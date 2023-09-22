@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>propAnnotationPoint</class>
+ <widget class="QWidget" name="propAnnotationPoint">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>200</width>
+    <height>196</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>200</width>
+    <height>196</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>16777215</width>
+    <height>196</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QGroupBox" name="annotationPoint">
+   <property name="geometry">
+    <rect>
+     <x>3</x>
+     <y>1</y>
+     <width>194</width>
+     <height>191</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>AnnotationPoint</string>
+   </property>
+   <widget class="QDoubleSpinBox" name="ctrZ">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>63</y>
+      <width>91</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 0, 0);</string>
+    </property>
+    <property name="decimals">
+     <number>6</number>
+    </property>
+    <property name="minimum">
+     <double>-999999999.000000000000000</double>
+    </property>
+    <property name="maximum">
+     <double>999999999.000000000000000</double>
+    </property>
+    <property name="singleStep">
+     <double>0.100000000000000</double>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="ctrX">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>17</y>
+      <width>91</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 255);</string>
+    </property>
+    <property name="decimals">
+     <number>6</number>
+    </property>
+    <property name="minimum">
+     <double>-999999999.000000000000000</double>
+    </property>
+    <property name="maximum">
+     <double>999999999.000000000000000</double>
+    </property>
+    <property name="singleStep">
+     <double>0.100000000000000</double>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="ctrY">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>40</y>
+      <width>91</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 127, 0);</string>
+    </property>
+    <property name="decimals">
+     <number>6</number>
+    </property>
+    <property name="minimum">
+     <double>-999999999.000000000000000</double>
+    </property>
+    <property name="maximum">
+     <double>999999999.000000000000000</double>
+    </property>
+    <property name="singleStep">
+     <double>0.100000000000000</double>
+    </property>
+   </widget>
+   <widget class="QLabel" name="cxLabel">
+    <property name="geometry">
+     <rect>
+      <x>71</x>
+      <y>18</y>
+      <width>21</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>X: </string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="cyLabel">
+    <property name="geometry">
+     <rect>
+      <x>72</x>
+      <y>40</y>
+      <width>20</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Y: </string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="czLabel">
+    <property name="geometry">
+     <rect>
+      <x>71</x>
+      <y>64</y>
+      <width>21</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Z: </string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="cLabel">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>51</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Coords:</string>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="dirY">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>137</y>
+      <width>91</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 127, 0);</string>
+    </property>
+    <property name="decimals">
+     <number>6</number>
+    </property>
+    <property name="minimum">
+     <double>-1.000000000000000</double>
+    </property>
+    <property name="maximum">
+     <double>1.000000000000000</double>
+    </property>
+    <property name="singleStep">
+     <double>0.100000000000000</double>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="dirX">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>114</y>
+      <width>91</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 255);</string>
+    </property>
+    <property name="decimals">
+     <number>6</number>
+    </property>
+    <property name="minimum">
+     <double>-1.000000000000000</double>
+    </property>
+    <property name="maximum">
+     <double>1.000000000000000</double>
+    </property>
+    <property name="singleStep">
+     <double>0.100000000000000</double>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="dirZ">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>160</y>
+      <width>91</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 0, 0);</string>
+    </property>
+    <property name="decimals">
+     <number>6</number>
+    </property>
+    <property name="minimum">
+     <double>-1.000000000000000</double>
+    </property>
+    <property name="maximum">
+     <double>1.000000000000000</double>
+    </property>
+    <property name="singleStep">
+     <double>0.100000000000000</double>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="showNorm">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>140</y>
+      <width>70</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Normal:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="cyLabel_2">
+    <property name="geometry">
+     <rect>
+      <x>73</x>
+      <y>137</y>
+      <width>20</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Y: </string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="czLabel_2">
+    <property name="geometry">
+     <rect>
+      <x>72</x>
+      <y>161</y>
+      <width>21</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Z: </string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="cxLabel_2">
+    <property name="geometry">
+     <rect>
+      <x>72</x>
+      <y>115</y>
+      <width>21</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>X: </string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <zorder>cxLabel</zorder>
+   <zorder>cyLabel</zorder>
+   <zorder>czLabel</zorder>
+   <zorder>ctrZ</zorder>
+   <zorder>ctrX</zorder>
+   <zorder>ctrY</zorder>
+   <zorder>cLabel</zorder>
+   <zorder>dirY</zorder>
+   <zorder>dirX</zorder>
+   <zorder>dirZ</zorder>
+   <zorder>showNorm</zorder>
+   <zorder>cyLabel_2</zorder>
+   <zorder>czLabel_2</zorder>
+   <zorder>cxLabel_2</zorder>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>ctrX</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>propAnnotationPoint</receiver>
+   <slot>changedCtrX(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>61</x>
+     <y>295</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>194</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ctrY</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>propAnnotationPoint</receiver>
+   <slot>changedCtrY(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>61</x>
+     <y>315</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>194</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ctrZ</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>propAnnotationPoint</receiver>
+   <slot>changedCtrZ(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>61</x>
+     <y>335</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>194</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dirX</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>propAnnotationPoint</receiver>
+   <slot>changedNormX(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>138</x>
+     <y>125</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>97</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dirY</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>propAnnotationPoint</receiver>
+   <slot>changedNormY(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>138</x>
+     <y>148</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>97</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dirZ</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>propAnnotationPoint</receiver>
+   <slot>changedNormZ(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>138</x>
+     <y>171</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>97</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>showNorm</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>propAnnotationPoint</receiver>
+   <slot>toggledShowNorm(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>149</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>97</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>changedCtrX(double)</slot>
+  <slot>changedCtrY(double)</slot>
+  <slot>changedCtrZ(double)</slot>
+  <slot>changedNormX(double)</slot>
+  <slot>changedNormY(double)</slot>
+  <slot>changedNormZ(double)</slot>
+  <slot>changedSize(int)</slot>
+  <slot>toggledShowNorm(bool)</slot>
+ </slots>
+</ui>

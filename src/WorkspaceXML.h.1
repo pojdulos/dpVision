@@ -1,0 +1,44 @@
+#pragma once
+
+#include "rapidxml/rapidxml.hpp"
+#include "rapidxml/rapidxml_print.hpp"
+#include "rapidxml/rapidxml_utils.hpp"
+
+//using namespace rapidxml;
+
+#include "Workspace.h"
+
+#define mp_alloc(a) mp.allocate_string(std::to_string(a).c_str())
+
+class CWorkspaceXML
+{
+	CWorkspaceXML() {};
+	~CWorkspaceXML() {};
+
+	rapidxml::xml_document<> doc;
+	rapidxml::memory_pool<> mp;
+
+	struct createNode
+	{
+	public:
+		static rapidxml::xml_node<> * workspace(rapidxml::xml_document<> &doc, rapidxml::memory_pool<> &mp, CWorkspace &wksp);
+		static rapidxml::xml_node<> * views(rapidxml::xml_document<> &doc, rapidxml::memory_pool<> &mp);
+		static rapidxml::xml_node<> * models(rapidxml::xml_document<> &doc, rapidxml::memory_pool<> &mp, std::map<int, CModel3D*> &);
+		static rapidxml::xml_node<> * lights(rapidxml::xml_document<> &doc, rapidxml::memory_pool<> &mp, _light*);
+		static rapidxml::xml_node<> * rotation(rapidxml::xml_document<> &doc, rapidxml::memory_pool<> &mp, CQuaternion &);
+		static rapidxml::xml_node<> * translation(rapidxml::xml_document<> &doc, rapidxml::memory_pool<> &mp, CVector3d &);
+
+	};
+
+	class parseNode
+	{
+	public:
+
+	};
+
+	static inline CWorkspaceXML & getInstance() { static CWorkspaceXML instance; return instance; };
+
+public:
+	static void save( CWorkspace &, std::wstring );
+	static void load( std::wstring, CWorkspace & );
+};

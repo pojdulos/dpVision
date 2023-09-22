@@ -1,0 +1,66 @@
+#pragma once
+#ifndef MAINAPPLICATION_H
+#define MAINAPPLICATION_H
+
+#include "Global.h"
+#include "DPFileInfo.h"
+
+#include "BackgroundPlane.h"
+#include "Workspace.h"
+
+#include "PluginManager.h"
+
+#include <QtWidgets/QApplication>
+#include <QtCore/QSettings>
+
+typedef QMap<unsigned int, Plugin*> CPlugins;
+
+class __declspec(dllexport) CMainApplication : public QApplication
+{
+	//Q_OBJECT
+public:
+	using QApplication::QApplication;
+	CMainApplication(int& argc, char** argv);
+	static CMainApplication* theApp;
+
+protected:
+	QStringList vListaPlikow;
+
+	QString sExeDir;
+	QString sAppDir;
+	QString sTmpDir;
+
+	int m_lastObjectId;
+
+public:
+	bool isInitialised;
+	bool bGlobalPicking;
+	bool bPickSnap;
+
+	CPlugins plugins;
+	Plugin *activePlugin;
+
+	QSettings *settings;
+
+	const QString& appExecDir() { return sExeDir; };
+	const QString& appDataDir() { return sAppDir; };
+	const QString& appTempDir() { return sTmpDir; };
+
+	Plugin *getPlugin( unsigned int id );
+	Plugin* getPlugin(const char* strUUID);
+
+	void preExec();
+	void postExec();
+
+	void loadPlugin( const QString pluginPath );
+	void unloadPlugin( const QString pluginPath );
+	void unloadPlugin( const unsigned int id );
+	void UnloadAllPlugins();
+	void LoadAllPlugins();
+	void RunPlugin( const unsigned int id );
+	bool runPlugin(const char* strUUID);
+
+	int getUniqueId();
+};
+
+#endif

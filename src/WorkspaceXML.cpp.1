@@ -1,0 +1,292 @@
+#include "WorkspaceXML.h"
+#include "AP.h"
+
+#include <QTWidgets/QMdiSubWindow>
+
+#include "MainWindow.h"
+#include "GLviewer.h"
+
+//using namespace rapidxml;
+
+rapidxml::xml_node<> * CWorkspaceXML::createNode::views(rapidxml::xml_document<> &doc, rapidxml::memory_pool<> &mp)
+{
+	CMainWindow* win = AP::mainWinPtr();
+
+	if (win == nullptr)
+	{
+		return nullptr;
+	}
+
+	std::vector<QMdiSubWindow*> windows = win->subWindows();
+
+	rapidxml::xml_node<> * views = doc.allocate_node(rapidxml::node_element, "views");
+	views->append_attribute(doc.allocate_attribute("count", mp.allocate_string(std::to_string(windows.size()).c_str())));
+
+
+	for (int i = 0; i<windows.size(); i++)
+	{
+		GLViewer * vie = (GLViewer *)windows[i]->widget();
+
+		rapidxml::xml_node<> * viewer = doc.allocate_node(rapidxml::node_element, "window");
+
+		viewer->append_attribute(doc.allocate_attribute("id", mp.allocate_string(std::to_string(i).c_str())));
+		
+		if ( win->isCurrentSubWindow(windows[i]) )
+		{
+			viewer->append_attribute(doc.allocate_attribute("current", mp.allocate_string("true")));
+		}
+
+		CTransform transform = vie->transform();
+
+		rapidxml::xml_node<> *tra = doc.allocate_node(rapidxml::node_element, "translation");
+		tra->append_attribute(doc.allocate_attribute("x", mp.allocate_string(std::to_string(transform.translation().X()).c_str())));
+		tra->append_attribute(doc.allocate_attribute("y", mp.allocate_string(std::to_string(transform.translation().Y()).c_str())));
+		tra->append_attribute(doc.allocate_attribute("z", mp.allocate_string(std::to_string(transform.translation().Z()).c_str())));
+		viewer->append_node(tra);
+
+		viewer->append_node( createNode::rotation( doc, mp, transform.rotation()));
+
+		views->append_node(viewer);
+	}
+
+	return views;
+}
+
+rapidxml::xml_node<> * CWorkspaceXML::createNode::translation(rapidxml::xml_document<> &doc, rapidxml::memory_pool<> &mp, CVector3d &t)
+{
+	rapidxml::xml_node<> *tra = doc.allocate_node(rapidxml::node_element, "translation");
+	tra->append_attribute(doc.allocate_attribute("x", mp_alloc(t.X())));
+	tra->append_attribute(doc.allocate_attribute("y", mp_alloc(t.Y())));
+	tra->append_attribute(doc.allocate_attribute("z", mp_alloc(t.Z())));
+	return tra;
+}
+
+rapidxml::xml_node<> * CWorkspaceXML::createNode::rotation(rapidxml::xml_document<> &doc, rapidxml::memory_pool<> &mp, CQuaternion &r)
+{
+	rapidxml::xml_node<> *rot = doc.allocate_node(rapidxml::node_element, "rotation");
+	rot->append_attribute( doc.allocate_attribute( "w", mp_alloc(r.w())));
+	rot->append_attribute( doc.allocate_attribute( "x", mp_alloc(r.x())));
+	rot->append_attribute( doc.allocate_attribute( "y", mp_alloc(r.y())));
+	rot->append_attribute( doc.allocate_attribute( "z", mp_alloc(r.z())));
+	return rot;
+}
+
+rapidxml::xml_node<> * CWorkspaceXML::createNode::models(rapidxml::xml_document<> &doc, rapidxml::memory_pool<> &mp, std::map<int, CModel3D*> &objects)
+{
+	char value[255];
+
+	rapidxml::xml_node<> * models = doc.allocate_node(rapidxml::node_element, "models");
+
+	size_t s = objects.size();
+
+	models->append_attribute(doc.allocate_attribute("count", mp_alloc(s) ));
+
+	for (std::map<int, CModel3D*>::iterator it = objects.begin(); it != objects.end(); it++)
+	{
+		rapidxml::xml_node<> *model = doc.allocate_node(rapidxml::node_element, "model");
+		models->append_node(model);
+
+		CTransform &t = (*it).second->getTransform();
+
+		int id = (*it).second->id();
+		model->append_attribute(doc.allocate_attribute("id", mp_alloc(id) ));
+
+		if ( t.isLocked() )
+			model->append_attribute(doc.allocate_attribute("locked", "true" ));
+
+		if ( ! (*it).second->getSelfVisibility() )
+			model->append_attribute(doc.allocate_attribute("hidden", "true"));
+
+		model->append_node(doc.allocate_node(rapidxml::node_element, "path", mp.allocate_string( (*it).second->pathA().c_str() ) ));
+
+		model->append_node( createNode::translation( doc, mp, t.translation() ));
+		model->append_node( createNode::rotation( doc, mp, t.rotation() ));
+
+		model->append_node(doc.allocate_node(rapidxml::node_element, "scale", mp_alloc(t.scale().x) ));
+
+	}
+
+	return models;
+}
+
+rapidxml::xml_node<> * CWorkspaceXML::createNode::lights(rapidxml::xml_document<> &doc, rapidxml::memory_pool<> &mp, _light *lights )
+{
+	char value[255];
+
+	rapidxml::xml_node<> * nodeLights = doc.allocate_node(rapidxml::node_element, "lights");
+
+	for (int i = 0; i<8; i++)
+	{
+		rapidxml::xml_node<> *light = doc.allocate_node(rapidxml::node_element, "light");
+		nodeLights->append_node(light);
+
+		light->append_attribute(doc.allocate_attribute("id", mp.allocate_string(std::to_string(i).c_str())));
+
+		light->append_attribute(doc.allocate_attribute("active", mp.allocate_string( lights[i].active ? "1" : "0")));
+		light->append_attribute(doc.allocate_attribute("fixed", mp.allocate_string( lights[i].fixed ? "1" : "0")));
+
+		sprintf(value, "%f,%f,%f,%f", lights[i].ambient[0], lights[i].ambient[1], lights[i].ambient[2], lights[i].ambient[3]);
+		light->append_node(doc.allocate_node(rapidxml::node_element, "ambient", mp.allocate_string(value)));
+
+		sprintf(value, "%f,%f,%f,%f", lights[i].diffuse[0], lights[i].diffuse[1], lights[i].diffuse[2], lights[i].diffuse[3]);
+		light->append_node(doc.allocate_node(rapidxml::node_element, "diffuse", mp.allocate_string(value)));
+
+		sprintf(value, "%f,%f,%f,%f", lights[i].specular[0], lights[i].specular[1], lights[i].specular[2], lights[i].specular[3]);
+		light->append_node(doc.allocate_node(rapidxml::node_element, "specular", mp.allocate_string(value)));
+
+		sprintf(value, "%f,%f,%f,%f", lights[i].position[0], lights[i].position[1], lights[i].position[2], lights[i].position[3]);
+		light->append_node(doc.allocate_node(rapidxml::node_element, "position", mp.allocate_string(value)));
+
+		sprintf(value, "%f,%f,%f", lights[i].spot_direction[0], lights[i].spot_direction[1], lights[i].spot_direction[2]);
+		light->append_node(doc.allocate_node(rapidxml::node_element, "spot_direction", mp.allocate_string(value)));
+
+		sprintf(value, "%f", lights[i].spot_cut_off);
+		light->append_node(doc.allocate_node(rapidxml::node_element, "spot_cut_off", mp.allocate_string(value)));
+	}
+
+	return nodeLights;
+}
+
+
+rapidxml::xml_node<> * CWorkspaceXML::createNode::workspace(rapidxml::xml_document<> &doc, rapidxml::memory_pool<> &mp, CWorkspace &wksp)
+{
+	rapidxml::xml_node<> *workspace = doc.allocate_node(rapidxml::node_element, "workspace");
+
+	workspace->append_attribute(doc.allocate_attribute("ver", "1.2"));
+
+	workspace->append_node( createNode::views(doc, mp) );
+	workspace->append_node( createNode::models(doc, mp, wksp.m_data) );
+	workspace->append_node( createNode::lights(doc, mp, wksp.m_lights) );
+
+	return workspace;
+}
+
+
+void CWorkspaceXML::save(CWorkspace & wksp, std::wstring path)
+{
+	rapidxml::xml_document<> doc;
+	rapidxml::memory_pool<> mp;
+
+	rapidxml::xml_node<> *decl = doc.allocate_node(rapidxml::node_declaration);
+	doc.append_node(decl);
+
+	decl->append_attribute(doc.allocate_attribute("version", "1.0"));
+	decl->append_attribute(doc.allocate_attribute("encoding", "utf-8"));
+
+	//doc.append_node( doc.allocate_node( node_cdata, "", "dpVision workspace" ) );
+	//doc.append_node(doc.allocate_node(node_comment, "", "dpVision workspace"));
+
+	doc.append_node( createNode::workspace(doc, mp, wksp) );
+
+	std::ofstream file(std::string(path.begin(),path.end()));
+	std::streambuf* sbuf = std::cout.rdbuf();
+	std::cout.rdbuf(file.rdbuf());
+
+	rapidxml::print(std::cout, doc, 0);
+
+	std::cout.rdbuf(sbuf);
+	file.close();
+
+	return;
+}
+
+
+
+void CWorkspaceXML::load( std::wstring path, CWorkspace &wksp )
+{
+	rapidxml::xml_document<char> doc;
+
+	// dpVision workspace
+
+	rapidxml::file<> file( UI::wstr2str(path).c_str() );
+
+	doc.parse<0>(file.data());
+
+	rapidxml::xml_node<> *root = doc.first_node("workspace");
+
+	float x, y, z;
+	
+	wksp.clear();
+
+	rapidxml::xml_node<> *models = root->first_node("models");
+
+	GLuint lb = atoi(models->first_attribute("count")->value());
+
+	rapidxml::xml_node<> *model;
+	rapidxml::xml_attribute<> * attr;
+	rapidxml::xml_node<> *node;
+
+	while (model = models->first_node("model"))
+	{
+		std::wstring modelfile;
+
+		if (node = model->first_node("path"))
+		{
+			// nowa wersja - tag "path"
+			modelfile = UI::str2wstr(node->value());
+		}
+		else if (attr = model->first_attribute("filename"))
+		{
+			// stara wersja - atrybut "filename"
+			modelfile = UI::str2wstr(attr->value());
+		}
+
+		
+		CModel3D *obj = AP::WORKSPACE::loadModel(modelfile);
+		if ( NULL != obj )
+		{
+			int id = obj->id();
+
+			rapidxml::xml_node<> * ntra = model->first_node("translation");
+
+			if (attr = ntra->first_attribute("x"))
+			{
+				// nowa wersja plików
+				CVector3<double> t;
+				t.X(::atof(attr->value()));
+				t.Y(::atof(ntra->first_attribute("y")->value()));
+				t.Z(::atof(ntra->first_attribute("z")->value()));
+
+				obj->getTransform().translation() = t;
+			}
+			else  if (3 == sscanf(ntra->value(), "%f,%f,%f", &x, &y, &z))
+			{
+				// stare wersje plików - tylko dla zgodnoœci
+				obj->getTransform().translation() = CVector3d(x, y, z);
+			}
+
+
+
+			rapidxml::xml_node<> * nrot = model->first_node("rotation");
+
+			if (attr = nrot->first_attribute("w"))
+			{
+				// nowa wersja plików
+				CQuaternion q(
+					::atof(attr->value()),
+					::atof(nrot->first_attribute("x")->value()),
+					::atof(nrot->first_attribute("y")->value()),
+					::atof(nrot->first_attribute("z")->value()) );
+
+				obj->getTransform().rotation() = q;
+			}
+			else  if (3 == sscanf(nrot->value(), "%f,%f,%f", &x, &y, &z))
+			{
+				// stare wersje plików - tylko dla zgodnoœci
+				obj->getTransform().rotation().fromEulerAnglesDeg(x, y, z);
+			}
+
+			sscanf(model->first_node("scale")->value(), "%f", &x);
+			obj->getTransform().setScale(x);
+
+			int a;
+			sscanf(model->first_node("lock")->value(), "%d", &a);
+			obj->getTransform().lock(1 == a);
+
+			UI::STATUSBAR::printf(obj->getLabelW().c_str());
+		}
+		models->remove_node(model);
+	}
+}
+
+

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>propPointCloud</class>
+ <widget class="QWidget" name="propPointCloud">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>200</width>
+    <height>102</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>200</width>
+    <height>102</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>16777215</width>
+    <height>102</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QGroupBox" name="cloud">
+   <property name="geometry">
+    <rect>
+     <x>3</x>
+     <y>4</y>
+     <width>194</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="title">
+    <string>Point Cloud</string>
+   </property>
+   <widget class="QTextEdit" name="info">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>171</width>
+      <height>51</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="spinPointSize">
+    <property name="geometry">
+     <rect>
+      <x>145</x>
+      <y>74</y>
+      <width>40</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
+    <property name="maximum">
+     <number>15</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>5</x>
+      <y>74</y>
+      <width>141</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Displayed point size (global):</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>info</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>spinPointSize</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>propPointCloud</receiver>
+   <slot>pointSizeChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>155</x>
+     <y>203</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>160</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>changedLabel(QString)</slot>
+  <slot>changedColR(int)</slot>
+  <slot>changedColG(int)</slot>
+  <slot>changedColB(int)</slot>
+  <slot>changedColA(int)</slot>
+  <slot>changedSelR(int)</slot>
+  <slot>changedSelG(int)</slot>
+  <slot>changedSelB(int)</slot>
+  <slot>changedSelA(int)</slot>
+  <slot>testButtonClicked()</slot>
+  <slot>rValueChanged(int)</slot>
+  <slot>gValueChanged(int)</slot>
+  <slot>bValueChanged(int)</slot>
+  <slot>aValueChanged(int)</slot>
+  <slot>rgbaTextChanged(QString)</slot>
+  <slot>colorButtonClicked()</slot>
+  <slot>pointSizeChanged(int)</slot>
+ </slots>
+</ui>

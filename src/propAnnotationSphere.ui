@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>propAnnotationSphere</class>
+ <widget class="QWidget" name="propAnnotationSphere">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>200</width>
+    <height>110</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>200</width>
+    <height>110</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>16777215</width>
+    <height>110</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QGroupBox" name="annotationSphere">
+   <property name="geometry">
+    <rect>
+     <x>3</x>
+     <y>0</y>
+     <width>194</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>5</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="title">
+    <string>AnnotationSphere</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+   </property>
+   <property name="flat">
+    <bool>false</bool>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="sizeConstraint">
+     <enum>QLayout::SetDefaultConstraint</enum>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QWidget" name="content" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>190</width>
+        <height>100</height>
+       </size>
+      </property>
+      <widget class="QDoubleSpinBox" name="ctrY">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>38</y>
+         <width>71</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(0, 127, 0);</string>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="minimum">
+        <double>-999999999.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>999999999.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.100000000000000</double>
+       </property>
+      </widget>
+      <widget class="QLabel" name="cxLabel">
+       <property name="geometry">
+        <rect>
+         <x>1</x>
+         <y>18</y>
+         <width>21</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>X: </string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="cyLabel">
+       <property name="geometry">
+        <rect>
+         <x>2</x>
+         <y>38</y>
+         <width>20</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Y: </string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="czLabel">
+       <property name="geometry">
+        <rect>
+         <x>1</x>
+         <y>58</y>
+         <width>21</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Z: </string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QDoubleSpinBox" name="ctrX">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>18</y>
+         <width>71</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(0, 0, 255);</string>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="minimum">
+        <double>-999999999.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>999999999.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.100000000000000</double>
+       </property>
+      </widget>
+      <widget class="QLabel" name="rLabel">
+       <property name="geometry">
+        <rect>
+         <x>109</x>
+         <y>-2</y>
+         <width>71</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Radius:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="cLabel">
+       <property name="geometry">
+        <rect>
+         <x>19</x>
+         <y>0</y>
+         <width>47</width>
+         <height>13</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Center:</string>
+       </property>
+      </widget>
+      <widget class="QDoubleSpinBox" name="radius">
+       <property name="geometry">
+        <rect>
+         <x>109</x>
+         <y>18</y>
+         <width>71</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(0, 0, 255);</string>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="minimum">
+        <double>-999999999.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>999999999.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.100000000000000</double>
+       </property>
+      </widget>
+      <widget class="QDoubleSpinBox" name="ctrZ">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>58</y>
+         <width>71</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(255, 0, 0);</string>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="minimum">
+        <double>-999999999.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>999999999.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.100000000000000</double>
+       </property>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>ctrX</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>propAnnotationSphere</receiver>
+   <slot>changedCtrX(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>61</x>
+     <y>295</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>194</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ctrY</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>propAnnotationSphere</receiver>
+   <slot>changedCtrY(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>61</x>
+     <y>315</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>194</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ctrZ</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>propAnnotationSphere</receiver>
+   <slot>changedCtrZ(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>61</x>
+     <y>335</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>194</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radius</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>propAnnotationSphere</receiver>
+   <slot>changedRadius(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>150</x>
+     <y>295</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>194</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>annotationSphere</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>content</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>99</x>
+     <y>54</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>97</x>
+     <y>59</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>changedCtrX(double)</slot>
+  <slot>changedCtrY(double)</slot>
+  <slot>changedCtrZ(double)</slot>
+  <slot>changedRadius(double)</slot>
+ </slots>
+</ui>

@@ -1,0 +1,189 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Polski (Polska) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PLK)
+LANGUAGE LANG_POLISH, SUBLANG_DEFAULT
+#pragma code_page(1250)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,1,0,0
+ PRODUCTVERSION 1,1,0,0
+ FILEFLAGSMASK 0x17L
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x0L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "041504b0"
+        BEGIN
+            VALUE "CompanyName", "IITiS PAN"
+            VALUE "FileDescription", "Experimental 3d viewier and editor"
+            VALUE "FileVersion", "1.1.0.0"
+            VALUE "InternalName", "dpVision"
+            VALUE "LegalCopyright", "Copyright (C) 2010 - 2022"
+            VALUE "OriginalFilename", "dpVision"
+            VALUE "ProductName", "dpVision"
+            VALUE "ProductVersion", "1.1.0.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x415, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON1               ICON                    "icon1.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDC_CURSOR1             CURSOR                  "cursor1.cur"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_ACCELERATOR1 ACCELERATORS
+BEGIN
+    "W",            IDM_PM_ECOLL,           VIRTKEY, CONTROL, NOINVERT
+END
+
+#endif    // Polski (Polska) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Neutralny (Domyœlne systemu) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEUSD)
+LANGUAGE LANG_NEUTRAL, SUBLANG_SYS_DEFAULT
+#pragma code_page(1250)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_MODEL_LOCK          "Lock (now is unlocked)          L"
+    IDS_MODEL_UNLOCK        "Unlock (now is locked)          L"
+    IDS_MODEL_HIDE          "Hide (now is visible)"
+    IDS_MODEL_SHOW          "Show (now is hidden)"
+    IDS_MODEL_TEXTUREON     "Show texture (now is hidden)        T"
+    IDS_MODEL_TEXTUREOFF    "Hide texture (now is visible)        T"
+    IDS_MODEL_PMECOLL       "PM Reduction (EColl)..."
+    IDS_MODEL_PMVSPLIT      "PM Reconstruction (VSplit)..."
+    IDS_MODEL_CLOSE         "Close selected          del"
+    IDS_MODEL_CALCVN        "Calculate vertex normals"
+    IDS_MODEL_RENDERVA      "VA Render Method"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_STEREO_MODE_0       "Stereo: Off"
+    IDS_STEREO_MODE_1       "Stereo: Anaglyph (L-red R-cyan) default"
+    IDS_STEREO_MODE_2       "Stereo: Anaglyph (L-red R-blue)"
+    IDS_STEREO_MODE_3       "Stereo: Anaglyph (L-red R-green)"
+    IDS_STEREO_MODE_4       "Stereo: Anaglyph (L-cyan R-red)"
+    IDS_STEREO_MODE_5       "Stereo: Anaglyph (L-blue R-red)"
+    IDS_STEREO_MODE_6       "Stereo: Anaglyph (L-green R-red)"
+    IDS_STEREO_MODE_QB      "Stereo: Quad buffering"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_MODEL_BBOFF         "Hide bounding box (now is visible)          B"
+    IDS_MODEL_BBON          "Show bounding box (now is hidden)          B"
+    IDS_PROP_MATERIAL_CHECK "Use this checkbox to hide original vertex colors and use selected material.\nIf your model has a texture instead of vertex colors, the checkbox is grayed.\nYou should to hide the texture (menu or key ""T"") to use the material."
+END
+
+#endif    // Neutralny (Domyœlne systemu) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Angielski (Stany Zjednoczone) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // Angielski (Stany Zjednoczone) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

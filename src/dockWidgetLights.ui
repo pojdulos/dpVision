@@ -1,0 +1,1324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DockWidgetLights</class>
+ <widget class="QDockWidget" name="DockWidgetLights">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>200</width>
+    <height>450</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>200</width>
+    <height>450</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>200</width>
+    <height>524287</height>
+   </size>
+  </property>
+  <property name="allowedAreas">
+   <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
+  </property>
+  <property name="windowTitle">
+   <string>Lights Properties</string>
+  </property>
+  <widget class="QWidget" name="dockWidgetContents">
+   <widget class="QGroupBox" name="groupBox">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>181</width>
+      <height>171</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Colours</string>
+    </property>
+    <widget class="QDoubleSpinBox" name="ambientR">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>33</y>
+       <width>42</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="palette">
+      <palette>
+       <active>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>255</red>
+           <green>0</green>
+           <blue>0</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </active>
+       <inactive>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>255</red>
+           <green>0</green>
+           <blue>0</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </inactive>
+       <disabled>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>120</red>
+           <green>120</green>
+           <blue>120</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </disabled>
+      </palette>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>value of R component</string>
+     </property>
+     <property name="maximum">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="ambientB">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>33</y>
+       <width>42</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="palette">
+      <palette>
+       <active>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>0</red>
+           <green>0</green>
+           <blue>255</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </active>
+       <inactive>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>0</red>
+           <green>0</green>
+           <blue>255</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </inactive>
+       <disabled>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>120</red>
+           <green>120</green>
+           <blue>120</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </disabled>
+      </palette>
+     </property>
+     <property name="toolTip">
+      <string>value of B component</string>
+     </property>
+     <property name="maximum">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="ambientG">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>33</y>
+       <width>42</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="palette">
+      <palette>
+       <active>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>0</red>
+           <green>170</green>
+           <blue>0</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </active>
+       <inactive>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>0</red>
+           <green>170</green>
+           <blue>0</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </inactive>
+       <disabled>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>120</red>
+           <green>120</green>
+           <blue>120</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </disabled>
+      </palette>
+     </property>
+     <property name="toolTip">
+      <string>value of G component</string>
+     </property>
+     <property name="maximum">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="ambientA">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>33</y>
+       <width>42</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>value of Alpha component</string>
+     </property>
+     <property name="maximum">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="difuseG">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>83</y>
+       <width>42</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="palette">
+      <palette>
+       <active>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>0</red>
+           <green>170</green>
+           <blue>0</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </active>
+       <inactive>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>0</red>
+           <green>170</green>
+           <blue>0</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </inactive>
+       <disabled>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>120</red>
+           <green>120</green>
+           <blue>120</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </disabled>
+      </palette>
+     </property>
+     <property name="toolTip">
+      <string>value of G component</string>
+     </property>
+     <property name="maximum">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="difuseB">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>83</y>
+       <width>42</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="palette">
+      <palette>
+       <active>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>0</red>
+           <green>0</green>
+           <blue>255</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </active>
+       <inactive>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>0</red>
+           <green>0</green>
+           <blue>255</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </inactive>
+       <disabled>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>120</red>
+           <green>120</green>
+           <blue>120</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </disabled>
+      </palette>
+     </property>
+     <property name="toolTip">
+      <string>value of B component</string>
+     </property>
+     <property name="maximum">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="difuseA">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>83</y>
+       <width>42</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>value of Alpha component</string>
+     </property>
+     <property name="maximum">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="difuseR">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>83</y>
+       <width>42</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="palette">
+      <palette>
+       <active>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>255</red>
+           <green>0</green>
+           <blue>0</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </active>
+       <inactive>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>255</red>
+           <green>0</green>
+           <blue>0</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </inactive>
+       <disabled>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>120</red>
+           <green>120</green>
+           <blue>120</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </disabled>
+      </palette>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>value of R component</string>
+     </property>
+     <property name="maximum">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="specularA">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>133</y>
+       <width>42</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>value of Alpha component</string>
+     </property>
+     <property name="maximum">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="specularG">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>133</y>
+       <width>42</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="palette">
+      <palette>
+       <active>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>0</red>
+           <green>170</green>
+           <blue>0</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </active>
+       <inactive>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>0</red>
+           <green>170</green>
+           <blue>0</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </inactive>
+       <disabled>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>120</red>
+           <green>120</green>
+           <blue>120</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </disabled>
+      </palette>
+     </property>
+     <property name="toolTip">
+      <string>value of G component</string>
+     </property>
+     <property name="maximum">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="specularB">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>133</y>
+       <width>42</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="palette">
+      <palette>
+       <active>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>0</red>
+           <green>0</green>
+           <blue>255</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </active>
+       <inactive>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>0</red>
+           <green>0</green>
+           <blue>255</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </inactive>
+       <disabled>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>120</red>
+           <green>120</green>
+           <blue>120</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </disabled>
+      </palette>
+     </property>
+     <property name="toolTip">
+      <string>value of B component</string>
+     </property>
+     <property name="maximum">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="specularR">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>133</y>
+       <width>42</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="palette">
+      <palette>
+       <active>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>255</red>
+           <green>0</green>
+           <blue>0</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </active>
+       <inactive>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>255</red>
+           <green>0</green>
+           <blue>0</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </inactive>
+       <disabled>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>120</red>
+           <green>120</green>
+           <blue>120</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </disabled>
+      </palette>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>value of R component</string>
+     </property>
+     <property name="maximum">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>69</x>
+       <y>16</y>
+       <width>46</width>
+       <height>13</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Ambient</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>73</x>
+       <y>65</y>
+       <width>31</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Difuse</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_3">
+     <property name="geometry">
+      <rect>
+       <x>70</x>
+       <y>113</y>
+       <width>41</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Specular</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QComboBox" name="comboLightSource">
+    <property name="geometry">
+     <rect>
+      <x>84</x>
+      <y>10</y>
+      <width>71</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="currentText">
+     <string>Source 0</string>
+    </property>
+    <item>
+     <property name="text">
+      <string>Source 0</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Source 1</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Source 2</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Source 3</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Source 4</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Source 5</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Source 6</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Source 7</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>220</y>
+      <width>81</width>
+      <height>111</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Position</string>
+    </property>
+    <widget class="QDoubleSpinBox" name="positionX">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>21</y>
+       <width>62</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>value of X coordinate</string>
+     </property>
+     <property name="minimum">
+      <double>-999999999.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>999999999.000000000000000</double>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="positionY">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>51</y>
+       <width>62</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>value of Y coordinate</string>
+     </property>
+     <property name="minimum">
+      <double>-999999999.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>999999999.000000000000000</double>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="positionZ">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>81</y>
+       <width>62</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>value of Z coordinate</string>
+     </property>
+     <property name="minimum">
+      <double>-999999999.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>999999999.000000000000000</double>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_3">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>220</y>
+      <width>81</width>
+      <height>111</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Spot dir</string>
+    </property>
+    <widget class="QDoubleSpinBox" name="spotX">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>21</y>
+       <width>62</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>value of X direction</string>
+     </property>
+     <property name="minimum">
+      <double>-999999999.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>999999999.000000000000000</double>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="spotY">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>51</y>
+       <width>62</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>value of Y direction</string>
+     </property>
+     <property name="minimum">
+      <double>-999999999.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>999999999.000000000000000</double>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="spotZ">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>81</y>
+       <width>62</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>value of Z direction</string>
+     </property>
+     <property name="minimum">
+      <double>-999999999.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>999999999.000000000000000</double>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_4">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>340</y>
+      <width>181</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string/>
+    </property>
+    <widget class="QDoubleSpinBox" name="spotAngle">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>10</y>
+       <width>71</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Angle of lighting cone</string>
+     </property>
+     <property name="maximum">
+      <double>360.000000000000000</double>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>10</y>
+       <width>61</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Spot cut off</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkActive">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>50</y>
+       <width>51</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Switch light source On/Off</string>
+     </property>
+     <property name="text">
+      <string>Active</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkFixed">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>50</y>
+       <width>51</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Viewer (fixed) or scene (floating) light source</string>
+     </property>
+     <property name="text">
+      <string>Fixed</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>13</y>
+      <width>31</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Light:</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>ambientA</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>DockWidgetLights</receiver>
+   <slot>ambientA(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>160</x>
+     <y>105</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ambientB</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>DockWidgetLights</receiver>
+   <slot>ambientB(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>120</x>
+     <y>105</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ambientG</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>DockWidgetLights</receiver>
+   <slot>ambientG(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>80</x>
+     <y>105</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ambientR</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>DockWidgetLights</receiver>
+   <slot>ambientR(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>40</x>
+     <y>105</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>specularA</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>DockWidgetLights</receiver>
+   <slot>specularA(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>160</x>
+     <y>205</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>specularB</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>DockWidgetLights</receiver>
+   <slot>specularB(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>120</x>
+     <y>205</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>specularG</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>DockWidgetLights</receiver>
+   <slot>specularG(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>80</x>
+     <y>205</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>specularR</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>DockWidgetLights</receiver>
+   <slot>specularR(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>40</x>
+     <y>205</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>difuseA</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>DockWidgetLights</receiver>
+   <slot>difuseA(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>160</x>
+     <y>155</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>difuseB</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>DockWidgetLights</receiver>
+   <slot>difuseB(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>120</x>
+     <y>155</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>difuseG</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>DockWidgetLights</receiver>
+   <slot>difuseG(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>80</x>
+     <y>155</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>difuseR</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>DockWidgetLights</receiver>
+   <slot>difuseR(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>40</x>
+     <y>155</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboLightSource</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>DockWidgetLights</receiver>
+   <slot>selectSource(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>119</x>
+     <y>42</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkActive</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>DockWidgetLights</receiver>
+   <slot>setActive(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>55</x>
+     <y>420</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkFixed</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>DockWidgetLights</receiver>
+   <slot>setFixed(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>145</x>
+     <y>420</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>positionX</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>DockWidgetLights</receiver>
+   <slot>positionX(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>50</x>
+     <y>273</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>positionY</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>DockWidgetLights</receiver>
+   <slot>positionY(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>50</x>
+     <y>303</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>positionZ</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>DockWidgetLights</receiver>
+   <slot>positionZ(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>50</x>
+     <y>333</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spotX</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>DockWidgetLights</receiver>
+   <slot>spotDirX(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>150</x>
+     <y>273</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spotY</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>DockWidgetLights</receiver>
+   <slot>spotDirY(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>150</x>
+     <y>303</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spotZ</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>DockWidgetLights</receiver>
+   <slot>spotDirZ(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>150</x>
+     <y>333</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spotAngle</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>DockWidgetLights</receiver>
+   <slot>spotAngle(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>135</x>
+     <y>382</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>228</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>ambientR(double)</slot>
+  <slot>ambientG(double)</slot>
+  <slot>ambientB(double)</slot>
+  <slot>ambientA(double)</slot>
+  <slot>difuseR(double)</slot>
+  <slot>difuseG(double)</slot>
+  <slot>difuseB(double)</slot>
+  <slot>difuseA(double)</slot>
+  <slot>specularR(double)</slot>
+  <slot>specularG(double)</slot>
+  <slot>specularB(double)</slot>
+  <slot>specularA(double)</slot>
+  <slot>selectSource(int)</slot>
+  <slot>setActive(int)</slot>
+  <slot>setFixed(int)</slot>
+  <slot>positionX(double)</slot>
+  <slot>positionY(double)</slot>
+  <slot>positionZ(double)</slot>
+  <slot>spotDirX(double)</slot>
+  <slot>spotDirY(double)</slot>
+  <slot>spotDirZ(double)</slot>
+  <slot>spotAngle(double)</slot>
+ </slots>
+</ui>

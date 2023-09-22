@@ -1,0 +1,2269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>853</width>
+    <height>589</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Okno główne</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="dpVision.qrc">
+    <normaloff>:/icons/dpVision.ico</normaloff>:/icons/dpVision.ico</iconset>
+  </property>
+  <property name="animated">
+   <bool>false</bool>
+  </property>
+  <property name="documentMode">
+   <bool>false</bool>
+  </property>
+  <property name="dockNestingEnabled">
+   <bool>false</bool>
+  </property>
+  <property name="dockOptions">
+   <set>QMainWindow::AllowTabbedDocks|QMainWindow::VerticalTabs</set>
+  </property>
+  <property name="unifiedTitleAndToolBarOnMac">
+   <bool>false</bool>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>16777215</width>
+     <height>16777215</height>
+    </size>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QMdiArea" name="mdiArea">
+      <property name="lineWidth">
+       <number>0</number>
+      </property>
+      <property name="background">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>160</red>
+         <green>160</green>
+         <blue>160</blue>
+        </color>
+       </brush>
+      </property>
+      <property name="viewMode">
+       <enum>QMdiArea::SubWindowView</enum>
+      </property>
+      <property name="documentMode">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>853</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFIle">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <widget class="QMenu" name="menuRecentFiles">
+     <property name="title">
+      <string>Recent files</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menuImport">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="title">
+      <string>Import</string>
+     </property>
+     <addaction name="action_ImportImage"/>
+     <addaction name="action_ImportTK"/>
+    </widget>
+    <addaction name="actionOpenWorkspace"/>
+    <addaction name="actionSaveWorkspace"/>
+    <addaction name="separator"/>
+    <addaction name="action_File_Open"/>
+    <addaction name="action_File_SaveAs"/>
+    <addaction name="separator"/>
+    <addaction name="menuImport"/>
+    <addaction name="separator"/>
+    <addaction name="menuRecentFiles"/>
+    <addaction name="separator"/>
+    <addaction name="action_File_Exit"/>
+   </widget>
+   <widget class="QMenu" name="menuWindows">
+    <property name="title">
+     <string>Window</string>
+    </property>
+    <widget class="QMenu" name="menuStereoscopy">
+     <property name="title">
+      <string>Stereoscopy</string>
+     </property>
+     <widget class="QMenu" name="menuAnaglyph">
+      <property name="title">
+       <string>Anaglyph</string>
+      </property>
+      <addaction name="actionRedCyan"/>
+      <addaction name="actionRedBlue"/>
+      <addaction name="actionRedGreen"/>
+      <addaction name="separator"/>
+      <addaction name="actionCyanRed"/>
+      <addaction name="actionBlueRed"/>
+      <addaction name="actionGreenRed"/>
+     </widget>
+     <widget class="QMenu" name="menuOther">
+      <property name="title">
+       <string>Other</string>
+      </property>
+      <addaction name="actionRowInterlaced"/>
+      <addaction name="actionAboveBelow"/>
+      <addaction name="separator"/>
+      <addaction name="actionColumnInterlaced"/>
+      <addaction name="actionSideBySide"/>
+     </widget>
+     <addaction name="actionStereoNone"/>
+     <addaction name="separator"/>
+     <addaction name="actionQuadbuffering"/>
+     <addaction name="menuAnaglyph"/>
+     <addaction name="menuOther"/>
+    </widget>
+    <widget class="QMenu" name="menuNew">
+     <property name="title">
+      <string>New</string>
+     </property>
+     <addaction name="actionNewGLView"/>
+    </widget>
+    <addaction name="actionFullscreen"/>
+    <addaction name="separator"/>
+    <addaction name="menuStereoscopy"/>
+    <addaction name="separator"/>
+    <addaction name="action_View_Shaders"/>
+    <addaction name="menuNew"/>
+    <addaction name="separator"/>
+    <addaction name="actionCascade"/>
+    <addaction name="actionTile"/>
+   </widget>
+   <widget class="QMenu" name="menuWorkspace">
+    <property name="title">
+     <string>Workspace</string>
+    </property>
+    <widget class="QMenu" name="menuSelection">
+     <property name="title">
+      <string>Checked models</string>
+     </property>
+     <addaction name="actionSelectAll"/>
+     <addaction name="actionUnselectAll"/>
+     <addaction name="separator"/>
+     <addaction name="actionResetSelectedTransformations"/>
+     <addaction name="separator"/>
+     <addaction name="actionHideSelectedModels"/>
+     <addaction name="actionShowSelectedModels"/>
+     <addaction name="separator"/>
+     <addaction name="actionLockSelectedModels"/>
+     <addaction name="actionUnlockSelectedModels"/>
+     <addaction name="separator"/>
+     <addaction name="actionRemoveSelectedModels"/>
+    </widget>
+    <addaction name="actionResetAllTransformations"/>
+    <addaction name="separator"/>
+    <addaction name="actionHideAllModels"/>
+    <addaction name="actionShowAllModels"/>
+    <addaction name="separator"/>
+    <addaction name="actionLockAllModels"/>
+    <addaction name="actionUnlockAllModels"/>
+    <addaction name="separator"/>
+    <addaction name="menuSelection"/>
+    <addaction name="separator"/>
+    <addaction name="actionRemoveAllModels"/>
+   </widget>
+   <widget class="QMenu" name="menuModel">
+    <property name="title">
+     <string>Model</string>
+    </property>
+    <widget class="QMenu" name="menuMeshEditionTools">
+     <property name="title">
+      <string>Mesh specific tools</string>
+     </property>
+     <widget class="QMenu" name="menuMeshRenderAs">
+      <property name="title">
+       <string>Render as</string>
+      </property>
+      <addaction name="action_Model_RenderAsFaces"/>
+      <addaction name="action_Model_RenderAsEdges"/>
+      <addaction name="action_Model_RenderAsVertices"/>
+     </widget>
+     <widget class="QMenu" name="menuMeshPickPoint">
+      <property name="title">
+       <string>Point Picking</string>
+      </property>
+      <addaction name="action_Tools_Grab_points"/>
+      <addaction name="action_Tools_Picking_Snap"/>
+     </widget>
+     <addaction name="menuMeshRenderAs"/>
+     <addaction name="separator"/>
+     <addaction name="action_Model_ShowTexture"/>
+     <addaction name="action_Model_Smoothing"/>
+     <addaction name="separator"/>
+     <addaction name="menuMeshPickPoint"/>
+     <addaction name="separator"/>
+     <addaction name="action_Mesh_InvertNormals"/>
+     <addaction name="action_Mesh_ApplyTransformations"/>
+    </widget>
+    <widget class="QMenu" name="menuProgressiveMeshSpecificTools">
+     <property name="title">
+      <string>Progressive Mesh specific tools</string>
+     </property>
+     <addaction name="actionPMecol"/>
+     <addaction name="actionPMvsplit"/>
+    </widget>
+    <addaction name="actionModelInSelection"/>
+    <addaction name="action_Model_Show"/>
+    <addaction name="action_Model_Lock"/>
+    <addaction name="action_Model_ShowBB"/>
+    <addaction name="separator"/>
+    <addaction name="actionModelResetTransformation"/>
+    <addaction name="separator"/>
+    <addaction name="menuMeshEditionTools"/>
+    <addaction name="menuProgressiveMeshSpecificTools"/>
+    <addaction name="separator"/>
+    <addaction name="action_Model_Duplicate"/>
+    <addaction name="separator"/>
+    <addaction name="action_Model_Close"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <widget class="QMenu" name="menuDebug">
+     <property name="title">
+      <string>Debug</string>
+     </property>
+     <addaction name="actionSwitchConsole"/>
+    </widget>
+    <addaction name="actionAbout"/>
+    <addaction name="separator"/>
+    <addaction name="menuDebug"/>
+   </widget>
+   <widget class="QMenu" name="menuCamera">
+    <property name="title">
+     <string>Camera</string>
+    </property>
+    <widget class="QMenu" name="menuProjection">
+     <property name="title">
+      <string>Projection</string>
+     </property>
+     <addaction name="actionProjectionPerpective"/>
+     <addaction name="actionProjectionOrthogonal"/>
+    </widget>
+    <widget class="QMenu" name="menuLook_direction">
+     <property name="title">
+      <string>Look direction</string>
+     </property>
+     <addaction name="actionLookF"/>
+     <addaction name="actionLookB"/>
+     <addaction name="actionLookL"/>
+     <addaction name="actionLookR"/>
+     <addaction name="actionLookT"/>
+     <addaction name="actionLookD"/>
+    </widget>
+    <addaction name="actionCameraResetTransformation"/>
+    <addaction name="separator"/>
+    <addaction name="menuProjection"/>
+    <addaction name="menuLook_direction"/>
+   </widget>
+   <widget class="QMenu" name="menuSelect">
+    <property name="title">
+     <string>Select</string>
+    </property>
+    <addaction name="action_select_Vertex"/>
+    <addaction name="action_select_Face"/>
+    <addaction name="action_select_None"/>
+    <addaction name="separator"/>
+    <addaction name="action_select_selection_delete"/>
+    <addaction name="action_select_noselection_delete"/>
+   </widget>
+   <widget class="QMenu" name="menuImage">
+    <property name="title">
+     <string>Image</string>
+    </property>
+    <addaction name="action_ImageFit"/>
+   </widget>
+   <addaction name="menuFIle"/>
+   <addaction name="menuSelect"/>
+   <addaction name="menuModel"/>
+   <addaction name="menuImage"/>
+   <addaction name="menuWorkspace"/>
+   <addaction name="menuCamera"/>
+   <addaction name="menuWindows"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="action_File_Open">
+   <property name="text">
+    <string>Open...</string>
+   </property>
+  </action>
+  <action name="action_File_Exit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionNewGLView">
+   <property name="text">
+    <string>OpenGL viewer</string>
+   </property>
+  </action>
+  <action name="actionCascade">
+   <property name="text">
+    <string>Cascade</string>
+   </property>
+  </action>
+  <action name="actionTile">
+   <property name="text">
+    <string>Tile</string>
+   </property>
+  </action>
+  <action name="actionFullscreen">
+   <property name="text">
+    <string>Fullscreen</string>
+   </property>
+   <property name="shortcut">
+    <string>F11</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="action_File_SaveAs">
+   <property name="text">
+    <string>Save as...</string>
+   </property>
+  </action>
+  <action name="actionAll">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>All</string>
+   </property>
+  </action>
+  <action name="actionSelectNone">
+   <property name="text">
+    <string>None</string>
+   </property>
+  </action>
+  <action name="actionRotationMode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/rotate-cw.png</normaloff>icons/rotate-cw.png</iconset>
+   </property>
+   <property name="text">
+    <string>rotation mode</string>
+   </property>
+  </action>
+  <action name="actionZoomMode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/QTgui/icons/zoom16.png</normaloff>:/QTgui/icons/zoom16.png</iconset>
+   </property>
+   <property name="text">
+    <string>zoom mode</string>
+   </property>
+  </action>
+  <action name="actionMoveMode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/Move.png</normaloff>icons/Move.png</iconset>
+   </property>
+   <property name="text">
+    <string>move mode</string>
+   </property>
+  </action>
+  <action name="actionStereoNone">
+   <property name="text">
+    <string>None</string>
+   </property>
+  </action>
+  <action name="actionRedCyan">
+   <property name="text">
+    <string>Red-Cyan</string>
+   </property>
+  </action>
+  <action name="action_Model_ShowTexture">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Texture on/off</string>
+   </property>
+   <property name="shortcut">
+    <string>T</string>
+   </property>
+  </action>
+  <action name="action_Model_Smoothing">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Smoothing on/of</string>
+   </property>
+   <property name="shortcut">
+    <string>Q</string>
+   </property>
+  </action>
+  <action name="action_Model_Duplicate">
+   <property name="text">
+    <string>Create copy</string>
+   </property>
+   <property name="shortcut">
+    <string>C</string>
+   </property>
+  </action>
+  <action name="actionCameraResetTransformation">
+   <property name="text">
+    <string>Reset camera transformation</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+N</string>
+   </property>
+  </action>
+  <action name="action_Model_ShowBB">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Bounding Box show/hide</string>
+   </property>
+   <property name="shortcut">
+    <string>B</string>
+   </property>
+  </action>
+  <action name="actionOpenWorkspace">
+   <property name="text">
+    <string>Open workspace...</string>
+   </property>
+  </action>
+  <action name="action_Model_Close">
+   <property name="text">
+    <string>Remove current model</string>
+   </property>
+   <property name="shortcut">
+    <string>Del</string>
+   </property>
+  </action>
+  <action name="actionSaveWorkspace">
+   <property name="text">
+    <string>Save workspace...</string>
+   </property>
+  </action>
+  <action name="actionQuadbuffering">
+   <property name="text">
+    <string>Quadbuffering</string>
+   </property>
+  </action>
+  <action name="actionRowInterlaced">
+   <property name="text">
+    <string>Row interlaced</string>
+   </property>
+  </action>
+  <action name="actionColumnInterlaced">
+   <property name="text">
+    <string>Column interlaced</string>
+   </property>
+  </action>
+  <action name="actionPMecol">
+   <property name="text">
+    <string>PM Reduction (ecol)</string>
+   </property>
+  </action>
+  <action name="actionPMvsplit">
+   <property name="text">
+    <string>PM Reconstruction (vsplit)</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About...</string>
+   </property>
+  </action>
+  <action name="actionPluginsManager">
+   <property name="text">
+    <string>Manager...</string>
+   </property>
+  </action>
+  <action name="actionRedBlue">
+   <property name="text">
+    <string>Red-Blue</string>
+   </property>
+  </action>
+  <action name="actionRedGreen">
+   <property name="text">
+    <string>Red-Green</string>
+   </property>
+  </action>
+  <action name="actionCyanRed">
+   <property name="text">
+    <string>Cyan-Red</string>
+   </property>
+  </action>
+  <action name="actionBlueRed">
+   <property name="text">
+    <string>Blue-Red</string>
+   </property>
+  </action>
+  <action name="actionGreenRed">
+   <property name="text">
+    <string>Green-Red</string>
+   </property>
+  </action>
+  <action name="actionAboveBelow">
+   <property name="text">
+    <string>Above/Below</string>
+   </property>
+  </action>
+  <action name="actionSideBySide">
+   <property name="text">
+    <string>Side by side</string>
+   </property>
+  </action>
+  <action name="actionProjectionPerpective">
+   <property name="text">
+    <string>Perspective</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+P, P</string>
+   </property>
+  </action>
+  <action name="actionProjectionOrthogonal">
+   <property name="text">
+    <string>Orthogonal</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+P, O</string>
+   </property>
+  </action>
+  <action name="action_Model_Lock">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Model is locked</string>
+   </property>
+   <property name="shortcut">
+    <string>L</string>
+   </property>
+  </action>
+  <action name="action_Model_Show">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Model is visible</string>
+   </property>
+   <property name="shortcut">
+    <string>H</string>
+   </property>
+  </action>
+  <action name="action_Tools_Picking_Snap">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Snap to vertices</string>
+   </property>
+  </action>
+  <action name="action_Tools_Picking_Point">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Point on face</string>
+   </property>
+  </action>
+  <action name="actionDd">
+   <property name="text">
+    <string>dd</string>
+   </property>
+  </action>
+  <action name="action_View_Shaders">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Use shaders (test)</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="action_Mesh_InvertNormals">
+   <property name="text">
+    <string>Invert normals</string>
+   </property>
+  </action>
+  <action name="action_Mesh_ApplyTransformations">
+   <property name="text">
+    <string>Apply transformations</string>
+   </property>
+  </action>
+  <action name="action_Tools_Grab_points">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Grab points</string>
+   </property>
+  </action>
+  <action name="actionResetAllTransformations">
+   <property name="text">
+    <string>Reset all transformations</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+N</string>
+   </property>
+  </action>
+  <action name="actionRemoveAllModels">
+   <property name="text">
+    <string>Remove all models</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+Del</string>
+   </property>
+  </action>
+  <action name="actionResetSelectedTransformations">
+   <property name="text">
+    <string>Reset checked transformations</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S, N</string>
+   </property>
+  </action>
+  <action name="actionRemoveSelectedModels">
+   <property name="text">
+    <string>Remove checked models</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Del</string>
+   </property>
+  </action>
+  <action name="actionLockAllModels">
+   <property name="text">
+    <string>Lock all models</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+L, L</string>
+   </property>
+  </action>
+  <action name="actionLockSelectedModels">
+   <property name="text">
+    <string>Lock checked models</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L, L</string>
+   </property>
+  </action>
+  <action name="actionUnlockSelectedModels">
+   <property name="text">
+    <string>Unlock checked models</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L, U</string>
+   </property>
+  </action>
+  <action name="actionUnlockAllModels">
+   <property name="text">
+    <string>Unlock all models</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+L, U</string>
+   </property>
+  </action>
+  <action name="actionSelectAll">
+   <property name="text">
+    <string>Check All</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S, =</string>
+   </property>
+  </action>
+  <action name="actionUnselectAll">
+   <property name="text">
+    <string>Uncheck All</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S, -</string>
+   </property>
+  </action>
+  <action name="actionShowAllModels">
+   <property name="text">
+    <string>Show all models</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+H, S</string>
+   </property>
+  </action>
+  <action name="actionShowSelectedModels">
+   <property name="text">
+    <string>Show checked models</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+H, S</string>
+   </property>
+  </action>
+  <action name="actionHideAllModels">
+   <property name="text">
+    <string>Hide all models</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+H, H</string>
+   </property>
+  </action>
+  <action name="actionHideSelectedModels">
+   <property name="text">
+    <string>Hide checked models</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+H, H</string>
+   </property>
+  </action>
+  <action name="actionModelInSelection">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Model is selected</string>
+   </property>
+   <property name="shortcut">
+    <string>A</string>
+   </property>
+  </action>
+  <action name="actionModelResetTransformation">
+   <property name="text">
+    <string>Reset model transformation</string>
+   </property>
+   <property name="shortcut">
+    <string>N</string>
+   </property>
+  </action>
+  <action name="actionzz">
+   <property name="text">
+    <string>zz</string>
+   </property>
+  </action>
+  <action name="action_select_Vertex">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Area</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+V</string>
+   </property>
+  </action>
+  <action name="action_select_Face">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Face</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+F</string>
+   </property>
+  </action>
+  <action name="action_select_None">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>None</string>
+   </property>
+  </action>
+  <action name="action_select_selection_delete">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Delete selected area</string>
+   </property>
+  </action>
+  <action name="action_select_noselection_delete">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Delete not selected area</string>
+   </property>
+  </action>
+  <action name="action_ImportTK">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>TK images</string>
+   </property>
+  </action>
+  <action name="actionNewPicView">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Image viewer</string>
+   </property>
+  </action>
+  <action name="action_ImportImage">
+   <property name="text">
+    <string>2D image</string>
+   </property>
+  </action>
+  <action name="action_ImageFit">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Fit to window</string>
+   </property>
+  </action>
+  <action name="actionLookF">
+   <property name="text">
+    <string>Front</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L, Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionLookL">
+   <property name="text">
+    <string>Left</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L, Ctrl+L</string>
+   </property>
+  </action>
+  <action name="actionLookT">
+   <property name="text">
+    <string>Top</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L, Ctrl+T</string>
+   </property>
+  </action>
+  <action name="actionLookB">
+   <property name="text">
+    <string>Back</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L, Ctrl+B</string>
+   </property>
+  </action>
+  <action name="actionLookR">
+   <property name="text">
+    <string>Right</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L, Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionLookD">
+   <property name="text">
+    <string>Bottom</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L, Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionSwitchConsole">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Switch console</string>
+   </property>
+  </action>
+  <action name="actionee">
+   <property name="text">
+    <string>ee</string>
+   </property>
+  </action>
+  <actiongroup name="GroupRender">
+   <action name="action_Model_RenderAsFaces">
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+    <property name="text">
+     <string>Faces</string>
+    </property>
+    <property name="shortcut">
+     <string>F</string>
+    </property>
+   </action>
+   <action name="action_Model_RenderAsEdges">
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="text">
+     <string>Edges</string>
+    </property>
+    <property name="shortcut">
+     <string>E</string>
+    </property>
+   </action>
+   <action name="action_Model_RenderAsVertices">
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="text">
+     <string>Vertices</string>
+    </property>
+    <property name="shortcut">
+     <string>V</string>
+    </property>
+   </action>
+  </actiongroup>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="dpVision.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>action_File_Exit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>359</x>
+     <y>306</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionNewGLView</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>createGLViewer()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>360</x>
+     <y>267</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionFullscreen</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>viewChildFS()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>443</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_File_Open</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>fileOpen()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>403</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionStereoNone</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>stereoscopyOff()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionRedCyan</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>stereoscopyRedCyan()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Model_RenderAsFaces</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>renderAsFaces()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Model_RenderAsEdges</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>renderAsEdges()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Model_RenderAsVertices</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>renderAsVertices()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Model_ShowTexture</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>textureOnOff()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Model_Smoothing</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>smoothingOnOff()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Model_Duplicate</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>createNewCopy()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionCameraResetTransformation</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>cameraResetPosition()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Model_ShowBB</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>bbShowHide(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionOpenWorkspace</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>openWorkspace()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Model_Close</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>modelClose()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionSaveWorkspace</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>saveWorkspace()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_File_SaveAs</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>fileSave()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionQuadbuffering</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>stereoscopyQuadbuff()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionRowInterlaced</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>stereoscopyRowInterlaced()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionColumnInterlaced</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>stereoscopyColInterlaced()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionPMecol</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>pmEcol()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionPMvsplit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>pmVsplit()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionAbout</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>helpAbout()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>436</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionBlueRed</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>stereoscopyBlueRed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>456</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionGreenRed</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>stereoscopyGreenRed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>456</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionRedBlue</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>stereoscopyRedBlue()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>456</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionCyanRed</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>stereoscopyCyanRed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>456</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionRedGreen</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>stereoscopyRedGreen()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>456</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionAboveBelow</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>stereoscopyAboveBelow()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>456</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionSideBySide</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>stereoscopySideBySide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>456</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionCascade</sender>
+   <signal>triggered()</signal>
+   <receiver>mdiArea</receiver>
+   <slot>cascadeSubWindows()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>462</x>
+     <y>273</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionTile</sender>
+   <signal>triggered()</signal>
+   <receiver>mdiArea</receiver>
+   <slot>tileSubWindows()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>462</x>
+     <y>273</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionProjectionOrthogonal</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>projectionOrthogonal()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>456</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionProjectionPerpective</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>projectionPerspective()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>456</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mdiArea</sender>
+   <signal>subWindowActivated(QMdiSubWindow*)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>viewerSelected(QMdiSubWindow*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>319</x>
+     <y>240</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Model_Lock</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>modelLock(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Model_Show</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>modelVisibility(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_View_Shaders</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>useShaders(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Mesh_InvertNormals</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>modelInvertNormals()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Mesh_ApplyTransformations</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>meshApplyTransformations()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Tools_Picking_Snap</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>pickSnap(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Tools_Grab_points</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>grabPoints(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionRemoveAllModels</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>removeAllModels()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionResetAllTransformations</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>resetAllTransformations()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionRemoveSelectedModels</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>removeSelectedModels()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionResetSelectedTransformations</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>resetSelectedTransformations()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionLockAllModels</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>lockAllModels()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionLockSelectedModels</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>lockSelectedModels()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionUnlockAllModels</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>unlockAllModels()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionUnlockSelectedModels</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>unlockSelectedModels()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionSelectAll</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>selectAll()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionUnselectAll</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>unselectAll()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionHideAllModels</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>hideAllModels()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionHideSelectedModels</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>hideSelectedModels()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionShowAllModels</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>showAllModels()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionShowSelectedModels</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>showSelectedModels()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionModelInSelection</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>modelInSelection(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionModelResetTransformation</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>modelResetTransformations()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_select_Vertex</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>actionSelectVertex()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_select_Face</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>actionSelectFace()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_select_None</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>actionSelectNone()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_select_selection_delete</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>actionSelectSelectionDelete()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_select_noselection_delete</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>actionSelectNoSelectionDelete()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionNewPicView</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>createPicViewer()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_ImportImage</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>importImage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_ImageFit</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>imageFit(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionLookT</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>actionLookDir()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionLookF</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>actionLookDir()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionLookL</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>actionLookDir()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionLookB</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>actionLookDir()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionLookR</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>actionLookDir()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionLookD</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>actionLookDir()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionSwitchConsole</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>switchConsole(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <designerdata>
+  <property name="gridDeltaX">
+   <number>10</number>
+  </property>
+  <property name="gridDeltaY">
+   <number>10</number>
+  </property>
+  <property name="gridSnapX">
+   <bool>false</bool>
+  </property>
+  <property name="gridSnapY">
+   <bool>false</bool>
+  </property>
+  <property name="gridVisible">
+   <bool>true</bool>
+  </property>
+ </designerdata>
+ <slots>
+  <slot>viewChildFS()</slot>
+  <slot>fileOpen()</slot>
+  <slot>stereoscopyOff()</slot>
+  <slot>stereoscopyRedCyan()</slot>
+  <slot>renderAsFaces()</slot>
+  <slot>renderAsEdges()</slot>
+  <slot>renderAsVertices()</slot>
+  <slot>textureOnOff()</slot>
+  <slot>smoothingOnOff()</slot>
+  <slot>createNewCopy()</slot>
+  <slot>cameraResetPosition()</slot>
+  <slot>bbShowHide(bool)</slot>
+  <slot>openWorkspace()</slot>
+  <slot>modelClose()</slot>
+  <slot>saveWorkspace()</slot>
+  <slot>fileSave()</slot>
+  <slot>stereoscopyQuadbuff()</slot>
+  <slot>stereoscopyRowInterlaced()</slot>
+  <slot>stereoscopyColInterlaced()</slot>
+  <slot>pmEcol()</slot>
+  <slot>pmVsplit()</slot>
+  <slot>helpAbout()</slot>
+  <slot>stereoscopyRedBlue()</slot>
+  <slot>stereoscopyRedGreen()</slot>
+  <slot>stereoscopyBlueRed()</slot>
+  <slot>stereoscopyCyanRed()</slot>
+  <slot>stereoscopyGreenRed()</slot>
+  <slot>stereoscopyAboveBelow()</slot>
+  <slot>stereoscopySideBySide()</slot>
+  <slot>projectionOrthogonal()</slot>
+  <slot>projectionPerspective()</slot>
+  <slot>viewerSelected(QMdiSubWindow*)</slot>
+  <slot>modelLock(bool)</slot>
+  <slot>modelVisibility(bool)</slot>
+  <slot>useShaders(bool)</slot>
+  <slot>modelInvertNormals()</slot>
+  <slot>meshApplyTransformations()</slot>
+  <slot>pickSnap(bool)</slot>
+  <slot>grabPoints(bool)</slot>
+  <slot>removeAllModels()</slot>
+  <slot>resetAllTransformations()</slot>
+  <slot>removeSelectedModels()</slot>
+  <slot>resetSelectedTransformations()</slot>
+  <slot>lockAllModels()</slot>
+  <slot>lockSelectedModels()</slot>
+  <slot>unlockAllModels()</slot>
+  <slot>unlockSelectedModels()</slot>
+  <slot>selectAll()</slot>
+  <slot>unselectAll()</slot>
+  <slot>hideAllModels()</slot>
+  <slot>showAllModels()</slot>
+  <slot>hideSelectedModels()</slot>
+  <slot>showSelectedModels()</slot>
+  <slot>modelInSelection(bool)</slot>
+  <slot>modelResetTransformations()</slot>
+  <slot>actionSelectVertex()</slot>
+  <slot>actionSelectFace()</slot>
+  <slot>actionSelectNone()</slot>
+  <slot>actionSelectSelectionDelete()</slot>
+  <slot>actionSelectNoSelectionDelete()</slot>
+  <slot>createGLViewer()</slot>
+  <slot>importImage()</slot>
+  <slot>imageFit(bool)</slot>
+  <slot>actionLookDir()</slot>
+  <slot>switchConsole(bool)</slot>
+ </slots>
+</ui>

@@ -1,0 +1,3011 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="100">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="." name="0">
+      <df name="3rdParty">
+        <df name="quazip-1.4">
+          <df name="quazip">
+            <in>JlCompress.cpp</in>
+            <in>qioapi.cpp</in>
+            <in>quaadler32.cpp</in>
+            <in>quachecksum32.cpp</in>
+            <in>quacrc32.cpp</in>
+            <in>quagzipfile.cpp</in>
+            <in>quaziodevice.cpp</in>
+            <in>quazip.cpp</in>
+            <in>quazipdir.cpp</in>
+            <in>quazipfile.cpp</in>
+            <in>quazipfileinfo.cpp</in>
+            <in>quazipnewinfo.cpp</in>
+            <in>unzip.c</in>
+            <in>zip.c</in>
+          </df>
+        </df>
+      </df>
+      <df name="build">
+        <df name="3rdParty">
+          <df name="quazip-1.4">
+            <df name="quazip">
+              <df name="QuaZip_autogen">
+                <in>mocs_compilation.cpp</in>
+              </df>
+            </df>
+          </df>
+        </df>
+        <df name="dpVision_autogen">
+          <in>mocs_compilation.cpp</in>
+        </df>
+        <df name="PluginManager">
+          <df name="PluginManager_autogen">
+            <in>mocs_compilation.cpp</in>
+          </df>
+        </df>
+        <df name="PluginManager_autogen">
+          <in>mocs_compilation.cpp</in>
+        </df>
+        <df name="plugins">
+          <df name="cutPlane">
+            <df name="cutPlane_autogen">
+              <in>mocs_compilation.cpp</in>
+            </df>
+          </df>
+        </df>
+        <df name="PMFactory">
+          <df name="PMFactory_autogen">
+            <in>mocs_compilation.cpp</in>
+          </df>
+        </df>
+        <in>qrc_dpVision.cpp</in>
+      </df>
+      <df name="PluginManager">
+        <in>CommonDLL.cpp</in>
+        <in>Plugin.cpp</in>
+        <in>PluginManager.cpp</in>
+        <in>dllmain.cpp</in>
+        <in>stdafx.cpp</in>
+      </df>
+      <df name="plugins">
+        <df name="cutPlane">
+          <in>ConcretePlugin.cpp</in>
+          <in>MousePick.cpp</in>
+          <in>PluginDLL.cpp</in>
+          <in>dllmain.cpp</in>
+          <in>stdafx.cpp</in>
+        </df>
+      </df>
+      <df name="PMFactory">
+        <df name="src">
+          <in>PMFactory.cpp</in>
+          <in>PMFactoryEColl.cpp</in>
+          <in>PMFactoryEColl2.cpp</in>
+          <in>PMFactoryIO.cpp</in>
+          <in>PMFactoryVSplit.cpp</in>
+          <in>PMFerrors.cpp</in>
+          <in>PMFfaces.cpp</in>
+          <in>PMFskulls.cpp</in>
+          <in>VFaces.cpp</in>
+        </df>
+      </df>
+      <df name="src">
+        <in>AP.cpp</in>
+        <in>Annotation.cpp</in>
+        <in>AnnotationBezier.cpp</in>
+        <in>AnnotationBoundVectors.cpp</in>
+        <in>AnnotationBox.cpp</in>
+        <in>AnnotationCamera.cpp</in>
+        <in>AnnotationCurvatureMap.cpp</in>
+        <in>AnnotationCylinder.cpp</in>
+        <in>AnnotationEdges.cpp</in>
+        <in>AnnotationElasticPath.cpp</in>
+        <in>AnnotationPath.cpp</in>
+        <in>AnnotationPlane.cpp</in>
+        <in>AnnotationPoint.cpp</in>
+        <in>AnnotationPoints.cpp</in>
+        <in>AnnotationPolygon.cpp</in>
+        <in>AnnotationPolygon2D.cpp</in>
+        <in>AnnotationPyramid.cpp</in>
+        <in>AnnotationSetOfCameras.cpp</in>
+        <in>AnnotationSetOfFaces.cpp</in>
+        <in>AnnotationSetOfVertices.cpp</in>
+        <in>AnnotationSphere.cpp</in>
+        <in>AnnotationTriangle.cpp</in>
+        <in>AnnotationTriple.cpp</in>
+        <in>AnnotationVPath.cpp</in>
+        <in>AnnotationVertex.cpp</in>
+        <in>BackgroundPlane.cpp</in>
+        <in>BaseObject.cpp</in>
+        <in>BoundVector.cpp</in>
+        <in>BoundingBox.cpp</in>
+        <in>CDoubleSpinBox.cpp</in>
+        <in>CItemEditorFactory.cpp</in>
+        <in>CSpinBoxDelegate.cpp</in>
+        <in>Camera.cpp</in>
+        <in>ContextMenu.cpp</in>
+        <in>DockWidgetHistogram.cpp</in>
+        <in>DockWidgetImageViewer.cpp</in>
+        <in>DockWidgetLights.cpp</in>
+        <in>DockWidgetModel.cpp</in>
+        <in>DockWidgetPluginList.cpp</in>
+        <in>DockWidgetPluginPanel.cpp</in>
+        <in>DockWidgetProperties.cpp</in>
+        <in>DockWidgetViewer.cpp</in>
+        <in>DockWidgetWorkspace.cpp</in>
+        <in>Edge.cpp</in>
+        <in>Face.cpp</in>
+        <in>FaceSplitter.cpp</in>
+        <in>FileConnector.cpp</in>
+        <in>FilterDialog.cpp</in>
+        <in>GLViewer.cpp</in>
+        <in>GLViewer_Pick.cpp</in>
+        <in>GLViewer_Render.cpp</in>
+        <in>GLViewer_StereoProjection.cpp</in>
+        <in>GroupObject.cpp</in>
+        <in>Histogram.cpp</in>
+        <in>Image.cpp</in>
+        <in>ImageLabel.cpp</in>
+        <in>IndexedTriangle.cpp</in>
+        <in>KDNode.cpp</in>
+        <in>KDNode2.cpp</in>
+        <in>KDTree.cpp</in>
+        <in>Kula.cpp</in>
+        <in>LocalClass.cpp</in>
+        <in>MainApplication.cpp</in>
+        <in>MainWindow.cpp</in>
+        <in>MainWindow_Slots.cpp</in>
+        <in>MainWindow_TCP.cpp</in>
+        <in>Material.cpp</in>
+        <in>MdiChild.cpp</in>
+        <in>Mesh.cpp</in>
+        <in>Model3D.cpp</in>
+        <in>Object.cpp</in>
+        <in>OrderedPointCloud.cpp</in>
+        <in>Parser.cpp</in>
+        <in>ParserDPV.cpp</in>
+        <in>ParserDPV_load.cpp</in>
+        <in>ParserDPV_save.cpp</in>
+        <in>ParserOBJ.cpp</in>
+        <in>ParserSMF.cpp</in>
+        <in>ParserSTL.cpp</in>
+        <in>PicViewer.cpp</in>
+        <in>Plane.cpp</in>
+        <in>PointCloud.cpp</in>
+        <in>PolygonGroup.cpp</in>
+        <in>ProgressIndicator.cpp</in>
+        <in>Quaternion.cpp</in>
+        <in>RAWdicomData.cpp</in>
+        <in>RGBA.cpp</in>
+        <in>RangeSlider.cpp</in>
+        <in>Stat.cpp</in>
+        <in>TKimageDialog.cpp</in>
+        <in>Texture.cpp</in>
+        <in>ThreadParser.cpp</in>
+        <in>ThreadParserLoader.cpp</in>
+        <in>Transform.cpp</in>
+        <in>TransformMatrix.cpp</in>
+        <in>Triangle.cpp</in>
+        <in>UI.cpp</in>
+        <in>Utilities.cpp</in>
+        <in>Vertex.cpp</in>
+        <in>VertexArray.cpp</in>
+        <in>VolTK.cpp</in>
+        <in>VolTKimageDialog.cpp</in>
+        <in>WinMain.cpp</in>
+        <in>Workspace.cpp</in>
+        <in>WorkspaceFile.cpp</in>
+        <in>WorkspaceTreeItem.cpp</in>
+        <in>WorkspaceTreeModel.cpp</in>
+        <in>dpLog.cpp</in>
+        <in>histogramwidget.cpp</in>
+        <in>propAnnotation.cpp</in>
+        <in>propAnnotationCamera.cpp</in>
+        <in>propAnnotationPlane.cpp</in>
+        <in>propAnnotationPoint.cpp</in>
+        <in>propAnnotationSetOfFaces.cpp</in>
+        <in>propAnnotationSetOfVertices.cpp</in>
+        <in>propAnnotationSphere.cpp</in>
+        <in>propAnnotationTriple.cpp</in>
+        <in>propBaseObject.cpp</in>
+        <in>propDataChild.cpp</in>
+        <in>propHistogram.cpp</in>
+        <in>propImage.cpp</in>
+        <in>propMaterial.cpp</in>
+        <in>propMesh.cpp</in>
+        <in>propModel.cpp</in>
+        <in>propPointCloud.cpp</in>
+        <in>propTransform.cpp</in>
+        <in>propViewer.cpp</in>
+        <in>propVolTK.cpp</in>
+        <in>propWidget.cpp</in>
+        <in>stdafx.cpp</in>
+        <in>tinyspline.c</in>
+        <in>tinysplinecpp.cpp</in>
+        <in>volTKcolorWidget.cpp</in>
+      </df>
+    </df>
+    <logicalFolder name="Modules"
+                   displayName="Modules"
+                   projectFiles="true"
+                   root="../../../mingw64/share/cmake/Modules">
+      <itemPath>../../../mingw64/share/cmake/Modules/CMakeCXXCompilerABI.cpp</itemPath>
+      <itemPath>../../../mingw64/share/cmake/Modules/CMakeCompilerABI.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>CMakeLists.txt</itemPath>
+      <itemPath>nbproject/private/launcher.properties</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <compilerSet>MinGW|MinGW</compilerSet>
+        <dependencyChecking>false</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <flagsDictionary>
+        <element flagsID="0" commonFlags="-std=gnu++11"/>
+        <element flagsID="1" commonFlags="-std=gnu++14"/>
+      </flagsDictionary>
+      <codeAssistance>
+      </codeAssistance>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>./build</buildCommandWorkingDir>
+          <buildCommand>${MAKE} -f Makefile -j 16</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
+          <executablePath>./build/dpVision.exe</executablePath>
+          <cTool>
+            <standard>10</standard>
+            <incDir>
+              <pElem>src</pElem>
+              <pElem>PluginManager</pElem>
+              <pElem>PMFactory/src</pElem>
+              <pElem>../../../mingw64/include</pElem>
+              <pElem>../../../usr/include</pElem>
+            </incDir>
+            <preprocessorList>
+              <Elem>QT_CORE_LIB</Elem>
+            </preprocessorList>
+          </cTool>
+          <ccTool>
+            <standard>11</standard>
+            <incDir>
+              <pElem>src</pElem>
+              <pElem>PluginManager</pElem>
+              <pElem>PMFactory/src</pElem>
+              <pElem>../../../mingw64/include</pElem>
+              <pElem>../../../usr/include</pElem>
+            </incDir>
+          </ccTool>
+        </makeTool>
+        <preBuild>
+          <preBuildCommandWorkingDir>./build</preBuildCommandWorkingDir>
+          <preBuildCommand>${CMAKE} -G "MSYS Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=${IDE_CC} -DCMAKE_CXX_COMPILER=${IDE_CXX} -DCMAKE_C_FLAGS_DEBUG="-g3 -gdwarf-2" -DCMAKE_CXX_FLAGS_DEBUG="-g3 -gdwarf-2" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..</preBuildCommand>
+        </preBuild>
+      </makefileType>
+      <item path="../../../mingw64/share/cmake/Modules/CMakeCXXCompilerABI.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="3rdParty/quazip-1.4/quazip/JlCompress.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="3rdParty/quazip-1.4/quazip/qioapi.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="3rdParty/quazip-1.4/quazip/quaadler32.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="3rdParty/quazip-1.4/quazip/quachecksum32.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="3rdParty/quazip-1.4/quazip/quacrc32.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="3rdParty/quazip-1.4/quazip/quagzipfile.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="3rdParty/quazip-1.4/quazip/quaziodevice.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="3rdParty/quazip-1.4/quazip/quazip.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="3rdParty/quazip-1.4/quazip/quazipdir.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="3rdParty/quazip-1.4/quazip/quazipfile.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="3rdParty/quazip-1.4/quazip/quazipfileinfo.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="3rdParty/quazip-1.4/quazip/quazipnewinfo.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="3rdParty/quazip-1.4/quazip/unzip.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="3rdParty/quazip-1.4/quazip/zip.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="PMFactory/src/PMFactory.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PMFactory/src/PMFactoryEColl.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PMFactory/src/PMFactoryEColl2.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PMFactory/src/PMFactoryIO.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PMFactory/src/PMFactoryVSplit.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PMFactory/src/PMFerrors.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PMFactory/src/PMFfaces.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PMFactory/src/PMFskulls.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PMFactory/src/VFaces.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PluginManager/CommonDLL.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PluginManager/Plugin.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PluginManager/PluginManager.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PluginManager/dllmain.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="PluginManager/stdafx.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="build/3rdParty/quazip-1.4/quazip/QuaZip_autogen/mocs_compilation.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="build/PMFactory/PMFactory_autogen/mocs_compilation.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="build/PluginManager/PluginManager_autogen/mocs_compilation.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="build/PluginManager_autogen/mocs_compilation.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="build/dpVision_autogen/mocs_compilation.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="build/plugins/cutPlane/cutPlane_autogen/mocs_compilation.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="build/qrc_dpVision.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>build</pElem>
+            <pElem></pElem>
+            <pElem>build/dpVision_autogen/include</pElem>
+            <pElem>src</pElem>
+            <pElem>PluginManager</pElem>
+            <pElem>PMFactory/src</pElem>
+            <pElem>include</pElem>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>QT_CORE_LIB</Elem>
+            <Elem>QT_GUI_LIB</Elem>
+            <Elem>QT_NETWORK_LIB</Elem>
+            <Elem>QT_OPENGL_LIB</Elem>
+            <Elem>QT_WIDGETS_LIB</Elem>
+            <Elem>QT_XML_LIB</Elem>
+            <Elem>dpVision_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <folder path="0/3rdParty">
+        <cTool>
+          <incDir>
+            <pElem>build/3rdParty/quazip-1.4/quazip</pElem>
+            <pElem>3rdParty/quazip-1.4/quazip</pElem>
+            <pElem>build/3rdParty/quazip-1.4/quazip/QuaZip_autogen/include</pElem>
+            <pElem>3rdParty/quazip-1.4</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>D:/Qt/5.15.2/msvc2019_64/include</pElem>
+            <pElem>D:/Qt/5.15.2/msvc2019_64/include/QtZlib</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_BZIP2</Elem>
+            <Elem>QT_ZLIB_LIB</Elem>
+            <Elem>QUAZIP_BUILD</Elem>
+            <Elem>QuaZip_EXPORTS</Elem>
+          </preprocessorList>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>build/3rdParty/quazip-1.4/quazip</pElem>
+            <pElem>3rdParty/quazip-1.4/quazip</pElem>
+            <pElem>build/3rdParty/quazip-1.4/quazip/QuaZip_autogen/include</pElem>
+            <pElem>3rdParty/quazip-1.4</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>D:/Qt/5.15.2/msvc2019_64/include</pElem>
+            <pElem>D:/Qt/5.15.2/msvc2019_64/include/QtZlib</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_BZIP2</Elem>
+            <Elem>QT_CORE_LIB</Elem>
+            <Elem>QT_ZLIB_LIB</Elem>
+            <Elem>QUAZIP_BUILD</Elem>
+            <Elem>QuaZip_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/PMFactory">
+        <ccTool>
+          <incDir>
+            <pElem>build/PMFactory</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>build/PMFactory/PMFactory_autogen/include</pElem>
+            <pElem>src</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>QT_CORE_LIB</Elem>
+            <Elem>QT_GUI_LIB</Elem>
+            <Elem>QT_OPENGL_LIB</Elem>
+            <Elem>QT_WIDGETS_LIB</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/PluginManager">
+        <ccTool>
+          <incDir>
+            <pElem>build/PluginManager</pElem>
+            <pElem>PluginManager</pElem>
+            <pElem>build/PluginManager/PluginManager_autogen/include</pElem>
+            <pElem>src</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>DPVISION_PLUGIN_DLL</Elem>
+            <Elem>PluginManager_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/build/3rdParty">
+        <ccTool>
+          <incDir>
+            <pElem>build/3rdParty/quazip-1.4/quazip</pElem>
+            <pElem>3rdParty/quazip-1.4/quazip</pElem>
+            <pElem>build/3rdParty/quazip-1.4/quazip/QuaZip_autogen/include</pElem>
+            <pElem>3rdParty/quazip-1.4</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>D:/Qt/5.15.2/msvc2019_64/include</pElem>
+            <pElem>D:/Qt/5.15.2/msvc2019_64/include/QtZlib</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_BZIP2</Elem>
+            <Elem>QT_CORE_LIB</Elem>
+            <Elem>QT_ZLIB_LIB</Elem>
+            <Elem>QUAZIP_BUILD</Elem>
+            <Elem>QuaZip_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/build/PMFactory">
+        <ccTool>
+          <incDir>
+            <pElem>build/PMFactory</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>build/PMFactory/PMFactory_autogen/include</pElem>
+            <pElem>src</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>QT_CORE_LIB</Elem>
+            <Elem>QT_GUI_LIB</Elem>
+            <Elem>QT_OPENGL_LIB</Elem>
+            <Elem>QT_WIDGETS_LIB</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/build/PluginManager">
+        <ccTool>
+          <incDir>
+            <pElem>build/PluginManager</pElem>
+            <pElem>PluginManager</pElem>
+            <pElem>build/PluginManager/PluginManager_autogen/include</pElem>
+            <pElem>src</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>DPVISION_PLUGIN_DLL</Elem>
+            <Elem>PluginManager_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/build/PluginManager_autogen">
+        <ccTool>
+          <incDir>
+            <pElem>build</pElem>
+            <pElem></pElem>
+            <pElem>build/PluginManager_autogen/include</pElem>
+            <pElem>src</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>DPVISION_PLUGIN_DLL</Elem>
+            <Elem>PluginManager_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/build/dpVision_autogen">
+        <ccTool>
+          <incDir>
+            <pElem>build</pElem>
+            <pElem></pElem>
+            <pElem>build/dpVision_autogen/include</pElem>
+            <pElem>src</pElem>
+            <pElem>PluginManager</pElem>
+            <pElem>PMFactory/src</pElem>
+            <pElem>include</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>3rdParty/quazip-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+            <pElem>D:/Qt/5.15.2/msvc2019_64/include</pElem>
+            <pElem>D:/Qt/5.15.2/msvc2019_64/include/QtZlib</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>NO_OLD_BYTE_DEFINITION</Elem>
+            <Elem>QT_CORE_LIB</Elem>
+            <Elem>QT_GUI_LIB</Elem>
+            <Elem>QT_NETWORK_LIB</Elem>
+            <Elem>QT_OPENGL_LIB</Elem>
+            <Elem>QT_WIDGETS_LIB</Elem>
+            <Elem>QT_XML_LIB</Elem>
+            <Elem>QT_ZLIB_LIB</Elem>
+            <Elem>dpVision_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/build/plugins">
+        <ccTool>
+          <incDir>
+            <pElem>build/plugins/cutPlane</pElem>
+            <pElem>plugins/cutPlane</pElem>
+            <pElem>build/plugins/cutPlane/cutPlane_autogen/include</pElem>
+            <pElem>src</pElem>
+            <pElem>PluginManager</pElem>
+            <pElem>PMFactory/src</pElem>
+            <pElem>include</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>DPVISION_PLUGIN_DLL</Elem>
+            <Elem>QT_CORE_LIB</Elem>
+            <Elem>QT_GUI_LIB</Elem>
+            <Elem>QT_NETWORK_LIB</Elem>
+            <Elem>QT_OPENGL_LIB</Elem>
+            <Elem>QT_WIDGETS_LIB</Elem>
+            <Elem>QT_XML_LIB</Elem>
+            <Elem>cutPlane_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/plugins">
+        <ccTool>
+          <incDir>
+            <pElem>build/plugins/cutPlane</pElem>
+            <pElem>plugins/cutPlane</pElem>
+            <pElem>build/plugins/cutPlane/cutPlane_autogen/include</pElem>
+            <pElem>src</pElem>
+            <pElem>PluginManager</pElem>
+            <pElem>PMFactory/src</pElem>
+            <pElem>include</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>DPVISION_PLUGIN_DLL</Elem>
+            <Elem>QT_CORE_LIB</Elem>
+            <Elem>QT_GUI_LIB</Elem>
+            <Elem>QT_NETWORK_LIB</Elem>
+            <Elem>QT_OPENGL_LIB</Elem>
+            <Elem>QT_WIDGETS_LIB</Elem>
+            <Elem>QT_XML_LIB</Elem>
+            <Elem>cutPlane_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/src">
+        <cTool>
+          <incDir>
+            <pElem>build</pElem>
+            <pElem></pElem>
+            <pElem>build/dpVision_autogen/include</pElem>
+            <pElem>src</pElem>
+            <pElem>PluginManager</pElem>
+            <pElem>PMFactory/src</pElem>
+            <pElem>include</pElem>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>QT_GUI_LIB</Elem>
+            <Elem>QT_NETWORK_LIB</Elem>
+            <Elem>QT_OPENGL_LIB</Elem>
+            <Elem>QT_WIDGETS_LIB</Elem>
+            <Elem>QT_XML_LIB</Elem>
+            <Elem>dpVision_EXPORTS</Elem>
+          </preprocessorList>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>build</pElem>
+            <pElem></pElem>
+            <pElem>build/dpVision_autogen/include</pElem>
+            <pElem>src</pElem>
+            <pElem>PluginManager</pElem>
+            <pElem>PMFactory/src</pElem>
+            <pElem>include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>QT_CORE_LIB</Elem>
+            <Elem>QT_GUI_LIB</Elem>
+            <Elem>QT_NETWORK_LIB</Elem>
+            <Elem>QT_OPENGL_LIB</Elem>
+            <Elem>QT_WIDGETS_LIB</Elem>
+            <Elem>QT_XML_LIB</Elem>
+            <Elem>dpVision_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="Modules">
+        <ccTool>
+          <incDir>
+            <pElem>build</pElem>
+            <pElem></pElem>
+            <pElem>src</pElem>
+            <pElem>PluginManager</pElem>
+            <pElem>PMFactory/src</pElem>
+            <pElem>include</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>3rdParty/quazip-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+            <pElem>D:/Qt/5.15.2/msvc2019_64/include</pElem>
+            <pElem>D:/Qt/5.15.2/msvc2019_64/include/QtZlib</pElem>
+            <pElem>../../../mingw64/include</pElem>
+            <pElem>../../../mingw64/include/c++/13.2.0</pElem>
+            <pElem>../../../mingw64/include/c++/13.2.0/x86_64-w64-mingw32</pElem>
+            <pElem>../../../mingw64/include/c++/13.2.0/backward</pElem>
+            <pElem>../../../mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include</pElem>
+            <pElem>../../../mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include-fixed</pElem>
+            <pElem>build/dpVision_autogen</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>NO_OLD_BYTE_DEFINITION</Elem>
+            <Elem>QT_CORE_LIB</Elem>
+            <Elem>QT_GUI_LIB</Elem>
+            <Elem>QT_NETWORK_LIB</Elem>
+            <Elem>QT_OPENGL_LIB</Elem>
+            <Elem>QT_WIDGETS_LIB</Elem>
+            <Elem>QT_XML_LIB</Elem>
+            <Elem>QT_ZLIB_LIB</Elem>
+            <Elem>dpVision_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <item path="plugins/cutPlane/ConcretePlugin.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="plugins/cutPlane/MousePick.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="plugins/cutPlane/PluginDLL.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="plugins/cutPlane/dllmain.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="plugins/cutPlane/stdafx.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/AP.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>3rdParty/quazip-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+            <pElem>D:/Qt/5.15.2/msvc2019_64/include</pElem>
+            <pElem>D:/Qt/5.15.2/msvc2019_64/include/QtZlib</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>NO_OLD_BYTE_DEFINITION</Elem>
+            <Elem>QT_ZLIB_LIB</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/Annotation.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>3rdParty/quazip-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+            <pElem>D:/Qt/5.15.2/msvc2019_64/include</pElem>
+            <pElem>D:/Qt/5.15.2/msvc2019_64/include/QtZlib</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>NO_OLD_BYTE_DEFINITION</Elem>
+            <Elem>QT_ZLIB_LIB</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/AnnotationBezier.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/AnnotationBoundVectors.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/AnnotationBox.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/AnnotationCamera.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/AnnotationCurvatureMap.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/AnnotationCylinder.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/AnnotationEdges.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/AnnotationElasticPath.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/AnnotationPath.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/AnnotationPlane.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/AnnotationPoint.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/AnnotationPoints.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/AnnotationPolygon.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/AnnotationPolygon2D.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/AnnotationPyramid.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/AnnotationSetOfCameras.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/AnnotationSetOfFaces.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/AnnotationSetOfVertices.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/AnnotationSphere.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/AnnotationTriangle.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/AnnotationTriple.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/AnnotationVPath.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/AnnotationVertex.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/BackgroundPlane.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/BaseObject.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/BoundVector.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/BoundingBox.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/CDoubleSpinBox.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/CItemEditorFactory.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/CSpinBoxDelegate.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/Camera.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/ContextMenu.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/DockWidgetHistogram.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/DockWidgetImageViewer.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/DockWidgetLights.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/DockWidgetModel.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/DockWidgetPluginList.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/DockWidgetPluginPanel.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/DockWidgetProperties.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/DockWidgetViewer.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/DockWidgetWorkspace.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/Edge.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/Face.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/FaceSplitter.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/FileConnector.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/FilterDialog.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/GLViewer.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/GLViewer_Pick.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/GLViewer_Render.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/GLViewer_StereoProjection.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/GroupObject.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/Histogram.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/Image.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/ImageLabel.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/IndexedTriangle.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/KDNode.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/KDNode2.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/KDTree.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/Kula.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/LocalClass.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/MainApplication.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/MainWindow.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/MainWindow_Slots.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/MainWindow_TCP.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/Material.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/MdiChild.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/Mesh.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/Model3D.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/Object.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/OrderedPointCloud.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/Parser.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/ParserDPV.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/ParserDPV_load.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/ParserDPV_save.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/ParserOBJ.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/ParserSMF.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/ParserSTL.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/PicViewer.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/Plane.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/PointCloud.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/PolygonGroup.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/ProgressIndicator.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/Quaternion.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/RAWdicomData.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/RGBA.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/RangeSlider.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/Stat.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/TKimageDialog.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/Texture.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/ThreadParser.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/ThreadParserLoader.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/Transform.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/TransformMatrix.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/Triangle.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/UI.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/Utilities.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/Vertex.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/VertexArray.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/VolTK.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/VolTKimageDialog.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/WinMain.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/Workspace.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/WorkspaceFile.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/WorkspaceTreeItem.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/WorkspaceTreeModel.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/dpLog.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/histogramwidget.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/propAnnotation.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/propAnnotationCamera.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/propAnnotationPlane.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/propAnnotationPoint.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/propAnnotationSetOfFaces.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/propAnnotationSetOfVertices.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/propAnnotationSphere.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/propAnnotationTriple.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/propBaseObject.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/propDataChild.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/propHistogram.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/propImage.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/propMaterial.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/propMesh.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/propModel.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/propPointCloud.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/propTransform.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/propViewer.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/propVolTK.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/propWidget.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/stdafx.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/tinyspline.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="src/tinysplinecpp.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/volTKcolorWidget.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
+            <pElem>PMFactory</pElem>
+            <pElem>../../../mingw64/include/QtCore</pElem>
+            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
+            <pElem>../../../mingw64/include/QtOpenGL</pElem>
+            <pElem>../../../mingw64/include/QtWidgets</pElem>
+            <pElem>../../../mingw64/include/QtGui</pElem>
+            <pElem>../../../mingw64/include/QtXml</pElem>
+            <pElem>../../../mingw64/include/eigen3</pElem>
+            <pElem>../../../mingw64/include/QtNetwork</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>

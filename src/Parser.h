@@ -1,0 +1,70 @@
+#pragma once
+
+#ifdef DPVISION_PLUGIN_DLL
+#define MYDECL __declspec(dllimport)
+#else
+#define MYDECL __declspec(dllexport)
+#endif
+
+
+#include "Global.h"
+#include "DPFileInfo.h"
+
+#include "Model3D.h"
+
+class MYDECL CParser
+{
+protected:
+	// old style -- deprecated
+	bool bIsNotSet;
+
+	// old style -- deprecated
+	CModel3D *m_model;
+
+	// old style -- deprecated
+	CFileInfo plikSiatki;
+
+	// old style -- deprecated
+	CMesh *pMeshData;
+
+
+	bool m_bOK;
+	std::string m_sError;
+
+	QString m_descr;
+	QSet<QString> m_exts;
+	QSet<QString> m_save_exts;
+
+	// old style -- deprecated
+	virtual size_t Run() { return 0; };
+
+	// old style -- deprecated
+	virtual bool save() { return false; };
+
+	inline void setDescr(const QString descr) { m_descr = descr; }
+
+public:
+	CParser(void);
+	virtual ~CParser(void);
+
+	virtual CModel3D* load( const QString path, bool wait = true);
+	virtual bool save( CModel3D *obj, const QString path );
+	virtual bool save(QVector<CBaseObject*> objects, const QString path) { return false; };
+
+	virtual bool canLoadExt(const QString ext);
+	virtual bool canSaveExt(const QString ext);
+
+	virtual void getLoadExts(QString& ext);
+	virtual void getLoadExts(std::wstring& ext);
+	virtual void getSaveExts(QString& ext);
+	virtual void getSaveExts(std::wstring& ext);
+
+	virtual bool inPlugin() { return true; };
+
+	//const std::wstring &getDescr() { return m_descr; };
+	//void set( std::wstring npl, CModel3D *obj );
+
+	bool IsOK() { return m_bOK; }
+	std::string LastError() { return m_sError; }
+};
+
