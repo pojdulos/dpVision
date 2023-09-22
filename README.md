@@ -1,6 +1,6 @@
 # dpVision
 
-Working on Windows, compiling with MinGW and MSVC++. 
+Currently runs on windows only, compiles using MinGW or MSVC++.
 
 ## prerequisites
 * qt5
