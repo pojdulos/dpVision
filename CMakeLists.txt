@@ -208,23 +208,6 @@ endif (Eigen3_FOUND)
 
 #############################################################################
 
-message( "\nConfiguring libICP:\n" )
-add_subdirectory(3rdParty/libICP)
-# if (LIBICP_SRC_DIR)
-	# message( "-- libICP found")
-# else (LIBICP_SRC_DIR)
-	# message( "-- libICP not found")
-# endif (LIBICP_SRC_DIR)
-
-add_library(dpVision::libICP INTERFACE IMPORTED)
-set_target_properties(dpVision::libICP PROPERTIES
-	INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/3rdParty/libICP/src
-	INTERFACE_LINK_LIBRARIES libICP
-)
-
-
-#############################################################################
-
 message( "\nConfiguring Boost:\n" )
 set (Boost_DIR "${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/boost}")
 find_package(Boost QUIET)
@@ -249,8 +232,8 @@ endif (Boost_FOUND)
 
 message( "\nConfiguring internal libraries...\n" )
 
-add_subdirectory(PMFactory)
-add_subdirectory(PluginManager)
+add_subdirectory(libs/PMFactory)
+add_subdirectory(libs/PluginManager)
 
 add_library(dpVision::PluginManager INTERFACE IMPORTED)
 set_target_properties(dpVision::PluginManager PROPERTIES
@@ -267,6 +250,19 @@ target_include_directories (${EXE_NAME} PUBLIC
 	${PluginManager_INCLUDE_DIR}
 	${PMFactory_INCLUDE_DIR}
 )
+
+message( "Configuring libICP\n" )
+add_subdirectory(libs/libICP)
+
+add_library(dpVision::libICP INTERFACE IMPORTED)
+set_target_properties(dpVision::libICP PROPERTIES
+	INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/libs/libICP/src
+	INTERFACE_LINK_LIBRARIES libICP
+)
+
+
+#############################################################################
+
 
 
 message( "\nConfiguring plugins:\n" )
