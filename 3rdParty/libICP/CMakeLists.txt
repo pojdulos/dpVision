@@ -1,18 +1,15 @@
-# project
+# This is modified version of libICP CMakeLists.txt created for dpVision project
+
 cmake_minimum_required (VERSION 3.20)
-project (libicp)
+project (libICP)
+
 
 # directories
 set (LIBICP_SRC_DIR src)
 
-FIND_PATH(Boost_INCLUDE_DIRS "boost")
-FIND_PATH(EIGEN3_INCLUDE_DIR "Eigen")
-
 # include directory
 include_directories(
 	${LIBICP_SRC_DIR}
-	${CMAKE_SOURCE_DIR}/src
-	${EIGEN3_INCLUDE_DIR}
 	${Boost_INCLUDE_DIRS}
 )
 
@@ -32,12 +29,9 @@ include_directories(
 # sources
 FILE(GLOB LIBICP_SRC_FILES "src/*.cpp")
 
-# make release version
-#et(CMAKE_BUILD_TYPE Release)
-
-# build demo program
 add_library(libICP STATIC ${LIBICP_SRC_FILES})
 
 target_link_libraries (libICP
+	Eigen3::Eigen
 	dpVision
 )

@@ -22,3 +22,4 @@ target_compile_definitions(${_NAME} PRIVATE
 set_target_properties(${_NAME} PROPERTIES
     LINKER_LANGUAGE CXX
 )
+

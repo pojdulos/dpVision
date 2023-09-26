@@ -547,10 +547,13 @@ void GLViewer::glSetFont()
 	logfont.lfClipPrecision = CLIP_DEFAULT_PRECIS;
 	logfont.lfQuality = CLEARTYPE_QUALITY;
 	logfont.lfPitchAndFamily = DEFAULT_PITCH;
-#if defined __MINGW32__
-	strcpy(logfont.lfFaceName, "MS Sans Serif");
-#else
+
+#ifdef _UNICODE
+	// Kod dla Unicode Character Set (TCHAR == wchar_t)
 	wcscpy(logfont.lfFaceName, L"MS Sans Serif");
+#else
+	// Kod dla Multi-Byte Character Set (TCHAR == char)
+	strcpy(logfont.lfFaceName, "MS Sans Serif");
 #endif
 
 	// Create the font and display list

@@ -80,6 +80,12 @@ target_link_libraries ( ${EXE_NAME}
 	Qt5::Network
 )
 
+add_library(dpVision::Core INTERFACE IMPORTED)
+set_target_properties(dpVision::Core PROPERTIES
+	INTERFACE_INCLUDE_DIRECTORIES ${dpVision_INCLUDE_DIR}
+	INTERFACE_LINK_LIBRARIES dpVision
+)
+
 if (MSVC)
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${EXE_NAME})
 endif (MSVC)
@@ -108,8 +114,13 @@ function(add_subdir_if_contains parentDir keyword)
     endforeach()
 endfunction()
 
-###list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/3rdparty")
-set(CMAKE_FIND_USE_CMAKE_PATH FALSE)
+list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/3rdparty")
+#set(CMAKE_FIND_USE_CMAKE_PATH FALSE)
+
+	set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+	set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+	set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
 
 #############################################################################
 # ZLIB
@@ -152,19 +163,20 @@ else (QuaZip-Qt5_FOUND)
 	message( "-- QuaZip-Qt5 not found. Trying to find sources in 3rdParty folder" )
 	
 	#set (BUILD_SHARED_LIBS OFF)
-	set (QUAZIP_INSTALL OFF)
+	set ( QUAZIP_INSTALL OFF )
 	add_subdir_if_contains(${CMAKE_CURRENT_SOURCE_DIR}/3rdParty "QuaZip")
 
 	if (QuaZip_Library_SOURCE_DIR)
 		message( "-- QuaZip found in ${QuaZip_Library_SOURCE_DIR}")
 	
 		target_link_libraries ( ${EXE_NAME}
-			quazip1-qt5
+			QuaZip::QuaZip
+			# quazip1-qt5
 		)
 
-		target_include_directories( ${EXE_NAME} PUBLIC
-			${QuaZip_Library_SOURCE_DIR}
-		)
+		# target_include_directories( ${EXE_NAME} PUBLIC
+			# ${QuaZip_Library_SOURCE_DIR}
+		# )
 	else (QuaZip_Library_SOURCE_DIR)
 		message( "-- QuaZip not found")
 	endif (QuaZip_Library_SOURCE_DIR)
@@ -204,15 +216,33 @@ add_subdirectory(3rdParty/libICP)
 	# message( "-- libICP not found")
 # endif (LIBICP_SRC_DIR)
 
+add_library(dpVision::libICP INTERFACE IMPORTED)
+set_target_properties(dpVision::libICP PROPERTIES
+	INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/3rdParty/libICP/src
+	INTERFACE_LINK_LIBRARIES libICP
+)
+
 
 #############################################################################
 
 message( "\nConfiguring Boost:\n" )
+set (Boost_DIR "${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/boost}")
 find_package(Boost QUIET)
 if (Boost_FOUND)
 	message( "-- Boost found")
 else (Boost_FOUND)
-	message( "-- Boost not found")
+	message( "-- Boost not found. Set Boost_ROOT by hand please...")
+	set (Boost_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/boost")
+	set (Boost_LIBRARY_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/boost/stage/lib")
+	add_library(Boost::boost INTERFACE IMPORTED)
+	set_target_properties(Boost::boost PROPERTIES
+		INTERFACE_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS}
+		# INTERFACE_LINK_LIBRARIES "${Boost_LIBRARY_DIRS}/library.a"
+	)
+	set(Boost_FOUND TRUE)
+	target_link_libraries(${EXE_NAME}
+		Boost::boost
+	)
 endif (Boost_FOUND)
 
 
@@ -221,6 +251,12 @@ message( "\nConfiguring internal libraries...\n" )
 
 add_subdirectory(PMFactory)
 add_subdirectory(PluginManager)
+
+add_library(dpVision::PluginManager INTERFACE IMPORTED)
+set_target_properties(dpVision::PluginManager PROPERTIES
+	INTERFACE_INCLUDE_DIRECTORIES ${PluginManager_INCLUDE_DIR}
+	INTERFACE_LINK_LIBRARIES PluginManager
+)
 
 target_link_libraries ( ${EXE_NAME}
 	PluginManager

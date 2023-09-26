@@ -3,8 +3,11 @@
 Currently runs on windows only, compiles using MinGW or MSVC++.
 
 ## prerequisites
-* qt5
-* zlib
-* quazip
+* Qt5
+* zlib if QtZlib is not found
+* QuaZip
 * boost
-* eigen
+git clone --recurse-submodules https://github.com/boostorg/boost
+
+* Eigen3
+
