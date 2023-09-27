@@ -18,7 +18,10 @@ set (TMP_LIST "")
 FOREACH(subdir ${SUBDIRS})
     set (PLUGIN_NAME "")
 
-    ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/${subdir})
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${subdir}/CMakeLists.txt)
+		# message( "Subdirectory \"${subdir}\" contains CMakeLists.txt..." )
+		add_subdirectory(${subdir})
+	endif()
 
     list (APPEND TMP_LIST ${PLUGIN_NAME})
 ENDFOREACH()

@@ -114,6 +114,23 @@ function(add_subdir_if_contains parentDir keyword)
     endforeach()
 endfunction()
 
+function(find_subdirs parentDir keyword)
+    file(GLOB subdirectories RELATIVE ${parentDir} ${parentDir}/*)
+    string(TOLOWER ${keyword} keyword_lower)
+	set (SUBDIRLIST "")
+    foreach(subdir ${subdirectories})
+        if(IS_DIRECTORY ${parentDir}/${subdir})
+            string(TOLOWER ${subdir} subdir_lower)
+            string(FIND ${subdir_lower} ${keyword_lower} position)
+            if(NOT ${position} EQUAL -1)
+                list (APPEND SUBDIRLIST ${subdir})
+            endif()
+        endif()
+    endforeach()
+	set (SUBDIRS ${SUBDIRLIST} PARENT_SCOPE)
+endfunction()
+
+
 list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/3rdparty")
 #set(CMAKE_FIND_USE_CMAKE_PATH FALSE)
 
@@ -267,8 +284,17 @@ set_target_properties(dpVision::libICP PROPERTIES
 
 message( "\nConfiguring plugins:\n" )
 
+set (SUBDIRS "")
 set (DPV_PLUGINS "")
-add_subdirectory(plugins)
+
+find_subdirs( ${CMAKE_CURRENT_SOURCE_DIR} "plugins")
+foreach(SUBDIR ${SUBDIRS})
+	# message( "Subdirectory \"${SUBDIR}\" found..." )
+	if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${SUBDIR}/CMakeLists.txt)
+		message( "\nSubdirectory \"${SUBDIR}\" contains CMakeLists.txt. Looking for plugins:\n" )
+		add_subdirectory(${SUBDIR})
+	endif()
+endforeach()
 
 message( "\nEnding configuration process...\n" )
 
