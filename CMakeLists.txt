@@ -245,7 +245,9 @@ else (Boost_FOUND)
 	)
 endif (Boost_FOUND)
 
-
+# message( "Configuring DicomHero6 (Imebra)\n" )
+# add_subdirectory(3rdParty/DicomHero6)
+# target_link_libraries(dicomhero6 ws2_32)
 
 message( "\nConfiguring internal libraries...\n" )
 
