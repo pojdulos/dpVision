@@ -90,11 +90,6 @@ if (MSVC)
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${EXE_NAME})
 endif (MSVC)
 
-# get_cmake_property(_variableNames VARIABLES)
-# list(SORT _variableNames)
-# foreach (_variableName ${_variableNames})
-   # message(STATUS "${_variableName}=${${_variableName}}")
-# endforeach()
 
 
 
@@ -226,23 +221,30 @@ endif (Eigen3_FOUND)
 #############################################################################
 
 message( "\nConfiguring Boost:\n" )
-set (Boost_DIR "${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/boost}")
 find_package(Boost QUIET)
 if (Boost_FOUND)
-	message( "-- Boost found")
+	message( "-- Boost found.")
 else (Boost_FOUND)
-	message( "-- Boost not found. Set Boost_ROOT by hand please...")
-	set (Boost_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/boost")
-	set (Boost_LIBRARY_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/boost/stage/lib")
-	add_library(Boost::boost INTERFACE IMPORTED)
-	set_target_properties(Boost::boost PROPERTIES
-		INTERFACE_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS}
-		# INTERFACE_LINK_LIBRARIES "${Boost_LIBRARY_DIRS}/library.a"
-	)
-	set(Boost_FOUND TRUE)
-	target_link_libraries(${EXE_NAME}
-		Boost::boost
-	)
+	message( "-- Boost not found in system path. Looking in 3rdParty folder...")
+
+	find_subdirs( ${CMAKE_CURRENT_SOURCE_DIR}/3rdParty "boost")
+	
+	list(LENGTH SUBDIRS SUBDIR_COUNT)
+	while((SUBDIR_COUNT GREATER 0) AND (NOT Boost_FOUND))
+		list(POP_FRONT SUBDIRS SUBDIR)
+		set (PTH "${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/${SUBDIR}")
+		if(IS_DIRECTORY ${PTH} AND EXISTS "${PTH}/boost/version.hpp")
+			set(Boost_INCLUDE_DIR ${PTH} CACHE PATH "Boost directory" FORCE)
+			find_package(Boost QUIET)
+		endif()
+		list(LENGTH SUBDIRS SUBDIR_COUNT)
+	endwhile()
+	
+	if (Boost_FOUND)
+		message( "-- Boost found in ${PTH}" )
+	else (Boost_FOUND)
+		message( "-- Boost not found. Specify Boost_INCLUDE_DIR variable and reconfigure, please...")
+	endif (Boost_FOUND)
 endif (Boost_FOUND)
 
 # message( "Configuring DicomHero6 (Imebra)\n" )
@@ -251,8 +253,21 @@ endif (Boost_FOUND)
 
 message( "\nConfiguring internal libraries...\n" )
 
+set ( xerces-c_INSTALL OFF )
+# add_subdirectory(libs/xerces-c-3.2.4)
+# add_subdirectory(libs/libE57)
 add_subdirectory(libs/PMFactory)
 add_subdirectory(libs/PluginManager)
+add_subdirectory(libs/PolyVox)
+add_subdirectory(libs/Volumetric)
+add_subdirectory(libs/Lidar)
+
+# get_cmake_property(_variableNames VARIABLES)
+# list(SORT _variableNames)
+# foreach (_variableName ${_variableNames})
+#    message(STATUS "${_variableName}=${${_variableName}}")
+# endforeach()
+
 
 add_library(dpVision::PluginManager INTERFACE IMPORTED)
 set_target_properties(dpVision::PluginManager PROPERTIES
@@ -279,6 +294,11 @@ set_target_properties(dpVision::libICP PROPERTIES
 	INTERFACE_LINK_LIBRARIES libICP
 )
 
+
+# find_package(OpenCV REQUIRED)
+# target_link_libraries (${EXE_NAME}
+# 	${OpenCV_LIBRARIES}
+# )
 
 #############################################################################
 

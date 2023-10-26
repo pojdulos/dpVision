@@ -54,7 +54,7 @@ public:
 	};
 
 	void setDest(CMesh* m) { m_mesh = m; };
-	void getDest();
+	CMesh* getDest();
 
 	inline CMesh*& dstMesh() { return m_mesh; }
 
@@ -63,6 +63,9 @@ public:
 		CAnnotation::clear();
 		SetOfFIndices::clear();
 	};
+
+
+	CMesh* toMesh();
 
 	virtual int type() { return CAnnotation::Type::SETOFFACES; }
 

@@ -32,14 +32,14 @@ ConcretePlugin::~ConcretePlugin(void)
 
 void ConcretePlugin::onLoad()
 {
-	UI::PLUGINPANEL::create(m_ID, L"Cut Plane");
+	UI::PLUGINPANEL::create(m_ID, "Cut Plane");
 
-	UI::PLUGINPANEL::addButton(m_ID, L"makeXZ", L"Płaszczyzna XZ", 5, 0);
-	UI::PLUGINPANEL::addButton(m_ID, L"makePlane", L"Płaszczyzna (z punktów)", 6, 0);
-	UI::PLUGINPANEL::addButton(m_ID, L"ciach", L"Tnij płaszczyzną", 7, 0);
-	UI::PLUGINPANEL::addButton(m_ID, L"scalanie", L"Scal chmury punktów", 23, 0);
+	UI::PLUGINPANEL::addButton(m_ID, "makeXZ", "Płaszczyzna XZ", 5, 0);
+	UI::PLUGINPANEL::addButton(m_ID, "makePlane", "Płaszczyzna (z punktów)", 6, 0);
+	UI::PLUGINPANEL::addButton(m_ID, "ciach", "Tnij płaszczyzną", 7, 0);
+	UI::PLUGINPANEL::addButton(m_ID, "scalanie", "Scal chmury punktów", 23, 0);
 
-	UI::PLUGINPANEL::addButton(m_ID, L"ciach4", L"Wytnij policzek", 40, 0);
+	UI::PLUGINPANEL::addButton(m_ID, "ciach4", "Wytnij policzek", 40, 0);
 
 }
 
@@ -313,13 +313,13 @@ void ConcretePlugin::onButton(std::wstring name)
 
 			if (!((modelA->getChild()->hasType(CObject::CLOUD)) || (modelA->getChild()->hasType(CObject::ORDEREDCLOUD)) || (modelA->getChild()->hasType(CObject::MESH))))
 			{
-				UI::STATUSBAR::setText(L"Obiekt " + modelA->getLabelW() + L" nie jest chmurą punktów (lub siatką).");
+				UI::STATUSBAR::setText("Obiekt " + modelA->getLabel() + " nie jest chmurą punktów (lub siatką).");
 				return;
 			}
 
 			if (!((modelB->getChild()->hasType(CObject::CLOUD)) || (modelB->getChild()->hasType(CObject::ORDEREDCLOUD)) || (modelB->getChild()->hasType(CObject::MESH))))
 			{
-				UI::STATUSBAR::setText(L"Obiekt " + modelB->getLabelW() + L" nie jest chmurą punktów (lub siatką).");
+				UI::STATUSBAR::setText("Obiekt " + modelB->getLabel() + " nie jest chmurą punktów (lub siatką).");
 				return;
 			}
 

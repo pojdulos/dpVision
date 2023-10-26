@@ -7,7 +7,7 @@
 #include "Quaternion.h"
 
 #include<Eigen/Geometry>
-#include <QMatrix4x4>
+#include <QtGui/QMatrix4x4>
 
 class  __declspec(dllexport) CTransform
 {
@@ -15,10 +15,10 @@ class  __declspec(dllexport) CTransform
 	CQuaternion m_rot; // kwaternion obrotu
 	CPoint3d m_sca; // skala
 
-	bool m_bLocked; // czy zablokowaæ mo¿liwoœæ zmiany pozycji
+	bool m_bLocked; // czy zablokowaï¿½ moï¿½liwoï¿½ï¿½ zmiany pozycji
 
-	bool m_bRelocateCtr; // czy centrowaæ obiekt na scenie podczas rysowania
-	CPoint3d m_origin; // okreœla œrodek obrotu we wspó³rzêdnych obiektu - i jednoczeœnie punkt 0,0 dla centrowania
+	bool m_bRelocateCtr; // czy centrowaï¿½ obiekt na scenie podczas rysowania
+	CPoint3d m_origin; // okreï¿½la ï¿½rodek obrotu we wspï¿½rzï¿½dnych obiektu - i jednoczeï¿½nie punkt 0,0 dla centrowania
 
 public:
 	typedef enum {
@@ -34,29 +34,29 @@ public:
 
 	void reset();
 
-	// Obroty s¹ zwykle wykonywane wokó³ punktu 0,0, aby obiekt nie "lata³" po scenie podczas obracania
-	// jego œrodek obrotu jest domyœlnie ustawiany w œrodku obiektu, wg wzoru: (max+min)/2
+	// Obroty sï¿½ zwykle wykonywane wokï¿½ punktu 0,0, aby obiekt nie "lataï¿½" po scenie podczas obracania
+	// jego ï¿½rodek obrotu jest domyï¿½lnie ustawiany w ï¿½rodku obiektu, wg wzoru: (max+min)/2
 	CPoint3d &origin() { return m_origin; }
 	
 	// Deprecated, the same as origin() 
 	CPoint3d &centerOfRotation() { return m_origin; }
 
-	// mo¿na to oczywiœcie zmieniæ i ustawiæ go praktycznie dowolnie:
+	// moï¿½na to oczywiï¿½cie zmieniï¿½ i ustawiï¿½ go praktycznie dowolnie:
 	inline void setOrigin(CPoint3d c = CPoint3d(0, 0, 0)) { m_origin = c; }
 
 	// Deprecated, the same as setOrigin(CPoint3f c)
 	inline void setCenterOfRotation(CPoint3d c) { setOrigin(c); }
 
-	// czasami istnieje potrzeba wycentrowania obiektu na scenie, bo np. jego wspó³rzêdne s¹ bardzo odleg³e od centrum uk³adu
-	// i nie mieœci³by sie na ekranie. ¯eby nie wprowadzaæ dodatkowych zmiennych, wykorzystujemy œrodek obrotu jako punkt
-	// to¿samy z pocz¹tkiem "wirtualnego" uk³adu wspó³rzêdnych
+	// czasami istnieje potrzeba wycentrowania obiektu na scenie, bo np. jego wspï¿½rzï¿½dne sï¿½ bardzo odlegï¿½e od centrum ukï¿½adu
+	// i nie mieï¿½ciï¿½by sie na ekranie. ï¿½eby nie wprowadzaï¿½ dodatkowych zmiennych, wykorzystujemy ï¿½rodek obrotu jako punkt
+	// toï¿½samy z poczï¿½tkiem "wirtualnego" ukï¿½adu wspï¿½rzï¿½dnych
 	bool isTheOriginMovedToTheCenterOfRotation() { return m_bRelocateCtr; };
 	void moveTheOriginToTheCenterOfRotation(bool b) { m_bRelocateCtr = b; };
 
 
 	//void fromGLMatrixD(double matrix[16]);
 
-	//Przyj¹³em, ¿e skala bêdzie jednakowa w ka¿dej z osi
+	//Przyjï¿½ï¿½em, ï¿½e skala bï¿½dzie jednakowa w kaï¿½dej z osi
 	CPoint3d &scale() { return m_sca; }
 	
 	void setScale(CPoint3d s) { m_sca = s; };

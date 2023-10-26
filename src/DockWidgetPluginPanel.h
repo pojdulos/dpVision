@@ -41,7 +41,7 @@ public:
 	void setSliderRange(unsigned int pluginId, QString name, int min, int max );
 
 	QString getComboBoxCurrentItemText(unsigned int pluginId, QString name);
-	void setComboBoxItems(unsigned int pluginId, QString name, QVector<QString> items);
+	void setComboBoxItems(unsigned int pluginId, QString name, QStringList items);
 	
 
 	void addLabel(unsigned int pluginId, QString name, QString label, int row, int col, int rspan = 0, int cspan = 0);

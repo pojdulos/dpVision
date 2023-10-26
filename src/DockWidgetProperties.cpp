@@ -138,6 +138,7 @@ void DockWidgetProperties::selectionChanged( int id )
 							break;
 						case CObject::VOLTK:
 							m_widget = PropVolTK::create((CVolTK*)currentObject, this);
+							break;
 						case CObject::CLOUD:
 						case CObject::ORDEREDCLOUD:
 							m_widget = PropPointCloud::create((CPointCloud*)currentObject, this);

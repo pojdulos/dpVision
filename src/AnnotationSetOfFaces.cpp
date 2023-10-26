@@ -3,12 +3,12 @@
 
 #include "AP.h"
 
-void CAnnotationSetOfFaces::getDest()
+CMesh* CAnnotationSetOfFaces::getDest()
 {
 	if (m_mesh == nullptr)
 	{
-		if (m_parent == nullptr) return;
-		if (m_parent->category() != CBaseObject::Category::OBJECT) return;
+		if (m_parent == nullptr) return nullptr;
+		if (m_parent->category() != CBaseObject::Category::OBJECT) return nullptr;
 
 		if (m_parent->hasType(CBaseObject::Type::MESH))
 			m_mesh = (CMesh*)m_parent;
@@ -21,11 +21,34 @@ void CAnnotationSetOfFaces::getDest()
 					 child->hasType(CBaseObject::Type::MESH))
 				{
 					m_mesh = (CMesh*)child;
-					return;
 				}
 			}
 		}
 
+	}
+	return m_mesh;
+}
+
+CMesh* CAnnotationSetOfFaces::toMesh()
+{
+	if (m_mesh != nullptr)
+	{
+		CMesh* mesh = new CMesh();
+
+		mesh->vertices() = m_mesh->vertices();
+
+		for (INDEX_TYPE fId : *this)
+		{
+			mesh->addFace(m_mesh->faces()[fId]);
+		}
+
+		mesh->removeUnusedVertices();
+
+		return mesh;
+	}
+	else
+	{
+		return new CMesh();
 	}
 }
 

@@ -3,10 +3,12 @@
 
 #include <string>
 #include <list>
+#include <set>
 
-class Plugin;
+#include "BaseObject.h"
+
+class PluginInterface;
 class CWorkspace;
-class CBaseObject;
 class CObject;
 class CModel3D;
 class CAnnotation;
@@ -40,11 +42,11 @@ namespace AP
 	__declspec(dllexport) int addAnnotation(CModel3D* obj, CAnnotation *an);
 
 	namespace PLUGIN {
-		__declspec(dllexport) void loadPlugin(const std::wstring pluginPath);
+		__declspec(dllexport) bool loadPlugin(const QString &pluginPath);
 		__declspec(dllexport) void unloadPlugin(const unsigned int id);
 
-		__declspec(dllexport) Plugin* getPlugin(unsigned int id);
-		__declspec(dllexport) Plugin* getPlugin(const char* strUUID);
+		__declspec(dllexport) PluginInterface* getPlugin(unsigned int id);
+		//__declspec(dllexport) PluginInterface* getPlugin(const char* strUUID);
 
 		__declspec(dllexport) bool runPlugin(const char* strUUID);
 	};
@@ -123,6 +125,8 @@ namespace AP
 			__declspec(dllexport) bool isModelSelected(int id);
 			__declspec(dllexport) void clear();
 			__declspec(dllexport) std::list<int> getList();
+			__declspec(dllexport) std::list<int> getList(std::set<CBaseObject::Type> types, CObject* obj = nullptr);
+			__declspec(dllexport) std::list<CBaseObject*> getObjList(std::set<CBaseObject::Type> types, CObject* obj = nullptr);
 			__declspec(dllexport) void setModelsVisible(bool visibility = true);
 		}
 	};

@@ -259,7 +259,7 @@ int CHistogram::getHistogramIndex(double value)
 {
 	if (value == DBL_MAX) return -3; //undefined
 	if (value < m_lowerLimit) return -1; //poza dolnym zakresem
-	if (value > m_upperLimit) return -2; //poza górnym zakresem
+	if (value > m_upperLimit) return -2; //poza gï¿½rnym zakresem
 
 	if ((value == m_lowerLimit) && (value == m_upperLimit)) return (m_levels / 2) + 1;
 
@@ -310,10 +310,31 @@ CRGBA CHistogram::getColor(int i, CHistogram::ColorMode mode)
 	}
 }
 
+QColor CHistogram::getQColor(int i)
+{
+	switch (m_colormode) {
+	case CHistogram::ColorMode::Grayscale:
+		return getColorGray(i).toArgb32();
+		break;
+	case CHistogram::ColorMode::GreenRed:
+		return getColorGR(i).toArgb32();
+		break;
+	case CHistogram::ColorMode::BlueGreenRed:
+	default:
+		return getColorBGR(i).toArgb32();
+		break;
+	}
+}
+
 CRGBA CHistogram::getColorGray(int i)
 {
-	if (i == -1) return CRGBA(1.0f, 1.0f, 1.0f, 1.0f);
-	else if (i <= -2) return CRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+	if (i == -1)
+		if (showOutlayers) return CRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+		else return CRGBA(0.0f, 0.0f, 0.0f, 1.0f);
+	else if (i == -2)
+		if (showOutlayers) return CRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+		else return CRGBA(0.0f, 0.0f, 0.0f, 1.0f);
+	else if (i <= -3) return CRGBA(0.0f, 0.0f, 0.0f, 1.0f);
 
 	i = round(((double)i * 256.0) / (double)m_levels);
 
@@ -326,9 +347,14 @@ CRGBA CHistogram::getColorGray(int i)
 
 CRGBA CHistogram::getColorGR(int i)
 {
-	if (i == -1) return CRGBA(0.0f, 0.7f, 0.0f, 1.0f);
-	else if (i == -2) return CRGBA(0.7f, 0.0f, 0.0f, 1.0f);
+	if (i == -1)
+		if (showOutlayers) return CRGBA(0.0f, 0.7f, 0.0f, 1.0f);
+		else return CRGBA(0.0f, 0.0f, 0.0f, 1.0f);
+	else if (i == -2)
+		if (showOutlayers) return CRGBA(0.7f, 0.0f, 0.0f, 1.0f);
+		else return CRGBA(0.0f, 0.0f, 0.0f, 1.0f);
 	else if (i <= -3) return CRGBA(0.0f, 0.0f, 0.0f, 1.0f);
+
 
 	//if (m_levels < 512)
 	i = round(((double)i * 512.0) / (double)m_levels);
@@ -346,9 +372,15 @@ CRGBA CHistogram::getColorGR(int i)
 
 CRGBA CHistogram::getColorBGR(int i)
 {
-	if (i == -1) return CRGBA(0.0f, 0.0f, 0.7f, 1.0f);
-	else if (i == -2) return CRGBA(0.7f, 0.0f, 0.0f, 1.0f);
+	if (i == -1)
+		if (showOutlayers) return CRGBA(0.0f, 0.0f, 0.7f, 1.0f);
+		else return CRGBA(0.0f, 0.0f, 0.0f, 1.0f);
+	else if (i == -2)
+		if (showOutlayers) return CRGBA(0.7f, 0.0f, 0.0f, 1.0f);
+		else return CRGBA(0.0f, 0.0f, 0.0f, 1.0f);
 	else if (i <= -3) return CRGBA(0.0f, 0.0f, 0.0f, 1.0f);
+
+	
 
 	//if (m_levels < 1024)
 	i = round(((double)i * 1024.0) / (double)m_levels);
@@ -490,6 +522,11 @@ void CHistogram::savePLT(std::wstring fdir, std::wstring fname, std::vector<CHis
 	}
 }
 
+void CHistogram::save(QString fdir, QString fname)
+{
+	save(fdir.toStdWString(), fname.toStdWString());
+}
+
 void CHistogram::save(std::wstring fdir, std::wstring fname)
 {
 	std::wstring wideStr = fdir + L"/" + fname + L".csv";
@@ -537,7 +574,7 @@ void CHistogram::save(std::vector<CHistogram*> v, std::wstring fdir, std::wstrin
 
 	if (v.size() > 1)
 	{
-		//sprawdzam czy jednakowa liczba przedzia³ów
+		//sprawdzam czy jednakowa liczba przedziaï¿½ï¿½w
 		int lev = v[0]->m_levels;
 
 		for (int j = 1; j < v.size(); j++)

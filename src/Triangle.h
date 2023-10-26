@@ -28,6 +28,9 @@ public:
 	CBoundingBox getBoundingBox();
 	CPoint3d getMidpoint();
 
+	CVector3d getNormal();
+	CPoint3d getClosestPoint(const CPoint3d& sourcePosition);
+
 	bool rayPlaneIntersect3D(CPoint3d origin, CVector3d dir, CPoint3d &pIntersectionPoint, double &pDistance);
 	bool inTriangle(CPoint3d pt);
 	bool hit(CPoint3d origin, CVector3d dir, CPoint3d &iP);

@@ -150,3 +150,131 @@ bool CTriangle::hit( CPoint3d origin, CVector3d dir, CPoint3d &iP )
 	return false;
 }
 
+CVector3d CTriangle::getNormal()
+{
+	// wektor f.A->f.B
+	CVector3d v1(m_pV[0], m_pV[1]);
+
+	// wektor f.A->f.C
+	CVector3d v2(m_pV[0], m_pV[2]);
+
+	// iloczyn wektorowy
+	CVector3d vn = v1.crossProduct(v2);
+
+	// Normalizacja
+	vn.normalize();
+
+	return (vn);
+}
+
+
+
+template<class T, class Compare>
+constexpr const T& clamp(const T& v, const T& lo, const T& hi, Compare comp)
+{
+	return assert(!comp(hi, lo)),
+		comp(v, lo) ? lo : comp(hi, v) ? hi : v;
+}
+
+template<class T>
+constexpr const T& clamp(const T& v, const T& lo, const T& hi)
+{
+	return clamp(v, lo, hi, std::less<>());
+}
+
+CPoint3d CTriangle::getClosestPoint(const CPoint3d& sourcePosition)
+{
+	CVector3d edge0(m_pV[0], m_pV[1]);
+	CVector3d edge1(m_pV[0], m_pV[2]);
+	CVector3d v0(sourcePosition, m_pV[0]);
+
+	float a = edge0.dotProduct(edge0);
+	float b = edge0.dotProduct(edge1);
+	float c = edge1.dotProduct(edge1);
+	float d = edge0.dotProduct(v0);
+	float e = edge1.dotProduct(v0);
+
+	float det = a * c - b * b;
+	float s = b * e - c * d;
+	float t = b * d - a * e;
+
+	if (s + t < det)
+	{
+		if (s < 0.f)
+		{
+			if (t < 0.f)
+			{
+				if (d < 0.f)
+				{
+					s = clamp(-d / a, 0.f, 1.f);
+					t = 0.f;
+				}
+				else
+				{
+					s = 0.f;
+					t = clamp(-e / c, 0.f, 1.f);
+				}
+			}
+			else
+			{
+				s = 0.f;
+				t = clamp(-e / c, 0.f, 1.f);
+			}
+		}
+		else if (t < 0.f)
+		{
+			s = clamp(-d / a, 0.f, 1.f);
+			t = 0.f;
+		}
+		else
+		{
+			float invDet = 1.f / det;
+			s *= invDet;
+			t *= invDet;
+		}
+	}
+	else
+	{
+		if (s < 0.f)
+		{
+			float tmp0 = b + d;
+			float tmp1 = c + e;
+			if (tmp1 > tmp0)
+			{
+				float numer = tmp1 - tmp0;
+				float denom = a - 2 * b + c;
+				s = clamp(numer / denom, 0.f, 1.f);
+				t = 1 - s;
+			}
+			else
+			{
+				t = clamp(-e / c, 0.f, 1.f);
+				s = 0.f;
+			}
+		}
+		else if (t < 0.f)
+		{
+			if (a + d > b + e)
+			{
+				float numer = c + e - b - d;
+				float denom = a - 2 * b + c;
+				s = clamp(numer / denom, 0.f, 1.f);
+				t = 1 - s;
+			}
+			else
+			{
+				s = clamp(-e / c, 0.f, 1.f);
+				t = 0.f;
+			}
+		}
+		else
+		{
+			float numer = c + e - b - d;
+			float denom = a - 2 * b + c;
+			s = clamp(numer / denom, 0.f, 1.f);
+			t = 1.f - s;
+		}
+	}
+
+	return m_pV[0] + edge0 * s + edge1 * t;
+}

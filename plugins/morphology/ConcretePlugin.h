@@ -2,6 +2,9 @@
 #include "Plugin.h"
 #include "PluginDLL.h"
 
+#ifdef PLUGIN_NAME
+	#undef PLUGIN_NAME
+#endif 
 #define PLUGIN_NAME L"(dp) Morfologia 3D - testy"
 
 class CAnnotationPoint;

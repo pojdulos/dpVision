@@ -283,7 +283,7 @@ public:
 
 
 	//***********************************************************************
-	//Transformacje punktu w uk³adzie wspó³rzêdnych obiektu
+	//Transformacje punktu w ukÅ‚adzie wspÃ³Å‚rzÄ™dnych obiektu
 	//***********************************************************************
 //	CTriple<double> multByRot(const CTriple<double> rot1, const CTriple<double> pkt);
 //	CTriple<double> moveByTra(const CTriple<double> tra, const CTriple<double> pkt);

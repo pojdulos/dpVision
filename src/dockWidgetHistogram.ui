@@ -49,7 +49,7 @@
   </widget>
  </widget>
  <resources>
-  <include location="qtgui.qrc"/>
+  <include location="dpVision.qrc"/>
  </resources>
  <connections/>
  <slots>

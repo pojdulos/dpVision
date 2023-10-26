@@ -12,7 +12,6 @@ CBaseObject::CBaseObject(CBaseObject *p)
 	m_descr = "";
 	m_parent = p;
 
-	//m_visible = Visibility::SHOW;
 	m_selected = false;
 
 	m_showSelf = true;
@@ -29,7 +28,6 @@ CBaseObject::CBaseObject(int objId)
 	m_descr = "";
 	m_parent = AP::WORKSPACE::getModel(objId);
 
-	//m_visible = Visibility::SHOW;
 	m_selected = false;
 
 	m_showSelf = true;
@@ -48,7 +46,6 @@ CBaseObject::CBaseObject(const CBaseObject &b)
 
 	m_parent = b.m_parent;
 
-	//m_visible = Visibility::SHOW;
 	m_selected = false;
 
 	m_showSelf = true;
@@ -57,7 +54,7 @@ CBaseObject::CBaseObject(const CBaseObject &b)
 };
 
 
-inline void CBaseObject::render()
+void CBaseObject::render()
 {
 	glPushMatrix();
 	renderTransform();
@@ -71,23 +68,14 @@ void CBaseObject::setParent(int objId)
 	m_parent = AP::WORKSPACE::getModel(objId);
 }
 
-//CBaseObject::Visibility CBaseObject::setVisibility(CBaseObject::Visibility v)
-//{
-//	return (m_visible = v);
-//}
-//
-//inline CBaseObject::Visibility CBaseObject::getVisibility()
-//{
-//	return m_visible;
-//}
-//
-//CBaseObject::Visibility CBaseObject::switchVisibility()
-//{
-//	if (m_visible == HIDE_ALL)
-//		return m_visible = HIDE_SELF;
-//	else if (m_visible == HIDE_SELF)
-//		return m_visible = SHOW;
-//	else
-//		return m_visible = HIDE_ALL;
-//}
+bool CBaseObject::switchSelfVisibility()
+{
+	setSelfVisibility(!m_showSelf);
+	return m_showSelf;
+}
 
+bool CBaseObject::switchKidsVisibility()
+{
+	setKidsVisibility(!m_showKids);
+	return m_showKids;
+}

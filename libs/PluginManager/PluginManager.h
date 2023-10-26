@@ -11,9 +11,9 @@ class DPVISION_DLL_API PluginManager
 public:
     static PluginManager& Instance();
 
-    Plugin* LoadPlugin( const std::wstring& pluginName );
-    void UnloadPlugin( Plugin*& plugin );
-    void UnloadPlugin( const std::wstring& pluginName );
+    PluginInterface* LoadPlugin( const QString& pluginName );
+    bool UnloadPlugin( PluginInterface*& plugin );
+    bool UnloadPlugin( const QString& pluginPath );
 
 private:
     PluginManager(void);

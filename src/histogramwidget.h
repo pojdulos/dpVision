@@ -56,7 +56,9 @@ public:
     ~HistogramWidget();
 
     void setHistogram( CHistogram *histogram );
-	CHistogram * getHistogram() { return m_histogram; };
+    void writeValue(QPainter& painter, double low, double up, int x, int y);
+    void drawBar(QPainter& painter, int ix, qreal w, int colNb, size_t maxBarVal);
+    CHistogram * getHistogram() { return m_histogram; };
 
 protected:
     void paintEvent(QPaintEvent *event);

@@ -46,6 +46,10 @@ public:
 
 	bool m_showOutOfRangeData;
 
+	bool showOutlayers = false;
+
+	bool showLabels = false;
+
 	//size_t m_valMax;
 
 	CHistogram( std::vector<double> data, int levels=512 );
@@ -91,6 +95,7 @@ public:
 	
 	inline CRGBA getColor(int index) { return getColor(index, m_colormode); };
 	CRGBA getColor(int index, CHistogram::ColorMode mode );
+	QColor getQColor(int index);
 	CRGBA getColorGR(int index);
 	CRGBA getColorBGR(int index);
 	CRGBA getColorGray(int index);
@@ -112,10 +117,12 @@ public:
 
 	inline size_t maxBarValue() { return *std::max_element(std::begin(m_values), std::end(m_values)); };
 
-	int type() override { return CAnnotation::HISTOGRAM; }
+	virtual int type() override { return CAnnotation::HISTOGRAM; }
 	virtual std::wstring getTypeWSTR() { return L"histogram"; };
 
 	static void savePLT(std::wstring fdir, std::wstring fname, std::vector<CHistogram*> v, bool eqLevels );
+	
+	void save(QString fdir, QString fname);
 	void save(std::wstring fdir, std::wstring fname);
 	static void save(std::vector<CHistogram*>, std::wstring fdir, std::wstring fname, bool showOutOfRangeData=false);
 

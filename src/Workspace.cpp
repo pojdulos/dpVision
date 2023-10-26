@@ -130,19 +130,19 @@ void CWorkspace::addToSelection(int id)
 	if (!inSelection(id))
 	{
 		m_selection.push_back(id);
-		UI::STATUSBAR::printf(L"Model selected (pos.: %s)", std::to_wstring(getNumberInSelection(id)));
+		UI::STATUSBAR::setText(QString("Object selected (pos.: ") + QString::number(getNumberInSelection(id)) + ")");
 	}
-	m_data[id]->setSelected(true);
+	//m_data[id]->setSelected(true);
 }
 
 void CWorkspace::removeFromSelection(int id)
 {
 	if (inSelection(id))
 	{
-		UI::STATUSBAR::printf(L"Model at pos. %s unselected", std::to_wstring(getNumberInSelection(id)));
+		UI::STATUSBAR::setText(QString("Object at pos. ") + QString::number(getNumberInSelection(id)) + " unselected");
 		m_selection.remove(id);
 	}
-	m_data[id]->setSelected(false);
+	//m_data[id]->setSelected(false);
 }
 
 bool CWorkspace::inSelection(int id)
@@ -181,6 +181,52 @@ bool CWorkspace::changeSelection(int id, bool bb)
 	}
 	return false;
 }
+
+std::list<int> CWorkspace::getSelection()
+{
+	std::list<int> result;
+	for (auto id : m_selection)
+	{
+		CWorkspace::iterator it = m_data.find(id); // szukam tylko wœród obiektów z pierwszego poziomu
+		if ((it != m_data.end()) && (it->second->hasType(CObject::MODEL))) // i jeszcze siê upewniam ¿e to jest CModel3D
+		{
+			result.push_back(id);
+		}
+	}
+
+	return result;
+}
+
+std::list<int> CWorkspace::getSelection(std::set<CBaseObject::Type> types, CObject* dad)
+{
+	std::list<int> result;
+	for (auto id : m_selection)
+	{
+		CBaseObject* kid = (dad==nullptr)?getSomethingWithId(id):dad->getSomethingWithId(id); // szukam wœród wszystkich obiektów w scenie lub w obiekcie (jest to wolniejsze)
+		if ((kid != nullptr) && (types.empty() || types.find((CBaseObject::Type)kid->type()) != types.end())) // i sprawdzam czy typ jest na liœcie
+		{
+			result.push_back(id);
+		}
+	}
+	
+	return result;
+}
+
+std::list<CBaseObject*> CWorkspace::getSelected(std::set<CBaseObject::Type> types, CObject* dad)
+{
+	std::list<CBaseObject*> result;
+	for (auto id : m_selection)
+	{
+		CBaseObject* kid = (dad == nullptr) ? getSomethingWithId(id) : dad->getSomethingWithId(id); // szukam wœród wszystkich obiektów w scenie lub w obiekcie (jest to wolniejsze)
+		if ((kid != nullptr) && (types.empty() || types.find((CBaseObject::Type)kid->type()) != types.end())) // i sprawdzam czy typ jest na liœcie
+		{
+			result.push_back(kid);
+		}
+	}
+
+	return result;
+}
+
 
 void CWorkspace::InitLights()
 {

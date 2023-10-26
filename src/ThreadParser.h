@@ -1,11 +1,5 @@
 #pragma once
 
-#ifdef DPVISION_PLUGIN_DLL
-#define MYDECL Q_DECL_IMPORT
-#else
-#define MYDECL Q_DECL_EXPORT
-#endif
-
 #include "Parser.h"
 
 #include <QtCore/QObject>

@@ -75,9 +75,9 @@ namespace AP
 	}
 
 	namespace PLUGIN {
-		void loadPlugin(const std::wstring pluginPath)
+		bool loadPlugin(const QString &pluginPath)
 		{
-			AP::mainApp().loadPlugin(QString::fromStdWString(pluginPath));
+			return AP::mainApp().loadPlugin(pluginPath);
 		}
 
 		void unloadPlugin(const unsigned int id)
@@ -86,15 +86,15 @@ namespace AP
 		}
 
 
-		Plugin* getPlugin(unsigned int id)
+		PluginInterface* getPlugin(unsigned int id)
 		{
 			return AP::mainApp().getPlugin(id);
 		}
 
-		Plugin* getPlugin(const char* strUUID)
-		{
-			return AP::mainApp().getPlugin(strUUID);
-		}
+		// PluginInterface* getPlugin(const char* strUUID)
+		// {
+		// 	return AP::mainApp().getPlugin(strUUID);
+		// }
 
 		bool runPlugin(const char* strUUID)
 		{
@@ -519,6 +519,16 @@ namespace AP
 			std::list<int> getList()
 			{
 				return AP::getWorkspace()->getSelection();
+			}
+
+			std::list<int> getList(std::set<CBaseObject::Type> types, CObject* obj)
+			{
+				return AP::getWorkspace()->getSelection(types, obj);
+			}
+
+			std::list<CBaseObject*> getObjList(std::set<CBaseObject::Type> types, CObject* obj)
+			{
+				return AP::getWorkspace()->getSelected(types, obj);
 			}
 
 			void setModelsVisible(bool visibility)

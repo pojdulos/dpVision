@@ -59,7 +59,7 @@ void DockWidgetPluginList::loadPlugin()
 			QString( AP::getExeFilePath() + "/plugins" ),
 			tr("Plugin DLL (*.dll)")) );
 
-	AP::PLUGIN::loadPlugin( fileName.toStdWString() );
+	AP::PLUGIN::loadPlugin( fileName );
 }
 
 void DockWidgetPluginList::addPluginToList( int id, QString txt )

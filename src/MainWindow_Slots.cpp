@@ -944,7 +944,7 @@ void CMainWindow::unlockSelectedModels()
 
 void CMainWindow::selectAll()
 {
-	AP::getWorkspace()->getSelection().clear();
+	AP::getWorkspace()->clearSelection();
 	for (std::map<int, CModel3D*>::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
 	{
 		AP::WORKSPACE::SELECTION::selectModel(it->first);

@@ -141,28 +141,15 @@ public:
 
 	virtual void setVisible(bool v) { m_showSelf = v; };
 
-	virtual void setSelfVisibility(bool v) { m_showSelf = v; };
+	virtual void setSelfVisibility(bool v) { m_showSelf = v; }
 	virtual void setKidsVisibility(bool v) { m_showKids = v; };
 	virtual bool getSelfVisibility() { return m_showSelf; };
 	virtual bool getKidsVisibility() { return m_showKids; };
-	virtual bool switchSelfVisibility() { return m_showSelf = !m_showSelf; };
-	virtual bool switchKidsVisibility() { return m_showKids = !m_showKids; };
+	virtual bool switchSelfVisibility();
+	virtual bool switchKidsVisibility();
 
 	int id() { return m_Id; };
 	int parentId() { return (m_parent != nullptr) ? m_parent->id() : NO_CURRENT_MODEL; };
-	//virtual inline int setId(int i) { return m_Id = i; };
-
-	//virtual CBaseObject::Visibility setVisibility(CBaseObject::Visibility v);
-	//virtual inline CBaseObject::Visibility getVisibility();
-	//virtual CBaseObject::Visibility switchVisibility();
-
-	//virtual inline bool setVisible(bool show, bool selfOnly=false)
-	//{
-	//	m_visible = show ? Visibility::SHOW : (selfOnly ? Visibility::HIDE_SELF : Visibility::HIDE_ALL );
-	//	return (m_visible == Visibility::SHOW);
-	//};
-	//virtual inline bool isVisible() { return (m_visible == Visibility::SHOW); };
-	//virtual inline bool childsVisible() { return (m_visible != Visibility::HIDE_ALL); };
 
 	virtual inline bool setSelected(bool sel) { return m_selected = sel; };
 	virtual inline bool isSelected() { return m_selected; };
@@ -173,13 +160,13 @@ public:
 
 	//std::string getLabel() { return m_label.toStdString(); };
 	const QString& getLabel() { return m_label; };
-	const std::string getLabelA() { return m_label.toStdString(); };
+	const std::string getLabelA() { return m_label.toUtf8().toStdString(); };
 	const std::wstring getLabelW() { return m_label.toStdWString(); };
 
-	inline void setLabel(const char* label) { m_label = QString(label); }
-	inline void setLabel(const QString label) { m_label = label; }
-	inline void setLabel(const std::string label) { m_label = QString::fromStdString(label); }
-	inline void setLabel(const std::wstring label) { m_label = QString::fromWCharArray(label.c_str()); }
+	inline void setLabel(const QString &label) { m_label = label; }
+	inline void setLabel(const char* label) { m_label = QString::fromUtf8(label); }
+	inline void setLabel(const std::string &label) { m_label = QString::fromUtf8(label.c_str()); }
+	inline void setLabel(const std::wstring &label) { m_label = QString::fromWCharArray(label.c_str()); }
 
 	inline void setDescr(const QString descr) { m_descr = descr; }
 	const QString& getDescr() { return m_descr; };

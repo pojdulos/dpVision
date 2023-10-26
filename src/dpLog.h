@@ -2,9 +2,9 @@
 #ifndef _LOG_H_BY_DP_INCLUDED_
 #define _LOG_H_BY_DP_INCLUDED_
 
-#include <QString>
-#include <QFile>
-#include <QTextStream>
+#include <QtCore/QString>
+#include <QtCore/QFile>
+#include <QtCore/QTextStream>
 
 #include "MainApplication.h"
 #include "AP.h"

@@ -4,48 +4,45 @@
 
 Plugin::Plugin(void)
 {
-    setUUID(PLUGIN_UUID);
-    setName(PLUGIN_NAME);
-    CommonDLL::Instance().AddName( PLUGIN_NAME );
+    PluginInterface::setUUID(PLUGIN_UUID);
+    PluginInterface::setName(PLUGIN_NAME);
+    CommonDLL::Instance().AddName( QString(PLUGIN_NAME).toStdWString() );
 }
 
-Plugin::~Plugin(void)
-{
-}
 
 inline std::string Plugin::uuid() const
 {
-    return m_UUID;
+    return m_UUID.toStdString();
 }
 
 std::wstring Plugin::name() const
 {
-    return m_Name;
+    return m_Name.toStdWString();
 }
 
 void Plugin::setName( const std::wstring& name )
 {
-    m_Name = name;
+    m_Name = QString::fromWCharArray(name.c_str());
 }
 
 void Plugin::setUUID(const std::string& uuid)
 {
-    m_UUID = uuid;
+    m_UUID = QString::fromUtf8(uuid.c_str());
 }
 
 
 std::wstring Plugin::getPath() const
 {
-    return m_Path;
+    return m_Path.toStdWString();
 }
 
 bool Plugin::hasUUID(std::string strUUID)
 {
-    return (0 == m_UUID.compare(strUUID));
+    return (m_UUID == QString::fromUtf8(strUUID.c_str()));
 }
 
 void Plugin::setPath( const std::wstring& path )
 {
-    m_Path = path;
+    m_Path = QString::fromWCharArray(path.c_str());
 }
 

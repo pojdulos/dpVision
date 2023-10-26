@@ -26,6 +26,7 @@ public slots:
 	void changedLowerLimit(double);
 	void changedUpperLimit(double);
 	void colorSchemeChanged(int);
+	void lblBoxChanged(bool);
 
 private:
 	Ui::propHistogram ui;

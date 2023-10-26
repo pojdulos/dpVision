@@ -548,33 +548,13 @@ QWidget* UI::PLUGINPANEL::instance(unsigned int pluginId)
 	return nullptr;
 }
 
-void UI::PLUGINPANEL::create(unsigned int pluginId, QString label)
+void UI::PLUGINPANEL::create(unsigned int pluginId, const QString &label)
 {
 	CMainWindow* win = AP::mainWinPtr();
 
 	if (win != nullptr && win->dockPluginPanel != nullptr)
 	{
 		win->dockPluginPanel->addPluginPanel(pluginId, label);
-	}
-}
-
-void UI::PLUGINPANEL::create(unsigned int pluginId, std::string label)
-{
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr && win->dockPluginPanel != nullptr)
-	{
-		win->dockPluginPanel->addPluginPanel(pluginId, QString::fromStdString(label));
-	}
-}
-
-void UI::PLUGINPANEL::create( unsigned int pluginId, std::wstring label )
-{
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr && win->dockPluginPanel != nullptr)
-	{
-		win->dockPluginPanel->addPluginPanel(pluginId, QString::fromStdWString(label));
 	}
 }
 
@@ -589,23 +569,13 @@ void UI::PLUGINPANEL::setEnabled(unsigned int pluginId, bool b)
 	instance(pluginId)->setEnabled(b);
 }
 
-void UI::PLUGINPANEL::removeWidget(unsigned int pluginId, std::string name)
+void UI::PLUGINPANEL::removeWidget(unsigned int pluginId, const QString &name)
 {
 	CMainWindow* win = AP::mainWinPtr();
 
 	if (win != nullptr && win->dockPluginPanel != nullptr)
 	{
-		win->dockPluginPanel->removeWidget(pluginId, QString::fromStdString(name));
-	}
-}
-
-void UI::PLUGINPANEL::removeWidget( unsigned int pluginId, std::wstring name )
-{
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr && win->dockPluginPanel != nullptr)
-	{
-		win->dockPluginPanel->removeWidget(pluginId, QString::fromStdWString(name));
+		win->dockPluginPanel->removeWidget(pluginId, name);
 	}
 }
 
@@ -644,280 +614,185 @@ QPushButton* UI::PLUGINPANEL::addButton( unsigned int pluginId, std::wstring but
 	return nullptr;
 }
 
-void UI::PLUGINPANEL::setButtonText(unsigned int pluginId, std::string name, std::string value)
+void UI::PLUGINPANEL::setButtonText(unsigned int pluginId, const QString &name, const QString &value)
 {
 	CMainWindow* win = AP::mainWinPtr();
 
 	if (win != nullptr && win->dockPluginPanel != nullptr)
 	{
-		win->dockPluginPanel->setButtonText(pluginId, QString::fromStdString(name), QString::fromStdString(value));
+		win->dockPluginPanel->setButtonText(pluginId, name, value);
 	}
 }
 
-void UI::PLUGINPANEL::setButtonText(unsigned int pluginId, std::wstring name, std::wstring value)
+void UI::PLUGINPANEL::addSlider(unsigned int pluginId, const QString &buttonName, int min, int max, int row, int col, int rspan, int cspan)
 {
 	CMainWindow* win = AP::mainWinPtr();
 
 	if (win != nullptr && win->dockPluginPanel != nullptr)
 	{
-		win->dockPluginPanel->setButtonText(pluginId, QString::fromStdWString(name), QString::fromStdWString(value));
+		win->dockPluginPanel->addSlider(pluginId, buttonName, min, max, row, col, rspan, cspan);
 	}
 }
 
-void UI::PLUGINPANEL::addSlider(unsigned int pluginId, std::string buttonName, int min, int max, int row, int col, int rspan, int cspan)
+int UI::PLUGINPANEL::getSliderValue(unsigned int pluginId, const QString &name)
 {
 	CMainWindow* win = AP::mainWinPtr();
 
 	if (win != nullptr && win->dockPluginPanel != nullptr)
 	{
-		win->dockPluginPanel->addSlider(pluginId, QString::fromStdString(buttonName), min, max, row, col, rspan, cspan);
-	}
-}
-
-void UI::PLUGINPANEL::addSlider(unsigned int pluginId, std::wstring buttonName, int min, int max, int row, int col, int rspan, int cspan)
-{
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr && win->dockPluginPanel != nullptr)
-	{
-		win->dockPluginPanel->addSlider(pluginId, QString::fromStdWString(buttonName), min, max, row, col, rspan, cspan);
-	}
-}
-
-int UI::PLUGINPANEL::getSliderValue(unsigned int pluginId, std::string name)
-{
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr && win->dockPluginPanel != nullptr)
-	{
-		return win->dockPluginPanel->getSliderValue(pluginId, QString::fromStdString(name));
-	}
-	return -1;
-}
-int UI::PLUGINPANEL::getSliderValue(unsigned int pluginId, std::wstring name)
-{
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr && win->dockPluginPanel != nullptr)
-	{
-		return win->dockPluginPanel->getSliderValue(pluginId, QString::fromStdWString(name));
+		return win->dockPluginPanel->getSliderValue(pluginId, name);
 	}
 	return -1;
 }
 
-int UI::PLUGINPANEL::setSliderValue(unsigned int pluginId, std::string name, int value)
+int UI::PLUGINPANEL::setSliderValue(unsigned int pluginId, const QString &name, int value)
 {
 	CMainWindow* win = AP::mainWinPtr();
 
 	if (win != nullptr && win->dockPluginPanel != nullptr)
 	{
-		return win->dockPluginPanel->setSliderValue(pluginId, QString::fromStdString(name), value);
+		return win->dockPluginPanel->setSliderValue(pluginId, name, value);
 	}
 	return -1;
 }
 
-int UI::PLUGINPANEL::setSliderValue(unsigned int pluginId, std::wstring name, int value)
+void UI::PLUGINPANEL::setSliderRange(unsigned int pluginId, const QString &name, int min, int max)
 {
 	CMainWindow* win = AP::mainWinPtr();
 
 	if (win != nullptr && win->dockPluginPanel != nullptr)
 	{
-		return win->dockPluginPanel->setSliderValue(pluginId, QString::fromStdWString(name), value);
-	}
-	return -1;
-}
-
-void UI::PLUGINPANEL::setSliderRange(unsigned int pluginId, std::string name, int min, int max)
-{
-}
-
-void UI::PLUGINPANEL::setSliderRange(unsigned int pluginId, std::wstring name, int min, int max)
-{
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr && win->dockPluginPanel != nullptr)
-	{
-		win->dockPluginPanel->setSliderRange(pluginId, QString::fromStdWString(name), min, max);
+		win->dockPluginPanel->setSliderRange(pluginId, name, min, max);
 	}
 }
-
 
 
 // PLUGINPANEL - EDITBOX
 
-void UI::PLUGINPANEL::addEditBox(unsigned int pluginId, std::string name, std::string label, std::string value, int row, int col, int rspan, int cspan)
+void UI::PLUGINPANEL::addEditBox(unsigned int pluginId, const QString &name, const QString &label, const QString &value, int row, int col, int rspan, int cspan)
 {
 	CMainWindow* win = AP::mainWinPtr();
 
 	if (win != nullptr && win->dockPluginPanel != nullptr)
 	{
-		win->dockPluginPanel->addEditBox(pluginId, QString::fromStdString(name), QString::fromStdString(label), QString::fromStdString(value), row, col, rspan, cspan);
+		win->dockPluginPanel->addEditBox(pluginId, name, label, value, row, col, rspan, cspan);
 	}
 }
 
-void UI::PLUGINPANEL::addEditBox( unsigned int pluginId, std::wstring name, std::wstring label, std::wstring value, int row, int col, int rspan, int cspan )
+QString UI::PLUGINPANEL::getEditBoxValue(unsigned int pluginId, const QString &name)
 {
 	CMainWindow* win = AP::mainWinPtr();
 
 	if (win != nullptr && win->dockPluginPanel != nullptr)
 	{
-		win->dockPluginPanel->addEditBox(pluginId, QString::fromStdWString(name), QString::fromStdWString(label), QString::fromStdWString(value), row, col, rspan, cspan);
-	}
-}
-
-std::string UI::PLUGINPANEL::getEditBoxValue(unsigned int pluginId, std::string name)
-{
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr && win->dockPluginPanel != nullptr)
-	{
-		return win->dockPluginPanel->getEditBoxValue(pluginId, QString::fromStdString(name)).toStdString();
+		return win->dockPluginPanel->getEditBoxValue(pluginId, name);
 	}
 	return "";
 }
 
-std::wstring UI::PLUGINPANEL::getEditBoxValue( unsigned int pluginId, std::wstring name )
+void UI::PLUGINPANEL::setEditBoxValue(unsigned int pluginId, const QString &name, const QString &value)
 {
 	CMainWindow* win = AP::mainWinPtr();
 
 	if (win != nullptr && win->dockPluginPanel != nullptr)
 	{
-		return win->dockPluginPanel->getEditBoxValue(pluginId, QString::fromStdWString(name)).toStdWString();
-	}
-	return L"";
-}
-
-void UI::PLUGINPANEL::setEditBoxValue(unsigned int pluginId, std::string name, std::string value)
-{
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr && win->dockPluginPanel != nullptr)
-	{
-		win->dockPluginPanel->setEditBoxValue(pluginId, QString::fromStdString(name), QString::fromStdString(value));
+		win->dockPluginPanel->setEditBoxValue(pluginId, name, value);
 	}
 }
 
-void UI::PLUGINPANEL::setEditBoxValue( unsigned int pluginId, std::wstring name, std::wstring value )
+void UI::PLUGINPANEL::addComboBox(unsigned int pluginId, const QString &name, int row, int col, int rspan, int cspan)
 {
 	CMainWindow* win = AP::mainWinPtr();
 
 	if (win != nullptr && win->dockPluginPanel != nullptr)
 	{
-		win->dockPluginPanel->setEditBoxValue(pluginId, QString::fromStdWString(name), QString::fromStdWString(value));
+		win->dockPluginPanel->addComboBox(pluginId, name, row, col, rspan, cspan);
 	}
 }
 
-void UI::PLUGINPANEL::addComboBox(unsigned int pluginId, std::string name, int row, int col, int rspan, int cspan)
+QString UI::PLUGINPANEL::getComboBoxCurrentItemText(unsigned int pluginId, const QString &name)
 {
 	CMainWindow* win = AP::mainWinPtr();
 
 	if (win != nullptr && win->dockPluginPanel != nullptr)
 	{
-		win->dockPluginPanel->addComboBox(pluginId, QString::fromStdString(name), row, col, rspan, cspan);
-	}
-}
-
-void UI::PLUGINPANEL::addComboBox(unsigned int pluginId, std::wstring name, int row, int col, int rspan, int cspan)
-{
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr && win->dockPluginPanel != nullptr)
-	{
-		win->dockPluginPanel->addComboBox(pluginId, QString::fromStdWString(name), row, col, rspan, cspan);
-	}
-}
-
-std::string UI::PLUGINPANEL::getComboBoxCurrentItemText(unsigned int pluginId, std::string name)
-{
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr && win->dockPluginPanel != nullptr)
-	{
-		return win->dockPluginPanel->getComboBoxCurrentItemText(pluginId, QString::fromStdString(name)).toStdString();
+		return win->dockPluginPanel->getComboBoxCurrentItemText(pluginId, name);
 	}
 	return "";
 }
 
-std::wstring UI::PLUGINPANEL::getComboBoxCurrentItemText(unsigned int pluginId, std::wstring name)
+void UI::PLUGINPANEL::setComboBoxItems(unsigned int pluginId, const QString &name, QStringList items)
 {
 	CMainWindow* win = AP::mainWinPtr();
 
 	if (win != nullptr && win->dockPluginPanel != nullptr)
 	{
-		return win->dockPluginPanel->getComboBoxCurrentItemText(pluginId, QString::fromStdWString(name)).toStdWString();
-	}
-	return L"";
-}
+		//QStringList qItems;
+		//for(const QString &item : items) { qItems.append(QString::fromUtf8(item.toLatin1())); }
 
-void UI::PLUGINPANEL::setComboBoxItems(unsigned int pluginId, std::string name, std::vector<std::string> items)
-{
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr && win->dockPluginPanel != nullptr)
-	{
-		QVector<QString> qItems;
-		for (const std::string& i : items) qItems.push_back(QString::fromStdString(i));
-
-		win->dockPluginPanel->setComboBoxItems(pluginId, QString::fromStdString(name), qItems);
+		win->dockPluginPanel->setComboBoxItems(pluginId, name, items);
 	}
 }
 
-void UI::PLUGINPANEL::setComboBoxItems(unsigned int pluginId, std::wstring name, std::vector<std::wstring> items)
+void UI::PLUGINPANEL::setComboBoxItems(unsigned int pluginId, const char* name, std::initializer_list<const char*> items)
 {
 	CMainWindow* win = AP::mainWinPtr();
 
 	if (win != nullptr && win->dockPluginPanel != nullptr)
 	{
-		QVector<QString> qItems;
-		for (const std::wstring& i : items) qItems.push_back(QString::fromStdWString(i));
+		QStringList qItems;
+		for(const char* item : items) { qItems.append(QString::fromUtf8(item)); }
 
-		win->dockPluginPanel->setComboBoxItems(pluginId, QString::fromStdWString(name), qItems);
+		win->dockPluginPanel->setComboBoxItems(pluginId, QString::fromUtf8(name), qItems);
+	}
+}
+void UI::PLUGINPANEL::setComboBoxItems(unsigned int pluginId, const std::string &name, std::vector<std::string> items)
+{
+	CMainWindow* win = AP::mainWinPtr();
+
+	if (win != nullptr && win->dockPluginPanel != nullptr)
+	{
+		QStringList qItems;
+		for(const std::string &item : items) { qItems.append(QString::fromUtf8(item.c_str())); }
+		
+		win->dockPluginPanel->setComboBoxItems(pluginId, QString::fromUtf8(name.c_str()), qItems);
+	}
+}
+void UI::PLUGINPANEL::setComboBoxItems(unsigned int pluginId, const std::wstring &name, std::vector<std::wstring> items)
+{
+	CMainWindow* win = AP::mainWinPtr();
+
+	if (win != nullptr && win->dockPluginPanel != nullptr)
+	{
+		QStringList qItems;
+		for(const std::wstring &item : items) { qItems.append(QString::fromWCharArray(item.c_str())); }
+
+		win->dockPluginPanel->setComboBoxItems(pluginId, QString::fromWCharArray(name.c_str()), qItems);
 	}
 }
 
 
 // PLUGINPANEL - LABEL
 
-void UI::PLUGINPANEL::addLabel(unsigned int pluginId, std::string name, std::string text, int row, int col, int rspan, int cspan)
+void UI::PLUGINPANEL::addLabel(unsigned int pluginId, const QString &name, const QString &text, int row, int col, int rspan, int cspan)
 {
 	CMainWindow* win = AP::mainWinPtr();
 
 	if (win != nullptr && win->dockPluginPanel != nullptr)
 	{
-		win->dockPluginPanel->addLabel(pluginId, QString::fromStdString(name), QString::fromStdString(text), row, col, rspan, cspan);
+		win->dockPluginPanel->addLabel(pluginId, name, text, row, col, rspan, cspan);
 	}
 }
 
-void UI::PLUGINPANEL::addLabel( unsigned int pluginId, std::wstring name, std::wstring text, int row, int col, int rspan, int cspan )
+void UI::PLUGINPANEL::setLabel(unsigned int pluginId, const QString &name, const QString &text)
 {
 	CMainWindow* win = AP::mainWinPtr();
 
 	if (win != nullptr && win->dockPluginPanel != nullptr)
 	{
-		win->dockPluginPanel->addLabel(pluginId, QString::fromStdWString(name), QString::fromStdWString(text), row, col, rspan, cspan);
+		win->dockPluginPanel->setLabel(pluginId, name, text);
 	}
 }
-
-void UI::PLUGINPANEL::setLabel(unsigned int pluginId, std::string name, std::string text)
-{
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr && win->dockPluginPanel != nullptr)
-	{
-		win->dockPluginPanel->setLabel(pluginId, QString::fromStdString(name), QString::fromStdString(text));
-	}
-}
-
-void UI::PLUGINPANEL::setLabel( unsigned int pluginId, std::wstring name, std::wstring text )
-{
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr && win->dockPluginPanel != nullptr)
-	{
-		win->dockPluginPanel->setLabel(pluginId, QString::fromStdWString(name), QString::fromStdWString(text));
-	}
-}
-
 // PROGRESSBAR
 
 ProgressIndicator* UI::PROGRESSBAR::instance()
@@ -960,7 +835,8 @@ void UI::PROGRESSBAR::setValue( int val )
 	AP::processEvents(true);
 }
 
-void UI::PROGRESSBAR::setText(std::string text)
+
+void UI::PROGRESSBAR::setText(const QString text)
 {
 	CMainWindow* win = AP::mainWinPtr();
 
@@ -968,21 +844,7 @@ void UI::PROGRESSBAR::setText(std::string text)
 	{
 		if (nullptr != win->progressIndicator)
 		{
-			win->progressIndicator->setText(QString(text.c_str()));
-		}
-	}
-	AP::processEvents(true);
-}
-
-void UI::PROGRESSBAR::setText(std::wstring text)
-{
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr)
-	{
-		if (nullptr != win->progressIndicator)
-		{
-			win->progressIndicator->setText(QString::fromWCharArray(text.c_str()));
+			win->progressIndicator->setText(text);
 		}
 	}
 	AP::processEvents(true);
@@ -1075,25 +937,7 @@ void UI::STATUSBAR::printfTimed( int mst, const wchar_t *format, ...)
 	}
 }
 
-//void UI::STATUSBAR::setText(const QString msg)
-//{
-//	CMainWindow* win = AP::mainWinPtr();
-//
-//	if (win != nullptr)
-//	{
-//		QStatusBar* sb = win->statusBar();
-//		if (sb != nullptr)
-//		{
-//			sb->showMessage( msg );
-//		}
-//	}
-//
-//	AP::processEvents(true);
-//}
-
-//void UI::STATUSBAR::setText(const char* msg) { setText(QString(msg)); }
-
-void UI::STATUSBAR::setText(const std::string msg)
+void UI::STATUSBAR::setText(const QString msg)
 {
 	CMainWindow* win = AP::mainWinPtr();
 
@@ -1102,119 +946,36 @@ void UI::STATUSBAR::setText(const std::string msg)
 		QStatusBar* sb = win->statusBar();
 		if (sb != nullptr)
 		{
-			sb->showMessage(QString::fromStdString(msg));
+			sb->showMessage( msg );
 		}
 	}
 
 	AP::processEvents(true);
 }
-
-void UI::STATUSBAR::setText(const std::wstring msg)
-{
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr)
-	{
-		QStatusBar* sb = win->statusBar();
-		if (sb != nullptr)
-		{
-			sb->showMessage(QString::fromStdWString(msg));
-		}
-	}
-
-	AP::processEvents(true);
-}
-
 
 // MESSAGEBOX
 
 #include <QtWidgets/QMessageBox>
-//void UI::MESSAGEBOX::information(QString msg, QString tittle)
-//{
-//	QMessageBox::information(0, tittle, msg );
-//}
-//void UI::MESSAGEBOX::information(char* msg, char* tittle)
-//{
-//	QMessageBox::information(0, QString(tittle), QString(msg));
-//}
 
-void UI::MESSAGEBOX::information(std::string msg, std::string tittle)
-{
-	QMessageBox::information(0, QString::fromStdString(tittle), QString::fromStdString(msg));
-}
+void UI::MESSAGEBOX::information(const QString &msg, const QString &tittle) { QMessageBox::information(0, tittle, msg ); }
+void UI::MESSAGEBOX::information(const char* msg, const char* tittle) { QMessageBox::information(0, QString::fromUtf8(tittle), QString::fromUtf8(msg)); }
+void UI::MESSAGEBOX::information(const std::string &msg, const std::string &tittle) { QMessageBox::information(0, QString::fromUtf8(tittle.c_str()), QString::fromUtf8(msg.c_str())); }
+void UI::MESSAGEBOX::information(const std::wstring &msg, const std::wstring &tittle ) { QMessageBox::information( 0, QString::fromWCharArray(tittle.c_str()), QString::fromWCharArray(msg.c_str()) ); }
 
-void UI::MESSAGEBOX::information( std::wstring msg, std::wstring tittle )
-{
-	QMessageBox::information( 0, QString::fromStdWString(tittle), QString::fromStdWString(msg) );
-}
+void UI::MESSAGEBOX::warning(const QString &msg, const QString &tittle) { QMessageBox::warning( 0, tittle, msg ); }
+void UI::MESSAGEBOX::warning(const char* msg, const char* tittle) { QMessageBox::warning( 0, QString::fromUtf8(tittle), QString::fromUtf8(msg) ); }
+void UI::MESSAGEBOX::warning(const std::string &msg, const std::string &tittle) { QMessageBox::warning(0, QString::fromUtf8(tittle.c_str()), QString::fromUtf8(msg.c_str())); }
+void UI::MESSAGEBOX::warning(const std::wstring &msg, const std::wstring &tittle ) { QMessageBox::warning( 0, QString::fromWCharArray(tittle.c_str()), QString::fromWCharArray(msg.c_str()) ); }
 
+void UI::MESSAGEBOX::error(const QString &msg, const QString &tittle) { QMessageBox::critical(0, tittle, msg ); }
+void UI::MESSAGEBOX::error(const char* msg, const char* tittle) { QMessageBox::critical(0, QString::fromUtf8(tittle), QString::fromUtf8(msg) ); }
+void UI::MESSAGEBOX::error(const std::string &msg, const std::string &tittle) { QMessageBox::critical(0, QString::fromUtf8(tittle.c_str()), QString::fromUtf8(msg.c_str())); }
+void UI::MESSAGEBOX::error(const std::wstring &msg, const std::wstring &tittle ) { QMessageBox::critical( 0, QString::fromWCharArray(tittle.c_str()), QString::fromWCharArray(msg.c_str())); }
 
-/////////////////////////////////////////////////////////////////
-
-//void UI::MESSAGEBOX::warning(QString msg, QString tittle)
-//{
-//	QMessageBox::warning( 0, tittle, msg );
-//}
-//
-//void UI::MESSAGEBOX::warning(char* msg, char* tittle)
-//{
-//	QMessageBox::warning( 0, QString(tittle), QString(msg) );
-//}
-
-void UI::MESSAGEBOX::warning(std::string msg, std::string tittle)
-{
-	QMessageBox::warning(0, QString::fromStdString(tittle), QString::fromStdString(msg));
-}
-
-void UI::MESSAGEBOX::warning( std::wstring msg, std::wstring tittle )
-{
-	QMessageBox::warning( 0, QString::fromStdWString(tittle), QString::fromStdWString(msg) );
-}
-
-/////////////////////////////////////////////////////////////////
-
-//void UI::MESSAGEBOX::error(QString msg, QString tittle)
-//{
-//	QMessageBox::critical(0, tittle, msg );
-//}
-//
-//void UI::MESSAGEBOX::error(char* msg, char* tittle)
-//{
-//	QMessageBox::critical(0, QString(tittle), QString(msg) );
-//}
-
-void UI::MESSAGEBOX::error(std::string msg, std::string tittle)
-{
-	QMessageBox::critical(0, QString::fromStdString(tittle), QString::fromStdString(msg));
-}
-
-void UI::MESSAGEBOX::error( std::wstring msg, std::wstring tittle )
-{
-	QMessageBox::critical( 0, QString::fromStdWString(tittle), QString::fromStdWString(msg) );
-}
-
-/////////////////////////////////////////////////////////////////
-
-//int UI::MESSAGEBOX::question(QString msg, QString tittle, QString b0, QString b1, QString b2)
-//{
-//	return QMessageBox::question(0, tittle, msg, b0, b1, b2);
-//}
-//
-//int UI::MESSAGEBOX::question(char* msg, char* tittle, char* b0, char* b1, char* b2)
-//{
-//	return QMessageBox::question(0, QString(tittle), QString(msg), QString(b0), QString(b1), QString(b2));
-//}
-
-int UI::MESSAGEBOX::question(std::string msg, std::string tittle, std::string b0, std::string b1, std::string b2)
-{
-	return QMessageBox::question(0, QString::fromStdString(tittle), QString::fromStdString(msg), QString::fromStdString(b0), QString::fromStdString(b1), QString::fromStdString(b2));
-}
-
-int UI::MESSAGEBOX::question( std::wstring msg, std::wstring tittle, std::wstring b0, std::wstring b1, std::wstring b2 )
-{
-	return QMessageBox::question( 0, QString::fromStdWString(tittle), QString::fromStdWString(msg), QString::fromStdWString(b0), QString::fromStdWString(b1), QString::fromStdWString(b2) );
-}
-
+int UI::MESSAGEBOX::question(const QString &msg, const QString &tittle, const QString &b0, const QString &b1, const QString &b2) { return QMessageBox::question(0, tittle, msg, b0, b1, b2); }
+int UI::MESSAGEBOX::question(const char* msg, const char* tittle, const char* b0, const char* b1, const char* b2) {	return QMessageBox::question(0, QString::fromUtf8(tittle), QString::fromUtf8(msg), QString::fromUtf8(b0), QString::fromUtf8(b1), QString::fromUtf8(b2)); }
+int UI::MESSAGEBOX::question(const std::string &msg, const std::string &tittle, const std::string &b0, const std::string &b1, const std::string &b2) { return QMessageBox::question(0, QString::fromUtf8(tittle.c_str()), QString::fromUtf8(msg.c_str()), QString::fromUtf8(b0.c_str()), QString::fromUtf8(b1.c_str()), QString::fromUtf8(b2.c_str())); }
+int UI::MESSAGEBOX::question(const std::wstring &msg, const std::wstring &tittle, const std::wstring &b0, const std::wstring &b1, const std::wstring &b2 ) { return QMessageBox::question(0, QString::fromWCharArray(tittle.c_str()), QString::fromWCharArray(msg.c_str()), QString::fromWCharArray(b0.c_str()), QString::fromWCharArray(b1.c_str()), QString::fromWCharArray(b2.c_str())); }
 
 // FILECHOOSER
 
@@ -1340,7 +1101,7 @@ std::wstring UI::str2wstr( std::string s )
 
 std::string UI::wstr2str( std::wstring ws )
 {
-	return QString::fromWCharArray( ws.c_str() ).toStdString();
+	return QString::fromWCharArray( ws.c_str() ).toUtf8().toStdString();
 }
 
 

@@ -11,12 +11,17 @@ add_library (${_NAME} SHARED
 
 set (PluginManager_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)
 
+target_link_libraries (${_NAME}
+	Qt5::Core
+)
+
 target_include_directories (${_NAME} PUBLIC
     ${dpVision_INCLUDE_DIR}
 )
 
 target_compile_definitions(${_NAME} PRIVATE
     DPVISION_PLUGIN_DLL
+	"PLUGIN_NAME=L\"Plugin wzorcowy\""
 )
 
 set_target_properties(${_NAME} PROPERTIES

@@ -37,9 +37,9 @@ CMainApplication::CMainApplication(int& argc, char** argv) : QApplication(argc, 
 
 
 
-Plugin* CMainApplication::getPlugin( unsigned int id )
+PluginInterface* CMainApplication::getPlugin( unsigned int id )
 {
-	QMap<unsigned int, Plugin*>::iterator pit = plugins.find(id);
+	QMap<unsigned int, PluginInterface*>::iterator pit = plugins.find(id);
 
 	if ( pit != plugins.end() )
 	{
@@ -48,9 +48,9 @@ Plugin* CMainApplication::getPlugin( unsigned int id )
 	return nullptr;
 }
 
-Plugin* CMainApplication::getPlugin(const char* strUUID)
+PluginInterface* CMainApplication::getPlugin(const char* strUUID)
 {
-	for (Plugin* p : plugins)
+	for (PluginInterface* p : plugins)
 	{
 		if (p->hasUUID(strUUID))
 		{
@@ -60,19 +60,57 @@ Plugin* CMainApplication::getPlugin(const char* strUUID)
 	return nullptr;
 }
 
+#include <QPluginLoader>
 
-
-void CMainApplication::loadPlugin( const QString pluginPath )
+bool CMainApplication::loadQtPlugin(const QString &pluginPath)
 {
-	Plugin *plugin = PluginManager::Instance().LoadPlugin( pluginPath.toStdWString() );
-	CMainWindow* win = AP::mainWinPtr();
+	QPluginLoader loader(pluginPath); // lub .so lub .dylib w zale≈ºno≈õci od systemu
+	
+	QJsonObject metadata = loader.metaData().value("MetaData").toObject();
 
-	if (win == nullptr)
-	{
-		return;
+	QString version = metadata.value("version").toString();
+	QString name = metadata.value("name").toString();
+	QString description = metadata.value("description").toString();
+
+	QObject* pluginObject = loader.instance();
+
+	if (pluginObject) {
+		PluginInterface* plugin = qobject_cast<PluginInterface*>(pluginObject);
+		if (plugin)
+		{
+			unsigned int newID = PLUGIN_ID_OFFSET;
+			while (plugins.find(newID) != plugins.end()) {
+				newID++;
+			}
+
+			if (name != "") plugin->setName(name);
+			plugin->setPath(pluginPath);
+			plugin->setID(newID);
+
+			plugins[newID] = plugin;
+
+			plugin->onLoad();
+			if (!plugin->isHidden())
+			{
+				CMainWindow* win = AP::mainWinPtr();
+
+				if (win != nullptr)
+				{
+					win->addPluginToListView(newID, plugin->name() + " (" + plugin->path() + ")");
+				}
+			}
+
+			return true;
+		}
 	}
+	return false;
+}
 
-	if ( plugin != NULL ) {
+bool CMainApplication::loadWinPlugin( const QString &pluginPath )
+{
+	PluginInterface *plugin = PluginManager::Instance().LoadPlugin( pluginPath );
+	if (plugin != NULL)
+	{
 		unsigned int newID = PLUGIN_ID_OFFSET;
 		while ( plugins.find( newID ) != plugins.end() ) {
 			newID++;
@@ -84,23 +122,50 @@ void CMainApplication::loadPlugin( const QString pluginPath )
 		plugin->onLoad();
 		if ( ! plugin->isHidden() )
 		{
-			win->addPluginToListView( newID, QString::fromStdWString(plugin->name()) + " (" + QString::fromStdWString(plugin->getPath()) + ")" );
+			CMainWindow* win = AP::mainWinPtr();
+
+			if (win != nullptr)
+			{
+				win->addPluginToListView( newID, plugin->name() + " (" + plugin->path() + ")" );
+			}
 		}
+		return true;
 	}
-	else {
-		UI::STATUSBAR::printf( "PluginAdd: ERROR" );
+	return false;
+}
+
+bool CMainApplication::loadPlugin( const QString &pluginPath )
+{
+	qInfo() << "Trying to load plugin: " << pluginPath;
+	if (loadQtPlugin(pluginPath))
+	{
+		qInfo() << "-- has been identified as a plugin compatible with QPluginLoader";
+		return true;
+	}
+	if (loadWinPlugin(pluginPath))
+	{
+		qInfo() << "-- has been identified as an old-style dpVision plugin";
+		return true;
+	}
+	else
+	{
+		qInfo() << "-- probably this is not plugin";
+		return false;
 	}
 }
 
 void CMainApplication::unloadPlugin( const unsigned int id )
 {
-	QMap<unsigned int,Plugin*>::iterator pit = plugins.find( id );
+	QMap<unsigned int,PluginInterface*>::iterator pit = plugins.find( id );
 
 	if ( pit != plugins.end() )
 	{
 		pit.value()->onUnload();
 
-		PluginManager::Instance().UnloadPlugin( pit.value()->getPath().c_str() );
+		if (!PluginManager::Instance().UnloadPlugin(pit.value()))
+		{
+			delete pit.value();
+		}
 		plugins.erase( pit );
 
 		activePlugin = NULL;
@@ -111,11 +176,14 @@ void CMainApplication::unloadPlugin( const QString pluginPath )
 {
 	//unsigned int menuId;
 
-	for ( QMap<unsigned int,Plugin*>::iterator pit = plugins.begin(); pit != plugins.end(); pit++ )
+	for ( QMap<unsigned int,PluginInterface*>::iterator pit = plugins.begin(); pit != plugins.end(); pit++ )
     {
-		if ( 0 == pit.value()->getPath().compare( pluginPath.toStdWString() ) ) {
+		if ( 0 == pit.value()->path().compare( pluginPath ) ) {
 			//DeleteMenu( GetSubMenu( pOkno->hMenu, 5 ), (*pit)->GetMenuID(), MF_BYCOMMAND );
-			PluginManager::Instance().UnloadPlugin( pluginPath.toStdWString() );
+			if (!PluginManager::Instance().UnloadPlugin(pluginPath))
+			{
+				delete pit.value();
+			}
 			plugins.erase( pit );
 			break;
 		}
@@ -126,10 +194,13 @@ void CMainApplication::UnloadAllPlugins()
 {
 //	unsigned int menuId;
 
-	for ( QMap<unsigned int, Plugin*>::iterator pit = plugins.begin(); pit != plugins.end(); pit++ )
+	for ( QMap<unsigned int, PluginInterface*>::iterator pit = plugins.begin(); pit != plugins.end(); pit++ )
     {
 			//DeleteMenu( GetSubMenu( pOkno->hMenu, 5 ), (*pit)->GetMenuID(), MF_BYCOMMAND );
-		PluginManager::Instance().UnloadPlugin( pit.value()->getPath().c_str() );
+		if (!PluginManager::Instance().UnloadPlugin(pit.value()))
+		{
+			delete pit.value();
+		}
 	}
 
 	plugins.clear();
@@ -150,7 +221,7 @@ void CMainApplication::LoadAllPlugins()
 
 void CMainApplication::RunPlugin( const unsigned int id )
 {
-	QMap<unsigned int,Plugin*>::iterator pit = plugins.find( id );
+	QMap<unsigned int,PluginInterface*>::iterator pit = plugins.find( id );
 
 	if ( pit != plugins.end() )
 	{
@@ -160,15 +231,15 @@ void CMainApplication::RunPlugin( const unsigned int id )
 
 bool CMainApplication::runPlugin(const char * strUUID)
 {
-	for (Plugin *p : plugins)
+	for (PluginInterface *p : plugins)
 	{
-		std::string uuid = p->uuid();
+		//std::string uuid = p->uuid();
 		if (p->hasUUID(strUUID))
 		{
 			p->onRun();
 			return true;
 		}
-		UI::STATUSBAR::setText(uuid);
+		UI::STATUSBAR::setText(p->uuid());
 	}
 	return false;
 }
@@ -199,16 +270,16 @@ void CMainApplication::preExec()
 	LoadAllPlugins();
 
 
-	//wczytujÍ pliki z linii poleceÒ
+	//wczytujƒô pliki z linii polece≈Ñ
 	vListaPlikow = this->arguments();
-	vListaPlikow.pop_front(); // pierwsza jest zawsze úcieøka do programu
+	vListaPlikow.pop_front(); // pierwsza jest zawsze ≈õcie≈ºka do programu
 	if (!vListaPlikow.empty())
 	{
 		for (QString &plik : vListaPlikow)
 		{
 			if (QFile(plik).exists())
 			{
-				UI::STATUSBAR::setText(L"loading model: " + plik.toStdWString());
+				UI::STATUSBAR::setText("loading model: " + plik);
 				AP::WORKSPACE::loadModel(plik);
 			}
 		}

@@ -8,12 +8,13 @@
 #include "BackgroundPlane.h"
 #include "Workspace.h"
 
+#include "PluginInterface.h"
 #include "PluginManager.h"
 
 #include <QtWidgets/QApplication>
 #include <QtCore/QSettings>
 
-typedef QMap<unsigned int, Plugin*> CPlugins;
+typedef QMap<unsigned int, PluginInterface*> CPlugins;
 
 class __declspec(dllexport) CMainApplication : public QApplication
 {
@@ -38,7 +39,7 @@ public:
 	bool bPickSnap;
 
 	CPlugins plugins;
-	Plugin *activePlugin;
+	PluginInterface *activePlugin;
 
 	QSettings *settings;
 
@@ -46,13 +47,17 @@ public:
 	const QString& appDataDir() { return sAppDir; };
 	const QString& appTempDir() { return sTmpDir; };
 
-	Plugin *getPlugin( unsigned int id );
-	Plugin* getPlugin(const char* strUUID);
+	PluginInterface *getPlugin( unsigned int id );
+	PluginInterface* getPlugin(const char* strUUID);
+
 
 	void preExec();
 	void postExec();
 
-	void loadPlugin( const QString pluginPath );
+	bool loadQtPlugin(const QString &pluginPath);
+	bool loadWinPlugin(const QString &pluginPath);
+	bool loadPlugin( const QString &pluginPath );
+
 	void unloadPlugin( const QString pluginPath );
 	void unloadPlugin( const unsigned int id );
 	void UnloadAllPlugins();

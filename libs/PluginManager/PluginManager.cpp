@@ -7,8 +7,8 @@ typedef Plugin* (*fnCreatePlugin)(void);
 // Destroys the plugin type from the DLL before the library is unloaded.
 typedef void (*fnDestroyPlugin)(void);
 
-typedef std::map<std::wstring, Plugin*> PluginMap;
-typedef std::map<std::wstring, HMODULE > LibraryMap;
+typedef std::map<QString, PluginInterface*> PluginMap;
+typedef std::map<QString, HMODULE > LibraryMap;
 
 class PluginManagerPimpl
 {
@@ -35,14 +35,14 @@ PluginManager& PluginManager::Instance()
     return pluginManager;
 }
 
-Plugin* PluginManager::LoadPlugin( const std::wstring& pluginPath )
+PluginInterface* PluginManager::LoadPlugin( const QString& pluginPath )
 {
-    Plugin* plugin = NULL;
+    PluginInterface* plugin = NULL;
     PluginMap::iterator iter = m_Implementation->m_Plugins.find( pluginPath );
     if ( iter == m_Implementation->m_Plugins.end() )
     {
         // Try to load the plugin library
-        HMODULE hModule = LoadLibraryW( pluginPath.c_str() );
+        HMODULE hModule = LoadLibraryW( pluginPath.toStdWString().c_str() );
         if ( hModule != NULL )
         {
             fnCreatePlugin CreatePlugin = (fnCreatePlugin)GetProcAddress( hModule, "CreatePlugin" );
@@ -53,32 +53,28 @@ Plugin* PluginManager::LoadPlugin( const std::wstring& pluginPath )
 
                 if ( plugin != NULL )
                 {
-					//------------------------------------------
-					//nie wiem po co tu wymusza sie nazwe pliku:
-                    //plugin->SetName( pluginPath );
-					//bez tego tez dziala, zamieniam na dodane przeze mnie:
                     plugin->setPath( pluginPath );
 					//------------------------------------------
                     // Add the plugin and library18 to the maps.
-                    m_Implementation->m_Plugins.insert( PluginMap::value_type( pluginPath, plugin ) );
-                    m_Implementation->m_Libs.insert( LibraryMap::value_type(pluginPath, hModule ) );
+                    m_Implementation->m_Plugins[pluginPath] = plugin;
+                    m_Implementation->m_Libs[pluginPath] = hModule;
                 }
                 else
                 {
-                    std::wcerr << "ERROR: Could not load plugin from " << pluginPath << std::endl;
+                    qInfo() << "ERROR: Could not load plugin from " << pluginPath << Qt::endl;
                     // Unload the library.
                     FreeLibrary(hModule);
                 }
             }
             else
             {
-                std::wcerr << "ERROR: Could not find symbol \"CreatePlugin\" in " << pluginPath << std::endl;
+                qInfo() << "ERROR: Could not find symbol \"CreatePlugin\" in " << pluginPath << Qt::endl;
                 FreeLibrary(hModule);
             }
         }
         else
         {
-            std::wcerr << "ERROR: Could not load library: " << pluginPath << std::endl;
+            qInfo() << "ERROR: Could not load library: " << pluginPath << Qt::endl;
         }
     }
     else
@@ -87,59 +83,37 @@ Plugin* PluginManager::LoadPlugin( const std::wstring& pluginPath )
         NULL,
         (LPCWSTR)L"Plugin already loaded!!!",
         (LPCWSTR)L"PluginManager", MB_DEFBUTTON2 );
-        std::wcout << "INFO: Library \"" << pluginPath << "\" already loaded." << std::endl;
+        qInfo() << "INFO: Library \"" << pluginPath << "\" already loaded." << Qt::endl;
         //plugin = iter->second;
     }
 
     return plugin;
 }
 
-void PluginManager::UnloadPlugin( Plugin*& plugin )
+bool PluginManager::UnloadPlugin( PluginInterface*& plugin )
 {
     if ( plugin != NULL )
     {
-        LibraryMap::iterator iter = m_Implementation->m_Libs.find( plugin->name() );
-        if( iter != m_Implementation->m_Libs.end() )
+        if (UnloadPlugin(plugin->path()))
         {
-            // Remove the plugin from our plugin map.
-            m_Implementation->m_Plugins.erase(plugin->name());
-
-            HMODULE hModule = iter->second;
-            fnDestroyPlugin DestroyPlugin = (fnDestroyPlugin)GetProcAddress( hModule, "DestroyPlugin" );
-            if ( DestroyPlugin != NULL )
-            {
-                DestroyPlugin();
-            }
-            else
-            {
-                std::wcerr << "ERROR: Unable to find symbol \"DestroyPlugin\" in library \"" << plugin->name() << std::endl;
-            }
-            // Unload the library and remove the library from the map.
-            FreeLibrary(hModule);
-            m_Implementation->m_Libs.erase(iter);
+            plugin = NULL;
+            return true;
         }
-        else
-        {
-			MessageBoxW(
-			NULL,
-			(LPCWSTR)L"Plugin is already unloaded or never been loaded!!!",
-			(LPCWSTR)L"PluginManager", MB_DEFBUTTON2 );
-            std::cout << "WARNING: Trying to unload a plugin that is already unloaded or has never been loaded." << std::endl;
-        }
-        // NULL the plugin
-        plugin = NULL;
     }
+    return false;
 }
 
-void PluginManager::UnloadPlugin( const std::wstring& pluginName )
+bool PluginManager::UnloadPlugin( const QString& pluginPath )
 {
-        LibraryMap::iterator iter = m_Implementation->m_Libs.find( pluginName );
+        LibraryMap::iterator iter = m_Implementation->m_Libs.find( pluginPath );
         if( iter != m_Implementation->m_Libs.end() )
         {
             // Remove the plugin from our plugin map.
-            m_Implementation->m_Plugins.erase(pluginName);
+            PluginMap::iterator pl = m_Implementation->m_Plugins.find(pluginPath);
+            if (pl != m_Implementation->m_Plugins.end())
+                m_Implementation->m_Plugins.erase(pl);
 
-            HMODULE hModule = iter->second;
+            HMODULE hModule = (*iter).second;
             fnDestroyPlugin DestroyPlugin = (fnDestroyPlugin)GetProcAddress( hModule, "DestroyPlugin" );
             if ( DestroyPlugin != NULL )
             {
@@ -147,18 +121,22 @@ void PluginManager::UnloadPlugin( const std::wstring& pluginName )
             }
             else
             {
-                std::wcerr << "ERROR: Unable to find symbol \"DestroyPlugin\" in library \"" << pluginName << std::endl;
+                qInfo() << "ERROR: Unable to find symbol \"DestroyPlugin\" in library \"" << pluginPath << Qt::endl;
             }
             // Unload the library and remove the library from the map.
             FreeLibrary(hModule);
             m_Implementation->m_Libs.erase(iter);
+
+            return true;
         }
         else
         {
-			MessageBoxW(
-			NULL,
-			(LPCWSTR)L"Plugin is already unloaded or never been loaded!!!",
-			(LPCWSTR)L"PluginManager", MB_DEFBUTTON2 );
-            std::cout << "WARNING: Trying to unload a plugin that is already unloaded or has never been loaded." << std::endl;
+			//MessageBoxW(
+			//NULL,
+			//(LPCWSTR)L"Plugin is already unloaded or never been loaded!!!",
+			//(LPCWSTR)L"PluginManager", MB_DEFBUTTON2 );
+            qInfo() << "WARNING: Trying to unload a plugin that is already unloaded or has never been loaded." << Qt::endl;
+
+            return false;
         }
 }

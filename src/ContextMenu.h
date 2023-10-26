@@ -41,6 +41,7 @@ private slots:
 	void newPicWindow();
 
 	void histogramSave();
+	void setOfFacesToMesh();
 
 	void volTKshowImagesDlg();
 	void volTKtoCloud();

@@ -17,7 +17,7 @@ void GLViewer::cameraTransformations()
 	//glScalef( Scale, Scale, Scale );
   
 	//------------------------------------
-	// jeœli obracamy kamerê, to tutaj
+	// jeÅ›li obracamy kamerÄ™, to tutaj
 	if ( m_floatingCamera )
 	{
 		//m_transform.renderRotation();
@@ -30,11 +30,11 @@ void GLViewer::cameraTransformations()
 	//m_transform.renderTranslation();
 	glTranslatef( m_transform.translation().X(), m_transform.translation().Y(), m_transform.translation().Z() );
 
-	//sta³e przesuniecie sceny wzgl widza - przeniesione do lookAt()
+	//staÅ‚e przesuniecie sceny wzgl widza - przeniesione do lookAt()
 	//glTranslatef( 0.0f, 0.0f, -200.0f );
 
 	//------------------------------------
-	// jeœli obracamy scenê to tutaj:
+	// jeÅ›li obracamy scenÄ™ to tutaj:
 	if ( ! m_floatingCamera )
 	{
 		//m_transform.renderRotation();
@@ -47,10 +47,10 @@ void GLViewer::cameraTransformations()
 
 void GLViewer::Render()
 {
-	applyProjection();	// ustawia perspektywê dla okna
+	applyProjection();	// ustawia perspektywÄ™ dla okna
 
 	glMatrixMode(GL_MODELVIEW);		// wybierz macierz modeli
-	glLoadIdentity();				// zresetuj j¹
+	glLoadIdentity();				// zresetuj jÄ…
 
 	glInitNames();
 	glPushName( 0 );

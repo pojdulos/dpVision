@@ -60,9 +60,14 @@ void PropHistogram::updateProperties()
 		ui.upperLimit->blockSignals(false);
 
 		ui.colorSchemeCombo->blockSignals(true);
+		ui.colorSchemeCombo->clear();
 		for (auto c : a->colorModeString) { ui.colorSchemeCombo->addItem(c); }
 		ui.colorSchemeCombo->setCurrentIndex( a->getColorMode() );
 		ui.colorSchemeCombo->blockSignals(false);
+
+		ui.lblsBox->blockSignals(true);
+		ui.lblsBox->setChecked(a->showLabels);
+		ui.lblsBox->blockSignals(false);
 
 		showAdditionalInfo();
 	}
@@ -150,5 +155,11 @@ void PropHistogram::colorSchemeChanged(int i)
 	((CHistogram*)obj)->repaint();
 	showAdditionalInfo();
 	UI::updateAllViews();
+}
+
+void PropHistogram::lblBoxChanged(bool b)
+{
+	((CHistogram*)obj)->showLabels = b;
+	UI::DOCK::HISTOGRAM::repaint();
 }
 

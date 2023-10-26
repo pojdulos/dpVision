@@ -135,7 +135,9 @@ public:
 	void removeFromSelection(int id);
 	bool changeSelection(int id, bool b);
 
-	std::list<int> &getSelection() { return m_selection; };
+	std::list<int> getSelection();
+	std::list<int> getSelection(std::set<CBaseObject::Type> type, CObject* obj = nullptr);
+	std::list<CBaseObject*> getSelected(std::set<CBaseObject::Type> types, CObject* dad);
 	void clearSelection() { m_selection.clear(); };
 
 	CBoundingBox topBB();

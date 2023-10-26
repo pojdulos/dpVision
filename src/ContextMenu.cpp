@@ -28,6 +28,9 @@ CContextMenu::CContextMenu(CBaseObject *obj, QWidget *parent) : QMenu(parent), m
 				addAction(QIcon(":/icons/Erase.ico"), "delete", this, SLOT(slotDeleteObject()));
 				break;
 
+			case CBaseObject::Type::SETOFFACES:
+				addAction(QIcon(":/icons/Save.ico"), "export to mesh", this, SLOT(setOfFacesToMesh()));
+				break;
 			default:
 				addAction(QIcon(":/icons/Visible.ico"), "show/hide", this, SLOT(pointHide()));
 				addAction(QIcon(":/icons/Erase.ico"), "delete", this, SLOT(slotDeleteObject()));
@@ -370,6 +373,22 @@ void CContextMenu::histogramSave()
 	QString fname = QFileInfo(path).completeBaseName();
 
 	((CHistogram *)m_obj)->save(fdir.toStdWString(), fname.toStdWString());
+}
+
+
+#include "AnnotationSetOfFaces.h"
+
+void CContextMenu::setOfFacesToMesh()
+{
+	if (m_obj->hasType(CBaseObject::SETOFFACES))
+	{
+		CMesh* mesh = ((CAnnotationSetOfFaces*)m_obj)->toMesh();
+
+		CModel3D* obj = new CModel3D();
+		obj->addChild(mesh);
+		obj->importChildrenGeometry();
+		AP::WORKSPACE::addModel(obj);
+	}
 }
 
 

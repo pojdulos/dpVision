@@ -466,19 +466,25 @@ void DockWidgetWorkspace::colNameClicked(CBaseObject* obj, WorkspaceTreeItem* cl
 			AP::mainWin().activateGLViewerInstance();
 		}
 
-		if (!AP::getWorkspace()->changeSelection(obj->id(), clickedItem->checkState() == Qt::Checked))
+		bool b = clickedItem->checkState() == Qt::Checked;
+
+		obj->setSelected(b);
+		if (!AP::getWorkspace()->changeSelection(obj->id(), b))
 		{
-			//AP::EVENTS::modelIndicationEvent(obj->id());
 			emit currentObjectChanged(obj->id());
 		}
 	}
 	else
 	{
-		Qt::CheckState state = clickedItem->checkState();
-		if (state == Qt::Checked || state == Qt::Unchecked)
-		{
-			obj->setSelected(state > 0);
-		}
+		bool b = clickedItem->checkState() == Qt::Checked;
+		obj->setSelected(b);
+		AP::getWorkspace()->changeSelection(obj->id(), b);
+
+		//Qt::CheckState state = clickedItem->checkState();
+		//if (state == Qt::Checked || state == Qt::Unchecked)
+		//{
+		//	obj->setSelected(state > 0);
+		//}
 	}
 }
 

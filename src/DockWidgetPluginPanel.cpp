@@ -42,10 +42,10 @@ void DockWidgetPluginPanel::userButton()
 
 	unsigned int id = l[0].toUInt();
 
-	Plugin *p = AP::PLUGIN::getPlugin(id);
+	PluginInterface *p = AP::PLUGIN::getPlugin(id);
 	if (p != nullptr)
 	{
-		p->onButton(l[1].toStdWString());
+		p->onButton(l[1]);
 	}
 }
 
@@ -147,10 +147,10 @@ void DockWidgetPluginPanel::userValueChanged(int val)
 
 	unsigned int id = l[0].toUInt();
 
-	Plugin *p = AP::PLUGIN::getPlugin(id);
+	PluginInterface *p = AP::PLUGIN::getPlugin(id);
 	if (NULL != p)
 	{
-		p->onButton(l[1].toStdWString());
+		p->onButton(l[1]);
 	}
 
 }
@@ -164,10 +164,10 @@ void DockWidgetPluginPanel::comboTextChanged(const QString & text)
 
 	unsigned int id = l[0].toUInt();
 
-	Plugin *p = AP::PLUGIN::getPlugin(id);
+	PluginInterface *p = AP::PLUGIN::getPlugin(id);
 	if (NULL != p)
 	{
-		p->onButton(l[1].toStdWString());
+		p->onButton(l[1]);
 	}
 }
 
@@ -255,7 +255,7 @@ QString DockWidgetPluginPanel::getComboBoxCurrentItemText(unsigned int pluginId,
 	return QString("");
 }
 
-void DockWidgetPluginPanel::setComboBoxItems(unsigned int pluginId, QString name, QVector<QString> items)
+void DockWidgetPluginPanel::setComboBoxItems(unsigned int pluginId, QString name, QStringList items)
 {
 	QComboBox *ed = (QComboBox *)pluginUI[pluginId]->findChild<QWidget*>(QString::number(pluginId) + "@" + name, Qt::FindChildrenRecursively);
 
@@ -263,10 +263,7 @@ void DockWidgetPluginPanel::setComboBoxItems(unsigned int pluginId, QString name
 	{ 
 		ed->blockSignals(true);
 		ed->clear();
-		for (auto item : items)
-		{
-			ed->addItem( item );
-		}
+		ed->addItems(items);
 		ed->blockSignals(false);
 	}
 }

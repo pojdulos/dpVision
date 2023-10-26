@@ -7,7 +7,7 @@
 
 #include "Utilities.h"
 #include<Eigen/Geometry>
-#include <QMatrix4x4>
+#include <QtGui/QMatrix4x4>
 #include "Point3.h"
 #include "Vector3.h"
 

@@ -33,5 +33,6 @@ add_library(libICP STATIC ${LIBICP_SRC_FILES})
 
 target_link_libraries (libICP
 	Eigen3::Eigen
+	Boost::boost
 	dpVision
 )
