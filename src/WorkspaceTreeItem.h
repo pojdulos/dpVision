@@ -9,7 +9,7 @@ class CModel3D;
 
 Q_DECLARE_METATYPE(CBaseObject*)
 
-class __declspec(dllexport)  WorkspaceTreeItem : public QStandardItem
+class DPVISION_EXPORT  WorkspaceTreeItem : public QStandardItem
 {
 public:
 	enum Column {

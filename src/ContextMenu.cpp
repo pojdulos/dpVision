@@ -198,7 +198,7 @@ QMenu* CContextMenu::createAddAnnoMenu()
 #include "PointCloud.h"
 #include "Model3D.h"
 
-extern void __declspec(dllexport) testVolTKimageDialog(CVolTK*);
+extern void DPVISION_EXPORT testVolTKimageDialog(CVolTK*);
 void CContextMenu::volTKshowImagesDlg()
 {
 	if (m_obj->hasType(CBaseObject::VOLTK))

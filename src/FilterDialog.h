@@ -1,10 +1,12 @@
 #pragma once
+#include "dll_global.h"
+
 #include <QDialog>
 
 #ifndef FILTERDIALOG19131037_H
 #define FILTERDIALOG19131037_H
 
-class __declspec(dllexport) Filter
+class DPVISION_EXPORT Filter
 {
 	int m_size;
 	std::vector<double> matrix;
@@ -37,7 +39,7 @@ public:
 
 #include "ui_FilterDialog.h"
 
-class __declspec(dllexport) FilterDialog : public QDialog
+class DPVISION_EXPORT FilterDialog : public QDialog
 {
 	Q_OBJECT
 

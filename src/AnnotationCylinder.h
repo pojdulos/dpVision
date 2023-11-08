@@ -5,7 +5,7 @@
 #include "Wektor3D.h"
 #include "RGBA.h"
 
-class __declspec(dllexport)  CAnnotationCylinder : public CAnnotation
+class DPVISION_EXPORT CAnnotationCylinder : public CAnnotation
 {
 public:
 	CPoint3f m_point;

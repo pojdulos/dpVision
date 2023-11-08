@@ -4,7 +4,7 @@
 
 using namespace std;
 
-class  __declspec(dllexport) CIndexedTriangle : public CTriangle {
+class  DPVISION_EXPORT CIndexedTriangle : public CTriangle {
 public:
 	int m_idx;
 	int m_iA, m_iB, m_iC;

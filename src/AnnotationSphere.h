@@ -6,7 +6,7 @@
 #include "Vector3.h"
 #include "RGBA.h"
 
-class __declspec(dllexport)  CAnnotationSphere : public Kula, public CAnnotation
+class DPVISION_EXPORT CAnnotationSphere : public Kula, public CAnnotation
 {
 public:
 	int m_lats;

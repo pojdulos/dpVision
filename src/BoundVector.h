@@ -3,7 +3,7 @@
 #include "Point3.h"
 #include "Vector3.h"
 
-class  __declspec(dllexport)  CBoundVector	: public std::pair<CPoint3d,CPoint3d>
+class  DPVISION_EXPORT  CBoundVector	: public std::pair<CPoint3d,CPoint3d>
 {
 
 public:

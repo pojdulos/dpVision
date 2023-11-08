@@ -10,9 +10,9 @@ class CWorkspace;
 
 #define IdToString(id) QString::number((id),16)
 
-#include "dll_global2.h"
+#include "dll_global.h"
 
-class DPVISION_DLL_API CParserDPVISION :public QObject, public CParser
+class DPVISION_EXPORT CParserDPVISION :public QObject, public CParser
 {
 	Q_OBJECT
 

@@ -11,7 +11,7 @@
 
 class CPlane;
 
-class __declspec(dllexport) CPointCloud : public CObject
+class DPVISION_EXPORT CPointCloud : public CObject
 {
 public:
 	typedef std::vector<CVertex> Vertices;
@@ -19,7 +19,7 @@ public:
 	typedef std::vector<CVector3f> Normals;
 	typedef std::vector<CMaterial*> Materials;
 
-	class __declspec(dllexport) KDtree : private trimesh::KDtree
+	class DPVISION_EXPORT KDtree : private trimesh::KDtree
 	{
 		CPointCloud::Vertices &m_vertices;
 

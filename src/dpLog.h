@@ -9,7 +9,7 @@
 #include "MainApplication.h"
 #include "AP.h"
 
-class __declspec(dllexport) dpLog
+class DPVISION_EXPORT dpLog
 {
 	QFile m_logFile;
 	QTextStream m_txtStream;

@@ -7,7 +7,7 @@
 
 #include <list>
 
-class __declspec(dllexport)  CAnnotationPolygon2D : public CAnnotation
+class DPVISION_EXPORT CAnnotationPolygon2D : public CAnnotation
 {
 	std::list<std::pair<double,double>> m_data;
 

@@ -1,7 +1,9 @@
 #pragma once
+#include "dll_global.h"
+
 #include <qlabel.h>
 
-class __declspec(dllexport) ImageLabel : public QLabel
+class DPVISION_EXPORT ImageLabel : public QLabel
 {
 	Q_OBJECT
 

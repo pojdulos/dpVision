@@ -1,5 +1,7 @@
 #pragma once
 
+#include "dll_global.h"
+
 #include "Global.h"
 
 #include "RGBA.h"
@@ -7,12 +9,6 @@
 #include "TCoord.h"
 #include "TIndex.h"
 #include "DPFileInfo.h"
-
-#ifdef DPVISION_PLUGIN_DLL
-#define MYDECL __declspec(dllimport)
-#else
-#define MYDECL __declspec(dllexport)
-#endif
 
 struct SGLColors
 {
@@ -25,7 +21,7 @@ struct SGLColors
 };
 
 
-class MYDECL CMaterial
+class CMaterial
 {
 public:
 	CMaterial();

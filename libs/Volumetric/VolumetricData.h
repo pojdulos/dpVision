@@ -1,10 +1,6 @@
 #pragma once
 
-//#ifdef __gl_h_
-//#undef __gl_h__
-//#endif
-
-//#include "gltools.h"
+#include "dll_global.h"
 
 #include "Object.h"
 #include "RGBA.h"
@@ -30,7 +26,7 @@ struct OpenGLSurfaceMesh
 	const PolyVox::SurfaceMesh<PolyVox::PositionMaterialNormal>* sourceMesh;
 };
 
-class __declspec(dllexport) CVolumetricData : public CObject
+class DPVISION_EXPORT2 CVolumetricData : public CObject
 {
 public:
 	typedef PolyVox::MaterialDensityPair44 VoxelType;

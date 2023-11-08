@@ -1,6 +1,6 @@
 #ifndef DOCKWIDGETPLUGINLIST_H
 #define DOCKWIDGETPLUGINLIST_H
-#include "dll_global2.h"
+#include "dll_global.h"
 
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QFormLayout>
@@ -10,7 +10,7 @@
 #include <QtWidgets/QDockWidget>
 #include "ui_dockWidgetPluginList.h"
 
-class DPVISION_DLL_API DockWidgetPluginList : public QDockWidget
+class DPVISION_EXPORT DockWidgetPluginList : public QDockWidget
 {
 	Q_OBJECT
 

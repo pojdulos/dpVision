@@ -10,7 +10,7 @@
 #include "Point3.h"
 #include "Vertex.h"
 
-class __declspec(dllexport) CFace : public CTriple<INDEX_TYPE>
+class DPVISION_EXPORT CFace : public CTriple<INDEX_TYPE>
 {
 public:
 	CFace() { x=0; y=0; z=0; };
@@ -36,7 +36,7 @@ public:
 	void setAt(int n, const INDEX_TYPE v_id);
 };
 
-//class __declspec(dllexport) CArrayOfFaces : public std::vector<CFace>	{};
+//class DPVISION_EXPORT CArrayOfFaces : public std::vector<CFace>	{};
 //typedef std::vector<CFace> _vof;
 
 #endif /* _FACE_H_BY_DP_INCLUDED_ */

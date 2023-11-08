@@ -1,5 +1,7 @@
 #ifndef KDTREE_H
 #define KDTREE_H
+#include "dll_global.h"
+
 /*
 Szymon Rusinkiewicz
 Princeton University
@@ -38,7 +40,7 @@ using ::std::size_t;
 // i.e., distance
 typedef std::pair<float, const float *> pt_with_d;
 
-class __declspec(dllexport) KDtree {
+class DPVISION_EXPORT KDtree {
 protected:
 	struct Node;
 	struct NodeStorageBlock;

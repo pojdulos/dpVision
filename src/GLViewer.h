@@ -30,7 +30,7 @@ class CBoundVector;
 class CAnnotationPyramid;
 class CVolTK;
 
-class __declspec(dllexport) GLViewer : public QOpenGLWidget, protected QOpenGLFunctions
+class DPVISION_EXPORT GLViewer : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
 

@@ -1,14 +1,29 @@
 #ifdef DPVISION_DLL_API
-#	undef DPVISION_DLL_API
+#undef DPVISION_DLL_API
 #endif
 
-#ifndef DPVISION_STATIC
-# if defined(DPVISION_PLUGIN_DLL)
-#  define DPVISION_DLL_API __declspec(dllexport)
-# else
-#  define DPVISION_DLL_API __declspec(dllimport)
-# endif
+#ifdef DPVISION_IMPORT
+#undef DPVISION_IMPORT
+#endif
+
+#ifdef DPVISION_EXPORT
+#undef DPVISION_EXPORT
+#endif
+
+#ifdef DPVISION_EXPORT2
+#undef DPVISION_EXPORT2
+#endif
+
+#include <QtCore/qglobal.h>
+
+#ifdef DPVISION_PLUGIN_DLL
+#	define DPVISION_DLL_API Q_DECL_EXPORT
+//#	define DPVISION_IMPORT Q_DECL_EXPORT
+#	define DPVISION_EXPORT2 Q_DECL_IMPORT
 #else
-# define DPVISION_DLL_API
+#	define DPVISION_DLL_API Q_DECL_IMPORT
+//#	define DPVISION_IMPORT Q_DECL_IMPORT
+#	define DPVISION_EXPORT2 Q_DECL_EXPORT
 #endif
 
+#define DPVISION_EXPORT Q_DECL_EXPORT

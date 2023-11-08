@@ -10,7 +10,7 @@
 typedef unsigned char BYTE;
 typedef unsigned short WORD;
 
-class __declspec(dllexport) RAWdicomData
+class DPVISION_EXPORT RAWdicomData
 {
 
 	WORD* m_data;

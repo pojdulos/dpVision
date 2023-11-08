@@ -5,7 +5,7 @@
 #include <typeinfo>
 #include <set>
 
-class __declspec(dllexport) CVariantMap
+class DPVISION_EXPORT CVariantMap
 {
 	std::map< std::string, void* > m_map;
 

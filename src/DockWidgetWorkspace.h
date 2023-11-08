@@ -16,7 +16,7 @@ class CBaseObject;
 class QStandardItem;
 class WorkspaceTreeItem;
 
-#include "dll_global2.h"
+#include "dll_global.h"
 
 #include <QMouseEvent>
 #include <QDebug>
@@ -46,7 +46,7 @@ private:
 
 
 
-class DPVISION_DLL_API DockWidgetWorkspace : public QDockWidget
+class DockWidgetWorkspace : public QDockWidget
 {
 	Q_OBJECT
 

@@ -7,7 +7,7 @@
 #endif 
 #define PLUGIN_NAME L"(dp-parser) Pliki VRML"
 
-class PLUGINDLL_API ConcretePlugin : public Plugin
+class DPVISION_DLL_API ConcretePlugin : public Plugin
 {
 public:
     ConcretePlugin(void);

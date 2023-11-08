@@ -3,7 +3,7 @@
 #include <vector>
 #include "TCoord.h"
 
-class __declspec(dllexport) CTIndex {
+class DPVISION_EXPORT CTIndex {
 public:
 	size_t a;
 	size_t b;
@@ -13,4 +13,4 @@ public:
 	CTIndex( size_t aa, size_t ab, size_t ac ):a(aa),b(ab),c(ac) {};
 };
 
-//class __declspec(dllexport) CArrayOfTIndex : public std::vector<CTIndex> {};
+//class DPVISION_EXPORT CArrayOfTIndex : public std::vector<CTIndex> {};

@@ -6,7 +6,7 @@
 #include "ImageLabel.h"
 
 
-void __declspec(dllexport) testVolTKimageDialog(CVolTK* volTK)
+void DPVISION_EXPORT testVolTKimageDialog(CVolTK* volTK)
 {
 	VolTKimageDialog* dialog = new VolTKimageDialog(volTK);
 

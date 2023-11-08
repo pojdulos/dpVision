@@ -2,6 +2,8 @@
 #ifndef CMAINWINDOW_H
 #define CMAINWINDOW_H
 
+#include "dll_global.h"
+
 class QOpenGLWindow;
 class QMainWindow;
 class ProgressIndicator;
@@ -28,7 +30,7 @@ class QLocalSocket;
 class QTcpServer;
 class QTcpSocket;
 
-class __declspec(dllexport) CMainWindow : public QMainWindow
+class DPVISION_EXPORT CMainWindow : public QMainWindow
 {
 	Q_OBJECT
 

@@ -265,57 +265,127 @@ void PropVolTK::xValchanged(int i)
 	UI::updateAllViews();
 }
 
+
 void PropVolTK::xBchanged(int v)
 {
-	if ((v < obj->m_e.x) && (v >= obj->m_Min.x))
+	if (v >= obj->m_Min.x)
 	{
+		if (v >= obj->m_e.x)
+		{
+			if (v < obj->m_Max.x)
+			{
+				obj->m_e.x = v + 1;
+
+				ui.xEspin->blockSignals(true);
+				ui.xEspin->setValue(obj->m_e.x);
+				ui.xEspin->blockSignals(false);
+			}
+		}
 		obj->m_b.x = v;
-		UI::updateAllViews();
-	}
-}
-
-void PropVolTK::yBchanged(int v)
-{
-	if ((v < obj->m_e.y) && (v >= obj->m_Min.y))
-	{
-		obj->m_b.y = v;
-		UI::updateAllViews();
-	}
-}
-
-void PropVolTK::zBchanged(int v)
-{
-	if ((v < obj->m_e.z) && (v >= obj->m_Min.z))
-	{
-		obj->m_b.z = v;
 		UI::updateAllViews();
 	}
 }
 
 void PropVolTK::xEchanged(int v)
 {
-	if ( (v > obj->m_b.x) && (v <= obj->m_Max.x))
+	if (v <= obj->m_Max.x)
 	{
+		if (v <= obj->m_b.x)
+		{
+			if (v > obj->m_Min.x)
+			{
+				obj->m_b.x = v - 1;
+
+				ui.xBspin->blockSignals(true);
+				ui.xBspin->setValue(obj->m_b.x);
+				ui.xBspin->blockSignals(false);
+			}
+		}
 		obj->m_e.x = v;
+		UI::updateAllViews();
+
+	}
+}
+
+void PropVolTK::yBchanged(int v)
+{
+	if (v >= obj->m_Min.y)
+	{
+		if (v >= obj->m_e.y)
+		{
+			if (v < obj->m_Max.y)
+			{
+				obj->m_e.y = v + 1;
+
+				ui.yEspin->blockSignals(true);
+				ui.yEspin->setValue(obj->m_e.y);
+				ui.yEspin->blockSignals(false);
+			}
+		}
+		obj->m_b.y = v;
 		UI::updateAllViews();
 	}
 }
 
 void PropVolTK::yEchanged(int v)
 {
-	if ( (v > obj->m_b.y) && (v <= obj->m_Max.y))
+	if (v <= obj->m_Max.y)
 	{
+		if (v <= obj->m_b.y)
+		{
+			if (v > obj->m_Min.y)
+			{
+				obj->m_b.y = v - 1;
+
+				ui.yBspin->blockSignals(true);
+				ui.yBspin->setValue(obj->m_b.y);
+				ui.yBspin->blockSignals(false);
+			}
+		}
 		obj->m_e.y = v;
+		UI::updateAllViews();
+
+	}
+}
+
+void PropVolTK::zBchanged(int v)
+{
+	if (v >= obj->m_Min.z)
+	{
+		if (v >= obj->m_e.z)
+		{
+			if (v < obj->m_Max.z)
+			{
+				obj->m_e.z = v + 1;
+
+				ui.zEspin->blockSignals(true);
+				ui.zEspin->setValue(obj->m_e.z);
+				ui.zEspin->blockSignals(false);
+			}
+		}
+		obj->m_b.z = v;
 		UI::updateAllViews();
 	}
 }
 
 void PropVolTK::zEchanged(int v)
 {
-	if ( (v > obj->m_b.z) && (v <= obj->m_Max.z))
+	if (v <= obj->m_Max.z)
 	{
+		if (v <= obj->m_b.z)
+		{
+			if (v > obj->m_Min.z)
+			{
+				obj->m_b.z = v - 1;
+
+				ui.zBspin->blockSignals(true);
+				ui.zBspin->setValue(obj->m_b.z);
+				ui.zBspin->blockSignals(false);
+			}
+		}
 		obj->m_e.z = v;
 		UI::updateAllViews();
+		
 	}
 }
 

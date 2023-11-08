@@ -1,7 +1,7 @@
 #pragma once
 #ifndef _WORKSPACE_H_BY_DP_INCLUDED_
 #define _WORKSPACE_H_BY_DP_INCLUDED_
-#include "dll_global2.h"
+#include "dll_global.h"
 
 #include "Global.h"
 #include "Model3D.h"
@@ -41,7 +41,7 @@ struct _light
 };
 
 
-class DPVISION_DLL_API CWorkspace : public QObject
+class CWorkspace : public QObject
 {
 	Q_OBJECT
 

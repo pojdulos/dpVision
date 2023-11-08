@@ -8,7 +8,7 @@
 
 #include <list>
 
-class __declspec(dllexport)  CAnnotationBox : public CAnnotation, public CBoundingBox
+class DPVISION_EXPORT CAnnotationBox : public CAnnotation, public CBoundingBox
 {
 
 public:

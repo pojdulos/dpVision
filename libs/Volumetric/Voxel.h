@@ -3,6 +3,8 @@
 #ifndef _VOXELS_H_BY_DP_INCLUDED_
 #define _VOXELS_H_BY_DP_INCLUDED_
 
+#include "dll_global.h"
+
 #include "Object.h"
 
 #include "RGBA.h"
@@ -10,7 +12,7 @@
 #include <vector>
 #include <map>
 
-class __declspec(dllexport) CVoxel
+class DPVISION_EXPORT2 CVoxel
 {
 public:
 	CVoxel();
@@ -41,7 +43,7 @@ protected:
 };
 
 
-class __declspec(dllexport) CVoxels : public CObject
+class DPVISION_EXPORT2 CVoxels : public CObject
 {
 public:
 	//typedef std::vector<CVoxel*> DataType;

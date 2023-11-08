@@ -1,10 +1,12 @@
+#include "dll_global.h"
+
 #include <map>
 #include <cstddef>
 
 class CMesh;
 class CVertex;
 
-class __declspec(dllexport) CFaceSplitter
+class DPVISION_EXPORT CFaceSplitter
 {
 	CMesh *m;
 

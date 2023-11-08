@@ -4,7 +4,7 @@
 
 class CImage;
 
-class __declspec(dllexport) MdiChild : public QWidget
+class DPVISION_EXPORT MdiChild : public QWidget
 {
 	Q_OBJECT
 

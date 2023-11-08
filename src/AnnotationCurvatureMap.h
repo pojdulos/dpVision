@@ -3,7 +3,7 @@
 #include <map>
 #include <set>
 
-class __declspec(dllexport) CCurvature {
+class DPVISION_EXPORT CCurvature {
 public:
 	CVector3d vnorm; // wektor definiuj¹cy p³aszczyznê styczn¹ do wierzcho³ka
 	double tensor[4]; // tensor krzywizny
@@ -41,7 +41,7 @@ public:
 
 typedef std::map<INDEX_TYPE, CCurvature> CCurvatureMap;
 
-class __declspec(dllexport) CAnnotationCurvatureMap : public CAnnotation, public CCurvatureMap
+class DPVISION_EXPORT CAnnotationCurvatureMap : public CAnnotation, public CCurvatureMap
 {
 public:
 	CAnnotationCurvatureMap(CBaseObject* parent = nullptr) :CAnnotation(parent),CCurvatureMap()

@@ -10,10 +10,10 @@
 
 
 
-class __declspec(dllexport)  CAnnotationCamera : public CAnnotation
+class DPVISION_EXPORT CAnnotationCamera : public CAnnotation
 {
 public:
-	struct  __declspec(dllexport) Sensor {
+	struct DPVISION_EXPORT Sensor {
 		int xResolution;
 		int yResolution;
 		double realWidth;

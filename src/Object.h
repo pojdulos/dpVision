@@ -16,7 +16,7 @@ class CFileInfo;
 class CAnnotation;
 class QString;
 
-class __declspec(dllexport) CObject	: public CBaseObject, public CBoundingBox
+class DPVISION_EXPORT CObject	: public CBaseObject, public CBoundingBox
 {
 public:
 	typedef std::map<int, CBaseObject*> Children;

@@ -177,149 +177,6 @@
           <in>dllmain.cpp</in>
           <in>stdafx.cpp</in>
         </df>
-        <df name="ParserDFF">
-          <in>ConcretePlugin.cpp</in>
-          <in>ParserDFF.cpp</in>
-          <in>ParserMAP.cpp</in>
-          <in>ParserMAP3.cpp</in>
-          <in>PluginDLL.cpp</in>
-          <in>dllmain.cpp</in>
-          <in>stdafx.cpp</in>
-        </df>
-        <df name="ParserDICOM">
-          <df name="Imebra">
-            <df name="implementation">
-              <in>LUTImpl.cpp</in>
-              <in>MONOCHROME1ToMONOCHROME2Impl.cpp</in>
-              <in>MONOCHROME1ToRGBImpl.cpp</in>
-              <in>MONOCHROME2ToRGBImpl.cpp</in>
-              <in>MONOCHROME2ToYBRFULLImpl.cpp</in>
-              <in>PALETTECOLORToRGBImpl.cpp</in>
-              <in>RGBToMONOCHROME2Impl.cpp</in>
-              <in>RGBToYBRFULLImpl.cpp</in>
-              <in>RGBToYBRPARTIALImpl.cpp</in>
-              <in>RGBToYBRRCTImpl.cpp</in>
-              <in>VOILUTImpl.cpp</in>
-              <in>YBRFULLToMONOCHROME2Impl.cpp</in>
-              <in>YBRFULLToRGBImpl.cpp</in>
-              <in>YBRPARTIALToRGBImpl.cpp</in>
-              <in>YBRRCTToRGBImpl.cpp</in>
-              <in>acseImpl.cpp</in>
-              <in>baseSequenceStreamImpl.cpp</in>
-              <in>baseStreamImpl.cpp</in>
-              <in>bufferImpl.cpp</in>
-              <in>charsetConversionBaseImpl.cpp</in>
-              <in>charsetConversionICUImpl.cpp</in>
-              <in>charsetConversionIconvImpl.cpp</in>
-              <in>charsetConversionImpl.cpp</in>
-              <in>charsetConversionJavaImpl.cpp</in>
-              <in>charsetConversionWindowsImpl.cpp</in>
-              <in>charsetsListImpl.cpp</in>
-              <in>codecFactoryImpl.cpp</in>
-              <in>colorTransformImpl.cpp</in>
-              <in>colorTransformsFactoryImpl.cpp</in>
-              <in>dataHandlerDateImpl.cpp</in>
-              <in>dataHandlerDateTimeBaseImpl.cpp</in>
-              <in>dataHandlerDateTimeImpl.cpp</in>
-              <in>dataHandlerImpl.cpp</in>
-              <in>dataHandlerNumericImpl.cpp</in>
-              <in>dataHandlerStringAEImpl.cpp</in>
-              <in>dataHandlerStringASImpl.cpp</in>
-              <in>dataHandlerStringCSImpl.cpp</in>
-              <in>dataHandlerStringDSImpl.cpp</in>
-              <in>dataHandlerStringISImpl.cpp</in>
-              <in>dataHandlerStringImpl.cpp</in>
-              <in>dataHandlerStringLOImpl.cpp</in>
-              <in>dataHandlerStringLTImpl.cpp</in>
-              <in>dataHandlerStringPNImpl.cpp</in>
-              <in>dataHandlerStringSHImpl.cpp</in>
-              <in>dataHandlerStringSTImpl.cpp</in>
-              <in>dataHandlerStringUCImpl.cpp</in>
-              <in>dataHandlerStringUIImpl.cpp</in>
-              <in>dataHandlerStringURImpl.cpp</in>
-              <in>dataHandlerStringUTImpl.cpp</in>
-              <in>dataHandlerStringUnicodeImpl.cpp</in>
-              <in>dataHandlerTimeImpl.cpp</in>
-              <in>dataImpl.cpp</in>
-              <in>dataSetImpl.cpp</in>
-              <in>dicomDictImpl.cpp</in>
-              <in>dicomDirImpl.cpp</in>
-              <in>dicomImageCodecImpl.cpp</in>
-              <in>dicomStreamCodecImpl.cpp</in>
-              <in>dimseImpl.cpp</in>
-              <in>drawBitmapImpl.cpp</in>
-              <in>exceptionImpl.cpp</in>
-              <in>fileStreamImpl.cpp</in>
-              <in>huffmanTableImpl.cpp</in>
-              <in>imageCodecImpl.cpp</in>
-              <in>imageImpl.cpp</in>
-              <in>jpeg2000ImageCodecImpl.cpp</in>
-              <in>jpegCodecBaseImpl.cpp</in>
-              <in>jpegImageCodecImpl.cpp</in>
-              <in>jpegStreamCodecImpl.cpp</in>
-              <in>memoryImpl.cpp</in>
-              <in>memoryStreamImpl.cpp</in>
-              <in>modalityVOILUTImpl.cpp</in>
-              <in>pipeImpl.cpp</in>
-              <in>streamCodecImpl.cpp</in>
-              <in>streamControllerImpl.cpp</in>
-              <in>streamReaderImpl.cpp</in>
-              <in>streamWriterImpl.cpp</in>
-              <in>tcpSequenceStreamImpl.cpp</in>
-              <in>transformHighBitImpl.cpp</in>
-              <in>transformImpl.cpp</in>
-              <in>transformsChainImpl.cpp</in>
-            </df>
-            <df name="src">
-              <in>VOILUT.cpp</in>
-              <in>acse.cpp</in>
-              <in>baseStreamInput.cpp</in>
-              <in>baseStreamOutput.cpp</in>
-              <in>codecFactory.cpp</in>
-              <in>colorTransformsFactory.cpp</in>
-              <in>dataSet.cpp</in>
-              <in>definitions.cpp</in>
-              <in>dicomDictionary.cpp</in>
-              <in>dicomDir.cpp</in>
-              <in>dicomDirEntry.cpp</in>
-              <in>dimse.cpp</in>
-              <in>drawBitmap.cpp</in>
-              <in>exceptions.cpp</in>
-              <in>fileStreamInput.cpp</in>
-              <in>fileStreamOutput.cpp</in>
-              <in>image.cpp</in>
-              <in>lut.cpp</in>
-              <in>memoryPool.cpp</in>
-              <in>memoryStreamInput.cpp</in>
-              <in>memoryStreamOutput.cpp</in>
-              <in>modalityVOILUT.cpp</in>
-              <in>onload.cpp</in>
-              <in>pipe.cpp</in>
-              <in>readMemory.cpp</in>
-              <in>readWriteMemory.cpp</in>
-              <in>readingDataHandler.cpp</in>
-              <in>readingDataHandlerNumeric.cpp</in>
-              <in>streamReader.cpp</in>
-              <in>streamWriter.cpp</in>
-              <in>tag.cpp</in>
-              <in>tagId.cpp</in>
-              <in>tcpAddress.cpp</in>
-              <in>tcpListener.cpp</in>
-              <in>tcpStream.cpp</in>
-              <in>transform.cpp</in>
-              <in>transformHighBit.cpp</in>
-              <in>transformsChain.cpp</in>
-              <in>writingDataHandler.cpp</in>
-              <in>writingDataHandlerNumeric.cpp</in>
-            </df>
-          </df>
-          <in>ConcretePlugin.cpp</in>
-          <in>ParserDICOM.cpp</in>
-          <in>PluginDLL.cpp</in>
-          <in>dicom2jpeg.cpp</in>
-          <in>dllmain.cpp</in>
-          <in>stdafx.cpp</in>
-        </df>
         <df name="parserDP">
           <in>ConcretePlugin.cpp</in>
           <in>ParserATMDL.cpp</in>
@@ -2894,7 +2751,7 @@
           <cTool>
             <standard>10</standard>
           </cTool>
-          <ccTool>
+          <ccTool flags="3">
             <standard>11</standard>
           </ccTool>
         </makeTool>
@@ -3351,55 +3208,6 @@
         </ccTool>
       </item>
       <item path="dpVisionPlugins/meshDistance/stdafx.cpp"
-            ex="false"
-            tool="1"
-            flavor2="11">
-        <ccTool flags="3">
-        </ccTool>
-      </item>
-      <item path="dpVisionPlugins/parserDFF/ConcretePlugin.cpp"
-            ex="false"
-            tool="1"
-            flavor2="11">
-        <ccTool flags="3">
-        </ccTool>
-      </item>
-      <item path="dpVisionPlugins/parserDFF/ParserDFF.cpp"
-            ex="false"
-            tool="1"
-            flavor2="11">
-        <ccTool flags="3">
-        </ccTool>
-      </item>
-      <item path="dpVisionPlugins/parserDFF/ParserMAP.cpp"
-            ex="false"
-            tool="1"
-            flavor2="11">
-        <ccTool flags="3">
-        </ccTool>
-      </item>
-      <item path="dpVisionPlugins/parserDFF/ParserMAP3.cpp"
-            ex="false"
-            tool="1"
-            flavor2="11">
-        <ccTool flags="3">
-        </ccTool>
-      </item>
-      <item path="dpVisionPlugins/parserDFF/PluginDLL.cpp"
-            ex="false"
-            tool="1"
-            flavor2="11">
-        <ccTool flags="3">
-        </ccTool>
-      </item>
-      <item path="dpVisionPlugins/parserDFF/dllmain.cpp"
-            ex="false"
-            tool="1"
-            flavor2="11">
-        <ccTool flags="3">
-        </ccTool>
-      </item>
-      <item path="dpVisionPlugins/parserDFF/stdafx.cpp"
             ex="false"
             tool="1"
             flavor2="11">
@@ -5150,65 +4958,6 @@
             <Elem>QT_OPENGL_LIB</Elem>
             <Elem>QT_WIDGETS_LIB</Elem>
             <Elem>QT_XML_LIB</Elem>
-          </preprocessorList>
-        </ccTool>
-      </folder>
-      <folder path="0/dpVisionPlugins/ParserDFF">
-        <ccTool>
-          <incDir>
-            <pElem>build/dpVisionPlugins/parserDFF</pElem>
-            <pElem>dpVisionPlugins/parserDFF</pElem>
-            <pElem>build/dpVisionPlugins/parserDFF/parserDFF_autogen/include</pElem>
-            <pElem>libs/PMFactory</pElem>
-            <pElem>libs/PolyVox/include</pElem>
-            <pElem>libs/Volumetric</pElem>
-            <pElem>src</pElem>
-            <pElem>libs/PluginManager</pElem>
-            <pElem>../../../mingw64/include/QtCore</pElem>
-            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
-            <pElem>../../../mingw64/include/QtGui</pElem>
-            <pElem>../../../mingw64/include/QtWidgets</pElem>
-            <pElem>../../../mingw64/include/QtOpenGL</pElem>
-            <pElem>../../../mingw64/include/QtXml</pElem>
-            <pElem>../../../mingw64/include/QtNetwork</pElem>
-            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4</pElem>
-            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
-            <pElem>../../../mingw64/include/eigen3</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>parserDFF_EXPORTS</Elem>
-          </preprocessorList>
-        </ccTool>
-      </folder>
-      <folder path="0/dpVisionPlugins/ParserDICOM">
-        <ccTool>
-          <incDir>
-            <pElem>build/dpVisionPlugins/ParserDICOM</pElem>
-            <pElem>dpVisionPlugins/ParserDICOM</pElem>
-            <pElem>build/dpVisionPlugins/ParserDICOM/parserDICOM_autogen/include</pElem>
-            <pElem>dpVisionPlugins/ParserDICOM/Imebra/include</pElem>
-            <pElem>dpVisionPlugins/ParserDICOM/Imebra/implementation</pElem>
-            <pElem>libs/PMFactory</pElem>
-            <pElem>src</pElem>
-            <pElem>libs/PluginManager</pElem>
-            <pElem>../../../mingw64/include/QtCore</pElem>
-            <pElem>../../../mingw64/share/qt5/mkspecs/win32-g++</pElem>
-            <pElem>../../../mingw64/include/QtGui</pElem>
-            <pElem>../../../mingw64/include/QtWidgets</pElem>
-            <pElem>../../../mingw64/include/QtOpenGL</pElem>
-            <pElem>../../../mingw64/include/QtXml</pElem>
-            <pElem>../../../mingw64/include/QtNetwork</pElem>
-            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4</pElem>
-            <pElem>../../../mingw64/include/QuaZip-Qt5-1.4/quazip</pElem>
-            <pElem>../../../mingw64/include/eigen3</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>DISABLE_DIMSE_INTEROPERABILITY_TEST</Elem>
-            <Elem>IMEBRA_DLL</Elem>
-            <Elem>IMEBRA_DLL_EXPORTS</Elem>
-            <Elem>IMEBRA_USE_WINDOWS_CHARSET</Elem>
-            <Elem>NOMINMAX</Elem>
-            <Elem>parserDICOM_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </folder>

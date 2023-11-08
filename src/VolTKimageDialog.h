@@ -9,7 +9,7 @@ class ImageLabel;
 
 #include "FilterDialog.h"
 
-class __declspec(dllexport) VolTKimageDialog : public QDialog
+class DPVISION_EXPORT VolTKimageDialog : public QDialog
 {
 	Q_OBJECT
 

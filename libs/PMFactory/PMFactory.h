@@ -2,6 +2,8 @@
 #ifndef _PMFACTORY_H_BY_DP_INCLUDED_
 #define _PMFACTORY_H_BY_DP_INCLUDED_
 
+#include "dll_global.h"
+
 #include "Mesh.h"
 #include "Utilities.h"
 #include "UI.h"
@@ -41,7 +43,7 @@ typedef std::map<size_t,CTCoord> TextureCoords;
 
 typedef std::set<CPoint3f> _setOfPoints;
 
-class __declspec(dllexport) PMFactory
+class DPVISION_EXPORT2 PMFactory
 {
 public:
 	PMFactory(void);

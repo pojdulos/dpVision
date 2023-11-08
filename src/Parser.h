@@ -1,18 +1,12 @@
 #pragma once
 
-#ifdef DPVISION_PLUGIN_DLL
-#define MYDECL __declspec(dllimport)
-#else
-#define MYDECL __declspec(dllexport)
-#endif
-
 
 #include "Global.h"
 #include "DPFileInfo.h"
 
 #include "Model3D.h"
 
-class MYDECL CParser
+class DPVISION_EXPORT2 CParser
 {
 protected:
 	// old style -- deprecated

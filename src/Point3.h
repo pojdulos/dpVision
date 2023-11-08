@@ -2,13 +2,15 @@
 #ifndef _POINT3_H_BY_DP_INCLUDED_
 #define _POINT3_H_BY_DP_INCLUDED_
 
+#include "dll_global.h"
+
 #include <Eigen/Geometry>
 #include "Triple.h"
 #include "Vector3.h"
 
 template<
 	typename _T,
-	typename = typename std::enable_if<std::is_arithmetic<_T>::value, _T>::type >  class __declspec(dllexport) CPoint3 : public CTriple<_T>
+	typename = typename std::enable_if<std::is_arithmetic<_T>::value, _T>::type >  class DPVISION_EXPORT CPoint3 : public CTriple<_T>
 {
 public:
 	CPoint3() : CTriple<_T>() {};

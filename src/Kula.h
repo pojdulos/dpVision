@@ -5,7 +5,7 @@
 #include "Face.h"
 
 
-class __declspec(dllexport) Kula
+class DPVISION_EXPORT Kula
 {
 protected:
 	CPoint3d m_c;

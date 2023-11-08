@@ -3,13 +3,15 @@
 #ifndef CONTEXTMENU_H
 #define CONTEXTMENU_H
 
+#include "dll_global.h"
+
 #include <QtWidgets/QMenu>
 
 class CBaseObject;
 class CObject;
 class CModel3D;
 
-class __declspec(dllexport) CContextMenu : public QMenu
+class DPVISION_EXPORT CContextMenu : public QMenu
 {
     Q_OBJECT
 

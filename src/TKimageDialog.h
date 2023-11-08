@@ -2,11 +2,13 @@
 #ifndef TKIMAGEDIALOG_H
 #define TKIMAGEDIALOG_H
 
+#include "dll_global.h"
+
 #include "ui_TKimageDialog.h"
 
 class ImageLabel;
 
-class __declspec(dllexport) TKimageDialog : public QDialog
+class DPVISION_EXPORT TKimageDialog : public QDialog
 {
 	Q_OBJECT
 

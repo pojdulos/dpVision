@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _MODEL_H_BY_DP_INCLUDED_
-#define _MODEL_H_BY_DP_INCLUDED_
+#ifndef _ANIMATION_H_BY_DP_INCLUDED_
+#define _ANIMATION_H_BY_DP_INCLUDED_
 
 #include "Global.h"
 
@@ -26,7 +26,7 @@ class CAnnotation;
 //	_ANIM_STOPPED_RIGHT = 3,
 //};
 
-class DPVISION_EXPORT CModel3D : public CObject
+class DPVISION_EXPORT CAnimation : public CObject
 {
 public:
 	typedef enum {
@@ -56,28 +56,28 @@ protected:
 	void renderBoundingBox();
 
 public:
-	CModel3D();
-	CModel3D( const CModel3D &m );
-	virtual ~CModel3D();
+	CAnimation();
+	CAnimation( const CAnimation &m );
+	virtual ~CAnimation();
 
 	//------------------------------------------------------------------------------------
 	// metody dziedziczone:
 	//
 
-	inline int type() override { return CObject::Type::MODEL; };
-	CModel3D *getCopy() override { return new CModel3D(*this); };
+	inline int type() override { return CObject::Type::ANIMATION; };
+	CAnimation *getCopy() override { return new CAnimation(*this); };
 
 	void info(std::wstring i[4]) override;
 	std::wstring infoRow() override;
 
 	//------------------------------------------------------------------------------------
 
-	static CModel3D* load(const QString fext, const QString path, bool synchronous = true);
+	static CAnimation* load(const QString fext, const QString path, bool synchronous = true);
 
-	static CModel3D* load(const QString path, bool synchronous = true);
-	static CModel3D* load(const char* path, bool synchronous = true) { return load(QString(path), synchronous); }
-	static CModel3D* load(const std::wstring path, bool synchronous = true) { return load(QString::fromStdWString(path), synchronous); }
-	static CModel3D* load(const std::string path, bool synchronous = true) { return load(QString::fromStdString(path), synchronous); }
+	static CAnimation* load(const QString path, bool synchronous = true);
+	static CAnimation* load(const char* path, bool synchronous = true) { return load(QString(path), synchronous); }
+	static CAnimation* load(const std::wstring path, bool synchronous = true) { return load(QString::fromStdWString(path), synchronous); }
+	static CAnimation* load(const std::string path, bool synchronous = true) { return load(QString::fromStdString(path), synchronous); }
 
 	bool save(const char* path);
 	bool save(const QString path);
@@ -129,24 +129,13 @@ public:
 	inline void setPath(const std::string path) { plikSiatki.setFile(QString::fromStdString(path)); }
 	inline void setPath(const std::wstring path) { plikSiatki.setFile(QString::fromStdWString(path)); }
 
-	bool switchOption( CModel3D::Opt iOption, CModel3D::Switch iSet );
-	bool testOption( CModel3D::Opt iOption );
+	bool switchOption( CAnimation::Opt iOption, CAnimation::Switch iSet );
+	bool testOption( CAnimation::Opt iOption );
 
-	//kolejne do przemyœlenia:
-	void prepare();
-	
-	/*deprecated*/ void calcVN();
-	
-	void PMeshEcoll( GLuint rzm, bool checkPoints=false );
-	void PMeshVsplit( GLuint rzm );
-	
 	void importChildrenGeometry();
-	/*deprecated*/ inline void importMeshGeometry() { importChildrenGeometry(); };
-
-	void setOrigin(CTransform::Origin t);
 };
 
-typedef CModel3D* PtrModel3D;
-typedef CModel3D& RefModel3D;
+//typedef CAnimation* PtrModel3D;
+//typedef CAnimation& RefModel3D;
 
-#endif /* _MODEL_H_BY_DP_INCLUDED_ */
+#endif /* _ANIMATION_H_BY_DP_INCLUDED_ */

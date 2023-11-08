@@ -2,6 +2,8 @@
 #ifndef _UTILITIES_H_BY_DP_INCLUDED_
 #define _UTILITIES_H_BY_DP_INCLUDED_
 
+#include "dll_global.h"
+
 #include "Global.h"
 #include <algorithm>
 
@@ -21,7 +23,7 @@ template<typename _T> _T MAX4( const _T a, const _T b, const _T c,const  _T d ) 
 inline bool isAlmostNull(double f) { return abs(f) <= ALMOST_NULL; }
 inline bool isAlmostOne(double f) { return abs(1.0 - abs(f)) <= ALMOST_NULL; }
 
-__declspec(dllexport) double smartRound(double d, int decimal);
+DPVISION_EXPORT double smartRound(double d, int decimal);
 
 
 #ifndef deg2rad

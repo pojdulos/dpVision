@@ -9,7 +9,7 @@
 typedef std::set<INDEX_TYPE> SetOfVIndices;
 #define SetOfVertices SetOfVIndices
 
-class __declspec(dllexport) CAnnotationSetOfVertices : public CAnnotation, public SetOfVIndices
+class DPVISION_EXPORT CAnnotationSetOfVertices : public CAnnotation, public SetOfVIndices
 {
 public:
 	CPointCloud* m_cloud;

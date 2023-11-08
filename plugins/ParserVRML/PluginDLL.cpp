@@ -6,14 +6,14 @@
 
 ConcretePlugin* g_ConcretePlugin = NULL;
 
-extern "C" PLUGINDLL_API Plugin* CreatePlugin(void)
+extern "C" DPVISION_DLL_API Plugin* CreatePlugin(void)
 {
     assert(g_ConcretePlugin == NULL);
     g_ConcretePlugin = new ConcretePlugin();
     return g_ConcretePlugin;
 }
 
-extern "C" PLUGINDLL_API void DestroyPlugin(void)
+extern "C" DPVISION_DLL_API void DestroyPlugin(void)
 {
     assert(g_ConcretePlugin);
     delete g_ConcretePlugin;

@@ -7,7 +7,7 @@
 
 #include <list>
 
-class __declspec(dllexport)  CAnnotationPolygon : public CAnnotation
+class DPVISION_EXPORT CAnnotationPolygon : public CAnnotation
 {
 	std::list<CPoint3d> m_data;
 

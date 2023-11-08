@@ -5,7 +5,7 @@
 #include "Texture.h"
 #include "QtOpenGL/QGLShaderProgram"
 
-class  __declspec(dllexport) CPolygonGroup//	 : public CBaseObject
+class  DPVISION_EXPORT CPolygonGroup//	 : public CBaseObject
 {
 public:
 	typedef std::vector<CFace> Faces;

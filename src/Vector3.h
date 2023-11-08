@@ -2,6 +2,8 @@
 #ifndef _VECTOR3_H_BY_DP_INCLUDED_
 #define _VECTOR3_H_BY_DP_INCLUDED_
 
+#include "dll_global.h"
+
 #include <vector>
 #include <math.h>
 #include "Triple.h"
@@ -9,7 +11,7 @@
 
 template<
 	typename _T,
-	typename = typename std::enable_if<std::is_arithmetic<_T>::value, _T>::type >  class __declspec(dllexport) CVector3 : public CTriple<_T>
+	typename = typename std::enable_if<std::is_arithmetic<_T>::value, _T>::type >  class DPVISION_EXPORT CVector3 : public CTriple<_T>
 {
 public:
 	CVector3() : CTriple<_T>() {};
@@ -188,6 +190,6 @@ typedef CVector3<double> CVector3d;
 
 #define CWektor3D CVector3f
 
-//class __declspec(dllexport) CArray_OfNormals : public std::vector<CVector3f> {};
+//class DPVISION_EXPORT CArray_OfNormals : public std::vector<CVector3f> {};
 
 #endif /* _VECTOR3_H_BY_DP_INCLUDED_ */

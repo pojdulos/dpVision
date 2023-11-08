@@ -43,7 +43,7 @@ struct quaternion
 };
 
 
-class __declspec(dllexport) CCamera
+class DPVISION_EXPORT CCamera
 {
 public:
 	CVector3<double> m_pos;

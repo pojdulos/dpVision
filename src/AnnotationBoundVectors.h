@@ -7,7 +7,7 @@
 #include "BoundVector.h"
 #include <list>
 
-class __declspec(dllexport) CAnnotationBoundVectors : public CAnnotation
+class DPVISION_EXPORT CAnnotationBoundVectors : public CAnnotation
 {
 public:
 	typedef CBoundVector _BoundVector;

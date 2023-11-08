@@ -44,7 +44,7 @@ typedef WORD* WORDptr;
 typedef std::vector<CPoint3s> VolTKdisplayDataPart;
 typedef std::vector<VolTKdisplayDataPart*> VolTKdisplayData;
 
-class __declspec(dllexport) CVolTK : public CObject
+class DPVISION_EXPORT CVolTK : public CObject
 {
 public:
 	typedef VolTKdisplayDataPart DisplayDataPart;
@@ -99,6 +99,8 @@ public:
 	size_t size() { return m_displayData.size(); };
 	void clear();
 
+	static CVolTK* create(int w, int h, int l, int v = 0, int d = 16);
+
 	//inline int& cols() { return m_imW; }
 	//inline int& rows() { return m_imH; }
 	//inline int& lays() { return m_imNb; }
@@ -122,7 +124,7 @@ public:
 
 	float m_alpha;
 
-	std::map<int,std::pair<bool,CRGBA>> colorFilters;
+	ColorFilterMap colorFilters;
 
 	CPoint3d realXYZ(CPoint3d point);
 	CPoint3d realXYZ(double x, double y, double z);

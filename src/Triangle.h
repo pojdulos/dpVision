@@ -9,7 +9,7 @@ class CMesh;
 
 #include "Vertex.h"
 
-class  __declspec(dllexport) CTriangle {
+class  DPVISION_EXPORT CTriangle {
 public:
 	union {
 		//struct { CVertex m_pA, m_pB, m_pC; };

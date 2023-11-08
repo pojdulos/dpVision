@@ -1,9 +1,11 @@
 #pragma once
 
+#include "dll_global.h"
+
 #include "Object.h"
 #include "RGBA.h"
 
-class __declspec(dllexport) CLidarData : public CObject
+class DPVISION_EXPORT2 CLidarData : public CObject
 {
 public:
 	typedef struct

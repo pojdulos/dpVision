@@ -8,7 +8,7 @@
 
 typedef std::list<INDEX_TYPE> ListOfVIndices;
 
-class __declspec(dllexport) CAnnotationVPath : public CAnnotation, public ListOfVIndices
+class DPVISION_EXPORT CAnnotationVPath : public CAnnotation, public ListOfVIndices
 {
 public:
 	//ListOfVIndices m_list;
@@ -55,4 +55,4 @@ public:
 	ListOfVIndices::iterator cyclicPrev(ListOfVIndices::iterator current);
 };
 
-//class  __declspec(dllexport) CPathsMap : public std::map<int, CAnnotationPath*> {};
+//class DPVISION_EXPORT CPathsMap : public std::map<int, CAnnotationPath*> {};

@@ -14,6 +14,7 @@ CVolTK::CVolTK(CBaseObject *p, int imageWidth, int imageHeight, int numberOfImag
 	m_dataIntensityRange = { 0xFFFF, 0x0000 };
 	m_currentIntensityRange = { 0xFFFF, 0x0000 };
 
+	
 	kostka.init(imageWidth, imageHeight, numberOfImages);
 
 	m_Min.Set(0,0,0);
@@ -190,6 +191,8 @@ CVolTK::~CVolTK(void)
 	clear();
 }
 
+
+
 CVolTK* CVolTK::getCopy()
 {
 	return new CVolTK(*this, m_b, m_e, m_currentIntensityRange.lower, m_currentIntensityRange.upper+1);
@@ -215,6 +218,22 @@ void CVolTK::clear()
 	m_dataIntensityRange.upper = 0x0000;
 	m_dataIntensityRange.lower = 0xFFFF;
 }
+
+CVolTK* CVolTK::create(int cols, int rows, int layers, int value, int depth)
+{
+	CVolTK* volTK = new CVolTK(nullptr, cols, rows, layers, depth);
+
+	for (int layer = 0; layer < layers; layer++)
+		for (int row = 0; row < rows; row++)
+			for (int col = 0; col < cols; col++)
+				volTK->kostka.set(col, row, layer, value);
+	
+	volTK->createDisplayData();
+	volTK->setGeometry();
+
+	return volTK;
+}
+
 
 std::wstring CVolTK::infoRow()
 {
@@ -404,19 +423,22 @@ void CVolTK::renderPart(QOpenGLShaderProgram &program, uint16_t min, uint16_t ma
 {
 	program.setUniformValue(colorLocation, col);
 
-	for (auto it = min; it < max; it++)
+	for (int it = min; it < max; it++)
 	{
 		DisplayDataPart& vertices = *m_displayData[it];
 
-		size_t idx = 0;
-
-		functions->glVertexAttribPointer(vertexLocation, 3, GL_SHORT, GL_FALSE, 0, vertices.data());
-
-		while (idx < vertices.size())
+		if (!vertices.empty())
 		{
-			functions->glDrawArrays(GL_POINTS, idx, std::min(PACKET_SIZE, vertices.size() - idx));
+			size_t idx = 0;
 
-			idx += PACKET_SIZE;
+			functions->glVertexAttribPointer(vertexLocation, 3, GL_SHORT, GL_FALSE, 0, vertices.data());
+
+			while (idx < vertices.size())
+			{
+				functions->glDrawArrays(GL_POINTS, idx, std::min(PACKET_SIZE, vertices.size() - idx));
+
+				idx += PACKET_SIZE;
+			}
 		}
 	}
 
@@ -424,8 +446,9 @@ void CVolTK::renderPart(QOpenGLShaderProgram &program, uint16_t min, uint16_t ma
 
 void CVolTK::renderPart2(QOpenGLShaderProgram& program, uint16_t min, uint16_t max)
 {
-	for (auto cc = min; cc < max; cc++)
+	for (int cc = min; cc <= max; cc++)
 	{
+		//qInfo() << cc;
 		//QColor col(cc/16, cc/16, cc/16);
 		QColor col(cc / 256, cc / 256, cc / 256);
 
@@ -433,18 +456,20 @@ void CVolTK::renderPart2(QOpenGLShaderProgram& program, uint16_t min, uint16_t m
 
 		DisplayDataPart& vertices = *m_displayData[cc];
 
-		size_t idx = 0;
-
-		functions->glVertexAttribPointer(vertexLocation, 3, GL_SHORT, GL_FALSE, 0, vertices.data());
-
-		while (idx < vertices.size())
+		if (!vertices.empty())
 		{
-			functions->glDrawArrays(GL_POINTS, idx, std::min(PACKET_SIZE, vertices.size() - idx));
+			size_t idx = 0;
 
-			idx += PACKET_SIZE;
+			functions->glVertexAttribPointer(vertexLocation, 3, GL_SHORT, GL_FALSE, 0, vertices.data());
+
+			while (idx < vertices.size())
+			{
+				functions->glDrawArrays(GL_POINTS, idx, std::min(PACKET_SIZE, vertices.size() - idx));
+
+				idx += PACKET_SIZE;
+			}
 		}
 	}
-
 }
 
 void CVolTK::renderSelf()
@@ -497,7 +522,7 @@ void CVolTK::renderSelf()
 	}
 
 	wE = m_currentIntensityRange.upper;
-	if (wE > wB)
+	if (wE >= wB)
 	{
 		renderPart2(program, wB, wE);
 		//renderPart(program, wB, wE, QColor(255,255,255,128));

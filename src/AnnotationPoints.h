@@ -9,7 +9,7 @@
 typedef std::list<CPoint3d> SetOfPoints;
 //typedef std::set<CPoint3d> SetOfPoints;
 
-class __declspec(dllexport) CAnnotationPoints : public CAnnotation
+class DPVISION_EXPORT CAnnotationPoints : public CAnnotation
 {
 public:
 	SetOfPoints m_list;

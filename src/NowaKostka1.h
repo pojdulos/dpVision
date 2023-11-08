@@ -5,7 +5,7 @@
 #include <limits>
 #include "Utilities.h"
 
-class __declspec(dllexport) NowaKostka1
+class DPVISION_EXPORT NowaKostka1
 {
 public:
 	typedef uint16_t Type;
@@ -43,11 +43,18 @@ public:
 
 	bool init(size_t cols, size_t rows, size_t lays) {
 		if (m_data != nullptr) delete[] m_data;
+		//m_voxelSize.Set(1.0, 1.0, 1.0);
 		size_t _size = cols * rows * lays;
 		if (_size > 0) {
 			m_cols = cols;
 			m_rows = rows;
 			m_lays = lays;
+
+			//for (int l=0; l<lays; l++)
+			//{
+			//	m_imgPos.push_back(CPoint3d(0,0,l));
+			//	m_gantra.push_back(0);
+			//}
 
 			m_data = new Type[_size];
 			return true;
@@ -96,7 +103,7 @@ public:
 	{
 		double realX = m_imgPos[layer].x + (m_voxelSize.x * column);
 		double realY = m_imgPos[layer].y + (m_voxelSize.y * row - m_voxelSize.z * layer * tan(deg2rad(gantra)));
-		double realZ = m_imgPos[layer].z + (m_voxelSize.z * layer);
+		double realZ = m_imgPos[layer].z;// +(m_voxelSize.z * layer);
 
 		return CPoint3d(realX, realY, realZ);
 	}

@@ -1,4 +1,6 @@
 #pragma once
+#include "dll_global.h"
+
 #include "Parser.h"
 #include <QtCore>
 
@@ -22,7 +24,7 @@ struct Meshinfo {
 };
 
 
-class MYDECL CParserOBJ :public QObject, public CParser
+class CParserOBJ :public QObject, public CParser
 {
 	Q_OBJECT
 

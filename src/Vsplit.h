@@ -32,6 +32,6 @@ typedef struct _vsplit
 	TextureIndexes delTI;
 } SVsplit;
 
-//class __declspec(dllexport) CArrayOfVsplits : public std::vector<SVsplit> {};
+//class DPVISION_EXPORT CArrayOfVsplits : public std::vector<SVsplit> {};
 
 #endif /* _VSPLIT_H_BY_DP_INCLUDED_ */

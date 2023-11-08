@@ -16,7 +16,7 @@ struct  CAnnotationEdge
 };
 
 
-class __declspec(dllexport) CAnnotationEdges : public CAnnotation
+class DPVISION_EXPORT CAnnotationEdges : public CAnnotation
 {
 public:
 	std::list<CAnnotationEdge> m_list;
@@ -51,4 +51,4 @@ public:
 	virtual void renderSelf() override;
 };
 
-//class  __declspec(dllexport) CPathsMap : public std::map<int, CAnnotationPath*> {};
+//class  DPVISION_EXPORT CPathsMap : public std::map<int, CAnnotationPath*> {};

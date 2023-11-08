@@ -29,7 +29,7 @@ class ItemEditorFactory : public QItemEditorFactory
 	}
 };
 
-class __declspec(dllexport) PropTransform : public PropWidget
+class DPVISION_EXPORT PropTransform : public PropWidget
 {
 	Q_OBJECT
 	CTransform* m_trans;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "dll_global.h"
+
 #include "Parser.h"
 
 #include <QtCore/QObject>
@@ -8,7 +10,7 @@
 class ThreadParserLoader;
 class QThread;
 
-class MYDECL ThreadParser : public QObject, public CParser
+class DPVISION_EXPORT2 ThreadParser : public QObject, public CParser
 {
 	Q_OBJECT
 

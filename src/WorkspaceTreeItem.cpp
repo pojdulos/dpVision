@@ -85,13 +85,13 @@ QIcon WorkspaceTreeItem::getNewIcon(CBaseObject::Type t, Column c, bool b)
 
 void WorkspaceTreeItem::setObject(CBaseObject* obj)
 {
-	setData(QVariant::fromValue(obj->id()), Qt::UserRole);
-	setData(QVariant::fromValue(obj), Qt::UserRole + 1);
+	setData(QVariant::fromValue(obj), Qt::UserRole);
+	//setData(QVariant::fromValue(obj->id()), Qt::UserRole + 1);
 }
 
 CBaseObject* WorkspaceTreeItem::getObject()
 {
-	return data(Qt::UserRole + 1).value<CBaseObject*>();
+	return data(Qt::UserRole).value<CBaseObject*>();
 }
 
 QList<QStandardItem*> WorkspaceTreeItem::getFields()

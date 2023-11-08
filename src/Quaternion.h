@@ -22,7 +22,7 @@
 
 //using namespace Eigen;
 
-class  __declspec(dllexport) CQuaternion : public Eigen::Quaterniond
+class  DPVISION_EXPORT CQuaternion : public Eigen::Quaterniond
 {
 public:
 	using Eigen::Quaterniond::operator*;

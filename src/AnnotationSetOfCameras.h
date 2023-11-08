@@ -6,7 +6,7 @@
 #include "RGBA.h"
 #include "Transform.h"
 
-class __declspec(dllexport)  CAnnotationSetOfCameras : public CAnnotation
+class DPVISION_EXPORT CAnnotationSetOfCameras : public CAnnotation
 {
 public:
 	CAnnotationSetOfCameras( CBaseObject *m = nullptr) :CAnnotation(m)

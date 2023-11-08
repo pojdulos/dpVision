@@ -1,11 +1,13 @@
 #pragma once
+#include "dll_global.h"
+
 #include "Global.h"
 
 #include <set>
 #include <list>
 #include <vector>
 
-class __declspec(dllexport) CEdge : public std::pair<INDEX_TYPE, INDEX_TYPE>
+class DPVISION_EXPORT CEdge : public std::pair<INDEX_TYPE, INDEX_TYPE>
 {
 public:
 	INDEX_TYPE face;
@@ -76,7 +78,7 @@ public:
 };
 
 
-class __declspec(dllexport)  CSetOfEdges : public std::set< CEdge >
+class DPVISION_EXPORT  CSetOfEdges : public std::set< CEdge >
 {
 public:
 	CSetOfEdges::iterator findFirstVertex(INDEX_TYPE index);
@@ -87,7 +89,7 @@ public:
 };
 
 
-class __declspec(dllexport)  CListOfEdges : public std::list< CEdge > {
+class DPVISION_EXPORT  CListOfEdges : public std::list< CEdge > {
 public:
 	CListOfEdges::iterator findFirstVertex(INDEX_TYPE index);
 	CListOfEdges::iterator findSecondVertex(INDEX_TYPE index);

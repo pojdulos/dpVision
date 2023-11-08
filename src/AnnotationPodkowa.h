@@ -10,7 +10,7 @@ struct PFace{
 	CPoint3f p[3];
 };
 
-class __declspec(dllexport)  CAnnotationPodkowa : public CAnnotationCylinder
+class DPVISION_EXPORT CAnnotationPodkowa : public CAnnotationCylinder
 {
 public:
 	double m_arm_length;

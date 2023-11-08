@@ -2,6 +2,8 @@
 #ifndef _VOLDATA_H_BY_DP_INCLUDED_
 #define _VOLDATA_H_BY_DP_INCLUDED_
 
+#include "dll_global.h"
+
 #include "Object.h"
 //#include "Mesh.h"
 
@@ -26,7 +28,7 @@ struct SVolData {
 
 class CModel3D;
 
-class __declspec(dllexport) CVolData3D : public CObject
+class DPVISION_EXPORT2 CVolData3D : public CObject
 {
 public:
 	typedef SVolData VoxelType;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "dll_global.h"
+
 #include <QtWidgets/QWidget>
 
 class QScrollArea;
@@ -8,7 +10,7 @@ class QVBoxLayout;
 class ImageLabel;
 class CImage;
 
-class __declspec(dllexport) PicViewer : public QWidget
+class DPVISION_EXPORT PicViewer : public QWidget
 {
 	Q_OBJECT
 

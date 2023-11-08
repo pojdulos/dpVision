@@ -1,7 +1,7 @@
 #pragma once
 #include "PointCloud.h"
 
-class __declspec(dllexport) COrderedPointCloud : public CPointCloud
+class DPVISION_EXPORT COrderedPointCloud : public CPointCloud
 {
 public:
 	typedef std::vector<std::pair<float,float>> Angles;

@@ -8,7 +8,7 @@
 
 typedef std::list<CPoint3d> ListOfPoints;
 
-class __declspec(dllexport) CAnnotationPath : public CAnnotation, public ListOfPoints
+class DPVISION_EXPORT CAnnotationPath : public CAnnotation, public ListOfPoints
 {
 public:
 	CAnnotationPath( CModel3D *m = nullptr) :CAnnotation( m )

@@ -1,4 +1,6 @@
 #pragma once
+#include "dll_global.h"
+
 #include <qstyleditemdelegate.h>
 #include "CItemEditorFactory.h"
 
@@ -23,7 +25,7 @@ typedef enum {
 #define QtRoleDataStep Qt::ItemDataRole::UserRole+4
 #define QtRoleDataLoop Qt::ItemDataRole::UserRole+5
 
-class __declspec(dllexport) CSpinBoxDelegate :
+class DPVISION_EXPORT CSpinBoxDelegate :
     public QStyledItemDelegate
 {
     Q_OBJECT

@@ -1,9 +1,11 @@
 #pragma once
 
+#include "dll_global.h"
+
 #include <QtWidgets/QWidget>
 #include "ui_ProgressIndicator.h"
 
-class __declspec(dllexport) ProgressIndicator : public QWidget
+class DPVISION_EXPORT ProgressIndicator : public QWidget
 {
 	Q_OBJECT
 

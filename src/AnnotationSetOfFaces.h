@@ -9,7 +9,7 @@ class CMesh;
 
 typedef std::set<INDEX_TYPE> SetOfFIndices;
 
-class __declspec(dllexport) CAnnotationSetOfFaces : public CAnnotation, public SetOfFIndices
+class DPVISION_EXPORT CAnnotationSetOfFaces : public CAnnotation, public SetOfFIndices
 {
 	friend class PropAnnotationSetOfFaces;
 	CMesh* m_mesh;

@@ -1,16 +1,12 @@
 #pragma once
 
-#ifdef DPVISION_PLUGIN_DLL
-#define MYDECL Q_DECL_IMPORT
-#else
-#define MYDECL Q_DECL_EXPORT
-#endif
+#include "dll_global.h"
 
 #include <QtCore/QObject>
 
 class CBaseObject;
 
-class MYDECL ThreadParserLoader : public QObject
+class DPVISION_EXPORT2 ThreadParserLoader : public QObject
 {
 	Q_OBJECT
 

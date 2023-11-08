@@ -11,7 +11,7 @@ class CModel3D;
 //class CTransform;
 class QDomElement;
 
-class __declspec(dllexport) CAnnotation	 : public CBaseObject
+class DPVISION_EXPORT CAnnotation : public CBaseObject
 {
 public:
 	CRGBA m_color;

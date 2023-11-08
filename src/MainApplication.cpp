@@ -4,7 +4,7 @@
 
 #include "MainWindow.h"
 
-__declspec(dllexport) CMainApplication * CMainApplication::theApp = nullptr;
+DPVISION_EXPORT CMainApplication * CMainApplication::theApp = nullptr;
 
 //#include <QStyleFactory>
 
@@ -66,15 +66,10 @@ bool CMainApplication::loadQtPlugin(const QString &pluginPath)
 {
 	QPluginLoader loader(pluginPath); // lub .so lub .dylib w zależności od systemu
 	
-	QJsonObject metadata = loader.metaData().value("MetaData").toObject();
-
-	QString version = metadata.value("version").toString();
-	QString name = metadata.value("name").toString();
-	QString description = metadata.value("description").toString();
-
 	QObject* pluginObject = loader.instance();
 
-	if (pluginObject) {
+	if (pluginObject)
+	{
 		PluginInterface* plugin = qobject_cast<PluginInterface*>(pluginObject);
 		if (plugin)
 		{
@@ -82,14 +77,19 @@ bool CMainApplication::loadQtPlugin(const QString &pluginPath)
 			while (plugins.find(newID) != plugins.end()) {
 				newID++;
 			}
-
-			if (name != "") plugin->setName(name);
-			plugin->setPath(pluginPath);
 			plugin->setID(newID);
-
 			plugins[newID] = plugin;
 
-			plugin->onLoad();
+			plugin->setPath(pluginPath);
+
+
+			QJsonObject metadata = loader.metaData().value("MetaData").toObject();
+
+			//QString version = metadata.value("version").toString();
+			//QString description = metadata.value("description").toString();
+			QString name = metadata.value("name").toString();
+			if (name != "") plugin->setName(name);
+
 			if (!plugin->isHidden())
 			{
 				CMainWindow* win = AP::mainWinPtr();
@@ -100,6 +100,8 @@ bool CMainApplication::loadQtPlugin(const QString &pluginPath)
 				}
 			}
 
+			plugin->onLoad();
+
 			return true;
 		}
 	}
@@ -109,7 +111,7 @@ bool CMainApplication::loadQtPlugin(const QString &pluginPath)
 bool CMainApplication::loadWinPlugin( const QString &pluginPath )
 {
 	PluginInterface *plugin = PluginManager::Instance().LoadPlugin( pluginPath );
-	if (plugin != NULL)
+	if (plugin)
 	{
 		unsigned int newID = PLUGIN_ID_OFFSET;
 		while ( plugins.find( newID ) != plugins.end() ) {
@@ -119,7 +121,6 @@ bool CMainApplication::loadWinPlugin( const QString &pluginPath )
 		plugin->setID( newID );
 		plugins[ newID ] = plugin;
 		
-		plugin->onLoad();
 		if ( ! plugin->isHidden() )
 		{
 			CMainWindow* win = AP::mainWinPtr();
@@ -129,6 +130,9 @@ bool CMainApplication::loadWinPlugin( const QString &pluginPath )
 				win->addPluginToListView( newID, plugin->name() + " (" + plugin->path() + ")" );
 			}
 		}
+
+		plugin->onLoad();
+
 		return true;
 	}
 	return false;

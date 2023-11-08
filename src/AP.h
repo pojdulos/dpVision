@@ -1,6 +1,8 @@
 #ifndef INTERFEJSAPLIKACJI_H
 #define INTERFEJSAPLIKACJI_H
 
+#include "dll_global.h"
+
 #include <string>
 #include <list>
 #include <set>
@@ -19,120 +21,120 @@ class QString;
 
 namespace AP
 {
-	__declspec(dllexport) CMainApplication &mainApp();
-	__declspec(dllexport) CMainWindow &mainWin();
-	__declspec(dllexport) CMainWindow* mainWinPtr();
-	__declspec(dllexport) void leaveSelectionMode();
+	DPVISION_EXPORT CMainApplication &mainApp();
+	DPVISION_EXPORT CMainWindow &mainWin();
+	DPVISION_EXPORT CMainWindow* mainWinPtr();
+	DPVISION_EXPORT void leaveSelectionMode();
 
-	__declspec(dllexport) int getUniqueId();
+	DPVISION_EXPORT int getUniqueId();
 
-	__declspec(dllexport) void processEvents( bool immediate = false );
+	DPVISION_EXPORT void processEvents( bool immediate = false );
 
 	// returns CWorkspace handler - use it only as a last resort.
 	// If possible, use AP::WORKSPACE namespace !!!
 	// Let me know what function you need is missing in this namespace.
-	__declspec(dllexport) CWorkspace* getWorkspace(void);
+	DPVISION_EXPORT CWorkspace* getWorkspace(void);
 
-	__declspec(dllexport) const QString& getExeFilePath(void);
+	DPVISION_EXPORT const QString& getExeFilePath(void);
 
 	// OBSOLETE !!! use AP::MODEL::addAnnotation(int parentid, CAnnotation *an)
-	__declspec(dllexport) int addAnnotation(int parentid, CAnnotation *an);
+	DPVISION_EXPORT int addAnnotation(int parentid, CAnnotation *an);
 
 	// OBSOLETE !!! use AP::MODEL::addAnnotation(CModel3D* obj, CAnnotation *an)
-	__declspec(dllexport) int addAnnotation(CModel3D* obj, CAnnotation *an);
+	DPVISION_EXPORT int addAnnotation(CModel3D* obj, CAnnotation *an);
 
 	namespace PLUGIN {
-		__declspec(dllexport) bool loadPlugin(const QString &pluginPath);
-		__declspec(dllexport) void unloadPlugin(const unsigned int id);
+		DPVISION_EXPORT bool loadPlugin(const QString &pluginPath);
+		DPVISION_EXPORT void unloadPlugin(const unsigned int id);
 
-		__declspec(dllexport) PluginInterface* getPlugin(unsigned int id);
-		//__declspec(dllexport) PluginInterface* getPlugin(const char* strUUID);
+		DPVISION_EXPORT PluginInterface* getPlugin(unsigned int id);
+		//DPVISION_EXPORT PluginInterface* getPlugin(const char* strUUID);
 
-		__declspec(dllexport) bool runPlugin(const char* strUUID);
+		DPVISION_EXPORT bool runPlugin(const char* strUUID);
 	};
 
 	namespace OBJECT {
-		__declspec(dllexport) bool remove(CBaseObject* obj, bool deleteIt = false);
-		__declspec(dllexport) int addChild(CBaseObject* obj, CBaseObject* child);
-		__declspec(dllexport) bool removeChild(CBaseObject* obj, CBaseObject* child, bool deleteIt = false);
+		DPVISION_EXPORT bool remove(CBaseObject* obj, bool deleteIt = false);
+		DPVISION_EXPORT int addChild(CBaseObject* obj, CBaseObject* child);
+		DPVISION_EXPORT bool removeChild(CBaseObject* obj, CBaseObject* child, bool deleteIt = false);
 	};
 
 	namespace MODEL {
-		__declspec(dllexport) CModel3D * load(std::wstring path, bool synchronous=true);
+		DPVISION_EXPORT CModel3D * load(std::wstring path, bool synchronous=true);
 
-		__declspec(dllexport) int addChild(CModel3D* obj, CBaseObject* child);
-		__declspec(dllexport) int addChild(int parentId, CBaseObject* child);
-		__declspec(dllexport) void removeChild(CBaseObject* obj, CBaseObject* child);
-		__declspec(dllexport) void removeChild(int parentid, int childid);
+		DPVISION_EXPORT int addChild(CModel3D* obj, CBaseObject* child);
+		DPVISION_EXPORT int addChild(int parentId, CBaseObject* child);
+		DPVISION_EXPORT void removeChild(CBaseObject* obj, CBaseObject* child);
+		DPVISION_EXPORT void removeChild(int parentid, int childid);
 
-		__declspec(dllexport) int addAnnotation(CModel3D* obj, CAnnotation *an);
-		__declspec(dllexport) int addAnnotation(int parentid, CAnnotation* an);
-		__declspec(dllexport) void removeAnnotation(int parentid, int id);
+		DPVISION_EXPORT int addAnnotation(CModel3D* obj, CAnnotation *an);
+		DPVISION_EXPORT int addAnnotation(int parentid, CAnnotation* an);
+		DPVISION_EXPORT void removeAnnotation(int parentid, int id);
 	};
 
 	namespace WORKSPACE {
-		__declspec(dllexport) CWorkspace* instance(void);
-		__declspec(dllexport) size_t size();
-		__declspec(dllexport) CBaseObject* findId(int id);
-		__declspec(dllexport) bool addModel(CModel3D *obj, bool setItCurrent = false);
-		__declspec(dllexport) bool addImage(CImage* im, bool showViewer = true, bool show3d = false);
+		DPVISION_EXPORT CWorkspace* instance(void);
+		DPVISION_EXPORT size_t size();
+		DPVISION_EXPORT CBaseObject* findId(int id);
+		DPVISION_EXPORT bool addModel(CModel3D *obj, bool setItCurrent = false);
+		DPVISION_EXPORT bool addImage(CImage* im, bool showViewer = true, bool show3d = false);
 
-		__declspec(dllexport) CModel3D* loadModel(const QString fext, const QString& path, bool synchronous = true, bool setItCurrent = false);
-		__declspec(dllexport) CModel3D* loadModel(const QString& path, bool synchronous = true, bool setItCurrent = false);
-		__declspec(dllexport) CModel3D* loadModel(const std::wstring& path, bool synchronous = true, bool setItCurrent = false );
+		DPVISION_EXPORT CModel3D* loadModel(const QString fext, const QString& path, bool synchronous = true, bool setItCurrent = false);
+		DPVISION_EXPORT CModel3D* loadModel(const QString& path, bool synchronous = true, bool setItCurrent = false);
+		DPVISION_EXPORT CModel3D* loadModel(const std::wstring& path, bool synchronous = true, bool setItCurrent = false );
 
-		__declspec(dllexport) void setAllModelsVisible(bool visibility = true);
+		DPVISION_EXPORT void setAllModelsVisible(bool visibility = true);
 
 		// returns copy of model
-		__declspec(dllexport) CModel3D * duplicateModel(CModel3D * obj);
-		__declspec(dllexport) CModel3D * duplicateModel(int id);
-		__declspec(dllexport) CModel3D * duplicateCurrentModel();
+		DPVISION_EXPORT CModel3D * duplicateModel(CModel3D * obj);
+		DPVISION_EXPORT CModel3D * duplicateModel(int id);
+		DPVISION_EXPORT CModel3D * duplicateCurrentModel();
 
 		// returns pointer or nullptr if id not exists
-		__declspec(dllexport) CModel3D * getModel(int id);
+		DPVISION_EXPORT CModel3D * getModel(int id);
 
 		// returns pointer or nullptr if none selected
-		__declspec(dllexport) CModel3D * getCurrentModel();
+		DPVISION_EXPORT CModel3D * getCurrentModel();
 
 		// returns Id or -1 if none selected
-		__declspec(dllexport) int getCurrentModelId();
+		DPVISION_EXPORT int getCurrentModelId();
 
 		// remove model by id
-		__declspec(dllexport) bool removeModel(int id, bool deleteIt = true);
+		DPVISION_EXPORT bool removeModel(int id, bool deleteIt = true);
 		// remove model by handle
-		__declspec(dllexport) bool removeModel(CModel3D* obj, bool deleteIt = true);
+		DPVISION_EXPORT bool removeModel(CModel3D* obj, bool deleteIt = true);
 		// remove image by id
-		__declspec(dllexport) bool removeImage(int id, bool deleteIt = true);
+		DPVISION_EXPORT bool removeImage(int id, bool deleteIt = true);
 		// remove image by handle
-		__declspec(dllexport) bool removeImage(CImage* im, bool deleteIt = true);
+		DPVISION_EXPORT bool removeImage(CImage* im, bool deleteIt = true);
 
 
 		// the same as removeModel( getCurrentModelId() )
-		__declspec(dllexport) bool removeCurrentModel();
+		DPVISION_EXPORT bool removeCurrentModel();
 
-		__declspec(dllexport) bool removeAllModels();
-		__declspec(dllexport) bool removeSelectedModels();
+		DPVISION_EXPORT bool removeAllModels();
+		DPVISION_EXPORT bool removeSelectedModels();
 
-		//__declspec(dllexport) void resetAllTransformations();
-		//__declspec(dllexport) void resetSelectedTransformations();
+		//DPVISION_EXPORT void resetAllTransformations();
+		//DPVISION_EXPORT void resetSelectedTransformations();
 
 		// select model by Id or unselect if id==-1 or not exists
-		__declspec(dllexport) int setCurrentModel(int id);
+		DPVISION_EXPORT int setCurrentModel(int id);
 
 		namespace SELECTION {
-			__declspec(dllexport) void selectModel(int id);
-			__declspec(dllexport) void unselectModel(int id);
-			__declspec(dllexport) bool isModelSelected(int id);
-			__declspec(dllexport) void clear();
-			__declspec(dllexport) std::list<int> getList();
-			__declspec(dllexport) std::list<int> getList(std::set<CBaseObject::Type> types, CObject* obj = nullptr);
-			__declspec(dllexport) std::list<CBaseObject*> getObjList(std::set<CBaseObject::Type> types, CObject* obj = nullptr);
-			__declspec(dllexport) void setModelsVisible(bool visibility = true);
+			DPVISION_EXPORT void selectModel(int id);
+			DPVISION_EXPORT void unselectModel(int id);
+			DPVISION_EXPORT bool isModelSelected(int id);
+			DPVISION_EXPORT void clear();
+			DPVISION_EXPORT std::list<int> getList();
+			DPVISION_EXPORT std::list<int> getList(std::set<CBaseObject::Type> types, CObject* obj = nullptr);
+			DPVISION_EXPORT std::list<CBaseObject*> getObjList(std::set<CBaseObject::Type> types, CObject* obj = nullptr);
+			DPVISION_EXPORT void setModelsVisible(bool visibility = true);
 		}
 	};
 
 	namespace EVENTS {
-		__declspec(dllexport) void modelIndicationEvent( int objId );
+		DPVISION_EXPORT void modelIndicationEvent( int objId );
 	};
 };
 

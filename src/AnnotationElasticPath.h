@@ -6,7 +6,7 @@
 #include "Model3D.h"
 #include <list>
 
-class __declspec(dllexport) CAnnotationElasticPath : public CAnnotationPath
+class DPVISION_EXPORT CAnnotationElasticPath : public CAnnotationPath
 {
 public:
 	std::list<CPoint3f> m_data;
@@ -23,4 +23,4 @@ public:
 	virtual void renderSelf() override;
 };
 
-//class  __declspec(dllexport) CPathsMap : public std::map<int, CAnnotationPath*> {};
+//class DPVISION_EXPORT CPathsMap : public std::map<int, CAnnotationPath*> {};

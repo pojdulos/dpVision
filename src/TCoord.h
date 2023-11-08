@@ -2,7 +2,7 @@
 
 #include <vector>
 
-class __declspec(dllexport) CTCoord {
+class DPVISION_EXPORT CTCoord {
 public:
 	union {
 		float arr[2];
@@ -22,5 +22,5 @@ public:
 	}
 };
 
-class __declspec(dllexport) CArrayOfTCoord : public std::vector<CTCoord> {};
+class DPVISION_EXPORT CArrayOfTCoord : public std::vector<CTCoord> {};
 

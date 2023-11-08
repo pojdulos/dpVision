@@ -1,6 +1,6 @@
 #pragma once
 #include "Model3D.h"
-class __declspec(dllexport) CGroupObject : public CModel3D
+class DPVISION_EXPORT CGroupObject : public CModel3D
 {
 	int m_selectedChildId;
 

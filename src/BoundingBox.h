@@ -1,4 +1,7 @@
 #pragma once
+
+#include "dll_global.h"
+
 #include "Global.h"
 
 #include "Point3.h"
@@ -9,7 +12,7 @@
 
 class CBoundVector;
 
-class  __declspec(dllexport) CBoundingBox
+class  DPVISION_EXPORT CBoundingBox
 {
 public:
 	typedef enum {

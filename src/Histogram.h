@@ -6,7 +6,7 @@
 #include "Annotation.h"
 #include "PointCloud.h"
 
-class  __declspec(dllexport) CHistogram : public CAnnotation
+class  DPVISION_EXPORT CHistogram : public CAnnotation
 {
 	std::vector<double> m_data;
 	CPointCloud* m_destination;

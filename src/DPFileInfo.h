@@ -8,7 +8,7 @@
 #include <QtCore/QString>
 #include <QtCore/QFileInfo>
 
-class __declspec(dllexport) CFileInfo : public QFileInfo
+class DPVISION_EXPORT CFileInfo : public QFileInfo
 {
 public:
 	CFileInfo(void) : QFileInfo() {}

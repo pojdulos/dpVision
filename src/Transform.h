@@ -9,7 +9,7 @@
 #include<Eigen/Geometry>
 #include <QtGui/QMatrix4x4>
 
-class  __declspec(dllexport) CTransform
+class  DPVISION_EXPORT CTransform
 {
 	CVector3d m_tra; // translacja
 	CQuaternion m_rot; // kwaternion obrotu

@@ -9,7 +9,7 @@ using namespace std;
 
 class CIndexedTriangle;
 
-class  __declspec(dllexport) KDNode {
+class  DPVISION_EXPORT KDNode {
 public:
 	typedef struct {
 		int vidx;

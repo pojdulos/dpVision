@@ -1,6 +1,9 @@
 #pragma once
 #ifndef _PLANE_H_BY_DP_INCLUDED_
 #define _PLANE_H_BY_DP_INCLUDED_
+
+#include "dll_global.h"
+
 #include "Triple.h"
 #include "matrix3x3.h"
 
@@ -15,7 +18,7 @@ class CMesh;
 // P³aszczyzna: Ax + By + Cz + D = 0
 
 
-class __declspec(dllexport) CPlane {
+class DPVISION_EXPORT CPlane {
 public:
 	CPoint3d m_center;
 	CVector3d m_normal;

@@ -1,6 +1,8 @@
 #ifndef DOCKWIDGETHISTOGRAM_H
 #define DOCKWIDGETHISTOGRAM_H
 
+#include "dll_global.h"
+
 #include <QtWidgets/QDockWidget>
 #include "ui_dockWidgetHistogram.h"
 #include "histogramwidget.h"
@@ -8,7 +10,7 @@
 class CAnnotation;
 class CFace;
 
-class __declspec(dllexport) DockWidgetHistogram : public QDockWidget
+class DPVISION_EXPORT DockWidgetHistogram : public QDockWidget
 {
 	Q_OBJECT
 

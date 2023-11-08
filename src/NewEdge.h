@@ -1,12 +1,14 @@
 #pragma once
 
+#include "dll_global.h"
+
 #include <set>
 #include <map>
 
 
 class MapOfNewEdges;
 //klasa testowa, uprasza sie o nieu¿ywanie
-class __declspec(dllexport) NewEdge : public std::pair< std::pair<unsigned int, unsigned int>, std::set<unsigned int> >
+class DPVISION_EXPORT NewEdge : public std::pair< std::pair<unsigned int, unsigned int>, std::set<unsigned int> >
 {
 public:
 	NewEdge()
@@ -69,7 +71,7 @@ public:
 	inline bool hasOneOfVertices(unsigned int v1, unsigned int v2) const { return (v1 == first.first) || (v1 == first.second) || (v2 == first.first) || (v2 == first.second); }
 };
 
-class __declspec(dllexport)  MapOfNewEdges : public std::map< NewEdge::first_type, NewEdge::second_type >
+class DPVISION_EXPORT  MapOfNewEdges : public std::map< NewEdge::first_type, NewEdge::second_type >
 {
 public:
 	MapOfNewEdges::iterator findFirstVertex(unsigned int index);

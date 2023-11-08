@@ -2,7 +2,7 @@
 
 #include "Parser.h"
 
-class __declspec(dllexport) CFileConnector
+class DPVISION_EXPORT CFileConnector
 {
 public:
 	static bool save( CModel3D *m, QString path );

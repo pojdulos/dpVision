@@ -27,16 +27,16 @@ CBoundingBox KDNode2::createBB(CMesh* mesh, std::vector<INDEX_TYPE> tris)
 	return bb;
 }
 
-KDNode2* KDNode2::build(CMesh* mesh)
+KDNode2* KDNode2::build(CMesh* mesh, int maxTrisSize)
 {
 	std::vector<INDEX_TYPE> tris;
 	for (int i = 0; i < mesh->faces().size(); i++) tris.push_back(i);
 
-	return build2( mesh, tris, 0 );
+	return build2( mesh, tris, 0, maxTrisSize);
 }
 
 
-KDNode2* KDNode2::build2(CMesh* mesh, vector<INDEX_TYPE>& tris, int depth)
+KDNode2* KDNode2::build2(CMesh* mesh, vector<INDEX_TYPE>& tris, int depth, int maxTrisSize)
 {
 	KDNode2* node = new KDNode2();
 
@@ -44,7 +44,7 @@ KDNode2* KDNode2::build2(CMesh* mesh, vector<INDEX_TYPE>& tris, int depth)
 
 	node->m_bbox = createBB(mesh, tris);
 
-	if (tris.size() > 256)
+	if (tris.size() > maxTrisSize)
 	{
 		int axis = node->m_bbox.longest_axis();
 
@@ -78,8 +78,8 @@ KDNode2* KDNode2::build2(CMesh* mesh, vector<INDEX_TYPE>& tris, int depth)
 				}
 		}
 
-		node->m_left = KDNode2::build(mesh, left_tris, depth + 1);
-		node->m_right = KDNode2::build(mesh, right_tris, depth + 1);
+		node->m_left = KDNode2::build(mesh, left_tris, depth + 1, maxTrisSize);
+		node->m_right = KDNode2::build(mesh, right_tris, depth + 1, maxTrisSize);
 	}
 	else
 	{
@@ -91,7 +91,7 @@ KDNode2* KDNode2::build2(CMesh* mesh, vector<INDEX_TYPE>& tris, int depth)
 	return node;
 }
 
-KDNode2 * KDNode2::build(CMesh* mesh, vector<INDEX_TYPE> &tris, int depth)
+KDNode2 * KDNode2::build(CMesh* mesh, vector<INDEX_TYPE> &tris, int depth, int maxTrisSize)
 {
 	KDNode2 *node = new KDNode2();
 
@@ -99,7 +99,7 @@ KDNode2 * KDNode2::build(CMesh* mesh, vector<INDEX_TYPE> &tris, int depth)
 
 	node->m_bbox = createBB(mesh, tris);
 
-	if (tris.size() > 256)
+	if (tris.size() > maxTrisSize)
 	{
 		CPoint3d midpt = node->m_bbox.getMidpoint();
 
@@ -126,8 +126,8 @@ KDNode2 * KDNode2::build(CMesh* mesh, vector<INDEX_TYPE> &tris, int depth)
 			}
 		}
 
-		node->m_left = KDNode2::build(mesh, left_tris, depth + 1);
-		node->m_right = KDNode2::build(mesh, right_tris, depth + 1);
+		node->m_left = KDNode2::build(mesh, left_tris, depth + 1, maxTrisSize);
+		node->m_right = KDNode2::build(mesh, right_tris, depth + 1, maxTrisSize);
 	}
 	else
 	{

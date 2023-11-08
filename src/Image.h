@@ -4,7 +4,7 @@
 
 #include "Model3D.h"
 
-class  __declspec(dllexport) CImage : protected CModel3D, protected QImage
+class  DPVISION_EXPORT CImage : protected CModel3D, protected QImage
 {
 protected:
 	CImage(const QImage& i);

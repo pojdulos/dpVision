@@ -5,7 +5,7 @@
 #include "Vector3.h"
 #include "RGBA.h"
 
-class __declspec(dllexport)  CAnnotationPoint : public CAnnotation, public CPoint3d
+class DPVISION_EXPORT CAnnotationPoint : public CAnnotation, public CPoint3d
 {
 	size_t m_faceId;
 	CPoint3f m_faceA;

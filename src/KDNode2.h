@@ -9,7 +9,7 @@ using namespace std;
 
 class CMesh;
 
-class  __declspec(dllexport) KDNode2 {
+class  DPVISION_EXPORT KDNode2 {
 public:
 	typedef map<int, std::pair<double, CPoint3d>> HitMap;
 
@@ -30,9 +30,9 @@ public:
 
 	static CBoundingBox createBB(CMesh* mesh, std::vector<INDEX_TYPE> tris);
 
-	static KDNode2* build(CMesh* mesh);
-	static KDNode2* build2(CMesh* mesh, vector<INDEX_TYPE>& tris, int depth);
-	static KDNode2* build(CMesh* mesh,  vector<INDEX_TYPE>& tris, int depth);
+	static KDNode2* build(CMesh* mesh, int maxTrisSize = 256);
+	static KDNode2* build2(CMesh* mesh, vector<INDEX_TYPE>& tris, int depth, int maxTrisSize);
+	static KDNode2* build(CMesh* mesh,  vector<INDEX_TYPE>& tris, int depth, int maxTrisSize = 256);
 
 	bool hit(CMesh *mesh, const CPoint3d origin, const CVector3d dir, ShadeRec &sr);
 	bool hit(CMesh* mesh, const CPoint3d origin, const CVector3d dir, HitMap& hmap, long vidx = -1);

@@ -21,7 +21,7 @@
 
 class CAnnotationPoints;
 
-class __declspec(dllexport) CMesh : public CPointCloud
+class DPVISION_EXPORT CMesh : public CPointCloud
 {
 public:
 	//typedef enum {

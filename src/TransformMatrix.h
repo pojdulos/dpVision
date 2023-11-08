@@ -3,7 +3,7 @@
 #include <string>
 #include "Vector3.h"
 
-class __declspec(dllexport) CTransformMatrix
+class DPVISION_EXPORT CTransformMatrix
 {
 	double m_data[16]; // OpenGL style matrix
 

@@ -7,6 +7,8 @@
 #include "Wektor3D.h"
 #include "Global.h"
 
+#include "dll_global.h"
+
 #include <set>
 #include <map>
 #include <string>
@@ -17,7 +19,7 @@ class CModel3D;
 class CFileInfo;
 class CTransform;
 
-class __declspec(dllexport) CBaseObject
+class DPVISION_EXPORT CBaseObject
 {
 public:
 	//typedef enum {
@@ -37,6 +39,7 @@ public:
 		GENERIC,
 		GROUP,
 		MODEL,
+		ANIMATION,
 		IMAGE,
 		CLOUD,
 		ORDEREDCLOUD,
@@ -82,7 +85,7 @@ public:
 	// konstruktor ze wskazaniem rodzica
 	CBaseObject(int objId);
 
-	// konstruktor kopiuj¹cy
+	// konstruktor kopiujï¿½cy
 	CBaseObject(const CBaseObject &b);
 
 	virtual ~CBaseObject(void) {};
@@ -154,7 +157,7 @@ public:
 	virtual inline bool setSelected(bool sel) { return m_selected = sel; };
 	virtual inline bool isSelected() { return m_selected; };
 
-	// dla zachowania zgodnoœci przy wyszukiwaniu potomków
+	// dla zachowania zgodnoï¿½ci przy wyszukiwaniu potomkï¿½w
 	virtual CBaseObject *findId(int /*id*/) { return NULL; };
 	virtual inline bool hasChildren() { return false; };
 

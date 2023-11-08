@@ -6,7 +6,7 @@
 #include "Vector3.h"
 #include "RGBA.h"
 
-class __declspec(dllexport)  CAnnotationTriangle : public CAnnotation
+class DPVISION_EXPORT CAnnotationTriangle : public CAnnotation
 {
 public:
 	CPoint3d m_pA, m_pB, m_pC;

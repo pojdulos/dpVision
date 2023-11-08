@@ -2,11 +2,14 @@
 #ifndef _RGBA_H_BY_DP_INCLUDED_
 #define _RGBA_H_BY_DP_INCLUDED_
 
+#include "dll_global.h"
+
+
 #include <sstream>
 #include <iostream>
 #include <stdint.h>
 
-class __declspec(dllexport) CRGBA {
+class DPVISION_EXPORT CRGBA {
 	union {
 		__int32 m_rgba;
 		unsigned char m_v[4];
@@ -147,6 +150,6 @@ public:
 	std::string asHexRGBA();
 };
 
-//class __declspec(dllexport) CArray_OfRGBA : public std::vector<CRGBA> {};
+//class DPVISION_EXPORT CArray_OfRGBA : public std::vector<CRGBA> {};
 
 #endif /* _RGBA_H_BY_DP_INCLUDED_ */

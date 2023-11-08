@@ -9,7 +9,7 @@
 
 class CPointCloud;
 
-class __declspec(dllexport)  CAnnotationVertex : public CAnnotation
+class DPVISION_EXPORT CAnnotationVertex : public CAnnotation
 {
 	size_t m_index;
 

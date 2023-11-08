@@ -225,6 +225,15 @@ void UI::DOCK::WORKSPACE::selectItem( int id)
 	}
 }
 
+DPVISION_EXPORT QVector<CBaseObject*> UI::DOCK::WORKSPACE::getSelectedObjects()
+{
+	CMainWindow* win = AP::mainWinPtr();
+
+	if (win && win->dockWorkspace) return win->dockWorkspace->getSelectedObjects();
+
+	return QVector<CBaseObject*>();
+}
+
 void UI::DOCK::WORKSPACE::setItemCheckedById(int id, bool b)
 {
 	CMainWindow* win = AP::mainWinPtr();

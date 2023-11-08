@@ -2,6 +2,8 @@
 #ifndef MAINAPPLICATION_H
 #define MAINAPPLICATION_H
 
+#include "dll_global.h"
+
 #include "Global.h"
 #include "DPFileInfo.h"
 
@@ -16,7 +18,7 @@
 
 typedef QMap<unsigned int, PluginInterface*> CPlugins;
 
-class __declspec(dllexport) CMainApplication : public QApplication
+class DPVISION_EXPORT CMainApplication : public QApplication
 {
 	//Q_OBJECT
 public:

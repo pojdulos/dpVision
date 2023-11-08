@@ -6,7 +6,7 @@
 #include "Model3D.h"
 #include <vector>
 
-class __declspec(dllexport) CAnnotationBezier : public CAnnotation
+class DPVISION_EXPORT CAnnotationBezier : public CAnnotation
 {
 public:
 	std::vector<CPoint3d> m_list;

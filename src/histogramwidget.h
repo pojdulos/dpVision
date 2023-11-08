@@ -42,12 +42,14 @@
 #ifndef HISTOGRAMWIDGET_H
 #define HISTOGRAMWIDGET_H
 
+#include "dll_global.h"
+
 #include <QtWidgets/QDockWidget>
 #include <map>
 
 class CHistogram;
 
-class __declspec(dllexport) HistogramWidget : public QWidget
+class DPVISION_EXPORT HistogramWidget : public QWidget
 {
     Q_OBJECT
 

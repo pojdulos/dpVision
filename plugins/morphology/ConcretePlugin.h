@@ -11,7 +11,7 @@ class CAnnotationPoint;
 class CSymulatorZgryzu;
 class CModel3D;
 
-class PLUGINDLL_API ConcretePlugin : public Plugin
+class DPVISION_DLL_API ConcretePlugin : public Plugin
 {
 	bool m_picking;
 

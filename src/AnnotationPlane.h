@@ -8,7 +8,7 @@
 
 //class CTransform;
 
-class __declspec(dllexport)  CAnnotationPlane : public CAnnotation, public CPlane
+class DPVISION_EXPORT CAnnotationPlane : public CAnnotation, public CPlane
 {
 	double m_size;
 

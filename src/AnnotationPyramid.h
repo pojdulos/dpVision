@@ -7,7 +7,7 @@
 
 #include <list>
 
-class __declspec(dllexport)  CAnnotationPyramid : public CAnnotation
+class DPVISION_EXPORT CAnnotationPyramid : public CAnnotation
 {
 	CPoint3d m_bottom[4];
 	CPoint3d m_top[4];

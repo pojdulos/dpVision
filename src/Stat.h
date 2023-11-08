@@ -1,10 +1,12 @@
 #pragma once
 
+#include "dll_global.h"
+
 #include <vector>
 #include <cstddef>
 #include <cfloat>
 
-class  __declspec(dllexport) CStat
+class  DPVISION_EXPORT CStat
 {
 public:
 	typedef enum {

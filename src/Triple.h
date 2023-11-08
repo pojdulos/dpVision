@@ -2,12 +2,14 @@
 #ifndef _TRIO_H_BY_DP_INCLUDED_
 #define _TRIO_H_BY_DP_INCLUDED_
 
+#include "dll_global.h"
+
 #include <Eigen/Geometry>
 #include <type_traits>
 
 template<
 	typename _T,
-	typename = typename std::enable_if<std::is_arithmetic<_T>::value, _T>::type >  class __declspec(dllexport) CTriple
+	typename = typename std::enable_if<std::is_arithmetic<_T>::value, _T>::type >  class DPVISION_EXPORT CTriple
 {
 public:
 	union {

@@ -1,9 +1,11 @@
 #pragma once
 
+#include "dll_global.h"
+
 #include "Texture.h"
 #include "DPFileInfo.h"
 
-struct __declspec(dllexport) SBgImage {
+struct DPVISION_EXPORT SBgImage {
 	char Path[255];
 	QString path;
 	int SizeX;
@@ -15,7 +17,7 @@ struct __declspec(dllexport) SBgImage {
 	CTexture* tex;
 };
 
-class __declspec(dllexport) CBackgroundPlane
+class DPVISION_EXPORT CBackgroundPlane
 {
 	//std::vector<SBgImage> vImages;
 	SBgImage vImages[25];
