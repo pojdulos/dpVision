@@ -1,6 +1,9 @@
 # dpVision
+Experimental 3d viewer and editor
 
-Currently runs on windows only, compiles using MinGW or MSVC++.
+* The application currently compiles and runs only on Windows
+* Easy CMake-based configuration
+* Building with MinGW (projects for Netbeans and VS Code are included) and MSVC++ was tested.
 
 ## prerequisites
 
