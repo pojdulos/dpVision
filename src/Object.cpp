@@ -1,4 +1,5 @@
 #include "Object.h"
+#include "Annotation.h"
 
 // konstruktor ze wskazaniem rodzica
 CObject::CObject(CBaseObject *p) : CBaseObject(p), CBoundingBox()//, CMinMax()
@@ -19,18 +20,27 @@ CObject::CObject(const CObject &b) : CBaseObject(b), CBoundingBox(b) //CMinMax(b
 	{
 		CBaseObject *child = it->second->getCopy();
 		child->setParent(this);
-		//child->setId(getNewId());
 		addChild(child);
 	}
+
+	for (Annotations::const_iterator it = b.m_annotations.begin(); it != b.m_annotations.end(); it++)
+	{
+		CAnnotation* child = it->second->getCopy();
+		child->setParent(this);
+		addAnnotation(child);
+	}
+
 };
 
 CObject::~CObject()
 {
-	while (!m_data.empty())
+	auto it = m_data.rbegin();
+	while (it != m_data.rend())
 	{
-		delete m_data.begin()->second;
-		m_data.erase(m_data.begin());
+		delete (*it).second;
+		it++;
 	}
+	m_data.clear();
 }
 
 void CObject::applyTransformation(CTransform& from, CTransform& to)
@@ -127,6 +137,21 @@ bool CObject::removeAnnotation(CAnnotation *an)
 	}
 	
 	return false;
+}
+
+void CObject::showChildren(bool show, QSet<CBaseObject::Type> inc, QSet<CBaseObject::Type> exc)
+{
+	if (inc.contains((CBaseObject::Type)this->type()) || (inc.empty() && !exc.contains((CBaseObject::Type)this->type())))
+		this->setSelfVisibility(show);
+
+	for (auto& kid : this->m_data)
+	{
+		if (inc.contains((CBaseObject::Type)kid.second->type()) || (inc.empty() && !exc.contains((CBaseObject::Type)kid.second->type())))
+		{
+			kid.second->setSelfVisibility(show);
+		}
+		kid.second->showChildren(show, inc, exc);
+	}
 }
 
 

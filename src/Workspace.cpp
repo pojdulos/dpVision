@@ -53,6 +53,7 @@ bool CWorkspace::_addModel( CModel3D *pMdlR )
 
 	try {
 		this->m_data.insert( CWorkspace::value_type( pMdlR->id(), pMdlR ) );
+		pMdlR->setParent(nullptr);
 	}
 	catch ( std::bad_alloc &e ) {
 		return false;

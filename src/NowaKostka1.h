@@ -43,18 +43,18 @@ public:
 
 	bool init(size_t cols, size_t rows, size_t lays) {
 		if (m_data != nullptr) delete[] m_data;
-		//m_voxelSize.Set(1.0, 1.0, 1.0);
+		m_voxelSize.Set(1.0, 1.0, 1.0);
 		size_t _size = cols * rows * lays;
 		if (_size > 0) {
 			m_cols = cols;
 			m_rows = rows;
 			m_lays = lays;
 
-			//for (int l=0; l<lays; l++)
-			//{
-			//	m_imgPos.push_back(CPoint3d(0,0,l));
-			//	m_gantra.push_back(0);
-			//}
+			for (int l=0; l<lays; l++)
+			{
+				m_imgPos.push_back(CPoint3d(0,0,l));
+				m_gantra.push_back(0);
+			}
 
 			m_data = new Type[_size];
 			return true;

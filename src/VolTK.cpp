@@ -419,12 +419,60 @@ void main(void)
 }
 
 
-void CVolTK::renderPart(QOpenGLShaderProgram &program, uint16_t min, uint16_t max, QColor col)
+float fixVal(float val)
 {
-	program.setUniformValue(colorLocation, col);
+	float k = 3.0;  // wspó³czynnik nachylenia krzywej
+	float x_0 = 0.3;  // x dla którego funkcja osi¹ga 0.5
 
+	float c = 1.0f / (1.0f + exp(-k * (val * 10.0f - x_0)));
+
+	return c;
+}
+
+void CVolTK::renderPart(QOpenGLShaderProgram& program, uint16_t min, uint16_t max, int fR, int fG, int fB)
+{
 	for (int it = min; it < max; it++)
 	{
+		float c = float(it - min) / float(max - min);
+
+		//float c = fixVal( ic );
+
+		int r = c * fR;
+		int g = c * fG;
+		int b = c * fB;
+
+		program.setUniformValue(colorLocation, QColor(r, g, b));
+
+		DisplayDataPart& vertices = *m_displayData[it];
+
+		if (!vertices.empty())
+		{
+			size_t idx = 0;
+
+			functions->glVertexAttribPointer(vertexLocation, 3, GL_SHORT, GL_FALSE, 0, vertices.data());
+
+			while (idx < vertices.size())
+			{
+				functions->glDrawArrays(GL_POINTS, idx, std::min(PACKET_SIZE, vertices.size() - idx));
+
+				idx += PACKET_SIZE;
+			}
+		}
+	}
+}
+
+void CVolTK::renderPart(QOpenGLShaderProgram &program, uint16_t min, uint16_t max, QColor col)
+{
+	for (int it = min; it < max; it++)
+	{
+		float c = float(it - min) / float(max - min);
+
+		int r = col.red() * c;
+		int g = col.green() * c;
+		int b = col.blue() * c;
+
+		program.setUniformValue(colorLocation, QColor(r, g, b));
+
 		DisplayDataPart& vertices = *m_displayData[it];
 
 		if (!vertices.empty())
@@ -448,11 +496,14 @@ void CVolTK::renderPart2(QOpenGLShaderProgram& program, uint16_t min, uint16_t m
 {
 	for (int cc = min; cc <= max; cc++)
 	{
-		//qInfo() << cc;
-		//QColor col(cc/16, cc/16, cc/16);
-		QColor col(cc / 256, cc / 256, cc / 256);
+		float c = 1.0f;
 
-		program.setUniformValue(colorLocation, col);
+		if (max>min)
+			c = float(cc - min) / float(max - min);
+
+		//c = fixVal(c);
+
+		program.setUniformValue(colorLocation, QColor(c*255, c * 255, c * 255));
 
 		DisplayDataPart& vertices = *m_displayData[cc];
 
@@ -515,7 +566,8 @@ void CVolTK::renderSelf()
 		{
 			if (f.second.first)
 			{
-				renderPart(program, wB, wE, QColor::fromRgba(f.second.second.toArgb32()));
+				CRGBA c = f.second.second;
+				renderPart(program, wB, wE, c.red(), c.green(), c.blue());
 			}
 			wB = wE;
 		}

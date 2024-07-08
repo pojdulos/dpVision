@@ -11,16 +11,23 @@ class QColorDialog;
 class PropPointCloud : public PropWidget
 {
 	Q_OBJECT
-		CPointCloud* obj;
+
+	CPointCloud* obj;
+
+	static bool group_visible;
+
 public:
 	explicit PropPointCloud(CPointCloud *mesh, QWidget *parent = 0);
 	~PropPointCloud();
 
 	static PropWidget* create(CPointCloud* m, QWidget* parent = 0);
+	static QVector<PropWidget*> create_and_get_subwidgets(CBaseObject* obj);
 
 	virtual void updateProperties() override;
 
 public slots:
+	void adjustGroupHeight(bool);
+
 	//void testButtonClicked();
 
 	void pointSizeChanged(int);

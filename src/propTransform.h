@@ -34,7 +34,10 @@ class DPVISION_EXPORT PropTransform : public PropWidget
 	Q_OBJECT
 	CTransform* m_trans;
 
+	static bool group_visible;
+
 public:
+	virtual QString treeItemLabel() override;
 	void addSeparator(const QString& title, QStandardItemModel* model);
 	void updateDouble(QString itemName, double v);
 	void updateVector3d(QString itemName, CVector3d q);
@@ -73,6 +76,8 @@ public slots:
 	void pasteFromClipboard();
 
 	void onItemChanged(QStandardItem*);
+
+	void onShowScrewCheckBox(bool b);
 
 	void dataChanged(QStandardItem* item);
 

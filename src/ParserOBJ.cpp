@@ -413,6 +413,7 @@ size_t CParserOBJ::Run()
 		return 0;
 	}
 
+	pMeshData->setPath(plikSiatki.absoluteFilePath());
 	m_model->setPath(plikSiatki.absoluteFilePath());
 	m_model->setLabel(plikSiatki.fileName());
 
@@ -636,6 +637,7 @@ size_t CParserOBJ::Run()
 			}
 			hasGroups = true;
 			pMeshData->setLabel(name);
+			pMeshData->setPath(plikSiatki.absoluteFilePath());
 			meshinfo[pMeshData->id()] = { true,true,true };
 		}
 		else if (qline.startsWith("usemtl", Qt::CaseInsensitive))

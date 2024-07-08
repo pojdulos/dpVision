@@ -70,12 +70,12 @@ void CParserWRL::VRML_ParseNode_IndexedFaceSet( FILE *plik )
 				bool koniec = false;
 				while ( ! koniec )
 				{
-					if ( 1 == fscanf( plik, " %ld ", &a ) )
+					if ( 1 == fscanf( plik, " %d ", &a ) )
 					{
 						fscanf( plik, " , " ); // tu mo¿e nie byæ przecinka
-						fscanf( plik, " %ld ", &b );
+						fscanf( plik, " %d ", &b );
 						fscanf( plik, " , " ); // tu mo¿e nie byæ przecinka
-						fscanf( plik, " %ld ", &c );
+						fscanf( plik, " %d ", &c );
 						fscanf( plik, " , " ); // tu mo¿e nie byæ przecinka
 						fscanf( plik, " -1 " );
 						fscanf( plik, " , " ); // tu mo¿e nie byæ przecinka

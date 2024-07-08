@@ -32,9 +32,9 @@
 
 CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 {
-	QRect r = AP::mainApp().settings->value("mainwindow/geometry").value<QRect>();
+	//QRect r = AP::mainApp().settings->value("mainwindow/geometry").value<QRect>();
 
-	setGeometry(r);
+	//setGeometry(r);
 
 	ui.setupUi(this);
 
@@ -118,11 +118,12 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 
 	connect(dockWorkspace, SIGNAL(currentObjectChanged(int)), dockProperties, SLOT(onCurrentObjectChanged(int)));
 
+	this->restoreState(AP::mainApp().settings->value("mainwindow/dockState").toByteArray());
+	this->restoreState(AP::mainApp().settings->value("mainwindow/geometry").toByteArray());
 }
 
-CMainWindow::~CMainWindow()
-{
-}
+CMainWindow::~CMainWindow() {}
+
 
 CMainWindow* CMainWindow::instance()
 {

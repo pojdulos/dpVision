@@ -21,6 +21,7 @@ public:
 	~PropImage();
 
 	static PropWidget* create(CImage* m, QWidget* parent = 0);
+	static QVector<PropWidget*> create_and_get_subwidgets(CBaseObject* obj);
 
 	//virtual void paintEvent(QPaintEvent * event) override;
 

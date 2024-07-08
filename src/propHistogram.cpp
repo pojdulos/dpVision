@@ -34,6 +34,12 @@ PropWidget* PropHistogram::create(CHistogram* m, QWidget* parent)
 	return widget;
 }
 
+QVector<PropWidget*> PropHistogram::create_and_get_subwidgets(CBaseObject* obj)
+{
+	CHistogram* m = (CHistogram*)obj;
+	return QVector<PropWidget*>({ new PropBaseObject(m), new PropAnnotation(m), new PropHistogram(m) });
+}
+
 void PropHistogram::updateProperties()
 {
 	//PropAnnotation::updateProperties();

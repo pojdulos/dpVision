@@ -5,10 +5,79 @@
 
 #include "ImageLabel.h"
 
+///////////////////////////////////////////////////////////////////////////////////////////
+// ImageDialog
+///////////////////////////////////////////////////////////////////////////////////////////
 
-void DPVISION_EXPORT testVolTKimageDialog(CVolTK* volTK)
+VolTKimageDialog::VolTKimageDialog(Volumetric* volTK, QWidget* parent, Qt::WindowFlags f) : QDialog(parent, f), m_VolTK(volTK)
 {
-	VolTKimageDialog* dialog = new VolTKimageDialog(volTK);
+	ui.setupUi(this);
+
+	this->setWindowFlags(this->windowFlags() | Qt::WindowMaximizeButtonHint); // | Qt::WindowMinimizeButtonHint);
+
+	m_imageLabel = new ImageLabel(ui.scrollArea);
+	//m_imageLabel->setScrollArea(ui.scrollArea);
+	//m_imageLabel->setMainWidget(ui.imageLabelWidget);
+	m_imageLabel->setMouseTracking(true);
+	m_imageLabel->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignTop);
+	m_imageLabel->m_scale = 1.0;
+
+	//ui.scrollArea->setAlignment(Qt::AlignmentFlag::AlignCenter | Qt::AlignmentFlag::AlignHCenter);
+
+	ui.scrollArea->setWidget(m_imageLabel);
+
+	QObject::connect(m_imageLabel, SIGNAL(scaleChanged()), this, SLOT(onImageScaleChanged()));
+	QObject::connect(m_imageLabel, SIGNAL(mousePressed(QPoint)), this, SLOT(onImageMousePressed(QPoint)));
+	
+	//this->setMaximumWidth(1600); this->setMinimumWidth(400);
+	//this->setMaximumHeight(940); this->setMinimumHeight(265);
+
+	currentView = Volumetric::Layer::XY;
+	dispBits = 16;
+	setTreshWidget(false, 0, 0xffff, 0, 0xffff);
+
+	ui.horizontalSlider->setRange(0, m_VolTK->m_shape[0] - 1);
+
+
+	QObject::connect(m_imageLabel, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
+	
+}
+
+void VolTKimageDialog::initContent(std::vector<QString> paths)
+{
+}
+
+void VolTKimageDialog::setTreshWidget(bool check, int min, int max, Volumetric::VoxelType low, Volumetric::VoxelType up)
+{
+	ui.treshGroupBox->setChecked(check);
+	ui.treshSlider->setRange(min, max);
+	ui.treshSlider->setValue(low);
+
+	ui.upTreshSlider->setRange(min, max);
+	ui.upTreshSlider->setValue(up);
+
+	ui.lowerTresh->setRange(min, max);
+	ui.lowerTresh->setValue(low);
+
+	ui.upperTresh->setRange(min, max);
+	ui.upperTresh->setValue(up);
+
+}
+
+bool VolTKimageDialog::getTresh(Volumetric::VoxelType &lowT, Volumetric::VoxelType &upT )
+{
+	if (ui.treshGroupBox->isChecked())
+	{
+		lowT = ui.treshSlider->value();
+		upT = ui.upTreshSlider->value();
+	}
+
+	return ui.treshGroupBox->isChecked();
+}
+
+void VolTKimageDialog::test_dialog(Volumetric* volum)
+{
+	VolTKimageDialog* dialog = new VolTKimageDialog(volum);
 
 	//Ui_TKimageDialog& pmUi = dialog->getUI();
 
@@ -70,66 +139,6 @@ void DPVISION_EXPORT testVolTKimageDialog(CVolTK* volTK)
 	}
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////
-// ImageDialog
-///////////////////////////////////////////////////////////////////////////////////////////
-
-VolTKimageDialog::VolTKimageDialog(CVolTK* volTK, QWidget* parent, Qt::WindowFlags f) : QDialog(parent, f), m_VolTK(volTK)
-{
-	ui.setupUi(this);
-
-	m_imageLabel = new ImageLabel(ui.scrollArea);
-	ui.scrollArea->setWidget(m_imageLabel);
-	m_imageLabel->setMouseTracking(true);
-
-	m_imageLabel->m_scale = 1.0;
-
-	this->setMaximumWidth(1600); this->setMinimumWidth(400);
-	this->setMaximumHeight(940); this->setMinimumHeight(265);
-
-	currentView = CVolTK::Layer::XY;
-	dispBits = 16;
-	setTreshWidget(false, 0, 0xffff, 0, 0xffff);
-
-	ui.horizontalSlider->setRange(0, m_VolTK->kostka.m_lays-1);
-
-
-	QObject::connect(m_imageLabel, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
-	
-}
-
-void VolTKimageDialog::initContent(std::vector<QString> paths)
-{
-}
-
-void VolTKimageDialog::setTreshWidget(bool check, int min, int max, uint16_t low, uint16_t up)
-{
-	ui.treshGroupBox->setChecked(check);
-	ui.treshSlider->setRange(min, max);
-	ui.treshSlider->setValue(low);
-
-	ui.upTreshSlider->setRange(min, max);
-	ui.upTreshSlider->setValue(up);
-
-	ui.lowerTresh->setRange(min, max);
-	ui.lowerTresh->setValue(low);
-
-	ui.upperTresh->setRange(min, max);
-	ui.upperTresh->setValue(up);
-
-}
-
-bool VolTKimageDialog::getTresh( uint16_t &lowT, uint16_t &upT )
-{
-	if (ui.treshGroupBox->isChecked())
-	{
-		lowT = ui.treshSlider->value();
-		upT = ui.upTreshSlider->value();
-	}
-
-	return ui.treshGroupBox->isChecked();
-}
-
 //void VolTKimageDialog::addPicture(QString path)
 //{
 //	//m_obrazki.push_back(QPixmap(path));
@@ -147,17 +156,17 @@ void VolTKimageDialog::addName(QString name)
 
 void VolTKimageDialog::setSelection(int tx, int ty, int bx, int by)
 {
-	m_imageLabel->m_sel = QRectF( tx, ty, bx - tx, by - ty );
+	m_imageLabel->m_sel = QRect( tx, ty, bx - tx, by - ty );
 }
 
 void VolTKimageDialog::setSelection(QRect s)
 {
-	m_imageLabel->m_sel = QRectF(s);
+	m_imageLabel->m_sel = QRect(s);
 }
 
 QRect VolTKimageDialog::getSelection()
 {
-	return m_imageLabel->m_sel.toRect();
+	return m_imageLabel->m_sel;
 }
 
 
@@ -372,7 +381,7 @@ QImage doMedianFilter(QImage srcImg, int size)
 
 void VolTKimageDialog::changeDisplayedPixmap(int i)
 {
-	changeDisplayedPixmap(m_VolTK->getLayerAsImage(i, currentView, dispBits));
+	changeDisplayedPixmap(m_VolTK->getLayerAsImage(i, currentView));
 }
 
 void VolTKimageDialog::changeDisplayedPixmap(QImage image)
@@ -392,37 +401,72 @@ void VolTKimageDialog::changeDisplayedPixmap(QImage image)
 	int imgW = pic.width();
 	int imgH = pic.height();
 
-	if ((imgW < this->maximumWidth()) && (imgH < this->maximumHeight()))
+	if (ui.fitCheckBox->isChecked())
 	{
-		this->setMaximumWidth(imgW); this->setMinimumWidth(imgW);
-		this->setMaximumHeight(imgH + 40); this->setMinimumHeight(imgH + 40);
-		ui.scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
-		ui.scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
-
-		m_imageLabel->setPixmap(pic);
-
-		m_imageLabel->m_scale = 1.0;
-	}
-	else if (ui.fitCheckBox->isChecked())
-	{
-		ui.scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
-		ui.scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
-		int w = ui.scrollArea->width();
-		int h = ui.scrollArea->height();
+		// Uzyskanie rzeczywistych wymiarów dostêpnych w scrollArea
+		int w = ui.scrollArea->contentsRect().width();
+		int h = ui.scrollArea->contentsRect().height();
 
 		QPixmap p = pic.scaled(w, h, Qt::KeepAspectRatio);
 		m_imageLabel->setPixmap(p);
 
-		m_imageLabel->m_scale = (double)pic.width() / p.width();
+		// Dostosowanie rozmiaru etykiety po ustawieniu nowej pixmapy
+		m_imageLabel->adjustSize();
+
+		//m_imageLabel->m_scale = static_cast<double>(pic.width()) / p.width();
+	}
+	else if (m_imageLabel->m_scale == 1.0)
+	{
+		m_imageLabel->setPixmap(pic);
+
+		// Dostosowanie rozmiaru etykiety po ustawieniu nowej pixmapy
+		m_imageLabel->adjustSize();
+
+		//m_imageLabel->m_scale = 1.0;
 	}
 	else
 	{
-		ui.scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
-		ui.scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
-		m_imageLabel->setPixmap(pic);
+		int w = int(double(imgW) * m_imageLabel->m_scale);
+		int h = int(double(imgH) * m_imageLabel->m_scale);
 
-		m_imageLabel->m_scale = 1.0;
+		//qInfo() << w << h;
+		QPixmap p = pic.scaled(w, h, Qt::KeepAspectRatio);
+		m_imageLabel->setPixmap(p);
+
+		// Dostosowanie rozmiaru etykiety po ustawieniu nowej pixmapy
+		m_imageLabel->adjustSize();
+		this->update();
 	}
+
+	// U¿ycie update() zamiast repaint()
+	//this->update();
+
+
+	//if ((imgW < this->maximumWidth()) && (imgH < this->maximumHeight()))
+	//{
+	//	//this->setMaximumWidth(imgW); this->setMinimumWidth(imgW);
+	//	//this->setMaximumHeight(imgH + 40); this->setMinimumHeight(imgH + 40);
+	//	//ui.scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+	//	//ui.scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+
+	//	m_imageLabel->setPixmap(pic);
+
+	//	m_imageLabel->m_scale = 1.0;
+	//}
+	//else if (ui.fitCheckBox->isChecked())
+	//{
+	//	//ui.scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+	//	//ui.scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+	//	int w = ui.scrollArea->width();
+	//	int h = ui.scrollArea->height();
+
+	//	qInfo() << w << h;
+
+	//	QPixmap p = pic.scaled(w, h, Qt::KeepAspectRatio);
+	//	m_imageLabel->setPixmap(p);
+
+	//	m_imageLabel->m_scale = (double)pic.width() / p.width();
+	//}
 }
 
 
@@ -433,13 +477,24 @@ void VolTKimageDialog::onFitCheckBox(int i)
 
 void VolTKimageDialog::onSelectionChanged()//QRect r)
 {
-	QRect sel = m_imageLabel->m_sel.toRect();
+	QRect sel = m_imageLabel->m_sel;
 	ui.selGroupBox->setChecked((sel.width() > 0) && (sel.height() > 0));
 
+	ui.selLeft->blockSignals(true);
 	ui.selLeft->setValue(sel.left());
+	ui.selLeft->blockSignals(false);
+
+	ui.selTop->blockSignals(true);
 	ui.selTop->setValue(sel.top());
+	ui.selTop->blockSignals(false);
+
+	ui.selRight->blockSignals(true);
 	ui.selRight->setValue(sel.right());
+	ui.selRight->blockSignals(false);
+
+	ui.selBottom->blockSignals(true);
 	ui.selBottom->setValue(sel.bottom());
+	ui.selBottom->blockSignals(false);
 }
 
 void VolTKimageDialog::onSelLeftEdited(int l)
@@ -527,21 +582,21 @@ void VolTKimageDialog::onViewPlaneChanged(QString val)
 {
 	if (val == "XY")
 	{
-		currentView = CVolTK::Layer::XY;
+		currentView = Volumetric::Layer::XY;
 
-		ui.horizontalSlider->setRange(0, m_VolTK->kostka.m_lays - 1);
+		ui.horizontalSlider->setRange(0, m_VolTK->m_shape[0] - 1);
 	}
 	else if (val == "YZ")
 	{
-		currentView = CVolTK::Layer::YZ;
+		currentView = Volumetric::Layer::YZ;
 
-		ui.horizontalSlider->setRange(0, m_VolTK->kostka.m_cols - 1);
+		ui.horizontalSlider->setRange(0, m_VolTK->m_shape[2] - 1);
 	}
 	else if (val == "ZX")
 	{
-		currentView = CVolTK::Layer::ZX;
+		currentView = Volumetric::Layer::ZX;
 
-		ui.horizontalSlider->setRange(0, m_VolTK->kostka.m_rows - 1);
+		ui.horizontalSlider->setRange(0, m_VolTK->m_shape[1] - 1);
 	}
 	ui.horizontalSlider->setValue(0);
 	changeDisplayedPixmap(0);
@@ -633,155 +688,206 @@ void VolTKimageDialog::onConvFilterBtn()
 
 	if (dlg->exec())
 	{
-		QImage image = aplyConvFilter(m_VolTK->getLayerAsImage(ui.horizontalSlider->value(), currentView, dispBits), filter);
+		QImage image = aplyConvFilter(m_VolTK->getLayerAsImage(ui.horizontalSlider->value(), currentView), filter);
 		
 		changeDisplayedPixmap(image);
 	}
 }
 
-
-
-
-
-int mediana(NowaKostka1& kostka, size_t destAdress, size_t cols, int size)
+#include <QMouseEvent>
+void VolTKimageDialog::onImageScaleChanged()
 {
-	int halfSize = size / 2;
-	size_t srcAdress = destAdress - halfSize;
-
-	int srcVal[81]; //array for maximal size 9
-	
-	size_t srcRowAdress = srcAdress - cols * halfSize;
-
-	for (int srow = 0; srow < size; srow++)
-	{
-		size_t srcCellAdress = srcRowAdress + srow;
-		for (int scol = 0; scol < size; scol++)
-		{
-			srcVal[srow * size + scol] = ((NowaKostka1&)kostka).get(srcCellAdress);
-			srcCellAdress++;
-		}
-
-		srcRowAdress += cols;
-	}
-	return med(srcVal, size*size);
+	changeDisplayedPixmap(ui.horizontalSlider->value());
 }
 
-int VolTKimageDialog::mediana0(NowaKostka1& kostka, size_t dest0adress, int filterSize)
+#include <QtWidgets>
+
+void VolTKimageDialog::onImageMousePressed(QPoint pos)
 {
-	size_t srcRowAdress = dest0adress;
+	QRect r = ui.scrollArea->viewport()->rect();
 
-	int* srcVal = new int[filterSize*filterSize]; //array for maximal size 9
-	int fastIdx = 0;
-	for (int srow = 0; srow < filterSize; srow++)
-	{
-		size_t srcCellAdress = srcRowAdress + srow;
-		for (int scol = 0; scol < filterSize; scol++)
-		{
-			//srcVal[srow * filterSize + scol] = ((NowaKostka1&)kostka).get(srcCellAdress);
-			srcVal[fastIdx] = kostka.get(srcCellAdress);
-			fastIdx++;
-			srcCellAdress++;
-		}
+	int sW = r.width();
+	int sH = r.height();
+	int iW = m_imageLabel->width();
+	int iH = m_imageLabel->height();
 
-		srcRowAdress += kostka.m_cols;
-	}
+	// Przesuniêcie wynikaj¹ce z przewijania
+	//int hScroll = ui.scrollArea->horizontalScrollBar()->value();
+	//int vScroll = ui.scrollArea->verticalScrollBar()->value();
 
-	int result = med(srcVal, filterSize * filterSize);
-	delete[] srcVal;
-	
-	return result;
-}
+	// Przesuniêcie wynikaj¹ce z wyœrodkowania QLabel w QScrollArea
+	int hCenterOffset = (sW - iW) / 2;
+	int vCenterOffset = (sH - iH) / 2;
 
+	// Pozycja klikniêcia wzglêdem obrazka
+	//QPoint imagePos = pos + QPoint(hScroll - hCenterOffset, vScroll - vCenterOffset);
 
-void VolTKimageDialog::do3dMedianFilter(NowaKostka1& src, NowaKostka1&dst, int size)
-{
-	UI::PROGRESSBAR::init(0, src.m_lays, 0);
-	UI::PROGRESSBAR::setText("3d data filtering: ");
+	qInfo() << pos <<sW << sH << iW <<iH << hCenterOffset << vCenterOffset;
 
-	size_t destOffset2 = src.m_cols * (size / 2) + (size / 2);
-	
-	bool setTresh = ui.treshGroupBox->isChecked();
-	int lowTresh = ui.treshSlider->value();
-	int upTresh = ui.upTreshSlider->value();
-
-	for (size_t layer = 0; layer < src.m_lays; layer++)
-	{
-		if (!(layer%10)) UI::PROGRESSBAR::setValue(layer);
-		size_t layOffset = src.m_rows * src.m_cols * layer;
-//		#pragma loop(hint_parallel(0))
-		for (size_t row = 0; row < (src.m_rows - (size - 1)); row++)
-		{
-			size_t rowOffset = src.m_cols * row;
-			for (size_t col = 0; col < (src.m_cols - (size - 1)); col++)
-			{
-				size_t currentFilter0adress = layOffset + rowOffset + col;
-				size_t currentDestAdress = currentFilter0adress + destOffset2;
-
-				int newValue = mediana0(src, currentFilter0adress, size);
-				
-				//if (setTresh)
-				//{
-				//	if (newValue < lowTresh)
-				//	{
-				//		newValue = 0;
-				//	}
-				//	else if (newValue > upTresh)
-				//	{
-				//		newValue = 0;
-				//	}
-				//}
-
-				//dst.set(currentDestAdress, newValue);
-				dst.set(col+(size/2),row+(size/2),layer, newValue);
-			}
-		}
-	}
-	UI::PROGRESSBAR::hide();
+	//if (e->buttons() == Qt::LeftButton)
+	//{
+	//	if (m_mode == Move)
+	//	{
+	//		m_offs = m_sel.topLeft() - QPointF(e->pos()) / m_scale;
+	//	}
+	//	else if (m_mode == None)
+	//	{
+	//		m_sel.setTopLeft(QPointF(e->pos()) / m_scale);
+	//		m_sel.setSize(QSizeF(0, 0));
+	//	}
+	//}
+	//else
+	//{
+	//	m_offs = QPointF(0, 0);
+	//	m_sel.setTopLeft(QPointF(0, 0));
+	//	m_sel.setSize(QSizeF(0, 0));
+	//}
+	//emit(selectionChanged());
 }
 
 
-#include "AP.h"
 
-void VolTKimageDialog::onCreateVolTKStructureBtn()
-{
-	CVolTK* nowy = new CVolTK(*m_VolTK);
 
-	if (ui.medianGroupBox->isChecked())
-	{
-		nowy->kostka.setAllData(0);
-		do3dMedianFilter(m_VolTK->kostka, nowy->kostka, ui.medianFilterSizeSpinBox->value());
-	}
+//
+//int mediana(NowaKostka1& kostka, size_t destAdress, size_t cols, int size)
+//{
+//	int halfSize = size / 2;
+//	size_t srcAdress = destAdress - halfSize;
+//
+//	int srcVal[81]; //array for maximal size 9
+//	
+//	size_t srcRowAdress = srcAdress - cols * halfSize;
+//
+//	for (int srow = 0; srow < size; srow++)
+//	{
+//		size_t srcCellAdress = srcRowAdress + srow;
+//		for (int scol = 0; scol < size; scol++)
+//		{
+//			srcVal[srow * size + scol] = ((NowaKostka1&)kostka).get(srcCellAdress);
+//			srcCellAdress++;
+//		}
+//
+//		srcRowAdress += cols;
+//	}
+//	return med(srcVal, size*size);
+//}
+//
+//int VolTKimageDialog::mediana0(NowaKostka1& kostka, size_t dest0adress, int filterSize)
+//{
+//	size_t srcRowAdress = dest0adress;
+//
+//	int* srcVal = new int[filterSize*filterSize]; //array for maximal size 9
+//	int fastIdx = 0;
+//	for (int srow = 0; srow < filterSize; srow++)
+//	{
+//		size_t srcCellAdress = srcRowAdress + srow;
+//		for (int scol = 0; scol < filterSize; scol++)
+//		{
+//			//srcVal[srow * filterSize + scol] = ((NowaKostka1&)kostka).get(srcCellAdress);
+//			srcVal[fastIdx] = kostka.get(srcCellAdress);
+//			fastIdx++;
+//			srcCellAdress++;
+//		}
+//
+//		srcRowAdress += kostka.m_cols;
+//	}
+//
+//	int result = med(srcVal, filterSize * filterSize);
+//	delete[] srcVal;
+//	
+//	return result;
+//}
+//
+//
+//void VolTKimageDialog::do3dMedianFilter(NowaKostka1& src, NowaKostka1&dst, int size)
+//{
+//	UI::PROGRESSBAR::init(0, src.m_lays, 0);
+//	UI::PROGRESSBAR::setText("3d data filtering: ");
+//
+//	size_t destOffset2 = src.m_cols * (size / 2) + (size / 2);
+//	
+//	bool setTresh = ui.treshGroupBox->isChecked();
+//	int lowTresh = ui.treshSlider->value();
+//	int upTresh = ui.upTreshSlider->value();
+//
+//	for (size_t layer = 0; layer < src.m_lays; layer++)
+//	{
+//		if (!(layer%10)) UI::PROGRESSBAR::setValue(layer);
+//		size_t layOffset = src.m_rows * src.m_cols * layer;
+////		#pragma loop(hint_parallel(0))
+//		for (size_t row = 0; row < (src.m_rows - (size - 1)); row++)
+//		{
+//			size_t rowOffset = src.m_cols * row;
+//			for (size_t col = 0; col < (src.m_cols - (size - 1)); col++)
+//			{
+//				size_t currentFilter0adress = layOffset + rowOffset + col;
+//				size_t currentDestAdress = currentFilter0adress + destOffset2;
+//
+//				int newValue = mediana0(src, currentFilter0adress, size);
+//				
+//				//if (setTresh)
+//				//{
+//				//	if (newValue < lowTresh)
+//				//	{
+//				//		newValue = 0;
+//				//	}
+//				//	else if (newValue > upTresh)
+//				//	{
+//				//		newValue = 0;
+//				//	}
+//				//}
+//
+//				//dst.set(currentDestAdress, newValue);
+//				dst.set(col+(size/2),row+(size/2),layer, newValue);
+//			}
+//		}
+//	}
+//	UI::PROGRESSBAR::hide();
+//}
+//
 
-	int lowTresh = ui.treshSlider->value();
-	int upTresh = ui.upTreshSlider->value();
+//#include "AP.h"
 
-	if (ui.treshGroupBox->isChecked())
-	{
-		for (size_t l = 0; l < nowy->kostka.m_lays; l++)
-			for (size_t r = 0; r < nowy->kostka.m_rows; r++)
-				for (size_t c = 0; c < nowy->kostka.m_cols; c++)
-				{
-					int val = nowy->kostka.get(c, r, l);
-
-					if (val < lowTresh)
-					{
-						nowy->kostka.set(c, r, l, 0);
-					}
-					else if (val > upTresh)
-					{
-						nowy->kostka.set(c, r, l, 0xffff);
-					}
-					else
-					{
-						nowy->kostka.set(c, r, l, val);
-					}
-				}
-	}
-
-	nowy->createDisplayData();
-	nowy->setGeometry();
-
-	AP::OBJECT::addChild(m_VolTK->getParent(), nowy);
-
-	accept();
-}
+//void VolTKimageDialog::onCreateVolTKStructureBtn()
+//{
+//	Volumetric* nowy = new Volumetric(*m_VolTK);
+//
+//	if (ui.medianGroupBox->isChecked())
+//	{
+//		nowy->kostka.setAllData(0);
+//		do3dMedianFilter(m_VolTK->kostka, nowy->kostka, ui.medianFilterSizeSpinBox->value());
+//	}
+//
+//	int lowTresh = ui.treshSlider->value();
+//	int upTresh = ui.upTreshSlider->value();
+//
+//	if (ui.treshGroupBox->isChecked())
+//	{
+//		for (size_t l = 0; l < nowy->kostka.m_lays; l++)
+//			for (size_t r = 0; r < nowy->kostka.m_rows; r++)
+//				for (size_t c = 0; c < nowy->kostka.m_cols; c++)
+//				{
+//					int val = nowy->kostka.get(c, r, l);
+//
+//					if (val < lowTresh)
+//					{
+//						nowy->kostka.set(c, r, l, 0);
+//					}
+//					else if (val > upTresh)
+//					{
+//						nowy->kostka.set(c, r, l, 0xffff);
+//					}
+//					else
+//					{
+//						nowy->kostka.set(c, r, l, val);
+//					}
+//				}
+//	}
+//
+//	nowy->createDisplayData();
+//	nowy->setGeometry();
+//
+//	AP::OBJECT::addChild(m_VolTK->getParent(), nowy);
+//
+//	accept();
+//}

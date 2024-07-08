@@ -3,18 +3,20 @@
 
 #include <QtWidgets/QWidget>
 
+class CBaseObject;
+
 class PropWidget : public QWidget
 {
 public:
-	explicit PropWidget(QWidget *parent = 0) : QWidget(parent) { /*updateProperties();*/ };
+	explicit PropWidget(QWidget *parent = 0);
 	~PropWidget() {};
 
-	//static PropWidget* create(QWidget *parent = 0) {};
-
-	//virtual void paintEvent(QPaintEvent * event) override ;
 	virtual void updateProperties();
 
 	static PropWidget* build(QVector<PropWidget*> content, QWidget* parent = 0);
+	static QVector<PropWidget*> create_and_get_subwidgets(CBaseObject* obj);
+
+	virtual QString treeItemLabel();
 };
 
 #endif // PROPWIDGET_H

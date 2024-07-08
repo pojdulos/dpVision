@@ -11,6 +11,7 @@ DPVISION_EXPORT CMainApplication * CMainApplication::theApp = nullptr;
 CMainApplication::CMainApplication(int& argc, char** argv) : QApplication(argc, argv)
 {
 	isInitialised = false;
+	verbose_mode = false;
 
 	setOrganizationName("IITiS PAN");
 	setOrganizationDomain("iitis.pl");
@@ -140,20 +141,20 @@ bool CMainApplication::loadWinPlugin( const QString &pluginPath )
 
 bool CMainApplication::loadPlugin( const QString &pluginPath )
 {
-	qInfo() << "Trying to load plugin: " << pluginPath;
+	if (verbose_mode) qDebug() << "Trying to load .dll file: " << pluginPath;
 	if (loadQtPlugin(pluginPath))
 	{
-		qInfo() << "-- has been identified as a plugin compatible with QPluginLoader";
+		if (verbose_mode) qDebug() << "-- has been identified as a plugin compatible with QPluginLoader";
 		return true;
 	}
 	if (loadWinPlugin(pluginPath))
 	{
-		qInfo() << "-- has been identified as an old-style dpVision plugin";
+		if (verbose_mode) qDebug() << "-- has been identified as an old-style dpVision plugin";
 		return true;
 	}
 	else
 	{
-		qInfo() << "-- probably this is not plugin";
+		if (verbose_mode) qDebug() << "-- probably this is not plugin";
 		return false;
 	}
 }
@@ -255,61 +256,3 @@ int CMainApplication::getUniqueId()
 	return m_lastObjectId;
 }
 
-
-void CMainApplication::preExec()
-{
-	Q_INIT_RESOURCE(dpVision);
-
-	if (AP::mainApp().settings->value("mainwindow/maximized", false).toBool())
-	{
-		CMainWindow::instance()->showMaximized();
-	}
-	else
-	{
-		CMainWindow::instance()->show();
-	}
-
-	UI::STATUSBAR::printf("loading plugins...");
-
-	LoadAllPlugins();
-
-
-	//wczytuję pliki z linii poleceń
-	vListaPlikow = this->arguments();
-	vListaPlikow.pop_front(); // pierwsza jest zawsze ścieżka do programu
-	if (!vListaPlikow.empty())
-	{
-		for (QString &plik : vListaPlikow)
-		{
-			if (QFile(plik).exists())
-			{
-				UI::STATUSBAR::setText("loading model: " + plik);
-				AP::WORKSPACE::loadModel(plik);
-			}
-		}
-
-	}
-	CWorkspace::instance()->_setCurrentModel(NO_CURRENT_MODEL);
-
-	isInitialised = true;
-	
-	UI::STATUSBAR::printf("starting tcp server...");
-
-	CMainWindow::instance()->startServer();
-
-	//FreeConsole();
-	//AllocConsole();
-	//AttachConsole(GetCurrentProcessId());
-	//freopen("CON", "w", stdout); 
-	//freopen("CON", "w", stderr);
-	//freopen("CON", "r", stdin);
-
-	UI::STATUSBAR::printf("ready...");
-}
-
-
-void CMainApplication::postExec()
-{
-	UnloadAllPlugins();
-	CWorkspace::instance()->clear();
-}

@@ -18,7 +18,6 @@ public:
 
 	CAnnotationTriangle( CAnnotationTriangle &t ) :CAnnotation( t )
 	{
-		setLabel("triple");
 		m_pC = t.m_pC;
 		m_pA = t.m_pA;
 		m_pB = t.m_pB;
@@ -49,6 +48,11 @@ public:
 	};
 
 	~CAnnotationTriangle(void){};
+
+	virtual CAnnotationTriangle* getCopy() override
+	{
+		return new CAnnotationTriangle(*this);
+	}
 
 	CPoint3d &C() { return m_pC; }
 	CPoint3d &A() { return m_pA; }

@@ -95,7 +95,8 @@
 			"typeinfo": "cpp",
 			"valarray": "cpp",
 			"variant": "cpp"
-		}
+		},
+		"cmake.options.statusBarVisibility": "visible"
 	},
 	"launch": {
 		"version": "0.2.0",

@@ -33,6 +33,12 @@ PropWidget* PropAnnotationTriple::create(CAnnotationTriple* m, QWidget* parent)
 	return widget;
 }
 
+QVector<PropWidget*> PropAnnotationTriple::create_and_get_subwidgets(CBaseObject* obj)
+{
+	CAnnotationTriple* m = (CAnnotationTriple*)obj;
+	return QVector<PropWidget*>({ new PropBaseObject(m), new PropAnnotation(m), new PropAnnotationTriple(m) });
+}
+
 void PropAnnotationTriple::updateProperties()
 {
 	//PropAnnotation::updateProperties();

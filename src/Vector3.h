@@ -45,7 +45,7 @@ public:
 		this->z = static_cast<_T>(k.z) - static_cast<_T>(p.z);
 	};
 
-	// modulo ka¿dego elementu przez skalar c, z zachowaniem znaku:
+	// modulo kaï¿½dego elementu przez skalar c, z zachowaniem znaku:
 	// (-c) < x <= c, (-c) < y <= c, (-c) < z <= c
 	template<typename _W> CVector3 modulo( const _W c ) {
 		while (this->x > c) this->x -= c;
@@ -103,7 +103,7 @@ public:
 		return CVector3<_T>(this->y * c.Z() - this->z * c.Y(), this->z * c.X() - this->x * c.Z(), this->x * c.Y() - this->y * c.X());
 	};
 
-	// iloczyn wektorowy ( wywo³uje metodê v.crossProduct(w) )
+	// iloczyn wektorowy ( wywoï¿½uje metodï¿½ v.crossProduct(w) )
 	template<typename _W> CVector3 operator*(const CVector3<_W> &c) const {	return crossProduct( c ); };
 
 
@@ -122,7 +122,7 @@ public:
 		}
 	};
 
-	// zwraca wektor znormalizowany, ale nie modyfikuje orygina³u
+	// zwraca wektor znormalizowany, ale nie modyfikuje oryginaï¿½u
 	CVector3 getNormalized() {
 		double d = sqrt((double)this->x*this->x + (double)this->y*this->y + (double)this->z*this->z);
 		if (d) {
@@ -134,16 +134,37 @@ public:
 	// negacja
 	inline void invert() { this->x = -this->x;	this->y = -this->y;	this->z = -this->z; };
 
-	// d³ugoœæ wektora
+	// dï¿½ugoï¿½ï¿½ wektora
 	double length() { return sqrt((double)this->x*this->x + (double)this->y*this->y + (double)this->z*this->z); };
 
-	// kwadrat d³ugoœci wektora
+	// kwadrat dï¿½ugoï¿½ci wektora
 	double squaredLength() { return (double)this->x*this->x + (double)this->y*this->y + (double)this->z*this->z; };
 
 
 	template<typename _W> double angleTo(const CVector3<_W> &c) {
 		return acos(dotProduct(c));
 	}
+
+	// export to Eigen::Vector4<Type>
+	Eigen::Matrix<_T, 4, 1> toVector4()
+	{
+		Eigen::Matrix<_T, 4, 1> ev;
+		ev(0, 0) = this->x;
+		ev(1, 0) = this->y;
+		ev(2, 0) = this->z;
+		ev(3, 0) = 0;
+		return ev;
+	}
+
+	// export to Eigen::RowVector4<Type>
+	Eigen::Matrix<_T, 1, 4> toRowVector4()
+	{
+		Eigen::Matrix<_T, 1, 4> erv;
+		erv(0, 0) = this->x;		erv(0, 1) = this->y;		erv(0, 2) = this->z;		erv(0, 3) = 0;
+		return erv;
+	}
+
+
 
 	// Multiply by matrix 4x4 (result 'w' component is discarded)
 	CVector3<_T> transformByMatrixF(float matrix[16])

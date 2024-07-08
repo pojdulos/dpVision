@@ -260,6 +260,8 @@ void GLViewer::paintGL()
 
 void GLViewer::draw3Dcontent()
 {
+	makeCurrent();
+
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 
@@ -393,7 +395,14 @@ void GLViewer::screenshot(QString path)
 //	draw3Dcontent();
 	QImage image = this->grabFramebuffer();
 
-	image.save(path);
+	QString fileName = path;
+	if (fileName.isEmpty()) {
+		fileName = QFileDialog::getSaveFileName(nullptr, "Save screenshot", "", QString("PNG (*.png);;TIFF (*.tif);;JPEG (*.jpg);;Bitmap (*.bmp);;Gif (*.gif)"));
+	}
+	
+	if (!fileName.isEmpty()) {
+		image.save(fileName);
+	}
 }
 
 void GLViewer::setSelectionMode(int mode)
@@ -516,12 +525,21 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 
 					std::map<size_t, size_t> idxMap;
 
+					Eigen::Matrix4d m1 = cloud->getGlobalTransformationMatrix(); // point to workspace
+					Eigen::Matrix4d m2 = m_transform.toEigenMatrix4d(); // workspace to viewer
+					
 					while (i >= 0)
 					{
 						CPoint3d point = cloud->vertices()[i];
-						CPoint3d workspace = obj->transform().l2w(point);
-						CPoint3d world = m_transform.l2w(workspace) - cam.m_pos;
-						CPoint3d win = world2win(world);
+						//CPoint3d workspace = obj->transform().l2w(point);
+						//CPoint3d world = m_transform.l2w(workspace) - cam.m_pos;
+						//CPoint3d win = world2win(world);
+						Eigen::Vector4d pt(point.x, point.y, point.z, 1.0);
+
+						Eigen::Vector4d workspacePt = m1 * pt;
+						Eigen::Vector4d worldPt = m2 * workspacePt;
+
+						CPoint3d win = world2win(CPoint3d(worldPt[0], worldPt[1], worldPt[2]));
 
 						QPoint pXY(win.x, win.y);
 
@@ -653,14 +671,80 @@ void GLViewer::mouseReleaseEvent( QMouseEvent* event )
 //	return false;
 //}
 
+
+void GLViewer::rotate(double dx, double dy) {
+	double xAngle = 0.0, yAngle = 0.0, zAngle = 0.0;
+
+	//if (Qt::AltModifier != QApplication::keyboardModifiers())
+	//{
+	xAngle = deg2rad(dy * 0.3);
+	yAngle = deg2rad(dx * 0.3);
+	//}
+	//else
+	//{
+	//	xAngle = DEG_TO_RAD(dy) * 0.3;
+	//	zAngle = DEG_TO_RAD(dx) * 0.3;
+	//}
+
+	CQuaternion invR = m_transform.rotation().inverse();
+
+	//osie układu współrzędnych związanego z ekranem konwertuję do współrzędnych Workspace'a
+	CVector3d xAxis = invR * CVector3d::XAxis();
+	CVector3d yAxis = invR * CVector3d::YAxis();
+	//CVector3d zAxis = invR * CVector3d::ZAxis();
+
+	CModel3D* obj = AP::WORKSPACE::getCurrentModel();
+
+	if (NULL != obj)
+	{
+		//środek obrotu konwertuję do współrzędnych Workspace'a
+		CPoint3d p1 = obj->transform() * obj->getMidpoint();
+
+		// obroty w układzie Workspace'a wokół punktu p1 i wyznaczonych osi
+		obj->transform().rotate(p1, { {xAxis, xAngle}, {yAxis, yAngle} }, false);
+		//obj->transform().rotate(p1, { {xAxis, xAngle}, {yAxis, yAngle}, {zAxis, zAngle} }, false);
+
+		UI::STATUSBAR::printf(L"rotacja obiektu"); // : [%f, %f, %f]", wX.X(), wX.Y(), wX.Z());
+	}
+	else
+	{
+		m_transform.rotate({ {xAxis, xAngle}, {yAxis, yAngle} });
+		//m_transform.rotate({ {xAxis, xAngle}, {yAxis, yAngle}, {zAxis, zAngle} });
+
+		UI::STATUSBAR::printf(L"rotacja układu współrzędnych"); // : [%f, %f, %f]", wX.X(), wX.Y(), wX.Z());
+	}
+}
+
+
+void GLViewer::translate(double dx, double dy, double dz) {
+	if (NULL != AP::WORKSPACE::getCurrentModel())
+	{
+		CQuaternion invR = m_transform.rotation().inverse();
+
+		CVector3d t = invR * CVector3d(dx, dy, dz);
+
+		AP::WORKSPACE::getCurrentModel()->transform().translate(t);
+
+		emit translationChanged(t.X(), t.Y(), t.Z());
+
+		UI::STATUSBAR::printf(L"translacja obiektu: [%f,%f,%f]", t.X(), t.Y(), t.Z());
+	}
+	else
+	{
+		CVector3d t = CVector3d(dx, dy, dz);
+
+		m_transform.translate(t);
+
+		UI::STATUSBAR::printf(L"translacja środka układu współrzędnych: [%f,%f,%f]", t.X(), t.Y(), t.Z());
+	}
+}
+
 /************************************************************************
   if the mouse is moved ...
  */
 void GLViewer::mouseMoveEvent( QMouseEvent* event )
 {
-	//UI::STATUSBAR::setText( QString("pozycja kursora: %1 %2").arg(event->pos().x()).arg(event->pos().y()).toStdString() );
-
-	if (m_selectionMode == 0)
+	if (m_selectionMode == 0) // Normal mode
 	{
 		double dx = double(event->pos().x()) - double(lastPos.x());
 		double dy = double(event->pos().y()) - double(lastPos.y());
@@ -674,106 +758,54 @@ void GLViewer::mouseMoveEvent( QMouseEvent* event )
 		//double	matrix[16];
 		//m_transform.rotation().toInvertedGLMatrixD(matrix);
 
-		CQuaternion invR = m_transform.rotation().inverse();
-
-		if (event->buttons() & Qt::MouseButton::LeftButton)
-		{
-			if (Qt::ShiftModifier == QApplication::keyboardModifiers())
+		if (true) {
+			if (event->buttons() & Qt::MouseButton::LeftButton)
 			{
-				UI::STATUSBAR::setText("SHIFT pressed: nothing to do...");
-			}
-			else if (Qt::ControlModifier != QApplication::keyboardModifiers())
-			{
-				double xAngle = 0.0, yAngle = 0.0, zAngle = 0.0;
-
-				//if (Qt::AltModifier != QApplication::keyboardModifiers())
-				//{
-				xAngle = deg2rad(dy * 0.3);
-				yAngle = deg2rad(dx * 0.3);
-				//}
-				//else
-				//{
-				//	xAngle = DEG_TO_RAD(dy) * 0.3;
-				//	zAngle = DEG_TO_RAD(dx) * 0.3;
-				//}
-
-				//osie układu współrzędnych związanego z ekranem konwertuję do współrzędnych Workspace'a
-				CVector3d xAxis = invR * CVector3d::XAxis();
-				CVector3d yAxis = invR * CVector3d::YAxis();
-				//CVector3d zAxis = invR * CVector3d::ZAxis();
-
-				CModel3D* obj = AP::WORKSPACE::getCurrentModel();
-
-				if (NULL != obj)
+				if (Qt::ShiftModifier == QApplication::keyboardModifiers())
 				{
-					//środek obrotu konwertuję do współrzędnych Workspace'a
-					CPoint3d p1 = obj->transform() * obj->getMidpoint();
+					double factor = (NULL != AP::WORKSPACE::getCurrentModel()) ? AP::WORKSPACE::getCurrentModel()->transform().scale().x : 5.0;
 
-					// obroty w układzie Workspace'a wokół punktu p1 i wyznaczonych osi
-					obj->transform().rotate(p1, { {xAxis, xAngle}, {yAxis, yAngle} }, false);
-					//obj->transform().rotate(p1, { {xAxis, xAngle}, {yAxis, yAngle}, {zAxis, zAngle} }, false);
-
-					UI::STATUSBAR::printf(L"rotacja obiektu"); // : [%f, %f, %f]", wX.X(), wX.Y(), wX.Z());
+					this->translate(0.0, 0.0, dy / factor);
+				}
+				else if (Qt::ControlModifier == QApplication::keyboardModifiers())
+				{
+					CPoint3d factor = (NULL != AP::WORKSPACE::getCurrentModel()) ? AP::WORKSPACE::getCurrentModel()->transform().scale() : CPoint3d(5.0, 5.0, 5.0);
+					
+					this->translate(dx / factor.x, -dy / factor.y, 0.0);
 				}
 				else
 				{
-					m_transform.rotate({ {xAxis, xAngle}, {yAxis, yAngle} });
-					//m_transform.rotate({ {xAxis, xAngle}, {yAxis, yAngle}, {zAxis, zAngle} });
-
-					UI::STATUSBAR::printf(L"rotacja układu współrzędnych"); // : [%f, %f, %f]", wX.X(), wX.Y(), wX.Z());
+					this->rotate(dx, dy);
 				}
 			}
 		}
-		else if (event->buttons() & Qt::MouseButton::MidButton)
-		{
-			if (NULL != AP::WORKSPACE::getCurrentModel())
+		else {
+			if (event->buttons() & Qt::MouseButton::LeftButton)
 			{
-				double factor = AP::WORKSPACE::getCurrentModel()->getTransform().scale().x;
-
-				//CVector3d t = CVector3d(0.0, 0.0, dy / factor).transformByMatrixD(matrix);
-				CVector3d t = invR * CVector3d(0.0, 0.0, dy / factor);
-
-				AP::WORKSPACE::getCurrentModel()->getTransform().translate(t);
-
-				UI::STATUSBAR::printf(L"translacja obiektu: [%f,%f,%f]", t.X(), t.Y(), t.Z());
+				if (Qt::ShiftModifier == QApplication::keyboardModifiers())
+				{
+					UI::STATUSBAR::setText("SHIFT pressed: nothing to do...");
+				}
+				else if (Qt::ControlModifier != QApplication::keyboardModifiers())
+				{
+					this->rotate(dx, dy);
+				}
 			}
-			else
+			else if (event->buttons() & Qt::MouseButton::MidButton)
 			{
-				double factor = 5.0;
-				CVector3d t = CVector3d(0.0, 0.0, dy / factor);
+				double factor = (NULL != AP::WORKSPACE::getCurrentModel()) ? AP::WORKSPACE::getCurrentModel()->transform().scale().x : 5.0;
 
-				m_transform.translate(t);
-
-				UI::STATUSBAR::printf(L"translacja środka układu współrzędnych: [%f,%f,%f]", t.X(), t.Y(), t.Z());
+				this->translate(0.0, 0.0, dy / factor);
 			}
-		}
-		else if (event->buttons() & Qt::MouseButton::RightButton)
-		{
-			if (NULL != AP::WORKSPACE::getCurrentModel())
+			else if (event->buttons() & Qt::MouseButton::RightButton)
 			{
-				auto factor = AP::WORKSPACE::getCurrentModel()->transform().scale();
+				CPoint3d factor = (NULL != AP::WORKSPACE::getCurrentModel()) ? AP::WORKSPACE::getCurrentModel()->transform().scale() : CPoint3d(5.0, 5.0, 5.0);
 
-				CVector3d t = invR * CVector3d(dx / factor.x, -dy / factor.y, 0.0);
-
-				AP::WORKSPACE::getCurrentModel()->transform().translate(t);
-
-				emit translationChanged(t.X(), t.Y(), t.Z());
-
-				UI::STATUSBAR::printf(L"translacja obiektu: [%f,%f,%f]", t.X(), t.Y(), t.Z());
-			}
-			else
-			{
-				double factor = 5.0;
-				CVector3d t = CVector3d(dx / factor, -dy / factor, 0.0);
-
-				m_transform.translate(t);
-
-				UI::STATUSBAR::printf(L"translacja środka układu współrzędnych: [%f,%f,%f]", t.X(), t.Y(), t.Z());
+				this->translate(dx / factor.x, -dy / factor.y, 0.0);
 			}
 		}
 
 		UI::DOCK::PROPERTIES::updateProperties();
-
 	}
 	else if ( m_selectionMode == 1 )
 	{
@@ -790,10 +822,8 @@ void GLViewer::mouseMoveEvent( QMouseEvent* event )
 
 	lastPos = event->pos();
 
-	 //If the mouse is moving we want to keep a note of this, will be
-	 //useful for other interactions and events in future.
+	 //If the mouse is moving we want to keep a note of this, will be useful for other interactions and events in future.
     moving = true;
-	//this->updateGL();
 	UI::updateAllViews();
     moving = false;
 }

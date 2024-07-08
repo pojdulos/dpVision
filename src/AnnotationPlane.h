@@ -31,10 +31,10 @@ public:
 
 	CAnnotationPlane( CAnnotationPlane &t ) :CAnnotation( t ),CPlane( t )
 	{
-		setLabel("plane");
-		m_color.SetFloat(0.0f, 1.0f, 1.0f, 0.5f);
-		m_selcolor.SetFloat(1.0f, 0.0f, 0.0f, 0.5f);
-		m_size = 10;
+		//setLabel("plane");
+		//m_color.SetFloat(0.0f, 1.0f, 1.0f, 0.5f);
+		//m_selcolor.SetFloat(1.0f, 0.0f, 0.0f, 0.5f);
+		m_size = t.m_size;
 	};
 
 
@@ -60,6 +60,11 @@ public:
 	~CAnnotationPlane(void) override {};
 
 	virtual int type() { return CAnnotation::PLANE; }
+
+	virtual CAnnotationPlane* getCopy() override
+	{
+		return new CAnnotationPlane(*this);
+	}
 
 	void setSize(double s) { m_size = s; };
 	double getSize() { return m_size; };

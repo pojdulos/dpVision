@@ -2,6 +2,8 @@
 #include <QtWidgets/QMdiSubwindow>
 #include <QtWidgets/QMdiArea>
 
+#include "dll_global.h"
+
 class CImage;
 
 class DPVISION_EXPORT MdiChild : public QWidget

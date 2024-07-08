@@ -19,9 +19,14 @@ class DockWidgetWorkspace;
 class CTransform;
 class CModel3D;
 class GLViewer;
+class QGroupBox;
 
 namespace UI
 {
+	DPVISION_EXPORT void adjustGroupBoxHeight(QGroupBox* groupBox, bool checked);
+
+
+
 	DPVISION_EXPORT bool timeElapsed(int mst);
 	DPVISION_EXPORT void show();
 	DPVISION_EXPORT void updateView(bool repaintAll = true, bool buffered = true);
@@ -75,10 +80,11 @@ namespace UI
 
 		DPVISION_EXPORT GLViewer* currentViewer();
 
-		DPVISION_EXPORT void screenshot(QString path);
-		DPVISION_EXPORT inline void screenshot(const char* path) { screenshot(QString::fromStdString(path)); };
-		DPVISION_EXPORT inline void screenshot(std::string path) { screenshot(QString::fromStdString(path)); };
-		DPVISION_EXPORT inline void screenshot(std::wstring path) { screenshot(QString::fromStdWString(path)); };
+		// screenshot active GLViewer window or GLViewer specyfied by 'v' parameter
+		DPVISION_EXPORT void screenshot(QString path, void* v = nullptr);
+		DPVISION_EXPORT inline void screenshot(const char* path, void* v = nullptr) { screenshot(QString::fromStdString(path), v); };
+		DPVISION_EXPORT inline void screenshot(std::string path, void* v = nullptr) { screenshot(QString::fromStdString(path), v); };
+		DPVISION_EXPORT inline void screenshot(std::wstring path, void* v = nullptr) { screenshot(QString::fromStdWString(path), v); };
 	}
 
 	namespace PICVIEWER {

@@ -103,7 +103,7 @@ public:
 		CVector3d v02(p0, p2);
 
 		m_normal = v01.crossProduct(v02).getNormalized();
-		m_center = p0;
+		m_center = (p0+p1+p2)/3;
 		m_d = recalc_D();
 	}
 
@@ -608,6 +608,7 @@ public:
 
 	CMesh* getMesh( double size, int divX=1, int divY=1 );
 	void toMatrix(double* m);
+	CTransform toTransform1();
 	CTransform toTransform();
 };
 

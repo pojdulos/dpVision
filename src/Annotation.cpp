@@ -1,5 +1,21 @@
 #include "Annotation.h"
 
+// konstruktor kopiuj¹cy
+
+inline CAnnotation::CAnnotation(const CAnnotation& a) : CBaseObject(a)
+{
+	m_color = a.m_color;
+	m_selcolor = a.m_selcolor;
+
+	m_annotations.clear();
+	for (Annotations::const_iterator it = a.m_annotations.begin(); it != a.m_annotations.end(); it++)
+	{
+		CAnnotation* child = it->second->getCopy();
+		child->setParent(this);
+		//child->setId(getNewId());
+		addAnnotation(child);
+	}
+}
 
 CBaseObject* CAnnotation::getSomethingWithId(int id)
 {

@@ -34,6 +34,12 @@ PropWidget* PropAnnotationSetOfVertices::create(CAnnotationSetOfVertices* m, QWi
 	return widget;
 }
 
+QVector<PropWidget*> PropAnnotationSetOfVertices::create_and_get_subwidgets(CBaseObject* obj)
+{
+	CAnnotationSetOfVertices* m = (CAnnotationSetOfVertices*)obj;
+	return QVector<PropWidget*>({ new PropBaseObject(m), new PropAnnotation(m), new PropAnnotationSetOfVertices(m) });
+}
+
 void PropAnnotationSetOfVertices::updateProperties()
 {
 	PropWidget::updateProperties();

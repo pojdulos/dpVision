@@ -16,11 +16,14 @@ void VolTKcolorWidget::colorButtonPressed()
 {
 	QColor color = QColorDialog::getColor(QColor(ui.colorButton->text()), nullptr, "", QColorDialog::ShowAlphaChannel);
 	
-	QString c = color.name(QColor::HexArgb);
-	
-	ui.colorButton->setStyleSheet("background-color: " + c + ";");
-	ui.colorButton->setText(c);
-	emit imModyfied();
+	if (color.isValid())
+	{
+		QString c = color.name(QColor::HexArgb);
+
+		ui.colorButton->setStyleSheet("background-color: " + c + ";");
+		ui.colorButton->setText(c);
+		emit imModyfied();
+	}
 }
 
 void VolTKcolorWidget::winMaxSpinBoxValueChanged(int)

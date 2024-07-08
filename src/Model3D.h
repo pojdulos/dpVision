@@ -50,13 +50,13 @@ protected:
 	bool bDrawBB;
 
 
-	CFileInfo plikSiatki;
+	//CFileInfo plikSiatki;
 
 	void renderAxes();
 	void renderBoundingBox();
 
 public:
-	CModel3D();
+	CModel3D(CBaseObject* p = nullptr);
 	CModel3D( const CModel3D &m );
 	virtual ~CModel3D();
 
@@ -90,6 +90,10 @@ public:
 
 	void applyTransform(CTransform to=CTransform());
 
+	virtual bool hasTransformation() override { return true; };
+	virtual Eigen::Matrix4d getTransformationMatrix() override { return this->m_transform.toEigenMatrix4d(); };
+
+
 	//CBaseObject * getSomethingWithId(int id);
 
 	//deprecated, use getChild()
@@ -118,16 +122,16 @@ public:
 	virtual void renderTransform() override;
 	virtual void renderSelf() override;
 
-	inline CFileInfo &fileInfo(void) { return plikSiatki; }
+	//inline CFileInfo &fileInfo(void) { return CFileInfo(m_path); }
 
-	inline QString path(void) { return plikSiatki.absolutePath(); };
-	inline std::string pathA(void) { return plikSiatki.absolutePath().toStdString(); }
-	inline std::wstring pathW(void) { return plikSiatki.absolutePath().toStdWString(); }
+	inline virtual const QString& path() override { return m_path; }
+	inline std::string pathA(void) { return m_path.toStdString(); }
+	inline std::wstring pathW(void) { return m_path.toStdWString(); }
 
-	inline void setPath(const QString path) { plikSiatki.setFile(path); };
-	inline void setPath(const char* path) { plikSiatki.setFile(QString(path)); };
-	inline void setPath(const std::string path) { plikSiatki.setFile(QString::fromStdString(path)); }
-	inline void setPath(const std::wstring path) { plikSiatki.setFile(QString::fromStdWString(path)); }
+	inline virtual void setPath(const QString& path) override { m_path = path; }
+	inline void setPath(const char* path) { m_path = QString(path); };
+	inline void setPath(const std::string path) { m_path = QString::fromStdString(path); }
+	inline void setPath(const std::wstring path) { m_path = QString::fromStdWString(path); }
 
 	bool switchOption( CModel3D::Opt iOption, CModel3D::Switch iSet );
 	bool testOption( CModel3D::Opt iOption );

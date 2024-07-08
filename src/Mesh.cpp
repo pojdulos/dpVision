@@ -17,8 +17,6 @@ CMesh::CMesh(CModel3D *p) :CPointCloud(p)
 
 CMesh::CMesh( CMesh &m ) : CPointCloud(m)
 {
-	setLabel("copy of " + m.getLabel());
-
 	m_poly = m.m_poly;
 	m_poly.setParent(this);
 
@@ -38,8 +36,6 @@ CMesh::CMesh( CMesh &m ) : CPointCloud(m)
 
 CMesh::CMesh(CPointCloud & cloud) : CPointCloud(cloud)
 {
-	setLabel("copy of " + cloud.getLabel());
-
 	renderWithTexture(false);
 	renderFacesAsPoints(false);
 	renderFacesAsEdges(false);
@@ -723,7 +719,7 @@ void CMesh::afterLoad(CModel3D *p)
 {
 	renderSmoothVertex( hasVertexNormals() );
 
-	bool t = attachTexture( p->path() );
+	bool t = false;// attachTexture(p->path());
 
 	UI::STATUSBAR::printf(t?L"jest tekstura": L"nie ma tekstury");
 

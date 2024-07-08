@@ -32,6 +32,12 @@ PropWidget* PropAnnotation::create(CAnnotation* m, QWidget* parent)
 	return widget;
 }
 
+QVector<PropWidget*> PropAnnotation::create_and_get_subwidgets(CBaseObject* obj)
+{
+	CAnnotation* m = (CAnnotation*)obj;
+	return QVector<PropWidget*>({ new PropBaseObject(m), new PropAnnotation(m) });
+}
+
 void PropAnnotation::updateProperties()
 {
 	//PropBaseObject::updateProperties();

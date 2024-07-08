@@ -1,7 +1,4 @@
 #include "UI.h"
-#include "UI.h"
-#include "UI.h"
-#include "UI.h"
 
 #include "MainWindow.h"
 
@@ -19,11 +16,37 @@
 
 #include "ProgressIndicator.h"
 
-#include <QtWidgets/QMdiSubWindow>
+#include <QtWidgets>
+
 #include "GLViewer.h"
 
 #include "AP.h"
 
+
+void UI::adjustGroupBoxHeight(QGroupBox* groupBox, bool checked)
+{
+	// Uzyskaj wysokość checkboxa i tytułu
+	QCheckBox* ch = groupBox->findChild<QCheckBox*>();
+	int checkBoxHeight = (ch) ? groupBox->findChild<QCheckBox*>()->sizeHint().height() : 0;
+	int titleHeight = groupBox->fontMetrics().height();  // Wysokość tytułu na podstawie czcionki
+
+	int heightForChecked = groupBox->sizeHint().height();  // Wysokość dla zaznaczonego stanu
+	//int heightForUnchecked = checkBoxHeight + titleHeight + 10;  // Wysokość dla odznaczonego stanu (z dodatkowym odstępem)
+
+	int heightForUnchecked = std::max(checkBoxHeight, titleHeight);
+
+	if (checked) {
+		groupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+		groupBox->setMinimumHeight(0);
+		groupBox->setMaximumHeight(QWIDGETSIZE_MAX);  // Brak limitu wysokości
+		groupBox->adjustSize();
+	}
+	else {
+		groupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+		groupBox->setMinimumHeight(heightForUnchecked);  // Ustaw wysokość na widoczność checkboxa i tytułu
+		groupBox->setMaximumHeight(heightForUnchecked);  // Ustaw wysokość na widoczność checkboxa i tytułu
+	}
+}
 
 bool UI::timeElapsed(int mst)
 {
@@ -361,17 +384,24 @@ GLViewer * UI::CAMERA::currentViewer()
 	return nullptr;
 }
 
-void UI::CAMERA::screenshot(QString path)
+void UI::CAMERA::screenshot(QString path, void *v)
 {
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr)
+	if (v != nullptr)
 	{
-		GLViewer* view = win->currentViewer();
+		((GLViewer*)v)->screenshot(path);
+	}
+	else
+	{
+		CMainWindow* win = AP::mainWinPtr();
 
-		if (view != nullptr)
+		if (win != nullptr)
 		{
-			return view->screenshot(path);
+			GLViewer* view = win->currentViewer();
+
+			if (view != nullptr)
+			{
+				view->screenshot(path);
+			}
 		}
 	}
 }
@@ -607,7 +637,7 @@ QPushButton* UI::PLUGINPANEL::addButton(unsigned int pluginId, std::string butto
 
 	if (win != nullptr && win->dockPluginPanel != nullptr)
 	{
-		return win->dockPluginPanel->addButton(pluginId, QString::fromStdString(buttonName), QString::fromStdString(label), row, col, rspan, cspan);
+		return win->dockPluginPanel->addButton(pluginId, QString::fromStdString(buttonName), QString::fromUtf8(label.c_str()), row, col, rspan, cspan);
 	}
 	return nullptr;
 }

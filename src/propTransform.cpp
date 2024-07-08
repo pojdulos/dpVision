@@ -11,6 +11,13 @@
 
 #include "CSpinBoxDelegate.h"
 
+bool PropTransform::group_visible = true;
+
+QString PropTransform::treeItemLabel()
+{
+	return QString("Transformation");
+}
+
 
 void PropTransform::addSeparator(const QString& title, QStandardItemModel* model )
 {
@@ -311,9 +318,9 @@ void PropTransform::onRotButton()
 
 PropTransform::PropTransform(CTransform *m, QWidget *parent, bool isCameraTransform) : PropWidget( parent )
 {
-	ui.setupUi(this);
-
 	m_trans = m; // &m->getTransform();
+
+	ui.setupUi(this);
 
 	if (isCameraTransform)
 	{
@@ -368,8 +375,15 @@ void PropTransform::updateProperties()
 	updateSca();
 
 	updateMatrix();
+	//assert("TEST");
+
+	ui.showScrewCheckBox->blockSignals(true);
+	ui.showScrewCheckBox->setChecked(m_trans->isScrewVisible());
+	ui.showScrewCheckBox->blockSignals(false);
 
 	updatePropertiesTree();
+
+	
 }
 
 void PropTransform::updateTra()
@@ -451,7 +465,7 @@ void PropTransform::changedEul(double val)
 
 	updateQua();
 	updateMatrix();
-
+	
 	UI::updateAllViews();
 }
 
@@ -619,4 +633,11 @@ void PropTransform::pasteFromClipboard()
 void PropTransform::onItemChanged(QStandardItem*)
 {
 	UI::MESSAGEBOX::information(L"Item changed");
+}
+
+void PropTransform::onShowScrewCheckBox(bool b)
+{
+	//UI::MESSAGEBOX::information(L"onShowScrewCheckBox(bool)");
+	m_trans->showScrew(b);
+	UI::updateAllViews();
 }

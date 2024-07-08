@@ -117,14 +117,14 @@ WORD RAWdicomData::getRescaled(short x, short y, short z, WORD ymin, WORD ymax) 
 	pix *= rescaleSlope;
 	pix += rescaleIntercept;
 
-	WORD result;
+	WORD result = pix+1000;
 
-	if (pix <= (double)windowCenter - 0.5 - (windowWidth - 1) / 2)
-		result = ymin;
-	else if (pix > (double)windowCenter - 0.5 + (windowWidth - 1) / 2)
-		result = ymax;
-	else
-		result = ((pix - ((double)windowCenter - 0.5)) / ((double)windowWidth - 1) + 0.5) * (ymax - ymin) + ymin;
+	//if (pix <= (double)windowCenter - 0.5 - (windowWidth - 1) / 2)
+	//	result = ymin;
+	//else if (pix > (double)windowCenter - 0.5 + (windowWidth - 1) / 2)
+	//	result = ymax;
+	//else
+	//	result = ((pix - ((double)windowCenter - 0.5)) / ((double)windowWidth - 1) + 0.5) * (ymax - ymin) + ymin;
 
 	return result;
 }

@@ -97,7 +97,7 @@ public:
 	void setAxesVisible(AxesStyle s) { m_drawAxes = s; };
 	void toggleAxesVisibility() { m_drawAxes+=1; if (m_drawAxes==AxesStyle_END) m_drawAxes=AxesStyle_NONE; };
 
-	void screenshot( QString path );
+	void screenshot(QString path = QString());
 
 	void setSelectionMode(int mode);
 
@@ -112,7 +112,9 @@ public slots:
 	//the required function definitions for the mouse events.
     void mousePressEvent( QMouseEvent* event ) override;
 	void mouseReleaseEvent( QMouseEvent* event ) override;
-    void mouseMoveEvent( QMouseEvent* event ) override;
+	void rotate(double dx, double dy);
+	void translate(double dx, double dy, double dz=0.0);
+	void mouseMoveEvent( QMouseEvent* event ) override;
 	void wheelEvent(QWheelEvent* event) override;
 
 	void setBGcolor(GLfloat col);

@@ -23,6 +23,7 @@ public:
 	~PropModel();
 
 	static PropWidget* create(CModel3D* m, QWidget* parent = 0);
+	static QVector<PropWidget*> create_and_get_subwidgets(CBaseObject* m);
 
 	//virtual void paintEvent(QPaintEvent * event) override;
 

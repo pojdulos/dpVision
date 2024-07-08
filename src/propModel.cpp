@@ -102,10 +102,16 @@ void PropModel::updateProperties()
 
 PropWidget* PropModel::create(CModel3D* m, QWidget* parent)
 {
-	return PropWidget::build({ 
+	return PropWidget::build(create_and_get_subwidgets(m), parent);
+}
+
+QVector<PropWidget*> PropModel::create_and_get_subwidgets(CBaseObject *obj)
+{
+	CModel3D* m = (CModel3D*)obj;
+	return QVector<PropWidget*>({
 			new PropBaseObject(m, nullptr), //, false),
 			new PropTransform(&m->getTransform(), nullptr)
-		}, parent);
+		});
 }
 
 

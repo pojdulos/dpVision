@@ -10,13 +10,18 @@ class QColorDialog;
 class PropMesh : public PropWidget
 {
 	Q_OBJECT
-		CMesh* obj;
+
+	CMesh* obj;
+
+	static bool group_visible;
 
 public:
 	explicit PropMesh(CMesh *mesh, QWidget *parent = 0);
 	~PropMesh();
 
 	static PropWidget* create(CMesh* m, QWidget* parent = 0);
+
+	static QVector<PropWidget*> create_and_get_subwidgets(CBaseObject* m);
 
 	virtual void updateProperties() override;
 

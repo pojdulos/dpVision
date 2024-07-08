@@ -59,6 +59,11 @@ PropWidget* PropImage::create(CImage* m, QWidget* parent)
 	return widget;
 }
 
+QVector<PropWidget*> PropImage::create_and_get_subwidgets(CBaseObject* obj)
+{
+	return QVector<PropWidget*>({PropImage::create((CImage*)obj)});
+}
+
 #include "PicViewer.h"
 #include "MdiChild.h"
 

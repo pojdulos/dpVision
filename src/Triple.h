@@ -63,17 +63,6 @@ public:
 		return ev;
 	}
 
-	// export to Eigen::Vector4<Type>
-	Eigen::Matrix<_T, 4, 1> toVector4()
-	{
-		Eigen::Matrix<_T, 4, 1> ev;
-		ev(0, 0) = x;
-		ev(1, 0) = y;
-		ev(2, 0) = z;
-		ev(3, 0) = 1;
-		return ev;
-	}
-
 	// export to Eigen::RowVector3<Type>
 	Eigen::Matrix<_T, 1, 3> toRowVector3()
 	{
@@ -81,15 +70,6 @@ public:
 		erv(0, 0) = x;		erv(0, 1) = y;		erv(0, 2) = z;
 		return erv;
 	}
-
-	// export to Eigen::RowVector4<Type>
-	Eigen::Matrix<_T, 1, 4> toRowVector4()
-	{
-		Eigen::Matrix<_T, 1, 4> erv;
-		erv(0, 0) = x;		erv(0, 1) = y;		erv(0, 2) = z;		erv(0, 3) = 1;
-		return erv;
-	}
-
 
 	template<typename _W> inline void Set( CTriple<_W> t )
 	{

@@ -39,13 +39,14 @@ public:
 		GENERIC,
 		GROUP,
 		MODEL,
-		ANIMATION,
+		MOVEMENT,
 		IMAGE,
 		CLOUD,
 		ORDEREDCLOUD,
 		MESH,
 		//IMAGE2D,
 		VOLUMETRIC,
+		VOLUMETRIC_NEW,
 		VOLTK,
 		LIDAR,
 		OTHER,
@@ -151,6 +152,8 @@ public:
 	virtual bool switchSelfVisibility();
 	virtual bool switchKidsVisibility();
 
+	virtual void showChildren(bool show, QSet<CBaseObject::Type> inc = {}, QSet<CBaseObject::Type> exc = {}) {};
+
 	int id() { return m_Id; };
 	int parentId() { return (m_parent != nullptr) ? m_parent->id() : NO_CURRENT_MODEL; };
 
@@ -161,6 +164,10 @@ public:
 	virtual CBaseObject *findId(int /*id*/) { return NULL; };
 	virtual inline bool hasChildren() { return false; };
 
+	virtual bool hasTransformation() { return false; };
+	virtual Eigen::Matrix4d getTransformationMatrix() {	return Eigen::Matrix4d::Identity();	};
+	virtual Eigen::Matrix4d getGlobalTransformationMatrix();
+	
 	//std::string getLabel() { return m_label.toStdString(); };
 	const QString& getLabel() { return m_label; };
 	const std::string getLabelA() { return m_label.toUtf8().toStdString(); };
@@ -171,14 +178,23 @@ public:
 	inline void setLabel(const std::string &label) { m_label = QString::fromUtf8(label.c_str()); }
 	inline void setLabel(const std::wstring &label) { m_label = QString::fromWCharArray(label.c_str()); }
 
-	inline void setDescr(const QString descr) { m_descr = descr; }
-	const QString& getDescr() { return m_descr; };
+	inline void addKeyword(const QString keyword) { m_keywords.insert(keyword); }
+	inline void delKeyword(const QString keyword) { m_keywords.remove(keyword); }
+	inline bool hasKeyword(const QString keyword) { return m_keywords.find(keyword) != m_keywords.end(); }
+	inline QSet<QString>& keywords() { return m_keywords; }
 
+	inline void setDescr(const QString descr) { m_descr = descr; }
+	const QString& getDescr() { return m_descr; }
+
+	inline virtual void setPath(const QString& path) { m_path = path; }
+	inline virtual const QString& path() { return m_path; }
 	//virtual CBaseObject* getSomethingWithId(int id) { if (m_Id == id) return this; else return nullptr; };
 protected:
 	int m_Id;
 	QString m_label;
 	QString m_descr;
+	QSet<QString> m_keywords;
+	QString m_path;
 
 	CBaseObject *m_parent;
 

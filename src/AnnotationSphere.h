@@ -20,8 +20,8 @@ public:
 
 	CAnnotationSphere( CAnnotationSphere&t ) :Kula(t.center(),t.radius()), CAnnotation( t )
 	{
-		m_lats = m_longs = 128;
-		setLabel("sphere");
+		m_lats = t.m_lats;
+		m_longs = t.m_longs;
 	};
 
 	CAnnotationSphere( Kula &k ) :Kula(k.center(), k.radius()), CAnnotation(nullptr)
@@ -31,6 +31,11 @@ public:
 	};
 
 	~CAnnotationSphere(void){};
+
+	virtual CAnnotationSphere* getCopy() override
+	{
+		return new CAnnotationSphere(*this);
+	}
 
 	virtual int type() { return CAnnotation::SPHERE; }
 

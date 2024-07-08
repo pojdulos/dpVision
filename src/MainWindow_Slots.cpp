@@ -17,15 +17,17 @@
 
 void CMainWindow::closeEvent(QCloseEvent * event)
 {
-	//QRect r = this->frameGeometry();
-	QRect r = this->geometry();
+	//QRect r = this->geometry();
 
 	AP::mainApp().settings->setValue( "mainwindow/maximized", this->isMaximized() );
 
-	if ( !this->isMaximized() ) {
-		AP::mainApp().settings->setValue("mainwindow/geometry", r);
-	}
+	//if ( !this->isMaximized() ) {
+	//	AP::mainApp().settings->setValue("mainwindow/geometry", r);
+	//}
 
+	AP::mainApp().settings->setValue("mainwindow/dockState", this->saveState()); 
+	AP::mainApp().settings->setValue("mainwindow/geometry", this->saveGeometry());
+	
 	deleteLater();
 	QMainWindow::closeEvent(event);
 }
@@ -567,41 +569,21 @@ void CMainWindow::actionLookDir(int direction, CModel3D* obj)
 
 		if (current->getBoundingBox().isInvalid()) return;
 
-		CPoint3d min = current->getMin();
-		CPoint3d max = current->getMax();
+		Eigen::Matrix4d MT = current->getGlobalTransformationMatrix();
 
-		Eigen::Matrix4d T = current->transform().toEigenMatrix4d();
-
-		CPoint3d m1 = T * min;
-		CPoint3d m2 = T * CPoint3d(min.x, min.y, max.z);
-		CPoint3d m3 = T * CPoint3d(min.x, max.y, max.z);
-		CPoint3d m4 = T * CPoint3d(min.x, max.y, min.z);
-		CPoint3d m5 = T * CPoint3d(max.x, max.y, min.z);
-		CPoint3d m6 = T * CPoint3d(max.x, min.y, min.z);
-		CPoint3d m7 = T * CPoint3d(max.x, min.y, max.z);
-		CPoint3d m8 = T * max;
-
-		bb.expand(m1);
-		bb.expand(m2);
-		bb.expand(m3);
-		bb.expand(m4);
-		bb.expand(m5);
-		bb.expand(m6);
-		bb.expand(m7);
-		bb.expand(m8);
+		for (CPoint3d& corner : current->getCorners())
+		{
+			corner = MT * corner;
+			bb.expand(corner);
+		}
 	}
 	else
 	{
 		bb = AP::WORKSPACE::instance()->topBB();
 
 		if (bb.isInvalid()) return;
-
 	}
 
-	//	CModel3D* mdl = new CModel3D;
-	//	mdl->getBoundingBox() = bb;
-	//	AP::WORKSPACE::addModel(mdl);
-	//	mdl->setLocked(true);
 
 	if (center)
 	{
@@ -640,70 +622,83 @@ void CMainWindow::actionLookDir(int direction, CModel3D* obj)
 		view->transform().translate(tra);
 	}
 
-	CVector3d correction(0.0, 0.0, -10.0);
 
-	CPoint3d min = bb.getMin();
-	CPoint3d max = bb.getMax();
+	double minX = DBL_MAX;
+	double maxX = -DBL_MAX;
+	double minY = DBL_MAX;
+	double maxY = -DBL_MAX;
 
-	Eigen::Matrix4d T = view->transform().toEigenMatrix4d();
+	Eigen::Matrix4d MT = view->transform().toEigenMatrix4d();
 
-	CPoint3d m1, m2, m3, m4, m5, m6, m7, m8;
+	for (CPoint3d& corner : bb.getCorners())
+	{
+		corner = MT * corner;
+		corner = corner - view->camPos();
+		corner = view->world2win(corner);
 
-	m1 = T * min;
-	m2 = T * CPoint3d(min.x, min.y, max.z);
-	m3 = T * CPoint3d(min.x, max.y, max.z);
-	m4 = T * CPoint3d(min.x, max.y, min.z);
-	m5 = T * CPoint3d(max.x, max.y, min.z);
-	m6 = T * CPoint3d(max.x, min.y, min.z);
-	m7 = T * CPoint3d(max.x, min.y, max.z);
-	m8 = T * max;
-
-	m1 = view->world2win(m1 - view->camPos());
-	m2 = view->world2win(m2 - view->camPos());
-	m3 = view->world2win(m3 - view->camPos());
-	m4 = view->world2win(m4 - view->camPos());
-	m5 = view->world2win(m5 - view->camPos());
-	m6 = view->world2win(m6 - view->camPos());
-	m7 = view->world2win(m7 - view->camPos());
-	m8 = view->world2win(m8 - view->camPos());
+		minX = corner.x < minX ? corner.x : minX;
+		minY = corner.y < minY ? corner.y : minY;
+		maxX = corner.x > maxX ? corner.x : maxX;
+		maxY = corner.y > maxY ? corner.y : maxY;
+	}
 
 	QRect r = view->rect();
+	qInfo() << r << QVector<int>({r.left(),r.top(),r.right(),r.bottom()});
+	qInfo() << QVector<double>({ minX, minY, maxX, maxY });
 
-	double minX = std::min(std::min(std::min(m1.x, m2.x), std::min(m3.x, m4.x)), std::min(std::min(m5.x, m6.x), std::min(m7.x, m8.x)));
-	double minY = std::min(std::min(std::min(m1.y, m2.y), std::min(m3.y, m4.y)), std::min(std::min(m5.y, m6.y), std::min(m7.y, m8.y)));
 
-	double maxX = std::max(std::max(std::max(m1.x, m2.x), std::max(m3.x, m4.x)), std::max(std::max(m5.x, m6.x), std::max(m7.x, m8.x)));
-	double maxY = std::max(std::max(std::max(m1.y, m2.y), std::max(m3.y, m4.y)), std::max(std::max(m5.y, m6.y), std::max(m7.y, m8.y)));
+	CTransform T;
 
-	while ((minX < 0) || (minY < 0) || (maxX >= r.width()) || (maxY >= r.height()))
+	while ((minX > r.left()) && (minY > r.top()) && (maxX < r.right()) && (maxY < r.bottom()))
 	{
-		view->transform().translate(correction);
+		view->transform().translate(CVector3d(0.0, 0.0, 1.0) );
 
-		T = view->transform().toEigenMatrix4d();
+		T = view->transform();
 
-		m1 = T * min;
-		m2 = T * CPoint3d(min.x, min.y, max.z);
-		m3 = T * CPoint3d(min.x, max.y, max.z);
-		m4 = T * CPoint3d(min.x, max.y, min.z);
-		m5 = T * CPoint3d(max.x, max.y, min.z);
-		m6 = T * CPoint3d(max.x, min.y, min.z);
-		m7 = T * CPoint3d(max.x, min.y, max.z);
-		m8 = T * max;
+		minX = DBL_MAX;
+		maxX = -DBL_MAX;
+		minY = DBL_MAX;
+		maxY = -DBL_MAX;
 
-		m1 = view->world2win(m1 - view->camPos());
-		m2 = view->world2win(m2 - view->camPos());
-		m3 = view->world2win(m3 - view->camPos());
-		m4 = view->world2win(m4 - view->camPos());
-		m5 = view->world2win(m5 - view->camPos());
-		m6 = view->world2win(m6 - view->camPos());
-		m7 = view->world2win(m7 - view->camPos());
-		m8 = view->world2win(m8 - view->camPos());
+		for (CPoint3d& corner : bb.getCorners())
+		{
+			corner = T * corner;
+			corner = corner - view->camPos();
+			corner = view->world2win(corner);
 
-		minX = std::min(std::min(std::min(m1.x, m2.x), std::min(m3.x, m4.x)), std::min(std::min(m5.x, m6.x), std::min(m7.x, m8.x)));
-		minY = std::min(std::min(std::min(m1.y, m2.y), std::min(m3.y, m4.y)), std::min(std::min(m5.y, m6.y), std::min(m7.y, m8.y)));
+			minX = corner.x < minX ? corner.x : minX;
+			minY = corner.y < minY ? corner.y : minY;
+			maxX = corner.x > maxX ? corner.x : maxX;
+			maxY = corner.y > maxY ? corner.y : maxY;
+		}
 
-		maxX = std::max(std::max(std::max(m1.x, m2.x), std::max(m3.x, m4.x)), std::max(std::max(m5.x, m6.x), std::max(m7.x, m8.x)));
-		maxY = std::max(std::max(std::max(m1.y, m2.y), std::max(m3.y, m4.y)), std::max(std::max(m5.y, m6.y), std::max(m7.y, m8.y)));
+		qInfo() << view->rect() << QVector<double>({ minX, minY, maxX, maxY });
+	}
+
+	while ((minX < r.left()) || (minY < r.top()) || (maxX > r.right()) || (maxY > r.bottom()))
+	{
+		view->transform().translate(CVector3d(0.0, 0.0, -1.0));
+
+		T = view->transform();
+
+		minX = DBL_MAX;
+		maxX = -DBL_MAX;
+		minY = DBL_MAX;
+		maxY = -DBL_MAX;
+
+		for (CPoint3d& corner : bb.getCorners())
+		{
+			corner = T * corner;
+			corner = corner - view->camPos();
+			corner = view->world2win(corner);
+
+			minX = corner.x < minX ? corner.x : minX;
+			minY = corner.y < minY ? corner.y : minY;
+			maxX = corner.x > maxX ? corner.x : maxX;
+			maxY = corner.y > maxY ? corner.y : maxY;
+		}
+
+		qInfo() << view->rect() << QVector<double>({ minX, minY, maxX, maxY });
 	}
 
 	UI::DOCK::PROPERTIES::updateProperties();
@@ -839,7 +834,6 @@ void CMainWindow::openWorkspace()
 		}
 	}
 }
-
 
 void CMainWindow::saveWorkspace()
 {

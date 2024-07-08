@@ -4,9 +4,24 @@
 
 #include <QLayout>
 #include <QRegularExpression>
+#include "QFormLayout"
+
+PropWidget::PropWidget(QWidget* parent) : QWidget(parent)
+{
+	//QFormLayout* layout = qobject_cast<QFormLayout*>(this->layout());
+	//
+	//if (layout == nullptr)
+	//{
+	//	layout = new QFormLayout(this);
+	//	setLayout(layout);
+	//}
+
+	//this->setStyleSheet("background-color:#ffff80");
+}
 
 void PropWidget::updateProperties()
 {
+	printf("PROPWIDGET !!!!\n");
 	QRegularExpression rx("prop");
 
 	//const QList<PropWidget*>& pList = this->layout()->findChildren<PropWidget*>("",Qt::FindDirectChildrenOnly);
@@ -19,23 +34,50 @@ void PropWidget::updateProperties()
 		((PropWidget * )i.next())->updateProperties();
 }
 
-#include "QFormLayout"
 
 PropWidget* PropWidget::build(QVector<PropWidget*> content, QWidget* parent)
 {
 	PropWidget* widget = new PropWidget(parent);
-	QVBoxLayout* layout = new QVBoxLayout(widget);
+	
+	widget->setObjectName("MainPropWidget");
+
+
+	QFormLayout* layout = qobject_cast<QFormLayout*>(widget->layout());
+
+	if (layout == nullptr)
+	{
+		layout = new QFormLayout(widget);
+		widget->setLayout(layout);
+	}
+
 	//QFormLayout* layout = new QFormLayout(widget);
+	//QVBoxLayout* layout = new QVBoxLayout(widget);
 
 	QVectorIterator<PropWidget*> i(content);
 	while (i.hasNext())
-		layout->addWidget( (PropWidget*)i.next() );
+		layout->addRow( (PropWidget*)i.next() );
 
+	//layout->setAlignment(Qt::AlignmentFlag::AlignTop);
+
+	widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	
 	widget->resize(layout->sizeHint());
 	widget->setMinimumSize(layout->sizeHint());
 	widget->setMaximumSize(layout->sizeHint());
 
-	widget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+
+	//widget->setLayout(layout);
 
 	return widget;
 }
+
+QVector<PropWidget*> PropWidget::create_and_get_subwidgets(CBaseObject* obj)
+{
+	return QVector<PropWidget*>();
+}
+
+QString PropWidget::treeItemLabel()
+{
+	return this->objectName();
+}
+

@@ -43,7 +43,7 @@ public:
 	double dY2() { return dY() / 2.0; };
 	double dZ2() { return dZ() / 2.0; };
 
-	CPoint3d getMidpoint() { return (m_min + m_max)/2.0; };
+	CPoint3d getMidpoint() { return (m_min + m_max) / 2.0; }
 
 	bool intersects(CBoundVector r);
 	bool intersects(CBoundingBox b);
@@ -96,8 +96,10 @@ public:
 	~CBoundingBox();
 
 	virtual void draw( Style r = DontRender, bool checked = false );
+	QVector<CPoint3d> getCorners();
 private:
 	void drawBox(bool dashed = false);
+
 
 protected:
 	CPoint3d m_min;

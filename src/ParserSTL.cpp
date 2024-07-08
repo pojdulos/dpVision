@@ -307,5 +307,7 @@ size_t CParserSTL::Run()
 		lbs = ReadBinarySTL();
 	}
 
+	pMeshData->setPath(plikSiatki.absoluteFilePath());
+
 	return lbs;
 }

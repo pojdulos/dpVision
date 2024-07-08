@@ -458,6 +458,7 @@ size_t CParserSMF::ReadSMF_V3b()
 	in.close();
 
 	pMeshData->version = 2;
+	pMeshData->setPath(plikSiatki.absoluteFilePath());
 
 	UI::STATUSBAR::printf( "Done." );
 

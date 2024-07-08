@@ -39,7 +39,7 @@ MapOfNewEdges::iterator MapOfNewEdges::findVertex(unsigned int index)
 
 	MapOfNewEdges::iterator it = this->begin();
 
-	NewEdge e = NewEdge( *it );
+	NewEdge e( *it );
 
 	while (! e.hasVertex(index) )
 	{
@@ -61,7 +61,7 @@ MapOfNewEdges::iterator MapOfNewEdges::findAnyOfVertices(unsigned int index1, un
 
 	MapOfNewEdges::iterator it = this->begin();
 
-	NewEdge e( *it );
+	NewEdge e(*it);
 
 	while (!e.hasOneOfVertices(index1, index2))
 	{

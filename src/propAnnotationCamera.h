@@ -17,6 +17,7 @@ public:
 	~PropAnnotationCamera();
 
 	static PropWidget* create(CAnnotationCamera* m, QWidget* parent = 0);
+	static QVector<PropWidget*> create_and_get_subwidgets(CBaseObject* obj);
 
 
 	virtual void updateProperties() override;

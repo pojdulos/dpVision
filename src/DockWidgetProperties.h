@@ -8,6 +8,7 @@
 
 class PropWidget;
 class QVBoxLayout;
+class QFormLayout;
 class QScrollArea;
 class CBaseObject;
 
@@ -24,18 +25,16 @@ public:
 	void selectionChanged( int id );
 	void updateProperties();
 
+	void addExpandableItems(QVector<PropWidget*> submodels);
+
+	void addExpandableItem(QString title, PropWidget* contentWidget);
+
 public slots:
 	void onCurrentObjectChanged(int);
 	void onCurrentObjectChanged(CBaseObject*);
 
 private:
 	Ui::DockWidgetProperties ui;
-
-	PropWidget *m_widget;
-	QVBoxLayout *m_layout;
-	QScrollArea *m_scroll;
-
-	void addWidgetToScrollArea(QWidget *widget);
 };
 
 #endif // DOCKWIDGETPROPERTIES_H

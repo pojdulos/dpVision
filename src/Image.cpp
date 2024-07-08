@@ -12,7 +12,7 @@ CImage::CImage() : CModel3D(), QImage()
 CImage::CImage(const QString& path, const char* format) : CModel3D(), QImage(path, format)
 {
 	m_label = QFileInfo(path).fileName();
-	plikSiatki = path;
+	m_path = path;
 	fitToWindow = false;
 
 	float w = (float)this->width() / 100.0f;

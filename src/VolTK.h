@@ -143,6 +143,8 @@ private:
 
 	bool addShaders(QOpenGLShaderProgram& program);
 	bool addShadersBAK(QOpenGLShaderProgram& program);
+
+	void renderPart(QOpenGLShaderProgram& program, uint16_t min, uint16_t max, int fR, int fG, int fB);
 	void renderPart(QOpenGLShaderProgram& program, uint16_t min, uint16_t max, QColor col);
 
 	void renderPart2(QOpenGLShaderProgram& program, uint16_t min, uint16_t max);

@@ -17,7 +17,7 @@ void GLViewer::cameraTransformations()
 	//glScalef( Scale, Scale, Scale );
   
 	//------------------------------------
-	// jeśli obracamy kamerę, to tutaj
+	// je�li obracamy kamer�, to tutaj
 	if ( m_floatingCamera )
 	{
 		//m_transform.renderRotation();
@@ -30,11 +30,11 @@ void GLViewer::cameraTransformations()
 	//m_transform.renderTranslation();
 	glTranslatef( m_transform.translation().X(), m_transform.translation().Y(), m_transform.translation().Z() );
 
-	//stałe przesuniecie sceny wzgl widza - przeniesione do lookAt()
+	//sta�e przesuniecie sceny wzgl widza - przeniesione do lookAt()
 	//glTranslatef( 0.0f, 0.0f, -200.0f );
 
 	//------------------------------------
-	// jeśli obracamy scenę to tutaj:
+	// je�li obracamy scen� to tutaj:
 	if ( ! m_floatingCamera )
 	{
 		//m_transform.renderRotation();
@@ -47,10 +47,10 @@ void GLViewer::cameraTransformations()
 
 void GLViewer::Render()
 {
-	applyProjection();	// ustawia perspektywę dla okna
+	applyProjection();	// ustawia perspektyw� dla okna
 
 	glMatrixMode(GL_MODELVIEW);		// wybierz macierz modeli
-	glLoadIdentity();				// zresetuj ją
+	glLoadIdentity();				// zresetuj j�
 
 	glInitNames();
 	glPushName( 0 );
@@ -491,9 +491,9 @@ void GLViewer::axis3D( double W1, double L1, double W2, double L2 )
 
 void GLViewer::triad3D(double W1, double L1, double W2, double L2, bool active)
 {
-	float xCol[] = { 0.2f, 0.2f, 0.8f };
+	float xCol[] = { 0.8f, 0.2f, 0.2f };
 	float yCol[] = { 0.2f, 0.8f, 0.2f };
-	float zCol[] = { 0.8f, 0.2f, 0.2f };
+	float zCol[] = { 0.2f, 0.2f, 0.8f };
 
 	glColor3f( 0.2f, 0.2f, 0.2f );
 
@@ -530,7 +530,7 @@ void GLViewer::triad3D(double W1, double L1, double W2, double L2, bool active)
 void GLViewer::glSetFont()
 {
 	HFONT hFont;
-	LOGFONT logfont;
+	LOGFONTA logfont;
 
 	HDC hDC = wglGetCurrentDC();
 
@@ -548,16 +548,14 @@ void GLViewer::glSetFont()
 	logfont.lfQuality = CLEARTYPE_QUALITY;
 	logfont.lfPitchAndFamily = DEFAULT_PITCH;
 
-#ifdef _UNICODE
-	// Kod dla Unicode Character Set (TCHAR == wchar_t)
-	wcscpy(logfont.lfFaceName, L"MS Sans Serif");
-#else
-	// Kod dla Multi-Byte Character Set (TCHAR == char)
+//#ifdef _MSC_VER
+//	wcscpy(logfont.lfFaceName, L"MS Sans Serif");
+//#elif defined __MINGW32__
 	strcpy(logfont.lfFaceName, "MS Sans Serif");
-#endif
+//#endif    
 
 	// Create the font and display list
-	hFont = CreateFontIndirect(&logfont);
+	hFont = CreateFontIndirectA(&logfont);
 	SelectObject(hDC, hFont);
 	//SelectObject (hDC, GetStockObject (SYSTEM_FONT));
 
@@ -723,9 +721,9 @@ void GLViewer::cameraTriad(void)
 
 void GLViewer::rysujOsie()
 {
-	float xCol[] = { 0.2f, 0.2f, 0.8f };
+	float xCol[] = { 0.8f, 0.2f, 0.2f };
 	float yCol[] = { 0.2f, 0.8f, 0.2f };
-	float zCol[] = { 0.8f, 0.2f, 0.2f };
+	float zCol[] = { 0.2f, 0.2f, 0.8f };
 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 

@@ -73,7 +73,7 @@ void CMainWindow::proceessData()
 		for (auto x : *AP::getWorkspace())
 		{
 			if (x.second != nullptr) {
-				response = QString::number(x.second->id()) + " " + x.second->getLabel() + " " + x.second->fileInfo().absoluteFilePath() + "\n\r";
+				response = QString::number(x.second->id()) + " " + x.second->getLabel() + " " + x.second->path() + "\n\r";
 			}
 		}
 		clientSocket->write(response.toLocal8Bit());

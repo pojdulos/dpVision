@@ -34,8 +34,6 @@ public:
 
 	CAnnotationPoint( CAnnotationPoint &t ) :CAnnotation( t ), CPoint3d( t )
 	{
-		setLabel("point");
-		//m_point = t.m_point;
 		m_faceId = t.m_faceId;
 		m_faceA = t.m_faceA;
 		m_faceB = t.m_faceB;
@@ -85,6 +83,11 @@ public:
 	};
 
 	~CAnnotationPoint(void){};
+
+	virtual CAnnotationPoint* getCopy() override
+	{
+		return new CAnnotationPoint(*this);
+	}
 
 	virtual int type() { return CAnnotation::POINT; }
 

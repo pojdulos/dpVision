@@ -17,7 +17,7 @@
 #include "Parser.h"
 
 
-CModel3D::CModel3D() : CObject(nullptr)
+CModel3D::CModel3D(CBaseObject* p) : CObject(p)
 {
 	setLabel("model3d");
 
@@ -37,8 +37,6 @@ CModel3D::CModel3D() : CObject(nullptr)
 
 CModel3D::CModel3D( const CModel3D &m ) : CObject(m)
 {
-	setLabel("copy_of_" + m.m_label);
-
 	m_bOK = true;
 
 	bDrawBB = true;
@@ -48,8 +46,6 @@ CModel3D::CModel3D( const CModel3D &m ) : CObject(m)
 	//lastanim = 0;
 
 	m_transform = m.m_transform;
-
-	plikSiatki.setFile(m.plikSiatki.absoluteFilePath());
 
 	//m_annotations = CModel3D::Annotations( m.m_annotations );
 
@@ -200,7 +196,7 @@ void CModel3D::importChildrenGeometry()
 	resetBoundingBox();
 	for (auto child : m_data)
 	{
-		if (child.second->category() == CBaseObject::Category::OBJECT)
+		if (child.second->hasCategory(CBaseObject::Category::OBJECT))
 		{
 			CObject* obj = (CObject*)child.second;
 			expand(*obj);
@@ -704,7 +700,7 @@ void CModel3D::renderAxes()
 
 	glBegin(GL_LINES);
 
-	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
+	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
 	glVertex3f(-L, 0, 0);
 	glVertex3f( L, 0, 0);
 
@@ -712,7 +708,7 @@ void CModel3D::renderAxes()
 	glVertex3f(0, -L, 0);
 	glVertex3f(0,  L, 0);
 
-	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
 	glVertex3f(0, 0, -L);
 	glVertex3f(0, 0,  L);
 	
@@ -771,4 +767,3 @@ void CModel3D::renderAxes()
 //	else
 //		return m_visible = HIDE_ALL;
 //}
-

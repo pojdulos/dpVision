@@ -79,17 +79,17 @@ void TKimageDialog::addName(QString name)
 
 void TKimageDialog::setSelection(int tx, int ty, int bx, int by)
 {
-	m_imageLabel->m_sel = QRectF( tx, ty, bx - tx, by - ty );
+	m_imageLabel->m_sel = QRect( tx, ty, bx - tx, by - ty );
 }
 
 void TKimageDialog::setSelection(QRect s)
 {
-	m_imageLabel->m_sel = QRectF(s);
+	m_imageLabel->m_sel = QRect(s);
 }
 
 QRect TKimageDialog::getSelection()
 {
-	return m_imageLabel->m_sel.toRect();
+	return m_imageLabel->m_sel;
 }
 
 
@@ -252,7 +252,7 @@ void TKimageDialog::changeDisplayedPixmap(int i)
 		QPixmap p = pic.scaled(w, h, Qt::KeepAspectRatio);
 		m_imageLabel->setPixmap(p);
 
-		m_imageLabel->m_scale = (double)pic.width() / p.width();
+		m_imageLabel->m_scale = (double)p.width() / pic.width();
 	}
 	else
 	{
@@ -272,7 +272,7 @@ void TKimageDialog::onFitCheckBox(int i)
 
 void TKimageDialog::onSelectionChanged()//QRect r)
 {
-	QRect sel = m_imageLabel->m_sel.toRect();
+	QRect sel = m_imageLabel->m_sel;
 	ui.selGroupBox->setChecked((sel.width() > 0) && (sel.height() > 0));
 
 	ui.selLeft->setValue(sel.left());

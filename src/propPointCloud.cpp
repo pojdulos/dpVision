@@ -7,11 +7,26 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
+bool PropPointCloud::group_visible = true;
 
 PropPointCloud::PropPointCloud(CPointCloud*mesh, QWidget *parent) : PropWidget( parent )
 {
 	obj = mesh; 
+
+	// Usuñ istniej¹cy layout
+	QLayout* oldLayout = layout();
+	if (oldLayout) {
+		QLayoutItem* item;
+		while ((item = oldLayout->takeAt(0)) != nullptr) {
+			delete item->widget();
+			delete item;
+		}
+		delete oldLayout;
+	}
+
 	ui.setupUi(this);
+
+	connect(ui.cloud, &QGroupBox::toggled, this, &PropPointCloud::adjustGroupHeight);
 
 	//cd = new QColorDialog(this);
 	//cd->setOptions(QColorDialog::DontUseNativeDialog | QColorDialog::ShowAlphaChannel);
@@ -40,6 +55,12 @@ PropWidget* PropPointCloud::create(CPointCloud* m, QWidget* parent)
 	widget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
 	return widget;
+}
+
+QVector<PropWidget*> PropPointCloud::create_and_get_subwidgets(CBaseObject* obj)
+{
+	CPointCloud* m = (CPointCloud*)obj;
+	return QVector<PropWidget*>({ new PropBaseObject(m), new PropMaterial(m), new PropPointCloud(m) });
 }
 
 //void PropPointCloud::updateSliders(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
@@ -106,6 +127,16 @@ void PropPointCloud::updateProperties()
 	ui.info->setText(info); // QString::fromStdWString(obj->infoRow()) );
 	ui.info->blockSignals(false);
 }
+
+
+void PropPointCloud::adjustGroupHeight(bool checked) {
+	PropPointCloud::group_visible = checked;
+	UI::adjustGroupBoxHeight(ui.cloud, PropPointCloud::group_visible);
+	this->adjustSize();
+	this->parentWidget()->adjustSize();
+}
+
+
 
 void PropPointCloud::pointSizeChanged(int s)
 {

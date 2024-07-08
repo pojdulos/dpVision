@@ -1,3 +1,4 @@
+#include "BoundingBox.h"
 #include "StdAfx.h"
 #include "BoundingBox.h"
 
@@ -103,6 +104,17 @@ void CBoundingBox::drawBox(bool dashed)
 	glPopAttrib();
 }
 
+QVector<CPoint3d> CBoundingBox::getCorners()
+{
+	return { m_min,
+		CPoint3d(m_min.x, m_min.y, m_max.z),
+		CPoint3d(m_min.x, m_max.y, m_max.z),
+		CPoint3d(m_min.x, m_max.y, m_min.z),
+		CPoint3d(m_max.x, m_max.y, m_min.z),
+		CPoint3d(m_max.x, m_min.y, m_min.z),
+		CPoint3d(m_max.x, m_min.y, m_max.z),
+		m_max };
+}
 
 void CBoundingBox::reset(InitialValues v)
 {

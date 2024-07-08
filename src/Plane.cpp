@@ -2,48 +2,133 @@
 
 #include "Mesh.h"
 
+void generateSquarePoints(const CPoint3d& point, const CVector3d& normal, double sideLength) {
+
+	CVector3d arbitraryVector(1, 0, 0);
+	if (normal.x == 1 && normal.y == 0 && normal.z == 0)
+		arbitraryVector = CVector3d(0, 1, 0);
+
+	CVector3d vec1 = normal.crossProduct(arbitraryVector).getNormalized() * sideLength;
+	CVector3d vec2 = normal.crossProduct(vec1).getNormalized() * sideLength;
+
+	// Generowanie punktów kwadratu
+	CPoint3d p1 = point + vec1 + vec2;
+	CPoint3d p2 = point + vec1 - vec2;
+	CPoint3d p3 = point - vec1 - vec2;
+	CPoint3d p4 = point - vec1 + vec2;
+
+	// Wyœwietlanie punktów
+	std::cout << "P1: (" << p1.x << ", " << p1.y << ", " << p1.z << ")\n";
+	std::cout << "P2: (" << p2.x << ", " << p2.y << ", " << p2.z << ")\n";
+	std::cout << "P3: (" << p3.x << ", " << p3.y << ", " << p3.z << ")\n";
+	std::cout << "P4: (" << p4.x << ", " << p4.y << ", " << p4.z << ")\n";
+}
+
+
+
+// dzieli kwadratowe oczka na dwa trójk¹ty
+CMesh* generateTriangleMesh(const CPoint3d& topLeft, const CPoint3d& topRight,
+	const CPoint3d& bottomLeft, const CPoint3d& bottomRight, int divisions)
+{
+	CMesh* mesh = new CMesh();
+
+	double step = 1.0 / divisions;
+	// Generowanie wierzcho³ków
+	for (int i = 0; i <= divisions; ++i) {
+		for (int j = 0; j <= divisions; ++j) {
+			CPoint3d vertex = topLeft + (topRight - topLeft) * step * j + (bottomLeft - topLeft) * step * i;
+			mesh->vertices().push_back(vertex);
+		}
+	}
+
+	// Generowanie indeksów
+	for (int i = 0; i < divisions; ++i) {
+		for (int j = 0; j < divisions; ++j) {
+			int topLeftIndex = i * (divisions + 1) + j;
+			int topRightIndex = topLeftIndex + 1;
+			int bottomLeftIndex = (i + 1) * (divisions + 1) + j;
+			int bottomRightIndex = bottomLeftIndex + 1;
+
+			// Pierwszy trójk¹t
+			mesh->faces().push_back( CFace( topLeftIndex, bottomLeftIndex, topRightIndex) );
+
+			// Drugi trójk¹t
+			mesh->faces().push_back(CFace( topRightIndex, bottomLeftIndex, bottomRightIndex) );
+		}
+	}
+
+	return mesh;
+}
+
+// dieli kwadratowe oczka na cztery trójk¹ty dodajêc wierzcho³ek w œrodku
+CMesh* generateTriangleMesh2(const CPoint3d& topLeft, const CPoint3d& topRight,
+	const CPoint3d& bottomLeft, const CPoint3d& bottomRight, int divisions )
+{
+	CMesh* mesh = new CMesh();
+
+	double step = 1.0 / divisions;
+
+	// Generowanie wierzcho³ków
+	for (int i = 0; i <= divisions; ++i) {
+		for (int j = 0; j <= divisions; ++j) {
+			CPoint3d vertex = topLeft + (topRight - topLeft) * step * j + (bottomLeft - topLeft) * step * i;
+			mesh->addVertex(vertex);
+		}
+	}
+
+	// Dodanie dodatkowych wierzcho³ków w œrodkach kwadratów
+	int offset = mesh->vertices().size();
+	for (int i = 0; i < divisions; ++i) {
+		for (int j = 0; j < divisions; ++j) {
+			CPoint3d centerVertex = (mesh->vertices()[i * (divisions + 1) + j] +
+				mesh->vertices()[i * (divisions + 1) + j + 1] +
+				mesh->vertices()[(i + 1) * (divisions + 1) + j] +
+				mesh->vertices()[(i + 1) * (divisions + 1) + j + 1]) * 0.25;
+			mesh->addVertex(centerVertex);
+		}
+	}
+
+	// Generowanie indeksów
+	for (int i = 0; i < divisions; ++i) {
+		for (int j = 0; j < divisions; ++j) {
+			int topLeftIndex = i * (divisions + 1) + j;
+			int topRightIndex = topLeftIndex + 1;
+			int bottomLeftIndex = (i + 1) * (divisions + 1) + j;
+			int bottomRightIndex = bottomLeftIndex + 1;
+			int centerIndex = offset + i * divisions + j;
+
+			// Dzielenie kwadratu na cztery trójk¹ty
+			mesh->addFace(CFace(topLeftIndex,topRightIndex,centerIndex));
+			mesh->addFace(CFace(topRightIndex,bottomRightIndex,centerIndex));
+			mesh->addFace(CFace(bottomRightIndex,bottomLeftIndex,centerIndex));
+			mesh->addFace(CFace(bottomLeftIndex,topLeftIndex,centerIndex));
+		}
+	}
+
+	return mesh;
+}
+
+
 CMesh* CPlane::getMesh(double size, int divX, int divY)
 {
-	// wzór wyjœciowy: n.x*v.x + n.y*v.y +n.z*v.z = 0
-	// v.x = ( n.y*v.y + n.z*v.z ) / -n.x
-	// v.y = ( n.x*v.x + n.z*v.z ) / -n.y
-	// v.z = ( n.x*v.x + n.y*v.y ) / -n.z
+	double sideLength = 50.0;
+	CPoint3d point = m_center;
+	CVector3d normal = m_normal;
 
-	// przyjmujê wstêpnie wartoœci v.x, v.y oraz v.z = 1.0 dla uproszczenia obliczeñ
-	double x = 1.0;
-	double y = 1.0;
-	double z = 1.0;
+	CVector3d arbitraryVector(1, 0, 0);
+	if (normal.x == 1 && normal.y == 0 && normal.z == 0)
+		arbitraryVector = CVector3d(0, 1, 0);
 
-	// mianownik nie mo¿e byæ zerowy
-	if (m_normal.Z() != 0.0) {
-		z = (m_normal.X() + m_normal.Y()) / -m_normal.Z();
-	}
-	else if (m_normal.Y() != 0.0) {
-		y = (m_normal.X() + m_normal.Z()) / -m_normal.Y();
-	}
-	else {
-		x = (m_normal.Y() + m_normal.Z()) / -m_normal.X();
-	}
+	CVector3d vec1 = normal.crossProduct(arbitraryVector).getNormalized() * sideLength;
+	CVector3d vec2 = normal.crossProduct(vec1).getNormalized() * sideLength;
 
+	// Generowanie punktów kwadratu
+	CPoint3d v1 = point + vec1 + vec2;
+	CPoint3d v2 = point + vec1 - vec2;
+	CPoint3d v3 = point - vec1 - vec2;
+	CPoint3d v4 = point - vec1 + vec2;
 
-	CVector3d v1(CVector3d(x, y, z).getNormalized() * size);			// mamy wektor kierunkowy do pierwszego naro¿nika, który mno¿ymy od razu przez m_size
-	CVector3d v2(v1.crossProduct(m_normal).getNormalized() * size);	// wektor prostopad³y jednoczeœnie do normalnego i do v1 wyznaczy drugi naro¿nik
-	CVector3d v3(-v1);													// wektor przeciwny do v1 wyznacza trzeci naro¿nik,
-	CVector3d v4(-v2);													// a wektor przeciwny do v2 - czwarty
-
-
-	CMesh* plane = new CMesh();
-
-	plane->addVertex(v1);
-	plane->addVertex(v2);
-	plane->addVertex(v3);
-	plane->addVertex(v4);
-
-	plane->faces().push_back(CFace(0, 1, 2));
-	plane->faces().push_back(CFace(0, 2, 3));
-
-	plane->fnormals().push_back(CFace(0, 1, 2).getNormal(plane->vertices()));
-	plane->fnormals().push_back(CFace(2, 3, 0).getNormal(plane->vertices()));
+	CMesh* plane = generateTriangleMesh2(v3, v4, v2, v1, 1000);
 
 	plane->getMaterial().FrontColor.ambient.SetFloat(0.0f, 1.0f, 1.0f, 0.8f);
 	plane->getMaterial().FrontColor.diffuse.SetFloat(0.0f, 1.0f, 1.0f, 0.8f);
@@ -82,7 +167,7 @@ void CPlane::toMatrix( double *m )
 	m[15] = 1.0;
 }
 
-CTransform CPlane::toTransform()
+CTransform CPlane::toTransform1()
 {
 //	double Rx[9], Ry[9], Rz[9];
 
@@ -129,4 +214,61 @@ CTransform CPlane::toTransform()
 	t.translation() = CVector3d(CPoint3d(0.0, 0.0, 0.0), m_center);
 	t.setScale(1.0);
 	return t;
+}
+
+
+
+Eigen::Matrix3d calculateRotationMatrix(const std::vector<double>& newNormal) {
+	// Wektor normalny [0,1,0]
+	std::vector<double> defaultNormal = { 0, 0, 1 };
+
+	// Obliczenie osi rotacji (iloczyn wektorowy)
+	std::vector<double> rotationAxis = {
+		defaultNormal[1] * newNormal[2] - defaultNormal[2] * newNormal[1],
+		defaultNormal[2] * newNormal[0] - defaultNormal[0] * newNormal[2],
+		defaultNormal[0] * newNormal[1] - defaultNormal[1] * newNormal[0]
+	};
+
+	// Obliczenie k¹ta rotacji (iloczyn skalarny i arccos)
+	double dotProduct = defaultNormal[1] * newNormal[1]; // Tylko sk³adowe Y, inne s¹ zerowe
+	double angle = acos(dotProduct);
+
+	// Normalizacja osi rotacji
+	double norm = sqrt(rotationAxis[0] * rotationAxis[0] +
+		rotationAxis[1] * rotationAxis[1] +
+		rotationAxis[2] * rotationAxis[2]);
+	rotationAxis[0] /= norm;
+	rotationAxis[1] /= norm;
+	rotationAxis[2] /= norm;
+
+	// Sk³adniki macierzy skoœnosymetrycznej
+	double Kx = rotationAxis[0], Ky = rotationAxis[1], Kz = rotationAxis[2];
+	Eigen::Matrix3d K;
+	K(0, 1) = -Kz; K(0, 2) = Ky;
+	K(1, 0) = Kz;  K(1, 2) = -Kx;
+	K(2,0) = -Ky; K(2,1) = Kx;
+
+	// Obliczenie macierzy rotacji
+	Eigen::Matrix3d R;
+	for (int i = 0; i < 3; ++i) {
+		for (int j = 0; j < 3; ++j) {
+			R(i,j) = 0;
+			for (int k = 0; k < 3; ++k) {
+				R(i,j) += (sin(angle) * K(i,k) + (1 - cos(angle)) * K(i,k) * K(k,j));
+			}
+			if (i == j) {
+				R(i,j) += 1;
+			}
+		}
+	}
+
+	return R;
+}
+
+CTransform CPlane::toTransform()
+{
+	Eigen::Matrix4d mat4d = Eigen::Matrix4d::Identity();
+	mat4d.block<3, 3>(0, 0) = calculateRotationMatrix({ m_normal.x, m_normal.y, m_normal.z });
+
+	return CTransform(mat4d);
 }

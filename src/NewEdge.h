@@ -7,7 +7,7 @@
 
 
 class MapOfNewEdges;
-//klasa testowa, uprasza sie o nieu¿ywanie
+//klasa testowa, uprasza sie o nieuï¿½ywanie
 class DPVISION_EXPORT NewEdge : public std::pair< std::pair<unsigned int, unsigned int>, std::set<unsigned int> >
 {
 public:
@@ -30,7 +30,7 @@ public:
 		second.insert(t);
 	};
 
-	NewEdge(const std::pair< NewEdge::first_type, NewEdge::second_type > e)
+	NewEdge(const std::pair< NewEdge::first_type, NewEdge::second_type > &e)
 	{
 		first.first = e.first.first;
 		first.second = e.first.second;

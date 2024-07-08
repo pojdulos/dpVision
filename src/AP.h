@@ -57,6 +57,8 @@ namespace AP
 		DPVISION_EXPORT bool remove(CBaseObject* obj, bool deleteIt = false);
 		DPVISION_EXPORT int addChild(CBaseObject* obj, CBaseObject* child);
 		DPVISION_EXPORT bool removeChild(CBaseObject* obj, CBaseObject* child, bool deleteIt = false);
+		DPVISION_EXPORT void moveTo(CBaseObject* obj, CBaseObject* newParent);
+		DPVISION_EXPORT void copyTo(CBaseObject* obj, CBaseObject* newParent);
 	};
 
 	namespace MODEL {
@@ -135,6 +137,7 @@ namespace AP
 
 	namespace EVENTS {
 		DPVISION_EXPORT void modelIndicationEvent( int objId );
+		DPVISION_EXPORT void workspaceTreeClicked( int objId );
 	};
 };
 

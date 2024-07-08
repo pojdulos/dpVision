@@ -34,6 +34,12 @@ PropWidget* PropAnnotationSetOfFaces::create(CAnnotationSetOfFaces* m, QWidget* 
 	return widget;
 }
 
+QVector<PropWidget*> PropAnnotationSetOfFaces::create_and_get_subwidgets(CBaseObject* obj)
+{
+	CAnnotationSetOfFaces* m = (CAnnotationSetOfFaces*)obj;
+	return QVector<PropWidget*>({ new PropBaseObject(m), new PropAnnotation(m), new PropAnnotationSetOfFaces(m) });
+}
+
 void PropAnnotationSetOfFaces::updateProperties()
 {
 	PropWidget::updateProperties();

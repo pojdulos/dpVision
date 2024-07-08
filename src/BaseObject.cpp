@@ -10,6 +10,7 @@ CBaseObject::CBaseObject(CBaseObject *p)
 	
 	m_label = "baseObject";
 	m_descr = "";
+	m_path = "";
 	m_parent = p;
 
 	m_selected = false;
@@ -26,6 +27,7 @@ CBaseObject::CBaseObject(int objId)
 	
 	m_label = "baseObject";
 	m_descr = "";
+	m_path = "";
 	m_parent = AP::WORKSPACE::getModel(objId);
 
 	m_selected = false;
@@ -41,8 +43,11 @@ CBaseObject::CBaseObject(const CBaseObject &b)
 {
 	m_Id = AP::getUniqueId();
 
-	setLabel("copy of " + b.m_label);
+	setLabel("* " + b.m_label);
+
 	setDescr(b.m_descr);
+	
+	m_path = b.m_path;
 
 	m_parent = b.m_parent;
 
@@ -78,4 +83,55 @@ bool CBaseObject::switchKidsVisibility()
 {
 	setKidsVisibility(!m_showKids);
 	return m_showKids;
+}
+
+
+void testMM(CBaseObject* obj)
+{
+	Eigen::Matrix4d aktualnaMacierz = obj->getTransformationMatrix();
+
+	CBaseObject* parent = obj->getParent();
+	while (parent != nullptr)
+	{
+		if (parent->hasTransformation())
+		{
+			Eigen::Matrix4d kolejnaMacierzZlisty = parent->getTransformationMatrix();
+			aktualnaMacierz = kolejnaMacierzZlisty * aktualnaMacierz;
+		}
+		parent = parent->getParent();
+	}
+
+	std::cout << std::endl << "TESTOWA:" << std::endl << aktualnaMacierz << std::endl;
+}
+
+Eigen::Matrix4d CBaseObject::getGlobalTransformationMatrix()
+{
+	Eigen::Matrix4d aktualnaMacierz = Eigen::Matrix4d::Identity();
+
+	std::vector<CBaseObject*> fifo;
+
+	fifo.push_back(this);
+
+	CBaseObject* parent = this->getParent();
+	while (parent != nullptr)
+	{
+		fifo.push_back(parent);
+		parent = parent->getParent();
+	}
+
+	for (int i = 0; i < fifo.size(); i++)
+	{
+		CBaseObject* currentObj = fifo[i];
+
+		if (currentObj->hasTransformation())
+		{
+			Eigen::Matrix4d kolejnaMacierzZlisty = currentObj->getTransformationMatrix();
+			aktualnaMacierz = kolejnaMacierzZlisty * aktualnaMacierz;
+		}
+	}
+
+	//std::cout << std::endl << aktualnaMacierz << std::endl;
+	//testMM(this);
+
+	return aktualnaMacierz;
 }

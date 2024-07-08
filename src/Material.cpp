@@ -58,5 +58,6 @@ bool CMaterial::attachTexture(const QString &dir )
 	}
 
 	tekstura = new CTexture( TexInfo );
-	return tekstura != nullptr;
+	return tekstura->isCreated();
+	//return tekstura != nullptr;
 }

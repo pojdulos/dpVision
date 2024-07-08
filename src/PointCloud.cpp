@@ -14,8 +14,6 @@ CPointCloud::CPointCloud(CBaseObject *p) : CObject(p)
 
 CPointCloud::CPointCloud(CPointCloud& m) : CObject(m)
 {
-	setLabel("copy of " + m.getLabel());
-
 	m_vertices = m.m_vertices;
 	m_vcolors = m.m_vcolors;
 	m_vnormals = m.m_vnormals;

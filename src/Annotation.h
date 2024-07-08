@@ -7,6 +7,8 @@
 #include "Object.h"
 #include "Transform.h"
 
+#include "QColor"
+
 class CModel3D;
 //class CTransform;
 class QDomElement;
@@ -40,13 +42,12 @@ public:
 	};
 
 	// konstruktor kopiuj¹cy
-	CAnnotation( const CAnnotation &a ) : CBaseObject(a)
+	CAnnotation(const CAnnotation& a);
+
+	virtual CAnnotation* getCopy() override
 	{
-		m_annotations.clear();
-		m_label = a.m_label;
-		m_color = a.m_color;
-		m_selcolor = a.m_selcolor;
-	};
+		return new CAnnotation(*this);
+	}
 
 	virtual ~CAnnotation()
 	{
@@ -58,6 +59,7 @@ public:
 
 	inline void setColor(CRGBA c) { m_color = c; };
 	inline CRGBA &getColor() { return m_color; };
+	inline void setColor(QColor c) { m_color = CRGBA( (unsigned char)c.red(), c.green(), c.blue(), c.alpha() ); };
 
 	inline void setSelColor(CRGBA c) { m_selcolor = c; };
 	inline CRGBA &getSelColor() { return m_selcolor; };

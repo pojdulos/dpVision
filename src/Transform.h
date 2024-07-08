@@ -17,6 +17,8 @@ class  DPVISION_EXPORT CTransform
 
 	bool m_bLocked; // czy zablokowa� mo�liwo�� zmiany pozycji
 
+	bool m_show_screw;
+
 	bool m_bRelocateCtr; // czy centrowa� obiekt na scenie podczas rysowania
 	CPoint3d m_origin; // okre�la �rodek obrotu we wsp�rz�dnych obiektu - i jednocze�nie punkt 0,0 dla centrowania
 
@@ -30,6 +32,7 @@ public:
 
 	CTransform();
 	CTransform(const CTransform &t);
+	CTransform(const Eigen::Matrix4d& mat);
 	~CTransform();
 
 	void reset();
@@ -84,6 +87,9 @@ public:
 		rotate(origin, axisAngle, internal);
 	}
 
+	void showScrew(bool b) { m_show_screw = b; }
+	bool isScrewVisible() { return m_show_screw; }
+
 	void rotateAroundAxis(CVector3d axis, double angle, bool internal = true);
 	void rotateAroundAxis(CPoint3d origin, CVector3d axis, double angle, bool internal = true);
 
@@ -123,6 +129,8 @@ public:
 	void toInvertedGLMatrixD(double* matrix);
 	void toInvertedRowMatrixD(double* matrix);
 
+	static CTransform fromTo(CTransform from, CTransform to);
+
 
 	template<typename _W> CVector3<_W> operator*(CVector3<_W> p) {
 		return Eigen::Vector4d(this->toEigenMatrix4d() * p.toVector4());
@@ -154,9 +162,11 @@ public:
 
 	std::wstring infoRow();
 
-	QString toString(QString prefix = "", QString suffix = "", QString separator = " ");
+	QString toString(QString prefix = "", QString suffix = "", QString separator = " ", const char* format = "%.8f");
 
 	void fromRowMatrix(QString text, QString separator= "(\\s+)");
+
+	void renderScrew(float r, float g, float b);
 
 	void render();
 };

@@ -29,7 +29,7 @@ size_t CParserWRL::VRML_ParseField_coordIndex( FILE *plik )
 #ifdef WIN64
 		ok = 1 == fscanf( plik, " %llu ", &a );
 #else
-		ok = 1 == fscanf(plik, " %zu ", &a);
+		ok = 1 == fscanf(plik, " %lu ", &a);
 #endif
 
 		fscanf( plik, " , " ); // tu mo¿e nie byæ przecinka
@@ -37,7 +37,7 @@ size_t CParserWRL::VRML_ParseField_coordIndex( FILE *plik )
 #ifdef WIN64
 		ok &= 1 == fscanf(plik, " %llu ", &b);
 #else
-		ok &= 1 == fscanf(plik, " %zu ", &b);
+		ok &= 1 == fscanf(plik, " %lu ", &b);
 #endif
 
 		fscanf( plik, " , " ); // tu mo¿e nie byæ przecinka
@@ -45,7 +45,7 @@ size_t CParserWRL::VRML_ParseField_coordIndex( FILE *plik )
 #ifdef WIN64
 		ok &= 1 == fscanf(plik, " %llu ", &c);
 #else
-		ok &= 1 == fscanf(plik, " %zu ", &c);
+		ok &= 1 == fscanf(plik, " %lu ", &c);
 #endif
 
 		fscanf( plik, " , " ); // tu mo¿e nie byæ przecinka

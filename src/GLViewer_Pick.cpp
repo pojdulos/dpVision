@@ -40,6 +40,8 @@ bool GLViewer::convertWorldToWin(CPoint3d workspaceCoords, CPoint3d& winCoords)
 	GLdouble modelview[16];
 	GLdouble projection[16];
 
+	makeCurrent();
+
 	glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
 	glGetDoublev(GL_PROJECTION_MATRIX, projection);
 	glGetIntegerv(GL_VIEWPORT, viewport);
@@ -53,22 +55,27 @@ bool GLViewer::convertWorldToWin(CPoint3d workspaceCoords, CPoint3d& winCoords)
 
 	winCoords = CPoint3d(winX, (double)viewport[3] - winY, winZ);
 
+	doneCurrent();
+
 	return (GL_TRUE == res1);
 }
 
 
 CPoint3d GLViewer::world2win(CPoint3d world)
 {
+	double winX, winY, winZ;
 	GLint viewport[4];
 	GLdouble modelview[16];
 	GLdouble projection[16];
 
+	makeCurrent();
 	glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
 	glGetDoublev(GL_PROJECTION_MATRIX, projection);
 	glGetIntegerv(GL_VIEWPORT, viewport);
 
-	double winX, winY, winZ;
 	int res1 = gluProject(world.X(), world.Y(), world.Z(), modelview, projection, viewport, &winX, &winY, &winZ);
+
+	doneCurrent();
 
 	return CPoint3d(winX, (double)viewport[3] - winY, winZ);
 }
@@ -81,6 +88,7 @@ bool GLViewer::convertWinToWorld(CPoint3d winCoords, CPoint3d& workspaceCoords)
 	GLdouble modelview[16];
 	GLdouble projection[16];
 
+	makeCurrent();
 	glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
 	glGetDoublev(GL_PROJECTION_MATRIX, projection);
 	glGetIntegerv(GL_VIEWPORT, viewport);
@@ -88,6 +96,7 @@ bool GLViewer::convertWinToWorld(CPoint3d winCoords, CPoint3d& workspaceCoords)
 	double worldX, worldY, worldZ;
 	int res1 = gluUnProject(winCoords.X(), (double)viewport[3] - winCoords.Y(), winCoords.Z(), modelview, projection, viewport, &worldX, &worldY, &worldZ);
 
+	doneCurrent();
 
 	workspaceCoords = m_transform.w2l(CPoint3d(worldX, worldY, worldZ) + cam.m_pos);
 
@@ -102,6 +111,7 @@ bool GLViewer::convertCoords(GLdouble winX, GLdouble winY, CPoint3d& pkt0, CPoin
 	GLdouble modelview[16];
 	GLdouble projection[16];
 
+	makeCurrent();
 	glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
 	glGetDoublev(GL_PROJECTION_MATRIX, projection);
 	glGetIntegerv(GL_VIEWPORT, viewport);
@@ -114,6 +124,8 @@ bool GLViewer::convertCoords(GLdouble winX, GLdouble winY, CPoint3d& pkt0, CPoin
 	int res2 = gluUnProject(winX, (double)viewport[3] - winY, 1.0, modelview, projection, viewport, &worldX, &worldY, &worldZ);
 
 	pkt1.Set(worldX, worldY, worldZ);
+	
+	doneCurrent();
 
 	return ((GL_TRUE == res1) && (GL_TRUE == res2));
 }

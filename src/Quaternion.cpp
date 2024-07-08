@@ -149,7 +149,11 @@ CVector3d CQuaternion::eulerAngles()
 
 CVector3d CQuaternion::eulerAnglesDeg()
 {
-	return rad2deg(CVector3d(toRotationMatrix().eulerAngles(0, 1, 2)));
+	Eigen::Vector3d tmp = toRotationMatrix().eulerAngles(0, 1, 2);
+	Eigen::Vector3d tmp2(rad2deg(tmp[0]), rad2deg(tmp[1]), rad2deg(tmp[2]));
+	//std::cout << "EULER: " << tmp2 << std::endl;
+	return tmp2;
+	//return rad2deg(CVector3d(toRotationMatrix().eulerAngles(0, 1, 2)));
 }
 
 void CQuaternion::fromEulerAngles(CVector3d v)

@@ -11,7 +11,7 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QComboBox>
 
-DockWidgetPluginPanel::DockWidgetPluginPanel(QWidget *parent)	: QDockWidget(parent)
+DockWidgetPluginPanel::DockWidgetPluginPanel(QWidget *parent) : QDockWidget(parent)
 {
 	ui.setupUi(this);
 

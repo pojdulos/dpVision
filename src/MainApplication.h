@@ -44,6 +44,7 @@ public:
 	PluginInterface *activePlugin;
 
 	QSettings *settings;
+	bool verbose_mode;
 
 	const QString& appExecDir() { return sExeDir; };
 	const QString& appDataDir() { return sAppDir; };
@@ -52,9 +53,6 @@ public:
 	PluginInterface *getPlugin( unsigned int id );
 	PluginInterface* getPlugin(const char* strUUID);
 
-
-	void preExec();
-	void postExec();
 
 	bool loadQtPlugin(const QString &pluginPath);
 	bool loadWinPlugin(const QString &pluginPath);

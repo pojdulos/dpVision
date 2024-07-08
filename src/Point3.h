@@ -100,6 +100,25 @@ public:
 		return sqrt(dx * dx + dy * dy + dz * dz);
 	}
 
+	// export to Eigen::Vector4<Type>
+	Eigen::Matrix<_T, 4, 1> toVector4()
+	{
+		Eigen::Matrix<_T, 4, 1> ev;
+		ev(0, 0) = this->x;
+		ev(1, 0) = this->y;
+		ev(2, 0) = this->z;
+		ev(3, 0) = 1;
+		return ev;
+	}
+
+	// export to Eigen::RowVector4<Type>
+	Eigen::Matrix<_T, 1, 4> toRowVector4()
+	{
+		Eigen::Matrix<_T, 1, 4> erv;
+		erv(0, 0) = this->x;		erv(0, 1) = this->y;		erv(0, 2) = this->z;		erv(0, 3) = 1;
+		return erv;
+	}
+
 	// Multiply by matrix 4x4 (result 'w' component is discarded)
 	// OpenGL (column-first) format of the matrix
 	CPoint3<_T> transformByMatrixF(float matrix[16])

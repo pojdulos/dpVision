@@ -1,4 +1,5 @@
 #include "Transform.h"
+#include "Transform.h"
 
 #include "AP.h"
 
@@ -10,7 +11,9 @@ CTransform::CTransform()
 	m_bRelocateCtr = false;
 
 	m_origin = 0.0;
-
+	
+	m_show_screw = false;
+	
 	m_rot.setIdentity();
 	m_tra = 0.0;
 	m_sca = 1.0;
@@ -24,8 +27,15 @@ CTransform::CTransform(const CTransform &t)
 	m_sca = t.m_sca;
 	m_origin = t.m_origin;
 
+	m_show_screw = false;
+
 	m_bLocked = t.m_bLocked;
 	m_bRelocateCtr = t.m_bRelocateCtr;
+}
+
+CTransform::CTransform(const Eigen::Matrix4d& mat)
+{
+	this->fromEigenMatrix4d(mat);
 }
 
 CTransform::~CTransform()
@@ -395,6 +405,7 @@ void CTransform::toRowMatrixD(double* matrix)
 	matrix[15] = 1.0;
 }
 
+
 Eigen::Matrix4d CTransform::toEigenMatrix4d()
 {
 	Eigen::Matrix4d m = m_rot.toEigenMatrix4d();
@@ -710,6 +721,14 @@ void CTransform::toInvertedRowMatrixD(double* matrix)
 	invertMatrixD(tmp, matrix);
 }
 
+CTransform CTransform::fromTo(CTransform from, CTransform to)
+{
+	Eigen::Matrix4d m1 = from.toEigenMatrix4d();
+	Eigen::Matrix4d m2 = to.toEigenMatrix4d();
+
+	//return CTransform(m1 * m2.inverse());
+	return CTransform(m2.inverse() * m1);
+}
 
 CPoint3d CTransform::w2l(const CPoint3d pkt)
 {
@@ -749,7 +768,7 @@ std::wstring CTransform::infoRow()
 }
 
 
-QString CTransform::toString(QString prefix, QString suffix, QString separator)
+QString CTransform::toString(QString prefix, QString suffix, QString separator, const char* format)
 {
 	double matrix[16];
 	
@@ -763,8 +782,18 @@ QString CTransform::toString(QString prefix, QString suffix, QString separator)
 			int idx = 4 * row + col;
 
 			if (idx > 0) text.append(separator);
-				
-			text.append( QString::number(matrix[idx]) );
+			
+			if (format == nullptr) {
+				text.append(QString::number(matrix[idx]));
+			}
+			else {
+				double number = matrix[idx];
+				if (qAbs(number) < 0.00000001)
+					number = 0.0;
+				QString liczba;
+				liczba.sprintf(format, number);
+				text.append(liczba);
+			}
 		}
 
 	text.append(suffix);
@@ -797,9 +826,58 @@ void CTransform::fromRowMatrix(QString text, QString separator)
 	}
 }
 
+#include "K3Screw.h"
+
+void CTransform::renderScrew(float r = 1., float g = 1., float b = 0.)
+{
+	auto k3 = K3RigidToScrew(this->toEigenMatrix4d());
+	Vector3d V = std::get<0>(k3);
+	double alpha = std::get<1>(k3);
+	Vector3d D = std::get<2>(k3);
+	Vector3d t = std::get<3>(k3);
+
+	//std::cout << "\nV =" << dispMatrixXd(V);
+	//std::cout << "\nalpha =" << rad2deg(alpha);
+	//std::cout << "\nD = " << dispMatrixXd(D);
+	//std::cout << "\nt = " << dispMatrixXd(t) << endl;
+
+	Vector3d P = K3Projection({ 0., 0., 0. }, D, V);
+
+	//std::cout << "\nnz =" << dispMatrixXd(P);
+
+	std::vector<Vector3d> A = { P - 50 * V, P, P + 50 * V };
+	
+	Eigen::Quaterniond q = this->m_rot;
+	//std::cout << "\nq = [ w: " << q.w() << ", x: " << q.x() << ", y: " << q.y() << ", z: " << q.z() << "]" << std::endl;
+
+	glPushMatrix();
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
+
+	glDisable(GL_TEXTURE_2D);
+	glEnable(GL_COLOR_MATERIAL);
+
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+
+	glColor3f(r, g, b);
+
+	glLineWidth(3.0);
+	glBegin(GL_LINES);
+	glVertex3f(A[0][0], A[0][1], A[0][2]);
+	glVertex3f(A[2][0], A[2][1], A[2][2]);
+	glEnd();
+	glLineWidth(1.0);
+	glBegin(GL_LINES);
+	glVertex3f(0., 0., 0.);
+	glVertex3f(A[1][0], A[1][1], A[1][2]);
+	glEnd();
+
+	glPopAttrib();
+	glPopMatrix();
+}
 
 void CTransform::render()
 {
+	if (m_show_screw) renderScrew();
 	//float matrix[16];
 
 	//toGLMatrixF(matrix);

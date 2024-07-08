@@ -2,22 +2,23 @@
 #ifndef VOLTKIMAGEDIALOG_H
 #define VOLTKIMAGEDIALOG_H
 
-#include "ui_VolTKimageDialog.h"
-#include "VolTK.h"
+#include "ui_volumetricImageDialog.h"
+#include "Volumetric.h"
 
 class ImageLabel;
 
 #include "FilterDialog.h"
 
+#include "dll_global.h"
 class DPVISION_EXPORT VolTKimageDialog : public QDialog
 {
 	Q_OBJECT
 
 public:
-	explicit VolTKimageDialog(CVolTK* volTK, QWidget* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
+	explicit VolTKimageDialog(Volumetric* volTK, QWidget* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
 	~VolTKimageDialog() {};
 
-	inline Ui::VolTKimageDialog& getUI() { return ui; };
+	inline Ui::VolumetricImageDialog& getUI() { return ui; };
 
 	void initContent(std::vector<QString> paths);
 
@@ -35,9 +36,10 @@ public:
 	void setSelection(QRect s);
 	QRect getSelection();
 
-	void setTreshWidget(bool check, int min, int max, uint16_t low, uint16_t up);
-	bool getTresh(uint16_t& lowT, uint16_t& upT);
+	void setTreshWidget(bool check, int min, int max, Volumetric::VoxelType low, Volumetric::VoxelType up);
+	bool getTresh(Volumetric::VoxelType& lowT, Volumetric::VoxelType& upT);
 
+	static void test_dialog(Volumetric*);
 
 protected:
 	virtual void resizeEvent(QResizeEvent* e) override;
@@ -47,7 +49,7 @@ public slots:
 	void onTreshCheckBox(int i);
 	void onSliderValueChanged(int i);
 	void onUpperTreshValueChanged(int i);
-	void onFitCheckBox(int i);
+	void onFitCheckBox(int);
 	void onSelectionChanged();// QRect);
 
 	void onSelLeftEdited(int);
@@ -61,15 +63,17 @@ public slots:
 	void onDispBitsChanged(QString);
 	QImage aplyConvFilter(QImage srcImg, Filter fltr);
 	void onConvFilterBtn();
-	int mediana0(NowaKostka1& kostka, size_t dest0adress, int filterSize);
-	void do3dMedianFilter(NowaKostka1& src, NowaKostka1& dst, int size);
-	void onCreateVolTKStructureBtn();
+	//int mediana0(NowaKostka1& kostka, size_t dest0adress, int filterSize);
+	//void do3dMedianFilter(NowaKostka1& src, NowaKostka1& dst, int size);
+	void onCreateVolTKStructureBtn() {};
+	void onImageScaleChanged();
+	void onImageMousePressed(QPoint);
 
 private:
-	Ui::VolTKimageDialog ui;
+	Ui::VolumetricImageDialog ui;
 
-	CVolTK* m_VolTK;
-	CVolTK::Layer currentView;
+	Volumetric* m_VolTK, m_rotated_volum;
+	Volumetric::Layer currentView;
 	int dispBits;
 
 	void changeDisplayedPixmap(int i);

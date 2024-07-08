@@ -79,6 +79,35 @@ void DockWidgetWorkspace::onCustomContextMenu(const QPoint &point)
 }
 
 
+void DockWidgetWorkspace::updateVisibilityAll(QStandardItem* parent)
+{
+	WorkspaceTreeModel* model = (WorkspaceTreeModel*)ui.treeView->model();
+	if (parent == nullptr) {
+		parent = model->invisibleRootItem();
+	}
+
+	for (int i = 0; i < parent->rowCount(); ++i) {
+		WorkspaceTreeItem* childItem = (WorkspaceTreeItem*) parent->child(i);
+
+		CBaseObject* currentObject = childItem->getObject();
+
+		childItem->changeIcon(WorkspaceTreeItem::Column::colSelfVisibility, currentObject->getSelfVisibility());
+		
+		qDebug() << childItem->text();
+
+		// Rekurencyjne wywo³anie dla dzieci, jeœli istniej¹
+		if (childItem->hasChildren()) {
+			updateVisibilityAll(childItem);
+		}
+	}
+}
+
+// U¿ycie:
+// QTreeView* treeView = ...; // Twoje QTreeView
+// QStandardItemModel* model = ...; // Model powi¹zany z QTreeView
+// iterujPoWierszach(model);
+
+
 void DockWidgetWorkspace::rebuildTree()
 {
 	ui.treeView->blockSignals(true);
@@ -313,7 +342,15 @@ void DockWidgetWorkspace::setItemLabelById(int id, QString s)
 	}
 }
 
+void DockWidgetWorkspace::expandAll()
+{
+	ui.treeView->expandAll();
+}
 
+void DockWidgetWorkspace::collapseAll()
+{
+	ui.treeView->collapseAll();
+}
 
 void DockWidgetWorkspace::addItem(CBaseObject *obj)
 {
@@ -533,10 +570,12 @@ void DockWidgetWorkspace::onTreeViewItemClicked(QModelIndex current)
 		}
 
 		emit(currentObjectChanged(clickedObject->id()));
+		AP::EVENTS::workspaceTreeClicked(clickedObject->id());
 	}
 	else
 	{
 		emit(currentObjectChanged(NO_CURRENT_MODEL));
+		AP::EVENTS::workspaceTreeClicked(NO_CURRENT_MODEL);
 	}
 }
 

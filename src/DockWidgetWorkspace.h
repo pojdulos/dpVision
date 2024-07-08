@@ -13,6 +13,7 @@ class CAnnotation;
 class CFace;
 class CModel3D;
 class CBaseObject;
+class CObject;
 class QStandardItem;
 class WorkspaceTreeItem;
 
@@ -54,6 +55,8 @@ public:
 	explicit DockWidgetWorkspace(QWidget *parent = 0);
 	~DockWidgetWorkspace();
 
+	void updateVisibilityAll(QStandardItem* parent = nullptr);
+
 	void rebuildTree();
 
 	void addItem(CBaseObject* obj);
@@ -79,6 +82,8 @@ public:
 	void setItemLabelById(int id, QString s);
 	void modifyItemById(int id);
 
+	void expandAll();
+	void collapseAll();
 
 private:
 	void colLockClicked(CModel3D* obj, WorkspaceTreeItem* clickedItem);

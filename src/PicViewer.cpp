@@ -128,7 +128,7 @@ void PicViewer::reloadImage()
 		QPixmap p = pic.scaled(w, h, Qt::KeepAspectRatio);
 		imageLabel->setPixmap(p);
 
-		imageLabel->m_scale = (double)pic.width() / p.width();
+		imageLabel->m_scale = (double)p.width() / pic.width();
 	}
 	else
 	{

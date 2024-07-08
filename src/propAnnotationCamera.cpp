@@ -38,6 +38,12 @@ PropWidget* PropAnnotationCamera::create(CAnnotationCamera* m, QWidget* parent)
 	return widget;
 }
 
+QVector<PropWidget*> PropAnnotationCamera::create_and_get_subwidgets(CBaseObject* obj)
+{
+	CAnnotationCamera* m = (CAnnotationCamera*)obj;
+	return QVector<PropWidget*>({ new PropBaseObject(m), new PropAnnotation(m), new PropAnnotationCamera(m) });
+}
+
 void PropAnnotationCamera::clearMatrix()
 {
 	CAnnotationCamera* a = (CAnnotationCamera*)obj;

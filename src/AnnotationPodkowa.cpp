@@ -16,7 +16,7 @@ std::wstring CAnnotationPodkowa::getInfoRow()
 }
 
 
-// std::list<CPoint3f[3]> getFaces()
+// std::list<CPoint3f[3]> CAnnotationPodkowa::getFaces()
 // {
 
 // 	return std::list<CPoint3f[3]>();

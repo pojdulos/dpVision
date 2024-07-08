@@ -577,6 +577,20 @@ namespace AP
 				//UI::changeMenuAfterSelect();
 			}
 		}
+
+		DPVISION_EXPORT void workspaceTreeClicked( int objId )
+		{
+			bool usedInPlugin = false;
+
+			if (nullptr != AP::mainApp().activePlugin)
+				usedInPlugin = AP::mainApp().activePlugin->onModelIndication(objId);
+
+			if (!usedInPlugin)
+			{
+				//DO SOMETHING ELSE
+				;
+			}
+		}
 	}
 }
 
@@ -696,3 +710,97 @@ bool AP::OBJECT::removeChild(CBaseObject* obj, CBaseObject* child, bool deleteIt
 	return false;
 }
 
+void AP::OBJECT::moveTo(CBaseObject *obj, CBaseObject* newParent)
+{
+	if (obj != nullptr)
+	{
+		CBaseObject* oldParent = obj->getParent();
+
+		CTransform t0;
+
+		if (oldParent != nullptr)
+		{
+			t0 = CTransform(oldParent->getGlobalTransformationMatrix());
+			AP::OBJECT::removeChild(oldParent, obj, false); // false => usun ale nie kasuj
+		}
+		else
+		{
+			if (obj == AP::WORKSPACE::getModel(obj->id()))
+			{
+				AP::WORKSPACE::removeModel(obj->id(), false);  // false => usun ale nie kasuj
+			}
+		}
+
+		CModel3D* newmodel = new CModel3D();
+		newmodel->setLabel("<=>");
+		newmodel->setDescr("Macierz dopasowania, wygenerowana podczas przenoszenia obiektu");
+		newmodel->addChild(obj);
+		newmodel->importChildrenGeometry();
+
+		if (newParent == nullptr) // copyToNew
+		{
+			newmodel->setTransform(t0);
+
+			AP::WORKSPACE::addModel(newmodel);
+		}
+		else // copyTo existing
+		{
+			CTransform t1(newParent->getGlobalTransformationMatrix());
+			CTransform ft = CTransform::fromTo(t0, t1);
+
+			newmodel->setTransform(ft);
+
+			AP::OBJECT::addChild(newParent, newmodel);
+			//((CObject*)newParent)->importChildrenGeometry();
+		}
+
+		UI::updateAllViews();
+	}
+}
+
+void AP::OBJECT::copyTo(CBaseObject* obj, CBaseObject* newParent)
+{
+	if (obj != nullptr)
+	{
+		CBaseObject* kopia = obj->getCopy();
+
+		CTransform t0;
+		if (obj->getParent() != nullptr)
+			t0 = CTransform(obj->getParent()->getGlobalTransformationMatrix());
+
+		CModel3D* newmodel = new CModel3D();
+		newmodel->setLabel("<=>");
+		newmodel->setDescr("Macierz dopasowania, wygenerowana podczas kopiowania obiektu");
+
+		if (newParent == nullptr) // copyToNew
+		{
+			newmodel->addChild(kopia);
+			newmodel->importChildrenGeometry();
+			newmodel->setTransform(t0);
+
+			AP::WORKSPACE::addModel(newmodel);
+		}
+		else // copyTo existing
+		{
+			CTransform t1(newParent->getGlobalTransformationMatrix());
+			CTransform ft = CTransform::fromTo(t0, t1);
+
+			if (ft.toQMatrix4x4().isIdentity())
+			{
+				AP::OBJECT::addChild(newParent, kopia);
+				delete newmodel;
+			}
+			else
+			{
+				newmodel->addChild(kopia);
+				newmodel->importChildrenGeometry();
+				newmodel->setTransform(ft);
+
+				AP::OBJECT::addChild(newParent, newmodel);
+			}
+
+			//((CObject*)newParent)->importChildrenGeometry();
+		}
+		UI::updateAllViews();
+	}
+}

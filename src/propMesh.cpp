@@ -6,15 +6,13 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
+bool PropMesh::group_visible = true;
 
 PropMesh::PropMesh(CMesh *mesh, QWidget *parent) : PropWidget( parent )
 {
 	obj = mesh; 
-	ui.setupUi(this);
 
-	//cd = new QColorDialog(this);
-	//cd->setOptions(QColorDialog::DontUseNativeDialog | QColorDialog::ShowAlphaChannel);
-	//QObject::connect(cd, SIGNAL(currentColorChanged(QColor)), this, SLOT(meshColorChanged(QColor)));
+	ui.setupUi(this);
 }
 
 PropMesh::~PropMesh()
@@ -24,22 +22,17 @@ PropMesh::~PropMesh()
 
 PropWidget* PropMesh::create(CMesh* m, QWidget* parent)
 {
-	PropWidget* widget = new PropWidget(parent);
-	QVBoxLayout* layout = new QVBoxLayout(widget);
+	return PropWidget::build(PropMesh::create_and_get_subwidgets(m), parent);
+}
 
-	layout->addWidget(new PropBaseObject(m, widget));
-	layout->addWidget(new PropMaterial(m, widget));
-	layout->addWidget(new PropPointCloud(m, widget));
-	layout->addWidget(new PropMesh(m, widget));
-	//layout->addWidget(new PropTransform(&m->getTransform(), widget));
-
-	widget->resize(layout->sizeHint());
-	widget->setMinimumSize(layout->sizeHint());
-	widget->setMaximumSize(layout->sizeHint());
-
-	widget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-
-	return widget;
+QVector<PropWidget*> PropMesh::create_and_get_subwidgets(CBaseObject* obj)
+{
+	CMesh* m = (CMesh*)obj;
+	return QVector<PropWidget*>({
+		new PropBaseObject(m, nullptr),
+		new PropMaterial(m, nullptr),
+		new PropPointCloud(m, nullptr),
+		new PropMesh(m, nullptr) });
 }
 
 //void PropMesh::updateSliders(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
@@ -73,23 +66,9 @@ PropWidget* PropMesh::create(CMesh* m, QWidget* parent)
 //}
 
 
+
 void PropMesh::updateProperties()
 {
-	//PropPointCloud::updateProperties();
-
-	//if ( obj->hasType(CBaseObject::MESH) )
-	//{
-	//	//ui.mesh->setTitle("Mesh");
-
-	//	CRGBA c = ((CMesh*)obj)->getMaterial(0).FrontColor.ambient;
-
-	//	updateSliders(c.red(), c.green(), c.blue(), c.alpha());
-	//	updateEditBox(c.red(), c.green(), c.blue(), c.alpha());
-	//}
-
-	//QString s("background-color: rgb(" + QString::number(a->getColor().R()) + ", " + QString::number(a->getColor().G()) + ", " + QString::number(a->getColor().B()) + ");");
-	//ui.colorGroupBox->setStyleSheet(s);
-
 	QString info = "Faces: " + QString::number(((CMesh*)obj)->faces().size()) + "\n";
 	info += "F-Colors: " + QString::number(((CMesh*)obj)->fcolors().size()) + "\n";
 	info += "F-Normals: " + QString::number(((CMesh*)obj)->fnormals().size()) + "\n";

@@ -23,7 +23,6 @@ public:
 
 	CAnnotationSetOfFaces( const CAnnotationSetOfFaces& p ) :CAnnotation( p ), SetOfFIndices(p)
 	{
-		setLabel("copy of " + p.m_label);
 		m_mesh = p.m_mesh;
 	};
 
@@ -34,6 +33,11 @@ public:
 	};
 
 	~CAnnotationSetOfFaces() override { SetOfFIndices::clear(); } // m_data.clear(); };
+
+	virtual CAnnotationSetOfFaces* getCopy() override
+	{
+		return new CAnnotationSetOfFaces(*this);
+	}
 
 	CAnnotationSetOfFaces& operator=(const CAnnotationSetOfFaces& p)
 	{

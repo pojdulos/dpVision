@@ -60,6 +60,8 @@ public:
 
 	inline bool hasChildren() override { return ! m_data.empty(); };
 
+	virtual void showChildren(bool show, QSet<CBaseObject::Type> inc = {}, QSet<CBaseObject::Type> exc = {}) override;
+
 	CBoundingBox & getBoundingBox() { return *this; };
 	CBoundingBox & expandBoundingBox(const CPoint3d &p) { CBoundingBox::expand(p); return *this; };
 	inline void resetBoundingBox(CBoundingBox::InitialValues v = CBoundingBox::InitialValues::InvalidBB) { CBoundingBox::reset(v); };
@@ -75,7 +77,7 @@ public:
 	CBaseObject* getChild(const QString& label);
 	//int getChildId( CBaseObject *d );
 
-	const Children & children() { return m_data; };
+	Children & children() { return m_data; };
 	std::vector<unsigned int> getChildrenIds();
 
 	int countChildren(CBaseObject::Type type);

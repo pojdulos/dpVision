@@ -2,12 +2,9 @@
 #include "Plugin.h"
 #include "PluginDLL.h"
 
-#ifdef PLUGIN_NAME
-	#undef PLUGIN_NAME
-#endif 
 #define PLUGIN_NAME L"(dp-parser) Pliki VRML"
 
-class DPVISION_DLL_API ConcretePlugin : public Plugin
+class PLUGINDLL_API ConcretePlugin : public Plugin
 {
 public:
     ConcretePlugin(void);

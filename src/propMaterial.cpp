@@ -6,38 +6,22 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
+bool PropMaterial::group_visible = true;
 
 PropMaterial::PropMaterial(CBaseObject *mesh, QWidget *parent) : PropWidget( parent )
 {
 	obj = mesh;
+
 	ui.setupUi(this);
-
-	//cd = new QColorDialog(this);
-	//cd->setOptions(QColorDialog::DontUseNativeDialog | QColorDialog::ShowAlphaChannel);
-	//QObject::connect(cd, SIGNAL(currentColorChanged(QColor)), this, SLOT(meshColorChanged(QColor)));
 }
 
-PropMaterial::~PropMaterial()
-{
-	//delete cd;
-}
+PropMaterial::~PropMaterial() {}
 
 PropWidget* PropMaterial::create(CBaseObject* m, QWidget* parent)
 {
-	PropWidget* widget = new PropWidget(parent);
-	QVBoxLayout* layout = new QVBoxLayout(widget);
-
-	layout->addWidget(new PropBaseObject(m, widget));
-	layout->addWidget(new PropMaterial(m, widget));
-	//layout->addWidget(new PropTransform(&m->getTransform(), widget));
-
-	widget->resize(layout->sizeHint());
-	widget->setMinimumSize(layout->sizeHint());
-	widget->setMaximumSize(layout->sizeHint());
-
-	widget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-
-	return widget;
+	return PropWidget::build({
+		new PropBaseObject(m, nullptr),
+		new PropMaterial(m, nullptr) }, parent);
 }
 
 void PropMaterial::updateSliders(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
@@ -80,6 +64,13 @@ void PropMaterial::updateProperties()
 		updateSliders(c.red(), c.green(), c.blue(), c.alpha());
 		updateEditBox(c.red(), c.green(), c.blue(), c.alpha());
 
+		QColor qc(c.red(), c.green(), c.blue(), c.alpha());
+		QString cs = qc.name(QColor::HexArgb);
+
+		ui.colorButton->setStyleSheet("background-color: " + cs + ";");
+		ui.colorButton->setText(cs);
+
+
 		ui.checkShow->blockSignals(true);
 		ui.checkShow->setChecked(((CPointCloud*)obj)->getMaterial(0).m_force);
 
@@ -98,6 +89,12 @@ void PropMaterial::rValueChanged(int r)
 	CRGBA c = ((CPointCloud*)obj)->getMaterial(0).FrontColor.ambient;
 	updateEditBox(c.red(), c.green(), c.blue(), c.alpha());
 
+	QColor qc(c.red(), c.green(), c.blue(), c.alpha());
+	QString cs = qc.name(QColor::HexArgb);
+
+	ui.colorButton->setStyleSheet("background-color: " + cs + ";");
+	ui.colorButton->setText(cs);
+
 	UI::updateAllViews();
 }
 
@@ -108,6 +105,13 @@ void PropMaterial::gValueChanged(int g)
 
 	CRGBA c = ((CPointCloud*)obj)->getMaterial(0).FrontColor.ambient;
 	updateEditBox(c.red(), c.green(), c.blue(), c.alpha());
+
+	QColor qc(c.red(), c.green(), c.blue(), c.alpha());
+	QString cs = qc.name(QColor::HexArgb);
+
+	ui.colorButton->setStyleSheet("background-color: " + cs + ";");
+	ui.colorButton->setText(cs);
+
 
 	UI::updateAllViews();
 }
@@ -120,6 +124,12 @@ void PropMaterial::bValueChanged(int b)
 	CRGBA c = ((CPointCloud*)obj)->getMaterial(0).FrontColor.ambient;
 	updateEditBox(c.red(), c.green(), c.blue(), c.alpha());
 
+	QColor qc(c.red(), c.green(), c.blue(), c.alpha());
+	QString cs = qc.name(QColor::HexArgb);
+
+	ui.colorButton->setStyleSheet("background-color: " + cs + ";");
+	ui.colorButton->setText(cs);
+
 	UI::updateAllViews();
 }
 
@@ -130,6 +140,13 @@ void PropMaterial::aValueChanged(int a)
 
 	CRGBA c = ((CPointCloud*)obj)->getMaterial(0).FrontColor.ambient;
 	updateEditBox(c.red(), c.green(), c.blue(), c.alpha());
+
+	QColor qc(c.red(), c.green(), c.blue(), c.alpha());
+	
+	QString cs = qc.name(QColor::HexArgb);
+	qInfo() << qc;
+	ui.colorButton->setText(cs);
+	//ui.colorButton->setStyleSheet("background-color: " + cs + ";");
 
 	UI::updateAllViews();
 }
@@ -168,6 +185,20 @@ void PropMaterial::colorButtonClicked()
 	c.setHsv(c.hsvHue(), c.hsvSaturation(), c.value() / 2, c.alpha());
 
 	meshColorChanged( c );
+}
+
+void PropMaterial::onColorButton()
+{
+	QColor color = QColorDialog::getColor(QColor(ui.colorButton->text()), nullptr, "", QColorDialog::ShowAlphaChannel);
+	if (color.isValid())
+	{
+		QString c = color.name(QColor::HexArgb);
+
+		ui.colorButton->setStyleSheet("background-color: " + c + ";");
+		ui.colorButton->setText(c);
+
+		meshColorChanged(c);
+	}
 }
 
 void PropMaterial::checkShowClicked(int i)
