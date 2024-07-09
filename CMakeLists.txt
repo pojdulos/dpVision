@@ -131,9 +131,10 @@ if(EXISTS "${VERSION_HEADER_PATH}")
     ExternalProject_Add(
         opencv
         SOURCE_DIR ${OPENCV_SOURCE_DIR}
-        BINARY_DIR ${CMAKE_BINARY_DIR}/opencv/build
+#        BINARY_DIR ${CMAKE_BINARY_DIR}/opencv/build
+		CMAKE_GENERATOR ${gen}
         CMAKE_ARGS
-			-DCMAKE_PREFIX_PATH=${CMAKE_BINARY_DIR}/opencv
+#			-DCMAKE_PREFIX_PATH=${CMAKE_BINARY_DIR}/opencv
 			-DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/opencv
             -DBUILD_opencv_world=ON
             -DBUILD_LIST=core,imgproc,imgcodecs,highgui,features2d#,videoio,video,calib3d,objdetect,dnn,ml,flann,photo,stitching,gapi
@@ -156,9 +157,10 @@ else()
         opencv
         GIT_REPOSITORY https://github.com/opencv/opencv.git
         GIT_TAG 4.10.0
-        BINARY_DIR ${CMAKE_BINARY_DIR}/opencv/build
+#        BINARY_DIR ${CMAKE_BINARY_DIR}/opencv/build
+		CMAKE_GENERATOR ${gen}
         CMAKE_ARGS
-			-DCMAKE_PREFIX_PATH=${CMAKE_BINARY_DIR}/opencv
+#			-DCMAKE_PREFIX_PATH=${CMAKE_BINARY_DIR}/opencv
 			-DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/opencv
             -DBUILD_opencv_world=ON
             -DBUILD_LIST=core,imgproc,imgcodecs,highgui,features2d#,videoio,video,calib3d,objdetect,dnn,ml,flann,photo,stitching,gapi
@@ -212,9 +214,8 @@ endif()
 	# Custom command to copy DLLs
     add_custom_command(TARGET opencv
         POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${OPENCV_BIN_DIR}
-        ${CMAKE_BINARY_DIR}/$<CONFIG>
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${OPENCV_BIN_DIR} ${CMAKE_BINARY_DIR}/$<CONFIG>
+	# COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PLUGIN_NAME}> $<TARGET_FILE_DIR:${PLUGIN_NAME}>/plugins/ 
     )	
 else()
     message("OpenCV found: ${OpenCV_VERSION_MAJOR}.${OPENCV_VERSION_MINOR}.${OPENCV_VERSION_REVISION}")
