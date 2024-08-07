@@ -61,7 +61,7 @@ bool GLViewer::convertWorldToWin(CPoint3d workspaceCoords, CPoint3d& winCoords)
 }
 
 
-CPoint3d GLViewer::world2win(CPoint3d world)
+CPoint3d GLViewer::world2win(const CPoint3d& world)
 {
 	double winX, winY, winZ;
 	GLint viewport[4];
@@ -79,6 +79,31 @@ CPoint3d GLViewer::world2win(CPoint3d world)
 
 	return CPoint3d(winX, (double)viewport[3] - winY, winZ);
 }
+
+//CPoint3d GLViewer::world2win(const CPoint3d& world)
+//{
+//	double winX, winY, winZ;
+//	GLint viewport[4];
+//	GLdouble modelview[16];
+//	GLdouble projection[16];
+//
+//	makeCurrent();
+//	glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+//	glGetDoublev(GL_PROJECTION_MATRIX, projection);
+//	glGetIntegerv(GL_VIEWPORT, viewport);
+//
+//	if (gluProject(world.X(), world.Y(), world.Z(), modelview, projection, viewport, &winX, &winY, &winZ) == GL_TRUE)
+//	{
+//		doneCurrent();
+//		return CPoint3d(winX, static_cast<double>(viewport[3]) - winY, winZ);
+//	}
+//	else
+//	{
+//		doneCurrent();
+//		// Obs³uga b³êdu - mo¿e byæ rzut wyj¹tku lub zwrócenie punktu z wartoœciami wskazuj¹cymi na b³¹d
+//		throw std::runtime_error("gluProject failed to transform world coordinates to window coordinates.");
+//	}
+//}
 
 
 

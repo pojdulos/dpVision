@@ -13,6 +13,8 @@
 
 PropMovement::PropMovement(CMovement* m, QWidget* parent, bool isCameraTransform) : PropWidget(parent)
 {
+	treeItemLabel = "Animation properties";
+
 	ui.setupUi(this);
 
 	m_animation = m; // &m->getTransform();
@@ -88,7 +90,7 @@ void PropMovement::updatePropertiesTree()
 {
 #ifdef EXPERIMENTAL_MOVEMENT_UI
 	QAbstractItemModel* model = ui.treeView->model();
-	QModelIndex index = model->index(m_animation->currentKey(), 0); // 0 oznacza pierwsz¹ kolumnê
+	QModelIndex index = model->index(m_animation->currentKey(), 0); // 0 oznacza pierwszï¿½ kolumnï¿½
 
 	QItemSelectionModel* selectionModel = ui.treeView->selectionModel();
 //	ui.treeView->blockSignals(true);

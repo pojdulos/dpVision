@@ -1,5 +1,4 @@
 #include "Transform.h"
-#include "Transform.h"
 
 #include "AP.h"
 
@@ -36,6 +35,13 @@ CTransform::CTransform(const CTransform &t)
 CTransform::CTransform(const Eigen::Matrix4d& mat)
 {
 	this->fromEigenMatrix4d(mat);
+
+	m_bLocked = false;
+	m_bRelocateCtr = false;
+
+	m_origin = 0.0;
+
+	m_show_screw = false;
 }
 
 CTransform::~CTransform()
@@ -830,7 +836,7 @@ void CTransform::fromRowMatrix(QString text, QString separator)
 
 void CTransform::renderScrew(float r = 1., float g = 1., float b = 0.)
 {
-	auto k3 = K3RigidToScrew(this->toEigenMatrix4d());
+	auto k3 = K3Screw::K3RigidToScrew(this->toEigenMatrix4d());
 	Vector3d V = std::get<0>(k3);
 	double alpha = std::get<1>(k3);
 	Vector3d D = std::get<2>(k3);
@@ -841,7 +847,7 @@ void CTransform::renderScrew(float r = 1., float g = 1., float b = 0.)
 	//std::cout << "\nD = " << dispMatrixXd(D);
 	//std::cout << "\nt = " << dispMatrixXd(t) << endl;
 
-	Vector3d P = K3Projection({ 0., 0., 0. }, D, V);
+	Vector3d P = K3Screw::K3Projection({ 0., 0., 0. }, D, V);
 
 	//std::cout << "\nnz =" << dispMatrixXd(P);
 

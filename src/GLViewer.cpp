@@ -13,6 +13,8 @@
 
 #include "GLViewer.h"
 
+bool mouse_key_pressed;
+
 GLViewer::GLViewer(QWidget *parent) : QOpenGLWidget(parent)
 {
 	QWidget::setAttribute(Qt::WA_DeleteOnClose);
@@ -345,6 +347,7 @@ static void qNormalizeAngle( int &angle )
  */
 void GLViewer::mousePressEvent( QMouseEvent* event )
 {
+	mouse_key_pressed = true;
   //get the information about the position of the mouse.
     lastPos = event->pos();
 
@@ -491,6 +494,126 @@ void GLViewer::deleteSelectedVoxelsVolTK(CVolTK& vol, CTransform& transform, boo
 	UI::PROGRESSBAR::hide();
 }
 
+// the glhProjectf (works only from perspective projection.
+// With the orthogonal projection it gives different results than standard gluProject. 
+// https://www.khronos.org/opengl/wiki/GluProject_and_gluUnProject_code
+int glhProjectf(double objx, double objy, double objz, double* modelview, double* projection, int* viewport, double* windowCoordinate)
+{
+	// Transformation vectors
+	double fTempo[8];
+	// Modelview transform
+	fTempo[0] = modelview[0] * objx + modelview[4] * objy + modelview[8] * objz + modelview[12]; // w is always 1
+	fTempo[1] = modelview[1] * objx + modelview[5] * objy + modelview[9] * objz + modelview[13];
+	fTempo[2] = modelview[2] * objx + modelview[6] * objy + modelview[10] * objz + modelview[14];
+	fTempo[3] = modelview[3] * objx + modelview[7] * objy + modelview[11] * objz + modelview[15];
+	// Projection transform, the final row of projection matrix is always [0 0 -1 0]
+	// so we optimize for that.
+	fTempo[4] = projection[0] * fTempo[0] + projection[4] * fTempo[1] + projection[8] * fTempo[2] + projection[12] * fTempo[3];
+	fTempo[5] = projection[1] * fTempo[0] + projection[5] * fTempo[1] + projection[9] * fTempo[2] + projection[13] * fTempo[3];
+	fTempo[6] = projection[2] * fTempo[0] + projection[6] * fTempo[1] + projection[10] * fTempo[2] + projection[14] * fTempo[3];
+	fTempo[7] = -fTempo[2];
+	// The result normalizes between -1 and 1
+	if (fTempo[7] == 0.0) // The w value
+		return 0;
+	fTempo[7] = 1.0 / fTempo[7];
+	// Perspective division
+	fTempo[4] *= fTempo[7];
+	fTempo[5] *= fTempo[7];
+	fTempo[6] *= fTempo[7];
+	// Window coordinates
+	// Map x, y to range 0-1
+	windowCoordinate[0] = (fTempo[4] * 0.5 + 0.5) * viewport[2] + viewport[0];
+	windowCoordinate[1] = (fTempo[5] * 0.5 + 0.5) * viewport[3] + viewport[1];
+	// This is only correct when glDepthRange(0.0, 1.0)
+	windowCoordinate[2] = (1.0 + fTempo[6]) * 0.5;	// Between 0 and 1
+	return 1;
+}
+
+#include <omp.h>
+#include "GL/Glu.h"
+
+void GLViewer::deleteSelectedVoxels(Volumetric* vol, bool deleteSelected)
+{
+
+	Eigen::Matrix4d m1 = vol->getGlobalTransformationMatrix(); // point to workspace
+	Eigen::Matrix4d m2 = m_transform.toEigenMatrix4d(); // workspace to viewer
+
+	Eigen::Matrix4d M = m2 * m1;
+
+	Volumetric::VoxelType zero = vol->m_minVal - 1;
+
+	Eigen::Vector4d cam_pos = cam.m_pos.toVector4();
+
+	GLint viewport[4];
+	GLdouble modelview[16];
+	GLdouble projection[16];
+
+	makeCurrent();
+	glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+	glGetDoublev(GL_PROJECTION_MATRIX, projection);
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	doneCurrent();
+
+	//// Konwersja modelview na Eigen::Matrix4d
+	//Eigen::Matrix4d modelviewMatrix;
+	//for (int i = 0; i < 16; ++i)
+	//{
+	//	modelviewMatrix(i / 4, i % 4) = modelview[i];
+	//}
+
+	//// Konwersja projection na Eigen::Matrix4d
+	//Eigen::Matrix4d projectionMatrix;
+	//for (int i = 0; i < 16; ++i)
+	//{
+	//	projectionMatrix(i / 4, i % 4) = projection[i];
+	//}
+
+	GLdouble viewportD[4];
+	for (int i = 0; i < 4; ++i)
+	{
+		viewportD[i] = double(viewport[i]);
+	}
+
+	UI::PROGRESSBAR::init(0, vol->layers(), 0);
+
+	for (int z = 0; z < vol->layers(); z++)
+	{
+		UI::PROGRESSBAR::setValue(z);
+
+#pragma omp parallel for
+		for (int y = 0; y < vol->rows(); y++)
+			for (int x = 0; x < vol->columns(); x++)
+			{
+				Eigen::Vector4d pt = vol->realXYZ(x, y, z).toVector4();
+				Eigen::Vector4d worldPt = M * pt - cam_pos;
+
+				double winX, winY, winZ;
+
+				int res1 = gluProject(worldPt.x(), worldPt.y(), worldPt.z(), modelview, projection, viewport, &winX, &winY, &winZ);
+				CPoint3d win(winX, viewportD[3] - winY, winZ);
+
+
+				//double wc[3];
+				//int res = glhProjectf(worldPt.x(), worldPt.y(), worldPt.z(), modelview, projection, viewport, wc);
+				//CPoint3d win(wc[0], viewportD[3] - wc[1], wc[2]);
+
+				QPoint pXY(win.x, win.y);
+
+				if ((deleteSelected && (m_mask.pixel(pXY) == qRgba(0, 255, 255, 255)))
+					|| (!deleteSelected && (m_mask.pixel(pXY)) == qRgba(0, 0, 0, 0)))
+				{
+					(*vol)[z][y * vol->columns() + x] = zero;
+					vol->m_minVal = zero;
+				}
+			}
+	}
+
+	UI::updateAllViews();
+
+	UI::PROGRESSBAR::hide();
+}
+
+
 void GLViewer::deleteSelectedVertices(bool deleteSelected)
 {
 	CModel3D *obj = AP::WORKSPACE::getCurrentModel();
@@ -502,7 +625,11 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 		{
 			if (child.second->getSelfVisibility())
 			{
-				if (child.second->hasType(CObject::VOLTK))
+				if (child.second->hasType(CObject::VOLUMETRIC_NEW))
+				{
+					deleteSelectedVoxels((Volumetric*)child.second, deleteSelected);
+				}
+				else if (child.second->hasType(CObject::VOLTK))
 				{
 					deleteSelectedVoxelsVolTK(*(CVolTK*)child.second, obj->transform(), deleteSelected);
 				}
@@ -636,6 +763,8 @@ void GLViewer::drawMaskCircle(QPoint pos)
  */
 void GLViewer::mouseReleaseEvent( QMouseEvent* event )
 {
+	mouse_key_pressed = false;
+
 	if (m_selectionMode == 0)
 	{
 		if (event->button() == Qt::MouseButton::MidButton)

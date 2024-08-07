@@ -25,6 +25,7 @@ struct SliceMetadata
 	//}
 };
 
+
 class QOpenGLShaderProgram;
 class QOpenGLFunctions;
 
@@ -38,21 +39,51 @@ class DPVISION_EXPORT Volumetric : public CObject
 {
 public:
 	typedef float VoxelType;
-	typedef std::vector<VoxelType> SliceDataType;
-	typedef std::vector<SliceDataType> VolumeDataType;
-	typedef SliceMetadata SliceMetadata;
-	typedef enum { XY, YZ, ZX } Layer;
 
-	VolumeDataType m_volume;
+	class SliceType : public std::vector<VoxelType>
+	{
+		unsigned int m_rows;
+		unsigned int m_columns;
+
+	public:
+		SliceType() :m_rows(0), m_columns(0) {}
+		SliceType(unsigned int _rows, unsigned int _cols, VoxelType color = 0.0) :std::vector<VoxelType>(_rows* _cols), m_rows(_rows), m_columns(_cols) {}
+
+		// konstruktor kopiuj�cy
+		SliceType(const SliceType& b) : std::vector<VoxelType>(b), m_rows(b.m_rows), m_columns(b.m_columns) {}
+
+		inline VoxelType& at(unsigned int row, unsigned int column) { return (*this)[row * m_columns + column]; }
+		inline const VoxelType& at(unsigned int row, unsigned int column) const { return (*this)[row * m_columns + column]; }
+
+		inline bool isValid() { return (m_rows > 0) && (m_columns > 0) && (m_rows*m_columns==size()); }
+
+		void setSize(unsigned int _rows, unsigned int _cols)
+		{
+			resize(_rows * _cols);
+			m_rows = _rows;
+			m_columns = _cols;
+		}
+
+		inline unsigned int rows() { return m_rows; }
+		inline unsigned int columns() { return m_columns; }
+	};
+	
+	typedef std::vector<SliceType> VolumeType;
+	typedef SliceMetadata SliceMetadata;
+	
+	typedef enum { XY, YZ, ZX, TEST } LayerPlane;
+
 	int i = 0;
 	GLuint vbo = 0;
 	//QOpenGLVertexArrayObject vao;
 	//QOpenGLShaderProgram* shader_program = nullptr;
 	GLuint shader_program = 0;
+	
 	VoxelType m_minVal = 0.0f;
 	VoxelType m_maxVal = 1.0f;
 	VoxelType m_minDisplWin = 0.0f;
 	VoxelType m_maxDisplWin = 1.0f;
+	
 	bool m_fastDraw = true;
 	bool m_renderBoxes = false;
 	std::vector<SliceMetadata> metadata;
@@ -62,7 +93,7 @@ public:
 	int m_maxRow = 0;
 	int m_minColumn = 0;
 	int m_maxColumn = 0;
-	float m_filters[7][3] = {
+	VoxelType m_filters[7][3] = {
 		{0, -100, 799},
 		{0, -9999, 99999},
 		{0, -9999, 99999},
@@ -72,15 +103,14 @@ public:
 		{0, 800, 4095} };
 
 	float m_fcolors[7][3] = {
-		{1.0, 0.0, 0.0},
-		{0.0, 1.0, 0.0},
-		{0.0, 0.0, 1.0},
-		{1.0, 1.0, 0.0},
-		{0.0, 1.0, 1.0},
-		{1.0, 0.0, 1.0},
-		{1.0, 1.0, 1.0} };
+		{1.0f, 0.0f, 0.0f},
+		{0.0f, 1.0f, 0.0f},
+		{0.0f, 0.0f, 1.0f},
+		{1.0f, 1.0f, 0.0f},
+		{0.0f, 1.0f, 1.0f},
+		{1.0f, 0.0f, 1.0f},
+		{1.0f, 1.0f, 1.0f} };
 
-	int m_shape[3] = { 0, 0, 0 };
 
 	Volumetric(CBaseObject* p = nullptr):CObject(p) {};
 	~Volumetric() {};
@@ -101,11 +131,17 @@ public:
 	CMesh* marching_cube(int factor = 1);
 	CMesh* marching_tetrahedron(int factor = 1);
 
-	bool getSlice(int nr, Volumetric::Layer layer, Volumetric::SliceDataType* slice, int* cols, int* rows);
+	bool getSlice(int nr, Volumetric::LayerPlane layer, Volumetric::SliceType* slice);
 
-	Volumetric* getRotatedVol(Volumetric::Layer dir);
+	Volumetric* getRotatedVol(Volumetric::LayerPlane dir);
 
-	QImage getLayerAsImage(int nr, Volumetric::Layer layer);
+	QImage getLayerAsImage(int nr, Volumetric::LayerPlane layer, bool tresh=false);
+
+	QImage getRTGasImage(Volumetric::LayerPlane plane, bool tresh=false);
+
+	CPoint3d realXYZ(CPoint3d pt);
+
+	CPoint3d realXYZ(int x, int y, int z);
 
 	CPoint3d getVoxelSize();
 
@@ -116,7 +152,54 @@ public:
 	void adjustMinMaxColor(VoxelType color);
 	void drawBox(CPoint3i origin, CPoint3i size, VoxelType color);
 
+	void drawSphere(CPoint3i origin, int radius, VoxelType color);
+
+	void drawCylinder(CPoint3i origin, int radius, int height, char axis, VoxelType color);
+
 
 	static Volumetric* scal1(Volumetric*, Volumetric*);
+
+	float pointToPlaneDistance(const CPoint3f& point, const CPoint3f& normal, const CPoint3f& planePoint);
+
+	float interpolateVoxel(const Volumetric::VolumeType& volume, const CPoint3f& point);
+
+	QImage generateFreeViewSliceImage(const CVector3f& normal, const CPoint3f& planePoint, const CVector3f& free_up, int width, int height, float scale, bool tresh=false);
+
+	QImage generateFreeViewRtgImage(const CVector3f& normal, const CPoint3f& planePoint, int width, int height, float scale, bool tresh);
+
+	/**************************************************************************/
+
+	inline const bool empty() const { return m_data.empty(); }
+	inline const size_t size() const { return m_data.size(); }
+	inline void push_back(const SliceType& slice) { m_data.push_back(slice); }
+
+	inline void reverse() {
+		std::reverse(m_data.begin(), m_data.end());
+		std::reverse(metadata.begin(), metadata.end());
+	}
+
+	inline unsigned int& layers() { return m_layers; }
+	inline unsigned int& rows() { return m_rows; }
+	inline unsigned int& columns() { return m_columns; }
+
+	inline VoxelType& at(unsigned int layer, unsigned int row, unsigned int column) { return m_data[layer][row*m_columns+column]; }
+	inline const VoxelType& at(unsigned int layer, unsigned int row, unsigned int column) const { return m_data[layer][row*m_columns+column]; }
+
+	inline SliceType& operator[](unsigned int layer) { return m_data[layer]; }
+	inline const SliceType& operator[](unsigned int layer) const { return m_data[layer]; }
+
+	inline SliceType& getLayer(unsigned int layer) { return m_data[layer]; }
+	inline const SliceType& getLayer(unsigned int layer) const { return m_data[layer]; }
+
+private:
+	VolumeType m_data;
+	unsigned int m_layers = 0;
+	unsigned int m_rows = 0;
+	unsigned int m_columns = 0;
+
+	template<typename T>
+	T clamp(T value, T min, T max);
+
 };
 
+// ąęłńś

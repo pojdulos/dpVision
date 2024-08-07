@@ -12,6 +12,8 @@ PropMaterial::PropMaterial(CBaseObject *mesh, QWidget *parent) : PropWidget( par
 {
 	obj = mesh;
 
+	treeItemLabel = "Material properties";
+
 	ui.setupUi(this);
 }
 

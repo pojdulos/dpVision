@@ -29,6 +29,7 @@
 class CBoundVector;
 class CAnnotationPyramid;
 class CVolTK;
+#include "Volumetric.h"
 
 class DPVISION_EXPORT GLViewer : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -102,6 +103,8 @@ public:
 	void setSelectionMode(int mode);
 
 	void deleteSelectedVoxelsVolTK(CVolTK& cloud, CTransform& transform, bool deleteSelected);
+
+	void deleteSelectedVoxels(Volumetric* vol, bool deleteSelected);
 
 	void deleteSelectedVertices(bool deleteSelected=true);
 
@@ -203,7 +206,7 @@ public:
 	bool isInPixelShadow(double pxlX, double pxlY, double ptX, double ptY);
 	bool convertWorldToWin(CPoint3d, CPoint3d &);
 	
-	CPoint3d world2win(CPoint3d world);
+	CPoint3d world2win(const CPoint3d& world);
 	
 	//template<typename _W> bool convertWinToWorld( CTriple<_W>, CTriple<_W> & );
 	//template<typename _W> bool convertWorldToWin( CTriple<_W>, CTriple<_W> & );

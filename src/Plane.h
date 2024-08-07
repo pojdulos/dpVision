@@ -15,7 +15,7 @@
 
 class CMesh;
 
-// P³aszczyzna: Ax + By + Cz + D = 0
+// Pï¿½aszczyzna: Ax + By + Cz + D = 0
 
 
 class DPVISION_EXPORT CPlane {
@@ -24,7 +24,7 @@ public:
 	CVector3d m_normal;
 	double m_d;
 
-	// domyœlny konstruktor, jeœli nie podano parametrów, p³aszczyzna: y = 0
+	// domyÅ›lny konstruktor, jeï¿½li nie podano parametrÃ³w, pÅ‚aszczyzna: y = 0
 	CPlane()
 	{
 		m_center.Set(0.0, 0.0, 0.0);
@@ -32,7 +32,7 @@ public:
 		m_d = recalc_D();
 	}
 
-	// konstruktor kopiuj¹cy
+	// konstruktor kopiujï¿½cy
 	CPlane(const CPlane& p)
 	{
 		m_center = p.m_center;
@@ -77,7 +77,7 @@ public:
 	}
 	*/
 
-	//// konstruktor - p³aszczyzna przez 3 punkty
+	//// konstruktor - pï¿½aszczyzna przez 3 punkty
 	//CPlane( CPoint3d p0, CPoint3d p1, CPoint3d p2 )
 	//{
 	//	CMatrix3x3<double> Mx( p0.Y(), p0.Z(),    1.0, p1.Y(), p1.Z(),    1.0, p2.Y(), p2.Z(),    1.0 );
@@ -96,7 +96,7 @@ public:
 	//	m_normal.normalize();
 	//}
 
-	// konstruktor - p³aszczyzna przez 3 punkty
+	// konstruktor - pï¿½aszczyzna przez 3 punkty
 	CPlane(CPoint3d p0, CPoint3d p1, CPoint3d p2)
 	{
 		CVector3d v01(p0, p1);
@@ -156,12 +156,12 @@ public:
 
 	double recalc_D()
 	{
-		// P³aszczyzna: Ax + By + Cz + D = 0
+		// Pï¿½aszczyzna: Ax + By + Cz + D = 0
 		// D = -( A*x + B*y + C*z )
 		return -(m_normal.X() * m_center.X() + m_normal.Y() * m_center.Y() + m_normal.Z() * m_center.Z());
 	}
 
-	// zwraca wspó³rzêdne obrazu punktu p w rzucie prostopad³ym na p³aszczyznê
+	// zwraca wspï¿½rzï¿½dne obrazu punktu p w rzucie prostopadï¿½ym na pï¿½aszczyznï¿½
 	CPoint3d projectionOfPoint(CPoint3d p)
 	{
 		double t = -(m_normal.X() * p.X() + m_normal.Y() * p.Y() + m_normal.Z() * p.Z() + m_d) / m_normal.squaredLength();
@@ -181,7 +181,7 @@ public:
 			r_normal = p3_normal;
 			return true;
 		}
-		else { // p³aszczyzny s¹ równoleg³e
+		else { // pï¿½aszczyzny sï¿½ rï¿½wnolegï¿½e
 			return false;
 		}
 	}
@@ -213,11 +213,11 @@ public:
 	{
 		if (0 == m_normal.length()) return false;
 
-		// wektor od wierzcho³ka trójk¹ta do punktu na promieniu
+		// wektor od wierzchoï¿½ka trï¿½jkï¿½ta do punktu na promieniu
 		CVector3d w0 = CVector3d(m_center, pP0);
 
-		// iloczyn skalarny -> zero jeœli wektory prostopad³e
-		double a = -m_normal.dotProduct(w0); // 0 -> w0 prostopad³y do vNorm -> punkt pP0 le¿y na p³aszczyŸnie trójk¹ta
+		// iloczyn skalarny -> zero jeï¿½li wektory prostopadï¿½e
+		double a = -m_normal.dotProduct(w0); // 0 -> w0 prostopadï¿½y do vNorm -> punkt pP0 leï¿½y na pï¿½aszczyï¿½nie trï¿½jkï¿½ta
 
 		if (a == 0)
 		{
@@ -227,19 +227,19 @@ public:
 			return true;
 		}
 
-		double b = m_normal.dotProduct(vRay);	// b == 0 -> vRay prostopad³y do vNorm -> vRay jest równoleg³y do trójk¹ta
+		double b = m_normal.dotProduct(vRay);	// b == 0 -> vRay prostopadï¿½y do vNorm -> vRay jest rï¿½wnolegï¿½y do trï¿½jkï¿½ta
 									// b < 0  -> vRay wpada od przodu -> OK
-									// b > 0  -> vRay wpada od ty³u -> NIE OK
+									// b > 0  -> vRay wpada od tyï¿½u -> NIE OK
 
-		//if ( fabs(b) < prawieZero ) // to jest chyba niepotrzebne o ile sie nie pojawi¹ b³êdy
+		//if ( fabs(b) < prawieZero ) // to jest chyba niepotrzebne o ile sie nie pojawiï¿½ bï¿½ï¿½dy
 		if (b == 0)
-		{ // vRay jest równoleg³y do p³aszczyzny trójk¹ta
+		{ // vRay jest rï¿½wnolegï¿½y do pï¿½aszczyzny trï¿½jkï¿½ta
 			return false;
 		}
 
 		double r = a / b;
 
-		// Wyznaczam punkt przeciêcia promienia z p³aszczyzna œciany
+		// Wyznaczam punkt przeciï¿½cia promienia z pï¿½aszczyzna ï¿½ciany
 		CVector3d vec = (vRay * a) / b;
 
 		pDistance = abs(r);
@@ -259,7 +259,7 @@ public:
 		{
 			if (d2 == 0)
 			{
-				// ten sam punkt, albo oba punkty na p³aszczyŸnie
+				// ten sam punkt, albo oba punkty na pï¿½aszczyï¿½nie
 				return false;
 			}
 			else

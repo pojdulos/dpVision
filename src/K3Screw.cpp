@@ -1,13 +1,7 @@
-#include <iostream>
-#include <Eigen/Dense>
-
-typedef Eigen::Matrix<double, 4, 4> Matrix4d;
-typedef Eigen::Matrix<double, 3, 3> Matrix3d;
-typedef Eigen::Vector3d Vector3d;
-
 #include "K3Screw.h"
+#include <iostream>
 
-std::string dispMatrixXd(Eigen::MatrixXd m)
+std::string K3Screw::dispMatrixXd(Eigen::MatrixXd m)
 {
     std::string result;
     if (m.rows()>1) result = "[\n";
@@ -23,7 +17,7 @@ std::string dispMatrixXd(Eigen::MatrixXd m)
     return result;
 }
 
-std::tuple<Vector3d, Vector3d> K3Fletch(const Vector3d& V) {
+std::tuple<Vector3d, Vector3d> K3Screw::K3Fletch(const Vector3d& V) {
     int imin = 0;
     double minAbs = std::abs(V(0));
     for (int i = 1; i < V.size(); ++i) {
@@ -45,11 +39,11 @@ std::tuple<Vector3d, Vector3d> K3Fletch(const Vector3d& V) {
     return std::make_tuple(XV, YV);
 }
 
-Vector3d K3Normalize(const Vector3d& V) {
+Vector3d K3Screw::K3Normalize(const Vector3d& V) {
     return V.normalized();
 }
 
-Vector3d K3AxisVersor(const Matrix3d& R) {
+Vector3d K3Screw::K3AxisVersor(const Matrix3d& R) {
     Matrix3d A = R - Matrix3d::Identity();
 
     Eigen::JacobiSVD<Matrix3d> svd(A, Eigen::ComputeFullU | Eigen::ComputeFullV);
@@ -67,7 +61,7 @@ Vector3d K3AxisVersor(const Matrix3d& R) {
         return V.normalized();
 }
 
-Eigen::MatrixXd null(const Eigen::MatrixXd& A, double rcond) {
+Eigen::MatrixXd K3Screw::null(const Eigen::MatrixXd& A, double rcond) {
     //std::cout << "\nA =" << dispMatrixXd(A) << std::endl;
 
     Eigen::JacobiSVD<Eigen::MatrixXd> svd(A, Eigen::ComputeFullU | Eigen::ComputeFullV);
@@ -90,7 +84,7 @@ Eigen::MatrixXd null(const Eigen::MatrixXd& A, double rcond) {
     return null_space;
 }
 
-std::tuple<Vector3d, double, Vector3d, Vector3d> K3RigidToScrew(const Matrix4d& M) {
+std::tuple<Vector3d, double, Vector3d, Vector3d> K3Screw::K3RigidToScrew(const Matrix4d& M) {
     Matrix3d R = M.topLeftCorner<3, 3>();
     Vector3d T = M.topRightCorner<3, 1>();
 
@@ -148,7 +142,7 @@ std::tuple<Vector3d, double, Vector3d, Vector3d> K3RigidToScrew(const Matrix4d& 
     }
 }
 
-Vector3d K3Projection(const Vector3d& P, const Vector3d& Q, const Vector3d& v) {
+Vector3d K3Screw::K3Projection(const Vector3d& P, const Vector3d& Q, const Vector3d& v) {
     Vector3d u = { P[0] - Q[0], P[1] - Q[1], P[2] - Q[2] };
     double dot_product = u[0] * v[0] + u[1] * v[1] + u[2] * v[2];
     double v_length_squared = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];

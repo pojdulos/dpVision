@@ -9,28 +9,11 @@
 #include "MainWindow.h"
 #include "GLViewer.h"
 
-QString PropViewer::treeItemLabel()
-{
-	return QString("Camera properties");
-}
-
 PropViewer::PropViewer(GLViewer* m, QWidget *parent)	: PropWidget( parent )
 {
-	// Usuñ istniej¹cy layout
-	//QLayout* oldLayout = layout();
-	//if (oldLayout) {
-	//	QLayoutItem* item;
-	//	while ((item = oldLayout->takeAt(0)) != nullptr) {
-	//		delete item->widget();
-	//		delete item;
-	//	}
-	//	delete oldLayout;
-	//}
-
+	treeItemLabel = "Camera properties";
 
 	ui.setupUi((QWidget*)this);
-
-	//ui.spinViewRotX->setKeyboardTracking(false);
 }
 
 PropViewer::~PropViewer()

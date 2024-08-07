@@ -188,8 +188,8 @@ std::list<int> CWorkspace::getSelection()
 	std::list<int> result;
 	for (auto id : m_selection)
 	{
-		CWorkspace::iterator it = m_data.find(id); // szukam tylko wœród obiektów z pierwszego poziomu
-		if ((it != m_data.end()) && (it->second->hasType(CObject::MODEL))) // i jeszcze siê upewniam ¿e to jest CModel3D
+		CWorkspace::iterator it = m_data.find(id); // szukam tylko wï¿½rï¿½d obiektï¿½w z pierwszego poziomu
+		if ((it != m_data.end()) && (it->second->hasType(CObject::MODEL))) // i jeszcze siï¿½ upewniam ï¿½e to jest CModel3D
 		{
 			result.push_back(id);
 		}
@@ -203,8 +203,8 @@ std::list<int> CWorkspace::getSelection(std::set<CBaseObject::Type> types, CObje
 	std::list<int> result;
 	for (auto id : m_selection)
 	{
-		CBaseObject* kid = (dad==nullptr)?getSomethingWithId(id):dad->getSomethingWithId(id); // szukam wœród wszystkich obiektów w scenie lub w obiekcie (jest to wolniejsze)
-		if ((kid != nullptr) && (types.empty() || types.find((CBaseObject::Type)kid->type()) != types.end())) // i sprawdzam czy typ jest na liœcie
+		CBaseObject* kid = (dad==nullptr)?getSomethingWithId(id):dad->getSomethingWithId(id); // szukam wï¿½rï¿½d wszystkich obiektï¿½w w scenie lub w obiekcie (jest to wolniejsze)
+		if ((kid != nullptr) && (types.empty() || types.find((CBaseObject::Type)kid->type()) != types.end())) // i sprawdzam czy typ jest na liï¿½cie
 		{
 			result.push_back(id);
 		}
@@ -218,8 +218,8 @@ std::list<CBaseObject*> CWorkspace::getSelected(std::set<CBaseObject::Type> type
 	std::list<CBaseObject*> result;
 	for (auto id : m_selection)
 	{
-		CBaseObject* kid = (dad == nullptr) ? getSomethingWithId(id) : dad->getSomethingWithId(id); // szukam wœród wszystkich obiektów w scenie lub w obiekcie (jest to wolniejsze)
-		if ((kid != nullptr) && (types.empty() || types.find((CBaseObject::Type)kid->type()) != types.end())) // i sprawdzam czy typ jest na liœcie
+		CBaseObject* kid = (dad == nullptr) ? getSomethingWithId(id) : dad->getSomethingWithId(id); // szukam wï¿½rï¿½d wszystkich obiektï¿½w w scenie lub w obiekcie (jest to wolniejsze)
+		if ((kid != nullptr) && (types.empty() || types.find((CBaseObject::Type)kid->type()) != types.end())) // i sprawdzam czy typ jest na liï¿½cie
 		{
 			result.push_back(kid);
 		}
@@ -508,7 +508,7 @@ void CWorkspace::reset()
 
 //int CWorkspace::getNewId()
 //{
-//	// prawid³owo, ale na razie musi byæ inaczej
+//	// prawidï¿½owo, ale na razie musi byï¿½ inaczej
 //	//int newId = MODEL_ID_OFFSET;
 //	//while ( m_data.find( newId ) != m_data.end() )
 //	//{

@@ -16,7 +16,7 @@ public:
 	static PropWidget* build(QVector<PropWidget*> content, QWidget* parent = 0);
 	static QVector<PropWidget*> create_and_get_subwidgets(CBaseObject* obj);
 
-	virtual QString treeItemLabel();
+	QString treeItemLabel;
 };
 
 #endif // PROPWIDGET_H

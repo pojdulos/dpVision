@@ -13,16 +13,7 @@ PropPointCloud::PropPointCloud(CPointCloud*mesh, QWidget *parent) : PropWidget( 
 {
 	obj = mesh; 
 
-	// Usuñ istniej¹cy layout
-	QLayout* oldLayout = layout();
-	if (oldLayout) {
-		QLayoutItem* item;
-		while ((item = oldLayout->takeAt(0)) != nullptr) {
-			delete item->widget();
-			delete item;
-		}
-		delete oldLayout;
-	}
+	treeItemLabel = "PointCloud properties";
 
 	ui.setupUi(this);
 

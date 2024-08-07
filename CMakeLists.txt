@@ -16,6 +16,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Możliwe konfiguracje" FORCE)
 
+
 #############################################################################
 # biblioteki dpVision
 #############################################################################
@@ -66,166 +67,17 @@ function(find_or_add_subdirectory package subdir)
     endif()
 endfunction()
 
+include(cmake/ArchAndRuntime.cmake)
 
-#find_package( OpenCV REQUIRED )
-#add_subdirectory(libs/opencv)
-
-#find_or_add_subdirectory(OpenCV libs/opencv)
-
-# find_package(OpenCV REQUIRED)
-# target_link_libraries (${EXE_NAME}
-# 	${OpenCV_LIBRARIES}
-# )
-
-find_package(OpenCV QUIET)
-if (NOT OpenCV_FOUND)
-    include(ExternalProject)
-
-	file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/opencv/include)
-    
-	# Ustawienia architektury 64-bitowej
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /DWIN64 /D_WIN64 /DAMD64")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DWIN64 /D_WIN64 /DAMD64")
-
-    #set(OpenCV_BUILD_LIST "world" CACHE STRING "List of modules to build")
-    #set(OpenCV_BUILD_SHARED_LIBS ON CACHE BOOL "Build shared libraries (DLLs)")
+include(cmake/getOpenCV.cmake)
 
 
-	set(OPENCV_SOURCE_DIR ${CMAKE_SOURCE_DIR}/3rdParty/opencv-4.10.0)
-	set(VERSION_HEADER_PATH "${OPENCV_SOURCE_DIR}/modules/core/include/opencv2/core/version.hpp")
+# get_cmake_property(_variablenames VARIABLES)
+# list(SORT _variablenames)
+# foreach (_variablename ${_variablenames})
+   # message(STATUS "${_variablename}=${${_variablename}}")
+# endforeach()
 
-if(EXISTS "${VERSION_HEADER_PATH}")
-    file(READ "${VERSION_HEADER_PATH}" _version_header)
-
-    string(REGEX MATCHALL "#define[ \t]+CV_VERSION_MAJOR[ \t]+([0-9]+)" _major_match "${_version_header}")
-    string(REGEX MATCHALL "#define[ \t]+CV_VERSION_MINOR[ \t]+([0-9]+)" _minor_match "${_version_header}")
-    string(REGEX MATCHALL "#define[ \t]+CV_VERSION_REVISION[ \t]+([0-9]+)" _revision_match "${_version_header}")
-
-    message(STATUS "Major match: ${_major_match}")
-    message(STATUS "Minor match: ${_minor_match}")
-    message(STATUS "Revision match: ${_revision_match}")
-
-    if (_major_match)
-        string(REGEX REPLACE ".*#define[ \t]+CV_VERSION_MAJOR[ \t]+([0-9]+).*" "\\1" OPENCV_VERSION_MAJOR "${_major_match}")
-    else()
-        set(OPENCV_VERSION_MAJOR "0")
-    endif()
-
-    if (_minor_match)
-        string(REGEX REPLACE ".*#define[ \t]+CV_VERSION_MINOR[ \t]+([0-9]+).*" "\\1" OPENCV_VERSION_MINOR "${_minor_match}")
-    else()
-        set(OPENCV_VERSION_MINOR "0")
-    endif()
-
-    if (_revision_match)
-        string(REGEX REPLACE ".*#define[ \t]+CV_VERSION_REVISION[ \t]+([0-9]+).*" "\\1" OPENCV_VERSION_REVISION "${_revision_match}")
-    else()
-        set(OPENCV_VERSION_REVISION "0")
-    endif()
-
-    set(OPENCV_VERSION "${OPENCV_VERSION_MAJOR}${OPENCV_VERSION_MINOR}${OPENCV_VERSION_REVISION}")
-
-    message(STATUS "OpenCV version: ${OPENCV_VERSION_MAJOR}.${OPENCV_VERSION_MINOR}.${OPENCV_VERSION_REVISION}")
-    message(STATUS "OpenCV version combined: ${OPENCV_VERSION}")
-	
-    ExternalProject_Add(
-        opencv
-        SOURCE_DIR ${OPENCV_SOURCE_DIR}
-#        BINARY_DIR ${CMAKE_BINARY_DIR}/opencv/build
-		CMAKE_GENERATOR ${gen}
-        CMAKE_ARGS
-#			-DCMAKE_PREFIX_PATH=${CMAKE_BINARY_DIR}/opencv
-			-DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/opencv
-            -DBUILD_opencv_world=ON
-            -DBUILD_LIST=core,imgproc,imgcodecs,highgui,features2d#,videoio,video,calib3d,objdetect,dnn,ml,flann,photo,stitching,gapi
-            -DBUILD_DOCS=OFF
-            -DBUILD_EXAMPLES=OFF
-            -DBUILD_TESTS=OFF
-            -DBUILD_SHARED_LIBS=ON
-            -DCMAKE_SYSTEM_PROCESSOR=AMD64
-            -DCMAKE_GENERATOR_PLATFORM=x64
-		UPDATE_COMMAND ""
-        PATCH_COMMAND ""
-        TEST_COMMAND ""
-        INSTALL_COMMAND ${CMAKE_COMMAND} --build . --config $<CONFIG> --target install
-    )
-	
-else()
-	set(OPENCV_VERSION 4100)
-
-    ExternalProject_Add(
-        opencv
-        GIT_REPOSITORY https://github.com/opencv/opencv.git
-        GIT_TAG 4.10.0
-#        BINARY_DIR ${CMAKE_BINARY_DIR}/opencv/build
-		CMAKE_GENERATOR ${gen}
-        CMAKE_ARGS
-#			-DCMAKE_PREFIX_PATH=${CMAKE_BINARY_DIR}/opencv
-			-DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/opencv
-            -DBUILD_opencv_world=ON
-            -DBUILD_LIST=core,imgproc,imgcodecs,highgui,features2d#,videoio,video,calib3d,objdetect,dnn,ml,flann,photo,stitching,gapi
-            -DBUILD_DOCS=OFF
-            -DBUILD_EXAMPLES=OFF
-            -DBUILD_TESTS=OFF
-            -DBUILD_SHARED_LIBS=ON
-            -DCMAKE_SYSTEM_PROCESSOR=AMD64
-            -DCMAKE_GENERATOR_PLATFORM=x64
-		UPDATE_COMMAND ""
-        PATCH_COMMAND ""
-        TEST_COMMAND ""
-        INSTALL_COMMAND ${CMAKE_COMMAND} --build . --config $<CONFIG> --target install
-    )
-endif()
-
-
-    # Dodajemy ścieżki do nagłówków i bibliotek po zbudowaniu OpenCV
-    # ExternalProject_Get_Property(opencv install_dir)
-	set(install_dir ${CMAKE_BINARY_DIR}/opencv)
-	
-    # Dynamiczne uzyskanie architektury i kompilatora
-    if(CMAKE_GENERATOR MATCHES "Visual Studio")
-        #set(MY_VS_PREFIX /${CMAKE_VS_PLATFORM_NAME}/${CMAKE_VS_PLATFORM_TOOLSET})
-        set(MY_VS_PREFIX /${CMAKE_VS_PLATFORM_NAME}/vc17)
-    else()
-        set(MY_VS_PREFIX "")
-    endif()
-    
-    set(OPENCV_BIN_DIR ${install_dir}${MY_VS_PREFIX}/bin)
-    set(OPENCV_LIB_DIR ${install_dir}${MY_VS_PREFIX}/lib)
-    set(OPENCV_INCLUDE_DIR ${install_dir}/include)	
-	
-    set(OpenCV_INCLUDE_DIRS ${OPENCV_INCLUDE_DIR})
-
-    link_directories(${OPENCV_LIB_DIR})
-
-    # Ustawienie OpenCV_LIBS w zależności od konfiguracji
-    set(OpenCV_LIBS
-        $<$<CONFIG:Debug>:${OPENCV_LIB_DIR}/opencv_world${OPENCV_VERSION}d.lib>
-        $<$<CONFIG:Release>:${OPENCV_LIB_DIR}/opencv_world${OPENCV_VERSION}.lib>
-    )
-
-	# target_link_libraries(${PROJECT_NAME}
-		# $<$<CONFIG:Debug>:${OPENCV_LIB_DIR}/opencv_world${OPENCV_VERSION}d.lib>
-		# $<$<CONFIG:Release>:${OPENCV_LIB_DIR}/opencv_world${OPENCV_VERSION}.lib>
-	# )
-
-    add_dependencies(${EXE_NAME} opencv)
-	
-	# Custom command to copy DLLs
-    add_custom_command(TARGET opencv
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${OPENCV_BIN_DIR} ${CMAKE_BINARY_DIR}/$<CONFIG>
-	# COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PLUGIN_NAME}> $<TARGET_FILE_DIR:${PLUGIN_NAME}>/plugins/ 
-    )	
-else()
-    message("OpenCV found: ${OpenCV_VERSION_MAJOR}.${OPENCV_VERSION_MINOR}.${OPENCV_VERSION_REVISION}")
-endif()
-
-
-include_directories(${OpenCV_INCLUDE_DIRS})
-
-target_include_directories ( ${EXE_NAME} PUBLIC ${OpenCV_INCLUDE_DIRS} )
-target_link_libraries ( ${EXE_NAME} ${OpenCV_LIBS} )
 
 
 set_target_properties(${EXE_NAME} PROPERTIES
@@ -265,8 +117,6 @@ endif (MSVC)
 
 
 
-
-message( "\nConfiguring external libraries:\n" )
 
 function(add_subdir_if_contains parentDir keyword)
     file(GLOB subdirectories RELATIVE ${parentDir} ${parentDir}/*)
@@ -486,6 +336,7 @@ foreach(SUBDIR ${SUBDIRS})
 	endif()
 endforeach()
 
+message( "Plugin list: ${DPV_PLUGINS}" )
 message( "\nEnding configuration process...\n" )
 
 

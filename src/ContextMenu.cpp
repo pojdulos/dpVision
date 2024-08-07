@@ -402,13 +402,15 @@ QMenu* CContextMenu::createVolumetricMenu()
 #include <QtWidgets>
 #include <QtGui>
 
-#include "VolTKimageDialog.h"
+#include "volumetricImageDialog.h"
 
 void CContextMenu::slot_vol_show_images()
 {
 	if (m_obj->hasType(CBaseObject::VOLUMETRIC_NEW))
 	{
-		VolTKimageDialog::test_dialog((Volumetric*)m_obj);
+		VolumetricImageDialog* dialog = new VolumetricImageDialog((Volumetric*)m_obj);
+
+		dialog->show();
 	}
 }
 
@@ -429,6 +431,19 @@ void CContextMenu::slot_volumetric_export()
 
 void CContextMenu::slot_volumetric_set_metadata()
 {
+	float* origin = ((Volumetric*)m_obj)->metadata[0].image_position_patient;
+
+	float vsizeX = ((Volumetric*)m_obj)->metadata[1].pixel_spacing[0];
+	float vsizeY = ((Volumetric*)m_obj)->metadata[1].pixel_spacing[1];
+	float vsizeZ = ((Volumetric*)m_obj)->metadata[1].slice_distance;
+
+	int shape[] = {
+	((Volumetric*)m_obj)->layers(),
+	((Volumetric*)m_obj)->rows(),
+	((Volumetric*)m_obj)->columns()
+	};
+
+
 	QDialog* dlg = new QDialog();
 
 	dlg->setWindowTitle("Volumetric Metadata");
@@ -443,11 +458,21 @@ void CContextMenu::slot_volumetric_set_metadata()
 	input2->setValidator(validator);
 	input3->setValidator(validator);
 
-	float* origin = ((Volumetric*)m_obj)->metadata[0].image_position_patient;
-
 	input1->setText(QString::number(origin[0]));
 	input2->setText(QString::number(origin[1]));
 	input3->setText(QString::number(origin[2]));
+
+	QPushButton* ctrButton = new QPushButton("Center", dlg);
+
+	QObject::connect(ctrButton, &QPushButton::clicked, [&]() {
+		origin[0] = -(vsizeX * shape[2]) / 2;
+		origin[1] = -(vsizeY * shape[1]) / 2;
+		origin[2] = -(vsizeZ * shape[0]) / 2;
+
+		input1->setText(QString::number(origin[0]));
+		input2->setText(QString::number(origin[1]));
+		input3->setText(QString::number(origin[2]));
+		});
 
 	QGroupBox* group1 = new QGroupBox(dlg);
 	group1->setTitle("Origin:");
@@ -457,6 +482,8 @@ void CContextMenu::slot_volumetric_set_metadata()
 	formLayout1->addRow("x:", input1);
 	formLayout1->addRow("y:", input2);
 	formLayout1->addRow("z:", input3);
+	formLayout1->addRow(ctrButton);
+
 	group1->setLayout(formLayout1);
 
 	QLineEdit* input4 = new QLineEdit(dlg);
@@ -465,10 +492,6 @@ void CContextMenu::slot_volumetric_set_metadata()
 	input4->setValidator(validator);
 	input5->setValidator(validator);
 	input6->setValidator(validator);
-
-	float vsizeX = ((Volumetric*)m_obj)->metadata[1].pixel_spacing[0];
-	float vsizeY = ((Volumetric*)m_obj)->metadata[1].pixel_spacing[1];
-	float vsizeZ = ((Volumetric*)m_obj)->metadata[1].slice_distance;
 
 	input4->setText(QString::number(vsizeX));
 	input5->setText(QString::number(vsizeY));
@@ -496,8 +519,6 @@ void CContextMenu::slot_volumetric_set_metadata()
 	QObject::connect(cancelButton, SIGNAL(clicked()), dlg, SLOT(reject()));
 
 	QVBoxLayout* layout = new QVBoxLayout();
-
-	int* shape = ((Volumetric*)m_obj)->m_shape;
 
 	QString crl = "Volume size: " + QString::number(shape[2]) + " x " + QString::number(shape[1]) + " x " + QString::number(shape[0]);
 	crl += " (" + QString::number(vsizeX * shape[2]) + "mm x " + QString::number(vsizeY * shape[1]) + "mm x " + QString::number(vsizeZ * shape[0]) + "mm)";
@@ -549,19 +570,19 @@ void CContextMenu::slot_volumetric_set_metadata()
 
 void CContextMenu::slot_volumetric_sift_cloud()
 {
-	// Liczba kluczowych punktów do zachowania.Domyœlnie 0, co oznacza, ¿e nie ma limitu.
+	// Liczba kluczowych punktï¿½w do zachowania.Domyï¿½lnie 0, co oznacza, ï¿½e nie ma limitu.
 	int nfeatures = 0;
 
-	// Liczba warstw w ka¿dej oktawie.Domyœlnie 3
+	// Liczba warstw w kaï¿½dej oktawie.Domyï¿½lnie 3
 	int nOctaveLayers = 3;
 
-	// Próg eliminacji kluczowych punktów o niskim kontraœcie.Domyœlnie 0.04
+	// Prï¿½g eliminacji kluczowych punktï¿½w o niskim kontraï¿½cie.Domyï¿½lnie 0.04
 	double contrastThreshold = 0.04;
 
-	// Próg eliminacji kluczowych punktów na krawêdziach.Domyœlnie 10
+	// Prï¿½g eliminacji kluczowych punktï¿½w na krawï¿½dziach.Domyï¿½lnie 10
 	double edgeThreshold = 10.0;
 
-	// Pocz¹tkowa sigma dla Gaussowskiego rozmycia.Domyœlnie 1.6
+	// Poczï¿½tkowa sigma dla Gaussowskiego rozmycia.Domyï¿½lnie 1.6
 	double sigma = 1.6;
 
 	int factor = 1;

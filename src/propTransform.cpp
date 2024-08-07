@@ -13,12 +13,6 @@
 
 bool PropTransform::group_visible = true;
 
-QString PropTransform::treeItemLabel()
-{
-	return QString("Transformation");
-}
-
-
 void PropTransform::addSeparator(const QString& title, QStandardItemModel* model )
 {
 	if (model)
@@ -319,6 +313,9 @@ void PropTransform::onRotButton()
 PropTransform::PropTransform(CTransform *m, QWidget *parent, bool isCameraTransform) : PropWidget( parent )
 {
 	m_trans = m; // &m->getTransform();
+
+	treeItemLabel = "Transformation properties";
+
 
 	ui.setupUi(this);
 

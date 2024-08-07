@@ -1,3 +1,4 @@
+#pragma once
 #ifndef INTERFEJSAPLIKACJI_H
 #define INTERFEJSAPLIKACJI_H
 

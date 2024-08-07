@@ -12,6 +12,8 @@ PropMesh::PropMesh(CMesh *mesh, QWidget *parent) : PropWidget( parent )
 {
 	obj = mesh; 
 
+	treeItemLabel = "Mesh properties";
+
 	ui.setupUi(this);
 }
 

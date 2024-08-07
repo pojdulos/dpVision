@@ -37,7 +37,6 @@ class DPVISION_EXPORT PropTransform : public PropWidget
 	static bool group_visible;
 
 public:
-	virtual QString treeItemLabel() override;
 	void addSeparator(const QString& title, QStandardItemModel* model);
 	void updateDouble(QString itemName, double v);
 	void updateVector3d(QString itemName, CVector3d q);

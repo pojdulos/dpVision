@@ -11,6 +11,8 @@
 PropImage::PropImage(CImage *m, QWidget *parent) : PropWidget( parent )
 {
 	obj = m;
+	treeItemLabel = "Image properties";
+
 	ui.setupUi((QWidget*)this);
 
 	wasLocked = ((CModel3D*)obj)->isLocked();

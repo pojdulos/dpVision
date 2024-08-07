@@ -10,6 +10,8 @@ PropBaseObject::PropBaseObject(CBaseObject* o, QWidget* parent) : PropWidget(par
 {
 	obj = o;
 
+	treeItemLabel = QString("Base Object - Id: %1").arg(obj->id());
+
 	// Usuń istniejący layout
 	//QLayout* oldLayout = layout();
 	//if (oldLayout) {
@@ -38,10 +40,6 @@ PropBaseObject::~PropBaseObject()
 {
 }
 
-QString PropBaseObject::treeItemLabel()
-{
-	return QString("Base Object - Id: %1").arg(obj->id());
-}
 
 void PropBaseObject::updateProperties()
 {

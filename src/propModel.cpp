@@ -10,6 +10,7 @@
 PropModel::PropModel(CModel3D *m, QWidget *parent) : PropWidget( parent )
 {
 	obj = m;
+
 	ui.setupUi((QWidget*)this);
 
 	//QObject::connect( ui.spinRotX, SIGNAL(valueChanged(double)), this, SLOT(updateModelRotX(double)) );

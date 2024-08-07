@@ -13,7 +13,7 @@ FilterDialog::FilterDialog(Filter* fltr, QWidget* parent, Qt::WindowFlags f) : Q
 		for (int c = 0; c < m_Filter->getSize(); c++)
 		{
 			QDoubleSpinBox* spin = new QDoubleSpinBox();
-
+			spin->setRange(-99999.0, 99999.0);
 			double& i = (*m_Filter)(r, c);
 			spin->setValue(i);
 			spin->setObjectName("Spin_R" + QString::number(r) + "_C" + QString::number(c));

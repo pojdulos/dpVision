@@ -496,6 +496,11 @@ std::vector<INDEX_TYPE> CPointCloud::KDtree::find_k_closest_to_ray(int k, CPoint
 	return wynik;
 }
 
+bool CPointCloud::KDtree::is_any_in_distance_to_pt(float distance, CPoint3f p) const
+{
+	return trimesh::KDtree::is_any_in_distance_to_pt(distance, p.toVector());
+}
+
 std::vector<INDEX_TYPE> CPointCloud::KDtree::find_all_in_distance_to_pt(float distance, CPoint3f p) const
 {
 	std::vector<const float *> knn;
@@ -510,6 +515,8 @@ std::vector<INDEX_TYPE> CPointCloud::KDtree::find_all_in_distance_to_pt(float di
 
 	return wynik;
 }
+
+
 std::vector<INDEX_TYPE> CPointCloud::KDtree::find_all_in_distance_to_ray(float distance, CPoint3f p, CVector3f dir) const
 {
 	std::vector<const float *> knn;

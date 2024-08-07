@@ -17,7 +17,7 @@ struct GLTriangle
 class DPVISION_EXPORT MeshMaker
 {
 public:
-    MeshMaker(Volumetric* volTK, CMesh* mesh, int pMin, int pMax) : m_volTK(volTK), m_mesh(mesh), progmin(pMin), progmax(pMax), DIVIDER(1) {}
+    MeshMaker(Volumetric* volTK, CMesh* mesh, int pMin, int pMax) : m_volume(volTK), m_mesh(mesh), progmin(pMin), progmax(pMax), DIVIDER(1) {}
     ~MeshMaker() {}
 
     std::vector<GLTriangle> triangles;
@@ -29,7 +29,7 @@ private:
 
     double DIVIDER;
 
-    Volumetric* m_volTK;
+    Volumetric* m_volume;
 
     /*
         getOffset finds the approximate point of intersection of the surface

@@ -167,9 +167,18 @@ public:
 
 	// OPERATORY
 	
-	_T& operator[](size_t index) { return v[index]; }
+	_T& operator[](const unsigned int idx) {
+		assert((idx < 3) && "Index out of range");
+		return v[idx];
+	}
 
-	const _T& operator[](size_t index) const { return v[index]; }
+	const _T& operator[](const unsigned int index) const {
+		assert((idx < 3) && "Index out of range");
+		return v[index];
+	}
+
+
+
 
 	// algebraiczne
 
@@ -259,7 +268,6 @@ public:
 		else if ( x < c.y ) return false;
 		return ( x >= c.z );
 	}
-
 
 };
 

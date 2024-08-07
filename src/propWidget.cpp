@@ -8,15 +8,7 @@
 
 PropWidget::PropWidget(QWidget* parent) : QWidget(parent)
 {
-	//QFormLayout* layout = qobject_cast<QFormLayout*>(this->layout());
-	//
-	//if (layout == nullptr)
-	//{
-	//	layout = new QFormLayout(this);
-	//	setLayout(layout);
-	//}
-
-	//this->setStyleSheet("background-color:#ffff80");
+	treeItemLabel = this->objectName() + " properties";
 }
 
 void PropWidget::updateProperties()
@@ -75,9 +67,3 @@ QVector<PropWidget*> PropWidget::create_and_get_subwidgets(CBaseObject* obj)
 {
 	return QVector<PropWidget*>();
 }
-
-QString PropWidget::treeItemLabel()
-{
-	return this->objectName();
-}
-

@@ -148,7 +148,12 @@ void DockWidgetProperties::selectionChanged( int id )
 		}
 	}
 	addExpandableItems(submodels);
-	updateProperties();
+	
+	for (auto& kid : submodels)
+	{
+		kid->updateProperties();
+	}
+	//updateProperties();
 }
 
 void DockWidgetProperties::updateProperties()
@@ -170,7 +175,7 @@ void DockWidgetProperties::addExpandableItems(QVector<PropWidget*> submodels)
 	while (i.hasNext())
 	{
 		PropWidget* ww = (PropWidget*)i.next();
-		addExpandableItem(ww->treeItemLabel(), ww);
+		addExpandableItem(ww->treeItemLabel, ww);
 	}
 }
 

@@ -388,9 +388,7 @@ inline double MeshMaker::getOffset(double fValue1, double fValue2, double fValue
 
 Volumetric::VoxelType MeshMaker::getVoxelValue(CPoint3d vox)
 {
-    //WORD val = m_volTK->kostka.getRescaled(vox.x, vox.y, vox.z);
-    size_t idx = vox.y * m_volTK->m_shape[1] + vox.x;
-    float val = m_volTK->m_volume[vox.z][idx];
+    float val = m_volume->at(vox.z, vox.y, vox.x);
 
     if (val >= progmax)
         return 0;
@@ -586,26 +584,26 @@ void MeshMaker::MarchingTetrahedron(double _DIV)
 {
     if (_DIV >= 1.0) DIVIDER = _DIV;
 
-    //triangles.reserve( m_volTK->kostka.size() );
+    //triangles.reserve( m_volume->kostka.size() );
 
-    UI::PROGRESSBAR::init(0, m_volTK->m_shape[2], 0);
+    UI::PROGRESSBAR::init(0, m_volume->columns(), 0);
     UI::PROGRESSBAR::setText("MarchingTetrahedron:");
 
-    short bX = m_volTK->m_minColumn;
+    short bX = m_volume->m_minColumn;
     bX /= DIVIDER;
     bX *= DIVIDER;
 
-    short bY = m_volTK->m_minRow;
+    short bY = m_volume->m_minRow;
     bY /= DIVIDER;
     bY *= DIVIDER;
 
-    short bZ = m_volTK->m_minSlice;
+    short bZ = m_volume->m_minSlice;
     bZ /= DIVIDER;
     bZ *= DIVIDER;
 
-    short eX = m_volTK->m_maxColumn - DIVIDER;
-    short eY = m_volTK->m_maxRow - DIVIDER;
-    short eZ = m_volTK->m_maxSlice - DIVIDER;
+    short eX = m_volume->m_maxColumn - DIVIDER;
+    short eY = m_volume->m_maxRow - DIVIDER;
+    short eZ = m_volume->m_maxSlice - DIVIDER;
 
     for (short iX = bX; iX < eX; iX += DIVIDER)
     {
@@ -618,11 +616,11 @@ void MeshMaker::MarchingTetrahedron(double _DIV)
     }
 
 
-    //for (short iX = 0; iX < (m_volTK->kostka.m_cols - DIVIDER); iX += DIVIDER)
+    //for (short iX = 0; iX < (m_volume->kostka.m_cols - DIVIDER); iX += DIVIDER)
     //{
     //    UI::PROGRESSBAR::setValue(iX);
-    //    for (short iY = 0; iY < (m_volTK->kostka.m_rows - DIVIDER); iY += DIVIDER)
-    //        for (short iZ = 0; iZ < (m_volTK->kostka.m_lays - DIVIDER); iZ += DIVIDER)
+    //    for (short iY = 0; iY < (m_volume->kostka.m_rows - DIVIDER); iY += DIVIDER)
+    //        for (short iZ = 0; iZ < (m_volume->kostka.m_lays - DIVIDER); iZ += DIVIDER)
     //        {
     //            vMarchCube(CPoint3d(iX, iY, iZ));
     //        }
@@ -636,26 +634,26 @@ void MeshMaker::MarchingCube(double _DIV)
 {
     if (_DIV >= 1.0) DIVIDER = _DIV;
 
-    //triangles.reserve(m_volTK->kostka.size());
+    //triangles.reserve(m_volume->kostka.size());
 
-    UI::PROGRESSBAR::init(0, m_volTK->m_shape[2], 0);
+    UI::PROGRESSBAR::init(0, m_volume->columns(), 0);
     UI::PROGRESSBAR::setText("MarchingCube:");
 
-    short bX = m_volTK->m_minColumn;
+    short bX = m_volume->m_minColumn;
     bX /= DIVIDER;
     bX *= DIVIDER;
 
-    short bY = m_volTK->m_minRow;
+    short bY = m_volume->m_minRow;
     bY /= DIVIDER;
     bY *= DIVIDER;
 
-    short bZ = m_volTK->m_minSlice;
+    short bZ = m_volume->m_minSlice;
     bZ /= DIVIDER;
     bZ *= DIVIDER;
 
-    short eX = m_volTK->m_maxColumn - DIVIDER;
-    short eY = m_volTK->m_maxRow - DIVIDER;
-    short eZ = m_volTK->m_maxSlice - DIVIDER;
+    short eX = m_volume->m_maxColumn - DIVIDER;
+    short eY = m_volume->m_maxRow - DIVIDER;
+    short eZ = m_volume->m_maxSlice - DIVIDER;
 
     for (short iX = bX; iX < eX; iX += DIVIDER)
     {

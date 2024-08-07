@@ -74,7 +74,7 @@ struct KDtree::Node {
 			Node *child1, *child2;
 		} node;
 		struct {
-			const float *p[MAX_PTS_PER_NODE];
+			const float *points[MAX_PTS_PER_NODE];
 		} leaf;
 	};
 
@@ -86,6 +86,7 @@ struct KDtree::Node {
 	void find_k_closest_to_ray(Traversal_Info &ti) const;
 	void find_all_in_distance_to_pt(KDtree::Node::Traversal_Info &ti) const;
 	void find_all_in_distance_to_ray(KDtree::Node::Traversal_Info &ti) const;
+	bool is_any_in_distance_to_pt(float, const float*) const;
 };
 
 
@@ -146,7 +147,7 @@ void KDtree::Node::build(KDtree *kd, const float **pts, size_t n)
 	// Leaf nodes
 	if (n <= MAX_PTS_PER_NODE) {
 		npts = n;
-		memcpy(leaf.p, pts, n * sizeof(float *));
+		memcpy(leaf.points, pts, n * sizeof(float *));
 		return;
 	}
 
@@ -259,13 +260,13 @@ void KDtree::Node::find_closest_to_pt(KDtree::Node::Traversal_Info &ti) const
 	// Leaf nodes
 	if (npts) {
 		for (int i = 0; i < npts; i++) {
-			float myd2 = dist2(leaf.p[i], ti.p);
+			float myd2 = dist2(leaf.points[i], ti.p);
 			if ((myd2 < ti.closest_d2) &&
-			    leaf.p[i] != ti.p &&
-			    (!ti.iscompat || (*ti.iscompat)(leaf.p[i]))) {
+			    leaf.points[i] != ti.p &&
+			    (!ti.iscompat || (*ti.iscompat)(leaf.points[i]))) {
 				ti.closest_d2 = myd2;
 				ti.closest_d = sqrt(ti.closest_d2);
-				ti.closest = leaf.p[i];
+				ti.closest = leaf.points[i];
 			}
 		}
 		return;
@@ -297,24 +298,24 @@ void KDtree::Node::find_k_closest_to_pt(KDtree::Node::Traversal_Info &ti) const
 	if (npts) {
 		for (int i = 0; i < npts; i++)
 		{
-			float myd2 = dist2(leaf.p[i], ti.p);
+			float myd2 = dist2(leaf.points[i], ti.p);
 
 			if ( ((myd2 < ti.closest_d2) || (ti.knn.size() < ti.k))
 				// && leaf.p[i] != ti.p
-				&& (!ti.iscompat || (*ti.iscompat)(leaf.p[i])))
+				&& (!ti.iscompat || (*ti.iscompat)(leaf.points[i])))
 			{
 				float myd = sqrt(myd2);
-				ti.knn.push_back(make_pair(myd, leaf.p[i]));
-				push_heap(ti.knn.begin(), ti.knn.end());      // po tym najwiêkszy element trafia do knn[0]
+				ti.knn.push_back(make_pair(myd, leaf.points[i]));
+				push_heap(ti.knn.begin(), ti.knn.end());      // po tym najwiï¿½kszy element trafia do knn[0]
 				
 				if (ti.knn.size() > ti.k)
 				{
-					pop_heap(ti.knn.begin(), ti.knn.end());  // po tym najwiêkszy element trafia do knn[k-1], a w knn[0] jest drugi najwiêkszy
+					pop_heap(ti.knn.begin(), ti.knn.end());  // po tym najwiï¿½kszy element trafia do knn[k-1], a w knn[0] jest drugi najwiï¿½kszy
 					ti.knn.pop_back();
 				}
 				
 				// Keep track of distance to k-th closest
-				ti.closest_d = ti.knn[0].first;              // w knn[0] powinien byc najwiêkszy element
+				ti.closest_d = ti.knn[0].first;              // w knn[0] powinien byc najwiï¿½kszy element
 				ti.closest_d2 = sqr(ti.closest_d); 
 			}
 		}
@@ -346,11 +347,11 @@ void KDtree::Node::find_all_in_distance_to_pt(KDtree::Node::Traversal_Info &ti) 
 	// Leaf nodes
 	if (npts) {
 		for (int i = 0; i < npts; i++) {
-			float myd2 = dist2(leaf.p[i], ti.p);
-			if ((myd2 < ti.closest_d2) && (leaf.p[i] != ti.p) && (!ti.iscompat || (*ti.iscompat)(leaf.p[i])))
+			float myd2 = dist2(leaf.points[i], ti.p);
+			if ((myd2 < ti.closest_d2) && (leaf.points[i] != ti.p) && (!ti.iscompat || (*ti.iscompat)(leaf.points[i])))
 			{
 				float myd = sqrt(myd2);
-				ti.knn.push_back(make_pair(myd, leaf.p[i]));
+				ti.knn.push_back(make_pair(myd, leaf.points[i]));
 			}
 		}
 		return;
@@ -375,6 +376,42 @@ void KDtree::Node::find_all_in_distance_to_pt(KDtree::Node::Traversal_Info &ti) 
 	}
 }
 
+bool KDtree::Node::is_any_in_distance_to_pt(float distance2, const float* p) const
+{
+	// Leaf nodes
+	if (npts) {
+		for (int i = 0; i < npts; i++) {
+			float myd2 = dist2(leaf.points[i], p);
+
+			if (myd2 <= distance2) return true;
+		}
+	}
+
+	// Check whether to abort
+	if (dist2(node.center, p) >= sqr(node.r + sqrt(distance2)))
+		return false;
+
+	// Recursive case - pick the optimal order
+	float myd = node.center[node.splitaxis] - p[node.splitaxis];
+	if (myd >= 0.0f) {
+		if ( node.child1->is_any_in_distance_to_pt(distance2, p) ) 
+			return true;
+		
+		if (myd < sqrt(distance2))
+			if (node.child2->is_any_in_distance_to_pt(distance2, p))
+				return true;
+	}
+	else {
+		if (node.child2->is_any_in_distance_to_pt(distance2, p))
+			return true;
+
+		if (-myd < sqrt(distance2))
+			if (node.child1->is_any_in_distance_to_pt(distance2, p))
+				return true;
+	}
+
+	return false;
+}
 
 
 // Crawl the KD tree to look for the closest point to
@@ -385,14 +422,14 @@ void KDtree::Node::find_closest_to_ray(KDtree::Node::Traversal_Info &ti) const
 	if (npts) {
 		for (int i = 0; i < npts; i++) {
 			// We don't want to find the point itself
-			if (leaf.p[i] == ti.p)
+			if (leaf.points[i] == ti.p)
 				continue;
-			float myd2 = dist2ray2(leaf.p[i], ti.p, ti.dir);
+			float myd2 = dist2ray2(leaf.points[i], ti.p, ti.dir);
 			if ((myd2 < ti.closest_d2) &&
-			    (!ti.iscompat || (*ti.iscompat)(leaf.p[i]))) {
+			    (!ti.iscompat || (*ti.iscompat)(leaf.points[i]))) {
 				ti.closest_d2 = myd2;
 				ti.closest_d = sqrt(ti.closest_d2);
-				ti.closest = leaf.p[i];
+				ti.closest = leaf.points[i];
 			}
 		}
 		return;
@@ -420,28 +457,28 @@ void KDtree::Node::find_k_closest_to_ray(KDtree::Node::Traversal_Info &ti) const
 	// Leaf nodes
 	if (npts) {
 		for (int i = 0; i < npts; i++) {
-			// We don't want to find the point itself  <--- a tak w³aœciwie, to dlaczego ????
-			if (leaf.p[i] == ti.p)
+			// We don't want to find the point itself  <--- a tak wï¿½aï¿½ciwie, to dlaczego ????
+			if (leaf.points[i] == ti.p)
 				continue;
 
-			float myd2 = dist2ray2(leaf.p[i], ti.p, ti.dir); //kwadrat odleg³oœci punktu od promienia
+			float myd2 = dist2ray2(leaf.points[i], ti.p, ti.dir); //kwadrat odlegï¿½oï¿½ci punktu od promienia
 			
 			//if ((myd2 < ti.closest_d2 || ti.knn.size() < ti.k) && (!ti.iscompat || (*ti.iscompat)(leaf.p[i])))
-			if ( ( myd2 < ti.closest_d2 ) && (!ti.iscompat || (*ti.iscompat)(leaf.p[i])))
+			if ( ( myd2 < ti.closest_d2 ) && (!ti.iscompat || (*ti.iscompat)(leaf.points[i])))
 			{
 				float myd = sqrt(myd2);
 				
-				ti.knn.push_back(make_pair(myd, leaf.p[i])); //dok³ada element do wektora
-				push_heap(ti.knn.begin(), ti.knn.end());	// przesuwa najwiêkszy element na pocz¹tek wektora
+				ti.knn.push_back(make_pair(myd, leaf.points[i])); //dokï¿½ada element do wektora
+				push_heap(ti.knn.begin(), ti.knn.end());	// przesuwa najwiï¿½kszy element na poczï¿½tek wektora
 				
 				if (ti.knn.size() > ti.k) {
-					pop_heap(ti.knn.begin(), ti.knn.end()); // przesuwa najwiêkszy element na koniec wektora,
-															// a jednoczeœnie na pocz¹tku pojawia sie drugi w kolejnoœci element
+					pop_heap(ti.knn.begin(), ti.knn.end()); // przesuwa najwiï¿½kszy element na koniec wektora,
+															// a jednoczeï¿½nie na poczï¿½tku pojawia sie drugi w kolejnoï¿½ci element
 					ti.knn.pop_back();						// usuwa ostatni element wektora
 				}
 
 				// Keep track of distance to k-th closest
-				ti.closest_d = ti.knn[0].first;				// teraz pierwszy element wektora zawiera najbardziej odleg³y punkt z wybranych
+				ti.closest_d = ti.knn[0].first;				// teraz pierwszy element wektora zawiera najbardziej odlegï¿½y punkt z wybranych
 				ti.closest_d2 = sqr(ti.closest_d);
 			}
 		}
@@ -474,13 +511,13 @@ void KDtree::Node::find_all_in_distance_to_ray(KDtree::Node::Traversal_Info &ti)
 	if (npts) {
 		for (int i = 0; i < npts; i++) {
 
-			float myd2 = dist2ray2(leaf.p[i], ti.p, ti.dir); //kwadrat odleg³oœci punktu od promienia
+			float myd2 = dist2ray2(leaf.points[i], ti.p, ti.dir); //kwadrat odlegï¿½oï¿½ci punktu od promienia
 
-			if ((myd2 < ti.closest_d2) && (!ti.iscompat || (*ti.iscompat)(leaf.p[i])))
+			if ((myd2 < ti.closest_d2) && (!ti.iscompat || (*ti.iscompat)(leaf.points[i])))
 			{
 				float myd = sqrt(myd2);
 
-				ti.knn.push_back(make_pair(myd, leaf.p[i])); //dok³ada element do wektora
+				ti.knn.push_back(make_pair(myd, leaf.points[i])); //dokï¿½ada element do wektora
 			}
 		}
 		return;
@@ -677,6 +714,16 @@ void KDtree::find_k_closest_to_ray(::std::vector<const float*>& knn, int k, cons
 }
 
 
+
+bool KDtree::is_any_in_distance_to_pt(float distance, const float* p) const
+{
+	if (!root)
+		return false;
+
+	return root->is_any_in_distance_to_pt(distance*distance, p);
+}
+
+
 void KDtree::find_all_in_distance_to_pt(::std::vector<const float*>& knn, float distance, const float * p, const CompatFunc * iscompat) const
 {
 	knn.clear();
@@ -702,6 +749,9 @@ void KDtree::find_all_in_distance_to_pt(::std::vector<const float*>& knn, float 
 	for (size_t i = 0; i < found; i++)
 		knn[i] = ti.knn[i].second;
 }
+
+
+
 
 void KDtree::find_all_in_distance_to_ray(::std::vector<const float*>& knn, float distance, const float * p, const float * dir, const CompatFunc * iscompat) const
 {

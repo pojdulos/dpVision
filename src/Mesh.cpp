@@ -567,89 +567,67 @@ void CMesh::removeUnusedVertices()
 
 	this->resetBoundingBox();
 
-	INDEX_TYPE i = static_cast<INDEX_TYPE>(m_poly.faces().size());
+	INDEX_TYPE faceCount = static_cast<INDEX_TYPE>(faces().size());
 
-	for (INDEX_TYPE j = 0; j < i; j++)
+	for (INDEX_TYPE face_id = 0; face_id < faceCount; face_id++)
 	{
-		UI::STATUSBAR::printfTimed(1000, L"(CMesh) Removing unused vertices. %d more to be done", i-j);
+		UI::STATUSBAR::printfTimed(1000, L"(CMesh) Removing unused vertices. %d more to be done", faceCount-face_id);
 
-		CFace *f = &this->m_poly.faces()[j];
+		CFace& face = this->faces()[face_id];
 
-		INDEX_TYPE a = f->A();
-		if (vIndexMap.end() == vIndexMap.find(a))
+		for (int idx = 0; idx < 3; idx++)
 		{
-			vIndexMap[a] = newVertices.size();
-			newVertices.push_back(m_vertices[a] );
-			if (modColors) newColors.push_back(m_vcolors[a]);
-			if (modNormals) newNormals.push_back(m_vnormals[a]);
+			INDEX_TYPE vertex_id = face[idx];
+			if (vIndexMap.end() == vIndexMap.find(vertex_id))
+			{
+				vIndexMap[vertex_id] = newVertices.size();
+				newVertices.push_back(m_vertices[vertex_id]);
 
-			expand(m_vertices[a]);
+				if (modColors)
+					newColors.push_back(m_vcolors[vertex_id]);
+				
+				if (modNormals)
+					newNormals.push_back(m_vnormals[vertex_id]);
+
+				expand(m_vertices[vertex_id]);
+			}
+			face[idx] = vIndexMap.at(vertex_id);
 		}
-		f->A( vIndexMap.at(a) );
-
-		INDEX_TYPE b = f->B();
-		if (vIndexMap.end() == vIndexMap.find(b))
-		{
-			vIndexMap[b] = newVertices.size();
-			newVertices.push_back(m_vertices[b] );
-			if (modColors) newColors.push_back(m_vcolors[b]);
-			if (modNormals) newNormals.push_back(m_vnormals[b]);
-
-			expand(m_vertices[b]);
-		}
-		f->B( vIndexMap.at(b) );
-
-		INDEX_TYPE c = f->C();
-		if (vIndexMap.end() == vIndexMap.find(c))
-		{
-			vIndexMap[c] = newVertices.size();
-			newVertices.push_back(m_vertices[c] );
-			if (modColors) newColors.push_back(m_vcolors[c]);
-			if (modNormals) newNormals.push_back(m_vnormals[c]);
-
-			expand(m_vertices[c]);
-		}
-		f->C( vIndexMap.at(c) );
 
 		//====================================================
 
-		if (modTC && (this->getMaterial(0).texindex.size()>j))
+		auto& texindex = this->getMaterial(0).texindex;
+		auto& texcoord = this->getMaterial(0).texcoord;
+
+		if (modTC && (texindex.size()>face_id))
 		{
-			CTIndex* ti = &this->getMaterial(0).texindex[j];
+			CTIndex& ti = texindex[face_id];
 
-			INDEX_TYPE tA = ti->a;
-			if (tcIndexMap.end() == tcIndexMap.find(tA))
+			for (int tidx = 0; tidx < 3; tidx++)
 			{
-				tcIndexMap[tA] = newTC.size();
-				newTC.push_back(this->getMaterial(0).texcoord[tA]);
+				INDEX_TYPE tex_coord_id = ti[tidx];
+				if (tcIndexMap.end() == tcIndexMap.find(tex_coord_id))
+				{
+					tcIndexMap[tex_coord_id] = newTC.size();
+					newTC.push_back(texcoord[tex_coord_id]);
+				}
+				ti[tidx] = tcIndexMap.at(tex_coord_id);
 			}
-			ti->a = tcIndexMap.at(tA);
-
-			INDEX_TYPE tB = ti->b;
-			if (tcIndexMap.end() == tcIndexMap.find(tB))
-			{
-				tcIndexMap[tB] = newTC.size();
-				newTC.push_back(this->getMaterial(0).texcoord[tB]);
-			}
-			ti->b = tcIndexMap.at(tB);
-
-			INDEX_TYPE tC = ti->c;
-			if (tcIndexMap.end() == tcIndexMap.find(tC))
-			{
-				tcIndexMap[tC] = newTC.size();
-				newTC.push_back(this->getMaterial(0).texcoord[tC]);
-			}
-			ti->c = tcIndexMap.at(tC);
 		}
 	}
 	vIndexMap.clear();
 	tcIndexMap.clear();
 
 	m_vertices = newVertices;
-	if (modColors) m_vcolors = newColors;
-	if (modNormals) m_vnormals = newNormals;
+	
+	if (modColors)
+		m_vcolors = newColors;
+	
+	if (modNormals)
+		m_vnormals = newNormals;
 
-	if (modTC) m_materials[0]->texcoord = newTC;
+	if (modTC)
+		m_materials[0]->texcoord = newTC;
 
 	newVertices.clear();
 	newColors.clear();

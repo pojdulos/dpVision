@@ -14,6 +14,9 @@
 PropVolumetric::PropVolumetric(Volumetric *voltk, QWidget *parent) : PropWidget( parent )
 {
 	this->obj = voltk;
+
+	treeItemLabel = "Volumetric data properties";
+
 	ui.setupUi((QWidget*)this);
 
 	f_check = { ui.f0CheckBox, ui.f1CheckBox, ui.f2CheckBox, ui.f3CheckBox, ui.f4CheckBox, ui.f5CheckBox, ui.f6CheckBox };
@@ -286,8 +289,8 @@ void PropVolumetric::xEchanged(int v)
 
 	if (val < this->obj->m_minColumn)
 		val = this->obj->m_minColumn;
-	else if (val >= this->obj->m_shape[2])
-		val = this->obj->m_shape[2] - 1;
+	else if (val >= this->obj->columns())
+		val = this->obj->columns() - 1;
 
 	this->obj->m_maxColumn = val;
 	ui.xBspin->blockSignals(true);
@@ -318,8 +321,8 @@ void PropVolumetric::yEchanged(int v)
 
 	if (val < this->obj->m_minRow)
 		val = this->obj->m_minRow;
-	else if (val >= this->obj->m_shape[1])
-		val = this->obj->m_shape[1] - 1;
+	else if (val >= this->obj->rows())
+		val = this->obj->rows() - 1;
 
 	this->obj->m_maxRow = val;
 	ui.yBspin->blockSignals(true);
@@ -350,8 +353,8 @@ void PropVolumetric::zEchanged(int v)
 
 	if (val < this->obj->m_minSlice)
 		val = this->obj->m_minSlice;
-	else if (val >= this->obj->m_shape[0])
-		val = this->obj->m_shape[0] - 1;
+	else if (val >= this->obj->layers())
+		val = this->obj->layers() - 1;
 
 	this->obj->m_maxSlice = val;
 	ui.zBspin->blockSignals(true);

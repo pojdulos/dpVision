@@ -95,16 +95,16 @@ void DockWidgetWorkspace::updateVisibilityAll(QStandardItem* parent)
 		
 		qDebug() << childItem->text();
 
-		// Rekurencyjne wywo³anie dla dzieci, jeœli istniej¹
+		// Rekurencyjne wywoï¿½anie dla dzieci, jeï¿½li istniejï¿½
 		if (childItem->hasChildren()) {
 			updateVisibilityAll(childItem);
 		}
 	}
 }
 
-// U¿ycie:
+// Uï¿½ycie:
 // QTreeView* treeView = ...; // Twoje QTreeView
-// QStandardItemModel* model = ...; // Model powi¹zany z QTreeView
+// QStandardItemModel* model = ...; // Model powiï¿½zany z QTreeView
 // iterujPoWierszach(model);
 
 
@@ -395,7 +395,7 @@ void DockWidgetWorkspace::addItem(int id, int parentId)
 
 	if (parentId == -1)
 	{
-		// najwy¿szy poziom
+		// najwyï¿½szy poziom
 		CModel3D *obj = AP::WORKSPACE::getModel(id);
 		if (NULL != obj)
 		{
@@ -413,11 +413,11 @@ void DockWidgetWorkspace::addItem(int id, int parentId)
 			int grandparentId = parent->parentId();
 
 			if ( -1 != grandparentId ) {
-				// dodajê childa do childa - to na razie nie jest u¿ywane
+				// dodajï¿½ childa do childa - to na razie nie jest uï¿½ywane
 		
 			}
 			else {
-				// dodajê childa do modelu
+				// dodajï¿½ childa do modelu
 
 				CBaseObject *child = parent->getSomethingWithId(id);
 

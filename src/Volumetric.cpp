@@ -6,19 +6,39 @@
 #include "Volumetric.h"
 #include "Volumetric_shaders.h"
 
+#include <omp.h>
+
+extern bool mouse_key_pressed;
+
+template <typename T> T Volumetric::clamp(T value, T min, T max) {
+	if (value < min) return min;
+	if (value > max) return max;
+	return value;
+}
+
 
 std::wstring Volumetric::infoRow()
 {
-	std::wstring info = L"Volumetric TK\n";
-	info += L"data: " + std::to_wstring(this->m_minVal) + L" - " + std::to_wstring(this->m_maxVal) + L"\n";
-	info += L"window: " + std::to_wstring(this->m_minDisplWin) + L" - " + std::to_wstring(this->m_maxDisplWin) + L"\n";
+	float vsizeX = metadata[1].pixel_spacing[0];
+	float vsizeY = metadata[1].pixel_spacing[1];
+	float vsizeZ = metadata[1].slice_distance;
 
-	info += L"range:\ncols[" + std::to_wstring(this->m_minColumn) + L"-" + std::to_wstring(this->m_maxColumn) + L"]\nrows[" + std::to_wstring(this->m_minRow) + L"-" + std::to_wstring(this->m_maxRow) + L"]\nslices[" + std::to_wstring(this->m_minSlice) + L"-" + std::to_wstring(this->m_maxSlice) + L"]\n\n";
+	QString info("Volumetric TK\n");
+
+	info += QString("Volume size:\n%1 x %2 x %3").arg(m_columns).arg(m_rows).arg(m_layers);
+	info += QString("\n(%1mm x %2mm x %3mm)").arg(vsizeX * m_columns).arg(vsizeY * m_rows).arg(vsizeZ * m_layers);
+
+	info += QString("\nCurently displayed:\ncols[%1-%2]\nrows[%3-%4]\nslices[%5-%6]\n\n").arg(m_minColumn).arg(m_maxColumn).arg(m_minRow).arg(m_maxRow).arg(m_minSlice).arg(m_maxSlice);
+
+	info += QString("Value range: %1 - %2\n").arg(this->m_minVal).arg(this->m_maxVal);
+	info += QString("Displayed values: %1 - %2\n").arg(this->m_minDisplWin).arg(this->m_maxDisplWin);
+
+
 
 	//info += L"voxelSize: " + std::to_wstring(kostka.m_voxelSize.x) + L", " + std::to_wstring(kostka.m_voxelSize.y) + L", " + std::to_wstring(kostka.m_voxelSize.z) + L"\n";
 	//info += L"gantra: " + std::to_wstring(m_alpha) + L"\n";
 
-	return info;
+	return info.toStdWString();
 }
 
 
@@ -31,13 +51,14 @@ Volumetric* Volumetric::getCopy()
 	Volumetric* volum = create(new_Layers, new_Rows, new_Columns );
 
 	if (volum) {
+#pragma omp parallel for
 		for (int l = 0; l < new_Layers; l++)
 		{
 			for (int r = 0; r < new_Rows; r++)
 				for (int c = 0; c < new_Columns; c++)
 				{
-					Volumetric::VoxelType value = this->m_volume[l + m_minSlice][(r + m_minRow) * m_shape[2] + c + m_minColumn];
-					volum->m_volume[l][r * new_Columns + c] = ((value >= m_minDisplWin) && (value <= m_maxDisplWin)) ? value : 0;
+					VoxelType value = m_data[l + m_minSlice][(r + m_minRow) * m_columns + c + m_minColumn];
+					volum->m_data[l][r * new_Columns + c] = ((value >= m_minDisplWin) && (value <= m_maxDisplWin)) ? value : 0;
 				}
 			
 			volum->metadata[l] = this->metadata[l+m_minSlice];
@@ -311,12 +332,13 @@ void Volumetric::renderSelf() {
 }
 */
 
-Volumetric::SliceDataType clip2D(const Volumetric::SliceDataType& layer, int rows, int cols, int startRow, int endRow, int startCol, int endCol) {
+Volumetric::SliceType clip2D(const Volumetric::SliceType& layer, int rows, int cols, int startRow, int endRow, int startCol, int endCol) {
 	int newRows = 1 + endRow - startRow;
 	int newCols = 1 + endCol - startCol;
 	
-	Volumetric::SliceDataType result(newRows * newCols);
+	Volumetric::SliceType result(newRows, newCols);
 
+#pragma omp parallel for
 	for (int i = 0; i < newRows; ++i) {
 		int orginalRowOffset = (startRow + i) * cols;
 		int newRowOffset = i * newCols;
@@ -328,12 +350,12 @@ Volumetric::SliceDataType clip2D(const Volumetric::SliceDataType& layer, int row
 	return result;
 }
 
-Volumetric::VolumeDataType clip3D(const Volumetric::VolumeDataType& volume, int layers, int rows, int cols, int startLayer, int endLayer, int startRow, int endRow, int startCol, int endCol) {
-	int newLayers = endLayer - startLayer;
-	int newRows = endRow - startRow;
-	int newCols = endCol - startCol;
+Volumetric::VolumeType clip3D(const Volumetric::VolumeType& volume, int layers, int rows, int cols, int startLayer, int endLayer, int startRow, int endRow, int startCol, int endCol) {
+	int newLayers = 1 + endLayer - startLayer;
+	int newRows = 1 + endRow - startRow;
+	int newCols = 1 + endCol - startCol;
 
-	Volumetric::VolumeDataType result(newLayers, Volumetric::SliceDataType(newRows * newCols));
+	Volumetric::VolumeType result(newLayers, Volumetric::SliceType(newRows, newCols));
 
 	for (int k = 0; k < newLayers; ++k) {
 		result[k] = clip2D(volume[startLayer + k], rows, cols, startRow, endRow, startCol, endCol);
@@ -345,12 +367,13 @@ Volumetric::VolumeDataType clip3D(const Volumetric::VolumeDataType& volume, int 
 
 
 // Funkcja przeskalowuj�ca jednowymiarowy wektor float�w reprezentuj�cy obraz 2D z okre�lonymi granicami
-Volumetric::SliceDataType downsample2D(const Volumetric::SliceDataType& layer, int rows, int cols, int factor, int startRow, int endRow, int startCol, int endCol) {
-	int newRows = (endRow - startRow) / factor;
-	int newCols = (endCol - startCol) / factor;
+Volumetric::SliceType downsample2D(const Volumetric::SliceType& layer, int rows, int cols, int factor, int startRow, int endRow, int startCol, int endCol) {
+	int newRows = 1 + (endRow - startRow) / factor;
+	int newCols = 1 + (endCol - startCol) / factor;
 	
-	Volumetric::SliceDataType result(newRows * newCols);
+	Volumetric::SliceType result(newRows, newCols);
 
+#pragma omp parallel for
 	for (int i = 0; i < newRows; ++i) {
 		int orginalRowOffset = (startRow + i * factor) * cols;
 		int newRowOffset = i * newCols;
@@ -364,12 +387,12 @@ Volumetric::SliceDataType downsample2D(const Volumetric::SliceDataType& layer, i
 }
 
 // Funkcja przeskalowuj�ca tr�jwymiarow� struktur� danych wolumetrycznych z okre�lonymi granicami
-Volumetric::VolumeDataType downsample3D(const Volumetric::VolumeDataType& volume, int layers, int rows, int cols, int factor, int startLayer, int endLayer, int startRow, int endRow, int startCol, int endCol) {
-	int newLayers = (endLayer - startLayer) / factor;
-	int newRows = (endRow - startRow) / factor;
-	int newCols = (endCol - startCol) / factor;
+Volumetric::VolumeType downsample3D(const Volumetric::VolumeType& volume, int layers, int rows, int cols, int factor, int startLayer, int endLayer, int startRow, int endRow, int startCol, int endCol) {
+	int newLayers = 1 + (endLayer - startLayer) / factor;
+	int newRows = 1 + (endRow - startRow) / factor;
+	int newCols = 1 + (endCol - startCol) / factor;
 
-	Volumetric::VolumeDataType result(newLayers, Volumetric::SliceDataType(newRows * newCols));
+	Volumetric::VolumeType result(newLayers, Volumetric::SliceType(newRows, newCols));
 
 	for (int k = 0; k < newLayers; ++k) {
 		result[k] = downsample2D(volume[startLayer + k * factor], rows, cols, factor, startRow, endRow, startCol, endCol);
@@ -425,33 +448,62 @@ void Volumetric::renderSelf() {
 	f->glUniform3fv(fcolors_loc, 7, (float*)this->m_fcolors);
 
 	int factor = 1;
-	if (this->m_fastDraw)
+	if (this->m_fastDraw || mouse_key_pressed)
 		factor = 4;
 
 
 	GLint factor_loc = f->glGetUniformLocation(this->shader_program, "factor");
 	f->glUniform1i(factor_loc, factor);
 
-	int first_slice = factor * int(this->m_minSlice / factor);
-	int first_row = factor * int(this->m_minRow / factor);
-	int first_column = factor * int(this->m_minColumn / factor);
 
-	int last_slice = 1 + factor * int(this->m_maxSlice / factor);
-	int last_row = 1 + factor * int(this->m_maxRow / factor);
-	int last_column = 1 + factor * int(this->m_maxColumn / factor);
+	int first_slice = this->m_minSlice;
+	int first_row = this->m_minRow;
+	int first_column = this->m_minColumn;
+
+	int last_slice = this->m_maxSlice;
+	int last_row = this->m_maxRow;
+	int last_column = this->m_maxColumn;
 
 	int small_shape[3];
-	small_shape[0] = (last_slice - first_slice) / factor;
-	small_shape[1] = (last_row - first_row) / factor;
-	small_shape[2] = (last_column - first_column) / factor;
 
-	VolumeDataType subvolume;
+	small_shape[0] = 1 + last_slice - first_slice;
+	small_shape[1] = 1 + last_row - first_row;
+	small_shape[2] = 1 + last_column - first_column;
+
 
 	if (factor > 1) {
-		subvolume = downsample3D(this->m_volume, this->m_shape[0], this->m_shape[1], this->m_shape[2], factor, first_slice, last_slice, first_row, last_row, first_column, last_column);
+		first_slice = (this->m_minSlice / factor) * factor;
+		first_row = (this->m_minRow / factor) * factor;
+		first_column = (this->m_minColumn / factor) * factor;
+
+		last_slice = (this->m_maxSlice / factor) * factor;
+		last_row = (this->m_maxRow / factor) * factor;
+		last_column = (this->m_maxColumn / factor) * factor;
+
+		small_shape[0] = 1 + (last_slice - first_slice) / factor;
+		small_shape[1] = 1 + (last_row - first_row) / factor;
+		small_shape[2] = 1 + (last_column - first_column) / factor;
+	}
+
+
+	VolumeType subvolume;
+
+	if (factor > 1) {
+		subvolume = downsample3D(
+			m_data,
+			m_layers, m_rows, m_columns,
+			factor,
+			first_slice, last_slice,
+			first_row, last_row,
+			first_column, last_column);
 	}
 	else {
-		subvolume = clip3D(this->m_volume, this->m_shape[0], this->m_shape[1], this->m_shape[2], first_slice, last_slice, first_row, last_row, first_column, last_column);
+		subvolume = clip3D(
+			m_data,
+			m_layers, m_rows, m_columns,
+			first_slice, last_slice,
+			first_row, last_row,
+			first_column, last_column);
 	}
 
 	GLint sizeX_loc = f->glGetUniformLocation(this->shader_program, "sizeX");
@@ -465,7 +517,7 @@ void Volumetric::renderSelf() {
 	for (int idx_in_subvolume = 0; idx_in_subvolume < small_shape[0]; idx_in_subvolume++) {
 		int true_index_of_slice = first_slice + idx_in_subvolume * factor;
 
-		std::vector<float> colors = subvolume[idx_in_subvolume];
+		SliceType colors = subvolume[idx_in_subvolume];
 		f->glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(float), colors.data(), GL_STATIC_DRAW);
 
 		SliceMetadata metadata = this->metadata[true_index_of_slice];
@@ -511,27 +563,33 @@ Volumetric* Volumetric::create(int layers, int rows, int columns)
 
 	if (volum) {
 		try {
-			volum->m_volume.resize(layers);
+			volum->m_data.resize(layers);
 
 			for (int i = 0; i < layers; i++) {
-				volum->m_volume[i].resize(rows * columns, 0.0f); // 100.0f * i / 10);
+				volum->m_data[i].resize(rows * columns, 0.0f); // 100.0f * i / 10);
 			}
 
-		} catch (...) {
-			qInfo() << "\nBRAK PAMI�CI !!!" << Qt::endl;
+		}
+		catch (...) {
+			qInfo() << "\nBRAK PAMIĘCI !!!" << Qt::endl;
 
 			//CZYSZCZENIE 
 
 			return nullptr;
 		}
 
-		volum->m_shape[0] = layers;
-		volum->m_shape[1] = rows;
-		volum->m_shape[2] = columns;
+		volum->m_layers = layers;
+		volum->m_rows = rows;
+		volum->m_columns = columns;
+
 
 		for (int i = 0; i < layers; i++) {
 			SliceMetadata mdata;
+			mdata.pixel_spacing[0] = mdata.pixel_spacing[1] = 1.0f;
+			mdata.slice_thickness = mdata.slice_distance = 1.0f;
+			mdata.image_position_patient[0] = mdata.image_position_patient[1] = 0.0f;
 			mdata.image_position_patient[2] = float(i);
+
 			volum->metadata.push_back(mdata);
 		}
 
@@ -556,13 +614,13 @@ Volumetric* Volumetric::create(int layers, int rows, int columns)
 
 void Volumetric::adjustMinMax(bool calc_color)
 {
-	if (calc_color && !this->m_volume.empty()) {
-		float min = *std::min_element(this->m_volume[0].begin(), this->m_volume[0].end());
-		float max = *std::max_element(this->m_volume[0].begin(), this->m_volume[0].end());
+	if (calc_color && !this->empty()) {
+		VoxelType min = *std::min_element(m_data[0].begin(), m_data[0].end());
+		VoxelType max = *std::max_element(m_data[0].begin(), m_data[0].end());
 
-		for (int i = 0; i < this->m_volume.size(); i++) {
-			min = std::min(min, *std::min_element(this->m_volume[i].begin(), this->m_volume[i].end()));
-			max = std::max(max, *std::max_element(this->m_volume[i].begin(), this->m_volume[i].end()));
+		for (int i = 0; i < this->size(); i++) {
+			min = std::min(min, *std::min_element(m_data[i].begin(), m_data[i].end()));
+			max = std::max(max, *std::max_element(m_data[i].begin(), m_data[i].end()));
 		}
 
 		this->m_minVal = min;
@@ -575,11 +633,11 @@ void Volumetric::adjustMinMax(bool calc_color)
 	this->m_minDisplWin = this->m_minVal;
 	this->m_maxDisplWin = this->m_maxVal;
 	this->m_minSlice = 0;
-	this->m_maxSlice = this->m_shape[0] - 1;
+	this->m_maxSlice = m_layers - 1;
 	this->m_minRow = 0;
-	this->m_maxRow = this->m_shape[1] - 1;
+	this->m_maxRow = m_rows - 1;
 	this->m_minColumn = 0;
-	this->m_maxColumn = this->m_shape[2] - 1;
+	this->m_maxColumn = m_columns - 1;
 }
 
 void Volumetric::adjustMinMaxColor(VoxelType color) {
@@ -591,9 +649,9 @@ void Volumetric::adjustMinMaxColor(VoxelType color) {
 
 void Volumetric::drawBox(CPoint3i origin = { 0, 0, 0 }, CPoint3i size = { 10, 10, 10 }, VoxelType color = 1000.0f)
 {
-	int layers = this->m_shape[0];
-	int rows = this->m_shape[1];
-	int cols = this->m_shape[2];
+	int layers = this->m_layers;
+	int rows = this->m_rows;
+	int cols = this->m_columns;
 
 	//int minX = std::max(0, origin[0] - size[0]);
 	//int minY = std::max(0, origin[1] - size[1]);
@@ -607,46 +665,43 @@ void Volumetric::drawBox(CPoint3i origin = { 0, 0, 0 }, CPoint3i size = { 10, 10
 	int maxY = std::min(rows, origin[1] + size[1] + 1);
 	int maxZ = std::min(cols, origin[2] + size[2] + 1 );
 
+#pragma omp parallel for
 	for (int z=minZ; z<maxZ; z++)
 		for (int y=minY; y<maxY; y++)
 			for (int x = minX; x < maxX; x++)
-				this->m_volume[z][y * cols + x] = color;
+				m_data[z][y * cols + x] = color;
 
 	this->adjustMinMaxColor(color);
 }
 
-//								def drawSphere(self, origin = [0, 0, 0], radius = 1, color = 1000.) :
-//								origin_z, origin_y, origin_x = origin
-//								z_min = max(0, origin_z - radius)
-//								z_max = min(self.shape[0], origin_z + radius + 1)
-//								y_min = max(0, origin_y - radius)
-//								y_max = min(self.shape[1], origin_y + radius + 1)
-//								x_min = max(0, origin_x - radius)
-//								x_max = min(self.shape[2], origin_x + radius + 1)
-//
-//								# Przygotowanie danych wej�ciowych
-//								radius_squared = radius * *2
-//
-//								# Tworzenie siatki wsp�rz�dnych
-//								z = np.arange(z_min, z_max)
-//								y = np.arange(y_min, y_max)
-//								x = np.arange(x_min, x_max)
-//								zv, yv, xv = np.meshgrid(z, y, x, indexing = 'ij')
-//
-//								# Obliczanie maski dla sfer
-//								mask = (xv - origin_x) * *2 + (yv - origin_y) * *2 + (zv - origin_z) * *2 <= radius_squared
-//
-//								# Rysowanie sfery
-//								for z_idx in tqdm(range(z_min, z_max), desc = f"drawing volumetric sphere: origin = {origin}, radius = {radius}...") :
-//									slice_mask = mask[z_idx - z_min, :, : ]
-//
-//									shifted_mask = np.zeros_like(self.m_volume[z_idx], dtype = bool)
-//									shifted_mask[y_min:y_min + slice_mask.shape[0], x_min : x_min + slice_mask.shape[1]] = slice_mask
-//
-//									self.m_volume[z_idx][shifted_mask] = color
-//									self.adjustMinMaxColor(color)
-//
-//
+void Volumetric::drawSphere(CPoint3i origin = { 0, 0, 0 }, int radius = 1, VoxelType color = 1000.0f)
+{
+	int layers = m_layers;
+	int rows = m_rows;
+	int cols = m_columns;
+
+	int z_min = std::max(0, origin.z - radius);
+	int z_max = std::min(layers, origin.z + radius + 1);
+	int y_min = std::max(0, origin.y - radius);
+	int y_max = std::min(rows, origin.y + radius + 1);
+	int x_min = std::max(0, origin.x - radius);
+	int x_max = std::min(cols, origin.x + radius + 1);
+
+	// Przygotowanie danych wejściowych
+	int radius_squared = radius * radius;
+
+#pragma omp parallel for
+	for (int z = z_min; z < z_max; z++)
+		for (int y = y_min; y < y_max; y++)
+			for (int x = x_min; x < x_max; x++)
+				if ((x - origin.x) * (x - origin.x) + (y - origin.y) * (y - origin.y) + (z - origin.z) * (z - origin.z) <= radius_squared)
+					m_data[z][y * cols + x] = color;
+
+	this->adjustMinMaxColor(color);
+}
+
+
+
 //									# def drawEllipsoid(self, origin = [0, 0, 0], radii = [1, 1, 1], color = 1000.) :
 //									# 	origin_z, origin_y, origin_x = origin
 //									# 	radius_z, radius_y, radius_x = radii
@@ -658,34 +713,46 @@ void Volumetric::drawBox(CPoint3i origin = { 0, 0, 0 }, CPoint3i size = { 10, 10
 //# 	# self.m_volume.flush()
 //									# 	self.adjustMinMax()
 //
-//									def drawCylinder(self, origin = [0, 0, 0], radius = 1, height = 1, axis = 'z', color = 1000.) :
-//									origin_z, origin_y, origin_x = origin
-//									#radius = float(radius)
-//									height = int(height)
-//
-//									if axis == 'z':
-//			for z in range(origin_z - height // 2, origin_z + height // 2 + 1):
-//				for y in range(origin_y - radius, origin_y + radius + 1) :
-//					for x in range(origin_x - radius, origin_x + radius + 1) :
-//						if ((y - origin_y) * *2 + (x - origin_x) * *2 <= radius * *2) :
-//							self.m_volume[z][y, x] = color
-//							elif axis == 'y' :
-//							for z in range(origin_z - radius, origin_z + radius + 1) :
-//								for y in range(origin_y - height // 2, origin_y + height // 2 + 1):
-//									for x in range(origin_x - radius, origin_x + radius + 1) :
-//										if ((z - origin_z) * *2 + (x - origin_x) * *2 <= radius * *2) :
-//											self.m_volume[z][y, x] = color
-//											elif axis == 'x' :
-//											for z in range(origin_z - radius, origin_z + radius + 1) :
-//												for y in range(origin_y - radius, origin_y + radius + 1) :
-//													for x in range(origin_x - height // 2, origin_x + height // 2 + 1):
-//														if ((z - origin_z) * *2 + (y - origin_y) * *2 <= radius * *2) :
-//															self.m_volume[z][y, x] = color
-//														else:
-//			raise ValueError("Axis must be one of 'x', 'y', or 'z'.")
-//				# self.m_volume.flush()
-//				self.adjustMinMaxColor(color)
-//
+
+
+void Volumetric::drawCylinder(CPoint3i origin = { 0, 0, 0 }, int radius = 1, int height = 1, char axis = 'z', VoxelType color = 1000.0f)
+{
+	if (axis == 'z')
+	{
+#pragma omp parallel for
+		for (int z = origin.z - height / 2; z < (origin.z + height / 2 + 1); z++)
+			for (int y = origin.y - radius; y < (origin.y + radius + 1); y++)
+				for (int x = origin.x - radius; x<(origin.x + radius + 1); x++)
+					if ((y - origin.y) * (y - origin.y) + (x - origin.x) * (x - origin.x) <= radius * radius)
+						m_data[z][y * m_columns + x] = color;
+	}
+	else if (axis == 'y') 
+	{
+#pragma omp parallel for
+		for (int z = origin.z - radius; z < (origin.z + radius + 1); z++)
+			for (int y = origin.y - height / 2; y < (origin.y + height / 2 + 1); y++)
+				for (int x = origin.x - radius; x < (origin.x + radius + 1); x++)
+					if ((z - origin.z) * (z - origin.z) + (x - origin.x) * (x - origin.x) <= radius * radius)
+						m_data[z][y * m_columns + x] = color;
+	}
+	else if (axis == 'x')
+	{
+#pragma omp parallel for
+		for (int z = origin.z - radius; z < (origin.z + radius + 1); z++)
+			for (int y = origin.y - radius; y < (origin.y + radius + 1); y++)
+				for (int x = origin.x - height / 2; x < (origin.x + height / 2 + 1); x++)
+					if ((z - origin.z) * (z - origin.z) + (y - origin.y) * (y - origin.y) <= radius * radius)
+						m_data[z][y * m_columns + x] = color;
+	}
+	else {
+		;
+		//			raise ValueError("Axis must be one of 'x', 'y', or 'z'.")
+	}
+
+	this->adjustMinMaxColor(color);
+}
+
+
 //				def set_pixel_size(self, image_x = 1.0, image_y = 1.0, slice_thickness = 1.0) :
 //				for n, mdata in enumerate(self.metadata) :
 //					mdata.pixel_spacing = [image_x, image_y]
@@ -787,7 +854,7 @@ CPointCloud* Volumetric::sift_cloud(int nfeatures, int nOctaveLayers, double con
 	{
 		UI::PROGRESSBAR::setValue(idx_of_slice);
 
-		auto image = clip2D(this->m_volume[idx_of_slice], this->m_shape[1], this->m_shape[2], this->m_minRow, this->m_maxRow, this->m_minColumn, this->m_maxColumn);
+		auto image = clip2D(m_data[idx_of_slice], m_rows, m_columns, this->m_minRow, this->m_maxRow, this->m_minColumn, this->m_maxColumn);
 
 		float *pixel_spacing = this->metadata[idx_of_slice].pixel_spacing;
 
@@ -916,7 +983,7 @@ CMesh* Volumetric::marching_cube(int factor) {
 	QString label("c_" + QString::number(pMin) + "_" + QString::number(pMax) + "_" + QString::number(div));
 	mesh->setLabel(label);
 	mesh->setDescr("source data: " + volTK->getParent()->getLabel()
-		+ "\nvolume size: " + QString::number(volTK->m_shape[2]) + " x " + QString::number(volTK->m_shape[1]) + " x " + QString::number(volTK->m_shape[0])
+		+ "\nvolume size: " + QString::number(volTK->m_columns) + " x " + QString::number(volTK->m_rows) + " x " + QString::number(volTK->m_layers)
 		+ "\nintensity range: " + QString::number(volTK->m_minDisplWin) + " - " + QString::number(volTK->m_maxDisplWin)
 		+ "\n"
 		+ "\nmethod: marching cube\nlower treshold: " + QString::number(pMin)
@@ -980,7 +1047,7 @@ CMesh* Volumetric::marching_tetrahedron(int factor) {
 	QString label("t_" + QString::number(pMin) + "_" + QString::number(pMax) + "_" + QString::number(div));
 	mesh->setLabel(label);
 	mesh->setDescr("source data: " + volTK->getParent()->getLabel()
-		+ "\nvolume size: " + QString::number(volTK->m_shape[2]) + " x " + QString::number(volTK->m_shape[1]) + " x " + QString::number(volTK->m_shape[0])
+		+ "\nvolume size: " + QString::number(volTK->m_columns) + " x " + QString::number(volTK->m_rows) + " x " + QString::number(volTK->m_layers)
 		+ "\nintensity range: " + QString::number(volTK->m_minDisplWin) + " - " + QString::number(volTK->m_maxDisplWin)
 		+ "\n"
 		+ "\nmethod: marching tetrahedron\nlower treshold: " + QString::number(pMin)
@@ -991,40 +1058,31 @@ CMesh* Volumetric::marching_tetrahedron(int factor) {
 	return mesh;
 }
 
-bool Volumetric::getSlice(int nr, Volumetric::Layer layer, Volumetric::SliceDataType* slice, int* cols, int* rows)
+bool Volumetric::getSlice(int nr, Volumetric::LayerPlane layer, Volumetric::SliceType* slice)
 {
-	int _columns = this->m_shape[2];
-	int _rows = this->m_shape[1];
-	int _layers = this->m_shape[0];
-
 	switch (layer)
 	{
 	case YZ:
-		slice->resize(_layers * _rows);
-		for (int row = 0; row < _rows; row++)
-			for (int col = 0; col < _layers; col++)
-				(*slice)[row * _layers + col] = this->m_volume[col][row * _columns + nr];
-
-		*cols = _layers;
-		*rows = _rows;
+		slice->setSize(m_rows, m_layers);
+#pragma omp parallel for
+		for (int row = 0; row < m_rows; row++)
+			for (int col = 0; col < m_layers; col++)
+				(*slice)[row * m_layers + col] = m_data[col][row * m_columns + nr];
 		return true;
 		break;
 	case ZX:
-		slice->resize(_layers * _columns);
-		for (int row = 0; row < _layers; row++)
-			for (int col = 0; col < _columns; col++)
-				(*slice)[row * _columns + col] = this->m_volume[row][nr * _columns + col];
+		slice->setSize(m_layers, m_columns);
+#pragma omp parallel for
+		for (int row = 0; row < m_layers; row++)
+			for (int col = 0; col < m_columns; col++)
+				(*slice)[row * m_columns + col] = m_data[row][nr * m_columns + col];
 
-		*cols = _columns;
-		*rows = _layers;
 		return true;
 		break;
 	case XY:
 	default:
-		slice->resize(_columns * _rows);
-		std::copy(this->m_volume[nr].begin(), this->m_volume[nr].end(), slice->begin());
-		*cols = _columns;
-		*rows = _rows;
+		slice->setSize(m_rows, m_columns);
+		std::copy(m_data[nr].begin(), m_data[nr].end(), slice->begin());
 		return true;
 		break;
 	}
@@ -1032,17 +1090,18 @@ bool Volumetric::getSlice(int nr, Volumetric::Layer layer, Volumetric::SliceData
 	return false;
 }
 
-Volumetric* Volumetric::getRotatedVol(Volumetric::Layer dir)
+
+Volumetric* Volumetric::getRotatedVol(Volumetric::LayerPlane dir)
 {
-	int old_L = m_shape[0];
-	int old_R = m_shape[1];
-	int old_C = m_shape[2];
+	int old_L = m_layers;
+	int old_R = m_rows;
+	int old_C = m_columns;
 
 	if (dir == XY)
 	{
 		Volumetric* new_volume = Volumetric::create(old_L, old_R, old_C );
 		for (int l = 0; l < old_L; l++)
-			std::copy(m_volume[l].begin(), m_volume[l].end(), new_volume->m_volume[l].begin());
+			std::copy(m_data[l].begin(), m_data[l].end(), (*new_volume)[l].begin());
 		return new_volume;
 	} 
 	else //if (dir == ZX)
@@ -1057,9 +1116,9 @@ Volumetric* Volumetric::getRotatedVol(Volumetric::Layer dir)
 			for (int r = 0; r < old_R; r++)
 				for (int c = 0; c < old_C; c++)
 				{
-					float value = m_volume[l][r * old_C + c];
+					VoxelType value = m_data[l][r * old_C + c];
 
-					new_volume->m_volume[r][c * new_C + l] = value;
+					(*new_volume)[r][c * new_C + l] = value;
 				}
 		return new_volume;
 	}
@@ -1070,24 +1129,37 @@ Volumetric* Volumetric::getRotatedVol(Volumetric::Layer dir)
 	//}
 }
 
-QImage Volumetric::getLayerAsImage(int nr, Volumetric::Layer layer)
+QImage Volumetric::getLayerAsImage(int nr, Volumetric::LayerPlane layer, bool tresh)
 {
-	Volumetric::SliceDataType slice;
-	int cols, rows;
+	Volumetric::SliceType slice;
 
-	if (getSlice(nr, layer, &slice, &cols, &rows))
+	if ( getSlice(nr, layer, &slice) )
 	{
+		unsigned int rows = slice.rows();
+		unsigned int cols = slice.columns();
+
 		QImage::Format imgFormat = QImage::Format::Format_Grayscale16;
 		WORD maxDisplVal = 0xffff;
 
 		QImage image = QImage(cols, rows, imgFormat);
+
+		VoxelType _min = tresh ? m_minDisplWin : m_minVal;
+		VoxelType _max = tresh ? m_maxDisplWin : m_maxVal;
 
 		for (qint32 y = 0; y < rows; y++)
 		{
 			uint16_t* line = (uint16_t*) image.scanLine(y);
 			for (qint32 x = 0; x < cols; x++)
 			{
-				line[x] = ((slice[y * cols + x] - this->m_minDisplWin) / (this->m_maxDisplWin - this->m_minDisplWin)) * maxDisplVal;
+				VoxelType val = slice.at(y, x);
+				if (tresh)
+				{
+					if (val < m_minDisplWin) val = m_minDisplWin;
+					if (val > m_maxDisplWin) val = m_maxDisplWin;
+				}
+
+				WORD piksel = static_cast<WORD>(((val - _min) / (_max - _min)) * double(maxDisplVal));
+				line[x] = piksel;
 			}
 		}
 		return image;
@@ -1097,9 +1169,36 @@ QImage Volumetric::getLayerAsImage(int nr, Volumetric::Layer layer)
 }
 
 
+CPoint3d Volumetric::realXYZ(CPoint3d pt)
+{
+	float* pos = metadata[pt.z].image_position_patient;
+	float* vSxy = metadata[pt.z].pixel_spacing;
+	float vSz = metadata[pt.z].slice_distance;
+
+	float x = pos[0] + pt.x * vSxy[0];
+	float y = pos[1] + pt.y * vSxy[1];
+	float z = pos[2] + pt.z * vSz;
+
+	return CPoint3d(x, y, z);
+}
+
+CPoint3d Volumetric::realXYZ(int x, int y, int z)
+{
+	float* pos = metadata[z].image_position_patient;
+	float* vSxy = metadata[z].pixel_spacing;
+	float vSz = metadata[z].slice_distance;
+
+	float xx = pos[0] + vSxy[0] * x;
+	float yy = pos[1] + vSxy[1] * y;
+	float zz = pos[2];
+
+	return CPoint3d(xx, yy, zz);
+}
 
 Volumetric* Volumetric::scal1(Volumetric* src1, Volumetric* src2)
 {
+	// TO JEST NIEGOTOWE !!!!
+
 	bool scalenie_jest_mozliwe = true;
 
 	Volumetric::SliceMetadata md1 = src1->metadata[1];
@@ -1123,3 +1222,287 @@ Volumetric* Volumetric::scal1(Volumetric* src1, Volumetric* src2)
 	return nullptr;
 }
 
+
+
+
+
+#include <QtGui/QImage>
+#include <vector>
+#include <cmath>
+#include  <algorithm>
+
+// Funkcja obliczająca odległość punktu od płaszczyzny
+float Volumetric::pointToPlaneDistance(const CPoint3f& point, const CPoint3f& normal, const CPoint3f& planePoint) {
+	return (point.x - planePoint.x) * normal.x +
+		(point.y - planePoint.y) * normal.y +
+		(point.z - planePoint.z) * normal.z;
+}
+
+// Funkcja interpolująca wartość voxel
+float Volumetric::interpolateVoxel(const Volumetric::VolumeType& volume, const CPoint3f& point) {
+	// Przyjmujemy, że point.x, point.y, point.z mieszczą się w zakresie indeksów volume
+	int x = static_cast<int>(std::floor(point.x));
+	int y = static_cast<int>(std::floor(point.y));
+	int z = static_cast<int>(std::floor(point.z));
+
+	// Prosta interpolacja nearest neighbor, można zastosować bardziej zaawansowaną interpolację
+	return volume[z].at(y, x);
+}
+
+
+// Funkcja generująca przekrój
+QImage Volumetric::generateFreeViewSliceImage(const CVector3f& normal, const CPoint3f& planePoint, const CVector3f& free_up, int width, int height, float scale, bool tresh)
+{
+	QImage::Format imgFormat = QImage::Format::Format_Grayscale16;
+	WORD maxDisplVal = 0xffff;
+
+	QImage image(width, height, imgFormat);
+
+	VoxelType _min = tresh ? m_minDisplWin : m_minVal;
+	VoxelType _max = tresh ? m_maxDisplWin : m_maxVal;
+
+	// Oblicz wektor "right" jako iloczyn wektorowy wektora "free_up" i "normal"
+	CVector3f right = free_up.crossProduct(normal).getNormalized();
+
+	for (int y = 0; y < height; ++y)
+	{
+		uint16_t* line = (uint16_t*)image.scanLine(y);
+
+		for (int x = 0; x < width; ++x)
+		{
+			// Przekształcanie współrzędnych pikseli obrazu na współrzędne przestrzenne
+			CPoint3f point = planePoint;
+
+			// Przesunięcie wzdłuż "right" i "free_up" o odpowiednie skale
+			point.x += (x - width / 2.0f) * scale * right.x + (y - height / 2.0f) * scale * free_up.x;
+			point.y += (x - width / 2.0f) * scale * right.y + (y - height / 2.0f) * scale * free_up.y;
+			point.z += (x - width / 2.0f) * scale * right.z + (y - height / 2.0f) * scale * free_up.z;
+
+			// Rzutowanie punktu na płaszczyznę przekroju
+			float distance = pointToPlaneDistance(point, normal, planePoint);
+			point.x -= distance * normal.x;
+			point.y -= distance * normal.y;
+			point.z -= distance * normal.z;
+
+			if (point.x >= 0 && point.x < m_columns && point.y >= 0 && point.y < m_rows && point.z >= 0 && point.z < m_layers)
+			{
+				VoxelType val = interpolateVoxel(m_data, point);
+
+				if (tresh)
+				{
+					if (val < m_minDisplWin) val = m_minDisplWin;
+					if (val > m_maxDisplWin) val = m_maxDisplWin;
+				}
+
+				WORD piksel = static_cast<WORD>(((val - _min) / (_max - _min)) * double(maxDisplVal));
+				line[x] = piksel;
+			}
+			else
+			{
+				line[x] = static_cast<WORD>(0xf0ff);
+			}
+		}
+	}
+
+	return image;
+}
+
+
+// Funkcja generująca przekrój
+//QImage Volumetric::generateFreeViewSliceImage( const CVector3f& normal, const CPoint3f& planePoint,	int width, int height, float scale, bool tresh)
+//{
+//	QImage::Format imgFormat = QImage::Format::Format_Grayscale16;
+//	WORD maxDisplVal = 0xffff;
+//
+//	//QImage image(width, height, QImage::Format_Grayscale8);
+//	QImage image(width, height, imgFormat);
+//
+//	VoxelType _min = tresh ? m_minDisplWin : m_minVal;
+//	VoxelType _max = tresh ? m_maxDisplWin : m_maxVal;
+//
+//	for (int y = 0; y < height; ++y)
+//	{
+//		uint16_t* line = (uint16_t*)image.scanLine(y);
+//
+//		for (int x = 0; x < width; ++x)
+//		{
+//			// Przekształcanie współrzędnych pikseli obrazu na współrzędne przestrzenne
+//			CPoint3f point;
+//			point.x = planePoint.x + (x - width / 2.0) * scale;
+//			point.y = planePoint.y + (y - height / 2.0) * scale;
+//			point.z = planePoint.z;
+//
+//			// Rzutowanie punktu na płaszczyznę przekroju
+//			float distance = pointToPlaneDistance(point, normal, planePoint);
+//			point.x -= distance * normal.x;
+//			point.y -= distance * normal.y;
+//			point.z -= distance * normal.z;
+//
+//			if (point.x >= 0 && point.x < m_columns && point.y >= 0 && point.y < m_rows && point.z >= 0 && point.z < m_layers)
+//			{
+//				VoxelType val = interpolateVoxel(m_data, point);
+//				
+//				if (tresh)
+//				{
+//					if (val < m_minDisplWin) val = m_minDisplWin;
+//					if (val > m_maxDisplWin) val = m_maxDisplWin;
+//				}
+//
+//				WORD piksel = static_cast<WORD>(((val - _min) / (_max - _min)) * double(maxDisplVal));
+//
+//				line[x] = piksel;
+//			}
+//			else
+//			{
+//				line[x] = static_cast<WORD>(0xf0ff);
+//			}
+//		}
+//	}
+//
+//	return image;
+//}
+
+
+
+
+QImage Volumetric::getRTGasImage(Volumetric::LayerPlane plane, bool tresh)
+{
+	int count = 0;
+	int rows = 0;
+	int cols = 0;
+
+	WORD maxDisplVal = 0xffff;
+	QImage::Format imgFormat = QImage::Format::Format_Grayscale16;
+
+	if (plane == LayerPlane::XY) {
+		count = m_layers;
+		rows = m_rows;
+		cols = m_columns;
+	}
+	else if (plane == LayerPlane::YZ) {
+		count = m_columns;
+		rows = m_rows;
+		cols = m_layers;
+	}
+	else if (plane == LayerPlane::ZX) {
+		count = m_rows;
+		rows = m_layers;
+		cols = m_columns;
+	}
+	else
+	{
+		return QImage(cols, rows, imgFormat);
+	}
+
+	std::vector<std::vector<double>> accum;
+	accum.resize(rows);
+	for (auto& row : accum)	row.resize(cols, 0.0);
+
+	Volumetric::SliceType slice;
+
+	for (int i = 0; i < count; i++)
+	{
+		if (getSlice(i, plane, &slice))
+		{
+#pragma omp parallel for
+			for (int row = 0; row < rows; row++)
+				for (int col = 0; col < cols; col++)
+				{
+					VoxelType val = slice.at(row, col);
+					if (tresh)
+					{
+						if (val < m_minDisplWin) val = m_minVal;
+						if (val > m_maxDisplWin) val = m_maxVal;
+					}
+					accum[row][col] += val;
+					//if ( tresh && (val >= m_minDisplWin) )//&& (val <= m_maxDisplWin) )
+					//	accum[row][col] += val;
+				}
+		}
+	}
+
+	double _min = DBL_MAX;
+	double _max = -DBL_MAX;
+	for (int row = 0; row < rows; row++)
+		for (int col = 0; col < cols; col++)
+		{
+			double val = accum[row][col] / count;
+			_min = std::min(_min, val);
+			_max = std::max(_max, val);
+			accum[row][col] = val;
+		}
+
+	QImage image = QImage(cols, rows, imgFormat);
+
+	for (int row = 0; row < rows; row++)
+	{
+		uint16_t* line = (uint16_t*)image.scanLine(row);
+#pragma omp parallel for
+		for (int col = 0; col < cols; col++)
+		{
+			double val = accum[row][col];
+
+			val = clamp(val, _min, _max);
+			WORD piksel = static_cast<WORD>(((val - _min) / (_max - _min)) * double(maxDisplVal));
+			line[col] = piksel;
+		}
+	}
+
+	return image;
+}
+
+
+
+
+QImage Volumetric::generateFreeViewRtgImage(const CVector3f& normal, const CPoint3f& planePoint, int width, int height, float scale, bool tresh)
+{
+	QImage::Format imgFormat = QImage::Format::Format_Grayscale16;
+	WORD maxDisplVal = 0xffff;
+
+	//QImage image(width, height, QImage::Format_Grayscale8);
+	QImage image(width, height, imgFormat);
+
+	VoxelType _min = tresh ? m_minDisplWin : m_minVal;
+	VoxelType _max = tresh ? m_maxDisplWin : m_maxVal;
+
+	for (int y = 0; y < height; ++y)
+	{
+		uint16_t* line = (uint16_t*)image.scanLine(y);
+
+		for (int x = 0; x < width; ++x)
+		{
+			// Przekształcanie współrzędnych pikseli obrazu na współrzędne przestrzenne
+			CPoint3f point;
+			point.x = planePoint.x + (x - width / 2.0) * scale;
+			point.y = planePoint.y + (y - height / 2.0) * scale;
+			point.z = planePoint.z;
+
+			// Rzutowanie punktu na płaszczyznę przekroju
+			float distance = pointToPlaneDistance(point, normal, planePoint);
+			point.x -= distance * normal.x;
+			point.y -= distance * normal.y;
+			point.z -= distance * normal.z;
+
+			if (point.x >= 0 && point.x < m_columns && point.y >= 0 && point.y < m_rows && point.z >= 0 && point.z < m_layers)
+			{
+				VoxelType val = interpolateVoxel(m_data, point);
+
+				if (tresh)
+				{
+					if (val < m_minDisplWin) val = m_minDisplWin;
+					if (val > m_maxDisplWin) val = m_maxDisplWin;
+				}
+
+				WORD piksel = static_cast<WORD>(((val - _min) / (_max - _min)) * double(maxDisplVal));
+
+				line[x] = piksel;
+			}
+			else
+			{
+				line[x] = 0;// static_cast<WORD>(0xf0ff);
+			}
+		}
+	}
+
+	return image;
+}

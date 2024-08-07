@@ -79,17 +79,17 @@ void TKimageDialog::addName(QString name)
 
 void TKimageDialog::setSelection(int tx, int ty, int bx, int by)
 {
-	m_imageLabel->m_sel = QRect( tx, ty, bx - tx, by - ty );
+	m_imageLabel->m_selection = QRect( tx, ty, bx - tx, by - ty );
 }
 
 void TKimageDialog::setSelection(QRect s)
 {
-	m_imageLabel->m_sel = QRect(s);
+	m_imageLabel->m_selection = QRect(s);
 }
 
 QRect TKimageDialog::getSelection()
 {
-	return m_imageLabel->m_sel;
+	return m_imageLabel->m_selection;
 }
 
 
@@ -165,23 +165,23 @@ QImage tesst2(QImage image, uint16_t treshold, uint16_t upTreshold)
 		for (qint32 x = 0; x < width; x++)
 		{
 			uint32_t lightness = 0;
-			if (depth == 16) // grayscale, 16bitów na piksel
+			if (depth == 16) // grayscale, 16bitï¿½w na piksel
 			{
 				lightness = ((uint16_t*)src)[x];
 			}
-			else if (depth == 8) // grayscale, 8bitów na piksel
+			else if (depth == 8) // grayscale, 8bitï¿½w na piksel
 			{
 				lightness = src[x];
 			}
-			else if (depth == 32) // ARGB, 8bitów na kolor
+			else if (depth == 32) // ARGB, 8bitï¿½w na kolor
 			{
 				lightness = src[4 * x];
 			}
-			else if (depth == 24) // RGB, 8bitów na kolor
+			else if (depth == 24) // RGB, 8bitï¿½w na kolor
 			{
 				lightness = src[3 * x];
 			}
-			else if (depth == 48) // RGB, 16bitów na kolor
+			else if (depth == 48) // RGB, 16bitï¿½w na kolor
 			{
 				lightness = ((uint16_t*)src)[3 * x];
 			}
@@ -272,7 +272,7 @@ void TKimageDialog::onFitCheckBox(int i)
 
 void TKimageDialog::onSelectionChanged()//QRect r)
 {
-	QRect sel = m_imageLabel->m_sel;
+	QRect sel = m_imageLabel->m_selection;
 	ui.selGroupBox->setChecked((sel.width() > 0) && (sel.height() > 0));
 
 	ui.selLeft->setValue(sel.left());
@@ -283,26 +283,26 @@ void TKimageDialog::onSelectionChanged()//QRect r)
 
 void TKimageDialog::onSelLeftEdited(int l)
 {
-	if ( (l>0) && (l<m_imageLabel->m_sel.right()))
-		m_imageLabel->m_sel.setLeft(l);
+	if ( (l>0) && (l<m_imageLabel->m_selection.right()))
+		m_imageLabel->m_selection.setLeft(l);
 }
 
 void TKimageDialog::onSelRightEdited(int r)
 {
-	if (r > m_imageLabel->m_sel.left())
-		m_imageLabel->m_sel.setRight(r);
+	if (r > m_imageLabel->m_selection.left())
+		m_imageLabel->m_selection.setRight(r);
 }
 
 void TKimageDialog::onSelTopEdited(int t)
 {
-	if ((t > 0) && (t < m_imageLabel->m_sel.bottom()))
-		m_imageLabel->m_sel.setTop(t);
+	if ((t > 0) && (t < m_imageLabel->m_selection.bottom()))
+		m_imageLabel->m_selection.setTop(t);
 }
 
 void TKimageDialog::onSelBottomEdited(int b)
 {
-	if (b > m_imageLabel->m_sel.top())
-		m_imageLabel->m_sel.setBottom(b);
+	if (b > m_imageLabel->m_selection.top())
+		m_imageLabel->m_selection.setBottom(b);
 }
 
 

@@ -46,7 +46,6 @@ class PropViewer : public PropWidget
 	CVector3<double> rot;
 	CVector3<double> tra;
 public:
-	virtual QString treeItemLabel() override;
 	explicit PropViewer(GLViewer* m, QWidget *parent = 0);
 	~PropViewer();
 

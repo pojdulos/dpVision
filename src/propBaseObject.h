@@ -23,8 +23,6 @@ public:
 
 	virtual void updateProperties() override;
 
-	virtual QString treeItemLabel() override;
-
 	void updateKeywords();
 
 	void setSelectionEnabled(bool b) { ui.selected->setEnabled(b); };

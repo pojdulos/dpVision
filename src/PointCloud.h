@@ -49,6 +49,7 @@ public:
 
 		std::vector<INDEX_TYPE> find_k_closest_to_pt(int k, CPoint3f p, float maxdist = 0.0f) const;
 		std::vector<INDEX_TYPE> find_k_closest_to_ray(int k, CPoint3f p, CVector3f dir, float maxdist = 0.0f) const;
+		bool is_any_in_distance_to_pt(float distance, CPoint3f p) const;
 		std::vector<INDEX_TYPE> find_all_in_distance_to_pt(float distance, CPoint3f p) const;
 		std::vector<INDEX_TYPE> find_all_in_distance_to_ray(float distance, CPoint3f p, CVector3f dir ) const;
 		std::vector<std::pair<INDEX_TYPE, float>> find_all_in_distance_to_ray_2(float distance, CPoint3f p, CVector3f dir) const;

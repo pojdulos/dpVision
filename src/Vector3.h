@@ -200,6 +200,15 @@ public:
 		return result;
 	}
 
+
+	CVector3<_T> transform(const _T matrix[3][3]) const {
+		return {
+			matrix[0][0] * this->x + matrix[0][1] * this->y + matrix[0][2] * this->z,
+			matrix[1][0] * this->x + matrix[1][1] * this->y + matrix[1][2] * this->z,
+			matrix[2][0] * this->x + matrix[2][1] * this->y + matrix[2][2] * this->z
+		};
+	}
+
 	static inline CVector3<_T> XAxis() { return CVector3<_T>(1, 0, 0); }
 	static inline CVector3<_T> YAxis() { return CVector3<_T>(0, 1, 0); }
 	static inline CVector3<_T> ZAxis() { return CVector3<_T>(0, 0, 1); }

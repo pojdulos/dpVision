@@ -140,7 +140,7 @@
              <x>0</x>
              <y>0</y>
              <width>720</width>
-             <height>812</height>
+             <height>796</height>
             </rect>
            </property>
            <property name="sizePolicy">
@@ -953,7 +953,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="dpVision.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>okButton</sender>

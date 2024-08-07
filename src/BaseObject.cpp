@@ -38,7 +38,7 @@ CBaseObject::CBaseObject(int objId)
 };
 
 
-// konstruktor kopiuj¹cy
+// konstruktor kopiujï¿½cy
 CBaseObject::CBaseObject(const CBaseObject &b)
 {
 	m_Id = AP::getUniqueId();

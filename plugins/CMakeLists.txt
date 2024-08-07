@@ -13,7 +13,7 @@ SUBDIRLIST(SUBDIRS ${CMAKE_CURRENT_SOURCE_DIR})
 
 # W CMakeLists.txt w subdir1
 
-set (TMP_LIST "")
+set (TMP_LIST ${DPV_PLUGINS})
 
 FOREACH(subdir ${SUBDIRS})
     set (PLUGIN_NAME "")

@@ -107,6 +107,8 @@ public:
 
 	//=====================================================================
 
+	bool is_any_in_distance_to_pt(float distance, const float* p) const;
+
 	void find_all_in_distance_to_pt(::std::vector<const float*>& knn,
 		float distance,
 		const float * p,
