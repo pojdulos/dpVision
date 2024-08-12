@@ -3,7 +3,7 @@ Experimental 3d viewer and editor
 
 * The application currently compiles and runs only on Windows
 * Easy CMake-based configuration
-* Building with MinGW (projects for Netbeans and VS Code are included) and MSVC++ was tested.
+* Building with MinGW (dpVision.code-workspace file and VS Code configuration directory included) and MSVC++ was tested.
 
 ## prerequisites
 
@@ -19,3 +19,30 @@ Experimental 3d viewer and editor
     * ./bootstrap
     * ./b2
 * Eigen3
+
+## Build with MinGW
+
+* clone this repository
+git clone https://github.com/pojdulos/dpVision.git
+
+* go into project directory
+cd dpVision
+
+* create build folder and go into it
+mkdir build
+cd build
+
+* configure project with CMake
+cmake  -G"Unix Makefiles" -D CMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release ..
+
+* build project
+make
+
+* optionaly create portable folder
+make bin
+
+* run dpVision application
+./dpVision.exe
+
+
+
