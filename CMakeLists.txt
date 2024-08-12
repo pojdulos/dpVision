@@ -4,6 +4,8 @@ set(EXE_NAME dpVision)
 
 project(${EXE_NAME})
 
+set(AUTOGEN_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/${EXE_NAME}_autogen/include")
+
 set (CMAKE_INCLUDE_CURRENT_DIR ON)
 set (CMAKE_AUTOMOC ON)
 set (CMAKE_AUTOUIC ON)
@@ -40,6 +42,9 @@ find_package (Qt5Network REQUIRED)
 
 qt5_add_resources(QRC_FILE ${PROJECT_SOURCE_DIR}/src/${EXE_NAME}.qrc)
 
+# Sprawdzenie dostępności OpenMP
+find_package(OpenMP REQUIRED)
+
 add_executable (${EXE_NAME}
 	${PROJECT_SOURCE_DIR}/src/WinMain.cpp
 	${SRC_FILES}
@@ -51,7 +56,10 @@ add_executable (${EXE_NAME}
 
 target_include_directories (${EXE_NAME} PUBLIC
 	${dpVision_INCLUDE_DIR}
+    $<BUILD_INTERFACE:${AUTOGEN_INCLUDE_DIR}>
+    $<INSTALL_INTERFACE:include>
 )
+
 
 #############################################################################
 # ZEWNETRZNE BIBLIOTEKI
@@ -75,7 +83,7 @@ include(cmake/getOpenCV.cmake)
 # get_cmake_property(_variablenames VARIABLES)
 # list(SORT _variablenames)
 # foreach (_variablename ${_variablenames})
-   # message(STATUS "${_variablename}=${${_variablename}}")
+#    message(STATUS "${_variablename}=${${_variablename}}")
 # endforeach()
 
 
@@ -94,6 +102,7 @@ target_compile_features(${EXE_NAME} PUBLIC
   cxx_nonstatic_member_init
 )
 
+
 target_link_libraries ( ${EXE_NAME}
 	opengl32
 	glu32
@@ -103,7 +112,9 @@ target_link_libraries ( ${EXE_NAME}
 	Qt5::OpenGL
 	Qt5::Xml
 	Qt5::Network
+    OpenMP::OpenMP_CXX
 )
+
 
 add_library(dpVision::Core INTERFACE IMPORTED)
 set_target_properties(dpVision::Core PROPERTIES

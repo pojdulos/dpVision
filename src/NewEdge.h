@@ -7,7 +7,7 @@
 
 
 class MapOfNewEdges;
-//klasa testowa, uprasza sie o nieu�ywanie
+//klasa testowa, uprasza sie o nieużywanie
 class DPVISION_EXPORT NewEdge : public std::pair< std::pair<unsigned int, unsigned int>, std::set<unsigned int> >
 {
 public:

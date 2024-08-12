@@ -1,11 +1,13 @@
 #pragma once
+
 #include "Parser.h"
 
 #include "imebra/imebra.h"
 #include "Volumetric.h"
 #include <exception>
 
-class __declspec(dllexport) CParserDICOM :public CParser
+
+class __declspec(dllexport) CParserDICOM : public CParser
 {
 public:
 	CParserDICOM(void);
@@ -22,7 +24,7 @@ public:
 
 	imebra::Image createImebraImageFromVoxels(const std::vector<float>& voxels, std::uint32_t width, std::uint32_t height);
 
-	bool _export(Volumetric* volum, QString dir_name="v:/test/", QString fname_base="plaster");
+	bool _export(Volumetric* volum, QString dir_name="", QString fname_base="slice");
 
 	virtual bool save(CModel3D* obj, const QString path);
 	virtual bool save(QVector<CBaseObject*> objects, const QString path);

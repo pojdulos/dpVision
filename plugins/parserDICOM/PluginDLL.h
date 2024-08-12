@@ -11,6 +11,8 @@
 #define PLUGINDLL_API __declspec(dllimport)
 #endif
 
+class Plugin;
+
 // This class is exported from the PluginDLL.dll
 class PLUGINDLL_API CPluginDLL {
 public:

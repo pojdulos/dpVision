@@ -172,9 +172,9 @@ public:
 		return v[idx];
 	}
 
-	const _T& operator[](const unsigned int index) const {
+	const _T& operator[](const unsigned int idx) const {
 		assert((idx < 3) && "Index out of range");
-		return v[index];
+		return v[idx];
 	}
 
 

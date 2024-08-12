@@ -1,6 +1,8 @@
 #pragma once
 #include "dll_global.h"
 
+class Plugin;
+
 // This class is exported from the PluginDLL.dll
 class DPVISION_DLL_API CPluginDLL {
 public:

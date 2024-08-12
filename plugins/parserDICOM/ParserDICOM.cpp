@@ -12,7 +12,7 @@
 
 CParserDICOM::CParserDICOM()
 {
-	setDescr("DICOM files");
+	this->setDescr("DICOM files");
 	m_exts.insert("dcm");
 	m_exts.insert("dcm.ptl");
 	m_exts.insert("cvs");
@@ -27,16 +27,16 @@ CParserDICOM::~CParserDICOM(void)
 
 
 Volumetric::SliceType convertInt16ToFloat(const char* srcBuffer, size_t size, unsigned int _rows, unsigned int _cols) {
-	// Upewniamy si�, �e rozmiar jest wielokrotno�ci� 2
+	// Upewniamy się, że rozmiar jest wielokrotnością 2
 	if (size % 2 != 0) {
 		throw std::invalid_argument("Size must be a multiple of 2.");
 	}
 
-	size_t numElements = size / 2; // Poniewa� ka�dy int16_t to 2 bajty
+	size_t numElements = size / 2; // Ponieważ każdy int16_t to 2 bajty
 	Volumetric::SliceType result; // (numElements);
 	result.setSize(_rows, _cols);
 
-	// Przechodzimy przez dane w krokach po 2 bajty (16 bit�w)
+	// Przechodzimy przez dane w krokach po 2 bajty (16 bitów)
 	for (size_t i = 0; i < numElements; ++i) {
 		int16_t value;
 		std::memcpy(&value, srcBuffer + 2 * i, sizeof(int16_t)); // Kopiujemy 2 bajty z bufora do value
@@ -45,29 +45,6 @@ Volumetric::SliceType convertInt16ToFloat(const char* srcBuffer, size_t size, un
 
 	return result;
 }
-
-
-Volumetric::SliceType convertInt16ToFloatRev(const char* srcBuffer, size_t size, unsigned int _rows, unsigned int _cols) {
-	// Upewniamy si�, �e rozmiar jest wielokrotno�ci� 2
-	if (size % 2 != 0) {
-		throw std::invalid_argument("Size must be a multiple of 2.");
-	}
-
-	size_t numElements = size / 2; // Poniewa� ka�dy int16_t to 2 bajty
-	Volumetric::SliceType result; // (numElements);
-	result.setSize(_rows, _cols);
-
-	// Przechodzimy przez dane w krokach po 2 bajty (16 bit�w)
-	for (size_t i = 0; i < numElements; ++i) {
-		int16_t value;
-		std::memcpy(&value, srcBuffer + 2 * i, sizeof(int16_t)); // Kopiujemy 2 bajty z bufora do value
-		int val = -int(value);
-		result[i] = static_cast<float>(val); // Konwertujemy int16_t do float
-	}
-
-	return result;
-}
-
 
 
 size_t CParserDICOM::parse_dicom_file(std::string dicomPath, uint16_t slide, Volumetric::SliceType &slice, Volumetric::SliceMetadata &metadata, bool isReversed)
@@ -154,21 +131,11 @@ size_t CParserDICOM::parse_dicom_file(std::string dicomPath, uint16_t slide, Vol
 
 	size_t frameNumber = 0;
 
-	//std::unique_ptr<imebra::Image> image0(nullptr);
-//	imebra::Image image0(nullptr);
-
 	size_t lbv = 0;
 
 	bool isOK = true;
 
 	imebra::Image image0(dataSet.getImage(frameNumber));
-	//try {
-	//	image0 = (imebra::Image) dataSet.getImage(frameNumber);
-	//}
-	//catch (...) {
-	//	isOK = false;
-	//}
-
 	
 	if (isOK)
 	{
@@ -191,13 +158,8 @@ size_t CParserDICOM::parse_dicom_file(std::string dicomPath, uint16_t slide, Vol
 		else {
 			slice = convertInt16ToFloat(srcBuffer, dsize, h, w);
 		}
-
-		//qInfo() << "OK: " << slice.size() << Qt::endl;
-
-		//delete image0;
 	}
 
-	//delete dataSet;
 	return 1;
 }
 
