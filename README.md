@@ -23,26 +23,34 @@ Experimental 3d viewer and editor
 ## Build with MinGW
 
 * clone this repository
-git clone https://github.com/pojdulos/dpVision.git
+
+``git clone https://github.com/pojdulos/dpVision.git``
 
 * go into project directory
-cd dpVision
+
+``cd dpVision``
 
 * create build folder and go into it
-mkdir build
-cd build
+
+``mkdir build``
+
+``cd build``
 
 * configure project with CMake
-cmake  -G"Unix Makefiles" -D CMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release ..
+
+``cmake  -G"Unix Makefiles" -D CMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release ..``
 
 * build project
-make
+
+``make``
 
 * optionaly create portable folder
-make bin
+
+``make bin``
 
 * run dpVision application
-./dpVision.exe
+
+``./dpVision.exe``
 
 
 
