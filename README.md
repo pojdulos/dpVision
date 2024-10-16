@@ -3,7 +3,7 @@ Experimental 3d viewer and editor
 
 * The application currently compiles and runs only on Windows
 * Easy CMake-based configuration
-* Building with MinGW (dpVision.code-workspace file and VS Code configuration directory included) and MSVC++ was tested.
+* Building with MinGW and MSVC++ was tested.
 
 ## prerequisites
 
