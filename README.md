@@ -1,7 +1,7 @@
 # dpVision
 Experimental 3d viewer and editor
 
-![screenshot](./docs/abel01.png)
+<img src="./docs/abel01.png" alt="screenshot" width="50%"/>
 
 * The application currently compiles and runs only on Windows
 * Easy CMake-based configuration
