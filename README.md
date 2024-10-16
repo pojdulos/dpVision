@@ -1,6 +1,8 @@
 # dpVision
 Experimental 3d viewer and editor
 
+![screenshot](./docs/abel01.png)
+
 * The application currently compiles and runs only on Windows
 * Easy CMake-based configuration
 * Building with MinGW and MSVC++ was tested.
