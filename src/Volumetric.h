@@ -1,5 +1,6 @@
 #pragma once
 #include "Object.h"
+#include "Vector3.h"
 #include <QtCore/QString>
 #include <vector>
 
@@ -35,10 +36,26 @@ class CMesh;
 #include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
 
+#define _VoxelTypeINT16
+//#define _VoxelTypeFLOAT
+
+#if defined(_VoxelTypeFLOAT)
+	#define VoxelTypeMax float(32767)
+	#define VoxelTypeMin float(-32768)
+#elif defined(_VoxelTypeINT16)
+	#define VoxelTypeMax int16_t(32767)
+	#define VoxelTypeMin int16_t(-32768)
+#endif
+
+
 class DPVISION_EXPORT Volumetric : public CObject
 {
 public:
-	typedef float VoxelType;
+#if defined(_VoxelTypeFLOAT)
+	using VoxelType = float;
+#elif defined(_VoxelTypeINT16)
+	using VoxelType = int16_t;
+#endif
 
 	class SliceType : public std::vector<VoxelType>
 	{
@@ -93,13 +110,13 @@ public:
 	int m_maxRow = 0;
 	int m_minColumn = 0;
 	int m_maxColumn = 0;
-	VoxelType m_filters[7][3] = {
+	float m_filters[7][3] = {
 		{0, -100, 799},
-		{0, -9999, 99999},
-		{0, -9999, 99999},
-		{0, -9999, 4000},
-		{0, -9999, 99999},
-		{0, -9999, 99999},
+		{0, VoxelTypeMin, VoxelTypeMax},
+		{0, VoxelTypeMin, VoxelTypeMax},
+		{0, -1000, 4000},
+		{0, VoxelTypeMin, VoxelTypeMax},
+		{0, VoxelTypeMin, VoxelTypeMax},
 		{0, 800, 4095} };
 
 	float m_fcolors[7][3] = {
@@ -136,6 +153,7 @@ public:
 	Volumetric* getRotatedVol(Volumetric::LayerPlane dir);
 
 	QImage getLayerAsImage(int nr, Volumetric::LayerPlane layer, bool tresh=false);
+	QImage getLayerAsArgbImage(int nr, Volumetric::LayerPlane layer, bool tresh=false);
 
 	QImage getRTGasImage(Volumetric::LayerPlane plane, bool tresh=false);
 
@@ -155,6 +173,10 @@ public:
 	void drawSphere(CPoint3i origin, int radius, VoxelType color);
 
 	void drawCylinder(CPoint3i origin, int radius, int height, char axis, VoxelType color);
+
+	void drawCylinder(CPoint3f p0, CPoint3f p1, float radius, VoxelType color);
+
+	void drawCylinder(CPoint3i origin, CVector3i vector, int radius, VoxelType color);
 
 
 	static Volumetric* scal1(Volumetric*, Volumetric*);
@@ -191,15 +213,15 @@ public:
 	inline SliceType& getLayer(unsigned int layer) { return m_data[layer]; }
 	inline const SliceType& getLayer(unsigned int layer) const { return m_data[layer]; }
 
+	VoxelType& altData(unsigned int idx, unsigned int layer, unsigned int row, unsigned int col) { return m_data[layer].at(row,col); };
+
 private:
 	VolumeType m_data;
 	unsigned int m_layers = 0;
 	unsigned int m_rows = 0;
 	unsigned int m_columns = 0;
 
-	template<typename T>
-	T clamp(T value, T min, T max);
-
+	template<typename T> T clamp(T value, T min, T max);
 };
 
 // ąęłńś

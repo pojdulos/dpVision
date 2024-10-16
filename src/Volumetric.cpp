@@ -436,10 +436,10 @@ void Volumetric::renderSelf() {
 
 	// Ustawianie uniform�w
 	GLint minColor_loc = f->glGetUniformLocation(this->shader_program, "minColor");
-	f->glUniform1f(minColor_loc, this->m_minDisplWin);
+	f->glUniform1f(minColor_loc, float(this->m_minDisplWin));
 
 	GLint maxColor_loc = f->glGetUniformLocation(this->shader_program, "maxColor");
-	f->glUniform1f(maxColor_loc, this->m_maxDisplWin);
+	f->glUniform1f(maxColor_loc, float(this->m_maxDisplWin));
 
 	GLint f_loc = f->glGetUniformLocation(this->shader_program, "f");
 	f->glUniform3fv(f_loc, 7, (float*)this->m_filters);
@@ -517,7 +517,14 @@ void Volumetric::renderSelf() {
 	for (int idx_in_subvolume = 0; idx_in_subvolume < small_shape[0]; idx_in_subvolume++) {
 		int true_index_of_slice = first_slice + idx_in_subvolume * factor;
 
+#if defined(_VoxelTypeFLOAT)
 		SliceType colors = subvolume[idx_in_subvolume];
+#else
+		SliceType subvol = subvolume[idx_in_subvolume];
+		std::vector<float> colors(subvol.size());
+		std::transform(subvol.begin(), subvol.end(), colors.begin(), [](VoxelType value) { return static_cast<float>(value); });
+#endif
+
 		f->glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(float), colors.data(), GL_STATIC_DRAW);
 
 		SliceMetadata metadata = this->metadata[true_index_of_slice];
@@ -599,8 +606,8 @@ Volumetric* Volumetric::create(int layers, int rows, int columns)
 		volum->adjustMinMax(false);
 
 		for (auto& filter : volum->m_filters) {
-			filter[1] = std::max(filter[1], volum->m_minDisplWin);
-			filter[2] = std::min(filter[2], volum->m_maxDisplWin);
+			filter[1] = std::max(filter[1], (float)volum->m_minDisplWin);
+			filter[2] = std::min(filter[2], (float)volum->m_maxDisplWin);
 		}
 
 		return volum;
@@ -750,6 +757,98 @@ void Volumetric::drawCylinder(CPoint3i origin = { 0, 0, 0 }, int radius = 1, int
 	}
 
 	this->adjustMinMaxColor(color);
+}
+
+
+//void Volumetric::drawCylinder(CPoint3f p0, CPoint3f p1, float radius = 1, VoxelType color = 1000.0f)
+//{
+//	// Wektor różnicy
+//	CVector3f d = p1 - p0;
+//
+//	// Długość cylindra (odległość między punktami)
+//	float length = d.length();
+//
+//	// Normalizacja wektora
+//	CVector3f n = d.getNormalized();
+//
+//	// Baza ortogonalna (potrzebna do transformacji do układu cylindra)
+//	CVector3f up = (fabs(n.x) > 0.9f) ? CVector3f(0, 1, 0) : CVector3f(1, 0, 0);
+//	CVector3f u = up.crossProduct(n).getNormalized();
+//	CVector3f v = n.crossProduct(u).getNormalized();
+//
+//	// Rysowanie cylindra
+//	for (int t = 0; t <= length; ++t) {
+//		CPoint3f c = p0 + n * t;
+//
+//		for (int i = -radius; i <= radius; ++i) {
+//			for (int j = -radius; j <= radius; ++j) {
+//				if (i * i + j * j <= radius * radius) {
+//					CPoint3f offset = u * i + v * j;
+//					int px = static_cast<int>(c.x + offset.x);
+//					int py = static_cast<int>(c.y + offset.y);
+//					int pz = static_cast<int>(c.z + offset.z);
+//
+//					if (px >= 0 && px < m_columns && py >= 0 && py < m_rows && pz >= 0 && pz < m_layers)
+//						m_data[pz][py * m_columns + px] = color;
+//				}
+//			}
+//		}
+//	}
+//
+//	this->adjustMinMaxColor(color);
+//}
+
+
+void Volumetric::drawCylinder(CPoint3f p0, CPoint3f p1, float radius = 1, VoxelType color = 1000.0f)
+{
+	// Wektor różnicy
+	CVector3f d = p1 - p0;
+
+	// Długość cylindra (odległość między punktami)
+	float length = d.length();
+
+	// Normalizacja wektora
+	CVector3f n = d.getNormalized();
+
+	// Iteracja przez wszystkie woksele w przestrzeni 3D
+#pragma omp parallel for
+	for (int z = 0; z < m_layers; ++z) {
+		for (int y = 0; y < m_rows; ++y) {
+			for (int x = 0; x < m_columns; ++x) {
+				// Punkt (x, y, z) jako wektor
+				CPoint3f p(x, y, z);
+
+				// Wektor od punktu początkowego do aktualnego punktu
+				CVector3f dP = p - p0;
+
+				// Rzutowanie wektora dP na oś cylindra
+				float proj = dP.dotProduct(n);
+
+				// Sprawdzenie, czy punkt leży w zakresie wysokości cylindra
+				if (proj >= 0 && proj <= length) {
+					// Obliczenie najbliższego punktu na osi cylindra
+					CPoint3f closestPoint = p0 + n * proj;
+
+					// Odległość od osi cylindra
+					float dist = (p - closestPoint).length();
+
+					// Sprawdzenie, czy punkt leży wewnątrz promienia cylindra
+					if (dist <= radius) {
+						m_data[z][y * m_columns + x] = color;
+					}
+				}
+			}
+		}
+	}
+
+	this->adjustMinMaxColor(color);
+}
+
+
+void Volumetric::drawCylinder(CPoint3i origin, CVector3i vector, int radius = 1, VoxelType color = 1000.0f)
+{
+	CPoint3i end = { origin.x + vector.x, origin.y + vector.y, origin.z + vector.z };
+	drawCylinder(origin, end, radius, color);
 }
 
 
@@ -1158,7 +1257,49 @@ QImage Volumetric::getLayerAsImage(int nr, Volumetric::LayerPlane layer, bool tr
 					if (val > m_maxDisplWin) val = m_maxDisplWin;
 				}
 
-				WORD piksel = static_cast<WORD>(((val - _min) / (_max - _min)) * double(maxDisplVal));
+				WORD piksel = static_cast<WORD>((double(val - _min) / double(_max - _min)) * double(maxDisplVal));
+				line[x] = piksel;
+			}
+		}
+		return image;
+	}
+
+	return QImage();
+}
+
+QImage Volumetric::getLayerAsArgbImage(int nr, Volumetric::LayerPlane layer, bool tresh)
+{
+	Volumetric::SliceType slice;
+
+	if (getSlice(nr, layer, &slice))
+	{
+		unsigned int rows = slice.rows();
+		unsigned int cols = slice.columns();
+
+		QImage::Format imgFormat = QImage::Format::Format_ARGB32;
+		//QRgb maxDisplVal = qRgba(255, 255, 255, 255);
+
+		QImage image = QImage(cols, rows, imgFormat);
+
+		VoxelType _min = tresh ? m_minDisplWin : m_minVal;
+		VoxelType _max = tresh ? m_maxDisplWin : m_maxVal;
+
+		for (qint32 y = 0; y < rows; y++)
+		{
+			QRgb* line = (QRgb*)image.scanLine(y);
+			for (qint32 x = 0; x < cols; x++)
+			{
+				VoxelType val = slice.at(y, x);
+				if (tresh)
+				{
+					if (val < m_minDisplWin) val = m_minDisplWin;
+					if (val > m_maxDisplWin) val = m_maxDisplWin;
+				}
+
+				//QRgb piksel = static_cast<QRgb>((double(val - _min) / double(_max - _min)) * double(maxDisplVal));
+
+				int b = (double(val - _min) / double(_max - _min)) * 255;
+				QRgb piksel = qRgb(b, b, b);
 				line[x] = piksel;
 			}
 		}
@@ -1294,7 +1435,7 @@ QImage Volumetric::generateFreeViewSliceImage(const CVector3f& normal, const CPo
 					if (val > m_maxDisplWin) val = m_maxDisplWin;
 				}
 
-				WORD piksel = static_cast<WORD>(((val - _min) / (_max - _min)) * double(maxDisplVal));
+				WORD piksel = static_cast<WORD>((double(val - _min) / double(_max - _min)) * double(maxDisplVal));
 				line[x] = piksel;
 			}
 			else

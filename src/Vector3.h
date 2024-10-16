@@ -214,7 +214,8 @@ public:
 	static inline CVector3<_T> ZAxis() { return CVector3<_T>(0, 0, 1); }
 };
 
-
+typedef CVector3<short> CVector3s;
+typedef CVector3<int> CVector3i;
 typedef CVector3<float> CVector3f;
 typedef CVector3<double> CVector3d;
 

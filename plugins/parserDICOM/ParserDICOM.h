@@ -22,7 +22,7 @@ public:
 	//long readFromLastToFirst(Volumetric *volum, int nbOfFiles, std::string dirPath, std::string shortName, std::string firstNumber, std::string suffix);
 	size_t Run();
 
-	imebra::Image createImebraImageFromVoxels(const std::vector<float>& voxels, std::uint32_t width, std::uint32_t height);
+	imebra::Image createImebraImageFromVoxels(const std::vector<Volumetric::VoxelType>& voxels, std::uint32_t width, std::uint32_t height);
 
 	bool _export(Volumetric* volum, QString dir_name="", QString fname_base="slice");
 

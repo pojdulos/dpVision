@@ -1,133 +1,83 @@
 cmake_minimum_required(VERSION 3.20)
 
-set(EXE_NAME dpVision)
-
-project(${EXE_NAME})
-
-set(AUTOGEN_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/${EXE_NAME}_autogen/include")
-
-set (CMAKE_INCLUDE_CURRENT_DIR ON)
-set (CMAKE_AUTOMOC ON)
-set (CMAKE_AUTOUIC ON)
-set (CMAKE_AUTORCC ON)
-
-set (CMAKE_CXX_STANDARD 14)
-set (CMAKE_CXX_STANDARD_REQUIRED True)
-
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Wybór typu budowania: Debug, Release, RelWithDebInfo, MinSizeRel")
+endif()
 
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Możliwe konfiguracje" FORCE)
 
+# Ustawienie nazwy projektu
+set(EXE_NAME dpVision)
+project(${EXE_NAME})
 
-#############################################################################
-# biblioteki dpVision
-#############################################################################
+# Ustawienia katalogów i opcji CMake
+set(AUTOGEN_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/${EXE_NAME}_autogen/include")
+file(MAKE_DIRECTORY ${AUTOGEN_INCLUDE_DIR})
 
-set (dpVision_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
 
-#############################################################################
-# glowny program dpVision
-#############################################################################
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+
+# Biblioteki dpVision
+set(dpVision_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src)
+
+# Znajdowanie pakietów
+find_package(OpenMP REQUIRED)
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Gui REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5OpenGL REQUIRED)
+find_package(Qt5Xml REQUIRED)
+find_package(Qt5Network REQUIRED)
+
+# Dodanie zasobów Qt
+qt5_add_resources(QRC_FILE ${PROJECT_SOURCE_DIR}/src/${EXE_NAME}.qrc)
+
+# Pliki źródłowe, nagłówkowe i interfejsu użytkownika
 file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 file(GLOB HDR_FILES ${PROJECT_SOURCE_DIR}/src/*.h)
 file(GLOB UI_FILES ${PROJECT_SOURCE_DIR}/src/*.ui)
 
-find_package (Qt5Core REQUIRED)
-find_package (Qt5Gui REQUIRED)
-find_package (Qt5Widgets REQUIRED)
-find_package (Qt5OpenGL REQUIRED)
-find_package (Qt5Xml REQUIRED)
-find_package (Qt5Network REQUIRED)
-
-qt5_add_resources(QRC_FILE ${PROJECT_SOURCE_DIR}/src/${EXE_NAME}.qrc)
-
-# Sprawdzenie dostępności OpenMP
-find_package(OpenMP REQUIRED)
-
-add_executable (${EXE_NAME}
-	${PROJECT_SOURCE_DIR}/src/WinMain.cpp
-	${SRC_FILES}
-	${PROJECT_SOURCE_DIR}/src/tinyspline.c
-	${HDR_FILES}
-	${UI_FILES}
-	${QRC_FILE}
+# Tworzenie pliku wykonywalnego
+add_executable(${EXE_NAME}
+    ${PROJECT_SOURCE_DIR}/src/WinMain.cpp
+    ${SRC_FILES}
+    ${PROJECT_SOURCE_DIR}/src/tinyspline.c
+    ${HDR_FILES}
+    ${UI_FILES}
+    ${QRC_FILE}
 )
 
-target_include_directories (${EXE_NAME} PUBLIC
-	${dpVision_INCLUDE_DIR}
+# Dodanie katalogów do przeszukania przez kompilator
+target_include_directories(${EXE_NAME} PUBLIC
+    ${dpVision_INCLUDE_DIR}
     $<BUILD_INTERFACE:${AUTOGEN_INCLUDE_DIR}>
     $<INSTALL_INTERFACE:include>
 )
 
-
-#############################################################################
-# ZEWNETRZNE BIBLIOTEKI
-#############################################################################
-
-# Funkcja do sprawdzenia, czy pakiet jest znaleziony
-function(find_or_add_subdirectory package subdir)
-    find_package(${package} QUIET)
-    if (NOT ${package}_FOUND)
-        message(STATUS "${package} not found, adding subdirectory ${subdir}")
-        add_subdirectory(${subdir})
-        # find_package(${package} REQUIRED)
-    endif()
-endfunction()
-
-include(cmake/ArchAndRuntime.cmake)
-
-include(cmake/getOpenCV.cmake)
-
-
-# get_cmake_property(_variablenames VARIABLES)
-# list(SORT _variablenames)
-# foreach (_variablename ${_variablenames})
-#    message(STATUS "${_variablename}=${${_variablename}}")
-# endforeach()
-
-
-
+# Właściwości targetu
 set_target_properties(${EXE_NAME} PROPERTIES
     LINKER_LANGUAGE CXX
     ENABLE_EXPORTS ON
 )
 
+# Definicje preprocesora
 target_compile_definitions(${EXE_NAME} PRIVATE NO_OLD_BYTE_DEFINITION)
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-
-target_compile_features(${EXE_NAME} PUBLIC
-  cxx_nonstatic_member_init
-)
-
-
-target_link_libraries ( ${EXE_NAME}
-	opengl32
-	glu32
-	Qt5::Core
-	Qt5::Gui
-	Qt5::Widgets
-	Qt5::OpenGL
-	Qt5::Xml
-	Qt5::Network
-    OpenMP::OpenMP_CXX
-)
-
-
-add_library(dpVision::Core INTERFACE IMPORTED)
-set_target_properties(dpVision::Core PROPERTIES
-	INTERFACE_INCLUDE_DIRECTORIES ${dpVision_INCLUDE_DIR}
-	INTERFACE_LINK_LIBRARIES dpVision
-)
-
-if (MSVC)
-    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${EXE_NAME})
-endif (MSVC)
-
-
-
+# Funkcje do obsługi zewnętrznych bibliotek
+function(find_or_add_subdirectory package subdir)
+    find_package(${package} QUIET)
+    if (NOT ${package}_FOUND)
+        message(STATUS "${package} not found, adding subdirectory ${subdir}")
+        add_subdirectory(${subdir})
+    endif()
+endfunction()
 
 function(add_subdir_if_contains parentDir keyword)
     file(GLOB subdirectories RELATIVE ${parentDir} ${parentDir}/*)
@@ -146,222 +96,98 @@ endfunction()
 function(find_subdirs parentDir keyword)
     file(GLOB subdirectories RELATIVE ${parentDir} ${parentDir}/*)
     string(TOLOWER ${keyword} keyword_lower)
-	set (SUBDIRLIST "")
+    set(SUBDIRLIST "")
     foreach(subdir ${subdirectories})
         if(IS_DIRECTORY ${parentDir}/${subdir})
             string(TOLOWER ${subdir} subdir_lower)
             string(FIND ${subdir_lower} ${keyword_lower} position)
             if(NOT ${position} EQUAL -1)
-                list (APPEND SUBDIRLIST ${subdir})
+                list(APPEND SUBDIRLIST ${subdir})
             endif()
         endif()
     endforeach()
-	set (SUBDIRS ${SUBDIRLIST} PARENT_SCOPE)
+    set(SUBDIRS ${SUBDIRLIST} PARENT_SCOPE)
 endfunction()
 
+# Łączenie bibliotek
+target_link_libraries(${EXE_NAME}
+    opengl32
+    glu32
+    Qt5::Core
+    Qt5::Gui
+    Qt5::Widgets
+    Qt5::OpenGL
+    Qt5::Xml
+    Qt5::Network
+    OpenMP::OpenMP_CXX
+)
 
-list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/3rdparty")
-#set(CMAKE_FIND_USE_CMAKE_PATH FALSE)
+# Zewnętrzne biblioteki
+add_library(dpVision::Core INTERFACE IMPORTED)
+set_target_properties(dpVision::Core PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES ${dpVision_INCLUDE_DIR}
+    INTERFACE_LINK_LIBRARIES dpVision
+)
 
-	set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-	set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-	set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+# detekcja wersji kompilatora i architektury
+include(cmake/ArchAndRuntime.cmake)
 
+# Konfiguracja zewnętrznych bibliotek
+include(cmake/getOpenCV.cmake)
+include(cmake/Zlib.cmake)
+include(cmake/QuaZip.cmake)
+include(cmake/Eigen3.cmake)
+include(cmake/Boost.cmake)
 
-#############################################################################
-# ZLIB
-#############################################################################
-
-message( "\nConfiguring ZLIB:\n" )
-
-find_package (Qt5Zlib QUIET)
-if (Qt5Zlib_FOUND)
-    message( "-- Qt::Zlib found" )
-    target_link_libraries( ${EXE_NAME}
-		Qt::Zlib
-	)
-    set (QUAZIP_USE_QT_ZLIB ON)
-else (Qt5Zlib_FOUND)
-	find_package (ZLIB)
-	if (ZLIB_FOUND)
-		message( "-- ZLIB found" )
-		target_link_libraries( ${EXE_NAME}
-			z
-		)
-	else (ZLIB_FOUND)
-		message( "-- Qt::Zlib not found, looking for another zlib" )
-	endif (ZLIB_FOUND)
-endif (Qt5Zlib_FOUND)
-
-#############################################################################
-# QUAZIP
-#############################################################################
-
-message( "\nConfiguring QuaZip:\n" )
-
-find_package (QuaZip-Qt5 QUIET)
-if (QuaZip-Qt5_FOUND)
-	message( "-- QuaZip-Qt5 found" )
-	target_link_libraries(${EXE_NAME}
-		QuaZip::QuaZip
-	)
-else (QuaZip-Qt5_FOUND)
-	message( "-- QuaZip-Qt5 not found. Trying to find sources in 3rdParty folder" )
-	
-	#set (BUILD_SHARED_LIBS OFF)
-	set ( QUAZIP_INSTALL OFF )
-	add_subdir_if_contains(${CMAKE_CURRENT_SOURCE_DIR}/3rdParty "QuaZip")
-
-	if (QuaZip_Library_SOURCE_DIR)
-		message( "-- QuaZip found in ${QuaZip_Library_SOURCE_DIR}")
-	
-		target_link_libraries ( ${EXE_NAME}
-			QuaZip::QuaZip
-			# quazip1-qt5
-		)
-
-		# target_include_directories( ${EXE_NAME} PUBLIC
-			# ${QuaZip_Library_SOURCE_DIR}
-		# )
-	else (QuaZip_Library_SOURCE_DIR)
-		message( "-- QuaZip not found")
-	endif (QuaZip_Library_SOURCE_DIR)
-endif (QuaZip-Qt5_FOUND)
-
-#############################################################################
-
-message( "\nConfiguring Eigen3:\n" )
-
-find_package(Eigen3 QUIET)
-if (Eigen3_FOUND)
-	message( "-- Eigen3 found")
-	target_link_libraries(${EXE_NAME}
-		Eigen3::Eigen
-	)
-else (Eigen3_FOUND)
-	message( "-- Eigen3 not found. Trying to find sources in 3rdParty folder")
-	add_subdir_if_contains(${CMAKE_CURRENT_SOURCE_DIR}/3rdParty "Eigen")
-	if (TARGET Eigen3::Eigen)
-		message( "-- Eigen3 found in 3rdParty folder.")
-		target_link_libraries(${EXE_NAME}
-			Eigen3::Eigen
-		)
-	else (TARGET Eigen3::Eigen)
-		message( "-- Eigen3 not found.")
-	endif (TARGET Eigen3::Eigen)
-endif (Eigen3_FOUND)
-
-
-#############################################################################
-
-message( "\nConfiguring Boost:\n" )
-find_package(Boost QUIET)
-if (Boost_FOUND)
-	message( "-- Boost found.")
-else (Boost_FOUND)
-	message( "-- Boost not found in system path. Looking in 3rdParty folder...")
-
-	find_subdirs( ${CMAKE_CURRENT_SOURCE_DIR}/3rdParty "boost")
-	
-	list(LENGTH SUBDIRS SUBDIR_COUNT)
-	while((SUBDIR_COUNT GREATER 0) AND (NOT Boost_FOUND))
-		list(POP_FRONT SUBDIRS SUBDIR)
-		set (PTH "${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/${SUBDIR}")
-		if(IS_DIRECTORY ${PTH} AND EXISTS "${PTH}/boost/version.hpp")
-			set(Boost_INCLUDE_DIR ${PTH} CACHE PATH "Boost directory" FORCE)
-			find_package(Boost QUIET)
-		endif()
-		list(LENGTH SUBDIRS SUBDIR_COUNT)
-	endwhile()
-	
-	if (Boost_FOUND)
-		message( "-- Boost found in ${PTH}" )
-	else (Boost_FOUND)
-		message( "-- Boost not found. Specify Boost_INCLUDE_DIR variable and reconfigure, please...")
-	endif (Boost_FOUND)
-endif (Boost_FOUND)
-
-# message( "Configuring DicomHero6 (Imebra)\n" )
-# add_subdirectory(3rdParty/DicomHero6)
-# target_link_libraries(dicomhero6 ws2_32)
-
-message( "\nConfiguring internal libraries...\n" )
-
-# set ( xerces-c_INSTALL OFF )
-# add_subdirectory(libs/xerces-c-3.2.4)
-# add_subdirectory(libs/libE57)
+message("\nConfiguring internal libraries...\n")
 add_subdirectory(libs/PMFactory)
 add_subdirectory(libs/PluginManager)
-# add_subdirectory(libs/PolyVox)
-# add_subdirectory(libs/Volumetric)
-# add_subdirectory(libs/Lidar)
-
-# get_cmake_property(_variableNames VARIABLES)
-# list(SORT _variableNames)
-# foreach (_variableName ${_variableNames})
-#    message(STATUS "${_variableName}=${${_variableName}}")
-# endforeach()
-
+add_subdirectory(libs/libICP)
 
 add_library(dpVision::PluginManager INTERFACE IMPORTED)
 set_target_properties(dpVision::PluginManager PROPERTIES
-	INTERFACE_INCLUDE_DIRECTORIES ${PluginManager_INCLUDE_DIR}
-	INTERFACE_LINK_LIBRARIES PluginManager
+    INTERFACE_INCLUDE_DIRECTORIES ${PluginManager_INCLUDE_DIR}
+    INTERFACE_LINK_LIBRARIES PluginManager
 )
 
-target_link_libraries ( ${EXE_NAME}
-	PluginManager
-	PMFactory
+target_link_libraries(${EXE_NAME}
+    PluginManager
+    PMFactory
 )
 
-target_include_directories (${EXE_NAME} PUBLIC
-	${PluginManager_INCLUDE_DIR}
-	${PMFactory_INCLUDE_DIR}
+target_include_directories(${EXE_NAME} PUBLIC
+    ${PluginManager_INCLUDE_DIR}
+    ${PMFactory_INCLUDE_DIR}
 )
-
-message( "Configuring libICP\n" )
-add_subdirectory(libs/libICP)
 
 add_library(dpVision::libICP INTERFACE IMPORTED)
 set_target_properties(dpVision::libICP PROPERTIES
-	INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/libs/libICP/src
-	INTERFACE_LINK_LIBRARIES libICP
+    INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/libs/libICP/src
+    INTERFACE_LINK_LIBRARIES libICP
 )
 
+# Konfiguracja pluginów
+message("\nConfiguring plugins:\n")
+set(SUBDIRS "")
+set(DPV_PLUGINS "")
 
-#############################################################################
-
-
-
-message( "\nConfiguring plugins:\n" )
-
-set (SUBDIRS "")
-set (DPV_PLUGINS "")
-
-find_subdirs( ${CMAKE_CURRENT_SOURCE_DIR} "plugins")
+find_subdirs(${CMAKE_CURRENT_SOURCE_DIR} "plugins")
 foreach(SUBDIR ${SUBDIRS})
-	# message( "Subdirectory \"${SUBDIR}\" found..." )
-	if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${SUBDIR}/CMakeLists.txt)
-		message( "\nSubdirectory \"${SUBDIR}\" contains CMakeLists.txt. Looking for plugins:\n" )
-		add_subdirectory(${SUBDIR})
-	endif()
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${SUBDIR}/CMakeLists.txt)
+        message("\nSubdirectory \"${SUBDIR}\" contains CMakeLists.txt. Looking for plugins:\n")
+        add_subdirectory(${SUBDIR})
+    endif()
 endforeach()
 
-message( "Plugin list: ${DPV_PLUGINS}" )
-message( "\nEnding configuration process...\n" )
+message("Plugin list: ${DPV_PLUGINS}")
+message("\nEnding configuration process...\n")
 
-
-#############################################################################
-# SKRYPTY DLA: make install
-# SKRYPTY DLA: make bin
-#############################################################################
-
+# Skrypty instalacyjne
 set(BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
+install(TARGETS ${EXE_NAME} PluginManager DESTINATION ${BINARY_DIR})
+install(TARGETS ${DPV_PLUGINS} DESTINATION ${BINARY_DIR}/plugins)
 
-install (TARGETS ${EXE_NAME} PluginManager DESTINATION ${BINARY_DIR})
-install (TARGETS ${DPV_PLUGINS} DESTINATION ${BINARY_DIR}/plugins)
-
-if (UNIX OR MINGW)
+if(UNIX OR MINGW)
     file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/run_ldd.sh
         "#!/bin/sh\n"
         "echo \"Running ldd...\"\n"
@@ -372,17 +198,15 @@ endif()
 
 add_custom_target(bin
     COMMAND ${CMAKE_COMMAND} --build . --target install
-    # COMMAND ${CMAKE_COMMAND} -E remove ${BINARY_DIR}/*.a
-    # COMMAND ${CMAKE_COMMAND} -E remove ${BINARY_DIR}/plugins/*.a
 )
 
-if (UNIX OR MINGW)
+if(UNIX OR MINGW)
     add_custom_command(TARGET bin POST_BUILD
         COMMAND /bin/sh ${CMAKE_CURRENT_BINARY_DIR}/run_ldd.sh ${BINARY_DIR}/${EXE_NAME}.exe
     )
 endif()
 
-if (MSVC OR MINGW)
+if(MSVC OR MINGW)
     add_custom_command(TARGET bin POST_BUILD
         COMMAND windeployqt.exe ${BINARY_DIR}/${EXE_NAME}.exe
     )

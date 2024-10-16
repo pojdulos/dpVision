@@ -515,7 +515,7 @@ size_t CParserDICOM::Run()
 	return volum->layers() * volum->rows() * volum->columns();
 }
 
-imebra::Image CParserDICOM::createImebraImageFromVoxels(const std::vector<float>& voxels, std::uint32_t width, std::uint32_t height) {
+imebra::Image CParserDICOM::createImebraImageFromVoxels(const std::vector<Volumetric::VoxelType>& voxels, std::uint32_t width, std::uint32_t height) {
 	if (voxels.size() != width * height) {
 		throw std::invalid_argument("Voxel data size does not match the specified dimensions.");
 	}

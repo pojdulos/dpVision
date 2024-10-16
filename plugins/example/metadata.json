@@ -1,0 +1,6 @@
+{
+  "name": "example",
+  "description": "Simple example of plugin creation",
+  "className": "SamplePlugin",
+  "version": "1.0"
+}

@@ -174,8 +174,8 @@ void PropVolumetric::updateProperties()
 		this->spin_max[idx]->setMaximum(this->obj->m_maxVal);
 		this->spin_max[idx]->setValue(this->obj->m_filters[idx][2]);
 
-		this->spin_max[idx]->setMinimum(std::max(this->obj->m_minVal, (float)this->spin_min[idx]->value()));
-		this->spin_min[idx]->setMaximum(std::min(this->obj->m_maxVal, (float)this->spin_max[idx]->value()));
+		this->spin_max[idx]->setMinimum(std::max(this->obj->m_minVal, Volumetric::VoxelType(this->spin_min[idx]->value())));
+		this->spin_min[idx]->setMaximum(std::min(this->obj->m_maxVal, Volumetric::VoxelType(this->spin_max[idx]->value())));
 
 		this->spin_min[idx]->blockSignals(false);
 		this->spin_max[idx]->blockSignals(false);

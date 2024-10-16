@@ -43,7 +43,9 @@ vec3 get_filter(int i, float nCol)
 
 void main()
 {
-	if (aCol >= minColor && aCol <= maxColor)
+	float nCol = aCol;
+
+	if (nCol >= minColor && nCol <= maxColor)
 	{
 		int aPosY = int( float(gl_VertexID) / sizeX );
 		int aPosX = gl_VertexID - ( aPosY * sizeX );
@@ -53,11 +55,9 @@ void main()
 		vout.modelviewMatrix = modelviewMatrix;
 		vout.projectionMatrix = projectionMatrix;
 		
-		float nCol = aCol;
-
 		for (int i=0; i<7; i++)
 		{
-			if (f[i][0] != 0.0 && aCol >= f[i][1] && aCol <= f[i][2])
+			if (f[i][0] != 0.0 && nCol >= f[i][1] && nCol <= f[i][2])
 			{
 				vout.color = get_filter(i, nCol);
 

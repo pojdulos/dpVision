@@ -1016,7 +1016,7 @@ void VolumetricImageDialog::changeDisplayedPixmap(int i, bool forget_mask)
 		if (ui.rtg->isChecked())
 			changeDisplayedPixmap(m_VolTK->getRTGasImage(currentView, ui.displ_win->isChecked()), i);
 		else
-			changeDisplayedPixmap(m_VolTK->getLayerAsImage(i, currentView, ui.displ_win->isChecked()), i);
+			changeDisplayedPixmap(m_VolTK->getLayerAsArgbImage(i, currentView, ui.displ_win->isChecked()), i);
 	}
 
 	if (!common_mask)
