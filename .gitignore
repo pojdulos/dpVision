@@ -1,4 +1,6 @@
 nbproject/private/
+.vscode/
+dpVision.code-workspace
 build/
 buildMS/
 3rdParty/

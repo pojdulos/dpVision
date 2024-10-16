@@ -44,13 +44,13 @@ Experimental 3d viewer and editor
 
 ``make``
 
-* optionaly create portable folder
-
-``make bin``
-
 * run dpVision application
 
 ``./dpVision.exe``
+
+* optionaly create portable folder
+
+``make bin``
 
 
 
