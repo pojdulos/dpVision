@@ -1,0 +1,9 @@
+
+newmtl mesh
+Ka 0.2 0.2 0.2
+Kd 1 1 1
+Ks 1 1 1
+illum 0
+map_Ka duck.jpg
+map_Kd duck.jpg
+map_Ks duck.jpg
