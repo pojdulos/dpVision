@@ -118,6 +118,12 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 
 	connect(dockWorkspace, SIGNAL(currentObjectChanged(int)), dockProperties, SLOT(onCurrentObjectChanged(int)));
 
+	connect(ui.mdiArea, &QMdiArea::subWindowActivated, this, [this](QMdiSubWindow* window) {
+		if (window != nullptr) {
+			lastActiveWindow = window;  // Przechowuj wskaŸnik jako QPointer
+		}
+		});
+
 	this->restoreState(AP::mainApp().settings->value("mainwindow/dockState").toByteArray());
 	this->restoreState(AP::mainApp().settings->value("mainwindow/geometry").toByteArray());
 }
@@ -154,6 +160,8 @@ void CMainWindow::showEvent(QShowEvent* ev)
 
 void CMainWindow::updateView(bool repaintAll, bool buffered)
 {
+	//qInfo() << "checkpoint" << Qt::endl;
+
 	if (repaintAll)
 	{
 		if (ui.mdiArea != nullptr)
@@ -166,23 +174,36 @@ void CMainWindow::updateView(bool repaintAll, bool buffered)
 				{
 					child->updateView(buffered);
 				}
+				else
+				{
+					qInfo() << "No active child.";
+				}
 
 			}
 		}
 	}
 	else
 	{
-		QMdiSubWindow* window = ui.mdiArea->activeSubWindow();
-		if (window != nullptr)
+		if (lastActiveWindow != nullptr)
 		{
-			MdiChild* child = (MdiChild*)window->widget();
+			MdiChild* child = (MdiChild*)lastActiveWindow->widget();
 
 			if (child != nullptr)
 			{
 				child->updateView(buffered);
 			}
+			else
+			{
+				qInfo() << "No active child.";
+			}
+		}
+		else
+		{
+			qInfo() << "No active subwindow.";
 		}
 	}
+
+	//QCoreApplication::processEvents();
 }
 
 void CMainWindow::addPluginToListView( int id, QString txt )
@@ -242,10 +263,9 @@ std::vector<QMdiSubWindow*> CMainWindow::subWindows() {
 
 GLViewer * CMainWindow::currentViewer()
 {
-	QMdiSubWindow* win = ui.mdiArea->activeSubWindow();
-	if (win != nullptr)
+	if (lastActiveWindow != nullptr)
 	{
-		MdiChild* child = (MdiChild*)win->widget();
+		MdiChild* child = (MdiChild*)lastActiveWindow->widget();
 		if (child != nullptr)
 		{
 			if (child->hasType(MdiChild::Type::GL))
@@ -260,10 +280,9 @@ GLViewer * CMainWindow::currentViewer()
 
 MdiChild* CMainWindow::currentMdiChild()
 {
-	QMdiSubWindow* win = ui.mdiArea->activeSubWindow();
-	if (win != nullptr)
+	if (lastActiveWindow != nullptr)
 	{
-		return (MdiChild*)win->widget();
+		return (MdiChild*)lastActiveWindow->widget();
 	}
 	return nullptr;
 }

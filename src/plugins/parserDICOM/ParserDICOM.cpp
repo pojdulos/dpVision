@@ -17,6 +17,7 @@ CParserDICOM::CParserDICOM()
 	m_exts.insert("dcm.ptl");
 	m_exts.insert("cvs");
 	m_save_exts.insert("dcm");
+	m_csp = Volumetric::ColorSpace::MONOCHROME2;
 }
 
 CParserDICOM::~CParserDICOM(void)
@@ -139,6 +140,7 @@ size_t CParserDICOM::parse_dicom_file(std::string dicomPath, uint16_t slide, Vol
 	
 	if (isOK)
 	{
+		//qInfo() << QString::fromStdString(image0.getColorSpace()) << Qt::endl;
 		size_t w = image0.getWidth();
 		size_t h = image0.getHeight();
 		imebra::bitDepth_t d = image0.getDepth();
@@ -221,7 +223,7 @@ long CParserDICOM::read_frames(Volumetric* volum, imebra::DataSet& dataSet, int 
 		metadata.image_position_patient[1] = dataSet.getDouble(imebra::TagId(imebra::tagId_t::ImagePositionPatient_0020_0032), 1);
 		metadata.slice_location = metadata.image_position_patient[2] = dataSet.getDouble(imebra::TagId(imebra::tagId_t::ImagePositionPatient_0020_0032), 2);
 
-		//qInfo() << "ImagePositionPatient_0020_0032: " << metadata.image_position_patient[0] << metadata.image_position_patient[1] << metadata.image_position_patient[2];
+		qInfo() << "ImagePositionPatient_0020_0032: " << metadata.image_position_patient[0] << metadata.image_position_patient[1] << metadata.image_position_patient[2];
 	}
 	catch (...)
 	{
@@ -232,7 +234,7 @@ long CParserDICOM::read_frames(Volumetric* volum, imebra::DataSet& dataSet, int 
 		{
 			metadata.image_position_patient[2] = metadata.slice_location;
 		}
-		// qInfo() << "[" << metadata.image_position_patient[2] << "]\n";
+		qInfo() << "[" << metadata.image_position_patient[2] << "]\n";
 	}
 
 	float posZ0 = metadata.slice_location;
@@ -241,7 +243,7 @@ long CParserDICOM::read_frames(Volumetric* volum, imebra::DataSet& dataSet, int 
 		metadata.pixel_spacing[0] = dataSet.getDouble(imebra::TagId(imebra::tagId_t::PixelSpacing_0028_0030), 0);
 		metadata.pixel_spacing[1] = dataSet.getDouble(imebra::TagId(imebra::tagId_t::PixelSpacing_0028_0030), 1);
 
-		//qInfo() << "PixelSpacing_0028_0030: " << metadata.pixel_spacing[0] << metadata.pixel_spacing[1];
+		qInfo() << "PixelSpacing_0028_0030: " << metadata.pixel_spacing[0] << metadata.pixel_spacing[1];
 	}
 	catch (...)
 	{
@@ -250,7 +252,7 @@ long CParserDICOM::read_frames(Volumetric* volum, imebra::DataSet& dataSet, int 
 
 	metadata.slice_distance = metadata.slice_thickness = dataSet.getDouble(imebra::TagId(imebra::tagId_t::SliceThickness_0018_0050), 0);
 
-	//qInfo() << "sliceThickness: " << metadata.slice_thickness << endl;
+	qInfo() << "sliceThickness: " << metadata.slice_thickness << endl;
 
 	try {
 		metadata.gantry_detector_tilt = dataSet.getDouble(imebra::TagId(imebra::tagId_t::GantryDetectorTilt_0018_1120), 0);
@@ -420,7 +422,14 @@ size_t CParserDICOM::Run()
 
 	std::string photometric = dataSet0.getString(imebra::TagId(imebra::tagId_t::PhotometricInterpretation_0028_0004), 0);
 
-	if (photometric.compare("MONOCHROME2"))
+	m_csp = Volumetric::ColorSpace::MONOCHROME2;
+
+	if (! photometric.compare("RGB"))
+	{
+		UI::MESSAGEBOX::error("Color space is RGB. This is experimental yet.");
+		m_csp = Volumetric::ColorSpace::RGB;
+	}
+	else if (photometric.compare("MONOCHROME2"))
 	{
 		UI::MESSAGEBOX::error("Sorry. Now I can read monochrome DICOMs only.");
 		return 0;
@@ -452,7 +461,7 @@ size_t CParserDICOM::Run()
 	}
 
 
-	Volumetric* volum = new Volumetric();
+	Volumetric* volum = new Volumetric(m_csp);
 	volum->setLabel("dicom file");
 
 	if (singleFile)

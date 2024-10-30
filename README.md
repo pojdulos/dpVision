@@ -38,9 +38,9 @@ Experimental 3d viewer and editor
 
 ``cd build``
 
-* configure project with CMake
+* configure project for MinGW compiler with CMake
 
-``cmake  -G"Unix Makefiles" -D CMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release ..``
+``cmake  -G"MinGW Makefiles" -D CMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release ..``
 
 * build project
 

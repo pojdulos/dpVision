@@ -60,9 +60,9 @@ CModel3D::CModel3D( const CModel3D &m ) : CObject(m)
 
 CModel3D::~CModel3D()
 {
-	// Nie jestem pewien czy tu nie ma wycieku pamiêci,
-	// ale próba usuwania poszczególnych annotacji za pomoc¹ delete
-	// koñczy sie wyj¹tkiem przy zamykaniu programu
+	// Nie jestem pewien czy tu nie ma wycieku pamiï¿½ci,
+	// ale prï¿½ba usuwania poszczegï¿½lnych annotacji za pomocï¿½ delete
+	// koï¿½czy sie wyjï¿½tkiem przy zamykaniu programu
 	// 
 	// temat do zbadania!!!
 

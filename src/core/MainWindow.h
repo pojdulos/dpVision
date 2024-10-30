@@ -19,6 +19,8 @@ class DockWidgetImageViewer;
 #include <QtCore/QList>
 
 #include "ui_mainWindow.h"
+#include <QMdiSubWindow>
+#include <QPointer>
 
 class CBaseObject;
 class GLViewer;
@@ -110,6 +112,8 @@ private:
 	void createSelectMenu();
 
 	QMenu* recentFilesMenu;
+
+	QPointer<QMdiSubWindow> lastActiveWindow;
 
 	QAction* openAction;
 	QList<QAction*> recentFileActionList;

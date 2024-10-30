@@ -13,7 +13,7 @@ PropWidget::PropWidget(QWidget* parent) : QWidget(parent)
 
 void PropWidget::updateProperties()
 {
-	printf("PROPWIDGET !!!!\n");
+	//printf("PROPWIDGET !!!!\n");
 	QRegularExpression rx("prop");
 
 	//const QList<PropWidget*>& pList = this->layout()->findChildren<PropWidget*>("",Qt::FindDirectChildrenOnly);

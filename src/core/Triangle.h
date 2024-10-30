@@ -35,6 +35,9 @@ public:
 	bool inTriangle(CPoint3d pt);
 	bool hit(CPoint3d origin, CVector3d dir, CPoint3d &iP);
 
+	CTriangle transformByMatrix(Eigen::Matrix4d matrix);
+	CTriangle transformByMatrix(Eigen::Matrix3d matrix);
+
 	template <typename Container>
 	static CBoundingBox getBoundingBox(Container &container)
 	{

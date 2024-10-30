@@ -9,6 +9,8 @@
 
 class __declspec(dllexport) CParserDICOM : public CParser
 {
+	Volumetric::ColorSpace m_csp = Volumetric::ColorSpace::MONOCHROME2;
+
 public:
 	CParserDICOM(void);
 	~CParserDICOM(void);

@@ -48,13 +48,14 @@ class CMesh;
 #endif
 
 
+//template<typename VoxelType>
 class DPVISION_EXPORT Volumetric : public CObject
 {
 public:
 #if defined(_VoxelTypeFLOAT)
 	using VoxelType = float;
 #elif defined(_VoxelTypeINT16)
-	using VoxelType = int16_t;
+	using VoxelType = int32_t;
 #endif
 
 	class SliceType : public std::vector<VoxelType>
@@ -64,7 +65,7 @@ public:
 
 	public:
 		SliceType() :m_rows(0), m_columns(0) {}
-		SliceType(unsigned int _rows, unsigned int _cols, VoxelType color = 0.0) :std::vector<VoxelType>(_rows* _cols), m_rows(_rows), m_columns(_cols) {}
+		SliceType(unsigned int _rows, unsigned int _cols, VoxelType color = 0) :std::vector<VoxelType>(_rows* _cols), m_rows(_rows), m_columns(_cols) {}
 
 		// konstruktor kopiuj�cy
 		SliceType(const SliceType& b) : std::vector<VoxelType>(b), m_rows(b.m_rows), m_columns(b.m_columns) {}
@@ -89,6 +90,8 @@ public:
 	typedef SliceMetadata SliceMetadata;
 	
 	typedef enum { XY, YZ, ZX, TEST } LayerPlane;
+
+	typedef enum { MONOCHROME2, RGB } ColorSpace;
 
 	int i = 0;
 	GLuint vbo = 0;
@@ -129,7 +132,7 @@ public:
 		{1.0f, 1.0f, 1.0f} };
 
 
-	Volumetric(CBaseObject* p = nullptr):CObject(p) {};
+	Volumetric(ColorSpace csp=MONOCHROME2, CBaseObject* p = nullptr):CObject(p),m_csp(csp) {};
 	~Volumetric() {};
 
 	virtual inline int type() override { return CObject::Type::VOLUMETRIC_NEW; };
@@ -220,6 +223,8 @@ private:
 	unsigned int m_layers = 0;
 	unsigned int m_rows = 0;
 	unsigned int m_columns = 0;
+
+	ColorSpace m_csp = MONOCHROME2;
 
 	template<typename T> T clamp(T value, T min, T max);
 };

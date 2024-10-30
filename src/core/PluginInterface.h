@@ -88,8 +88,10 @@ public:
 	// called when you select another plugin
 	virtual void onDeactivate() {}
 
-	// called if button on PluginPanel is pressed
+	// called if button on PluginPanel is pressed, deprecated (for compatibility with old plugins)
 	virtual void onButton(std::wstring name) {}
+	
+	// called if button on PluginPanel is pressed
 	virtual void onButton(const QString &name) { onButton(name.toStdWString()); }
 
 	// called if plugin is active and ctrl+MouseClick is done on any model

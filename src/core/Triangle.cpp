@@ -64,11 +64,11 @@ bool CTriangle::rayPlaneIntersect3D(CPoint3d origin, CVector3d dir, CPoint3d &pI
 
 	if (0 == vNorm.length()) return false;
 
-	// wektor od wierzcho³ka trójk¹ta do punktu na promieniu
+	// wektor od wierzchoï¿½ka trï¿½jkï¿½ta do punktu na promieniu
 	CVector3d w0 = CVector3d(m_pV[0], origin);
 
-	// iloczyn skalarny -> zero jeœli wektory prostopad³e
-	double a = -vNorm.dotProduct(w0); // 0 -> w0 prostopad³y do vNorm -> punkt pP0 le¿y na p³aszczyŸnie trójk¹ta
+	// iloczyn skalarny -> zero jeï¿½li wektory prostopadï¿½e
+	double a = -vNorm.dotProduct(w0); // 0 -> w0 prostopadï¿½y do vNorm -> punkt pP0 leï¿½y na pï¿½aszczyï¿½nie trï¿½jkï¿½ta
 
 	if (a == 0)
 	{
@@ -78,19 +78,19 @@ bool CTriangle::rayPlaneIntersect3D(CPoint3d origin, CVector3d dir, CPoint3d &pI
 		return true;
 	}
 
-	double b = vNorm.dotProduct(dir);	// b == 0 -> vRay prostopad³y do vNorm -> vRay jest równoleg³y do trójk¹ta
+	double b = vNorm.dotProduct(dir);	// b == 0 -> vRay prostopadï¿½y do vNorm -> vRay jest rï¿½wnolegï¿½y do trï¿½jkï¿½ta
 								// b < 0  -> vRay wpada od przodu -> OK
-								// b > 0  -> vRay wpada od ty³u -> NIE OK
+								// b > 0  -> vRay wpada od tyï¿½u -> NIE OK
 
-	//if ( fabs(b) < prawieZero ) // to jest chyba niepotrzebne o ile sie nie pojawi¹ b³êdy
+	//if ( fabs(b) < prawieZero ) // to jest chyba niepotrzebne o ile sie nie pojawiï¿½ bï¿½ï¿½dy
 	if (b == 0)
-	{ // vRay jest równoleg³y do p³aszczyzny trójk¹ta
+	{ // vRay jest rï¿½wnolegï¿½y do pï¿½aszczyzny trï¿½jkï¿½ta
 		return false;
 	}
 
 	double r = a / b;
 
-	// Wyznaczam punkt przeciêcia promienia z p³aszczyzna œciany
+	// Wyznaczam punkt przeciï¿½cia promienia z pï¿½aszczyzna ï¿½ciany
 	CVector3d vec = (dir * a) / b;
 
 	pDistance = abs(r);
@@ -106,9 +106,9 @@ bool CTriangle::inTriangle(CPoint3d pt)
 	CVector3d v = CVector3d(m_pV[0], m_pV[2]);
 
 	// --------------------------------------------------------------
-	// sprawdzam czy pt lezy w trójk¹cie tFace
+	// sprawdzam czy pt lezy w trï¿½jkï¿½cie tFace
 	// --------------------------------------------------------------
-	// to jest wyznaczane ze wspó³rzêdnych barycentrycznych
+	// to jest wyznaczane ze wspï¿½rzï¿½dnych barycentrycznych
 
 	double uu = u.dotProduct(u);
 	double uv = u.dotProduct(v);
@@ -124,15 +124,15 @@ bool CTriangle::inTriangle(CPoint3d pt)
 	// get and test parametric coords
 	double s = (uv * wv - vv * wu) / D;
 
-	if (s < 0.0 || s > 1.0)         // pt le¿y poza trójk¹tem
+	if (s < 0.0 || s > 1.0)         // pt leï¿½y poza trï¿½jkï¿½tem
 		return false;
 
 	double t = (uv * wu - uu * wv) / D;
 
-	if (t < 0.0 || (s + t) > 1.0)  // pt le¿y poza trójk¹tem
+	if (t < 0.0 || (s + t) > 1.0)  // pt leï¿½y poza trï¿½jkï¿½tem
 		return false;
 
-	return true; // pt le¿y na trójk¹cie
+	return true; // pt leï¿½y na trï¿½jkï¿½cie
 }
 
 
@@ -148,6 +148,26 @@ bool CTriangle::hit( CPoint3d origin, CVector3d dir, CPoint3d &iP )
 	}
 		
 	return false;
+}
+
+CTriangle CTriangle::transformByMatrix(Eigen::Matrix4d matrix)
+{
+	CTriangle result;
+
+	result.m_pV[0] = this->m_pV[0].transformByMatrix(matrix);
+	result.m_pV[1] = this->m_pV[1].transformByMatrix(matrix);
+	result.m_pV[2] = this->m_pV[2].transformByMatrix(matrix);
+	return result;
+}
+
+CTriangle CTriangle::transformByMatrix(Eigen::Matrix3d matrix)
+{
+	CTriangle result;
+
+	result.m_pV[0] = this->m_pV[0].transformByMatrix(matrix);
+	result.m_pV[1] = this->m_pV[1].transformByMatrix(matrix);
+	result.m_pV[2] = this->m_pV[2].transformByMatrix(matrix);
+	return result;
 }
 
 CVector3d CTriangle::getNormal()
