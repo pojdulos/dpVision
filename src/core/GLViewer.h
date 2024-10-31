@@ -20,6 +20,7 @@
 
 #include <QTWidgets/QOpenGLWidget>
 #include <QtGui/QOpenGLFunctions>
+//#include <QtGui/QOpenGLFunctions_3_2_Core>
 #include <QtOpenGL>
 
 #include "RGBA.h"

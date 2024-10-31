@@ -132,7 +132,7 @@ void checkGLError(const char *label, const char *txt="") {
 
 #include <exception>
 
-GLuint compile_shader(QOpenGLFunctions* f, const char* source, GLenum shader_type) {
+GLuint compile_shader(QOpenGLFunctionsType* f, const char* source, GLenum shader_type) {
 	GLuint shader = f->glCreateShader(shader_type);
 
 	f->glShaderSource(shader, 1, &source, NULL);
@@ -165,7 +165,7 @@ void Volumetric::remove_shader_program() {
 	this->shader_program = 0;
 }
 
-bool Volumetric::create_program(QOpenGLFunctions* f) {
+bool Volumetric::create_program(QOpenGLFunctionsType* f) {
 	//QOpenGLFunctions* f = QOpenGLContext::currentContext()->functions();
 
 	GLuint vertex_shader = compile_shader(f, vertex_shader_code, GL_VERTEX_SHADER);
@@ -402,9 +402,8 @@ Volumetric::VolumeType downsample3D(const Volumetric::VolumeType& volume, int la
 }
 
 
-
 void Volumetric::renderSelf() {
-	QOpenGLFunctions* f = QOpenGLContext::currentContext()->functions();
+    QOpenGLFunctionsType *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctionsType>();
 
 	f->glEnable(GL_PROGRAM_POINT_SIZE);
 
@@ -421,7 +420,10 @@ void Volumetric::renderSelf() {
 
 	// Ustawienie atrybutu aCol w location 0
 	f->glEnableVertexAttribArray(0);
-	f->glVertexAttribPointer(0, 1, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+	//f->glVertexAttribPointer(0, 1, GL_FLOAT, GL_FALSE, 0, nullptr);
+    f->glVertexAttribIPointer(0, 1, GL_INT, 0, nullptr);
+
 
 	// Pobieranie macierzy modelview i projection
 	float modelview[16];
@@ -443,6 +445,7 @@ void Volumetric::renderSelf() {
 
 	GLint f_loc = f->glGetUniformLocation(this->shader_program, "f");
 	f->glUniform3fv(f_loc, 7, (float*)this->m_filters);
+	//f->glUniform3iv(f_loc, 7, (int32_t*)this->m_filters);
 
 	GLint fcolors_loc = f->glGetUniformLocation(this->shader_program, "fcolors");
 	f->glUniform3fv(fcolors_loc, 7, (float*)this->m_fcolors);
@@ -520,12 +523,14 @@ void Volumetric::renderSelf() {
 #if defined(_VoxelTypeFLOAT)
 		SliceType colors = subvolume[idx_in_subvolume];
 #else
-		SliceType subvol = subvolume[idx_in_subvolume];
-		std::vector<float> colors(subvol.size());
-		std::transform(subvol.begin(), subvol.end(), colors.begin(), [](VoxelType value) { return static_cast<float>(value); });
+        SliceType colors = subvolume[idx_in_subvolume];
+		// SliceType subvol = subvolume[idx_in_subvolume];
+		// std::vector<float> colors(subvol.size());
+		// std::transform(subvol.begin(), subvol.end(), colors.begin(), [](VoxelType value) { return static_cast<float>(value); });
 #endif
 
-		f->glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(float), colors.data(), GL_STATIC_DRAW);
+		f->glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(int32_t), colors.data(), GL_STATIC_DRAW);
+		//f->glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(float), colors.data(), GL_STATIC_DRAW);
 
 		SliceMetadata metadata = this->metadata[true_index_of_slice];
 
@@ -606,8 +611,8 @@ Volumetric* Volumetric::create(int layers, int rows, int columns)
 		volum->adjustMinMax(false);
 
 		for (auto& filter : volum->m_filters) {
-			filter[1] = std::max(filter[1], (float)volum->m_minDisplWin);
-			filter[2] = std::min(filter[2], (float)volum->m_maxDisplWin);
+			filter[1] = std::max(filter[1], float(volum->m_minDisplWin));
+			filter[2] = std::min(filter[2], float(volum->m_maxDisplWin));
 		}
 
 		return volum;

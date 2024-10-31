@@ -28,23 +28,26 @@ struct SliceMetadata
 
 
 class QOpenGLShaderProgram;
-class QOpenGLFunctions;
 
 class CPointCloud;
 class CMesh;
 
 #include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
+#include <QtGui/QOpenGLFunctions_3_2_Core>
+#include <QtGui/QOpenGLFunctions>
 
-#define _VoxelTypeINT16
+#define QOpenGLFunctionsType QOpenGLFunctions_3_2_Core
+
+#define _VoxelTypeINT32
 //#define _VoxelTypeFLOAT
 
 #if defined(_VoxelTypeFLOAT)
 	#define VoxelTypeMax float(32767)
 	#define VoxelTypeMin float(-32768)
-#elif defined(_VoxelTypeINT16)
-	#define VoxelTypeMax int16_t(32767)
-	#define VoxelTypeMin int16_t(-32768)
+#elif defined(_VoxelTypeINT32)
+	#define VoxelTypeMax INT32_MAX
+	#define VoxelTypeMin INT32_MIN
 #endif
 
 
@@ -53,9 +56,9 @@ class DPVISION_EXPORT Volumetric : public CObject
 {
 public:
 #if defined(_VoxelTypeFLOAT)
-	using VoxelType = float;
-#elif defined(_VoxelTypeINT16)
-	using VoxelType = int32_t;
+ 	using VoxelType = float;
+#elif defined(_VoxelTypeINT32)
+ 	using VoxelType = int32_t;
 #endif
 
 	class SliceType : public std::vector<VoxelType>
@@ -99,10 +102,10 @@ public:
 	//QOpenGLShaderProgram* shader_program = nullptr;
 	GLuint shader_program = 0;
 	
-	VoxelType m_minVal = 0.0f;
-	VoxelType m_maxVal = 1.0f;
-	VoxelType m_minDisplWin = 0.0f;
-	VoxelType m_maxDisplWin = 1.0f;
+	VoxelType m_minVal = VoxelTypeMin;
+	VoxelType m_maxVal = VoxelTypeMax;
+	VoxelType m_minDisplWin = VoxelTypeMin;
+	VoxelType m_maxDisplWin = VoxelTypeMax;
 	
 	bool m_fastDraw = true;
 	bool m_renderBoxes = false;
@@ -115,11 +118,11 @@ public:
 	int m_maxColumn = 0;
 	float m_filters[7][3] = {
 		{0, -100, 799},
-		{0, VoxelTypeMin, VoxelTypeMax},
-		{0, VoxelTypeMin, VoxelTypeMax},
+		{0, float(VoxelTypeMin), float(VoxelTypeMax)},
+		{0, float(VoxelTypeMin), float(VoxelTypeMax)},
 		{0, -1000, 4000},
-		{0, VoxelTypeMin, VoxelTypeMax},
-		{0, VoxelTypeMin, VoxelTypeMax},
+		{0, float(VoxelTypeMin), float(VoxelTypeMax)},
+		{0, float(VoxelTypeMin), float(VoxelTypeMax)},
 		{0, 800, 4095} };
 
 	float m_fcolors[7][3] = {
@@ -143,8 +146,8 @@ public:
 
 	void remove_shader_program();
 
-	bool create_program(QOpenGLFunctions* f);
-	
+	bool create_program(QOpenGLFunctionsType* f);
+
 	virtual void renderSelf() override;
 
 	CPointCloud* sift_cloud( int nfeatures = 0, int nOctaveLayers = 3, double contrastThreshold = 0.04, double edgeThreshold = 10, double sigma = 1.6, int factor = 1 );

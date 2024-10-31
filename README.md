@@ -1,5 +1,7 @@
-# dpVision
-Experimental 3d viewer and editor
+# dpVision (data processing for vision)
+
+The dpVision software framework offers a flexible platform for implementing and testing various data and image processing algorithms. It handles multimodal data across various formats and dimensions, acquired with different imaging techniques like 3D scanning or medical imaging. Support for various object types within a common space enables
+efficient multimodal image processing and algorithm testing, addressing the limitations of existing solutions.
 
 <img src="./docs/abel01.png" alt="screenshot" width="50%"/>
 
@@ -9,9 +11,10 @@ Experimental 3d viewer and editor
 
 ## prerequisites
 
-* Qt5
-* zlib if QtZlib is not found
-* QuaZip
+* Qt5 (https://www.qt.io/), and:
+  * QtZlib or zlib if QtZlib is not found
+  * QuaZip: https://quazip.sourceforge.net/
+* Eigen3 (https://eigen.tuxfamily.org/index.php?title=Main_Page)
 * boost
   * install boost package if your system can do it... (it is the fastest and most elegant way).
   * or alternatively download current release from <https://www.boost.org/> and unpack it to 3rdParty folder (it is fast too)
@@ -20,7 +23,6 @@ Experimental 3d viewer and editor
   * if you choosed second or third way, enter the 3rdParty folder and execute two commands (change slash to backslash on Windows):
     * ./bootstrap
     * ./b2
-* Eigen3
 
 ## Build with MinGW
 
@@ -38,9 +40,9 @@ Experimental 3d viewer and editor
 
 ``cd build``
 
-* configure project for MinGW compiler with CMake
+* configure project for MinGW compiler (recommended) with CMake
 
-``cmake  -G"MinGW Makefiles" -D CMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release ..``
+``cmake  -G"Unix Makefiles" -D CMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release ../src``
 
 * build project
 

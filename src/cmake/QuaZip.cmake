@@ -1,5 +1,10 @@
 message( "\nConfiguring QuaZip:\n" )
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+
+message("CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}")
 find_package (QuaZip-Qt5 QUIET)
 if (QuaZip-Qt5_FOUND)
 	message( "-- QuaZip-Qt5 found" )
@@ -28,3 +33,8 @@ else (QuaZip-Qt5_FOUND)
 		message( "-- QuaZip not found")
 	endif (QuaZip_Library_SOURCE_DIR)
 endif (QuaZip-Qt5_FOUND)
+
+#if (MSVC)
+#	install(TARGETS ${QUAZIP_LIB} DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/bin/")
+#	install(FILES "${CMAKE_BINARY_DIR}/quazip1-qt5.dll" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/bin/")
+#endif (MSVC)
