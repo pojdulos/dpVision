@@ -91,3 +91,12 @@ void DockWidgetPluginList::currentItemChanged( QListWidgetItem *curr, QListWidge
 		AP::mainApp().activePlugin->onActivate();
 	}
 }
+
+void DockWidgetPluginList::deactivateCurrentPlugin()
+{
+	unsigned int id = AP::mainApp().activePlugin->id();
+
+	AP::mainWin().dockPluginPanel->showPanel(id, false);
+	AP::PLUGIN::getPlugin(id)->onDeactivate();
+	AP::mainApp().activePlugin = NULL;
+}

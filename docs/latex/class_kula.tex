@@ -1,0 +1,86 @@
+\doxysection{Kula Class Reference}
+\hypertarget{class_kula}{}\label{class_kula}\index{Kula@{Kula}}
+Inheritance diagram for Kula\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_kula}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_kula_a7fe1a2b18b8f1ab96f0172353b76ebb4}\label{class_kula_a7fe1a2b18b8f1ab96f0172353b76ebb4} 
+{\bfseries Kula} (double x, double y, double z, double r)
+\item 
+\Hypertarget{class_kula_ac076dc77bfcfb803420f34bf9b48cb8d}\label{class_kula_ac076dc77bfcfb803420f34bf9b48cb8d} 
+{\bfseries Kula} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} c, double r)
+\item 
+\Hypertarget{class_kula_a8dfaf9a769c99f25866af9c214ff1cdf}\label{class_kula_a8dfaf9a769c99f25866af9c214ff1cdf} 
+{\bfseries Kula} (\mbox{\hyperlink{class_kula}{Kula}} \&k)
+\item 
+\Hypertarget{class_kula_a9ad7293a54053ae20a0d15f5cc7b2a22}\label{class_kula_a9ad7293a54053ae20a0d15f5cc7b2a22} 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} \& {\bfseries center} ()
+\item 
+\Hypertarget{class_kula_a4dbeb31604797dd73f736d1cf63654a9}\label{class_kula_a4dbeb31604797dd73f736d1cf63654a9} 
+double \& {\bfseries radius} ()
+\item 
+\Hypertarget{class_kula_a2b190026fc3b3f544ac24f0c4a2dba85}\label{class_kula_a2b190026fc3b3f544ac24f0c4a2dba85} 
+bool {\bfseries is\+Valid} ()
+\item 
+\Hypertarget{class_kula_a6d104ae628e43e0a7363c9ea5125bd40}\label{class_kula_a6d104ae628e43e0a7363c9ea5125bd40} 
+void {\bfseries find\+Biggest\+Triangle} (std\+::vector$<$ \mbox{\hyperlink{class_c_vertex}{CVertex}} $>$ \&pts, INDEX\+\_\+\+TYPE result\mbox{[}3\mbox{]})
+\item 
+\Hypertarget{class_kula_af4c61ae7db9c05628e82650abfdbed60}\label{class_kula_af4c61ae7db9c05628e82650abfdbed60} 
+void {\bfseries bound2} (\mbox{\hyperlink{class_kula}{Kula}} k1, \mbox{\hyperlink{class_kula}{Kula}} k2)
+\item 
+\Hypertarget{class_kula_a5018e891fbbaa7906f1af3f4ef69ac81}\label{class_kula_a5018e891fbbaa7906f1af3f4ef69ac81} 
+void {\bfseries scal} (\mbox{\hyperlink{class_kula}{Kula}} k2)
+\item 
+\Hypertarget{class_kula_aa96cd820bd62f829ceb1690e2d2a5421}\label{class_kula_aa96cd820bd62f829ceb1690e2d2a5421} 
+bool {\bfseries contains} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} p)
+\item 
+\Hypertarget{class_kula_a31df2b7b63b62017ee4b863af3ce8d51}\label{class_kula_a31df2b7b63b62017ee4b863af3ce8d51} 
+bool {\bfseries contains} (\mbox{\hyperlink{class_kula}{Kula}} k)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_kula_aef16a7b6394d3d342db10b8010b7ea00}\label{class_kula_aef16a7b6394d3d342db10b8010b7ea00} 
+static \mbox{\hyperlink{class_kula}{Kula}} \texorpdfstring{$\ast$}{*} {\bfseries from\+Triangle} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} A, \mbox{\hyperlink{class_c_point3}{CPoint3d}} B, \mbox{\hyperlink{class_c_point3}{CPoint3d}} C)
+\item 
+\Hypertarget{class_kula_acc439bec446507d658ffecbfa62f6f46}\label{class_kula_acc439bec446507d658ffecbfa62f6f46} 
+static \mbox{\hyperlink{class_kula}{Kula}} \texorpdfstring{$\ast$}{*} {\bfseries from\+Triangle} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} v\mbox{[}3\mbox{]})
+\item 
+\Hypertarget{class_kula_a5a66002b008b99403fdd4edf3b14473d}\label{class_kula_a5a66002b008b99403fdd4edf3b14473d} 
+static \mbox{\hyperlink{class_kula}{Kula}} \texorpdfstring{$\ast$}{*} {\bfseries from\+Points} (std\+::vector$<$ \mbox{\hyperlink{class_c_vertex}{CVertex}} $>$ pts)
+\item 
+\Hypertarget{class_kula_a015afe882d6df94bc730588ac3ad52ed}\label{class_kula_a015afe882d6df94bc730588ac3ad52ed} 
+static \mbox{\hyperlink{class_kula}{Kula}} \texorpdfstring{$\ast$}{*} {\bfseries from\+Points2} (std\+::vector$<$ \mbox{\hyperlink{class_c_vertex}{CVertex}} $>$ \&pts)
+\item 
+\Hypertarget{class_kula_a77ee301a6335d026324f6128a556434c}\label{class_kula_a77ee301a6335d026324f6128a556434c} 
+static \mbox{\hyperlink{class_kula}{Kula}} \texorpdfstring{$\ast$}{*} {\bfseries from\+Points3} (std\+::vector$<$ \mbox{\hyperlink{class_c_vertex}{CVertex}} $>$ \&pts)
+\item 
+\Hypertarget{class_kula_a02515fd8f63032b9bfe9de6fe9ceb92b}\label{class_kula_a02515fd8f63032b9bfe9de6fe9ceb92b} 
+static double {\bfseries find\+Max\+Dist\+\_\+\+Brute\+Force} (std\+::vector$<$ \mbox{\hyperlink{class_c_vertex}{CVertex}} $>$ \&pts, std\+::pair$<$ INDEX\+\_\+\+TYPE, INDEX\+\_\+\+TYPE $>$ \&result)
+\item 
+\Hypertarget{class_kula_a43ff7a5a4272521bd9b8b8686827f03b}\label{class_kula_a43ff7a5a4272521bd9b8b8686827f03b} 
+static \mbox{\hyperlink{class_kula}{Kula}} \texorpdfstring{$\ast$}{*} {\bfseries from\+Mesh} (std\+::vector$<$ \mbox{\hyperlink{class_c_face}{CFace}} $>$ \&fcs, std\+::vector$<$ \mbox{\hyperlink{class_c_vertex}{CVertex}} $>$ \&pts)
+\item 
+\Hypertarget{class_kula_aa52afabf950ef1c3e545c39a357955ca}\label{class_kula_aa52afabf950ef1c3e545c39a357955ca} 
+static \mbox{\hyperlink{class_kula}{Kula}} \texorpdfstring{$\ast$}{*} {\bfseries bound} (\mbox{\hyperlink{class_kula}{Kula}} k1, \mbox{\hyperlink{class_kula}{Kula}} k2)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_kula_a241690e0df8e60a3f4e35b256f471723}\label{class_kula_a241690e0df8e60a3f4e35b256f471723} 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries m\+\_\+c}
+\item 
+\Hypertarget{class_kula_a31733a363f1d6bef27872d0838bae630}\label{class_kula_a31733a363f1d6bef27872d0838bae630} 
+double {\bfseries m\+\_\+r}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/core/Kula.\+h\item 
+src/core/Kula.\+cpp\end{DoxyCompactItemize}

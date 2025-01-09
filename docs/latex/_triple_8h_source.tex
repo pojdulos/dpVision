@@ -1,0 +1,281 @@
+\doxysection{Triple.\+h}
+\hypertarget{_triple_8h_source}{}\label{_triple_8h_source}\index{src/core/Triple.h@{src/core/Triple.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#ifndef\ \_TRIO\_H\_BY\_DP\_INCLUDED\_}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#define\ \_TRIO\_H\_BY\_DP\_INCLUDED\_}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}dll\_global.h"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <Eigen/Geometry>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{keyword}{template}<}
+\DoxyCodeLine{00011\ \ \ \ \ \textcolor{keyword}{typename}\ \_T,}
+\DoxyCodeLine{00012\ \ \ \ \ \textcolor{keyword}{typename}\ =\ \textcolor{keyword}{typename}\ std::enable\_if<std::is\_arithmetic<\_T>::value,\ \_T>::type\ >\ \ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_triple}{CTriple}}}
+\DoxyCodeLine{00013\ \{}
+\DoxyCodeLine{00014\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keyword}{union\ }\{}
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ \_T\ v[3];}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\{\ \_T\ x,\ y,\ z;\ \};}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\{\ \_T\ first,\ second,\ third;\ \};}
+\DoxyCodeLine{00019\ \ \ \ \ \};}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00022\ \ \ \ \ \mbox{\hyperlink{class_c_triple}{CTriple}}()}
+\DoxyCodeLine{00023\ \ \ \ \ \{}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(std::is\_arithmetic<\_T>::value,\ \textcolor{stringliteral}{"{}CTriple<>\ type\ must\ be\ numeric"{}});}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ x\ =\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(0);}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ y\ =\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(0);}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ z\ =\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(0);}
+\DoxyCodeLine{00028\ \ \ \ \ \};}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \mbox{\hyperlink{class_c_triple}{CTriple}}(\ \_W\ *f\ )}
+\DoxyCodeLine{00031\ \ \ \ \ \{}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(std::is\_arithmetic<\_W>::value,\ \textcolor{stringliteral}{"{}CTriple<>\ type\ must\ be\ numeric"{}});}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ x\ =\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(f[0]);}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ y\ =\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(f[1]);}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ z\ =\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(f[2]);}
+\DoxyCodeLine{00036\ \ \ \ \ \};}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \mbox{\hyperlink{class_c_triple}{CTriple}}(\_W\ fx,\ \_W\ fy,\ \_W\ fz)}
+\DoxyCodeLine{00039\ \ \ \ \ \{}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(std::is\_arithmetic<\_W>::value,\ \textcolor{stringliteral}{"{}CTriple<>\ type\ must\ be\ numeric"{}});}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ x\ =\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(fx);}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ y\ =\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(fy);}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ z\ =\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(fz);}
+\DoxyCodeLine{00044\ \ \ \ \ \};}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \mbox{\hyperlink{class_c_triple}{CTriple}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_W>}}\ \&t)}
+\DoxyCodeLine{00047\ \ \ \ \ \{}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(std::is\_arithmetic<\_W>::value,\ \textcolor{stringliteral}{"{}CTriple<>\ type\ must\ be\ numeric"{}});}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ x\ =\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(t.X());}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ y\ =\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(t.Y());}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ z\ =\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(t.Z());}
+\DoxyCodeLine{00052\ \ \ \ \ \};}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \ \ \mbox{\hyperlink{class_c_triple}{\string~CTriple}}()\ \{\};}
+\DoxyCodeLine{00055\ \ \ \ \ }
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{comment}{//\ export\ to\ Eigen::Vector3<Type>}}
+\DoxyCodeLine{00057\ \ \ \ \ Eigen::Matrix<\_T,\ 3,\ 1>\ toVector3()}
+\DoxyCodeLine{00058\ \ \ \ \ \{}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ Eigen::Matrix<\_T,\ 3,\ 1>\ ev;}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ ev(0,\ 0)\ =\ x;}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ ev(1,\ 0)\ =\ y;}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ ev(2,\ 0)\ =\ z;}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ ev;}
+\DoxyCodeLine{00064\ \ \ \ \ \}}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \ \ \textcolor{comment}{//\ export\ to\ Eigen::RowVector3<Type>}}
+\DoxyCodeLine{00067\ \ \ \ \ Eigen::Matrix<\_T,\ 1,\ 3>\ toRowVector3()}
+\DoxyCodeLine{00068\ \ \ \ \ \{}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ Eigen::Matrix<\_T,\ 1,\ 3>\ erv;}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ erv(0,\ 0)\ =\ x;\ \ \ \ \ \ erv(0,\ 1)\ =\ y;\ \ \ \ \ \ erv(0,\ 2)\ =\ z;}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ erv;}
+\DoxyCodeLine{00072\ \ \ \ \ \}}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ Set(\ \mbox{\hyperlink{class_c_triple}{CTriple<\_W>}}\ t\ )}
+\DoxyCodeLine{00075\ \ \ \ \ \{}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(std::is\_arithmetic<\_W>::value,\ \textcolor{stringliteral}{"{}CTriple<>\ type\ must\ be\ numeric"{}});}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ x\ =\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(t.X());}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ y\ =\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(t.Y());}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ z\ =\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(t.Z());}
+\DoxyCodeLine{00080\ \ \ \ \ \};}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ Set(\ \_W\ w[3]\ )}
+\DoxyCodeLine{00083\ \ \ \ \ \{}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(std::is\_arithmetic<\_W>::value,\ \textcolor{stringliteral}{"{}Data\ type\ must\ be\ numeric"{}});}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ x\ =\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(w[0]);}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ y\ =\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(w[1]);}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ z\ =\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(w[2]);}
+\DoxyCodeLine{00088\ \ \ \ \ \};}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ Set(\_W\ ax,\ \_W\ ay,\ \_W\ az)}
+\DoxyCodeLine{00091\ \ \ \ \ \{}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(std::is\_arithmetic<\_W>::value,\ \textcolor{stringliteral}{"{}Data\ type\ must\ be\ numeric"{}});}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ x\ =\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(ax);}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ y\ =\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(ay);}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ z\ =\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(az);}
+\DoxyCodeLine{00096\ \ \ \ \ \};}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ SetIfBigger(\ \_T\ ax,\ \_T\ ay,\ \_T\ az\ )\ \{}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ x\ =\ (ax>x)?ax:x;\ \textcolor{comment}{//MAX(\ x,\ ax\ );}}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ y\ =\ (ay>y)?ay:y;}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ z\ =\ (az>z)?az:z;}
+\DoxyCodeLine{00102\ \ \ \ \ \};}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ SetIfBigger(\ \mbox{\hyperlink{class_c_triple}{CTriple<\_W>}}\ t\ )\ \{}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(std::is\_arithmetic<\_W>::value,\ \textcolor{stringliteral}{"{}Data\ type\ must\ be\ numeric"{}});}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ x\ =\ (t.x>x)\ ?\ t.x\ :\ x;\ \textcolor{comment}{//MAX(\ x,\ ax\ );}}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ y\ =\ (t.y>y)\ ?\ t.y\ :\ y;}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ z\ =\ (t.z>z)\ ?\ t.z\ :\ z;}
+\DoxyCodeLine{00109\ \ \ \ \ \};}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ SetIfBigger(\ \_W\ t[3]\ )\ \{}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(std::is\_arithmetic<\_W>::value,\ \textcolor{stringliteral}{"{}Data\ type\ must\ be\ numeric"{}});}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ x\ =\ (t[0]>x)\ ?\ t[0]\ :\ x;\ \textcolor{comment}{//MAX(\ x,\ ax\ );}}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ y\ =\ (t[1]>y)\ ?\ t[1]\ :\ y;}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ z\ =\ (t[2]>z)\ ?\ t[2]\ :\ z;}
+\DoxyCodeLine{00116\ \ \ \ \ \};}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ SetIfSmaller(\ \_T\ ax,\ \_T\ ay,\ \_T\ az\ )\ \{}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ x\ =\ (ax<x)?ax:x;\ \textcolor{comment}{//MIN(\ x,\ ax\ );}}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ y\ =\ (ay<y)?ay:y;}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ z\ =\ (az<z)?az:z;}
+\DoxyCodeLine{00122\ \ \ \ \ \};}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ SetIfSmaller(\ \mbox{\hyperlink{class_c_triple}{CTriple<\_W>}}\ t\ )\ \{}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(std::is\_arithmetic<\_W>::value,\ \textcolor{stringliteral}{"{}Data\ type\ must\ be\ numeric"{}});}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ x\ =\ (t.x<x)\ ?\ t.x\ :\ x;\ \textcolor{comment}{//MIN(\ x,\ ax\ );}}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ y\ =\ (t.y<y)\ ?\ t.y\ :\ y;}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ z\ =\ (t.z<z)\ ?\ t.z\ :\ z;}
+\DoxyCodeLine{00129\ \ \ \ \ \};}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ SetIfSmaller(\ \_W\ t[3]\ )\ \{}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(std::is\_arithmetic<\_W>::value,\ \textcolor{stringliteral}{"{}Data\ type\ must\ be\ numeric"{}});}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ x\ =\ (t[0]<x)\ ?\ t[0]\ :\ x;\ \textcolor{comment}{//MIN(\ x,\ ax\ );}}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ y\ =\ (t[1]<y)\ ?\ t[1]\ :\ y;}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ z\ =\ (t[2]<z)\ ?\ t[2]\ :\ z;}
+\DoxyCodeLine{00136\ \ \ \ \ \};}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ }
+\DoxyCodeLine{00139\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ scaleByVector(\mbox{\hyperlink{class_c_triple}{CTriple<\_W>}}\ t)}
+\DoxyCodeLine{00140\ \ \ \ \ \{}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(std::is\_arithmetic<\_W>::value,\ \textcolor{stringliteral}{"{}CTriple<>\ type\ must\ be\ numeric"{}});}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ x\ *=\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(t.x);}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ y\ *=\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(t.y);}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ z\ *=\ \textcolor{keyword}{static\_cast<}\_T\textcolor{keyword}{>}(t.z);}
+\DoxyCodeLine{00145\ \ \ \ \ \};}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00149\ \ \ \ \ \textcolor{comment}{//\ odczyt\ i\ zapis}}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00152\ \ \ \ \ \textcolor{keyword}{inline}\ \_T\ *\ toVector()\ \{\ \textcolor{keywordflow}{return}\ \&v[0];\ \};}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ \ \ \ \ \textcolor{keyword}{inline}\ \_T\ X()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ x;\ \};}
+\DoxyCodeLine{00155\ \ \ \ \ \textcolor{keyword}{inline}\ \_T\ X(\ \textcolor{keyword}{const}\ \_T\ ax\ )\ \{\ \textcolor{keywordflow}{return}\ x=ax;\ \};}
+\DoxyCodeLine{00156\ }
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00158\ \ \ \ \ \textcolor{keyword}{inline}\ \_T\ Y()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ y;\ \};}
+\DoxyCodeLine{00159\ \ \ \ \ \textcolor{keyword}{inline}\ \_T\ Y(\ \textcolor{keyword}{const}\ \_T\ ay\ )\ \{\ \textcolor{keywordflow}{return}\ y=ay;\ \};}
+\DoxyCodeLine{00160\ }
+\DoxyCodeLine{00161\ \ \ \ \ \textcolor{keyword}{inline}\ \_T\ Z()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ z;\ \};}
+\DoxyCodeLine{00162\ \ \ \ \ \textcolor{keyword}{inline}\ \_T\ Z(\ \textcolor{keyword}{const}\ \_T\ az\ )\ \{\ \textcolor{keywordflow}{return}\ z=az;\ \};}
+\DoxyCodeLine{00163\ }
+\DoxyCodeLine{00164\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \_W\ X()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}\_W\textcolor{keyword}{>}(x);\ \};}
+\DoxyCodeLine{00165\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \_W\ Y()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}\_W\textcolor{keyword}{>}(y);\ \};}
+\DoxyCodeLine{00166\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \_W\ Z()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}\_W\textcolor{keyword}{>}(z);\ \};}
+\DoxyCodeLine{00167\ }
+\DoxyCodeLine{00168\ \ \ \ \ \textcolor{comment}{//\ OPERATORY}}
+\DoxyCodeLine{00169\ \ \ \ \ }
+\DoxyCodeLine{00170\ \ \ \ \ \_T\&\ operator[](\textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ idx)\ \{}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ assert((idx\ <\ 3)\ \&\&\ \textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ v[idx];}
+\DoxyCodeLine{00173\ \ \ \ \ \}}
+\DoxyCodeLine{00174\ }
+\DoxyCodeLine{00175\ \ \ \ \ \textcolor{keyword}{const}\ \_T\&\ operator[](\textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ idx)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ assert((idx\ <\ 3)\ \&\&\ \textcolor{stringliteral}{"{}Index\ out\ of\ range"{}});}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ v[idx];}
+\DoxyCodeLine{00178\ \ \ \ \ \}}
+\DoxyCodeLine{00179\ }
+\DoxyCodeLine{00180\ }
+\DoxyCodeLine{00181\ }
+\DoxyCodeLine{00182\ }
+\DoxyCodeLine{00183\ \ \ \ \ \textcolor{comment}{//\ algebraiczne}}
+\DoxyCodeLine{00184\ }
+\DoxyCodeLine{00185\ \ \ \ \ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\ operator\ przypisania\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00186\ \ \ \ \ \textcolor{comment}{//\ wykomentowalem,\ bo\ przypisanie\ jest\ realizowane\ przez\ konstruktor\ kopiujacy}}
+\DoxyCodeLine{00187\ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00188\ \ \ \ \ \textcolor{comment}{//\ \ CTriple<\_T>\ \&operator=(\ const\ CTriple<\_T>\&\ c\ )\ \{}}
+\DoxyCodeLine{00189\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ return\ CTriple<\_T>(\ x\ =\ c.x,\ y\ =\ c.y,\ z\ =\ c.z\ );}}
+\DoxyCodeLine{00190\ \ \ \ \ \textcolor{comment}{//\ \ \};}}
+\DoxyCodeLine{00191\ \ \ \ \ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00192\ }
+\DoxyCodeLine{00193\ \ \ \ \ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}\ operator-\/()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}(-\/x,\ -\/y,\ -\/z);}
+\DoxyCodeLine{00195\ \ \ \ \ \};}
+\DoxyCodeLine{00196\ }
+\DoxyCodeLine{00197\ \ \ \ \ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}\ operator+(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}\&\ c\ )\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}(\ x\ +\ c.x,\ y\ +\ c.y,\ z\ +\ c.z\ );}
+\DoxyCodeLine{00199\ \ \ \ \ \};}
+\DoxyCodeLine{00200\ }
+\DoxyCodeLine{00201\ \ \ \ \ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}\ operator+=(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}\&\ c\ )\ \{}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}(\ x\ +=\ c.x,\ y\ +=\ c.y,\ z\ +=\ c.z\ );}
+\DoxyCodeLine{00203\ \ \ \ \ \};}
+\DoxyCodeLine{00204\ }
+\DoxyCodeLine{00205\ \ \ \ \ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}\ operator-\/(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}\&\ c\ )\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}(\ x\ -\/\ c.x,\ y\ -\/\ c.y,\ z\ -\/\ c.z\ );}
+\DoxyCodeLine{00207\ \ \ \ \ \};}
+\DoxyCodeLine{00208\ }
+\DoxyCodeLine{00209\ \ \ \ \ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}\ operator-\/=(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}\&\ c\ )\ \{}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}(\ x\ -\/=\ c.x,\ y\ -\/=\ c.y,\ z\ -\/=\ c.z\ );}
+\DoxyCodeLine{00211\ \ \ \ \ \};}
+\DoxyCodeLine{00212\ }
+\DoxyCodeLine{00213\ \ \ \ \ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}\ operator/(\ \textcolor{keyword}{const}\ \_T\ c\ )\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}(\ x/c,\ y/c,\ z/c\ );\ }
+\DoxyCodeLine{00215\ \ \ \ \ \};}
+\DoxyCodeLine{00216\ }
+\DoxyCodeLine{00217\ \ \ \ \ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}\ operator*(\textcolor{keyword}{const}\ \_T\ c)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}(x\ *\ c,\ y\ *\ c,\ z\ *\ c);}
+\DoxyCodeLine{00219\ \ \ \ \ \};}
+\DoxyCodeLine{00220\ }
+\DoxyCodeLine{00221\ \ \ \ \ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}\ operator/=(\ \textcolor{keyword}{const}\ \_T\ c\ )\ \{}
+\DoxyCodeLine{00222\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}(\ x/=c,\ y/=c,\ z/=c\ );\ }
+\DoxyCodeLine{00223\ \ \ \ \ \};}
+\DoxyCodeLine{00224\ }
+\DoxyCodeLine{00225\ \ \ \ \ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}\ operator*=(\textcolor{keyword}{const}\ \_T\ c)\ \{}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}(x\ *=\ c,\ y\ *=\ c,\ z\ *=\ c);}
+\DoxyCodeLine{00227\ \ \ \ \ \};}
+\DoxyCodeLine{00228\ }
+\DoxyCodeLine{00229\ }
+\DoxyCodeLine{00230\ \ \ \ \ \textcolor{comment}{//\ logiczne}}
+\DoxyCodeLine{00231\ }
+\DoxyCodeLine{00232\ \ \ \ \ \textcolor{keywordtype}{bool}\ operator==(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}\&\ c\ )\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00233\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (\ x\ ==\ c.x\ )\ \&\&\ (\ y\ ==\ c.y\ )\ \&\&\ (\ z\ ==\ c.z\ );}
+\DoxyCodeLine{00234\ \ \ \ \ \};}
+\DoxyCodeLine{00235\ }
+\DoxyCodeLine{00236\ \ \ \ \ \textcolor{keywordtype}{bool}\ operator!=(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}\&\ c\ )\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (\ x\ !=\ c.x\ )\ ||\ (\ y\ !=\ c.y\ )\ ||\ (\ z\ !=\ c.z\ );}
+\DoxyCodeLine{00238\ \ \ \ \ \};}
+\DoxyCodeLine{00239\ }
+\DoxyCodeLine{00240\ \ \ \ \ \textcolor{keywordtype}{bool}\ operator<(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}\ \&c\ )\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\ x\ <\ c.x\ )\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (\ x\ >\ c.x\ )\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00243\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (\ y\ <\ c.y\ )\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00244\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (\ y\ >\ c.y\ )\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00245\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (\ z\ <\ c.z\ );}
+\DoxyCodeLine{00246\ \ \ \ \ \}}
+\DoxyCodeLine{00247\ }
+\DoxyCodeLine{00248\ \ \ \ \ \textcolor{keywordtype}{bool}\ operator<=(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}\ \&c\ )\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\ x\ <\ c.x\ )\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (\ x\ >\ c.x\ )\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00251\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (\ y\ <\ c.y\ )\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00252\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (\ y\ >\ c.y\ )\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00253\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (\ z\ <=\ c.z\ );}
+\DoxyCodeLine{00254\ \ \ \ \ \}}
+\DoxyCodeLine{00255\ }
+\DoxyCodeLine{00256\ \ \ \ \ \textcolor{keywordtype}{bool}\ operator>(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}\ \&c\ )\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00257\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\ x\ >\ c.x\ )\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (\ x\ <\ c.x\ )\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (\ x\ >\ c.y\ )\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00260\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (\ x\ <\ c.y\ )\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00261\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (\ x\ >\ c.z\ );}
+\DoxyCodeLine{00262\ \ \ \ \ \}}
+\DoxyCodeLine{00263\ }
+\DoxyCodeLine{00264\ \ \ \ \ \textcolor{keywordtype}{bool}\ operator>=(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}\ \&c\ )\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00265\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\ x\ >\ c.x\ )\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00266\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (\ x\ <\ c.x\ )\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00267\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (\ x\ >\ c.y\ )\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00268\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (\ x\ <\ c.y\ )\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (\ x\ >=\ c.z\ );}
+\DoxyCodeLine{00270\ \ \ \ \ \}}
+\DoxyCodeLine{00271\ }
+\DoxyCodeLine{00272\ \};}
+\DoxyCodeLine{00273\ }
+\DoxyCodeLine{00274\ }
+\DoxyCodeLine{00275\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ \_TRIO\_H\_BY\_DP\_INCLUDED\_\ */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

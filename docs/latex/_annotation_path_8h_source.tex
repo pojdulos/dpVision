@@ -1,0 +1,46 @@
+\doxysection{Annotation\+Path.\+h}
+\hypertarget{_annotation_path_8h_source}{}\label{_annotation_path_8h_source}\index{src/core/AnnotationPath.h@{src/core/AnnotationPath.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}Annotation.h"{}}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}Punkt3D.h"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}Wektor3D.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}RGBA.h"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}Model3D.h"{}}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <list>}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{keyword}{typedef}\ std::list<CPoint3d>\ ListOfPoints;}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_annotation_path}{CAnnotationPath}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_c_annotation}{CAnnotation}},\ \textcolor{keyword}{public}\ ListOfPoints}
+\DoxyCodeLine{00012\ \{}
+\DoxyCodeLine{00013\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00014\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_path}{CAnnotationPath}}(\ \mbox{\hyperlink{class_c_model3_d}{CModel3D}}\ *m\ =\ \textcolor{keyword}{nullptr})\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(\ m\ )}
+\DoxyCodeLine{00015\ \ \ \ \ \{}
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}path"{}});}
+\DoxyCodeLine{00017\ \ \ \ \ \};}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_path}{\string~CAnnotationPath}}()\textcolor{keyword}{\ override\ }\{\ clear();\ \};}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keywordtype}{void}\ addPoint(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&t)\ \{\ push\_back(t);\ \};}
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keywordtype}{void}\ addPoint(\textcolor{keywordtype}{double}\ x,\ \textcolor{keywordtype}{double}\ y,\ \textcolor{keywordtype}{double}\ z)\ \{\ push\_back(\mbox{\hyperlink{class_c_point3}{CPoint3d}}(x,\ y,\ z));\ \};}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{int}\ type()\ \{\ \textcolor{keywordflow}{return}\ CAnnotation::PATH;\ \}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{size\_t}\ size()\ \{\ \textcolor{keywordflow}{return}\ ListOfPoints::size();\ \}}
+\DoxyCodeLine{00027\ \ \ \ \ }
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ clear()\textcolor{keyword}{\ override}}
+\DoxyCodeLine{00029\ \textcolor{keyword}{\ \ \ \ }\{}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ CAnnotation::clear();}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ ListOfPoints::clear();}
+\DoxyCodeLine{00032\ \ \ \ \ \}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \ \ \ \ CAnnotationPath::iterator\ cyclicNext(CAnnotationPath::iterator\ current);}
+\DoxyCodeLine{00035\ \ \ \ \ CAnnotationPath::iterator\ cyclicPrev(CAnnotationPath::iterator\ current);}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keyword}{virtual}\ std::wstring\ getTypeWSTR()\ \{\ \textcolor{keywordflow}{return}\ L\textcolor{stringliteral}{"{}path"{}};\ \};}
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keyword}{virtual}\ std::wstring\ getInfoRow();}
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ renderSelf()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00040\ \};}
+
+\end{DoxyCode}

@@ -1,0 +1,43 @@
+\doxysection{Annotation\+Polygon.\+h}
+\hypertarget{_annotation_polygon_8h_source}{}\label{_annotation_polygon_8h_source}\index{src/core/AnnotationPolygon.h@{src/core/AnnotationPolygon.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}Annotation.h"{}}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}Punkt3D.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}Wektor3D.h"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}RGBA.h"{}}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <list>}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_annotation_polygon}{CAnnotationPolygon}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_c_annotation}{CAnnotation}}}
+\DoxyCodeLine{00011\ \{}
+\DoxyCodeLine{00012\ \ \ \ \ std::list<CPoint3d>\ m\_data;}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00015\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_polygon}{CAnnotationPolygon}}(\ \mbox{\hyperlink{class_c_base_object}{CBaseObject}}\ *m\ =\ \textcolor{keyword}{nullptr})\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(m)}
+\DoxyCodeLine{00016\ \ \ \ \ \{}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}polygon"{}});}
+\DoxyCodeLine{00018\ \ \ \ \ \};}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_polygon}{CAnnotationPolygon}}(\ \mbox{\hyperlink{class_c_annotation_polygon}{CAnnotationPolygon}}\ \&p\ )\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(p)}
+\DoxyCodeLine{00021\ \ \ \ \ \{}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}polygon"{}});}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ m\_data\ =\ p.m\_data;}
+\DoxyCodeLine{00024\ \ \ \ \ \}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_polygon}{\string~CAnnotationPolygon}}()\ \{\ m\_data.clear();\ \};}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{int}\ type()\ \{\ \textcolor{keywordflow}{return}\ CAnnotation::POLYGON;\ \}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keywordtype}{void}\ addPoint(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&t)\{\ m\_data.push\_back(\ t\ );\ \};}
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keywordtype}{void}\ addPoint(\textcolor{keywordtype}{double}\ x,\ \textcolor{keywordtype}{double}\ y,\ \textcolor{keywordtype}{double}\ z)\ \{\ m\_data.push\_back(\mbox{\hyperlink{class_c_point3}{CPoint3d}}(x,y,z));\ \};}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keyword}{virtual}\ std::wstring\ getInfoRow();}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ renderSelf()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00036\ \};}
+\DoxyCodeLine{00037\ }
+
+\end{DoxyCode}

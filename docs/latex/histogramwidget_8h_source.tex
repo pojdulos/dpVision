@@ -1,0 +1,78 @@
+\doxysection{histogramwidget.\+h}
+\hypertarget{histogramwidget_8h_source}{}\label{histogramwidget_8h_source}\index{src/core/histogramwidget.h@{src/core/histogramwidget.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{comment}{/****************************************************************************}}
+\DoxyCodeLine{00003\ \textcolor{comment}{**}}
+\DoxyCodeLine{00004\ \textcolor{comment}{**\ Copyright\ (C)\ 2015\ The\ Qt\ Company\ Ltd.}}
+\DoxyCodeLine{00005\ \textcolor{comment}{**\ Contact:\ http://www.qt.io/licensing/}}
+\DoxyCodeLine{00006\ \textcolor{comment}{**}}
+\DoxyCodeLine{00007\ \textcolor{comment}{**\ This\ file\ is\ part\ of\ the\ examples\ of\ the\ Qt\ Toolkit.}}
+\DoxyCodeLine{00008\ \textcolor{comment}{**}}
+\DoxyCodeLine{00009\ \textcolor{comment}{**\ \$QT\_BEGIN\_LICENSE:BSD\$}}
+\DoxyCodeLine{00010\ \textcolor{comment}{**\ You\ may\ use\ this\ file\ under\ the\ terms\ of\ the\ BSD\ license\ as\ follows:}}
+\DoxyCodeLine{00011\ \textcolor{comment}{**}}
+\DoxyCodeLine{00012\ \textcolor{comment}{**\ "{}Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00013\ \textcolor{comment}{**\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00014\ \textcolor{comment}{**\ met:}}
+\DoxyCodeLine{00015\ \textcolor{comment}{**\ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00016\ \textcolor{comment}{**\ \ \ \ \ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{**\ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above\ copyright}}
+\DoxyCodeLine{00018\ \textcolor{comment}{**\ \ \ \ \ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer\ in}}
+\DoxyCodeLine{00019\ \textcolor{comment}{**\ \ \ \ \ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00020\ \textcolor{comment}{**\ \ \ \ \ distribution.}}
+\DoxyCodeLine{00021\ \textcolor{comment}{**\ \ \ *\ Neither\ the\ name\ of\ The\ Qt\ Company\ Ltd\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00022\ \textcolor{comment}{**\ \ \ \ \ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived}}
+\DoxyCodeLine{00023\ \textcolor{comment}{**\ \ \ \ \ from\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00024\ \textcolor{comment}{**}}
+\DoxyCodeLine{00025\ \textcolor{comment}{**}}
+\DoxyCodeLine{00026\ \textcolor{comment}{**\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00027\ \textcolor{comment}{**\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00028\ \textcolor{comment}{**\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00029\ \textcolor{comment}{**\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00030\ \textcolor{comment}{**\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00031\ \textcolor{comment}{**\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00032\ \textcolor{comment}{**\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00033\ \textcolor{comment}{**\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00034\ \textcolor{comment}{**\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00035\ \textcolor{comment}{**\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00036\ \textcolor{comment}{**\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE."{}}}
+\DoxyCodeLine{00037\ \textcolor{comment}{**}}
+\DoxyCodeLine{00038\ \textcolor{comment}{**\ \$QT\_END\_LICENSE\$}}
+\DoxyCodeLine{00039\ \textcolor{comment}{**}}
+\DoxyCodeLine{00040\ \textcolor{comment}{****************************************************************************/}}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#ifndef\ HISTOGRAMWIDGET\_H}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#define\ HISTOGRAMWIDGET\_H}}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#include\ "{}dll\_global.h"{}}}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\#include\ <QtWidgets/QDockWidget>}}
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#include\ <map>}}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_c_histogram}{CHistogram}};}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_histogram_widget}{HistogramWidget}}\ :\ \textcolor{keyword}{public}\ QWidget}
+\DoxyCodeLine{00053\ \{}
+\DoxyCodeLine{00054\ \ \ \ \ Q\_OBJECT}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{class_histogram_widget}{HistogramWidget}}(QWidget\ *parent\ =\ 0);}
+\DoxyCodeLine{00058\ \ \ \ \ \mbox{\hyperlink{class_histogram_widget}{\string~HistogramWidget}}();}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keywordtype}{void}\ setHistogram(\ \mbox{\hyperlink{class_c_histogram}{CHistogram}}\ *histogram\ );}
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keywordtype}{void}\ writeValue(QPainter\&\ painter,\ \textcolor{keywordtype}{double}\ low,\ \textcolor{keywordtype}{double}\ up,\ \textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y);}
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keywordtype}{void}\ drawBar(QPainter\&\ painter,\ \textcolor{keywordtype}{int}\ ix,\ qreal\ w,\ \textcolor{keywordtype}{int}\ colNb,\ \textcolor{keywordtype}{size\_t}\ maxBarVal);}
+\DoxyCodeLine{00063\ \ \ \ \ \mbox{\hyperlink{class_c_histogram}{CHistogram}}\ *\ getHistogram()\ \{\ \textcolor{keywordflow}{return}\ m\_histogram;\ \};}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00066\ \ \ \ \ \textcolor{keywordtype}{void}\ paintEvent(QPaintEvent\ *event);}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00069\ \ \ \ \ \mbox{\hyperlink{class_c_histogram}{CHistogram}}\ *m\_histogram;}
+\DoxyCodeLine{00070\ \};}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ HISTOGRAMWIDGET\_H}}
+
+\end{DoxyCode}

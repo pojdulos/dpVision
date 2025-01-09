@@ -1,0 +1,57 @@
+\doxysection{Utilities.\+h}
+\hypertarget{_utilities_8h_source}{}\label{_utilities_8h_source}\index{src/core/Utilities.h@{src/core/Utilities.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#ifndef\ \_UTILITIES\_H\_BY\_DP\_INCLUDED\_}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#define\ \_UTILITIES\_H\_BY\_DP\_INCLUDED\_}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}dll\_global.h"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}Global.h"{}}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <algorithm>}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_T>\ \_T\ MIN(\ \textcolor{keyword}{const}\ \_T\ a,\ \textcolor{keyword}{const}\ \_T\ b)\ \{\ \textcolor{keywordflow}{return}\ (a<b)?a:b;\ \};}
+\DoxyCodeLine{00011\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_T>\ \_T\ MAX(\ \textcolor{keyword}{const}\ \_T\ a,\ \textcolor{keyword}{const}\ \_T\ b)\ \{\ \textcolor{keywordflow}{return}\ (a>b)?a:b;\ \};}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_T>\ \_T\ MIN3(\ \textcolor{keyword}{const}\ \_T\ a,\ \textcolor{keyword}{const}\ \_T\ b,\ \textcolor{keyword}{const}\ \_T\ c)\ \{\ \textcolor{keywordflow}{return}\ MIN(\ MIN(\ a,\ b\ ),\ c\ );\ \};}
+\DoxyCodeLine{00014\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_T>\ \_T\ MAX3(\ \textcolor{keyword}{const}\ \_T\ a,\ \textcolor{keyword}{const}\ \_T\ b,\ \textcolor{keyword}{const}\ \_T\ c)\ \{\ \textcolor{keywordflow}{return}\ MAX(\ MAX(\ a,\ b\ ),\ c\ );\ \};}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_T>\ \_T\ MIN4(\ \textcolor{keyword}{const}\ \_T\ a,\ \textcolor{keyword}{const}\ \_T\ b,\ \textcolor{keyword}{const}\ \_T\ c,\ \textcolor{keyword}{const}\ \_T\ d\ )\ \{\ \textcolor{keywordflow}{return}\ MIN(\ MIN(\ a,\ b\ ),\ MIN(\ c,\ d\ )\ );\ \};}
+\DoxyCodeLine{00017\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_T>\ \_T\ MAX4(\ \textcolor{keyword}{const}\ \_T\ a,\ \textcolor{keyword}{const}\ \_T\ b,\ \textcolor{keyword}{const}\ \_T\ c,\textcolor{keyword}{const}\ \ \_T\ d\ )\ \{\ \textcolor{keywordflow}{return}\ MAX(\ MAX(\ a,\ b\ ),\ MAX(\ c,\ d\ )\ );\ \};}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#ifndef\ ALMOST\_NULL}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#define\ ALMOST\_NULL\ 0.000001}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ isAlmostNull(\textcolor{keywordtype}{double}\ f)\ \{\ \textcolor{keywordflow}{return}\ abs(f)\ <=\ ALMOST\_NULL;\ \}}
+\DoxyCodeLine{00024\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ isAlmostOne(\textcolor{keywordtype}{double}\ f)\ \{\ \textcolor{keywordflow}{return}\ abs(1.0\ -\/\ abs(f))\ <=\ ALMOST\_NULL;\ \}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ DPVISION\_EXPORT\ \textcolor{keywordtype}{double}\ smartRound(\textcolor{keywordtype}{double}\ d,\ \textcolor{keywordtype}{int}\ decimal);}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#ifndef\ deg2rad}}
+\DoxyCodeLine{00030\ \textcolor{comment}{//\#define\ deg2rad(a)\ ((a)*PI/180.0)}}
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#define\ deg2rad(x)\ ((x)\ *\ 0.01745329251994329576923690768489)}}
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#ifndef\ rad2deg}}
+\DoxyCodeLine{00035\ \textcolor{comment}{//\#define\ rad2deg(a)\ ((a)*180.0/PI)}}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#define\ rad2deg(x)\ ((x)\ *\ 57.295779513082320876798154814105)}}
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \_W\ angle180(\textcolor{keyword}{const}\ \_W\ x)\ \{}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keywordflow}{while}\ (x\ >\ 180)\ x\ -\/=\ 360;}
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keywordflow}{while}\ (x\ <=\ -\/180)\ x\ +=\ 360;}
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00043\ \};}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \_W\ angle360(\textcolor{keyword}{const}\ \_W\ x)\ \{}
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keywordflow}{while}\ (x\ >=\ 360)\ x\ -\/=\ 360;}
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keywordflow}{while}\ (x\ <\ 0)\ x\ +=\ 360;}
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{00049\ \};}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ \_UTILITIES\_H\_BY\_DP\_INCLUDED\_\ */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

@@ -1,0 +1,241 @@
+\doxysection{Volumetric.\+h}
+\hypertarget{_volumetric_8h_source}{}\label{_volumetric_8h_source}\index{src/core/Volumetric.h@{src/core/Volumetric.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}Object.h"{}}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}Vector3.h"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <QtCore/QString>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_slice_metadata}{SliceMetadata}}}
+\DoxyCodeLine{00008\ \{}
+\DoxyCodeLine{00009\ \ \ \ \ \textcolor{keywordtype}{float}\ image\_position\_patient[3]\ =\ \{\ 0.0f,\ 0.0f,\ 0.0f\ \};}
+\DoxyCodeLine{00010\ \ \ \ \ \textcolor{keywordtype}{float}\ slice\_location\ =\ 0.0f;}
+\DoxyCodeLine{00011\ \ \ \ \ \textcolor{keywordtype}{float}\ pixel\_spacing[2]\ =\ \{\ 1.0f,\ 1.0f\ \};}
+\DoxyCodeLine{00012\ \ \ \ \ \textcolor{keywordtype}{float}\ slice\_thickness\ =\ 1.0f;}
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keywordtype}{float}\ slice\_distance\ =\ 1.0f;}
+\DoxyCodeLine{00014\ \ \ \ \ \textcolor{keywordtype}{float}\ gantry\_detector\_tilt\ =\ 0.0f;}
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keywordtype}{float}\ rescale\_slope\ =\ 1.0f;}
+\DoxyCodeLine{00016\ \ \ \ \ \textcolor{keywordtype}{float}\ rescale\_intercept\ =\ 0.0f;}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{comment}{//QString\ toString()\ \{}}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{comment}{//\ \ txt\ =\ f"{}SliceMetadata"{}}}
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ txt\ +=\ f"{}(\ gantry\_detector\_tilt\ =\ \{self.gantry\_detector\_tilt\}"{}}}
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ txt\ +=\ f"{},\ slice\_thickness\ =\ \{self.slice\_thickness\}"{}}}
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ txt\ +=\ f"{},\ slice\_location\ =\ \{self.slice\_location\}"{}}}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ txt\ +=\ f"{},\ pixel\_spacing\ =\ \{self.pixel\_spacing\}"{}}}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ txt\ +=\ f"{},\ image\_position\_patient\ =\ \{self.image\_position\_patient\}\ )"{}}}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ return\ txt}}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{comment}{//\}}}
+\DoxyCodeLine{00027\ \};}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{keyword}{class\ }QOpenGLShaderProgram;}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_c_point_cloud}{CPointCloud}};}
+\DoxyCodeLine{00033\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_c_mesh}{CMesh}};}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#include\ <QOpenGLBuffer>}}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#include\ <QOpenGLVertexArrayObject>}}
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#include\ <QtGui/QOpenGLFunctions\_3\_2\_Core>}}
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#include\ <QtGui/QOpenGLFunctions>}}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#define\ QOpenGLFunctionsType\ QOpenGLFunctions\_3\_2\_Core}}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#define\ \_VoxelTypeINT32}}
+\DoxyCodeLine{00043\ \textcolor{comment}{//\#define\ \_VoxelTypeFLOAT}}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#if\ defined(\_VoxelTypeFLOAT)}}
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\ \ \ \ \#define\ VoxelTypeMax\ float(32767)}}
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\ \ \ \ \#define\ VoxelTypeMin\ float(-\/32768)}}
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#elif\ defined(\_VoxelTypeINT32)}}
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\ \ \ \ \#define\ VoxelTypeMax\ INT32\_MAX}}
+\DoxyCodeLine{00050\ \textcolor{preprocessor}{\ \ \ \ \#define\ VoxelTypeMin\ INT32\_MIN}}
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \textcolor{comment}{//template<typename\ VoxelType>}}
+\DoxyCodeLine{00055\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_volumetric}{Volumetric}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_c_object}{CObject}}}
+\DoxyCodeLine{00056\ \{}
+\DoxyCodeLine{00057\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00058\ \textcolor{preprocessor}{\#if\ defined(\_VoxelTypeFLOAT)}}
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keyword}{using\ }VoxelType\ =\ float;}
+\DoxyCodeLine{00060\ \textcolor{preprocessor}{\#elif\ defined(\_VoxelTypeINT32)}}
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keyword}{using\ }VoxelType\ =\ int32\_t;}
+\DoxyCodeLine{00062\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_volumetric_1_1_slice_type}{SliceType}}\ :\ \textcolor{keyword}{public}\ std::vector<VoxelType>}
+\DoxyCodeLine{00065\ \ \ \ \ \{}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ m\_rows;}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ m\_columns;}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_volumetric_1_1_slice_type}{SliceType}}()\ :m\_rows(0),\ m\_columns(0)\ \{\}}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_volumetric_1_1_slice_type}{SliceType}}(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ \_rows,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ \_cols,\ VoxelType\ color\ =\ 0)\ :std::vector<VoxelType>(\_rows*\ \_cols),\ m\_rows(\_rows),\ m\_columns(\_cols)\ \{\}}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ konstruktor\ kopiuj{\ucr}cy}}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_volumetric_1_1_slice_type}{SliceType}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_volumetric_1_1_slice_type}{SliceType}}\&\ b)\ :\ std::vector<VoxelType>(b),\ m\_rows(b.m\_rows),\ m\_columns(b.m\_columns)\ \{\}}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ VoxelType\&\ at(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ row,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ column)\ \{\ \textcolor{keywordflow}{return}\ (*\textcolor{keyword}{this})[row\ *\ m\_columns\ +\ column];\ \}}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ VoxelType\&\ at(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ row,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ column)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ (*\textcolor{keyword}{this})[row\ *\ m\_columns\ +\ column];\ \}}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ isValid()\ \{\ \textcolor{keywordflow}{return}\ (m\_rows\ >\ 0)\ \&\&\ (m\_columns\ >\ 0)\ \&\&\ (m\_rows*m\_columns==size());\ \}}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setSize(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ \_rows,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ \_cols)}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \ \ \ \ resize(\_rows\ *\ \_cols);}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \ \ \ \ m\_rows\ =\ \_rows;}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \ \ \ \ m\_columns\ =\ \_cols;}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ rows()\ \{\ \textcolor{keywordflow}{return}\ m\_rows;\ \}}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ columns()\ \{\ \textcolor{keywordflow}{return}\ m\_columns;\ \}}
+\DoxyCodeLine{00090\ \ \ \ \ \};}
+\DoxyCodeLine{00091\ \ \ \ \ }
+\DoxyCodeLine{00092\ \ \ \ \ \textcolor{keyword}{typedef}\ std::vector<SliceType>\ VolumeType;}
+\DoxyCodeLine{00093\ \ \ \ \ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{struct_slice_metadata}{SliceMetadata}}\ \mbox{\hyperlink{struct_slice_metadata}{SliceMetadata}};}
+\DoxyCodeLine{00094\ \ \ \ \ }
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{\ XY,\ YZ,\ ZX,\ TEST\ \}\ LayerPlane;}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{\ MONOCHROME2,\ RGB\ \}\ ColorSpace;}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \ \ \ \ \textcolor{keywordtype}{int}\ i\ =\ 0;}
+\DoxyCodeLine{00100\ \ \ \ \ GLuint\ vbo\ =\ 0;}
+\DoxyCodeLine{00101\ \ \ \ \ \textcolor{comment}{//QOpenGLVertexArrayObject\ vao;}}
+\DoxyCodeLine{00102\ \ \ \ \ \textcolor{comment}{//QOpenGLShaderProgram*\ shader\_program\ =\ nullptr;}}
+\DoxyCodeLine{00103\ \ \ \ \ GLuint\ shader\_program\ =\ 0;}
+\DoxyCodeLine{00104\ \ \ \ \ }
+\DoxyCodeLine{00105\ \ \ \ \ VoxelType\ m\_minVal\ =\ VoxelTypeMin;}
+\DoxyCodeLine{00106\ \ \ \ \ VoxelType\ m\_maxVal\ =\ VoxelTypeMax;}
+\DoxyCodeLine{00107\ \ \ \ \ VoxelType\ m\_minDisplWin\ =\ VoxelTypeMin;}
+\DoxyCodeLine{00108\ \ \ \ \ VoxelType\ m\_maxDisplWin\ =\ VoxelTypeMax;}
+\DoxyCodeLine{00109\ \ \ \ \ }
+\DoxyCodeLine{00110\ \ \ \ \ \textcolor{keywordtype}{bool}\ m\_fastDraw\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00111\ \ \ \ \ \textcolor{keywordtype}{bool}\ m\_renderBoxes\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00112\ \ \ \ \ std::vector<SliceMetadata>\ metadata;}
+\DoxyCodeLine{00113\ \ \ \ \ \textcolor{keywordtype}{int}\ m\_minSlice\ =\ 0;}
+\DoxyCodeLine{00114\ \ \ \ \ \textcolor{keywordtype}{int}\ m\_maxSlice\ =\ 0;}
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{keywordtype}{int}\ m\_minRow\ =\ 0;}
+\DoxyCodeLine{00116\ \ \ \ \ \textcolor{keywordtype}{int}\ m\_maxRow\ =\ 0;}
+\DoxyCodeLine{00117\ \ \ \ \ \textcolor{keywordtype}{int}\ m\_minColumn\ =\ 0;}
+\DoxyCodeLine{00118\ \ \ \ \ \textcolor{keywordtype}{int}\ m\_maxColumn\ =\ 0;}
+\DoxyCodeLine{00119\ \ \ \ \ \textcolor{keywordtype}{float}\ m\_filters[7][3]\ =\ \{}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \{0,\ -\/100,\ 799\},}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \{0,\ float(VoxelTypeMin),\ float(VoxelTypeMax)\},}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \{0,\ float(VoxelTypeMin),\ float(VoxelTypeMax)\},}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \{0,\ -\/1000,\ 4000\},}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \{0,\ float(VoxelTypeMin),\ float(VoxelTypeMax)\},}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \{0,\ float(VoxelTypeMin),\ float(VoxelTypeMax)\},}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \{0,\ 800,\ 4095\}\ \};}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ \ \ \ \ \textcolor{keywordtype}{float}\ m\_fcolors[7][3]\ =\ \{}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \{1.0f,\ 0.0f,\ 0.0f\},}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \{0.0f,\ 1.0f,\ 0.0f\},}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \{0.0f,\ 0.0f,\ 1.0f\},}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \{1.0f,\ 1.0f,\ 0.0f\},}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \{0.0f,\ 1.0f,\ 1.0f\},}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \{1.0f,\ 0.0f,\ 1.0f\},}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \{1.0f,\ 1.0f,\ 1.0f\}\ \};}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \ \ \ \ \mbox{\hyperlink{class_volumetric}{Volumetric}}(ColorSpace\ csp=MONOCHROME2,\ \mbox{\hyperlink{class_c_base_object}{CBaseObject}}*\ p\ =\ \textcolor{keyword}{nullptr}):\mbox{\hyperlink{class_c_object}{CObject}}(p),m\_csp(csp)\ \{\};}
+\DoxyCodeLine{00139\ \ \ \ \ \mbox{\hyperlink{class_volumetric}{\string~Volumetric}}()\ \{\};}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{int}\ type()\textcolor{keyword}{\ override\ }\{\ \textcolor{keywordflow}{return}\ CObject::Type::VOLUMETRIC\_NEW;\ \};}
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{keyword}{virtual}\ std::wstring\ infoRow()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00143\ \ \ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{class_volumetric}{Volumetric}}*\ getCopy()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00145\ \ \ \ \ \textcolor{comment}{//GLuint\ compile\_shader(QOpenGLFunctions*\ functions,\ QString\ source,\ GLenum\ shader\_type);}}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \ \ \ \ \textcolor{keywordtype}{void}\ remove\_shader\_program();}
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00149\ \ \ \ \ \textcolor{keywordtype}{bool}\ create\_program(QOpenGLFunctionsType*\ f);}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ renderSelf()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00152\ }
+\DoxyCodeLine{00153\ \ \ \ \ \mbox{\hyperlink{class_c_point_cloud}{CPointCloud}}*\ sift\_cloud(\ \textcolor{keywordtype}{int}\ nfeatures\ =\ 0,\ \textcolor{keywordtype}{int}\ nOctaveLayers\ =\ 3,\ \textcolor{keywordtype}{double}\ contrastThreshold\ =\ 0.04,\ \textcolor{keywordtype}{double}\ edgeThreshold\ =\ 10,\ \textcolor{keywordtype}{double}\ sigma\ =\ 1.6,\ \textcolor{keywordtype}{int}\ factor\ =\ 1\ );}
+\DoxyCodeLine{00154\ \ \ \ \ \mbox{\hyperlink{class_c_mesh}{CMesh}}*\ marching\_cube(\textcolor{keywordtype}{int}\ factor\ =\ 1);}
+\DoxyCodeLine{00155\ \ \ \ \ \mbox{\hyperlink{class_c_mesh}{CMesh}}*\ marching\_tetrahedron(\textcolor{keywordtype}{int}\ factor\ =\ 1);}
+\DoxyCodeLine{00156\ }
+\DoxyCodeLine{00157\ \ \ \ \ \textcolor{keywordtype}{bool}\ getSlice(\textcolor{keywordtype}{int}\ nr,\ Volumetric::LayerPlane\ layer,\ \mbox{\hyperlink{class_volumetric_1_1_slice_type}{Volumetric::SliceType}}*\ slice);}
+\DoxyCodeLine{00158\ }
+\DoxyCodeLine{00159\ \ \ \ \ \mbox{\hyperlink{class_volumetric}{Volumetric}}*\ getRotatedVol(Volumetric::LayerPlane\ dir);}
+\DoxyCodeLine{00160\ }
+\DoxyCodeLine{00161\ \ \ \ \ QImage\ getLayerAsImage(\textcolor{keywordtype}{int}\ nr,\ Volumetric::LayerPlane\ layer,\ \textcolor{keywordtype}{bool}\ tresh=\textcolor{keyword}{false});}
+\DoxyCodeLine{00162\ \ \ \ \ QImage\ getLayerAsArgbImage(\textcolor{keywordtype}{int}\ nr,\ Volumetric::LayerPlane\ layer,\ \textcolor{keywordtype}{bool}\ tresh=\textcolor{keyword}{false});}
+\DoxyCodeLine{00163\ }
+\DoxyCodeLine{00164\ \ \ \ \ QImage\ getRTGasImage(Volumetric::LayerPlane\ plane,\ \textcolor{keywordtype}{bool}\ tresh=\textcolor{keyword}{false});}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00166\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ realXYZ(\mbox{\hyperlink{class_c_point3}{CPoint3d}}\ pt);}
+\DoxyCodeLine{00167\ }
+\DoxyCodeLine{00168\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ realXYZ(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y,\ \textcolor{keywordtype}{int}\ z);}
+\DoxyCodeLine{00169\ }
+\DoxyCodeLine{00170\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ getVoxelSize();}
+\DoxyCodeLine{00171\ }
+\DoxyCodeLine{00172\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ getOrigin();}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00174\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{class_volumetric}{Volumetric}}*\ create(\textcolor{keywordtype}{int}\ layers\ =\ 256,\ \textcolor{keywordtype}{int}\ rows\ =\ 256,\ \textcolor{keywordtype}{int}\ columns\ =\ 256);}
+\DoxyCodeLine{00175\ \ \ \ \ \textcolor{keywordtype}{void}\ adjustMinMax(\textcolor{keywordtype}{bool}\ calc\_color\ =\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00176\ \ \ \ \ \textcolor{keywordtype}{void}\ adjustMinMaxColor(VoxelType\ color);}
+\DoxyCodeLine{00177\ \ \ \ \ \textcolor{keywordtype}{void}\ drawBox(\mbox{\hyperlink{class_c_point3}{CPoint3i}}\ origin,\ \mbox{\hyperlink{class_c_point3}{CPoint3i}}\ size,\ VoxelType\ color);}
+\DoxyCodeLine{00178\ }
+\DoxyCodeLine{00179\ \ \ \ \ \textcolor{keywordtype}{void}\ drawSphere(\mbox{\hyperlink{class_c_point3}{CPoint3i}}\ origin,\ \textcolor{keywordtype}{int}\ radius,\ VoxelType\ color);}
+\DoxyCodeLine{00180\ }
+\DoxyCodeLine{00181\ \ \ \ \ \textcolor{keywordtype}{void}\ drawCylinder(\mbox{\hyperlink{class_c_point3}{CPoint3i}}\ origin,\ \textcolor{keywordtype}{int}\ radius,\ \textcolor{keywordtype}{int}\ height,\ \textcolor{keywordtype}{char}\ axis,\ VoxelType\ color);}
+\DoxyCodeLine{00182\ }
+\DoxyCodeLine{00183\ \ \ \ \ \textcolor{keywordtype}{void}\ drawCylinder(\mbox{\hyperlink{class_c_point3}{CPoint3f}}\ p0,\ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\ p1,\ \textcolor{keywordtype}{float}\ radius,\ VoxelType\ color);}
+\DoxyCodeLine{00184\ }
+\DoxyCodeLine{00185\ \ \ \ \ \textcolor{keywordtype}{void}\ drawCylinder(\mbox{\hyperlink{class_c_point3}{CPoint3i}}\ origin,\ \mbox{\hyperlink{class_c_vector3}{CVector3i}}\ vector,\ \textcolor{keywordtype}{int}\ radius,\ VoxelType\ color);}
+\DoxyCodeLine{00186\ }
+\DoxyCodeLine{00187\ }
+\DoxyCodeLine{00188\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{class_volumetric}{Volumetric}}*\ scal1(\mbox{\hyperlink{class_volumetric}{Volumetric}}*,\ \mbox{\hyperlink{class_volumetric}{Volumetric}}*);}
+\DoxyCodeLine{00189\ }
+\DoxyCodeLine{00190\ \ \ \ \ \textcolor{keywordtype}{float}\ pointToPlaneDistance(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\&\ point,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\&\ normal,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\&\ planePoint);}
+\DoxyCodeLine{00191\ }
+\DoxyCodeLine{00192\ \ \ \ \ \textcolor{keywordtype}{float}\ interpolateVoxel(\textcolor{keyword}{const}\ Volumetric::VolumeType\&\ volume,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\&\ point);}
+\DoxyCodeLine{00193\ }
+\DoxyCodeLine{00194\ \ \ \ \ QImage\ generateFreeViewSliceImage(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_vector3}{CVector3f}}\&\ normal,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\&\ planePoint,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_vector3}{CVector3f}}\&\ free\_up,\ \textcolor{keywordtype}{int}\ width,\ \textcolor{keywordtype}{int}\ height,\ \textcolor{keywordtype}{float}\ scale,\ \textcolor{keywordtype}{bool}\ tresh=\textcolor{keyword}{false});}
+\DoxyCodeLine{00195\ }
+\DoxyCodeLine{00196\ \ \ \ \ QImage\ generateFreeViewRtgImage(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_vector3}{CVector3f}}\&\ normal,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\&\ planePoint,\ \textcolor{keywordtype}{int}\ width,\ \textcolor{keywordtype}{int}\ height,\ \textcolor{keywordtype}{float}\ scale,\ \textcolor{keywordtype}{bool}\ tresh);}
+\DoxyCodeLine{00197\ }
+\DoxyCodeLine{00198\ \textcolor{comment}{\ \ \ \ /**************************************************************************/}}
+\DoxyCodeLine{00199\ }
+\DoxyCodeLine{00200\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ empty()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ m\_data.empty();\ \}}
+\DoxyCodeLine{00201\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ size()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ m\_data.size();\ \}}
+\DoxyCodeLine{00202\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ push\_back(\textcolor{keyword}{const}\ SliceType\&\ slice)\ \{\ m\_data.push\_back(slice);\ \}}
+\DoxyCodeLine{00203\ }
+\DoxyCodeLine{00204\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ reverse()\ \{}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ std::reverse(m\_data.begin(),\ m\_data.end());}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ std::reverse(metadata.begin(),\ metadata.end());}
+\DoxyCodeLine{00207\ \ \ \ \ \}}
+\DoxyCodeLine{00208\ }
+\DoxyCodeLine{00209\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\&\ layers()\ \{\ \textcolor{keywordflow}{return}\ m\_layers;\ \}}
+\DoxyCodeLine{00210\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\&\ rows()\ \{\ \textcolor{keywordflow}{return}\ m\_rows;\ \}}
+\DoxyCodeLine{00211\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\&\ columns()\ \{\ \textcolor{keywordflow}{return}\ m\_columns;\ \}}
+\DoxyCodeLine{00212\ }
+\DoxyCodeLine{00213\ \ \ \ \ \textcolor{keyword}{inline}\ VoxelType\&\ at(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ layer,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ row,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ column)\ \{\ \textcolor{keywordflow}{return}\ m\_data[layer][row*m\_columns+column];\ \}}
+\DoxyCodeLine{00214\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ VoxelType\&\ at(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ layer,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ row,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ column)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ m\_data[layer][row*m\_columns+column];\ \}}
+\DoxyCodeLine{00215\ }
+\DoxyCodeLine{00216\ \ \ \ \ \textcolor{keyword}{inline}\ SliceType\&\ operator[](\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ layer)\ \{\ \textcolor{keywordflow}{return}\ m\_data[layer];\ \}}
+\DoxyCodeLine{00217\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ SliceType\&\ operator[](\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ layer)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ m\_data[layer];\ \}}
+\DoxyCodeLine{00218\ }
+\DoxyCodeLine{00219\ \ \ \ \ \textcolor{keyword}{inline}\ SliceType\&\ getLayer(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ layer)\ \{\ \textcolor{keywordflow}{return}\ m\_data[layer];\ \}}
+\DoxyCodeLine{00220\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ SliceType\&\ getLayer(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ layer)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ m\_data[layer];\ \}}
+\DoxyCodeLine{00221\ }
+\DoxyCodeLine{00222\ \ \ \ \ VoxelType\&\ altData(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ idx,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ layer,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ row,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ col)\ \{\ \textcolor{keywordflow}{return}\ m\_data[layer].at(row,col);\ \};}
+\DoxyCodeLine{00223\ }
+\DoxyCodeLine{00224\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00225\ \ \ \ \ VolumeType\ m\_data;}
+\DoxyCodeLine{00226\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ m\_layers\ =\ 0;}
+\DoxyCodeLine{00227\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ m\_rows\ =\ 0;}
+\DoxyCodeLine{00228\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ m\_columns\ =\ 0;}
+\DoxyCodeLine{00229\ }
+\DoxyCodeLine{00230\ \ \ \ \ ColorSpace\ m\_csp\ =\ MONOCHROME2;}
+\DoxyCodeLine{00231\ }
+\DoxyCodeLine{00232\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>\ T\ clamp(T\ value,\ T\ min,\ T\ max);}
+\DoxyCodeLine{00233\ \};}
+\DoxyCodeLine{00234\ }
+\DoxyCodeLine{00235\ \textcolor{comment}{//\ ąęłńś}}
+
+\end{DoxyCode}

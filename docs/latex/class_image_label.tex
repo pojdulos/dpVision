@@ -1,0 +1,168 @@
+\doxysection{Image\+Label Class Reference}
+\hypertarget{class_image_label}{}\label{class_image_label}\index{ImageLabel@{ImageLabel}}
+Inheritance diagram for Image\+Label\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_image_label}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_image_label_abb5b4fd5fb56b3d6d1ff40250af6c0ea}\label{class_image_label_abb5b4fd5fb56b3d6d1ff40250af6c0ea} 
+enum {\bfseries Work\+Mode} \{ {\bfseries Work\+Mode\+Unknown}
+, {\bfseries Work\+Mode\+Select}
+, {\bfseries Work\+Mode\+Erase}
+, {\bfseries Work\+Mode\+Zoom}
+ \}
+\item 
+\Hypertarget{class_image_label_a23fadd71ab970944d40e514da8f95d83}\label{class_image_label_a23fadd71ab970944d40e514da8f95d83} 
+enum {\bfseries Sel\+Mode} \{ \newline
+{\bfseries Nothing\+To\+Do}
+, {\bfseries Move\+Selection}
+, {\bfseries Drag\+Bottom\+Right}
+, {\bfseries Drag\+Left}
+, \newline
+{\bfseries Drag\+Right}
+, {\bfseries Drag\+Top}
+, {\bfseries Drag\+Bottom}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Signals}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_image_label_a9af2ecbbd3904da9ed81d6fa875564a9}\label{class_image_label_a9af2ecbbd3904da9ed81d6fa875564a9} 
+void {\bfseries mouse\+Pressed} (QMouse\+Event \texorpdfstring{$\ast$}{*}e)
+\item 
+\Hypertarget{class_image_label_a46f42298253adf29213794cbf5f1bd61}\label{class_image_label_a46f42298253adf29213794cbf5f1bd61} 
+void {\bfseries mouse\+Moved} (QMouse\+Event \texorpdfstring{$\ast$}{*}e)
+\item 
+\Hypertarget{class_image_label_a087a451b1d72d08ac85612283e7b9596}\label{class_image_label_a087a451b1d72d08ac85612283e7b9596} 
+void {\bfseries selection\+Changed} ()
+\item 
+\Hypertarget{class_image_label_ac5c54b8754ee72078fffd62c3e197d3d}\label{class_image_label_ac5c54b8754ee72078fffd62c3e197d3d} 
+void {\bfseries scale\+Changed} ()
+\item 
+\Hypertarget{class_image_label_abe579e1311799b74c1b0bf387f7badc5}\label{class_image_label_abe579e1311799b74c1b0bf387f7badc5} 
+void {\bfseries key\+Pressed} (QKey\+Event \texorpdfstring{$\ast$}{*})
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_image_label_add55a05692e3e4cc241e07c3d5d475de}\label{class_image_label_add55a05692e3e4cc241e07c3d5d475de} 
+{\bfseries Image\+Label} (const QString \&text, QWidget \texorpdfstring{$\ast$}{*}parent=nullptr, Qt\+::\+Window\+Flags f=Qt\+::\+Window\+Flags())
+\item 
+\Hypertarget{class_image_label_a96c8f5af9989415d730dba18ad814c40}\label{class_image_label_a96c8f5af9989415d730dba18ad814c40} 
+{\bfseries Image\+Label} (QWidget \texorpdfstring{$\ast$}{*}parent=nullptr, Qt\+::\+Window\+Flags f=Qt\+::\+Window\+Flags())
+\item 
+\Hypertarget{class_image_label_aeb1c046f2d64bf82135621bd80060a1b}\label{class_image_label_aeb1c046f2d64bf82135621bd80060a1b} 
+{\bfseries Image\+Label} (QSize size, QWidget \texorpdfstring{$\ast$}{*}parent=nullptr, Qt\+::\+Window\+Flags f=Qt\+::\+Window\+Flags())
+\item 
+\Hypertarget{class_image_label_a42e8d50a206de1c85d7005c958920a0e}\label{class_image_label_a42e8d50a206de1c85d7005c958920a0e} 
+bool {\bfseries h\+Inside} (QPoint p)
+\item 
+\Hypertarget{class_image_label_a04efdce504256758e475f91f944d54c4}\label{class_image_label_a04efdce504256758e475f91f944d54c4} 
+bool {\bfseries v\+Inside} (QPoint p)
+\item 
+\Hypertarget{class_image_label_a90d4ad9fc166e638c8723275b03235cb}\label{class_image_label_a90d4ad9fc166e638c8723275b03235cb} 
+bool {\bfseries is\+Left\+Margin} (QPoint p)
+\item 
+\Hypertarget{class_image_label_af816188596a1a95bc69961024e2fc725}\label{class_image_label_af816188596a1a95bc69961024e2fc725} 
+bool {\bfseries is\+Right\+Margin} (QPoint p)
+\item 
+\Hypertarget{class_image_label_a328df2bc6bfeb0d347f16eeeb096353e}\label{class_image_label_a328df2bc6bfeb0d347f16eeeb096353e} 
+bool {\bfseries is\+Top\+Margin} (QPoint p)
+\item 
+\Hypertarget{class_image_label_a61f566dd3e52619340dbabaa1769a963}\label{class_image_label_a61f566dd3e52619340dbabaa1769a963} 
+bool {\bfseries is\+Bottom\+Margin} (QPoint p)
+\item 
+\Hypertarget{class_image_label_acdea69354a21a9425982d2fb6bdbbb78}\label{class_image_label_acdea69354a21a9425982d2fb6bdbbb78} 
+void {\bfseries move\+Selection} (QPoint)
+\item 
+\Hypertarget{class_image_label_a749a40404149e1e5f96f5d86d969970a}\label{class_image_label_a749a40404149e1e5f96f5d86d969970a} 
+void {\bfseries set\+Image\+Displayed} (const QImage \&image, int width=0, int height=0)
+\item 
+\Hypertarget{class_image_label_aa4f94c58320be849a44b233b48af01d8}\label{class_image_label_aa4f94c58320be849a44b233b48af01d8} 
+QImage \& {\bfseries mask\+\_\+ref} ()
+\item 
+\Hypertarget{class_image_label_a3b05c7e01e684b730ad92e44c5148815}\label{class_image_label_a3b05c7e01e684b730ad92e44c5148815} 
+void {\bfseries mask\+\_\+reset} ()
+\item 
+\Hypertarget{class_image_label_a4fbf583508a8d0fe56de169fb89bca4e}\label{class_image_label_a4fbf583508a8d0fe56de169fb89bca4e} 
+void {\bfseries mask\+\_\+set} (const QImage \&\+\_\+mask)
+\item 
+\Hypertarget{class_image_label_a57c0ed79f05b550e3ad5c6f5c36ec88a}\label{class_image_label_a57c0ed79f05b550e3ad5c6f5c36ec88a} 
+void {\bfseries mask\+\_\+set} (const QBitmap \&\+\_\+mask)
+\item 
+\Hypertarget{class_image_label_ade59c13109e7d043cb0ec0788f81617e}\label{class_image_label_ade59c13109e7d043cb0ec0788f81617e} 
+QImage {\bfseries mask\+\_\+to\+\_\+image} ()
+\item 
+\Hypertarget{class_image_label_a17f6e752d67d99658ff57ab40b473fc0}\label{class_image_label_a17f6e752d67d99658ff57ab40b473fc0} 
+QBitmap {\bfseries mask\+\_\+to\+\_\+bitmap} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_image_label_a141d99eb4cd4f5fcfd565cd274e988a3}\label{class_image_label_a141d99eb4cd4f5fcfd565cd274e988a3} 
+static QImage {\bfseries mask\+\_\+bitmap\+\_\+to\+\_\+image} (const QBitmap \&bitmap)
+\item 
+\Hypertarget{class_image_label_af0a6bf96278adad1948b2edc287c54ec}\label{class_image_label_af0a6bf96278adad1948b2edc287c54ec} 
+static QBitmap {\bfseries mask\+\_\+image\+\_\+to\+\_\+bitmap} (const QImage \&image)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_image_label_ab8f8f6e51f341600e4d4ef6d7e256653}\label{class_image_label_ab8f8f6e51f341600e4d4ef6d7e256653} 
+double {\bfseries m\+\_\+scale}
+\item 
+\Hypertarget{class_image_label_ac57ea45659885a53c1ea102e82b22ad3}\label{class_image_label_ac57ea45659885a53c1ea102e82b22ad3} 
+QRect {\bfseries m\+\_\+selection}
+\item 
+\Hypertarget{class_image_label_aa75eb3213625d109a5a13c96f10fd489}\label{class_image_label_aa75eb3213625d109a5a13c96f10fd489} 
+QPoint {\bfseries m\+\_\+eraser\+\_\+pos}
+\item 
+\Hypertarget{class_image_label_a819569c6bfd89cdfeb4db34af72e3c59}\label{class_image_label_a819569c6bfd89cdfeb4db34af72e3c59} 
+int {\bfseries m\+\_\+eraser\+\_\+rad}
+\item 
+\Hypertarget{class_image_label_a172dea3c85671eb75b875cea3fcbeb03}\label{class_image_label_a172dea3c85671eb75b875cea3fcbeb03} 
+Work\+Mode {\bfseries m\+\_\+work\+\_\+mode}
+\item 
+\Hypertarget{class_image_label_ab02bc43ddf50a6bf4ed8e30d35f270c4}\label{class_image_label_ab02bc43ddf50a6bf4ed8e30d35f270c4} 
+Sel\+Mode {\bfseries m\+\_\+sel\+\_\+mode}
+\item 
+\Hypertarget{class_image_label_ad51f4031d3800f4a36167776057826f8}\label{class_image_label_ad51f4031d3800f4a36167776057826f8} 
+QPoint {\bfseries m\+\_\+real\+\_\+offset}
+\item 
+\Hypertarget{class_image_label_a9455cba9b12b74d768dbeaa24a69c1e1}\label{class_image_label_a9455cba9b12b74d768dbeaa24a69c1e1} 
+QImage {\bfseries m\+\_\+current\+\_\+image}
+\item 
+\Hypertarget{class_image_label_a0ba2715d879c8acb32b8d2ed1b0f161a}\label{class_image_label_a0ba2715d879c8acb32b8d2ed1b0f161a} 
+QPixmap {\bfseries m\+\_\+scaled\+\_\+pixmap}
+\item 
+\Hypertarget{class_image_label_a351163f1383125e3f6d4a0903760c5e6}\label{class_image_label_a351163f1383125e3f6d4a0903760c5e6} 
+QImage {\bfseries m\+\_\+mask}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_image_label_a5c2ee1f0d67ab075f57272c8eb89580f}\label{class_image_label_a5c2ee1f0d67ab075f57272c8eb89580f} 
+virtual void {\bfseries mouse\+Move\+Event} (QMouse\+Event \texorpdfstring{$\ast$}{*}e) override
+\item 
+\Hypertarget{class_image_label_ada6b26ef4c5b58e606802a4ca7a20cee}\label{class_image_label_ada6b26ef4c5b58e606802a4ca7a20cee} 
+virtual void {\bfseries mouse\+Press\+Event} (QMouse\+Event \texorpdfstring{$\ast$}{*}e) override
+\item 
+\Hypertarget{class_image_label_aa9b3f5e762cda58e4a6ef9c313ea428e}\label{class_image_label_aa9b3f5e762cda58e4a6ef9c313ea428e} 
+virtual void {\bfseries mouse\+Release\+Event} (QMouse\+Event \texorpdfstring{$\ast$}{*}e) override
+\item 
+\Hypertarget{class_image_label_ace907e720a9a14364c9fe5698377993d}\label{class_image_label_ace907e720a9a14364c9fe5698377993d} 
+virtual void {\bfseries wheel\+Event} (QWheel\+Event \texorpdfstring{$\ast$}{*}e) override
+\item 
+\Hypertarget{class_image_label_a55a6e2ec38db6bff3ec53f784a93fe93}\label{class_image_label_a55a6e2ec38db6bff3ec53f784a93fe93} 
+virtual void {\bfseries paint\+Event} (QPaint\+Event \texorpdfstring{$\ast$}{*}e) override
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/core/Image\+Label.\+h\item 
+src/core/Image\+Label.\+cpp\end{DoxyCompactItemize}

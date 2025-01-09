@@ -1,0 +1,41 @@
+\doxysection{prop\+Annotation\+Sphere.\+h}
+\hypertarget{prop_annotation_sphere_8h_source}{}\label{prop_annotation_sphere_8h_source}\index{src/core/propAnnotationSphere.h@{src/core/propAnnotationSphere.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ PROPANNOTATIONSPHERE\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ PROPANNOTATIONSPHERE\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}propAnnotation.h"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}ui\_propAnnotationSphere.h"{}}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_c_annotation_sphere}{CAnnotationSphere}};}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_prop_annotation_sphere}{PropAnnotationSphere}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_prop_widget}{PropWidget}}}
+\DoxyCodeLine{00011\ \{}
+\DoxyCodeLine{00012\ \ \ \ \ Q\_OBJECT}
+\DoxyCodeLine{00013\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_sphere}{CAnnotationSphere}}*\ obj;}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00016\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{class_prop_annotation_sphere}{PropAnnotationSphere}}(\mbox{\hyperlink{class_c_annotation_sphere}{CAnnotationSphere}}\ *an,\ QWidget\ *parent\ =\ 0);}
+\DoxyCodeLine{00017\ \ \ \ \ \mbox{\hyperlink{class_prop_annotation_sphere}{\string~PropAnnotationSphere}}();}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{class_prop_widget}{PropWidget}}*\ create(\mbox{\hyperlink{class_c_annotation_sphere}{CAnnotationSphere}}*\ m,\ QWidget*\ parent\ =\ 0);}
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keyword}{static}\ QVector<PropWidget*>\ create\_and\_get\_subwidgets(\mbox{\hyperlink{class_c_base_object}{CBaseObject}}*\ obj);}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ updateProperties()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{public}\ slots:}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keywordtype}{void}\ changedCtrX(\textcolor{keywordtype}{double});}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keywordtype}{void}\ changedCtrY(\textcolor{keywordtype}{double});}
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keywordtype}{void}\ changedCtrZ(\textcolor{keywordtype}{double});}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keywordtype}{void}\ changedRadius(\textcolor{keywordtype}{double});}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00032\ \ \ \ \ Ui::propAnnotationSphere\ ui;}
+\DoxyCodeLine{00033\ \};}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ PROPANNOTATIONSPHERE\_H}}
+
+\end{DoxyCode}

@@ -204,6 +204,7 @@ void CMainWindow::updateView(bool repaintAll, bool buffered)
 	}
 
 	//QCoreApplication::processEvents();
+	AP::processEvents();
 }
 
 void CMainWindow::addPluginToListView( int id, QString txt )

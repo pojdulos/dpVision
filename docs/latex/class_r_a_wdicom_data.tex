@@ -1,0 +1,86 @@
+\doxysection{RAWdicom\+Data Class Reference}
+\hypertarget{class_r_a_wdicom_data}{}\label{class_r_a_wdicom_data}\index{RAWdicomData@{RAWdicomData}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_r_a_wdicom_data_a4da13d8f4aa2611f3a27e704028f0afb}\label{class_r_a_wdicom_data_a4da13d8f4aa2611f3a27e704028f0afb} 
+{\bfseries RAWdicom\+Data} (const \mbox{\hyperlink{class_r_a_wdicom_data}{RAWdicom\+Data}} \&src, int flag=0)
+\item 
+\Hypertarget{class_r_a_wdicom_data_a712065d1415a33cf989f488c57d3864f}\label{class_r_a_wdicom_data_a712065d1415a33cf989f488c57d3864f} 
+{\bfseries RAWdicom\+Data} (short cols, short rows, short lays, short minC=0, short minR=0, short minL=0)
+\item 
+\Hypertarget{class_r_a_wdicom_data_aaca59d188ba934d240cac2fe917fb287}\label{class_r_a_wdicom_data_aaca59d188ba934d240cac2fe917fb287} 
+bool {\bfseries is\+Valid} ()
+\item 
+\Hypertarget{class_r_a_wdicom_data_a639c1f658c6816ddfd49a20c3049207a}\label{class_r_a_wdicom_data_a639c1f658c6816ddfd49a20c3049207a} 
+size\+\_\+t {\bfseries size} ()
+\item 
+\Hypertarget{class_r_a_wdicom_data_a9b0d2d9ef0c09a1579d2e546672e6402}\label{class_r_a_wdicom_data_a9b0d2d9ef0c09a1579d2e546672e6402} 
+bool {\bfseries init} (short cols, short rows, short lays, short minC=0, short minR=0, short minL=0)
+\item 
+\Hypertarget{class_r_a_wdicom_data_a411e78885996c1aea0bfd82975aa386e}\label{class_r_a_wdicom_data_a411e78885996c1aea0bfd82975aa386e} 
+\mbox{\hyperlink{class_r_a_wdicom_data}{RAWdicom\+Data}} \& {\bfseries operator=} (const \mbox{\hyperlink{class_r_a_wdicom_data}{RAWdicom\+Data}} \&src)
+\item 
+\Hypertarget{class_r_a_wdicom_data_a1b66ea226373348fc4b4f0f14d5c98cd}\label{class_r_a_wdicom_data_a1b66ea226373348fc4b4f0f14d5c98cd} 
+void {\bfseries copy\+From} (const \mbox{\hyperlink{class_r_a_wdicom_data}{RAWdicom\+Data}} \&src, int flag=0)
+\item 
+\Hypertarget{class_r_a_wdicom_data_ad794035f4d0ae39b93dfd6e76f1c5ced}\label{class_r_a_wdicom_data_ad794035f4d0ae39b93dfd6e76f1c5ced} 
+WORD \texorpdfstring{$\ast$}{*} {\bfseries layer} (short z)
+\item 
+\Hypertarget{class_r_a_wdicom_data_a1dba72078e77605fae3f4196e9602c6d}\label{class_r_a_wdicom_data_a1dba72078e77605fae3f4196e9602c6d} 
+WORD {\bfseries get\+RAW} (short x, short y, short z)
+\item 
+\Hypertarget{class_r_a_wdicom_data_a02cf3bfff7d8eabacd9178e356795e45}\label{class_r_a_wdicom_data_a02cf3bfff7d8eabacd9178e356795e45} 
+WORD {\bfseries get\+Rescaled} (short x, short y, short z, WORD ymin=0, WORD ymax=4095)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_r_a_wdicom_data_a8c8a91db76f4b6e31b820cfe534af922}\label{class_r_a_wdicom_data_a8c8a91db76f4b6e31b820cfe534af922} 
+short {\bfseries m\+\_\+cols}
+\item 
+\Hypertarget{class_r_a_wdicom_data_a8649e63a43855c71c870919dbbfe34bc}\label{class_r_a_wdicom_data_a8649e63a43855c71c870919dbbfe34bc} 
+short {\bfseries m\+\_\+rows}
+\item 
+\Hypertarget{class_r_a_wdicom_data_a87344348aa6724d2f1fcb4b7d8242bbe}\label{class_r_a_wdicom_data_a87344348aa6724d2f1fcb4b7d8242bbe} 
+short {\bfseries m\+\_\+lays}
+\item 
+\Hypertarget{class_r_a_wdicom_data_ad6aaebb086c7a4b1bf401183c5068e08}\label{class_r_a_wdicom_data_ad6aaebb086c7a4b1bf401183c5068e08} 
+short {\bfseries m\+\_\+minC}
+\item 
+\Hypertarget{class_r_a_wdicom_data_aa8c0b6e489f03aadc6d0ecf4c3896471}\label{class_r_a_wdicom_data_aa8c0b6e489f03aadc6d0ecf4c3896471} 
+short {\bfseries m\+\_\+minR}
+\item 
+\Hypertarget{class_r_a_wdicom_data_a5bcbfea719fac0d071518d954a20e1b8}\label{class_r_a_wdicom_data_a5bcbfea719fac0d071518d954a20e1b8} 
+short {\bfseries m\+\_\+minL}
+\item 
+\Hypertarget{class_r_a_wdicom_data_a3a4ed0ee6ffc03bd5cecfe274e047a33}\label{class_r_a_wdicom_data_a3a4ed0ee6ffc03bd5cecfe274e047a33} 
+int {\bfseries pixel\+Representation}
+\item 
+\Hypertarget{class_r_a_wdicom_data_a4562fd2c8f373dbf19de7d888b978adf}\label{class_r_a_wdicom_data_a4562fd2c8f373dbf19de7d888b978adf} 
+std\+::vector$<$ \mbox{\hyperlink{class_c_point3}{CPoint3d}} $>$ {\bfseries m\+\_\+img\+Pos}
+\item 
+\Hypertarget{class_r_a_wdicom_data_ab7b27093174ab754a118a35b5947fc55}\label{class_r_a_wdicom_data_ab7b27093174ab754a118a35b5947fc55} 
+std\+::vector$<$ double $>$ {\bfseries m\+\_\+gantra}
+\item 
+\Hypertarget{class_r_a_wdicom_data_a32455a5644281edb2d67e61745dceb89}\label{class_r_a_wdicom_data_a32455a5644281edb2d67e61745dceb89} 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries m\+\_\+voxel\+Size}
+\item 
+\Hypertarget{class_r_a_wdicom_data_a6f63b90a6292a1b1e96529b7325d751f}\label{class_r_a_wdicom_data_a6f63b90a6292a1b1e96529b7325d751f} 
+int32\+\_\+t {\bfseries rescale\+Intercept}
+\item 
+\Hypertarget{class_r_a_wdicom_data_a4db947310140004cea9112d0b1eb76f3}\label{class_r_a_wdicom_data_a4db947310140004cea9112d0b1eb76f3} 
+int32\+\_\+t {\bfseries rescale\+Slope}
+\item 
+\Hypertarget{class_r_a_wdicom_data_ae4d0c17e4a0f78e9e07e23baabe85894}\label{class_r_a_wdicom_data_ae4d0c17e4a0f78e9e07e23baabe85894} 
+int32\+\_\+t {\bfseries window\+Center}
+\item 
+\Hypertarget{class_r_a_wdicom_data_a819cd65a092a68a5be6b3c6b7a2a6d33}\label{class_r_a_wdicom_data_a819cd65a092a68a5be6b3c6b7a2a6d33} 
+int32\+\_\+t {\bfseries window\+Width}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/core/RAWdicom\+Data.\+h\item 
+src/core/RAWdicom\+Data.\+cpp\end{DoxyCompactItemize}

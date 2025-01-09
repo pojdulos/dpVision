@@ -1,0 +1,43 @@
+\doxysection{Annotation\+Points.\+h}
+\hypertarget{_annotation_points_8h_source}{}\label{_annotation_points_8h_source}\index{src/core/AnnotationPoints.h@{src/core/AnnotationPoints.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}Annotation.h"{}}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}Punkt3D.h"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}Wektor3D.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}RGBA.h"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}Model3D.h"{}}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <list>}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{keyword}{typedef}\ std::list<CPoint3d>\ SetOfPoints;}
+\DoxyCodeLine{00010\ \textcolor{comment}{//typedef\ std::set<CPoint3d>\ SetOfPoints;}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_annotation_points}{CAnnotationPoints}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_c_annotation}{CAnnotation}}}
+\DoxyCodeLine{00013\ \{}
+\DoxyCodeLine{00014\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00015\ \ \ \ \ SetOfPoints\ m\_list;}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_points}{CAnnotationPoints}}(\ \mbox{\hyperlink{class_c_model3_d}{CModel3D}}\ *m\ =\ \textcolor{keyword}{nullptr})\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(\ m\ )}
+\DoxyCodeLine{00018\ \ \ \ \ \{}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}points"{}});}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ m\_list.clear();}
+\DoxyCodeLine{00021\ \ \ \ \ \};}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_points}{\string~CAnnotationPoints}}()\textcolor{keyword}{\ override\ }\{\ m\_list.clear();\ \};}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keywordtype}{void}\ clear()\ \{\ m\_list.clear();\ \};}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keywordtype}{void}\ addPoint(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&t)\ \{\ m\_list.push\_back(t);\ \};}
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keywordtype}{void}\ addPoint(\textcolor{keywordtype}{double}\ x,\ \textcolor{keywordtype}{double}\ y,\ \textcolor{keywordtype}{double}\ z)\ \{\ m\_list.push\_back(\mbox{\hyperlink{class_c_point3}{CPoint3d}}(x,\ y,\ z));\ \};}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ applyTransformation(\mbox{\hyperlink{class_c_transform}{CTransform}}\ \&prevT,\ \mbox{\hyperlink{class_c_transform}{CTransform}}\ \&newT)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{int}\ type()\textcolor{keyword}{\ override\ }\{\ \textcolor{keywordflow}{return}\ CAnnotation::POINTS;\ \}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keyword}{virtual}\ std::wstring\ getTypeWSTR()\textcolor{keyword}{\ override\ }\{\ \textcolor{keywordflow}{return}\ L\textcolor{stringliteral}{"{}points"{}};\ \};}
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keyword}{virtual}\ std::wstring\ getInfoRow()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ renderSelf()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00037\ \};}
+
+\end{DoxyCode}

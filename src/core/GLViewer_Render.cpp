@@ -47,6 +47,10 @@ void GLViewer::cameraTransformations()
 
 void GLViewer::Render()
 {
+	if (im_rendering_now) return;
+	
+	im_rendering_now = true;
+
 	applyProjection();	// ustawia perspektyw� dla okna
 
 	glMatrixMode(GL_MODELVIEW);		// wybierz macierz modeli
@@ -76,6 +80,8 @@ void GLViewer::Render()
 	}
 
 	glPopName();
+
+	im_rendering_now = false;
 }
 
 

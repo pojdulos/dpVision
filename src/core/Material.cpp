@@ -30,8 +30,8 @@ CMaterial::CMaterial(CMaterial &m)
 
 	TexInfo = m.TexInfo;
 
-	if (m.tekstura != nullptr)
-		tekstura = new CTexture(*m.tekstura);
+	if ( (m.tekstura != nullptr) && (m.tekstura->isCreated()) )
+		tekstura = new CTexture(m.tekstura->toImage());
 	else
 		tekstura = nullptr;
 

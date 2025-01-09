@@ -1,0 +1,33 @@
+\doxysection{dp\+Log.\+h}
+\hypertarget{dp_log_8h_source}{}\label{dp_log_8h_source}\index{src/core/dpLog.h@{src/core/dpLog.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#ifndef\ \_LOG\_H\_BY\_DP\_INCLUDED\_}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#define\ \_LOG\_H\_BY\_DP\_INCLUDED\_}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <QtCore/QString>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <QtCore/QFile>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <QtCore/QTextStream>}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}MainApplication.h"{}}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}AP.h"{}}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{classdp_log}{dpLog}}}
+\DoxyCodeLine{00013\ \{}
+\DoxyCodeLine{00014\ \ \ \ \ QFile\ m\_logFile;}
+\DoxyCodeLine{00015\ \ \ \ \ QTextStream\ m\_txtStream;}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \ \ \ \ \mbox{\hyperlink{classdp_log}{dpLog}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00018\ \ \ \ \ \mbox{\hyperlink{classdp_log}{\string~dpLog}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00019\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{classdp_log}{dpLog}}*\ open(QString\ fname,\ QString\ prefix=\ \mbox{\hyperlink{namespace_a_p_aaf0d1db33c53509abc5667a906354d2b}{AP::mainApp}}().appDataDir());}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keywordtype}{void}\ close();}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keywordtype}{void}\ info(QString\ msg);}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keywordtype}{void}\ info(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ format,\ ...);}
+\DoxyCodeLine{00025\ \};}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ \_LOG\_H\_BY\_DP\_INCLUDED\_\ */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

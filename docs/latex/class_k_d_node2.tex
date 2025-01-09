@@ -1,0 +1,64 @@
+\doxysection{KDNode2 Class Reference}
+\hypertarget{class_k_d_node2}{}\label{class_k_d_node2}\index{KDNode2@{KDNode2}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_k_d_node2_1_1_shade_rec}{Shade\+Rec}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_k_d_node2_aadebdd70faa7bbba6bd814d26fbd0f83}\label{class_k_d_node2_aadebdd70faa7bbba6bd814d26fbd0f83} 
+typedef map$<$ int, std\+::pair$<$ double, \mbox{\hyperlink{class_c_point3}{CPoint3d}} $>$ $>$ {\bfseries Hit\+Map}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_k_d_node2_ae02e3524a520a3cf51e66fdbb6fc06f4}\label{class_k_d_node2_ae02e3524a520a3cf51e66fdbb6fc06f4} 
+bool {\bfseries hit} (\mbox{\hyperlink{class_c_mesh}{CMesh}} \texorpdfstring{$\ast$}{*}mesh, const \mbox{\hyperlink{class_c_point3}{CPoint3d}} origin, const \mbox{\hyperlink{class_c_vector3}{CVector3d}} dir, \mbox{\hyperlink{struct_k_d_node2_1_1_shade_rec}{Shade\+Rec}} \&sr)
+\item 
+\Hypertarget{class_k_d_node2_a75139811a10f4cb3c991bcd5a82cbd10}\label{class_k_d_node2_a75139811a10f4cb3c991bcd5a82cbd10} 
+bool {\bfseries hit} (\mbox{\hyperlink{class_c_mesh}{CMesh}} \texorpdfstring{$\ast$}{*}mesh, const \mbox{\hyperlink{class_c_point3}{CPoint3d}} origin, const \mbox{\hyperlink{class_c_vector3}{CVector3d}} dir, Hit\+Map \&hmap, long vidx=-\/1)
+\item 
+\Hypertarget{class_k_d_node2_addc3274836178388ce862d80336db834}\label{class_k_d_node2_addc3274836178388ce862d80336db834} 
+bool {\bfseries find\+Crossed\+BB} (\mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} bb, \mbox{\hyperlink{class_c_mesh}{CMesh}} \texorpdfstring{$\ast$}{*}mesh, std\+::set$<$ INDEX\+\_\+\+TYPE $>$ \&result)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_k_d_node2_a2101c22578276bb5d599a86204d335c4}\label{class_k_d_node2_a2101c22578276bb5d599a86204d335c4} 
+static \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} {\bfseries create\+BB} (\mbox{\hyperlink{class_c_mesh}{CMesh}} \texorpdfstring{$\ast$}{*}mesh, INDEX\+\_\+\+TYPE face\+\_\+idxi)
+\item 
+\Hypertarget{class_k_d_node2_a72a99218052aba153845b23d4d3deb1b}\label{class_k_d_node2_a72a99218052aba153845b23d4d3deb1b} 
+static \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} {\bfseries create\+BB} (\mbox{\hyperlink{class_c_mesh}{CMesh}} \texorpdfstring{$\ast$}{*}mesh, std\+::vector$<$ INDEX\+\_\+\+TYPE $>$ tris)
+\item 
+\Hypertarget{class_k_d_node2_a4d51b86dda33ab45b4509aad77f61438}\label{class_k_d_node2_a4d51b86dda33ab45b4509aad77f61438} 
+static \mbox{\hyperlink{class_k_d_node2}{KDNode2}} \texorpdfstring{$\ast$}{*} {\bfseries build} (\mbox{\hyperlink{class_c_mesh}{CMesh}} \texorpdfstring{$\ast$}{*}mesh, int max\+Tris\+Size=256)
+\item 
+\Hypertarget{class_k_d_node2_a5376950f46816bf8647e2753e0cc3647}\label{class_k_d_node2_a5376950f46816bf8647e2753e0cc3647} 
+static \mbox{\hyperlink{class_k_d_node2}{KDNode2}} \texorpdfstring{$\ast$}{*} {\bfseries build2} (\mbox{\hyperlink{class_c_mesh}{CMesh}} \texorpdfstring{$\ast$}{*}mesh, vector$<$ INDEX\+\_\+\+TYPE $>$ \&tris, int depth, int max\+Tris\+Size)
+\item 
+\Hypertarget{class_k_d_node2_a4f005abf71754bff010e11a551badbd9}\label{class_k_d_node2_a4f005abf71754bff010e11a551badbd9} 
+static \mbox{\hyperlink{class_k_d_node2}{KDNode2}} \texorpdfstring{$\ast$}{*} {\bfseries build} (\mbox{\hyperlink{class_c_mesh}{CMesh}} \texorpdfstring{$\ast$}{*}mesh, vector$<$ INDEX\+\_\+\+TYPE $>$ \&tris, int depth, int max\+Tris\+Size=256)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_k_d_node2_a9521ff645b5c2fc1fbc131e6a288c00d}\label{class_k_d_node2_a9521ff645b5c2fc1fbc131e6a288c00d} 
+\mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} {\bfseries m\+\_\+bbox}
+\item 
+\Hypertarget{class_k_d_node2_aabb9db8e0768b8b624d70188e12588ee}\label{class_k_d_node2_aabb9db8e0768b8b624d70188e12588ee} 
+\mbox{\hyperlink{class_k_d_node2}{KDNode2}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+left}
+\item 
+\Hypertarget{class_k_d_node2_a759f2db8bf7c274907264dc7198b8ea1}\label{class_k_d_node2_a759f2db8bf7c274907264dc7198b8ea1} 
+\mbox{\hyperlink{class_k_d_node2}{KDNode2}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+right}
+\item 
+\Hypertarget{class_k_d_node2_a817337451c1a26d7d031eab2798a895e}\label{class_k_d_node2_a817337451c1a26d7d031eab2798a895e} 
+vector$<$ INDEX\+\_\+\+TYPE $>$ {\bfseries m\+\_\+tris}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/core/KDNode2.\+h\item 
+src/core/KDNode2.\+cpp\end{DoxyCompactItemize}

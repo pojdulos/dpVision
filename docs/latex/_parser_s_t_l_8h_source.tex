@@ -1,0 +1,46 @@
+\doxysection{Parser\+STL.\+h}
+\hypertarget{_parser_s_t_l_8h_source}{}\label{_parser_s_t_l_8h_source}\index{src/core/ParserSTL.h@{src/core/ParserSTL.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}Parser.h"{}}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}Global.h"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <map>}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_s_stl_face}{SStlFace}}\ \{}
+\DoxyCodeLine{00007\ \ \ \ \ \mbox{\hyperlink{class_c_vector3}{CVector3f}}\ n;}
+\DoxyCodeLine{00008\ \ \ \ \ \mbox{\hyperlink{class_c_vertex}{CVertex}}\ a;}
+\DoxyCodeLine{00009\ \ \ \ \ \mbox{\hyperlink{class_c_vertex}{CVertex}}\ b;}
+\DoxyCodeLine{00010\ \ \ \ \ \mbox{\hyperlink{class_c_vertex}{CVertex}}\ c;}
+\DoxyCodeLine{00011\ \};}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_s_vertex}{SVertex}}\ \{}
+\DoxyCodeLine{00014\ \ \ \ \ \mbox{\hyperlink{class_c_vertex}{CVertex}}\ v;}
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ iId;}
+\DoxyCodeLine{00016\ \};}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structlt_c_vertex}{ltCVertex}}}
+\DoxyCodeLine{00019\ \{}
+\DoxyCodeLine{00020\ \ \ \textcolor{keywordtype}{bool}\ operator()(\ \mbox{\hyperlink{class_c_vertex}{CVertex}}\ p1,\ \mbox{\hyperlink{class_c_vertex}{CVertex}}\ p2\ )\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00021\ \textcolor{keyword}{\ \ }\{}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\ p1.X()\ <\ p2.X()\ )\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (\ p1.X()\ >\ p2.X()\ )\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (\ p1.Y()\ <\ p2.Y()\ )\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (\ p1.Y()\ >\ p2.Y()\ )\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (\ p1.Z()\ <\ p2.Z()\ )\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00028\ \ \ \}}
+\DoxyCodeLine{00029\ \};}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_c_parser_s_t_l}{CParserSTL}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_c_parser}{CParser}}\ \{}
+\DoxyCodeLine{00032\ \ \ \ \ std::map<\ CVertex,\ size\_t,\ ltCVertex\ >\ mMapa;}
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ ReadTextSTL();}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ ReadBinarySTL();}
+\DoxyCodeLine{00035\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00036\ \ \ \ \ \mbox{\hyperlink{class_c_parser_s_t_l}{CParserSTL}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00037\ \ \ \ \ \mbox{\hyperlink{class_c_parser_s_t_l}{\string~CParserSTL}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ Run();}
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keywordtype}{bool}\ inPlugin()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};\ \};}
+\DoxyCodeLine{00040\ \};}
+
+\end{DoxyCode}

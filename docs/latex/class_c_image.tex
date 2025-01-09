@@ -1,0 +1,688 @@
+\doxysection{CImage Class Reference}
+\hypertarget{class_c_image}{}\label{class_c_image}\index{CImage@{CImage}}
+Inheritance diagram for CImage\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{class_c_image}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_image_a6f71c488be3c9ca3d1931462776dcf1d}\label{class_c_image_a6f71c488be3c9ca3d1931462776dcf1d} 
+typedef enum QImage\+::\+Format {\bfseries Format}
+\item 
+\Hypertarget{class_c_image_a5a69e3198338fdf82fda7c65e0a81d95}\label{class_c_image_a5a69e3198338fdf82fda7c65e0a81d95} 
+typedef enum Qt\+::\+Global\+Color {\bfseries Color}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_image_a6dd434bde9666be02e2a684872d84ba4}\label{class_c_image_a6dd434bde9666be02e2a684872d84ba4} 
+{\bfseries CImage} (const QString \&path, const char \texorpdfstring{$\ast$}{*}format=nullptr)
+\item 
+\Hypertarget{class_c_image_a1cf9ac0a54aa255aabc062f697c04c73}\label{class_c_image_a1cf9ac0a54aa255aabc062f697c04c73} 
+{\bfseries CImage} (const char \texorpdfstring{$\ast$}{*}path)
+\item 
+\Hypertarget{class_c_image_ad421dc6abb395df6ec734c9af6bc238b}\label{class_c_image_ad421dc6abb395df6ec734c9af6bc238b} 
+{\bfseries CImage} (const std\+::string path)
+\item 
+\Hypertarget{class_c_image_a30b5c625d57d59b45091b16413a2d287}\label{class_c_image_a30b5c625d57d59b45091b16413a2d287} 
+{\bfseries CImage} (const std\+::wstring path)
+\item 
+\Hypertarget{class_c_image_a024f8e69793a17f2c88c4668bfe9ce1a}\label{class_c_image_a024f8e69793a17f2c88c4668bfe9ce1a} 
+{\bfseries CImage} (const \mbox{\hyperlink{class_c_image}{CImage}} \&i)
+\item 
+\Hypertarget{class_c_image_a8c72e66089e4fef39c914c1eac3ddd84}\label{class_c_image_a8c72e66089e4fef39c914c1eac3ddd84} 
+{\bfseries CImage} (const uchar \texorpdfstring{$\ast$}{*}data, int w, int h, CImage\+::\+Format f)
+\item 
+\Hypertarget{class_c_image_ad903fd3d5fa54b31c560fe07d3b2b10a}\label{class_c_image_ad903fd3d5fa54b31c560fe07d3b2b10a} 
+{\bfseries CImage} (int w, int h, CImage\+::\+Format f)
+\item 
+\Hypertarget{class_c_image_a899d29fb2c2f367ab2193abc1d47883f}\label{class_c_image_a899d29fb2c2f367ab2193abc1d47883f} 
+void {\bfseries save} (const char \texorpdfstring{$\ast$}{*}path)
+\item 
+\Hypertarget{class_c_image_ad988d1065d675a5c82a200134d40ddc5}\label{class_c_image_ad988d1065d675a5c82a200134d40ddc5} 
+void {\bfseries save} (const QString path)
+\item 
+\Hypertarget{class_c_image_a3e6c5d6a6b1e0efbbda3337331353075}\label{class_c_image_a3e6c5d6a6b1e0efbbda3337331353075} 
+void {\bfseries save} (const std\+::string path)
+\item 
+\Hypertarget{class_c_image_a54fbab2f75baaf64731cbd49f275c50d}\label{class_c_image_a54fbab2f75baaf64731cbd49f275c50d} 
+void {\bfseries save} (const std\+::wstring path)
+\item 
+virtual \mbox{\hyperlink{class_c_image}{CImage}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_c_image_a15798af968d7a6d0bd385451ac180f24}{get\+Copy}} () override
+\item 
+\Hypertarget{class_c_image_a92a0cf9b61e4ce37d871d90639f24644}\label{class_c_image_a92a0cf9b61e4ce37d871d90639f24644} 
+\mbox{\hyperlink{class_c_image}{CImage}} \texorpdfstring{$\ast$}{*} {\bfseries copy} (int x, int y, int w, int h) const
+\item 
+\Hypertarget{class_c_image_acbc5edf31837479e93c9bd39416d90fe}\label{class_c_image_acbc5edf31837479e93c9bd39416d90fe} 
+QImage {\bfseries to\+QImage} ()
+\item 
+\Hypertarget{class_c_image_a0b239bc012403228a17ad749253f94ab}\label{class_c_image_a0b239bc012403228a17ad749253f94ab} 
+uint64\+\_\+t {\bfseries size\+In\+Bytes} () const
+\item 
+\Hypertarget{class_c_image_a4a45966096ab92b6d87ec9825f6d7531}\label{class_c_image_a4a45966096ab92b6d87ec9825f6d7531} 
+void {\bfseries fill} (CImage\+::\+Color color)
+\item 
+\Hypertarget{class_c_image_a457354ce09df9acf346bdf9acceae378}\label{class_c_image_a457354ce09df9acf346bdf9acceae378} 
+void {\bfseries set\+Color} (int i, uint32\+\_\+t argb)
+\item 
+\Hypertarget{class_c_image_aa2af0218865a36353fb507e4bc45549e}\label{class_c_image_aa2af0218865a36353fb507e4bc45549e} 
+uint32\+\_\+t {\bfseries pixel} (int x, int y) const
+\item 
+\Hypertarget{class_c_image_a56a2783a531eec303f35f94e2b8ba3c9}\label{class_c_image_a56a2783a531eec303f35f94e2b8ba3c9} 
+void {\bfseries set\+Pixel} (int x, int y, uint32\+\_\+t pixel)
+\item 
+\Hypertarget{class_c_image_a9a2a1cc6149806f3e26140ad7a2471d7}\label{class_c_image_a9a2a1cc6149806f3e26140ad7a2471d7} 
+void {\bfseries set\+Rect\+Width} (float w)
+\item 
+\Hypertarget{class_c_image_a730ff35d02f27ed98d37de3af0943292}\label{class_c_image_a730ff35d02f27ed98d37de3af0943292} 
+float {\bfseries rect\+Width} ()
+\item 
+\Hypertarget{class_c_image_a469ff5b76b0366aff7e4bf04c9512a02}\label{class_c_image_a469ff5b76b0366aff7e4bf04c9512a02} 
+void {\bfseries set\+Rect\+Height} (float h)
+\item 
+\Hypertarget{class_c_image_aee8a532495bd03d7adffe96f91e2e947}\label{class_c_image_aee8a532495bd03d7adffe96f91e2e947} 
+float {\bfseries rect\+Height} ()
+\item 
+\Hypertarget{class_c_image_a5277f84a9664888fc638910b1b05172d}\label{class_c_image_a5277f84a9664888fc638910b1b05172d} 
+void {\bfseries set\+Rect} (float w, float h)
+\item 
+\Hypertarget{class_c_image_a17ac6227bb3c8ac6d1e01cde7d7cd9d0}\label{class_c_image_a17ac6227bb3c8ac6d1e01cde7d7cd9d0} 
+CImage\+::\+Format {\bfseries format} () const
+\item 
+virtual void \mbox{\hyperlink{class_c_image_a826230ceaaa81d8200e455c5a641c673}{render\+Self}} () override
+\item 
+virtual int \mbox{\hyperlink{class_c_image_a19fc4dbb1b9f657476df32d540b06792}{type}} () override
+\item 
+virtual std\+::wstring \mbox{\hyperlink{class_c_image_af826b8dd1889891055c066244a805c47}{info\+Row}} () override
+\item 
+virtual const QString \& \mbox{\hyperlink{class_c_image_ab4f4402f4450f846523c817be7e7cb61}{path}} () override
+\item 
+virtual void \mbox{\hyperlink{class_c_image_ab7ce1e15dda3700a0003c0a07c53a3be}{set\+Path}} (const QString \&path) override
+\item 
+\Hypertarget{class_c_image_a5357a32b3901e6320624e634a690c5f5}\label{class_c_image_a5357a32b3901e6320624e634a690c5f5} 
+void {\bfseries set\+Path} (const char \texorpdfstring{$\ast$}{*}path)
+\item 
+\Hypertarget{class_c_image_a3ff0627fe5c608163a3c8e88690faf1e}\label{class_c_image_a3ff0627fe5c608163a3c8e88690faf1e} 
+void {\bfseries set\+Path} (const std\+::string path)
+\item 
+\Hypertarget{class_c_image_a39cd48b70a34efbaffb844a0dbf9b953}\label{class_c_image_a39cd48b70a34efbaffb844a0dbf9b953} 
+void {\bfseries set\+Path} (const std\+::wstring path)
+\item 
+\Hypertarget{class_c_image_abc80ebab3bc53f89f7268907cffeeaa8}\label{class_c_image_abc80ebab3bc53f89f7268907cffeeaa8} 
+\mbox{\hyperlink{class_c_transform}{CTransform}} \& {\bfseries get\+Transform} ()
+\item 
+\Hypertarget{class_c_image_a7bf049c19efb67f823124b1335238f63}\label{class_c_image_a7bf049c19efb67f823124b1335238f63} 
+\mbox{\hyperlink{class_c_transform}{CTransform}} \& {\bfseries transform} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_image_a1be1391da321f21418f74b281e5e91bd}\label{class_c_image_a1be1391da321f21418f74b281e5e91bd} 
+static \mbox{\hyperlink{class_c_image}{CImage}} \texorpdfstring{$\ast$}{*} {\bfseries load} (const char \texorpdfstring{$\ast$}{*}path)
+\item 
+\Hypertarget{class_c_image_a851dd867089633c4f744fed66fa5f345}\label{class_c_image_a851dd867089633c4f744fed66fa5f345} 
+static \mbox{\hyperlink{class_c_image}{CImage}} \texorpdfstring{$\ast$}{*} {\bfseries load} (const QString path)
+\item 
+\Hypertarget{class_c_image_a0587806756792924535adc032199c898}\label{class_c_image_a0587806756792924535adc032199c898} 
+static \mbox{\hyperlink{class_c_image}{CImage}} \texorpdfstring{$\ast$}{*} {\bfseries load} (const std\+::string path)
+\item 
+\Hypertarget{class_c_image_afeff568dc7f50f9abc0a885f9162f381}\label{class_c_image_afeff568dc7f50f9abc0a885f9162f381} 
+static \mbox{\hyperlink{class_c_image}{CImage}} \texorpdfstring{$\ast$}{*} {\bfseries load} (const std\+::wstring path)
+\item 
+\Hypertarget{class_c_image_afbd94273a89c7853cb472715e31155b0}\label{class_c_image_afbd94273a89c7853cb472715e31155b0} 
+static std\+::pair$<$ int, int $>$ {\bfseries load\+To\+BYTEvector} (std\+::wstring fname, std\+::vector$<$ BYTE $>$ \&bufor, int \&depth)
+\item 
+\Hypertarget{class_c_image_a8a9c9a2d338419603b26a1584b09238b}\label{class_c_image_a8a9c9a2d338419603b26a1584b09238b} 
+static std\+::pair$<$ int, int $>$ {\bfseries load\+To\+RGBAvector} (std\+::wstring fname, std\+::vector$<$ \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}} $>$ \&bufor, uchar alpha=255)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_image_a182dbf206ef5f1f442f360e477eb30a4}\label{class_c_image_a182dbf206ef5f1f442f360e477eb30a4} 
+bool {\bfseries fit\+To\+Window}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_image_a2c5a512d44730cd3f9601f782080c09c}\label{class_c_image_a2c5a512d44730cd3f9601f782080c09c} 
+{\bfseries CImage} (const QImage \&i)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_c_model3_d}{CModel3D}}}
+\begin{DoxyCompactItemize}
+\item 
+void {\bfseries render\+Axes} ()
+\item 
+void {\bfseries render\+Bounding\+Box} ()
+\end{DoxyCompactItemize}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries CModel3D} (\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*}p=nullptr)
+\item 
+{\bfseries CModel3D} (const \mbox{\hyperlink{class_c_model3_d}{CModel3D}} \&m)
+\item 
+int \mbox{\hyperlink{class_c_model3_d_aa6e32a064145d86ddf55f8ee540e86c1}{type}} () override
+\item 
+\mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_c_model3_d_a1ac1bf5f57c253cdf8a2246b304a365d}{get\+Copy}} () override
+\item 
+void \mbox{\hyperlink{class_c_model3_d_ad83c4cd32d5b2cc73ff5224d81e904e2}{info}} (std\+::wstring i\mbox{[}4\mbox{]}) override
+\item 
+std\+::wstring \mbox{\hyperlink{class_c_model3_d_a7eece6c0aa470c09cfac8eaed88db601}{info\+Row}} () override
+\item 
+bool {\bfseries save} (const char \texorpdfstring{$\ast$}{*}path)
+\item 
+bool {\bfseries save} (const QString path)
+\item 
+bool {\bfseries save} (const std\+::string path)
+\item 
+bool {\bfseries save} (const std\+::wstring path)
+\item 
+\mbox{\hyperlink{class_c_transform}{CTransform}} \& {\bfseries get\+Transform} ()
+\item 
+\mbox{\hyperlink{class_c_transform}{CTransform}} \& {\bfseries transform} ()
+\item 
+\mbox{\hyperlink{class_c_transform}{CTransform}} \& {\bfseries set\+Transform} (const \mbox{\hyperlink{class_c_transform}{CTransform}} \&t=\mbox{\hyperlink{class_c_transform}{CTransform}}())
+\item 
+void {\bfseries apply\+Transform} (\mbox{\hyperlink{class_c_transform}{CTransform}} to=\mbox{\hyperlink{class_c_transform}{CTransform}}())
+\item 
+virtual bool \mbox{\hyperlink{class_c_model3_d_aef02ed942ab4d1733269dce952c49bcb}{has\+Transformation}} () override
+\item 
+virtual Eigen\+::\+Matrix4d \mbox{\hyperlink{class_c_model3_d_a65b75c171c7955e62550b350c436d667}{get\+Transformation\+Matrix}} () override
+\item 
+\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries get\+Data} (int id=0)
+\item 
+bool {\bfseries set\+Locked} (bool b)
+\item 
+bool {\bfseries is\+Locked} ()
+\item 
+void {\bfseries set\+Name} (std\+::wstring n)
+\item 
+std\+::wstring {\bfseries get\+Name} ()
+\item 
+bool {\bfseries is\+OK} ()
+\item 
+std\+::string {\bfseries last\+Error} ()
+\item 
+const bool {\bfseries toggle\+Draw\+BB} ()
+\item 
+const bool {\bfseries Draw\+BB} () const
+\item 
+const bool {\bfseries Draw\+BB} (const bool b)
+\item 
+virtual void \mbox{\hyperlink{class_c_model3_d_a09bed697ae51d517fe1cc5f720d1e590}{render\+Transform}} () override
+\item 
+std\+::string {\bfseries pathA} (void)
+\item 
+std\+::wstring {\bfseries pathW} (void)
+\item 
+void {\bfseries set\+Path} (const char \texorpdfstring{$\ast$}{*}path)
+\item 
+void {\bfseries set\+Path} (const std\+::string path)
+\item 
+void {\bfseries set\+Path} (const std\+::wstring path)
+\item 
+bool {\bfseries switch\+Option} (CModel3\+D\+::\+Opt i\+Option, CModel3\+D\+::\+Switch i\+Set)
+\item 
+bool {\bfseries test\+Option} (CModel3\+D\+::\+Opt i\+Option)
+\item 
+void \mbox{\hyperlink{class_c_model3_d_a83a97c94ab50c6660b02e8cd64716b5f}{prepare}} ()
+\item 
+void {\bfseries calc\+VN} ()
+\item 
+void {\bfseries PMesh\+Ecoll} (GLuint rzm, bool check\+Points=false)
+\item 
+void {\bfseries PMesh\+Vsplit} (GLuint rzm)
+\item 
+void {\bfseries import\+Children\+Geometry} ()
+\item 
+void {\bfseries import\+Mesh\+Geometry} ()
+\item 
+void {\bfseries set\+Origin} (CTransform\+::\+Origin t)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_c_object}{CObject}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries CObject} (\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*}p=nullptr)
+\item 
+{\bfseries CObject} (int parent\+Id)
+\item 
+{\bfseries CObject} (const \mbox{\hyperlink{class_c_object}{CObject}} \&b)
+\item 
+virtual void \mbox{\hyperlink{class_c_object_a65aea5b119e08012177ac96c2d849489}{apply\+Transformation}} (\mbox{\hyperlink{class_c_transform}{CTransform}} \&from, \mbox{\hyperlink{class_c_transform}{CTransform}} \&to) override
+\item 
+virtual CBase\+Object\+::\+Category \mbox{\hyperlink{class_c_object_afc9d0d4ff86e34f7216b02b596c8b846}{category}} () override
+\item 
+std\+::wstring \mbox{\hyperlink{class_c_object_a1acca3ec7c4b98f67fcc6af150df33c3}{info\+Row}} () override
+\item 
+void \mbox{\hyperlink{class_c_object_a8b27b9ed5c67b8dfefded169cc5036e9}{info}} (std\+::wstring i\mbox{[}4\mbox{]}) override
+\item 
+virtual \mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries get\+Something\+With\+Id} (int id)
+\item 
+Annotations \& {\bfseries annotations} ()
+\item 
+\mbox{\hyperlink{class_c_annotation}{CAnnotation}} \texorpdfstring{$\ast$}{*} {\bfseries annotation} (int id)
+\item 
+int {\bfseries add\+Annotation} (\mbox{\hyperlink{class_c_annotation}{CAnnotation}} \texorpdfstring{$\ast$}{*}ad)
+\item 
+\mbox{\hyperlink{class_c_annotation}{CAnnotation}} \texorpdfstring{$\ast$}{*} {\bfseries remove\+Annotation} (int)
+\item 
+bool {\bfseries remove\+Annotation} (\mbox{\hyperlink{class_c_annotation}{CAnnotation}} \texorpdfstring{$\ast$}{*}an)
+\item 
+bool \mbox{\hyperlink{class_c_object_a518a6a907213a652a64b0ec546f2142a}{has\+Children}} () override
+\item 
+virtual void \mbox{\hyperlink{class_c_object_ac06f9e0d06bb6c219d0bb13a3c210641}{show\+Children}} (bool show, QSet$<$ CBase\+Object\+::\+Type $>$ inc=\{\}, QSet$<$ CBase\+Object\+::\+Type $>$ exc=\{\}) override
+\item 
+\mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} \& {\bfseries get\+Bounding\+Box} ()
+\item 
+\mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} \& {\bfseries expand\+Bounding\+Box} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&p)
+\item 
+void {\bfseries reset\+Bounding\+Box} (CBounding\+Box\+::\+Initial\+Values v=CBounding\+Box\+::\+Initial\+Values\+::\+Invalid\+BB)
+\item 
+void {\bfseries calc\+Min\+Max} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&v)
+\item 
+int {\bfseries add\+Child} (\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*}d)
+\item 
+bool {\bfseries remove\+Child} (int id=0)
+\item 
+void {\bfseries remove\+All\+Childs} ()
+\item 
+\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries get\+Child} (int id=0)
+\item 
+\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries get\+Child} (const QString \&label)
+\item 
+Children \& {\bfseries children} ()
+\item 
+std\+::vector$<$ unsigned int $>$ {\bfseries get\+Children\+Ids} ()
+\item 
+int {\bfseries count\+Children} (CBase\+Object\+::\+Type type)
+\item 
+std\+::vector$<$ \mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} $>$ {\bfseries get\+Children} ()
+\item 
+std\+::vector$<$ \mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} $>$ {\bfseries get\+Children} (CBase\+Object\+::\+Type type)
+\item 
+\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_c_object_a819e7d19293e24131d81ddcc1825d67f}{find\+Id}} (int id) override
+\item 
+virtual void \mbox{\hyperlink{class_c_object_a7eddaa505b170e419a7384369a38e1aa}{render\+Kids}} () override
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries CBase\+Object} (\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*}p=nullptr)
+\item 
+{\bfseries CBase\+Object} (int obj\+Id)
+\item 
+{\bfseries CBase\+Object} (const \mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \&b)
+\item 
+virtual bool {\bfseries has\+Category} (CBase\+Object\+::\+Category cat)
+\item 
+virtual bool {\bfseries has\+Type} (CBase\+Object\+::\+Type typ)
+\item 
+virtual const QString {\bfseries xml\+Info} ()
+\item 
+virtual void {\bfseries switch\+Opt} (int, int)
+\item 
+virtual void {\bfseries after\+Load} (\mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*})
+\item 
+virtual void {\bfseries render} ()
+\item 
+virtual void {\bfseries clear} ()
+\item 
+virtual bool {\bfseries is\+Modified} ()
+\item 
+virtual void {\bfseries set\+Modified} (bool b=true)
+\item 
+\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries get\+Parent} ()
+\item 
+void {\bfseries set\+Parent} (\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*}p)
+\item 
+void {\bfseries set\+Parent} (int obj\+Id)
+\item 
+virtual void {\bfseries set\+Visible} (bool v)
+\item 
+virtual void {\bfseries set\+Self\+Visibility} (bool v)
+\item 
+virtual void {\bfseries set\+Kids\+Visibility} (bool v)
+\item 
+virtual bool {\bfseries get\+Self\+Visibility} ()
+\item 
+virtual bool {\bfseries get\+Kids\+Visibility} ()
+\item 
+virtual bool {\bfseries switch\+Self\+Visibility} ()
+\item 
+virtual bool {\bfseries switch\+Kids\+Visibility} ()
+\item 
+int {\bfseries id} ()
+\item 
+int {\bfseries parent\+Id} ()
+\item 
+virtual bool {\bfseries set\+Selected} (bool sel)
+\item 
+virtual bool {\bfseries is\+Selected} ()
+\item 
+virtual Eigen\+::\+Matrix4d {\bfseries get\+Global\+Transformation\+Matrix} ()
+\item 
+const QString \& {\bfseries get\+Label} ()
+\item 
+const std\+::string {\bfseries get\+LabelA} ()
+\item 
+const std\+::wstring {\bfseries get\+LabelW} ()
+\item 
+void {\bfseries set\+Label} (const QString \&label)
+\item 
+void {\bfseries set\+Label} (const char \texorpdfstring{$\ast$}{*}label)
+\item 
+void {\bfseries set\+Label} (const std\+::string \&label)
+\item 
+void {\bfseries set\+Label} (const std\+::wstring \&label)
+\item 
+void {\bfseries add\+Keyword} (const QString keyword)
+\item 
+void {\bfseries del\+Keyword} (const QString keyword)
+\item 
+bool {\bfseries has\+Keyword} (const QString keyword)
+\item 
+QSet$<$ QString $>$ \& {\bfseries keywords} ()
+\item 
+void {\bfseries set\+Descr} (const QString descr)
+\item 
+const QString \& {\bfseries get\+Descr} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}}}
+\begin{DoxyCompactItemize}
+\item 
+void {\bfseries set\+Min} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&v)
+\item 
+void {\bfseries set\+Max} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&v)
+\item 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} \& {\bfseries get\+Min} ()
+\item 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} \& {\bfseries get\+Max} ()
+\item 
+void {\bfseries reset} (Initial\+Values v=Initial\+Values\+::\+Invalid\+BB)
+\item 
+double {\bfseries dX} ()
+\item 
+double {\bfseries dY} ()
+\item 
+double {\bfseries dZ} ()
+\item 
+double {\bfseries d\+X2} ()
+\item 
+double {\bfseries d\+Y2} ()
+\item 
+double {\bfseries d\+Z2} ()
+\item 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries get\+Midpoint} ()
+\item 
+bool {\bfseries intersects} (\mbox{\hyperlink{class_c_bound_vector}{CBound\+Vector}} r)
+\item 
+bool {\bfseries intersects} (\mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} b)
+\item 
+bool {\bfseries is\+Null} ()
+\item 
+bool {\bfseries is\+Valid} ()
+\item 
+bool {\bfseries is\+Invalid} ()
+\item 
+void {\bfseries expand} (const \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} b)
+\item 
+void {\bfseries expand} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} p)
+\item 
+void {\bfseries expand} (double value)
+\item 
+bool {\bfseries contains} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&p)
+\item 
+bool {\bfseries hit} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} origin, \mbox{\hyperlink{class_c_vector3}{CVector3d}} dir, \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&coord)
+\item 
+int {\bfseries longest\+\_\+axis} ()
+\item 
+{\bfseries CBounding\+Box} (Initial\+Values v=Initial\+Values\+::\+Invalid\+BB)
+\item 
+{\bfseries CBounding\+Box} (const \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} \&bb)
+\item 
+{\bfseries CBounding\+Box} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} a, \mbox{\hyperlink{class_c_point3}{CPoint3d}} b, \mbox{\hyperlink{class_c_point3}{CPoint3d}} c)
+\item 
+{\bfseries CBounding\+Box} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} min, \mbox{\hyperlink{class_c_point3}{CPoint3d}} max)
+\item 
+virtual void {\bfseries draw} (Style r=Dont\+Render, bool checked=false)
+\item 
+QVector$<$ \mbox{\hyperlink{class_c_point3}{CPoint3d}} $>$ {\bfseries get\+Corners} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Types inherited from \mbox{\hyperlink{class_c_model3_d}{CModel3D}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_model3_d_a809fef3e10559d752b844e6dfc1ad677}\label{class_c_model3_d_a809fef3e10559d752b844e6dfc1ad677} 
+enum {\bfseries Switch} \{ {\bfseries switch\+On}
+, {\bfseries switch\+Off}
+, {\bfseries switch\+Toggle}
+ \}
+\item 
+\Hypertarget{class_c_model3_d_aab030d99c5a5f74d57363a717a831fca}\label{class_c_model3_d_aab030d99c5a5f74d57363a717a831fca} 
+enum {\bfseries Opt} \{ {\bfseries opt\+Render\+As\+Points}
+, {\bfseries opt\+Render\+As\+Edges}
+, {\bfseries opt\+Render\+With\+Texture}
+, {\bfseries opt\+Smooth\+Vertices}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Types inherited from \mbox{\hyperlink{class_c_object}{CObject}}}
+\begin{DoxyCompactItemize}
+\item 
+typedef std\+::map$<$ int, \mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} $>$ {\bfseries Children}
+\item 
+typedef std\+::map$<$ int, \mbox{\hyperlink{class_c_annotation}{CAnnotation}} \texorpdfstring{$\ast$}{*} $>$ {\bfseries Annotations}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Types inherited from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_base_object_afb0822280ac2bb225cb43c99e8f6dc84}\label{class_c_base_object_afb0822280ac2bb225cb43c99e8f6dc84} 
+enum {\bfseries Category} \{ {\bfseries UNKNOWN}
+, {\bfseries OBJECT}
+, {\bfseries ANNOTATION}
+ \}
+\item 
+\Hypertarget{class_c_base_object_aa0d965c2b5d9bd03c45ba2b0fe4fe8c6}\label{class_c_base_object_aa0d965c2b5d9bd03c45ba2b0fe4fe8c6} 
+enum {\bfseries Type} \{ \newline
+{\bfseries GENERIC}
+, {\bfseries GROUP}
+, {\bfseries MODEL}
+, {\bfseries MOVEMENT}
+, \newline
+{\bfseries IMAGE}
+, {\bfseries CLOUD}
+, {\bfseries ORDEREDCLOUD}
+, {\bfseries MESH}
+, \newline
+{\bfseries VOLUMETRIC}
+, {\bfseries VOLUMETRIC\+\_\+\+NEW}
+, {\bfseries VOLTK}
+, {\bfseries LIDAR}
+, \newline
+{\bfseries OTHER}
+, {\bfseries BASEANNOTATION}
+, {\bfseries POINT}
+, {\bfseries POINTS}
+, \newline
+{\bfseries BOUNDVECTORS}
+, {\bfseries VERTEX}
+, {\bfseries SETOFVERTICES}
+, {\bfseries PATH}
+, \newline
+{\bfseries VPATH}
+, {\bfseries ELASTICPATH}
+, {\bfseries PLANE}
+, {\bfseries BOX}
+, \newline
+{\bfseries CURVATUREMAP}
+, {\bfseries ATSHELL}
+, {\bfseries SETOFFACES}
+, {\bfseries EDGES}
+, \newline
+{\bfseries POLYGON}
+, {\bfseries POLYGON2D}
+, {\bfseries CAMERA}
+, {\bfseries SETOFCAMERAS}
+, \newline
+{\bfseries PYRAMID}
+, {\bfseries CYLINDER}
+, {\bfseries PODKOWA}
+, {\bfseries HISTOGRAM}
+, \newline
+{\bfseries TRIPLE}
+, {\bfseries SPHERE}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Types inherited from \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_bounding_box_ae038c7cb07ded81ab8f4dacb0857d33d}\label{class_c_bounding_box_ae038c7cb07ded81ab8f4dacb0857d33d} 
+enum {\bfseries Initial\+Values} \{ {\bfseries Null\+BB}
+, {\bfseries Invalid\+BB}
+ \}
+\item 
+\Hypertarget{class_c_bounding_box_ab1000ce98eebe38c2ff2881b0d5843aa}\label{class_c_bounding_box_ab1000ce98eebe38c2ff2881b0d5843aa} 
+enum {\bfseries Style} \{ {\bfseries Dont\+Render} = 0
+, {\bfseries Not\+Selected} = 1
+, {\bfseries Unlocked} = 2
+, {\bfseries Locked} = 3
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Protected Member Functions inherited from \mbox{\hyperlink{class_c_model3_d}{CModel3D}}}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*} {\bfseries load} (const QString fext, const QString path, bool synchronous=true)
+\item 
+static \mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*} {\bfseries load} (const QString path, bool synchronous=true)
+\item 
+static \mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*} {\bfseries load} (const char \texorpdfstring{$\ast$}{*}path, bool synchronous=true)
+\item 
+static \mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*} {\bfseries load} (const std\+::wstring path, bool synchronous=true)
+\item 
+static \mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*} {\bfseries load} (const std\+::string path, bool synchronous=true)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Protected Member Functions inherited from \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}}}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} {\bfseries intersection} (\mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} a, \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} b)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_c_model3_d}{CModel3D}}}
+\begin{DoxyCompactItemize}
+\item 
+bool {\bfseries m\+\_\+b\+OK}
+\item 
+std\+::string {\bfseries m\+\_\+s\+Error}
+\item 
+\mbox{\hyperlink{class_c_transform}{CTransform}} {\bfseries m\+\_\+transform}
+\item 
+bool {\bfseries b\+Draw\+BB}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_c_object}{CObject}}}
+\begin{DoxyCompactItemize}
+\item 
+Children {\bfseries m\+\_\+data}
+\item 
+Annotations {\bfseries m\+\_\+annotations}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+int {\bfseries m\+\_\+\+Id}
+\item 
+QString {\bfseries m\+\_\+label}
+\item 
+QString {\bfseries m\+\_\+descr}
+\item 
+QSet$<$ QString $>$ {\bfseries m\+\_\+keywords}
+\item 
+QString {\bfseries m\+\_\+path}
+\item 
+\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+parent}
+\item 
+bool {\bfseries m\+\_\+selected}
+\item 
+bool {\bfseries m\+\_\+show\+Self}
+\item 
+bool {\bfseries m\+\_\+show\+Kids}
+\end{DoxyCompactItemize}
+\begin{DoxyCompactItemize}
+\item 
+bool {\bfseries m\+\_\+modified}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries m\+\_\+min}
+\item 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries m\+\_\+max}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_c_image_a15798af968d7a6d0bd385451ac180f24}\index{CImage@{CImage}!getCopy@{getCopy}}
+\index{getCopy@{getCopy}!CImage@{CImage}}
+\doxysubsubsection{\texorpdfstring{getCopy()}{getCopy()}}
+{\footnotesize\ttfamily \label{class_c_image_a15798af968d7a6d0bd385451ac180f24} 
+virtual \mbox{\hyperlink{class_c_image}{CImage}} \texorpdfstring{$\ast$}{*} CImage\+::get\+Copy (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_object}{CObject}}.
+
+\Hypertarget{class_c_image_af826b8dd1889891055c066244a805c47}\index{CImage@{CImage}!infoRow@{infoRow}}
+\index{infoRow@{infoRow}!CImage@{CImage}}
+\doxysubsubsection{\texorpdfstring{infoRow()}{infoRow()}}
+{\footnotesize\ttfamily \label{class_c_image_af826b8dd1889891055c066244a805c47} 
+std\+::wstring CImage\+::info\+Row (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}.
+
+\Hypertarget{class_c_image_ab4f4402f4450f846523c817be7e7cb61}\index{CImage@{CImage}!path@{path}}
+\index{path@{path}!CImage@{CImage}}
+\doxysubsubsection{\texorpdfstring{path()}{path()}}
+{\footnotesize\ttfamily \label{class_c_image_ab4f4402f4450f846523c817be7e7cb61} 
+virtual const QString \& CModel3\+D\+::path (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_model3_d}{CModel3D}}.
+
+\Hypertarget{class_c_image_a826230ceaaa81d8200e455c5a641c673}\index{CImage@{CImage}!renderSelf@{renderSelf}}
+\index{renderSelf@{renderSelf}!CImage@{CImage}}
+\doxysubsubsection{\texorpdfstring{renderSelf()}{renderSelf()}}
+{\footnotesize\ttfamily \label{class_c_image_a826230ceaaa81d8200e455c5a641c673} 
+void CImage\+::render\+Self (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_model3_d}{CModel3D}}.
+
+\Hypertarget{class_c_image_ab7ce1e15dda3700a0003c0a07c53a3be}\index{CImage@{CImage}!setPath@{setPath}}
+\index{setPath@{setPath}!CImage@{CImage}}
+\doxysubsubsection{\texorpdfstring{setPath()}{setPath()}}
+{\footnotesize\ttfamily \label{class_c_image_ab7ce1e15dda3700a0003c0a07c53a3be} 
+virtual void CModel3\+D\+::set\+Path (\begin{DoxyParamCaption}\item[{const QString \&}]{path}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_model3_d}{CModel3D}}.
+
+\Hypertarget{class_c_image_a19fc4dbb1b9f657476df32d540b06792}\index{CImage@{CImage}!type@{type}}
+\index{type@{type}!CImage@{CImage}}
+\doxysubsubsection{\texorpdfstring{type()}{type()}}
+{\footnotesize\ttfamily \label{class_c_image_a19fc4dbb1b9f657476df32d540b06792} 
+virtual int CImage\+::type (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_object}{CObject}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/core/Image.\+h\item 
+src/core/Image.\+cpp\end{DoxyCompactItemize}

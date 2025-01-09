@@ -1,0 +1,29 @@
+\doxysection{Parser\+SMF.\+h}
+\hypertarget{_parser_s_m_f_8h_source}{}\label{_parser_s_m_f_8h_source}\index{src/core/ParserSMF.h@{src/core/ParserSMF.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}Parser.h"{}}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <sstream>}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{keyword}{typedef}\ std::map<int,\ int>\ \_mapa;}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_c_parser_s_m_f}{CParserSMF}}\ :\textcolor{keyword}{public}\ \mbox{\hyperlink{class_c_parser}{CParser}}}
+\DoxyCodeLine{00008\ \{}
+\DoxyCodeLine{00009\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00010\ \ \ \ \ \mbox{\hyperlink{class_c_parser_s_m_f}{CParserSMF}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00011\ \ \ \ \ \mbox{\hyperlink{class_c_parser_s_m_f}{\string~CParserSMF}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keywordtype}{bool}\ inPlugin()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};\ \};}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ Run();}
+\DoxyCodeLine{00016\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ ReadSMF\_V3();}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ ReadSMF\_V3b();}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keywordtype}{void}\ SkipLine(\ FILE\ *plik\ );}
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keywordtype}{void}\ ReadVSplit(\ FILE\ *plik,\ \mbox{\hyperlink{struct__vsplit}{SVsplit}}\ \&\ vsplit\ );}
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keywordtype}{void}\ ReadPartFromV4(\ FILE\ *plik,\ \mbox{\hyperlink{struct__vsplit}{SVsplit}}\ \&\ vsplit\ );}
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keywordtype}{void}\ ReadPartFromV5(\ FILE\ *plik,\ \mbox{\hyperlink{struct__vsplit}{SVsplit}}\ \&\ vsplit\ );}
+\DoxyCodeLine{00023\ \};}
+
+\end{DoxyCode}

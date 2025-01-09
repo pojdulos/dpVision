@@ -1,0 +1,72 @@
+\doxysection{Annotation\+Pyramid.\+h}
+\hypertarget{_annotation_pyramid_8h_source}{}\label{_annotation_pyramid_8h_source}\index{src/core/AnnotationPyramid.h@{src/core/AnnotationPyramid.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}Annotation.h"{}}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}Punkt3D.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}Wektor3D.h"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}RGBA.h"{}}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <list>}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_annotation_pyramid}{CAnnotationPyramid}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_c_annotation}{CAnnotation}}}
+\DoxyCodeLine{00011\ \{}
+\DoxyCodeLine{00012\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ m\_bottom[4];}
+\DoxyCodeLine{00013\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ m\_top[4];}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00016\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_pyramid}{CAnnotationPyramid}}(\ \mbox{\hyperlink{class_c_base_object}{CBaseObject}}\ *m\ =\ \textcolor{keyword}{nullptr})\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(m)}
+\DoxyCodeLine{00017\ \ \ \ \ \{}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}Pyramid"{}});}
+\DoxyCodeLine{00019\ \ \ \ \ \};}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_pyramid}{CAnnotationPyramid}}(\ \mbox{\hyperlink{class_c_annotation_pyramid}{CAnnotationPyramid}}\ \&p\ )\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(p)}
+\DoxyCodeLine{00022\ \ \ \ \ \{}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}Pyramid"{}});}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ m\_top[0]\ =\ p.m\_top[0];}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ m\_top[1]\ =\ p.m\_top[1];}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ m\_top[2]\ =\ p.m\_top[2];}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ m\_top[3]\ =\ p.m\_top[3];}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ m\_bottom[0]\ =\ p.m\_bottom[0];}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ m\_bottom[1]\ =\ p.m\_bottom[1];}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ m\_bottom[2]\ =\ p.m\_bottom[2];}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ m\_bottom[3]\ =\ p.m\_bottom[3];}
+\DoxyCodeLine{00032\ \ \ \ \ \}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_pyramid}{\string~CAnnotationPyramid}}()\ \{\};}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{int}\ type()\ \{\ \textcolor{keywordflow}{return}\ CAnnotation::PYRAMID;\ \}}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keywordtype}{void}\ setBottom(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&b0,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&b1,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&b2,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&b3)}
+\DoxyCodeLine{00039\ \ \ \ \ \{}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ m\_bottom[0]\ =\ b0;}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ m\_bottom[1]\ =\ b1;}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ m\_bottom[2]\ =\ b2;}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ m\_bottom[3]\ =\ b3;}
+\DoxyCodeLine{00044\ \ \ \ \ \};}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keywordtype}{void}\ setTop(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&t0,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&t1,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&t2,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&t3)}
+\DoxyCodeLine{00047\ \ \ \ \ \{}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ m\_top[0]\ =\ t0;}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ m\_top[1]\ =\ t1;}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ m\_top[2]\ =\ t2;}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ m\_top[3]\ =\ t3;}
+\DoxyCodeLine{00052\ \ \ \ \ \};}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keywordtype}{void}\ setTop(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&t0)}
+\DoxyCodeLine{00055\ \ \ \ \ \{}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ m\_top[0]\ =\ t0;}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ m\_top[1]\ =\ t0;}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ m\_top[2]\ =\ t0;}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ m\_top[3]\ =\ t0;}
+\DoxyCodeLine{00060\ \ \ \ \ \};}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keyword}{virtual}\ std::wstring\ getInfoRow();}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ renderSelf()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00065\ \};}
+\DoxyCodeLine{00066\ }
+
+\end{DoxyCode}

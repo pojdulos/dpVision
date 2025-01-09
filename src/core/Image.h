@@ -56,6 +56,7 @@ public:
 	using CModel3D::path;
 	using CModel3D::setPath;
 	using CModel3D::getTransform;
+	using CModel3D::transform;
 	using CModel3D::render;
 
 	virtual CImage* getCopy() override { return new CImage(*this); }
@@ -90,6 +91,14 @@ public:
 	//kolor w formacie: #AARRGGBB
 	void setPixel(int x, int y, uint32_t pixel);
 
+	inline void setRectWidth(float w) { img3d_half_width = w / 2.0f; };
+	inline float rectWidth() { return img3d_half_width * 2.0f; };
+
+	inline void setRectHeight(float h) { img3d_half_height = h / 2.0f; };
+	inline float rectHeight() { return img3d_half_height * 2.0f; };
+
+	inline void setRect(float w, float h) { img3d_half_width = w / 2.0f; img3d_half_height = h / 2.0f; };
+
 	CImage::Format format() const;
 
 	virtual void renderSelf() override;
@@ -100,5 +109,8 @@ public:
 
 	static std::pair<int, int> loadToBYTEvector(std::wstring fname, std::vector<BYTE>& bufor, int& depth);
 	static std::pair<int, int> loadToRGBAvector(std::wstring fname, std::vector<CRGBA>& bufor, uchar alpha = 255);
+
+private:
+	float img3d_half_width, img3d_half_height, img3d_Z;
 };
 

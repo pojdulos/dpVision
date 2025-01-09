@@ -79,6 +79,9 @@ public slots:
 	void copyTo();
 
 	void saveObjAs();
+	void slot_apply_last_transform();
+	void slot_delete_and_keep_children();
+	void slot_create_inversed_transform();
 };
 
 #endif // CONTEXTMENU_H

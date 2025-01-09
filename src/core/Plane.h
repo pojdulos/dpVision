@@ -610,6 +610,7 @@ public:
 	void toMatrix(double* m);
 	CTransform toTransform1();
 	CTransform toTransform();
+	CPlane get_transformed(Eigen::Matrix4d M);
 };
 
 #endif /* _PLANE_H_BY_DP_INCLUDED_ */

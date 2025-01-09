@@ -1,0 +1,60 @@
+\doxysection{prop\+Model.\+h}
+\hypertarget{prop_model_8h_source}{}\label{prop_model_8h_source}\index{src/core/propModel.h@{src/core/propModel.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ PROPMODEL\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ PROPMODEL\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}propTransform.h"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}ui\_propModel.h"{}}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}Wektor3D.h"{}}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}Quaternion.h"{}}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_c_model3_d}{CModel3D}};}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_prop_model}{PropModel}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_prop_widget}{PropWidget}}}
+\DoxyCodeLine{00015\ \{}
+\DoxyCodeLine{00016\ \ \ \ \ Q\_OBJECT}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_c_model3_d}{CModel3D}}*\ obj;}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_c_vector3}{CVector3<double>}}\ rot;}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_c_vector3}{CVector3<double>}}\ tra;}
+\DoxyCodeLine{00021\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{class_prop_model}{PropModel}}(\mbox{\hyperlink{class_c_model3_d}{CModel3D}}\ *m,\ QWidget\ *parent\ =\ 0);}
+\DoxyCodeLine{00023\ \ \ \ \ \mbox{\hyperlink{class_prop_model}{\string~PropModel}}();}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{class_prop_widget}{PropWidget}}*\ create(\mbox{\hyperlink{class_c_model3_d}{CModel3D}}*\ m,\ QWidget*\ parent\ =\ 0);}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keyword}{static}\ QVector<PropWidget*>\ create\_and\_get\_subwidgets(\mbox{\hyperlink{class_c_base_object}{CBaseObject}}*\ m);}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{comment}{//virtual\ void\ paintEvent(QPaintEvent\ *\ event)\ override;}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ updateProperties()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{comment}{//void\ showModelProperties(\ bool\ b\ )\ \{\ ui.groupBoxModel-\/>setVisible(\ b\ );\ \}}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{keyword}{public}\ slots:}
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keywordtype}{void}\ changedRotX(\ \textcolor{keywordtype}{double}\ );}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keywordtype}{void}\ changedRotY(\ \textcolor{keywordtype}{double}\ );}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keywordtype}{void}\ changedRotZ(\ \textcolor{keywordtype}{double}\ );}
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keywordtype}{void}\ changedTraXYZ(\ \textcolor{keywordtype}{double}\ );}
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keywordtype}{void}\ changedScale(\ \textcolor{keywordtype}{double}\ );}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keywordtype}{void}\ changedCentered(\ \textcolor{keywordtype}{int}\ );}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keywordtype}{void}\ changedQX(\textcolor{keywordtype}{double}\ x);}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keywordtype}{void}\ changedQY(\textcolor{keywordtype}{double}\ y);}
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keywordtype}{void}\ changedQZ(\textcolor{keywordtype}{double}\ z);}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keywordtype}{void}\ changedQW(\textcolor{keywordtype}{double}\ w);}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00048\ \ \ \ \ Ui::propModel\ ui;}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{comment}{//void\ updateQuaternion(CQuaternion\ \&q);}}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \};}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ PROPMODEL\_H}}
+
+\end{DoxyCode}

@@ -1,0 +1,358 @@
+\doxysection{GLViewer Class Reference}
+\hypertarget{class_g_l_viewer}{}\label{class_g_l_viewer}\index{GLViewer@{GLViewer}}
+Inheritance diagram for GLViewer\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_g_l_viewer}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_g_l_viewer_a0973ceec2bdeff2849faa6ce644dab30}\label{class_g_l_viewer_a0973ceec2bdeff2849faa6ce644dab30} 
+enum {\bfseries Stereo\+Type} \{ \newline
+{\bfseries STEREO\+\_\+\+NONE} =0
+, {\bfseries STEREO\+\_\+\+REDCYAN}
+, {\bfseries STEREO\+\_\+\+REDBLUE}
+, {\bfseries STEREO\+\_\+\+REDGREEN}
+, \newline
+{\bfseries STEREO\+\_\+\+CYANRED}
+, {\bfseries STEREO\+\_\+\+BLUERED}
+, {\bfseries STEREO\+\_\+\+GREENRED}
+, {\bfseries STEREO\+\_\+\+QUADBUFF} =32
+, \newline
+{\bfseries STEREO\+\_\+\+INTERLACED}
+, {\bfseries STEREO\+\_\+\+COLUMNINTERLACED}
+, {\bfseries STEREO\+\_\+\+SIDEBYSIDE}
+, {\bfseries STEREO\+\_\+\+ABOVEBELOW}
+ \}
+\item 
+\Hypertarget{class_g_l_viewer_ad5657a8a820eb9436c3fb5f8d9a1822b}\label{class_g_l_viewer_ad5657a8a820eb9436c3fb5f8d9a1822b} 
+enum {\bfseries Switch} \{ {\bfseries switch\+On}
+, {\bfseries switch\+Off}
+, {\bfseries switch\+Toggle}
+ \}
+\item 
+\Hypertarget{class_g_l_viewer_acf2ae472652b7154decd9f37007671d7}\label{class_g_l_viewer_acf2ae472652b7154decd9f37007671d7} 
+enum {\bfseries Projection} \{ {\bfseries PERSPECTIVE} = 0
+, {\bfseries ORTHOGONAL} = 128
+ \}
+\item 
+\Hypertarget{class_g_l_viewer_a3559cce6a1b849a034429731b46ee53f}\label{class_g_l_viewer_a3559cce6a1b849a034429731b46ee53f} 
+typedef int {\bfseries Axes\+Style}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Slots}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_g_l_viewer_aa2921f2af305590ff1b2eb72e346acd4}\label{class_g_l_viewer_aa2921f2af305590ff1b2eb72e346acd4} 
+void {\bfseries mouse\+Press\+Event} (QMouse\+Event \texorpdfstring{$\ast$}{*}event) override
+\item 
+\Hypertarget{class_g_l_viewer_a3fae7220f020186efeb20b8bfaa66b26}\label{class_g_l_viewer_a3fae7220f020186efeb20b8bfaa66b26} 
+void {\bfseries mouse\+Release\+Event} (QMouse\+Event \texorpdfstring{$\ast$}{*}event) override
+\item 
+\Hypertarget{class_g_l_viewer_a803571da29e06106512a2b61fbdaa8d5}\label{class_g_l_viewer_a803571da29e06106512a2b61fbdaa8d5} 
+void {\bfseries rotate} (double dx, double dy)
+\item 
+\Hypertarget{class_g_l_viewer_a4001ae90eae043fce3241acb5751962d}\label{class_g_l_viewer_a4001ae90eae043fce3241acb5751962d} 
+void {\bfseries translate} (double dx, double dy, double dz=0.\+0)
+\item 
+\Hypertarget{class_g_l_viewer_ab8d63721c26b2503378eb0cc57b69a5b}\label{class_g_l_viewer_ab8d63721c26b2503378eb0cc57b69a5b} 
+void {\bfseries mouse\+Move\+Event} (QMouse\+Event \texorpdfstring{$\ast$}{*}event) override
+\item 
+\Hypertarget{class_g_l_viewer_a10e286c601504f1f08ae7a03cc47e449}\label{class_g_l_viewer_a10e286c601504f1f08ae7a03cc47e449} 
+void {\bfseries wheel\+Event} (QWheel\+Event \texorpdfstring{$\ast$}{*}event) override
+\item 
+\Hypertarget{class_g_l_viewer_a5ab08a8f49d30fac6156fc139e4d086d}\label{class_g_l_viewer_a5ab08a8f49d30fac6156fc139e4d086d} 
+void {\bfseries set\+BGcolor} (GLfloat col)
+\item 
+\Hypertarget{class_g_l_viewer_aad2c46feac4a10b160ac2d111b89a5e3}\label{class_g_l_viewer_aad2c46feac4a10b160ac2d111b89a5e3} 
+void {\bfseries set\+BGcolor} (\mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}} \&col)
+\item 
+\Hypertarget{class_g_l_viewer_ab516acb48819e8a640a41b149f739bf8}\label{class_g_l_viewer_ab516acb48819e8a640a41b149f739bf8} 
+\mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}} \& {\bfseries get\+BGcolor} ()
+\item 
+\Hypertarget{class_g_l_viewer_aff7de11a6c7d5b5a17bf82325eadd89b}\label{class_g_l_viewer_aff7de11a6c7d5b5a17bf82325eadd89b} 
+void {\bfseries recalc\+View} ()
+\item 
+\Hypertarget{class_g_l_viewer_ada0a8bf014fc4e9192872590ceb003ee}\label{class_g_l_viewer_ada0a8bf014fc4e9192872590ceb003ee} 
+void {\bfseries set\+VAngle} (GLdouble angle)
+\item 
+\Hypertarget{class_g_l_viewer_a443290263c5a88abc527ab156b0d82dd}\label{class_g_l_viewer_a443290263c5a88abc527ab156b0d82dd} 
+GLdouble {\bfseries get\+VAngle} ()
+\item 
+\Hypertarget{class_g_l_viewer_af95d1d684f419cd062c3c923f585486e}\label{class_g_l_viewer_af95d1d684f419cd062c3c923f585486e} 
+void {\bfseries set\+Ortho\+Size} (GLdouble fov)
+\item 
+\Hypertarget{class_g_l_viewer_a212b1354a7a0f38b74126d005313386b}\label{class_g_l_viewer_a212b1354a7a0f38b74126d005313386b} 
+GLdouble {\bfseries get\+Ortho\+Size} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Signals}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_g_l_viewer_afc7ee90743e5bb073d0ecc0ceec6678f}\label{class_g_l_viewer_afc7ee90743e5bb073d0ecc0ceec6678f} 
+void {\bfseries x\+Rotation\+Changed} (int angle)
+\item 
+\Hypertarget{class_g_l_viewer_aef8bd3e4db5a30392610b5aab41b3b73}\label{class_g_l_viewer_aef8bd3e4db5a30392610b5aab41b3b73} 
+void {\bfseries y\+Rotation\+Changed} (int angle)
+\item 
+\Hypertarget{class_g_l_viewer_a6d27b6515dd6b2ace11e1259e371aa43}\label{class_g_l_viewer_a6d27b6515dd6b2ace11e1259e371aa43} 
+void {\bfseries z\+Rotation\+Changed} (int angle)
+\item 
+\Hypertarget{class_g_l_viewer_a6975b22329522e859137d041da80a140}\label{class_g_l_viewer_a6975b22329522e859137d041da80a140} 
+void {\bfseries translation\+Changed} (double x, double y, double z)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_g_l_viewer_a760742a91d88e1b1364d47fa3e8756ce}\label{class_g_l_viewer_a760742a91d88e1b1364d47fa3e8756ce} 
+{\bfseries GLViewer} (QWidget \texorpdfstring{$\ast$}{*}parent=0)
+\item 
+\Hypertarget{class_g_l_viewer_ae5f20c2105d3e364397d736a3a9581ba}\label{class_g_l_viewer_ae5f20c2105d3e364397d736a3a9581ba} 
+bool {\bfseries switch\+Stereo} (GLViewer\+::\+Switch option)
+\item 
+\Hypertarget{class_g_l_viewer_a9e6d86bab0155720ae0bc9ee5ff9e373}\label{class_g_l_viewer_a9e6d86bab0155720ae0bc9ee5ff9e373} 
+const GLViewer\+::\+Stereo\+Type {\bfseries set\+Stereo\+Mode} (GLViewer\+::\+Stereo\+Type mode, GLViewer\+::\+Switch option=GLViewer\+::\+Switch\+::switch\+On)
+\item 
+\Hypertarget{class_g_l_viewer_a5ab20a0873e32ad8ed7e0250c02976ab}\label{class_g_l_viewer_a5ab20a0873e32ad8ed7e0250c02976ab} 
+const GLViewer\+::\+Stereo\+Type {\bfseries get\+Stereo\+Mode} () const
+\item 
+\Hypertarget{class_g_l_viewer_a6bef60e609b054cbc93a95d93acf7b46}\label{class_g_l_viewer_a6bef60e609b054cbc93a95d93acf7b46} 
+const GLViewer\+::\+Stereo\+Type {\bfseries next\+Stereo\+Mode} ()
+\item 
+\Hypertarget{class_g_l_viewer_ae6c32ae59813b71f0691516a7e03e805}\label{class_g_l_viewer_ae6c32ae59813b71f0691516a7e03e805} 
+void {\bfseries reset\+Geometry} ()
+\item 
+\Hypertarget{class_g_l_viewer_a72dc8493dcb91ec37cab3e42def4a27c}\label{class_g_l_viewer_a72dc8493dcb91ec37cab3e42def4a27c} 
+\mbox{\hyperlink{class_c_transform}{CTransform}} \& {\bfseries transform} ()
+\item 
+\Hypertarget{class_g_l_viewer_aaabc232cb73b263f4a00c824d45dd580}\label{class_g_l_viewer_aaabc232cb73b263f4a00c824d45dd580} 
+void {\bfseries set\+Projection} (GLViewer\+::\+Projection)
+\item 
+\Hypertarget{class_g_l_viewer_a100462e89ff611a523dd3e91566b692a}\label{class_g_l_viewer_a100462e89ff611a523dd3e91566b692a} 
+void {\bfseries apply\+Projection} ()
+\item 
+\Hypertarget{class_g_l_viewer_a765304985da0342254712edbd7f0ca06}\label{class_g_l_viewer_a765304985da0342254712edbd7f0ca06} 
+bool {\bfseries current\+Projection\+Is} (GLViewer\+::\+Projection)
+\item 
+\Hypertarget{class_g_l_viewer_a3450d3586fffb356b87ca37293df858a}\label{class_g_l_viewer_a3450d3586fffb356b87ca37293df858a} 
+void {\bfseries set\+Camera\+Floating} (bool f)
+\item 
+\Hypertarget{class_g_l_viewer_a5199a57a48b4a13d55930f2dd3f88fa5}\label{class_g_l_viewer_a5199a57a48b4a13d55930f2dd3f88fa5} 
+void {\bfseries set\+Axes\+Visible} (Axes\+Style s)
+\item 
+\Hypertarget{class_g_l_viewer_a1907d502cf14c8c9d936ebecc7f5b411}\label{class_g_l_viewer_a1907d502cf14c8c9d936ebecc7f5b411} 
+void {\bfseries toggle\+Axes\+Visibility} ()
+\item 
+\Hypertarget{class_g_l_viewer_ac40a59413381abb3dc5848dcb59005cc}\label{class_g_l_viewer_ac40a59413381abb3dc5848dcb59005cc} 
+void {\bfseries screenshot} (QString path=QString())
+\item 
+\Hypertarget{class_g_l_viewer_afd91098b4c1ad04eab715bb013ff3990}\label{class_g_l_viewer_afd91098b4c1ad04eab715bb013ff3990} 
+void {\bfseries set\+Selection\+Mode} (int mode)
+\item 
+\Hypertarget{class_g_l_viewer_a334175ab98f109d0972c09805282c7b3}\label{class_g_l_viewer_a334175ab98f109d0972c09805282c7b3} 
+void {\bfseries delete\+Selected\+Voxels\+Vol\+TK} (\mbox{\hyperlink{class_c_vol_t_k}{CVol\+TK}} \&cloud, \mbox{\hyperlink{class_c_transform}{CTransform}} \&transform, bool delete\+Selected)
+\item 
+\Hypertarget{class_g_l_viewer_a8c6aef33fd87027b3d12940556731b4a}\label{class_g_l_viewer_a8c6aef33fd87027b3d12940556731b4a} 
+void {\bfseries delete\+Selected\+Voxels} (\mbox{\hyperlink{class_volumetric}{Volumetric}} \texorpdfstring{$\ast$}{*}vol, bool delete\+Selected)
+\item 
+\Hypertarget{class_g_l_viewer_abffcce80f2d60f1db102ba4626a65fc1}\label{class_g_l_viewer_abffcce80f2d60f1db102ba4626a65fc1} 
+void {\bfseries delete\+Selected\+Vertices} (bool delete\+Selected=true)
+\item 
+\Hypertarget{class_g_l_viewer_ad0881687ef278655f0fd7e6ec4b0cbd6}\label{class_g_l_viewer_ad0881687ef278655f0fd7e6ec4b0cbd6} 
+void {\bfseries draw\+Mask\+Circle} (QPoint pos)
+\item 
+\Hypertarget{class_g_l_viewer_a7707393aa90d7eb806c6434db468be95}\label{class_g_l_viewer_a7707393aa90d7eb806c6434db468be95} 
+bool {\bfseries convert\+Win\+To\+World} (\mbox{\hyperlink{class_c_point3}{CPoint3d}}, \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&)
+\item 
+\Hypertarget{class_g_l_viewer_a177f00a649d90993b5730b80be0fc6c5}\label{class_g_l_viewer_a177f00a649d90993b5730b80be0fc6c5} 
+bool {\bfseries screen2obj} (double xx, double yy, \mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*}obj, \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&in, \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&out, \mbox{\hyperlink{class_c_vector3}{CVector3d}} \&ray)
+\item 
+\Hypertarget{class_g_l_viewer_a00245b9bfc4d00c34382db87300c00ac}\label{class_g_l_viewer_a00245b9bfc4d00c34382db87300c00ac} 
+bool {\bfseries in\+Triangle} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} pt, \mbox{\hyperlink{class_c_point3}{CPoint3d}} pA, \mbox{\hyperlink{class_c_point3}{CPoint3d}} pB, \mbox{\hyperlink{class_c_point3}{CPoint3d}} pC)
+\item 
+\Hypertarget{class_g_l_viewer_a5db651414d7b5a85c155db815a5d263b}\label{class_g_l_viewer_a5db651414d7b5a85c155db815a5d263b} 
+bool {\bfseries in\+Rectangle} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} pt, \mbox{\hyperlink{class_c_point3}{CPoint3d}} A, \mbox{\hyperlink{class_c_point3}{CPoint3d}} B, \mbox{\hyperlink{class_c_point3}{CPoint3d}} C, \mbox{\hyperlink{class_c_point3}{CPoint3d}} D)
+\item 
+\Hypertarget{class_g_l_viewer_aabea4158f2db9bd3110b209fd81e0f53}\label{class_g_l_viewer_aabea4158f2db9bd3110b209fd81e0f53} 
+void {\bfseries find\+Intersection} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} origin, \mbox{\hyperlink{class_c_vector3}{CVector3d}} direction, \mbox{\hyperlink{class_c_point3}{CPoint3d}} A, \mbox{\hyperlink{class_c_point3}{CPoint3d}} B, \mbox{\hyperlink{class_c_point3}{CPoint3d}} C, \mbox{\hyperlink{class_c_point3}{CPoint3d}} D, std\+::vector$<$ std\+::pair$<$ double, \mbox{\hyperlink{class_c_point3}{CPoint3d}} $>$ $>$ \&intersections)
+\item 
+\Hypertarget{class_g_l_viewer_aafee5c97a8cea6895637060f6da7c159}\label{class_g_l_viewer_aafee5c97a8cea6895637060f6da7c159} 
+bool {\bfseries get\+Entry\+And\+Exit} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} p\+Min, \mbox{\hyperlink{class_c_point3}{CPoint3d}} p\+Max, \mbox{\hyperlink{class_c_point3}{CPoint3d}} origin, \mbox{\hyperlink{class_c_vector3}{CVector3d}} direction, \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&entry, \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&exit)
+\item 
+\Hypertarget{class_g_l_viewer_a087c02cff761e70927e23df392fffe5d}\label{class_g_l_viewer_a087c02cff761e70927e23df392fffe5d} 
+\mbox{\hyperlink{class_c_annotation_pyramid}{CAnnotation\+Pyramid}} \texorpdfstring{$\ast$}{*} {\bfseries get\+Pyramid} (double xx, double yy, \mbox{\hyperlink{class_c_point3}{CPoint3d}} entry, \mbox{\hyperlink{class_c_point3}{CPoint3d}} exit, \mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*}obj, double \&r)
+\item 
+\Hypertarget{class_g_l_viewer_a50f84c074b7ba73cd09a7463d252d496}\label{class_g_l_viewer_a50f84c074b7ba73cd09a7463d252d496} 
+bool {\bfseries is\+In\+Pixel\+Shadow} (double pxlX, double pxlY, double ptX, double ptY)
+\item 
+\Hypertarget{class_g_l_viewer_a6f856aa73f2c3b4720ff011fdcc43883}\label{class_g_l_viewer_a6f856aa73f2c3b4720ff011fdcc43883} 
+bool {\bfseries convert\+World\+To\+Win} (\mbox{\hyperlink{class_c_point3}{CPoint3d}}, \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&)
+\item 
+\Hypertarget{class_g_l_viewer_add3d8db09fc3bc02ad5a54080f060de1}\label{class_g_l_viewer_add3d8db09fc3bc02ad5a54080f060de1} 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries world2win} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&world)
+\item 
+\Hypertarget{class_g_l_viewer_afd6cfb677f0e29e47493d89255a0babd}\label{class_g_l_viewer_afd6cfb677f0e29e47493d89255a0babd} 
+bool {\bfseries convert\+Coords} (GLdouble winX, GLdouble winY, \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&pkt0, \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&pkt1)
+\item 
+\Hypertarget{class_g_l_viewer_a325e09b0468b5eadaaff7835038269d5}\label{class_g_l_viewer_a325e09b0468b5eadaaff7835038269d5} 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries cam\+Pos} ()
+\item 
+\Hypertarget{class_g_l_viewer_ab275cd114e6559bfaa1521767f90f518}\label{class_g_l_viewer_ab275cd114e6559bfaa1521767f90f518} 
+void {\bfseries use\+Shaders} (bool)
+\item 
+\Hypertarget{class_g_l_viewer_ae31c65865caaf603eef329f0ac5e27b6}\label{class_g_l_viewer_ae31c65865caaf603eef329f0ac5e27b6} 
+void {\bfseries close\+Event} (QClose\+Event \texorpdfstring{$\ast$}{*}close\+Event) override
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_g_l_viewer_ae248fda5b84c088975d853448d90d567}\label{class_g_l_viewer_ae248fda5b84c088975d853448d90d567} 
+int {\bfseries m\+\_\+selection\+Mode}
+\item 
+\Hypertarget{class_g_l_viewer_ac217489dcd79460cff62c396b8f29d95}\label{class_g_l_viewer_ac217489dcd79460cff62c396b8f29d95} 
+bool {\bfseries m\+\_\+redraw3d}
+\item 
+\Hypertarget{class_g_l_viewer_ac540b7a3cec7e6de7603683b3781aee2}\label{class_g_l_viewer_ac540b7a3cec7e6de7603683b3781aee2} 
+QImage {\bfseries m\+\_\+im}
+\item 
+\Hypertarget{class_g_l_viewer_a6e3526ad71ddc8fb655051ec98a03f49}\label{class_g_l_viewer_a6e3526ad71ddc8fb655051ec98a03f49} 
+QImage {\bfseries m\+\_\+mask}
+\item 
+\Hypertarget{class_g_l_viewer_a4a17e9a7516b35ba7f5ff4f0ce84c192}\label{class_g_l_viewer_a4a17e9a7516b35ba7f5ff4f0ce84c192} 
+QPoint {\bfseries m\+\_\+mouse\+Pos}
+\item 
+\Hypertarget{class_g_l_viewer_a4fd8ed5c4fcc1a2d441422da45606de8}\label{class_g_l_viewer_a4fd8ed5c4fcc1a2d441422da45606de8} 
+int {\bfseries m\+\_\+sel\+Size}
+\item 
+\Hypertarget{class_g_l_viewer_aa026837fa5982201b887836853f737b7}\label{class_g_l_viewer_aa026837fa5982201b887836853f737b7} 
+bool {\bfseries shader\+On}
+\item 
+\Hypertarget{class_g_l_viewer_a7ad55c6cee48bd89beab2cf2b521bb0d}\label{class_g_l_viewer_a7ad55c6cee48bd89beab2cf2b521bb0d} 
+GLenum {\bfseries prog}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_g_l_viewer_a824e12e3d041b49d6a38c619fcb57790}\label{class_g_l_viewer_a824e12e3d041b49d6a38c619fcb57790} 
+static const int {\bfseries Axes\+Style\+\_\+\+NONE} = 0
+\item 
+\Hypertarget{class_g_l_viewer_a5c22cf2ac14cbbe7cbf43f4392b6026b}\label{class_g_l_viewer_a5c22cf2ac14cbbe7cbf43f4392b6026b} 
+static const int {\bfseries Axes\+Style\+\_\+\+ARROWS} = 1
+\item 
+\Hypertarget{class_g_l_viewer_a89401d0cf719323c8c2783cd58f8c078}\label{class_g_l_viewer_a89401d0cf719323c8c2783cd58f8c078} 
+static const int {\bfseries Axes\+Style\+\_\+\+LINES} = 2
+\item 
+\Hypertarget{class_g_l_viewer_a0a052478deec0058696f82f736de4e0a}\label{class_g_l_viewer_a0a052478deec0058696f82f736de4e0a} 
+static const int {\bfseries Axes\+Style\+\_\+\+PLANES} = 3
+\item 
+\Hypertarget{class_g_l_viewer_a8096a9701cc5e1ab095a8224974c1b42}\label{class_g_l_viewer_a8096a9701cc5e1ab095a8224974c1b42} 
+static const int {\bfseries Axes\+Style\+\_\+\+END} = 4
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_g_l_viewer_a751d80629b937f4b9045b56ddb032839}\label{class_g_l_viewer_a751d80629b937f4b9045b56ddb032839} 
+void {\bfseries initialize\+GL} () override
+\item 
+\Hypertarget{class_g_l_viewer_a209d2f8918b6091042744b13bbade650}\label{class_g_l_viewer_a209d2f8918b6091042744b13bbade650} 
+void {\bfseries paint\+GL} () override
+\item 
+\Hypertarget{class_g_l_viewer_a90190bba2296fd42496332eeb32c4b35}\label{class_g_l_viewer_a90190bba2296fd42496332eeb32c4b35} 
+void {\bfseries resize\+GL} (int w, int h) override
+\item 
+\Hypertarget{class_g_l_viewer_ae1f7d85f8c702951a1b6eca5140687c9}\label{class_g_l_viewer_ae1f7d85f8c702951a1b6eca5140687c9} 
+void {\bfseries draw3\+Dcontent} ()
+\item 
+\Hypertarget{class_g_l_viewer_a0745632c88dc5bd0a5f6677a9a6a6eb6}\label{class_g_l_viewer_a0745632c88dc5bd0a5f6677a9a6a6eb6} 
+void {\bfseries draw\+Overlays} (QPainter \&painter)
+\item 
+\Hypertarget{class_g_l_viewer_a1c69b6b3ccd0fa67376e0bf756280792}\label{class_g_l_viewer_a1c69b6b3ccd0fa67376e0bf756280792} 
+void {\bfseries Pick\+Object} (int x, int y)
+\item 
+\Hypertarget{class_g_l_viewer_a1ef2e59554e1699477c3b6120181afa6}\label{class_g_l_viewer_a1ef2e59554e1699477c3b6120181afa6} 
+void {\bfseries Pick\+Mesh\+Point} (double xx, double yy, \mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*}obj)
+\item 
+\Hypertarget{class_g_l_viewer_a9449e741415f5f8c0caf92bdae3a2e24}\label{class_g_l_viewer_a9449e741415f5f8c0caf92bdae3a2e24} 
+void {\bfseries Pick\+Cloud\+Point} (double xx, double yy, \mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*}obj)
+\item 
+\Hypertarget{class_g_l_viewer_a39f91783aae0fbc8220c5f1106e570c2}\label{class_g_l_viewer_a39f91783aae0fbc8220c5f1106e570c2} 
+void {\bfseries Pick\+Point} (int x, int y)
+\item 
+\Hypertarget{class_g_l_viewer_a9b3c19d8022ae09e051e93b0dd3ec400}\label{class_g_l_viewer_a9b3c19d8022ae09e051e93b0dd3ec400} 
+int {\bfseries read\+Select\+Buffer} (int x, int y)
+\item 
+\Hypertarget{class_g_l_viewer_a7cd7400455ded7a76d8f074c41e9cab6}\label{class_g_l_viewer_a7cd7400455ded7a76d8f074c41e9cab6} 
+void {\bfseries camera\+Transformations} ()
+\item 
+\Hypertarget{class_g_l_viewer_a04987ab1a0698345dfee04ceaff3ee50}\label{class_g_l_viewer_a04987ab1a0698345dfee04ceaff3ee50} 
+void {\bfseries Render} ()
+\item 
+\Hypertarget{class_g_l_viewer_aaa4bc9b13362723a47b7fc1d382634d3}\label{class_g_l_viewer_aaa4bc9b13362723a47b7fc1d382634d3} 
+void {\bfseries Render\+Scene} ()
+\item 
+\Hypertarget{class_g_l_viewer_a580584da26dab754b9cff5bb2a7df1f3}\label{class_g_l_viewer_a580584da26dab754b9cff5bb2a7df1f3} 
+void {\bfseries Render\+Scene\+Mono} ()
+\item 
+\Hypertarget{class_g_l_viewer_a81445297c83660d9d88565f2ca0808af}\label{class_g_l_viewer_a81445297c83660d9d88565f2ca0808af} 
+void {\bfseries Render\+Scene\+Anaglyph} ()
+\item 
+\Hypertarget{class_g_l_viewer_adeeb1f1a23c501ebdabb2d3b4f0ae8bc}\label{class_g_l_viewer_adeeb1f1a23c501ebdabb2d3b4f0ae8bc} 
+void {\bfseries Render\+Right\+View} ()
+\item 
+\Hypertarget{class_g_l_viewer_a49b1100a3288ea17daf28c94852c05cb}\label{class_g_l_viewer_a49b1100a3288ea17daf28c94852c05cb} 
+void {\bfseries Render\+Left\+View} ()
+\item 
+\Hypertarget{class_g_l_viewer_ae51f96bdd509afc99ea556ebd194d0c2}\label{class_g_l_viewer_ae51f96bdd509afc99ea556ebd194d0c2} 
+void {\bfseries Render\+Scene\+Above\+Below} ()
+\item 
+\Hypertarget{class_g_l_viewer_af0fd126b2bc410a5f8f60655b181d3dc}\label{class_g_l_viewer_af0fd126b2bc410a5f8f60655b181d3dc} 
+void {\bfseries Render\+Scene\+Interlaced} ()
+\item 
+\Hypertarget{class_g_l_viewer_a35d94b2cee55e3b1cc65757523a2959b}\label{class_g_l_viewer_a35d94b2cee55e3b1cc65757523a2959b} 
+void {\bfseries Render\+Scene\+Column\+Interlaced} ()
+\item 
+\Hypertarget{class_g_l_viewer_a97ed0ef146a282c64a074eff1a55cd32}\label{class_g_l_viewer_a97ed0ef146a282c64a074eff1a55cd32} 
+void {\bfseries Render\+Scene\+Side\+By\+Side} ()
+\item 
+\Hypertarget{class_g_l_viewer_a8f475b7940a279fa5b32867a723372e8}\label{class_g_l_viewer_a8f475b7940a279fa5b32867a723372e8} 
+void {\bfseries Render\+Scene\+Quad\+Buff} ()
+\item 
+\Hypertarget{class_g_l_viewer_ac5d51ac7eafe1a9457c98e66177a6bcf}\label{class_g_l_viewer_ac5d51ac7eafe1a9457c98e66177a6bcf} 
+void {\bfseries axis3D} (double W1, double L1, double W2, double W3)
+\item 
+\Hypertarget{class_g_l_viewer_aebd1ee0a71b7769c24d8857f06ef355f}\label{class_g_l_viewer_aebd1ee0a71b7769c24d8857f06ef355f} 
+void {\bfseries triad3D} (double W1=0.\+02, double L1=0.\+8, double W2=0.\+04, double W3=0.\+08, bool active=true)
+\item 
+\Hypertarget{class_g_l_viewer_ae4216ef96a297f823fbd5b07a52f7a01}\label{class_g_l_viewer_ae4216ef96a297f823fbd5b07a52f7a01} 
+void {\bfseries gl\+Set\+Font} ()
+\item 
+\Hypertarget{class_g_l_viewer_acaa3b50c948fe559b319494baa7bcf82}\label{class_g_l_viewer_acaa3b50c948fe559b319494baa7bcf82} 
+void {\bfseries gl\+Draw\+String} (GLfloat x, GLfloat y, QString string)
+\item 
+\Hypertarget{class_g_l_viewer_a79ae198e8cc2e0f64612e898ada67d1d}\label{class_g_l_viewer_a79ae198e8cc2e0f64612e898ada67d1d} 
+void {\bfseries tool\+Bar} (void)
+\item 
+\Hypertarget{class_g_l_viewer_a40b79ec555703a477cb208ee40d83f6a}\label{class_g_l_viewer_a40b79ec555703a477cb208ee40d83f6a} 
+void {\bfseries object\+Triad} (void)
+\item 
+\Hypertarget{class_g_l_viewer_afd0df8029f3ec7123b7d08043e202e68}\label{class_g_l_viewer_afd0df8029f3ec7123b7d08043e202e68} 
+void {\bfseries camera\+Triad} (void)
+\item 
+\Hypertarget{class_g_l_viewer_af2eeb8aeeffe078920c5b04b83f47bef}\label{class_g_l_viewer_af2eeb8aeeffe078920c5b04b83f47bef} 
+void {\bfseries rysuj\+Osie} ()
+\item 
+\Hypertarget{class_g_l_viewer_a7a6d7f11ce92bf9b247c2fd5651cb979}\label{class_g_l_viewer_a7a6d7f11ce92bf9b247c2fd5651cb979} 
+void {\bfseries Stereo\+Projection} (double df\+Left\+Border, double df\+Right\+Border, double df\+Bottom\+Border, double d\+FVertical, double df\+Near\+Border, double df\+Far\+Border, double df\+Target\+Plane, double df\+Camera\+To\+Target\+Distance, double df\+Stereo\+Magnitude\+Adj, double df\+Parallax\+Balance\+Adj, int Which\+Eye\+Projection)
+\item 
+\Hypertarget{class_g_l_viewer_a61b38062a20fa4aa15db5a47416b26b6}\label{class_g_l_viewer_a61b38062a20fa4aa15db5a47416b26b6} 
+const double {\bfseries Slide\+Stereo\+Cameras} (double step)
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/core/GLViewer.\+h\item 
+src/core/GLViewer.\+cpp\item 
+src/core/GLViewer\+\_\+\+Pick.\+cpp\item 
+src/core/GLViewer\+\_\+\+Render.\+cpp\item 
+src/core/GLViewer\+\_\+\+Stereo\+Projection.\+cpp\end{DoxyCompactItemize}

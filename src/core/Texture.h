@@ -3,22 +3,21 @@
 
 #include "dll_global.h"
 
-
-
 #include <QtWinExtras/QtWinExtras>
 #include <QtCore/QString>
 
-class CTexture : public QOpenGLTexture
+class DPVISION_EXPORT CTexture : public QOpenGLTexture
 {
 public:
-	QImage m_image;
-
-	using QOpenGLTexture::QOpenGLTexture;
-	CTexture(const CTexture& tex);
+	//using QOpenGLTexture::QOpenGLTexture;
+	CTexture(const QImage &img);
+	//CTexture(const CTexture& tex);
 	CTexture(QString path);
 	CTexture(QString path, const char* format);
 	CTexture(std::string path);
 	CTexture(std::wstring path);
+	
+	const QImage toImage();
 };
 
 #endif

@@ -1,0 +1,46 @@
+\doxysection{ts\+BSpline Struct Reference}
+\hypertarget{structts_b_spline}{}\label{structts_b_spline}\index{tsBSpline@{tsBSpline}}
+
+
+{\ttfamily \#include $<$tinyspline.\+h$>$}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structts_b_spline_a00ecdf2f793aa32562b834fb00895fae}\label{structts_b_spline_a00ecdf2f793aa32562b834fb00895fae} 
+size\+\_\+t {\bfseries deg}
+\item 
+\Hypertarget{structts_b_spline_a9962164fe5ab6834ecb1a7586ab9550f}\label{structts_b_spline_a9962164fe5ab6834ecb1a7586ab9550f} 
+size\+\_\+t {\bfseries order}
+\item 
+\Hypertarget{structts_b_spline_a531b4cbec5e74a767372931cf9b4898d}\label{structts_b_spline_a531b4cbec5e74a767372931cf9b4898d} 
+size\+\_\+t {\bfseries dim}
+\item 
+\Hypertarget{structts_b_spline_ac5cd99fde3b447fdb69ae6af9e8e4ad4}\label{structts_b_spline_ac5cd99fde3b447fdb69ae6af9e8e4ad4} 
+size\+\_\+t {\bfseries n\+\_\+ctrlp}
+\item 
+\Hypertarget{structts_b_spline_a035021a4dbb231f4a70b40ed291e0ac7}\label{structts_b_spline_a035021a4dbb231f4a70b40ed291e0ac7} 
+size\+\_\+t {\bfseries n\+\_\+knots}
+\item 
+\Hypertarget{structts_b_spline_a6c56854b649803b73670892077caa483}\label{structts_b_spline_a6c56854b649803b73670892077caa483} 
+ts\+Real \texorpdfstring{$\ast$}{*} {\bfseries ctrlp}
+\item 
+\Hypertarget{structts_b_spline_a0ac4324c87e2dbacde7f03adb2bb2ec1}\label{structts_b_spline_a0ac4324c87e2dbacde7f03adb2bb2ec1} 
+ts\+Real \texorpdfstring{$\ast$}{*} {\bfseries knots}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents a B-\/\+Spline which may also be used for NURBS, Bezier curves, lines, and points. NURBS are represented using homogeneous coordinates where the last component of a control point is its weight. Bezier curves are B-\/\+Splines with \textquotesingle{}n\+\_\+ctrlp == order\textquotesingle{} and clamped knot vector making the curve passing through the first and last control point. If a Bezier curve consists of two control points only, we call them a line. Points, ultimately, are just very short lines having only a single control point. Consequently, the degree of a point is zero.
+
+Two dimensional control points are organized as follows\+: \begin{DoxyVerb}[x_0, y_0, x_1, y_1, ..., x_n-1, y_n-1]
+\end{DoxyVerb}
+ Tree dimensional control points are organized as follows\+: \begin{DoxyVerb}[x_0, y_0, z_0, x_1, y_1, z_1, ..., x_n-1, y_n-1, z_n-1]
+\end{DoxyVerb}
+ ... and so on. NURBS are represented using homogeneous coordinates. For instance, let\textquotesingle{}s say we have a NURBS in 2D consisting of 11 control points where \textquotesingle{}w\+\_\+i\textquotesingle{} is the weight of the i\textquotesingle{}th control point. Then the corresponding control points are organized as follows\+: \begin{DoxyVerb}[x_0, y_0, w_0, x_1, y_1, w_1, ..., x_10, y_10, w_10]
+\end{DoxyVerb}
+ Note\+: The fields \textquotesingle{}ctrlp\textquotesingle{} and \textquotesingle{}knots\textquotesingle{} share the same array (similar to the approach used in \textquotesingle{}\doxylink{structts_de_boor_net}{ts\+De\+Boor\+Net}\textquotesingle{}). That is, the first elements of this array contain the control points of a spline whereas the last elements contain its knots. Accordingly, you should never free \textquotesingle{}knots\textquotesingle{} explicitly. Using \textquotesingle{}ts\+\_\+bspline\+\_\+free()\textquotesingle{} to free dynamically allocated memory is to be preferred anyway. If \textquotesingle{}ctrlp\textquotesingle{} and \textquotesingle{}knots\textquotesingle{} do not share the same array, or at least a consistent block of data, functions provided by Tiny\+Spline my fail because values are copied block wise. 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/core/\mbox{\hyperlink{tinyspline_8h}{tinyspline.\+h}}\end{DoxyCompactItemize}

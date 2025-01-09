@@ -1,0 +1,165 @@
+\doxysection{Workspace.\+h}
+\hypertarget{_workspace_8h_source}{}\label{_workspace_8h_source}\index{src/core/Workspace.h@{src/core/Workspace.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#ifndef\ \_WORKSPACE\_H\_BY\_DP\_INCLUDED\_}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#define\ \_WORKSPACE\_H\_BY\_DP\_INCLUDED\_}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}dll\_global.h"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}Global.h"{}}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}Model3D.h"{}}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}Utilities.h"{}}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct__light}{\_light}}}
+\DoxyCodeLine{00012\ \{}
+\DoxyCodeLine{00013\ \ \ \ \ GLenum\ light;}
+\DoxyCodeLine{00014\ \ \ \ \ \textcolor{keywordtype}{bool}\ active;}
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keywordtype}{bool}\ fixed;}
+\DoxyCodeLine{00016\ \ \ \ \ \textcolor{keywordtype}{float}\ ambient[4];}
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keywordtype}{float}\ diffuse[4];}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keywordtype}{float}\ specular[4];}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keywordtype}{float}\ position[4];}
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keywordtype}{float}\ spot\_direction[3];}
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keywordtype}{float}\ spot\_cut\_off;}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \mbox{\hyperlink{struct__light}{\_light}}(\textcolor{keywordtype}{void})\ \{}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ light\ =\ GL\_LIGHT0;}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ active\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ fixed\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ setAmbient(\ 0.0f,\ 0.0f,\ 0.0f,\ 0.0f\ );}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ setDiffuse(\ 0.0f,\ 0.0f,\ 0.0f,\ 0.0f\ );}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ setSpecular(\ 0.0f,\ 0.0f,\ 0.0f,\ 0.0f\ );}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ setPosition(\ 0.0f,\ 0.0f,\ 0.0f,\ 0.0f\ );}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ setSpot(\ 0.0f,\ 0.0f,\ 0.0f,\ 0.0f\ );}
+\DoxyCodeLine{00032\ \ \ \ \ \};}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keywordtype}{void}\ setAmbient(\ \textcolor{keywordtype}{float}\ f0,\ \textcolor{keywordtype}{float}\ f1,\ \textcolor{keywordtype}{float}\ f2,\ \textcolor{keywordtype}{float}\ f3\ )\ \{\ ambient[0]=f0;\ ambient[1]=f1;\ ambient[2]=f2;\ ambient[3]=f3;\ \};}
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keywordtype}{void}\ setDiffuse(\ \textcolor{keywordtype}{float}\ f0,\ \textcolor{keywordtype}{float}\ f1,\ \textcolor{keywordtype}{float}\ f2,\ \textcolor{keywordtype}{float}\ f3\ )\ \{\ diffuse[0]=f0;\ diffuse[1]=f1;\ diffuse[2]=f2;\ diffuse[3]=f3;\ \};}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keywordtype}{void}\ setSpecular(\ \textcolor{keywordtype}{float}\ f0,\ \textcolor{keywordtype}{float}\ f1,\ \textcolor{keywordtype}{float}\ f2,\ \textcolor{keywordtype}{float}\ f3\ )\ \{\ specular[0]=f0;\ specular[1]=f1;\ specular[2]=f2;\ specular[3]=f3;\ \};}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keywordtype}{void}\ setPosition(\ \textcolor{keywordtype}{float}\ f0,\ \textcolor{keywordtype}{float}\ f1,\ \textcolor{keywordtype}{float}\ f2,\ \textcolor{keywordtype}{float}\ f3=1.0f\ )\ \{\ position[0]=f0;\ position[1]=f1;\ position[2]=f2;\ position[3]=f3;\ \};}
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keywordtype}{void}\ setSpot(\ \textcolor{keywordtype}{float}\ f0,\ \textcolor{keywordtype}{float}\ f1,\ \textcolor{keywordtype}{float}\ f2,\ \textcolor{keywordtype}{float}\ f3\ )\ \{\ spot\_direction[0]=f0;\ spot\_direction[1]=f1;\ spot\_direction[2]=f2;\ spot\_cut\_off=f3;\ \};}
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keywordtype}{void}\ setSpot(\ \textcolor{keywordtype}{float}\ f0,\ \textcolor{keywordtype}{float}\ f1,\ \textcolor{keywordtype}{float}\ f2\ )\ \{\ spot\_direction[0]=f0;\ spot\_direction[1]=f1;\ spot\_direction[2]=f2;\ \};}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keywordtype}{void}\ setSpot(\ \textcolor{keywordtype}{float}\ f3\ )\ \{\ spot\_cut\_off=f3;\ \};}
+\DoxyCodeLine{00041\ \};}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_c_workspace}{CWorkspace}}\ :\ \textcolor{keyword}{public}\ QObject}
+\DoxyCodeLine{00045\ \{}
+\DoxyCodeLine{00046\ \ \ \ \ Q\_OBJECT}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_c_model3_d}{CModel3D}}\ \mbox{\hyperlink{class_c_model3_d}{ChildType}};}
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keyword}{typedef}\ std::map<int,\ ChildType*>\ Children;}
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keyword}{typedef}\ Children::iterator\ iterator;}
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keyword}{typedef}\ Children::value\_type\ value\_type;}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }CWorkspaceXML;}
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_c_workspace_file}{CWorkspaceFile}};}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00059\ \ \ \ \ Children\ m\_data;}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \ \ std::list<int>\ m\_selection;}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keywordtype}{int}\ m\_idOfCurrentModel;}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \ \ \ \ \mbox{\hyperlink{struct__light}{\_light}}\ m\_lights[8];}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keywordtype}{bool}\ m\_bOK;}
+\DoxyCodeLine{00068\ \ \ \ \ std::string\ m\_sError;}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{class_c_workspace}{CWorkspace}}();}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00073\ \ \ \ \ \mbox{\hyperlink{class_c_workspace}{\string~CWorkspace}}();}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{class_c_workspace}{CWorkspace}}*\ instance();}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \ \ \ \ Children\&\ children()\ \{\ \textcolor{keywordflow}{return}\ m\_data;\ \}}
+\DoxyCodeLine{00078\ \ \ \ \ }
+\DoxyCodeLine{00079\ \ \ \ \ \mbox{\hyperlink{class_c_model3_d}{ChildType}}*\&\ operator[](\textcolor{keywordtype}{int}\ i)}
+\DoxyCodeLine{00080\ \ \ \ \ \{}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ assert(m\_data.find(i)\ !=\ m\_data.end());}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ m\_data[i];}
+\DoxyCodeLine{00083\ \ \ \ \ \}}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \ \ \ \mbox{\hyperlink{class_c_model3_d}{ChildType}}*\ first()\ \{\ \textcolor{keywordflow}{if}\ (m\_data.empty())\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};\ \textcolor{keywordflow}{return}\ m\_data.begin()-\/>second;\ \};}
+\DoxyCodeLine{00086\ \ \ \ \ \mbox{\hyperlink{class_c_model3_d}{ChildType}}*\ last()\ \{\ \textcolor{keywordflow}{if}\ (m\_data.empty())\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};\ \textcolor{keywordflow}{return}\ m\_data.rbegin()-\/>second;\ \};}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \ \ \ \ CWorkspace::iterator\ begin()\ \{\ \textcolor{keywordflow}{return}\ m\_data.begin();\ \}}
+\DoxyCodeLine{00089\ \ \ \ \ CWorkspace::iterator\ end()\ \{\ \textcolor{keywordflow}{return}\ m\_data.end();\ \}}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \ \ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{class_c_base_object}{CBaseObject}}*\ getSomethingWithId(\textcolor{keywordtype}{int}\ \textcolor{keywordtype}{id});}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \ \ \ \ \textcolor{keywordtype}{bool}\ isOK()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ m\_bOK;\ \}}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keyword}{const}\ std::string\ \&lastError()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ m\_sError;\ \}}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ render();}
+\DoxyCodeLine{00097\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ renderLights(\ \textcolor{keywordtype}{bool}\ );}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \ \ \ \ \mbox{\hyperlink{struct__light}{\_light}}\ \&\ \ getLightRef(\ \textcolor{keywordtype}{int}\ nr\ )\ \{\ \textcolor{keywordflow}{return}\ m\_lights[nr];\ \};}
+\DoxyCodeLine{00100\ \ \ \ \ }
+\DoxyCodeLine{00101\ \ \ \ \ \textcolor{comment}{//\ MODELE:}}
+\DoxyCodeLine{00102\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \_addModel(\ \mbox{\hyperlink{class_c_model3_d}{CModel3D}}\ *obj\ );}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{keywordtype}{int}\ \ \ \ \ \ \ \ \ \_setCurrentModel(\ \textcolor{keywordtype}{int}\ i\ );}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{keywordtype}{int}\ \ \ \ \ \ \ \ \ \_getCurrentModelId()\ \{\ \textcolor{keywordflow}{return}\ m\_idOfCurrentModel;\ \};}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \ \ \ \ \mbox{\hyperlink{class_c_model3_d}{CModel3D}}\ *\ \ \_getModel(\ \textcolor{keywordtype}{int}\ i\ );}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \_removeModel(\ \textcolor{keywordtype}{int}\ i,\ \textcolor{keywordtype}{bool}\ deleteIt\ =\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \_removeAllModels();}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ \ \ \ \ \textcolor{comment}{//\ WORKSPACE}}
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ load(\ QString\ path\ );}
+\DoxyCodeLine{00116\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ save(\ QString\ path\ );}
+\DoxyCodeLine{00117\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ clear();}
+\DoxyCodeLine{00118\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ \ size()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ m\_data.size();\ \}}
+\DoxyCodeLine{00119\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ empty()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ m\_data.empty();\ \}}
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ reset();}
+\DoxyCodeLine{00121\ }
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{comment}{//======================================================}}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \ \ \ \ std::vector<CRGBA>\ getXRayImage(\ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\ pkt0,\ \textcolor{keywordtype}{int}\ size\ );}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ \ \ \ \ \textcolor{comment}{//int\ getNewId();}}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{keywordtype}{int}\ \_setNextModelCurrent();}
+\DoxyCodeLine{00130\ \ \ \ \ \textcolor{keywordtype}{int}\ \_setPreviousModelCurrent();}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \ \ \ \ \textcolor{keywordtype}{bool}\ inSelection(\textcolor{keywordtype}{int}\ \textcolor{keywordtype}{id});}
+\DoxyCodeLine{00133\ \ \ \ \ \textcolor{keywordtype}{int}\ getNumberInSelection(\textcolor{keywordtype}{int}\ \textcolor{keywordtype}{id});}
+\DoxyCodeLine{00134\ \ \ \ \ \textcolor{keywordtype}{void}\ addToSelection(\textcolor{keywordtype}{int}\ \textcolor{keywordtype}{id});}
+\DoxyCodeLine{00135\ \ \ \ \ \textcolor{keywordtype}{void}\ removeFromSelection(\textcolor{keywordtype}{int}\ \textcolor{keywordtype}{id});}
+\DoxyCodeLine{00136\ \ \ \ \ \textcolor{keywordtype}{bool}\ changeSelection(\textcolor{keywordtype}{int}\ \textcolor{keywordtype}{id},\ \textcolor{keywordtype}{bool}\ b);}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \ \ \ \ std::list<int>\ getSelection();}
+\DoxyCodeLine{00139\ \ \ \ \ std::list<int>\ getSelection(std::set<CBaseObject::Type>\ type,\ \mbox{\hyperlink{class_c_object}{CObject}}*\ obj\ =\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00140\ \ \ \ \ std::list<CBaseObject*>\ getSelected(std::set<CBaseObject::Type>\ types,\ \mbox{\hyperlink{class_c_object}{CObject}}*\ dad);}
+\DoxyCodeLine{00141\ \ \ \ \ \textcolor{keywordtype}{void}\ clearSelection()\ \{\ m\_selection.clear();\ \};}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ \ \ \ \ \mbox{\hyperlink{class_c_bounding_box}{CBoundingBox}}\ topBB();}
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00145\ signals:}
+\DoxyCodeLine{00146\ \ \ \ \ \textcolor{keywordtype}{void}\ currentObjectChanged(\textcolor{keywordtype}{int});}
+\DoxyCodeLine{00147\ \ \ \ \ \textcolor{keywordtype}{void}\ currentObjectChanged(\mbox{\hyperlink{class_c_base_object}{CBaseObject}}*);}
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00149\ \textcolor{keyword}{public}\ slots:}
+\DoxyCodeLine{00150\ \ \ \ \ \textcolor{keywordtype}{void}\ onCurrentObjectChanged(\textcolor{keywordtype}{int});}
+\DoxyCodeLine{00151\ \ \ \ \ \textcolor{keywordtype}{void}\ onCurrentObjectChanged(\mbox{\hyperlink{class_c_base_object}{CBaseObject}}*);}
+\DoxyCodeLine{00152\ \ \ \ \ }
+\DoxyCodeLine{00153\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00154\ \ \ \ \ \textcolor{keywordtype}{void}\ InitLights();}
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00156\ \};}
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00158\ }
+\DoxyCodeLine{00159\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ \_WORKSPACE\_H\_BY\_DP\_INCLUDED\_\ */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

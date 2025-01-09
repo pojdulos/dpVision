@@ -1,0 +1,79 @@
+\doxysection{Vol\+Data\+With\+Poly\+Vox.\+h}
+\hypertarget{_vol_data_with_poly_vox_8h_source}{}\label{_vol_data_with_poly_vox_8h_source}\index{src/core/VolDataWithPolyVox.h@{src/core/VolDataWithPolyVox.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#ifndef\ \_VOLDATA\_H\_BY\_DP\_INCLUDED\_}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#define\ \_VOLDATA\_H\_BY\_DP\_INCLUDED\_}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}Mesh.h"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00008\ \textcolor{comment}{struct\ SVolData\ \{}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ \ \ \ CRGBA\ color;}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ \ \ \ unsigned\ type\ :\ 4;}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ \ \ \ unsigned\ nLeftX\ :\ 1;}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ \ \ \ unsigned\ nRightX\ :\ 1;}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ \ \ \ unsigned\ nLeftY\ :\ 1;}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ \ \ \ unsigned\ nRightY\ :\ 1;}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ \ \ \ unsigned\ nLeftZ\ :\ 1;}}
+\DoxyCodeLine{00016\ \textcolor{comment}{\ \ \ \ unsigned\ nRightZ\ :\ 1;}}
+\DoxyCodeLine{00017\ \textcolor{comment}{\};}}
+\DoxyCodeLine{00018\ \textcolor{comment}{*/}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_s_vol_data}{SVolData}}\ \{}
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ bitLeftX\ =\ 0x01,}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ bitRightX\ =\ 0x02,}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ bitLeftY\ =\ 0x04,}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ bitRightY\ =\ 0x08,}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ bitLeftZ\ =\ 0x10,}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ bitRightZ\ =\ 0x20}
+\DoxyCodeLine{00028\ \ \ \ \ \};}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ n;}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ sum()\ \{\ \textcolor{keywordflow}{return}\ n;\ \};}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ c;}
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{comment}{//unsigned\ char\ r;}}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{comment}{//unsigned\ char\ g;}}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{comment}{//unsigned\ char\ b;}}
+\DoxyCodeLine{00038\ \};}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_c_model3_d}{CModel3D}};}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \textcolor{comment}{//class\ CVolData3D\ :\ public\ std::vector<CVolData2D>}}
+\DoxyCodeLine{00043\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_c_vol_data3_d}{CVolData3D}}\ :\ \textcolor{keyword}{public}\ std::map<Trio<int>,SVolData>}
+\DoxyCodeLine{00044\ \{}
+\DoxyCodeLine{00045\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00046\ \ \ \ \ \mbox{\hyperlink{class_c_vol_data3_d}{CVolData3D}}(\ \mbox{\hyperlink{class_c_model3_d}{CModel3D}}\ *p\ );}
+\DoxyCodeLine{00047\ \ \ \ \ \mbox{\hyperlink{class_c_vol_data3_d}{\string~CVolData3D}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keywordtype}{void}\ prepare(\ \mbox{\hyperlink{class_c_mesh}{CMesh}}\ \&mesh,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ options\ =\ MESHRENDEROPTIONS\_NONE\ );}
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keywordtype}{void}\ render(\ \mbox{\hyperlink{class_c_mesh}{CMesh}}\&\ mesh,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ options\ =\ MESHRENDEROPTIONS\_NONE\ );}
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keywordtype}{void}\ volumAddBox(\ \mbox{\hyperlink{class_c_mesh}{CMesh}}\ \&mesh,\ \textcolor{keywordtype}{float}\ ix,\ \textcolor{keywordtype}{float}\ iy,\ \textcolor{keywordtype}{float}\ iz,\ \textcolor{keywordtype}{float}\ w,\ \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}}\ color\ );}
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keywordtype}{void}\ volumReGenerate(\ \mbox{\hyperlink{class_c_mesh}{CMesh}}\ \&mesh\ );}
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keywordtype}{void}\ volumPrepare(\ \mbox{\hyperlink{class_c_mesh}{CMesh}}\ \&mesh,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ options\ );}
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keywordtype}{void}\ volumRender1(\ \mbox{\hyperlink{class_c_mesh}{CMesh}}\ \&mesh,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ options\ );}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keywordtype}{void}\ volumRender(\ \mbox{\hyperlink{class_c_mesh}{CMesh}}\ \&mesh,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ options\ );}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keywordtype}{void}\ addVoxel(\ \textcolor{keywordtype}{int}\ ix,\ \textcolor{keywordtype}{int}\ iy,\ \textcolor{keywordtype}{int}\ iz,\ \mbox{\hyperlink{struct_s_vol_data}{SVolData}}\ *v\ );}
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keywordtype}{void}\ addVoxel1(\ \textcolor{keywordtype}{int}\ ix,\ \textcolor{keywordtype}{int}\ iy,\ \textcolor{keywordtype}{int}\ iz,\ \mbox{\hyperlink{struct_s_vol_data}{SVolData}}\ *v\ );}
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keywordtype}{void}\ drawVoxel(\ \textcolor{keywordtype}{float}\ ix,\ \textcolor{keywordtype}{float}\ iy,\ \textcolor{keywordtype}{float}\ iz,\ \mbox{\hyperlink{struct_s_vol_data}{SVolData}}\ *v\ );}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \ \ \ \ \mbox{\hyperlink{class_c_model3_d}{CModel3D}}\ *m\_parent;}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ m\_alpha;}
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keywordtype}{int}\ m\_volX,\ m\_volY,\ m\_volZ;}
+\DoxyCodeLine{00064\ \ \ \ \ CPunkt3D\ m\_volMin,\ m\_volMax;}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \ \ \textcolor{keywordtype}{int}\ m\_type;}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \ \ \ \ \_vof4\ myFaces;}
+\DoxyCodeLine{00069\ \ \ \ \ \_vof4::iterator\ face4;}
+\DoxyCodeLine{00070\ \};}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ \_VOLDATA\_H\_BY\_DP\_INCLUDED\_\ */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

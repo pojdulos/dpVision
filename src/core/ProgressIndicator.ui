@@ -124,7 +124,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="qtgui.qrc">
+      <iconset resource="dpVision.qrc">
        <normaloff>:/icons/Erase.ico</normaloff>:/icons/Erase.ico</iconset>
      </property>
      <property name="flat">
@@ -135,7 +135,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="qtgui.qrc"/>
+  <include location="dpVision.qrc"/>
  </resources>
  <connections>
   <connection>

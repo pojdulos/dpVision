@@ -1,0 +1,41 @@
+\doxysection{Dock\+Widget\+Viewer.\+h}
+\hypertarget{_dock_widget_viewer_8h_source}{}\label{_dock_widget_viewer_8h_source}\index{src/core/DockWidgetViewer.h@{src/core/DockWidgetViewer.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ DOCKWIDGETVIEWER\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ DOCKWIDGETVIEWER\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <QtWidgets/QDockWidget>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}ui\_dockWidgetViewer.h"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}GLViewer.h"{}}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}Wektor3D.h"{}}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_dock_widget_viewer}{DockWidgetViewer}}\ :\ \textcolor{keyword}{public}\ QDockWidget}
+\DoxyCodeLine{00011\ \{}
+\DoxyCodeLine{00012\ \ \ \ \ Q\_OBJECT}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \ \ \ \ \mbox{\hyperlink{class_c_vector3}{CVector3<double>}}\ rot;}
+\DoxyCodeLine{00015\ \ \ \ \ \mbox{\hyperlink{class_c_vector3}{CVector3<double>}}\ tra;}
+\DoxyCodeLine{00016\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{class_dock_widget_viewer}{DockWidgetViewer}}(QWidget\ *parent\ =\ 0);}
+\DoxyCodeLine{00018\ \ \ \ \ \mbox{\hyperlink{class_dock_widget_viewer}{\string~DockWidgetViewer}}();}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keywordtype}{void}\ updateProperties();}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{keyword}{public}\ slots:}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keywordtype}{void}\ updateRotX(\ \textcolor{keywordtype}{double}\ );}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keywordtype}{void}\ updateRotY(\ \textcolor{keywordtype}{double}\ );}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keywordtype}{void}\ updateRotZ(\ \textcolor{keywordtype}{double}\ );}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keywordtype}{void}\ updateTrans(\ \textcolor{keywordtype}{double}\ );}
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keywordtype}{void}\ updateScale(\ \textcolor{keywordtype}{double}\ );}
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keywordtype}{void}\ updateBGcolor(\ \textcolor{keywordtype}{double}\ );}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keywordtype}{void}\ updateAngle(\ \textcolor{keywordtype}{int}\ );}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00032\ \ \ \ \ Ui::DockWidgetViewer\ ui;}
+\DoxyCodeLine{00033\ \};}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ DOCKWIDGETVIEWER\_H}}
+
+\end{DoxyCode}

@@ -1,0 +1,79 @@
+\doxysection{Mdi\+Child Class Reference}
+\hypertarget{class_mdi_child}{}\label{class_mdi_child}\index{MdiChild@{MdiChild}}
+Inheritance diagram for Mdi\+Child\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_mdi_child}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_mdi_child_a48dbebc5fcbc688e9869226a80863e94}\label{class_mdi_child_a48dbebc5fcbc688e9869226a80863e94} 
+enum {\bfseries Type} \{ {\bfseries GL}
+, {\bfseries Pic}
+ \}
+\item 
+\Hypertarget{class_mdi_child_ad2b65cc82066667262f92ef7cd210b8c}\label{class_mdi_child_ad2b65cc82066667262f92ef7cd210b8c} 
+enum {\bfseries Show} \{ {\bfseries Minimized} = 0
+, {\bfseries Normal} = 1
+, {\bfseries Maximized} = 2
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_mdi_child_aff92b1931b9011c094f2e05a2ed4d972}\label{class_mdi_child_aff92b1931b9011c094f2e05a2ed4d972} 
+Type {\bfseries type} ()
+\item 
+\Hypertarget{class_mdi_child_a01e3fa56cbb04dea81ba506aea2ff95b}\label{class_mdi_child_a01e3fa56cbb04dea81ba506aea2ff95b} 
+bool {\bfseries has\+Type} (Type t)
+\item 
+\Hypertarget{class_mdi_child_ab6402fa16e1994fce9dc02f8e466fd50}\label{class_mdi_child_ab6402fa16e1994fce9dc02f8e466fd50} 
+void {\bfseries update\+View} (bool buffered=true)
+\item 
+\Hypertarget{class_mdi_child_a20f6edc44866c38840dbd6376737456c}\label{class_mdi_child_a20f6edc44866c38840dbd6376737456c} 
+void {\bfseries full\+Screen} ()
+\item 
+\Hypertarget{class_mdi_child_a05d0c367a53a71f852c3f65a84eda875}\label{class_mdi_child_a05d0c367a53a71f852c3f65a84eda875} 
+void {\bfseries key\+Press\+Event} (QKey\+Event \texorpdfstring{$\ast$}{*}e) override
+\item 
+\Hypertarget{class_mdi_child_a76a94e525aade3dae5df118f45fc407d}\label{class_mdi_child_a76a94e525aade3dae5df118f45fc407d} 
+void {\bfseries resize\+Event} (QResize\+Event \texorpdfstring{$\ast$}{*}e) override
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_mdi_child_a671137c4d92b7827b70a2b85eac274fe}\label{class_mdi_child_a671137c4d92b7827b70a2b85eac274fe} 
+static QMdi\+Sub\+Window \texorpdfstring{$\ast$}{*} {\bfseries create} (Type t, QMdi\+Area \texorpdfstring{$\ast$}{*}mdi\+Area, Show show=Normal)
+\item 
+\Hypertarget{class_mdi_child_a82bce5bb4984fdb020fb4b818e921730}\label{class_mdi_child_a82bce5bb4984fdb020fb4b818e921730} 
+static QMdi\+Sub\+Window \texorpdfstring{$\ast$}{*} {\bfseries create} (\mbox{\hyperlink{class_c_image}{CImage}} \texorpdfstring{$\ast$}{*}im, QMdi\+Area \texorpdfstring{$\ast$}{*}mdi\+Area)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_mdi_child_a9d1fc699e37b1ffc24905eb276b2596d}\label{class_mdi_child_a9d1fc699e37b1ffc24905eb276b2596d} 
+bool {\bfseries m\+\_\+it\+Was\+Maximized}
+\item 
+\Hypertarget{class_mdi_child_a2302eef36129b63b9cbed7e8242897f4}\label{class_mdi_child_a2302eef36129b63b9cbed7e8242897f4} 
+QWidget \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+widget}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_mdi_child_a128a6f4ef9c8d96c496366eb2ca6113a}\label{class_mdi_child_a128a6f4ef9c8d96c496366eb2ca6113a} 
+{\bfseries Mdi\+Child} (Type t)
+\item 
+\Hypertarget{class_mdi_child_a977075c63075df32f15a939b8f7e441b}\label{class_mdi_child_a977075c63075df32f15a939b8f7e441b} 
+{\bfseries Mdi\+Child} (\mbox{\hyperlink{class_c_image}{CImage}} \texorpdfstring{$\ast$}{*}im)
+\item 
+\Hypertarget{class_mdi_child_a926c772a4b34046a9586590b1faee87d}\label{class_mdi_child_a926c772a4b34046a9586590b1faee87d} 
+void {\bfseries mouse\+Move\+Event} (QMouse\+Event \texorpdfstring{$\ast$}{*}event)
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/core/Mdi\+Child.\+h\item 
+src/core/Mdi\+Child.\+cpp\end{DoxyCompactItemize}

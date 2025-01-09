@@ -1,0 +1,83 @@
+\doxysection{CPolygon\+Group Class Reference}
+\hypertarget{class_c_polygon_group}{}\label{class_c_polygon_group}\index{CPolygonGroup@{CPolygonGroup}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_polygon_group_ad9a0e576a12707ba533aaed4aac2349d}\label{class_c_polygon_group_ad9a0e576a12707ba533aaed4aac2349d} 
+typedef std\+::vector$<$ \mbox{\hyperlink{class_c_face}{CFace}} $>$ {\bfseries Faces}
+\item 
+\Hypertarget{class_c_polygon_group_a73fc8e7ae35b903aa5d2c277f240bf16}\label{class_c_polygon_group_a73fc8e7ae35b903aa5d2c277f240bf16} 
+typedef std\+::vector$<$ \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}} $>$ {\bfseries Colors}
+\item 
+\Hypertarget{class_c_polygon_group_ac6d408853392705de919eda7fe052ead}\label{class_c_polygon_group_ac6d408853392705de919eda7fe052ead} 
+typedef std\+::vector$<$ \mbox{\hyperlink{class_c_vector3}{CVector3f}} $>$ {\bfseries Normals}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_polygon_group_aa47b7eef8598ce03315b86c4ab58654f}\label{class_c_polygon_group_aa47b7eef8598ce03315b86c4ab58654f} 
+{\bfseries CPolygon\+Group} (\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*}p=nullptr)
+\item 
+\Hypertarget{class_c_polygon_group_a9ce4613951c5ed89734ec985a815f6bd}\label{class_c_polygon_group_a9ce4613951c5ed89734ec985a815f6bd} 
+{\bfseries CPolygon\+Group} (\mbox{\hyperlink{class_c_polygon_group}{CPolygon\+Group}} \&m)
+\item 
+\Hypertarget{class_c_polygon_group_a522d5e6828948295e69574e338aa06f7}\label{class_c_polygon_group_a522d5e6828948295e69574e338aa06f7} 
+\mbox{\hyperlink{class_c_polygon_group}{CPolygon\+Group}} \& {\bfseries operator=} (const \mbox{\hyperlink{class_c_polygon_group}{CPolygon\+Group}} \&)
+\item 
+\Hypertarget{class_c_polygon_group_a62d2ea896357b8f57eaf6a154daef91d}\label{class_c_polygon_group_a62d2ea896357b8f57eaf6a154daef91d} 
+void {\bfseries set\+Parent} (\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*}p)
+\item 
+\Hypertarget{class_c_polygon_group_a0aac3412a3bbea1210986e52e2496f01}\label{class_c_polygon_group_a0aac3412a3bbea1210986e52e2496f01} 
+Faces \& {\bfseries faces} ()
+\item 
+\Hypertarget{class_c_polygon_group_a0721024f79f89caeb8bbe57d83aa6416}\label{class_c_polygon_group_a0721024f79f89caeb8bbe57d83aa6416} 
+Normals \& {\bfseries normals} ()
+\item 
+\Hypertarget{class_c_polygon_group_abbcf9137418d3e8e2170bc395d9df7b2}\label{class_c_polygon_group_abbcf9137418d3e8e2170bc395d9df7b2} 
+Colors \& {\bfseries colors} ()
+\item 
+\Hypertarget{class_c_polygon_group_aafe3f2145827d83f464a3b2c2628da15}\label{class_c_polygon_group_aafe3f2145827d83f464a3b2c2628da15} 
+\mbox{\hyperlink{class_c_face}{CFace}} \& {\bfseries operator\mbox{[}$\,$\mbox{]}} (INDEX\+\_\+\+TYPE index)
+\item 
+\Hypertarget{class_c_polygon_group_a3420d68a640485952400772c10615fc8}\label{class_c_polygon_group_a3420d68a640485952400772c10615fc8} 
+const \mbox{\hyperlink{class_c_face}{CFace}} \& {\bfseries operator\mbox{[}$\,$\mbox{]}} (INDEX\+\_\+\+TYPE index) const
+\item 
+\Hypertarget{class_c_polygon_group_a91421dcae167fe24f5d4bd342dbd5703}\label{class_c_polygon_group_a91421dcae167fe24f5d4bd342dbd5703} 
+size\+\_\+t {\bfseries size} ()
+\item 
+\Hypertarget{class_c_polygon_group_aed4c70f32801f71eb8f3743390f4b16d}\label{class_c_polygon_group_aed4c70f32801f71eb8f3743390f4b16d} 
+bool {\bfseries has\+Colors} ()
+\item 
+\Hypertarget{class_c_polygon_group_afee2a29fc520166217cc3b60c6f9780e}\label{class_c_polygon_group_afee2a29fc520166217cc3b60c6f9780e} 
+bool {\bfseries has\+Normals} ()
+\item 
+\Hypertarget{class_c_polygon_group_afe59e802932356623f225fb4c03b90d2}\label{class_c_polygon_group_afe59e802932356623f225fb4c03b90d2} 
+INDEX\+\_\+\+TYPE {\bfseries add\+Face} (\mbox{\hyperlink{class_c_face}{CFace}} f)
+\item 
+\Hypertarget{class_c_polygon_group_a16ab655d8dbb884e98b88bb99e1ae1e3}\label{class_c_polygon_group_a16ab655d8dbb884e98b88bb99e1ae1e3} 
+INDEX\+\_\+\+TYPE {\bfseries add\+Face} (\mbox{\hyperlink{class_c_face}{CFace}} f, \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}} f\+Color)
+\item 
+\Hypertarget{class_c_polygon_group_a1f97c31e217d21dafd5557fe35444987}\label{class_c_polygon_group_a1f97c31e217d21dafd5557fe35444987} 
+void {\bfseries remove\+Face} (INDEX\+\_\+\+TYPE idx)
+\item 
+\Hypertarget{class_c_polygon_group_a341513cafc97490fe490578165bcbd63}\label{class_c_polygon_group_a341513cafc97490fe490578165bcbd63} 
+void {\bfseries remove\+Face} (CPolygon\+Group\+::\+Faces\+::iterator itf)
+\item 
+\Hypertarget{class_c_polygon_group_ab6e4e45595a2c99dcc8b97a03b282335}\label{class_c_polygon_group_ab6e4e45595a2c99dcc8b97a03b282335} 
+void {\bfseries remove\+Face} (CPolygon\+Group\+::\+Faces\+::reverse\+\_\+iterator itfr)
+\item 
+\Hypertarget{class_c_polygon_group_aedb82283f3db49ccd16ee3da51a28379}\label{class_c_polygon_group_aedb82283f3db49ccd16ee3da51a28379} 
+void {\bfseries render\+Self} ()
+\item 
+\Hypertarget{class_c_polygon_group_ad095b45af3f8b7b5f72024db15bbd9ed}\label{class_c_polygon_group_ad095b45af3f8b7b5f72024db15bbd9ed} 
+void {\bfseries render\+Self\+\_\+\+OLD} ()
+\item 
+\Hypertarget{class_c_polygon_group_af078b6c7e1e961133672a0a60ed8f8bc}\label{class_c_polygon_group_af078b6c7e1e961133672a0a60ed8f8bc} 
+void {\bfseries render\+Self\+\_\+\+NEW} ()
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/core/Polygon\+Group.\+h\item 
+src/core/Polygon\+Group.\+cpp\end{DoxyCompactItemize}

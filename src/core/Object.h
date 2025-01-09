@@ -71,6 +71,13 @@ public:
 
 	int addChild( CBaseObject *d );
 	bool removeChild( int id = 0 );
+	
+	/*
+	removes the links from this object to all child objects
+	and annotations and permanently deletes all these objects
+	*/
+	void removeAllChilds();
+	
 	//void removeChild( CBaseObject *d );
 
 	CBaseObject* getChild(int id = 0);

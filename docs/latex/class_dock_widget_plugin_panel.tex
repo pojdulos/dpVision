@@ -1,0 +1,92 @@
+\doxysection{Dock\+Widget\+Plugin\+Panel Class Reference}
+\hypertarget{class_dock_widget_plugin_panel}{}\label{class_dock_widget_plugin_panel}\index{DockWidgetPluginPanel@{DockWidgetPluginPanel}}
+Inheritance diagram for Dock\+Widget\+Plugin\+Panel\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_dock_widget_plugin_panel}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Slots}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_a739dace82885b5a38e6302546e34a182}\label{class_dock_widget_plugin_panel_a739dace82885b5a38e6302546e34a182} 
+void {\bfseries user\+Button} ()
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_ade060b53b19665d68b85d766bdd213eb}\label{class_dock_widget_plugin_panel_ade060b53b19665d68b85d766bdd213eb} 
+void {\bfseries user\+Value\+Changed} (int)
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_aec31ccd36777deba9de255d5dcc424c3}\label{class_dock_widget_plugin_panel_aec31ccd36777deba9de255d5dcc424c3} 
+void {\bfseries combo\+Text\+Changed} (const QString \&text)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_a6f2e39e81e392a1b36df3818703c884c}\label{class_dock_widget_plugin_panel_a6f2e39e81e392a1b36df3818703c884c} 
+{\bfseries Dock\+Widget\+Plugin\+Panel} (QWidget \texorpdfstring{$\ast$}{*}parent=0)
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_a8c9de3d1127f3f009d53ea5b93160c43}\label{class_dock_widget_plugin_panel_a8c9de3d1127f3f009d53ea5b93160c43} 
+QGroup\+Box \texorpdfstring{$\ast$}{*} {\bfseries get\+Panel} (unsigned int plugin\+Id)
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_ad4b565de2eb236a757a1ec39cdf33044}\label{class_dock_widget_plugin_panel_ad4b565de2eb236a757a1ec39cdf33044} 
+void {\bfseries show\+Panel} (unsigned int plugin\+Id, bool b=true)
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_a8518354a18d76b4c0d9d4ea47094cfd5}\label{class_dock_widget_plugin_panel_a8518354a18d76b4c0d9d4ea47094cfd5} 
+void {\bfseries add\+Plugin\+Panel} (unsigned int plugin\+Id, QString label)
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_aac744bc0b2d02fcad6d3f42cb0ff47c1}\label{class_dock_widget_plugin_panel_aac744bc0b2d02fcad6d3f42cb0ff47c1} 
+void {\bfseries remove\+Plugin\+Panel} (unsigned int plugin\+Id)
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_ae93ce954c4ee3bf9d684f5c68d9a2ee1}\label{class_dock_widget_plugin_panel_ae93ce954c4ee3bf9d684f5c68d9a2ee1} 
+void {\bfseries remove\+Widget} (unsigned int plugin\+Id, QString name)
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_aa23561784e14f973974750402b61f948}\label{class_dock_widget_plugin_panel_aa23561784e14f973974750402b61f948} 
+QPush\+Button \texorpdfstring{$\ast$}{*} {\bfseries add\+Button} (unsigned int plugin\+Id, QString label, QObject \texorpdfstring{$\ast$}{*}receiver, const char \texorpdfstring{$\ast$}{*}slot, int row, int col, int rspan=0, int cspan=0)
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_af46e2dc716ee272654c1106fad359fe2}\label{class_dock_widget_plugin_panel_af46e2dc716ee272654c1106fad359fe2} 
+QPush\+Button \texorpdfstring{$\ast$}{*} {\bfseries add\+Button} (unsigned int plugin\+Id, QString button\+Name, QString label, int row, int col, int rspan=0, int cspan=0)
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_a31d934661f053426201cccae64b4eecc}\label{class_dock_widget_plugin_panel_a31d934661f053426201cccae64b4eecc} 
+void {\bfseries add\+Edit\+Box} (unsigned int plugin\+Id, QString name, QString label, QString value, int row, int col, int rspan=0, int cspan=0)
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_a7b7082d4f1d61ed990f540d7db1b628d}\label{class_dock_widget_plugin_panel_a7b7082d4f1d61ed990f540d7db1b628d} 
+void {\bfseries add\+Slider} (unsigned int plugin\+Id, QString button\+Name, int min, int max, int row, int col, int rspan=0, int cspan=0)
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_a04a6451f9b80ca58b4509fc8295d5404}\label{class_dock_widget_plugin_panel_a04a6451f9b80ca58b4509fc8295d5404} 
+void {\bfseries add\+Combo\+Box} (unsigned int plugin\+Id, QString name, int row, int col, int rspan=0, int cspan=0)
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_a6b856c3bb41968f8b2788e34968acd4d}\label{class_dock_widget_plugin_panel_a6b856c3bb41968f8b2788e34968acd4d} 
+void {\bfseries set\+Button\+Text} (unsigned int plugin\+Id, QString name, QString value)
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_ad3d3075b674ae87da78673c78b0f9ee1}\label{class_dock_widget_plugin_panel_ad3d3075b674ae87da78673c78b0f9ee1} 
+QString {\bfseries get\+Edit\+Box\+Value} (unsigned int plugin\+Id, QString name)
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_aa807b1efbdbaf6919127c4df56342fd7}\label{class_dock_widget_plugin_panel_aa807b1efbdbaf6919127c4df56342fd7} 
+void {\bfseries set\+Edit\+Box\+Value} (unsigned int plugin\+Id, QString name, QString value)
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_aa4285e91b81e4577ab0e73f537d0a68c}\label{class_dock_widget_plugin_panel_aa4285e91b81e4577ab0e73f537d0a68c} 
+int {\bfseries get\+Slider\+Value} (unsigned int plugin\+Id, QString name)
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_aea479950d12516a408cdc26caa2fc572}\label{class_dock_widget_plugin_panel_aea479950d12516a408cdc26caa2fc572} 
+int {\bfseries set\+Slider\+Value} (unsigned int plugin\+Id, QString name, int value)
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_a097ff04d63c11dfbadf3cd4b6cab5841}\label{class_dock_widget_plugin_panel_a097ff04d63c11dfbadf3cd4b6cab5841} 
+void {\bfseries set\+Slider\+Range} (unsigned int plugin\+Id, QString name, int min, int max)
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_a54c25593ebe65b2e7233440751c1911e}\label{class_dock_widget_plugin_panel_a54c25593ebe65b2e7233440751c1911e} 
+QString {\bfseries get\+Combo\+Box\+Current\+Item\+Text} (unsigned int plugin\+Id, QString name)
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_affd1a2515e9273d0fe3609d908916bde}\label{class_dock_widget_plugin_panel_affd1a2515e9273d0fe3609d908916bde} 
+void {\bfseries set\+Combo\+Box\+Items} (unsigned int plugin\+Id, QString name, QString\+List items)
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_a1d0eafe6275ff976b1acf8335500940f}\label{class_dock_widget_plugin_panel_a1d0eafe6275ff976b1acf8335500940f} 
+void {\bfseries add\+Label} (unsigned int plugin\+Id, QString name, QString label, int row, int col, int rspan=0, int cspan=0)
+\item 
+\Hypertarget{class_dock_widget_plugin_panel_a44418304ed6ec025c9a0be2059ddb486}\label{class_dock_widget_plugin_panel_a44418304ed6ec025c9a0be2059ddb486} 
+void {\bfseries set\+Label} (unsigned int plugin\+Id, QString name, QString text)
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/core/Dock\+Widget\+Plugin\+Panel.\+h\item 
+src/core/Dock\+Widget\+Plugin\+Panel.\+cpp\end{DoxyCompactItemize}

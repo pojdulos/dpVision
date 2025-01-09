@@ -39,6 +39,8 @@ GLViewer::GLViewer(QWidget *parent) : QOpenGLWidget(parent)
 	// Ustaw format dla tego widgetu
 	this->setFormat(format);
 
+	im_rendering_now = false;
+
 	m_floatingCamera = false;
 
 	m_transform.reset();
@@ -652,21 +654,21 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 
 					std::map<size_t, size_t> idxMap;
 
-					Eigen::Matrix4d m1 = cloud->getGlobalTransformationMatrix(); // point to workspace
-					Eigen::Matrix4d m2 = m_transform.toEigenMatrix4d(); // workspace to viewer
+					//Eigen::Matrix4d m1 = cloud->getGlobalTransformationMatrix(); // point to workspace
+					//Eigen::Matrix4d m2 = m_transform.toEigenMatrix4d(); // workspace to viewer
 					
 					while (i >= 0)
 					{
 						CPoint3d point = cloud->vertices()[i];
-						//CPoint3d workspace = obj->transform().l2w(point);
-						//CPoint3d world = m_transform.l2w(workspace) - cam.m_pos;
-						//CPoint3d win = world2win(world);
-						Eigen::Vector4d pt(point.x, point.y, point.z, 1.0);
+						CPoint3d workspace = obj->transform().l2w(point);
+						CPoint3d world = m_transform.l2w(workspace) - cam.m_pos;
+						CPoint3d win = world2win(world);
+						//Eigen::Vector4d pt(point.x, point.y, point.z, 1.0);
 
-						Eigen::Vector4d workspacePt = m1 * pt;
-						Eigen::Vector4d worldPt = m2 * workspacePt;
+						//Eigen::Vector4d workspacePt = m1 * pt;
+						//Eigen::Vector4d worldPt = m2 * workspacePt;
 
-						CPoint3d win = world2win(CPoint3d(worldPt[0], worldPt[1], worldPt[2]));
+						//CPoint3d win = world2win(CPoint3d(worldPt[0], worldPt[1], worldPt[2]));
 
 						QPoint pXY(win.x, win.y);
 
@@ -842,6 +844,7 @@ void GLViewer::rotate(double dx, double dy) {
 
 		UI::STATUSBAR::printf(L"rotacja układu współrzędnych"); // : [%f, %f, %f]", wX.X(), wX.Y(), wX.Z());
 	}
+	UI::DOCK::PROPERTIES::updateProperties();
 }
 
 
@@ -866,6 +869,7 @@ void GLViewer::translate(double dx, double dy, double dz) {
 
 		UI::STATUSBAR::printf(L"translacja środka układu współrzędnych: [%f,%f,%f]", t.X(), t.Y(), t.Z());
 	}
+	UI::DOCK::PROPERTIES::updateProperties();
 }
 
 /************************************************************************
@@ -934,7 +938,6 @@ void GLViewer::mouseMoveEvent( QMouseEvent* event )
 			}
 		}
 
-		UI::DOCK::PROPERTIES::updateProperties();
 	}
 	else if ( m_selectionMode == 1 )
 	{

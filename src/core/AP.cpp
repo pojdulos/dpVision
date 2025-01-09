@@ -300,19 +300,53 @@ namespace AP
 		{
 			if ( AP::getWorkspace()->_addModel(obj) )
 			{
-				UI::DOCK::WORKSPACE::addItem(obj->id());
+				UI::DOCK::WORKSPACE::addItem(obj);
 				
-				if (setItCurrent) {
-					AP::WORKSPACE::setCurrentModel(obj->id());
-				}
-				else
+				int id = (setItCurrent) ? obj->id() : -1;
+
+				if (id != AP::WORKSPACE::getCurrentModelId())
 				{
-					UI::DOCK::WORKSPACE::selectItem(obj->id() );
-					UI::DOCK::PROPERTIES::selectionChanged(obj->id());
+					AP::WORKSPACE::setCurrentModel(id);
+
+					UI::DOCK::WORKSPACE::selectItem(id);
+					UI::DOCK::PROPERTIES::selectionChanged(id);
+					
 					UI::changeMenuAfterSelect();
-					UI::updateAllViews();
 				}
+				UI::updateAllViews();
 				return true;
+			}
+			return false;
+		}
+
+		bool addObject(CBaseObject* obj, bool setItCurrent)
+		{
+			if (obj->hasType(CBaseObject::Type::MODEL))
+			{
+				addModel((CModel3D*)obj, setItCurrent);
+				return true;
+			}
+			else if (obj->hasType(CBaseObject::Type::IMAGE))
+			{
+				addImage((CImage*)obj, false, true);
+				return true;
+			}
+			else
+			{
+				CModel3D* mdl = new CModel3D();
+				if (obj->hasCategory(CBaseObject::Category::OBJECT))
+				{
+					mdl->addChild(obj);
+					mdl->importChildrenGeometry();
+					addModel(mdl, setItCurrent);
+					return true;
+				}
+				else if (obj->hasCategory(CBaseObject::Category::ANNOTATION))
+				{
+					mdl->addAnnotation((CAnnotation*)obj);
+					addModel(mdl, setItCurrent);
+					return true;
+				}
 			}
 			return false;
 		}
@@ -734,8 +768,16 @@ void AP::OBJECT::moveTo(CBaseObject *obj, CBaseObject* newParent)
 		CModel3D* newmodel = new CModel3D();
 		newmodel->setLabel("<=>");
 		newmodel->setDescr("Macierz dopasowania, wygenerowana podczas przenoszenia obiektu");
-		newmodel->addChild(obj);
-		newmodel->importChildrenGeometry();
+
+		if (obj->hasCategory(CBaseObject::OBJECT))
+		{
+			newmodel->addChild(obj);
+			newmodel->importChildrenGeometry();
+		}
+		else if (obj->hasCategory(CBaseObject::ANNOTATION))
+		{
+			newmodel->addAnnotation((CAnnotation*)obj);
+		}
 
 		if (newParent == nullptr) // copyToNew
 		{
@@ -774,11 +816,19 @@ void AP::OBJECT::copyTo(CBaseObject* obj, CBaseObject* newParent)
 
 		if (newParent == nullptr) // copyToNew
 		{
-			newmodel->addChild(kopia);
-			newmodel->importChildrenGeometry();
-			newmodel->setTransform(t0);
-
-			AP::WORKSPACE::addModel(newmodel);
+			if (kopia->hasCategory(CBaseObject::OBJECT))
+			{
+				newmodel->addChild(kopia);
+				newmodel->importChildrenGeometry();
+				newmodel->setTransform(t0);
+				AP::WORKSPACE::addModel(newmodel);
+			}
+			else if (kopia->hasCategory(CBaseObject::ANNOTATION))
+			{
+				newmodel->addAnnotation((CAnnotation*)kopia);
+				newmodel->setTransform(t0);
+				AP::WORKSPACE::addModel(newmodel);
+			}
 		}
 		else // copyTo existing
 		{

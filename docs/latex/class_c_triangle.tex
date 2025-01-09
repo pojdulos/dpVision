@@ -1,0 +1,74 @@
+\doxysection{CTriangle Class Reference}
+\hypertarget{class_c_triangle}{}\label{class_c_triangle}\index{CTriangle@{CTriangle}}
+Inheritance diagram for CTriangle\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_c_triangle}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_triangle_a1ca1c42207c2d8081992bd9e9af9e550}\label{class_c_triangle_a1ca1c42207c2d8081992bd9e9af9e550} 
+{\bfseries CTriangle} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} pA, \mbox{\hyperlink{class_c_point3}{CPoint3d}} pB, \mbox{\hyperlink{class_c_point3}{CPoint3d}} pC)
+\item 
+\Hypertarget{class_c_triangle_adadb573cea9bc0c00491cc23d1e9df45}\label{class_c_triangle_adadb573cea9bc0c00491cc23d1e9df45} 
+{\bfseries CTriangle} (int idx, \mbox{\hyperlink{class_c_mesh}{CMesh}} \&mesh)
+\item 
+\Hypertarget{class_c_triangle_ab377733cedeccb209a2e3a4155c6bd05}\label{class_c_triangle_ab377733cedeccb209a2e3a4155c6bd05} 
+{\bfseries CTriangle} (int idx, \mbox{\hyperlink{class_c_mesh}{CMesh}} \texorpdfstring{$\ast$}{*}mesh)
+\item 
+\Hypertarget{class_c_triangle_a34ecc2969123174f8a0e79d45fe64f86}\label{class_c_triangle_a34ecc2969123174f8a0e79d45fe64f86} 
+\mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} {\bfseries get\+Bounding\+Box} ()
+\item 
+\Hypertarget{class_c_triangle_a7bb8eb90f837259437a43c223de2784e}\label{class_c_triangle_a7bb8eb90f837259437a43c223de2784e} 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries get\+Midpoint} ()
+\item 
+\Hypertarget{class_c_triangle_a22995aec2c7a2bf471667ba26d97f3f4}\label{class_c_triangle_a22995aec2c7a2bf471667ba26d97f3f4} 
+\mbox{\hyperlink{class_c_vector3}{CVector3d}} {\bfseries get\+Normal} ()
+\item 
+\Hypertarget{class_c_triangle_adc1d28fc2067d8c2a21720fb2d73a5f5}\label{class_c_triangle_adc1d28fc2067d8c2a21720fb2d73a5f5} 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries get\+Closest\+Point} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&source\+Position)
+\item 
+\Hypertarget{class_c_triangle_a5453a8c6f5a9ab878dd4ac2d98104f2f}\label{class_c_triangle_a5453a8c6f5a9ab878dd4ac2d98104f2f} 
+bool {\bfseries ray\+Plane\+Intersect3D} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} origin, \mbox{\hyperlink{class_c_vector3}{CVector3d}} dir, \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&p\+Intersection\+Point, double \&p\+Distance)
+\item 
+\Hypertarget{class_c_triangle_ac330795b78e2485a1ec0b462e0471d89}\label{class_c_triangle_ac330795b78e2485a1ec0b462e0471d89} 
+bool {\bfseries in\+Triangle} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} pt)
+\item 
+\Hypertarget{class_c_triangle_a3d6a17fbea112f4563fbef95e824c13c}\label{class_c_triangle_a3d6a17fbea112f4563fbef95e824c13c} 
+bool {\bfseries hit} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} origin, \mbox{\hyperlink{class_c_vector3}{CVector3d}} dir, \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&iP)
+\item 
+\Hypertarget{class_c_triangle_aef9a128126a7a1cdc91efd61471d4cbb}\label{class_c_triangle_aef9a128126a7a1cdc91efd61471d4cbb} 
+\mbox{\hyperlink{class_c_triangle}{CTriangle}} {\bfseries transform\+By\+Matrix} (Eigen\+::\+Matrix4d matrix)
+\item 
+\Hypertarget{class_c_triangle_ad4854f5f4e88c243ec2dac0ed8c642e2}\label{class_c_triangle_ad4854f5f4e88c243ec2dac0ed8c642e2} 
+\mbox{\hyperlink{class_c_triangle}{CTriangle}} {\bfseries transform\+By\+Matrix} (Eigen\+::\+Matrix3d matrix)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_triangle_af5ba3ab32ad6376f2e44a84eb3d96faf}\label{class_c_triangle_af5ba3ab32ad6376f2e44a84eb3d96faf} 
+{\footnotesize template$<$typename Container $>$ }\\static \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} {\bfseries get\+Bounding\+Box} (Container \&container)
+\item 
+\Hypertarget{class_c_triangle_aa66b3a3d282a7d7d37333f227f130345}\label{class_c_triangle_aa66b3a3d282a7d7d37333f227f130345} 
+{\footnotesize template$<$typename Container $>$ }\\static \mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries get\+Midpoint} (Container \&container)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_triangle_a21f4708d73b4f67f26617f96ea22c1a2}\label{class_c_triangle_a21f4708d73b4f67f26617f96ea22c1a2} 
+\begin{tabbing}
+xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
+union \{\\
+\>\mbox{\hyperlink{class_c_vertex}{CVertex}} {\bfseries m\_pV} \mbox{[}3\mbox{]}\\
+\>CVertex::Type {\bfseries m\_v} \mbox{[}9\mbox{]}\\
+\}; \\
+
+\end{tabbing}\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/core/Triangle.\+h\item 
+src/core/Triangle.\+cpp\end{DoxyCompactItemize}

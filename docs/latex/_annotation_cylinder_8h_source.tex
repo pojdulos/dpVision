@@ -1,0 +1,64 @@
+\doxysection{Annotation\+Cylinder.\+h}
+\hypertarget{_annotation_cylinder_8h_source}{}\label{_annotation_cylinder_8h_source}\index{src/core/AnnotationCylinder.h@{src/core/AnnotationCylinder.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}Annotation.h"{}}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}Punkt3D.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}Wektor3D.h"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}RGBA.h"{}}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_annotation_cylinder}{CAnnotationCylinder}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_c_annotation}{CAnnotation}}}
+\DoxyCodeLine{00009\ \{}
+\DoxyCodeLine{00010\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00011\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\ m\_point;}
+\DoxyCodeLine{00012\ \ \ \ \ \textcolor{keywordtype}{float}\ m\_radius,\ m\_halfLength;}
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keywordtype}{double}\ m\_start\_angle,\ m\_end\_angle;}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_cylinder}{CAnnotationCylinder}}(\ \mbox{\hyperlink{class_c_base_object}{CBaseObject}}\ *m\ =\ \textcolor{keyword}{nullptr})\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(\ m\ )}
+\DoxyCodeLine{00016\ \ \ \ \ \{}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}cylinder"{}});}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ m\_point\ =\ \mbox{\hyperlink{class_c_point3}{CPoint3f}}(0,0,0);}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ m\_radius\ =\ 0;}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ m\_halfLength\ =\ 0;}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ m\_start\_angle\ =\ 0.0;}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ m\_end\_angle\ =\ 360.0;}
+\DoxyCodeLine{00023\ \ \ \ \ \};}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_cylinder}{CAnnotationCylinder}}(\ \mbox{\hyperlink{class_c_annotation_cylinder}{CAnnotationCylinder}}\ \&t\ )\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(\ t\ )}
+\DoxyCodeLine{00026\ \ \ \ \ \{}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}cylinder"{}});}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ m\_point\ =\ t.m\_point;}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ m\_radius\ =\ t.m\_radius;}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ m\_halfLength\ =\ t.m\_halfLength;}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ m\_start\_angle\ =\ t.m\_start\_angle;}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ m\_end\_angle\ =\ t.m\_end\_angle;}
+\DoxyCodeLine{00033\ \ \ \ \ \};}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_cylinder}{\string~CAnnotationCylinder}}(\textcolor{keywordtype}{void})\{\};}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{int}\ type()\ \{\ \textcolor{keywordflow}{return}\ CAnnotation::CYLINDER;\ \}}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keywordtype}{void}\ setPoint(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_triple}{CTriple<float>}}\ \&t\ )\{\ m\_point.Set(\ t\ );\ \};}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keywordtype}{void}\ setPoint(\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ \&tx,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ \&ty,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ \&tz\ )\{\ m\_point.Set(\ tx,\ ty,\ tz\ );\ \};}
+\DoxyCodeLine{00041\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\ getPoint()\{\ \textcolor{keywordflow}{return}\ m\_point;\ \};}
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keywordtype}{float}\ X()\ \{\ \textcolor{keywordflow}{return}\ m\_point.X();\ \};}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keywordtype}{float}\ Y()\ \{\ \textcolor{keywordflow}{return}\ m\_point.Y();\ \};}
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keywordtype}{float}\ Z()\ \{\ \textcolor{keywordflow}{return}\ m\_point.Z();\ \};}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keywordtype}{void}\ setAnglesDeg(\ \textcolor{keywordtype}{int}\ start,\ \textcolor{keywordtype}{int}\ end)}
+\DoxyCodeLine{00047\ \ \ \ \ \{}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ m\_start\_angle\ =\ start;}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ m\_end\_angle\ =\ end;}
+\DoxyCodeLine{00050\ \ \ \ \ \}}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keyword}{virtual}\ std::wstring\ getInfoRow();}
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keyword}{virtual}\ std::wstring\ getTypeWSTR()\ \{\ \textcolor{keywordflow}{return}\ L\textcolor{stringliteral}{"{}cylinder"{}};\ \};}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ renderSelf()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \};}
+\DoxyCodeLine{00058\ }
+
+\end{DoxyCode}

@@ -1,0 +1,284 @@
+\doxysection{CBase\+Object Class Reference}
+\hypertarget{class_c_base_object}{}\label{class_c_base_object}\index{CBaseObject@{CBaseObject}}
+Inheritance diagram for CBase\+Object\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=12.000000cm]{class_c_base_object}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_base_object_afb0822280ac2bb225cb43c99e8f6dc84}\label{class_c_base_object_afb0822280ac2bb225cb43c99e8f6dc84} 
+enum {\bfseries Category} \{ {\bfseries UNKNOWN}
+, {\bfseries OBJECT}
+, {\bfseries ANNOTATION}
+ \}
+\item 
+\Hypertarget{class_c_base_object_aa0d965c2b5d9bd03c45ba2b0fe4fe8c6}\label{class_c_base_object_aa0d965c2b5d9bd03c45ba2b0fe4fe8c6} 
+enum {\bfseries Type} \{ \newline
+{\bfseries GENERIC}
+, {\bfseries GROUP}
+, {\bfseries MODEL}
+, {\bfseries MOVEMENT}
+, \newline
+{\bfseries IMAGE}
+, {\bfseries CLOUD}
+, {\bfseries ORDEREDCLOUD}
+, {\bfseries MESH}
+, \newline
+{\bfseries VOLUMETRIC}
+, {\bfseries VOLUMETRIC\+\_\+\+NEW}
+, {\bfseries VOLTK}
+, {\bfseries LIDAR}
+, \newline
+{\bfseries OTHER}
+, {\bfseries BASEANNOTATION}
+, {\bfseries POINT}
+, {\bfseries POINTS}
+, \newline
+{\bfseries BOUNDVECTORS}
+, {\bfseries VERTEX}
+, {\bfseries SETOFVERTICES}
+, {\bfseries PATH}
+, \newline
+{\bfseries VPATH}
+, {\bfseries ELASTICPATH}
+, {\bfseries PLANE}
+, {\bfseries BOX}
+, \newline
+{\bfseries CURVATUREMAP}
+, {\bfseries ATSHELL}
+, {\bfseries SETOFFACES}
+, {\bfseries EDGES}
+, \newline
+{\bfseries POLYGON}
+, {\bfseries POLYGON2D}
+, {\bfseries CAMERA}
+, {\bfseries SETOFCAMERAS}
+, \newline
+{\bfseries PYRAMID}
+, {\bfseries CYLINDER}
+, {\bfseries PODKOWA}
+, {\bfseries HISTOGRAM}
+, \newline
+{\bfseries TRIPLE}
+, {\bfseries SPHERE}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_base_object_a2846f0b54f6c1e467d3e94dccf573527}\label{class_c_base_object_a2846f0b54f6c1e467d3e94dccf573527} 
+{\bfseries CBase\+Object} (\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*}p=nullptr)
+\item 
+\Hypertarget{class_c_base_object_a38a5d7d7b677dd1b1dba1479249fb5fb}\label{class_c_base_object_a38a5d7d7b677dd1b1dba1479249fb5fb} 
+{\bfseries CBase\+Object} (int obj\+Id)
+\item 
+\Hypertarget{class_c_base_object_a9f1c845386cb2cf40675834240297572}\label{class_c_base_object_a9f1c845386cb2cf40675834240297572} 
+{\bfseries CBase\+Object} (const \mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \&b)
+\item 
+\Hypertarget{class_c_base_object_af3e9d9f0dc4a5a9fbd473a21d028ba17}\label{class_c_base_object_af3e9d9f0dc4a5a9fbd473a21d028ba17} 
+virtual CBase\+Object\+::\+Category {\bfseries category} ()
+\item 
+\Hypertarget{class_c_base_object_acd091d128f2ecc88062254cbbc744b82}\label{class_c_base_object_acd091d128f2ecc88062254cbbc744b82} 
+virtual int {\bfseries type} ()
+\item 
+\Hypertarget{class_c_base_object_ae6a71f384686bca91aaa23387a9de624}\label{class_c_base_object_ae6a71f384686bca91aaa23387a9de624} 
+virtual bool {\bfseries has\+Category} (CBase\+Object\+::\+Category cat)
+\item 
+\Hypertarget{class_c_base_object_afb13589bb9ff4063981ce6c1a1679a1d}\label{class_c_base_object_afb13589bb9ff4063981ce6c1a1679a1d} 
+virtual bool {\bfseries has\+Type} (CBase\+Object\+::\+Type typ)
+\item 
+\Hypertarget{class_c_base_object_acf84b1c948c45ab051d4543245028a61}\label{class_c_base_object_acf84b1c948c45ab051d4543245028a61} 
+virtual const QString {\bfseries xml\+Info} ()
+\item 
+\Hypertarget{class_c_base_object_a18d5f66d1e34cbe455e299e0934b5a92}\label{class_c_base_object_a18d5f66d1e34cbe455e299e0934b5a92} 
+virtual void {\bfseries apply\+Transformation} (\mbox{\hyperlink{class_c_transform}{CTransform}} \&, \mbox{\hyperlink{class_c_transform}{CTransform}} \&)
+\item 
+\Hypertarget{class_c_base_object_a3daf61901b0af483976b985b40b01a04}\label{class_c_base_object_a3daf61901b0af483976b985b40b01a04} 
+virtual \mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries get\+Copy} ()
+\item 
+\Hypertarget{class_c_base_object_ac17e000299a68960a59f2d5376c2c16f}\label{class_c_base_object_ac17e000299a68960a59f2d5376c2c16f} 
+virtual void {\bfseries switch\+Opt} (int, int)
+\item 
+\Hypertarget{class_c_base_object_ae5e8a960d99f00e4b84f06dcf8698fb6}\label{class_c_base_object_ae5e8a960d99f00e4b84f06dcf8698fb6} 
+virtual void {\bfseries after\+Load} (\mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*})
+\item 
+\Hypertarget{class_c_base_object_a51f26cc898f70ffc16162d05e0ae790e}\label{class_c_base_object_a51f26cc898f70ffc16162d05e0ae790e} 
+virtual void {\bfseries render\+Transform} ()
+\item 
+\Hypertarget{class_c_base_object_afb4fbb4a0db0b195f1df8ce248b65761}\label{class_c_base_object_afb4fbb4a0db0b195f1df8ce248b65761} 
+virtual void {\bfseries render\+Self} ()
+\item 
+\Hypertarget{class_c_base_object_a7793cf15cca81925be0d4884414abb2f}\label{class_c_base_object_a7793cf15cca81925be0d4884414abb2f} 
+virtual void {\bfseries render\+Kids} ()
+\item 
+\Hypertarget{class_c_base_object_a32a6f917f7ee032370d81bf476c125c8}\label{class_c_base_object_a32a6f917f7ee032370d81bf476c125c8} 
+virtual void {\bfseries render} ()
+\item 
+\Hypertarget{class_c_base_object_ae3c1d3dd07b40aeef8804fb4da9c9bc6}\label{class_c_base_object_ae3c1d3dd07b40aeef8804fb4da9c9bc6} 
+virtual void {\bfseries prepare} ()
+\item 
+\Hypertarget{class_c_base_object_a3e270f9626a453c84ad204bd7385f79e}\label{class_c_base_object_a3e270f9626a453c84ad204bd7385f79e} 
+virtual void {\bfseries clear} ()
+\item 
+\Hypertarget{class_c_base_object_ac5dd2245513817b7f99d34237e512968}\label{class_c_base_object_ac5dd2245513817b7f99d34237e512968} 
+virtual bool {\bfseries is\+Modified} ()
+\item 
+\Hypertarget{class_c_base_object_a52f0d5730575f983eb2e9146863085dc}\label{class_c_base_object_a52f0d5730575f983eb2e9146863085dc} 
+virtual void {\bfseries set\+Modified} (bool b=true)
+\item 
+\Hypertarget{class_c_base_object_ac3a752d5656c249f75db353444ef27b1}\label{class_c_base_object_ac3a752d5656c249f75db353444ef27b1} 
+virtual std\+::wstring {\bfseries info\+Row} ()
+\item 
+\Hypertarget{class_c_base_object_a26b6c4c6b5091686b71cb38b4715b858}\label{class_c_base_object_a26b6c4c6b5091686b71cb38b4715b858} 
+virtual void {\bfseries info} (std\+::wstring i\mbox{[}4\mbox{]})
+\item 
+\Hypertarget{class_c_base_object_adefb4266212f8db2a9eddc808cbae3c4}\label{class_c_base_object_adefb4266212f8db2a9eddc808cbae3c4} 
+\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries get\+Parent} ()
+\item 
+\Hypertarget{class_c_base_object_a5447583b2b3bb64b5960e520401d6cf7}\label{class_c_base_object_a5447583b2b3bb64b5960e520401d6cf7} 
+void {\bfseries set\+Parent} (\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*}p)
+\item 
+\Hypertarget{class_c_base_object_abdec1cee05239f32d58e223764aff3b2}\label{class_c_base_object_abdec1cee05239f32d58e223764aff3b2} 
+void {\bfseries set\+Parent} (int obj\+Id)
+\item 
+\Hypertarget{class_c_base_object_a89d73e5a1853757c77cdd64d56f9a104}\label{class_c_base_object_a89d73e5a1853757c77cdd64d56f9a104} 
+virtual void {\bfseries set\+Visible} (bool v)
+\item 
+\Hypertarget{class_c_base_object_a260d141b5f0cf43a9ff52574c1ea44ce}\label{class_c_base_object_a260d141b5f0cf43a9ff52574c1ea44ce} 
+virtual void {\bfseries set\+Self\+Visibility} (bool v)
+\item 
+\Hypertarget{class_c_base_object_a60e5ca6c37a114b21b8d4c1d7397ba0f}\label{class_c_base_object_a60e5ca6c37a114b21b8d4c1d7397ba0f} 
+virtual void {\bfseries set\+Kids\+Visibility} (bool v)
+\item 
+\Hypertarget{class_c_base_object_a5188bba376ab6cbbb202d0bfed5692a3}\label{class_c_base_object_a5188bba376ab6cbbb202d0bfed5692a3} 
+virtual bool {\bfseries get\+Self\+Visibility} ()
+\item 
+\Hypertarget{class_c_base_object_a25abcf8792b5b69c86d93ada6908fdaa}\label{class_c_base_object_a25abcf8792b5b69c86d93ada6908fdaa} 
+virtual bool {\bfseries get\+Kids\+Visibility} ()
+\item 
+\Hypertarget{class_c_base_object_af3b264253ec557a12f8be20c13962b5c}\label{class_c_base_object_af3b264253ec557a12f8be20c13962b5c} 
+virtual bool {\bfseries switch\+Self\+Visibility} ()
+\item 
+\Hypertarget{class_c_base_object_a868f2470837547ff8b7194c47a3563a6}\label{class_c_base_object_a868f2470837547ff8b7194c47a3563a6} 
+virtual bool {\bfseries switch\+Kids\+Visibility} ()
+\item 
+\Hypertarget{class_c_base_object_ad87844b4adec9133a071d6e0b8a89ccf}\label{class_c_base_object_ad87844b4adec9133a071d6e0b8a89ccf} 
+virtual void {\bfseries show\+Children} (bool show, QSet$<$ CBase\+Object\+::\+Type $>$ inc=\{\}, QSet$<$ CBase\+Object\+::\+Type $>$ exc=\{\})
+\item 
+\Hypertarget{class_c_base_object_af633815c875fb942219c4d33f96cb7a2}\label{class_c_base_object_af633815c875fb942219c4d33f96cb7a2} 
+int {\bfseries id} ()
+\item 
+\Hypertarget{class_c_base_object_ad568cea36211dda5088c7722aa3e9732}\label{class_c_base_object_ad568cea36211dda5088c7722aa3e9732} 
+int {\bfseries parent\+Id} ()
+\item 
+\Hypertarget{class_c_base_object_aaf5daf882242fe79ad331ca7bbeac1b3}\label{class_c_base_object_aaf5daf882242fe79ad331ca7bbeac1b3} 
+virtual bool {\bfseries set\+Selected} (bool sel)
+\item 
+\Hypertarget{class_c_base_object_a7c64ff457239ec672c758dfd4fd0c074}\label{class_c_base_object_a7c64ff457239ec672c758dfd4fd0c074} 
+virtual bool {\bfseries is\+Selected} ()
+\item 
+\Hypertarget{class_c_base_object_aa01890963130de51ed8484073c6bc220}\label{class_c_base_object_aa01890963130de51ed8484073c6bc220} 
+virtual \mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries find\+Id} (int)
+\item 
+\Hypertarget{class_c_base_object_a35c640f745c0e7c356b9c00c23c9e4de}\label{class_c_base_object_a35c640f745c0e7c356b9c00c23c9e4de} 
+virtual bool {\bfseries has\+Children} ()
+\item 
+\Hypertarget{class_c_base_object_aaba069863f61d7f6cd355f0b4a7dd180}\label{class_c_base_object_aaba069863f61d7f6cd355f0b4a7dd180} 
+virtual bool {\bfseries has\+Transformation} ()
+\item 
+\Hypertarget{class_c_base_object_ad6d28753b17d2e47dbaf06035fd2807d}\label{class_c_base_object_ad6d28753b17d2e47dbaf06035fd2807d} 
+virtual Eigen\+::\+Matrix4d {\bfseries get\+Transformation\+Matrix} ()
+\item 
+\Hypertarget{class_c_base_object_a2cb8c8b7f3262e4faf3d682c9585ea7d}\label{class_c_base_object_a2cb8c8b7f3262e4faf3d682c9585ea7d} 
+virtual Eigen\+::\+Matrix4d {\bfseries get\+Global\+Transformation\+Matrix} ()
+\item 
+\Hypertarget{class_c_base_object_a7c158ba18738b9ec9fda4e91baf7c422}\label{class_c_base_object_a7c158ba18738b9ec9fda4e91baf7c422} 
+const QString \& {\bfseries get\+Label} ()
+\item 
+\Hypertarget{class_c_base_object_a3aa8885c5d9886223d3a85695063af50}\label{class_c_base_object_a3aa8885c5d9886223d3a85695063af50} 
+const std\+::string {\bfseries get\+LabelA} ()
+\item 
+\Hypertarget{class_c_base_object_a0529632d18798c2aa34dbad01379875f}\label{class_c_base_object_a0529632d18798c2aa34dbad01379875f} 
+const std\+::wstring {\bfseries get\+LabelW} ()
+\item 
+\Hypertarget{class_c_base_object_ad5c73994ffc97ded412ca1612624b3c1}\label{class_c_base_object_ad5c73994ffc97ded412ca1612624b3c1} 
+void {\bfseries set\+Label} (const QString \&label)
+\item 
+\Hypertarget{class_c_base_object_aca7b6c4abe142e4d3b6b5707aed98ae8}\label{class_c_base_object_aca7b6c4abe142e4d3b6b5707aed98ae8} 
+void {\bfseries set\+Label} (const char \texorpdfstring{$\ast$}{*}label)
+\item 
+\Hypertarget{class_c_base_object_a9dea85c546f1dc8ca7926c87dff90273}\label{class_c_base_object_a9dea85c546f1dc8ca7926c87dff90273} 
+void {\bfseries set\+Label} (const std\+::string \&label)
+\item 
+\Hypertarget{class_c_base_object_acec8413c1a85dd39237bdc580391755b}\label{class_c_base_object_acec8413c1a85dd39237bdc580391755b} 
+void {\bfseries set\+Label} (const std\+::wstring \&label)
+\item 
+\Hypertarget{class_c_base_object_a5cdfdc29a98f963da8c01c24a5411b2f}\label{class_c_base_object_a5cdfdc29a98f963da8c01c24a5411b2f} 
+void {\bfseries add\+Keyword} (const QString keyword)
+\item 
+\Hypertarget{class_c_base_object_ae608468e9826a5bea2d8e5608d15d3f2}\label{class_c_base_object_ae608468e9826a5bea2d8e5608d15d3f2} 
+void {\bfseries del\+Keyword} (const QString keyword)
+\item 
+\Hypertarget{class_c_base_object_a3db38a3aae1c08890dffdf0ba4856e1d}\label{class_c_base_object_a3db38a3aae1c08890dffdf0ba4856e1d} 
+bool {\bfseries has\+Keyword} (const QString keyword)
+\item 
+\Hypertarget{class_c_base_object_a4ba4ae60c935ef01d7a4555953d39fea}\label{class_c_base_object_a4ba4ae60c935ef01d7a4555953d39fea} 
+QSet$<$ QString $>$ \& {\bfseries keywords} ()
+\item 
+\Hypertarget{class_c_base_object_a35ce54ba109bc0cdf5890a270502e217}\label{class_c_base_object_a35ce54ba109bc0cdf5890a270502e217} 
+void {\bfseries set\+Descr} (const QString descr)
+\item 
+\Hypertarget{class_c_base_object_a38f5e6950ddb95fc8e2c02a72538669d}\label{class_c_base_object_a38f5e6950ddb95fc8e2c02a72538669d} 
+const QString \& {\bfseries get\+Descr} ()
+\item 
+\Hypertarget{class_c_base_object_ae9d70cb4061d45b2f33d68118a675623}\label{class_c_base_object_ae9d70cb4061d45b2f33d68118a675623} 
+virtual void {\bfseries set\+Path} (const QString \&path)
+\item 
+\Hypertarget{class_c_base_object_ab1e328aff9ac31fbe7ea70344515958b}\label{class_c_base_object_ab1e328aff9ac31fbe7ea70344515958b} 
+virtual const QString \& {\bfseries path} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_base_object_ad0e86ba035ed45068cdd17017602db46}\label{class_c_base_object_ad0e86ba035ed45068cdd17017602db46} 
+bool {\bfseries m\+\_\+modified}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_base_object_aa9ab96ba5a32598a4034e34ed61e3771}\label{class_c_base_object_aa9ab96ba5a32598a4034e34ed61e3771} 
+int {\bfseries m\+\_\+\+Id}
+\item 
+\Hypertarget{class_c_base_object_a694c5738d226bdceb6c67bb262067447}\label{class_c_base_object_a694c5738d226bdceb6c67bb262067447} 
+QString {\bfseries m\+\_\+label}
+\item 
+\Hypertarget{class_c_base_object_a7afaab1f26816701bd3b835bb9ed9d9c}\label{class_c_base_object_a7afaab1f26816701bd3b835bb9ed9d9c} 
+QString {\bfseries m\+\_\+descr}
+\item 
+\Hypertarget{class_c_base_object_a7885655d8f90395c758379ce536238bf}\label{class_c_base_object_a7885655d8f90395c758379ce536238bf} 
+QSet$<$ QString $>$ {\bfseries m\+\_\+keywords}
+\item 
+\Hypertarget{class_c_base_object_a3727288cbcac89f197a41af85d130958}\label{class_c_base_object_a3727288cbcac89f197a41af85d130958} 
+QString {\bfseries m\+\_\+path}
+\item 
+\Hypertarget{class_c_base_object_aa146bf2a698c46b3d5c8af7efadecc57}\label{class_c_base_object_aa146bf2a698c46b3d5c8af7efadecc57} 
+\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+parent}
+\item 
+\Hypertarget{class_c_base_object_abb85d3cc7cbaa9c7a4bc207c3f6842db}\label{class_c_base_object_abb85d3cc7cbaa9c7a4bc207c3f6842db} 
+bool {\bfseries m\+\_\+selected}
+\item 
+\Hypertarget{class_c_base_object_ac210ae57e444d0cd295cf1f8d7e7c785}\label{class_c_base_object_ac210ae57e444d0cd295cf1f8d7e7c785} 
+bool {\bfseries m\+\_\+show\+Self}
+\item 
+\Hypertarget{class_c_base_object_a2733201b5701404a8aa0be2634d8cb79}\label{class_c_base_object_a2733201b5701404a8aa0be2634d8cb79} 
+bool {\bfseries m\+\_\+show\+Kids}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/core/Base\+Object.\+h\item 
+src/core/Base\+Object.\+cpp\end{DoxyCompactItemize}

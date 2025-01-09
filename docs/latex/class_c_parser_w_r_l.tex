@@ -1,0 +1,104 @@
+\doxysection{CParser\+WRL Class Reference}
+\hypertarget{class_c_parser_w_r_l}{}\label{class_c_parser_w_r_l}\index{CParserWRL@{CParserWRL}}
+Inheritance diagram for CParser\+WRL\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_c_parser_w_r_l}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+size\+\_\+t \mbox{\hyperlink{class_c_parser_w_r_l_ad0a6afb8bcacb709a691931c68f753c6}{Run}} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_c_parser}{CParser}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual \mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*} {\bfseries load} (const QString path, bool wait=true)
+\item 
+virtual bool {\bfseries save} (\mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*}obj, const QString path)
+\item 
+virtual bool {\bfseries save} (QVector$<$ \mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} $>$ objects, const QString path)
+\item 
+virtual bool {\bfseries can\+Load\+Ext} (const QString ext)
+\item 
+virtual bool {\bfseries can\+Save\+Ext} (const QString ext)
+\item 
+virtual void {\bfseries get\+Load\+Exts} (QString \&ext)
+\item 
+virtual void {\bfseries get\+Load\+Exts} (std\+::wstring \&ext)
+\item 
+virtual void {\bfseries get\+Save\+Exts} (QString \&ext)
+\item 
+virtual void {\bfseries get\+Save\+Exts} (std\+::wstring \&ext)
+\item 
+virtual bool {\bfseries in\+Plugin} ()
+\item 
+bool {\bfseries Is\+OK} ()
+\item 
+std\+::string {\bfseries Last\+Error} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_c_parser}{CParser}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual bool {\bfseries save} ()
+\item 
+void {\bfseries set\+Descr} (const QString descr)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_c_parser}{CParser}}}
+\begin{DoxyCompactItemize}
+\item 
+bool {\bfseries b\+Is\+Not\+Set}
+\item 
+\mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+model}
+\item 
+\mbox{\hyperlink{class_c_file_info}{CFile\+Info}} {\bfseries plik\+Siatki}
+\item 
+\mbox{\hyperlink{class_c_mesh}{CMesh}} \texorpdfstring{$\ast$}{*} {\bfseries p\+Mesh\+Data}
+\item 
+bool {\bfseries m\+\_\+b\+OK}
+\item 
+std\+::string {\bfseries m\+\_\+s\+Error}
+\item 
+QString {\bfseries m\+\_\+descr}
+\item 
+QSet$<$ QString $>$ {\bfseries m\+\_\+exts}
+\item 
+QSet$<$ QString $>$ {\bfseries m\+\_\+save\+\_\+exts}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_c_parser_w_r_l_ad0a6afb8bcacb709a691931c68f753c6}\index{CParserWRL@{CParserWRL}!Run@{Run}}
+\index{Run@{Run}!CParserWRL@{CParserWRL}}
+\doxysubsubsection{\texorpdfstring{Run()}{Run()}}
+{\footnotesize\ttfamily \label{class_c_parser_w_r_l_ad0a6afb8bcacb709a691931c68f753c6} 
+size\+\_\+t CParser\+WRL\+::\+Run (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_parser}{CParser}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/plugins/parser\+VRML/Parser\+WRL.\+h\item 
+src/plugins/parser\+VRML/Parser\+WRL.\+cpp\item 
+src/plugins/parser\+VRML/VRML\+\_\+\+Appearance\+\_\+\+Node.\+cpp\item 
+src/plugins/parser\+VRML/VRML\+\_\+children\+\_\+\+Field.\+cpp\item 
+src/plugins/parser\+VRML/VRML\+\_\+color\+\_\+\+Field.\+cpp\item 
+src/plugins/parser\+VRML/VRML\+\_\+\+Color\+\_\+\+Node.\+cpp\item 
+src/plugins/parser\+VRML/VRML\+\_\+coord\+\_\+\+Field.\+cpp\item 
+src/plugins/parser\+VRML/VRML\+\_\+\+Coordinate\+\_\+\+Node.\+cpp\item 
+src/plugins/parser\+VRML/VRML\+\_\+coord\+Index\+\_\+\+Field.\+cpp\item 
+src/plugins/parser\+VRML/VRML\+\_\+\+Indexed\+Face\+Set\+\_\+\+Node.\+cpp\item 
+src/plugins/parser\+VRML/VRML\+\_\+\+Material\+\_\+\+Node.\+cpp\item 
+src/plugins/parser\+VRML/VRML\+\_\+point\+\_\+\+Field.\+cpp\item 
+src/plugins/parser\+VRML/VRML\+\_\+\+Root.\+cpp\item 
+src/plugins/parser\+VRML/VRML\+\_\+\+Separator\+\_\+\+Node.\+cpp\item 
+src/plugins/parser\+VRML/VRML\+\_\+\+Shape\+\_\+\+Node.\+cpp\item 
+src/plugins/parser\+VRML/VRML\+\_\+texpoint\+\_\+\+Field.\+cpp\item 
+src/plugins/parser\+VRML/VRML\+\_\+\+Texture\+Coordinate\+\_\+\+Node.\+cpp\item 
+src/plugins/parser\+VRML/VRML\+\_\+\+Transform\+\_\+\+Node.\+cpp\end{DoxyCompactItemize}

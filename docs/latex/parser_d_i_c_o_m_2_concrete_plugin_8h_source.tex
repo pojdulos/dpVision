@@ -1,0 +1,27 @@
+\doxysection{Concrete\+Plugin.\+h}
+\hypertarget{parser_d_i_c_o_m_2_concrete_plugin_8h_source}{}\label{parser_d_i_c_o_m_2_concrete_plugin_8h_source}\index{src/plugins/parserDICOM/ConcretePlugin.h@{src/plugins/parserDICOM/ConcretePlugin.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}dll\_global.h"{}}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}Plugin.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}PluginDLL.h"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ PLUGIN\_NAME\ L"{}(dp-\/parser)\ Pliki\ DICOM\ (testy)"{}}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{keyword}{class\ }DPVISION\_DLL\_API\ \mbox{\hyperlink{class_concrete_plugin}{ConcretePlugin}}\ :\ \textcolor{keyword}{public}\ Plugin}
+\DoxyCodeLine{00010\ \{}
+\DoxyCodeLine{00011\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00012\ \ \ \ \ \mbox{\hyperlink{class_concrete_plugin}{ConcretePlugin}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00013\ \ \ \ \ \mbox{\hyperlink{class_concrete_plugin}{\string~ConcretePlugin}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00014\ \ \ \ \ }
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keywordtype}{void}\ MarchingTetrahedron(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keywordtype}{int}\ isHidden()\{\ \textcolor{keywordflow}{return}\ 1;\ \};}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keywordtype}{void}\ onLoad();}
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keywordtype}{void}\ onUnload();}
+\DoxyCodeLine{00021\ \};}
+
+\end{DoxyCode}

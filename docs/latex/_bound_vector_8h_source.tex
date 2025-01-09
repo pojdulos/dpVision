@@ -1,0 +1,36 @@
+\doxysection{Bound\+Vector.\+h}
+\hypertarget{_bound_vector_8h_source}{}\label{_bound_vector_8h_source}\index{src/core/BoundVector.h@{src/core/BoundVector.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}Point3.h"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}Vector3.h"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{keyword}{class\ \ }DPVISION\_EXPORT\ \ \mbox{\hyperlink{class_c_bound_vector}{CBoundVector}}\ \ \ \ :\ \textcolor{keyword}{public}\ std::pair<CPoint3d,CPoint3d>}
+\DoxyCodeLine{00007\ \{}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00010\ \ \ \ \ \mbox{\hyperlink{class_c_bound_vector}{CBoundVector}}()\ \{\ first\ =\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}();\ second\ =\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}();\ \};}
+\DoxyCodeLine{00011\ \ \ \ \ \mbox{\hyperlink{class_c_bound_vector}{CBoundVector}}(\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ origin,\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\ direction\ );}
+\DoxyCodeLine{00012\ \ \ \ \ \mbox{\hyperlink{class_c_bound_vector}{CBoundVector}}(\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ p0,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ p1\ );}
+\DoxyCodeLine{00013\ \ \ \ \ \mbox{\hyperlink{class_c_bound_vector}{\string~CBoundVector}}();}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ origin()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ first;\ \};}
+\DoxyCodeLine{00016\ \ \ \ \ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\ direction()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}(first,\ second);\ \};}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&\ p0()\ \{\ \textcolor{keywordflow}{return}\ first;\ \};}
+\DoxyCodeLine{00019\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&\ p1()\ \{\ \textcolor{keywordflow}{return}\ second;\ \};}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keywordtype}{void}\ normalize()\ \{\ second\ =\ first\ +\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}(first,\ second).getNormalized();\ \};}
+\DoxyCodeLine{00022\ \ \ \ \ \mbox{\hyperlink{class_c_bound_vector}{CBoundVector}}\ getNormalized()\ \{\ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_bound_vector}{CBoundVector}}(first,\ first\ +\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}(first,\ second).getNormalized());\ \};}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keywordtype}{double}\ length()\ \{\ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}(first,\ second).length();\ \};}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keywordtype}{double}\ squaredLength()\ \{\ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}(first,\ second).squaredLength();\ \};}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keywordtype}{void}\ invert()\ \{\ second\ =\ first\ -\/\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}(first,\ second);\ \};}
+\DoxyCodeLine{00028\ \ \ \ \ \mbox{\hyperlink{class_c_bound_vector}{CBoundVector}}\ operator-\/()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_bound_vector}{CBoundVector}}(\ first,\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}(second,\ first)\ );\ \};}
+\DoxyCodeLine{00029\ \};}
+\DoxyCodeLine{00030\ }
+
+\end{DoxyCode}

@@ -1,0 +1,205 @@
+\doxysection{Point3.\+h}
+\hypertarget{_point3_8h_source}{}\label{_point3_8h_source}\index{src/core/Point3.h@{src/core/Point3.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#ifndef\ \_POINT3\_H\_BY\_DP\_INCLUDED\_}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#define\ \_POINT3\_H\_BY\_DP\_INCLUDED\_}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}dll\_global.h"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <Eigen/Geometry>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}Triple.h"{}}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}Vector3.h"{}}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{keyword}{template}<}
+\DoxyCodeLine{00012\ \ \ \ \ \textcolor{keyword}{typename}\ \_T,}
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keyword}{typename}\ =\ \textcolor{keyword}{typename}\ std::enable\_if<std::is\_arithmetic<\_T>::value,\ \_T>::type\ >\ \ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_point3}{CPoint3}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_c_triple}{CTriple}}<\_T>}
+\DoxyCodeLine{00014\ \{}
+\DoxyCodeLine{00015\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00016\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3}}()\ :\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}()\ \{\};}
+\DoxyCodeLine{00017\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3}}(\_T\ fx,\ \_T\ fy,\ \_T\ fz)\ :\mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}(fx,\ fy,\ fz)\ \{\};}
+\DoxyCodeLine{00018\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3}}(\_T\ f)\ :\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}(f,\ f,\ f)\ \{\};}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \mbox{\hyperlink{class_c_point3}{CPoint3}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_W>}}\&\ t)\ :\mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}(t)\ \{\};}
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{comment}{//template<typename\ \_W>\ CPoint3(const\ CPoint3<\_W>\ \&t)\ :CTriple<\_T>(t)\ \{\};}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{comment}{//\ constructor\ from\ Eigen::Vector3}}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \mbox{\hyperlink{class_c_point3}{CPoint3}}(\textcolor{keyword}{const}\ Eigen::Matrix<\_W,\ 3,\ 1>\&\ t)\ :\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}(t.x(),\ t.y(),\ t.z())\ \{\};}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{comment}{//\ constructor\ from\ Eigen::RowVector3}}
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \mbox{\hyperlink{class_c_point3}{CPoint3}}(\textcolor{keyword}{const}\ Eigen::Matrix<\_W,\ 1,\ 3>\&\ t)\ :\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}(t.x(),\ t.y(),\ t.z())\ \{\};}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{comment}{//\ constructor\ from\ Eigen::Vector4}}
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \mbox{\hyperlink{class_c_point3}{CPoint3}}(\textcolor{keyword}{const}\ Eigen::Matrix<\_W,\ 4,\ 1>\&\ t)\ :\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}(t.x(),\ t.y(),\ t.z())\ \{\};}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{comment}{//\ constructor\ from\ Eigen::RowVector4}}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \mbox{\hyperlink{class_c_point3}{CPoint3}}(\textcolor{keyword}{const}\ Eigen::Matrix<\_W,\ 1,\ 4>\&\ t)\ :\ \mbox{\hyperlink{class_c_triple}{CTriple<\_T>}}(t.x(),\ t.y(),\ t.z())\ \{\};}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \textcolor{keywordtype}{bool}\ isInBox(\mbox{\hyperlink{class_c_point3}{CPoint3<\_W>}}\ min,\ \mbox{\hyperlink{class_c_point3}{CPoint3<\_W>}}\ max)\ \{\ \textcolor{keywordflow}{return}\ (this-\/>x\ >=\ min.X())\ \&\&\ (this-\/>x\ <=\ max.X())\ \&\&\ (this-\/>y\ >=\ min.Y())\ \&\&\ (this-\/>y\ <=\ max.Y())\ \&\&\ (this-\/>z\ >=\ min.Z())\ \&\&\ (this-\/>z\ <=\ max.Z());\ \}}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}\ operator-\/()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}(-\/this-\/>x,\ -\/this-\/>y,\ -\/this-\/>z);}
+\DoxyCodeLine{00043\ \ \ \ \ \};}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}\ operator+(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_W>}}\&\ c)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}(this-\/>x\ +\ c.x,\ this-\/>y\ +\ c.y,\ this-\/>z\ +\ c.z);}
+\DoxyCodeLine{00047\ \ \ \ \ \};}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}\ operator+=(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_W>}}\&\ c)\ \{}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}(this-\/>x\ +=\ c.x,\ this-\/>y\ +=\ c.y,\ this-\/>z\ +=\ c.z);}
+\DoxyCodeLine{00051\ \ \ \ \ \};}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{comment}{//\ Point\ minus\ Point\ is\ Vector}}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \mbox{\hyperlink{class_c_vector3}{CVector3<\_T>}}\ operator-\/(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3<\_W>}}\&\ c)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_vector3}{CVector3<\_T>}}(this-\/>x\ -\/\ c.x,\ this-\/>y\ -\/\ c.y,\ this-\/>z\ -\/\ c.z);}
+\DoxyCodeLine{00056\ \ \ \ \ \};}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{comment}{//\ Point\ minus\ Vector\ is\ Point}}
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}\ operator-\/(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_vector3}{CVector3<\_W>}}\&\ c)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}(this-\/>x\ -\/\ c.x,\ this-\/>y\ -\/\ c.y,\ this-\/>z\ -\/\ c.z);}
+\DoxyCodeLine{00061\ \ \ \ \ \};}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{comment}{//template<typename\ \_W>\ CPoint3<\_T>\ operator-\/(const\ CTriple<\_W>\&\ c)\ const\ \{}}
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{comment}{//\ \ return\ CPoint3<\_T>(x\ -\/\ c.x,\ y\ -\/\ c.y,\ z\ -\/\ c.z);}}
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{comment}{//\};}}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}\ operator-\/=(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_triple}{CTriple<\_W>}}\&\ c)\ \{}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}(this-\/>x\ -\/=\ c.x,\ this-\/>y\ -\/=\ c.y,\ this-\/>z\ -\/=\ c.z);}
+\DoxyCodeLine{00069\ \ \ \ \ \};}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}\ operator/(\textcolor{keyword}{const}\ \_T\ c)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}(this-\/>x\ /\ c,\ this-\/>y\ /\ c,\ this-\/>z\ /\ c);}
+\DoxyCodeLine{00073\ \ \ \ \ \};}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}\ operator*(\textcolor{keyword}{const}\ \_T\ c)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}(this-\/>x\ *\ c,\ this-\/>y\ *\ c,\ this-\/>z\ *\ c);}
+\DoxyCodeLine{00077\ \ \ \ \ \};}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}\ operator/=(\textcolor{keyword}{const}\ \_T\ c)\ \{}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}(this-\/>x\ /=\ c,\ this-\/>y\ /=\ c,\ this-\/>z\ /=\ c);}
+\DoxyCodeLine{00081\ \ \ \ \ \};}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}\ operator*=(\textcolor{keyword}{const}\ \_T\ c)\ \{}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}(this-\/>x\ *=\ c,\ this-\/>y\ *=\ c,\ this-\/>z\ *=\ c);}
+\DoxyCodeLine{00085\ \ \ \ \ \};}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \textcolor{keywordtype}{double}\ squaredDistanceTo(\mbox{\hyperlink{class_c_point3}{CPoint3<\_W>}}\ p)\ \{}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ dx\ =\ p.x\ -\/\ this-\/>x;}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ dy\ =\ p.y\ -\/\ this-\/>y;}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ dz\ =\ p.z\ -\/\ this-\/>z;}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ dx\ *\ dx\ +\ dy\ *\ dy\ +\ dz\ *\ dz;}
+\DoxyCodeLine{00093\ \ \ \ \ \}}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \textcolor{keywordtype}{double}\ distanceTo(\mbox{\hyperlink{class_c_point3}{CPoint3<\_W>}}\ p)\ \{}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ dx\ =\ p.x\ -\/\ this-\/>x;}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ dy\ =\ p.y\ -\/\ this-\/>y;}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ dz\ =\ p.z\ -\/\ this-\/>z;}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ sqrt(dx\ *\ dx\ +\ dy\ *\ dy\ +\ dz\ *\ dz);}
+\DoxyCodeLine{00101\ \ \ \ \ \}}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \ \ \ \ \textcolor{comment}{//\ export\ to\ Eigen::Vector4<Type>}}
+\DoxyCodeLine{00104\ \ \ \ \ Eigen::Matrix<\_T,\ 4,\ 1>\ toVector4()}
+\DoxyCodeLine{00105\ \ \ \ \ \{}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ Eigen::Matrix<\_T,\ 4,\ 1>\ ev;}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ ev(0,\ 0)\ =\ this-\/>x;}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ ev(1,\ 0)\ =\ this-\/>y;}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ ev(2,\ 0)\ =\ this-\/>z;}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ ev(3,\ 0)\ =\ 1;}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ ev;}
+\DoxyCodeLine{00112\ \ \ \ \ \}}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ \ \ \ \ \textcolor{comment}{//\ export\ to\ Eigen::RowVector4<Type>}}
+\DoxyCodeLine{00115\ \ \ \ \ Eigen::Matrix<\_T,\ 1,\ 4>\ toRowVector4()}
+\DoxyCodeLine{00116\ \ \ \ \ \{}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ Eigen::Matrix<\_T,\ 1,\ 4>\ erv;}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ erv(0,\ 0)\ =\ this-\/>x;\ \ \ \ \ \ \ \ erv(0,\ 1)\ =\ this-\/>y;\ \ \ \ \ \ \ \ erv(0,\ 2)\ =\ this-\/>z;\ \ \ \ \ \ \ \ erv(0,\ 3)\ =\ 1;}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ erv;}
+\DoxyCodeLine{00120\ \ \ \ \ \}}
+\DoxyCodeLine{00121\ }
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{comment}{//\ Multiply\ by\ matrix\ 4x4\ (result\ 'w'\ component\ is\ discarded)}}
+\DoxyCodeLine{00123\ \ \ \ \ \textcolor{comment}{//\ OpenGL\ (column-\/first)\ format\ of\ the\ matrix}}
+\DoxyCodeLine{00124\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}\ transformByMatrixF(\textcolor{keywordtype}{float}\ matrix[16])}
+\DoxyCodeLine{00125\ \ \ \ \ \{}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}\ result;}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ result.x\ =\ this-\/>x\ *\ matrix[0]\ +\ this-\/>y\ *\ matrix[4]\ +\ this-\/>z\ *\ matrix[8]\ +\ matrix[12];}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ result.y\ =\ this-\/>x\ *\ matrix[1]\ +\ this-\/>y\ *\ matrix[5]\ +\ this-\/>z\ *\ matrix[9]\ +\ matrix[13];}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ result.z\ =\ this-\/>x\ *\ matrix[2]\ +\ this-\/>y\ *\ matrix[6]\ +\ this-\/>z\ *\ matrix[10]\ +\ matrix[14];}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \_T\ w\ =\ this-\/>x\ *\ matrix[3]\ +\ this-\/>y\ *\ matrix[7]\ +\ this-\/>z\ *\ matrix[11]\ +\ matrix[15];}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (w\ !=\ 1\ \&\&\ w\ !=\ 0)\ \{}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \ \ \ \ result.x\ /=\ w;}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \ \ \ \ result.y\ /=\ w;}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \ \ \ \ result.z\ /=\ w;}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00139\ }
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ result;}
+\DoxyCodeLine{00141\ \ \ \ \ \}}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ \ \ \ \ \textcolor{comment}{//\ OpenGL\ (column-\/first)\ format\ of\ the\ matrix}}
+\DoxyCodeLine{00144\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}\ transformByMatrixD(\textcolor{keywordtype}{double}\ matrix[16])}
+\DoxyCodeLine{00145\ \ \ \ \ \{}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}\ result;}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ result.x\ =\ this-\/>x\ *\ matrix[0]\ +\ this-\/>y\ *\ matrix[4]\ +\ this-\/>z\ *\ matrix[8]\ +\ matrix[12];}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ result.y\ =\ this-\/>x\ *\ matrix[1]\ +\ this-\/>y\ *\ matrix[5]\ +\ this-\/>z\ *\ matrix[9]\ +\ matrix[13];}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ result.z\ =\ this-\/>x\ *\ matrix[2]\ +\ this-\/>y\ *\ matrix[6]\ +\ this-\/>z\ *\ matrix[10]\ +\ matrix[14];}
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \_T\ w\ =\ this-\/>x\ *\ matrix[3]\ +\ this-\/>y\ *\ matrix[7]\ +\ this-\/>z\ *\ matrix[11]\ +\ matrix[15];}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (w\ !=\ 1\ \&\&\ w\ !=\ 0)\ \{}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \ \ \ \ result.x\ /=\ w;}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \ \ \ \ result.y\ /=\ w;}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \ \ \ \ result.z\ /=\ w;}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ result;}
+\DoxyCodeLine{00161\ \ \ \ \ \}}
+\DoxyCodeLine{00162\ }
+\DoxyCodeLine{00163\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}\ transformByMatrix(Eigen::Matrix4d\ matrix)}
+\DoxyCodeLine{00164\ \ \ \ \ \{}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}\ result;}
+\DoxyCodeLine{00166\ }
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ result.x\ =\ this-\/>x\ *\ matrix(0,0)\ +\ this-\/>y\ *\ matrix(0,1)\ +\ this-\/>z\ *\ matrix(0,2)\ +\ matrix(0,3);}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ result.y\ =\ this-\/>x\ *\ matrix(1,0)\ +\ this-\/>y\ *\ matrix(1,1)\ +\ this-\/>z\ *\ matrix(1,2)\ +\ matrix(1,3);}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ result.z\ =\ this-\/>x\ *\ matrix(2,0)\ +\ this-\/>y\ *\ matrix(2,1)\ +\ this-\/>z\ *\ matrix(2,2)\ +\ matrix(2,3);}
+\DoxyCodeLine{00170\ }
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \_T\ w\ =\ this-\/>x\ *\ matrix(3,0)\ +\ this-\/>y\ *\ matrix(3,1)\ +\ this-\/>z\ *\ matrix(3,2)\ +\ matrix(3,3);}
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (w\ !=\ 1\ \&\&\ w\ !=\ 0)\ \{}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \ \ \ \ result.x\ /=\ w;}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ \ \ \ \ result.y\ /=\ w;}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ \ \ \ \ result.z\ /=\ w;}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00178\ }
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ result;}
+\DoxyCodeLine{00180\ \ \ \ \ \}}
+\DoxyCodeLine{00181\ }
+\DoxyCodeLine{00182\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}\ transformByMatrix(Eigen::Matrix3d\ matrix)}
+\DoxyCodeLine{00183\ \ \ \ \ \{}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3<\_T>}}\ result;}
+\DoxyCodeLine{00185\ }
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ result.x\ =\ this-\/>x\ *\ matrix(0,\ 0)\ +\ this-\/>y\ *\ matrix(0,\ 1)\ +\ this-\/>z\ *\ matrix(0,\ 2);}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ result.y\ =\ this-\/>x\ *\ matrix(1,\ 0)\ +\ this-\/>y\ *\ matrix(1,\ 1)\ +\ this-\/>z\ *\ matrix(1,\ 2);}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ result.z\ =\ this-\/>x\ *\ matrix(2,\ 0)\ +\ this-\/>y\ *\ matrix(2,\ 1)\ +\ this-\/>z\ *\ matrix(2,\ 2);}
+\DoxyCodeLine{00189\ }
+\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ result;}
+\DoxyCodeLine{00191\ \ \ \ \ \}}
+\DoxyCodeLine{00192\ \};}
+\DoxyCodeLine{00193\ }
+\DoxyCodeLine{00194\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_c_point3}{CPoint3<short>}}\ \mbox{\hyperlink{class_c_point3}{CPoint3s}};}
+\DoxyCodeLine{00195\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_c_point3}{CPoint3<int>}}\ \mbox{\hyperlink{class_c_point3}{CPoint3i}};}
+\DoxyCodeLine{00196\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_c_point3}{CPoint3<float>}}\ \mbox{\hyperlink{class_c_point3}{CPoint3f}};}
+\DoxyCodeLine{00197\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_c_point3}{CPoint3<double>}}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}};}
+\DoxyCodeLine{00198\ }
+\DoxyCodeLine{00199\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ \_POINT3\_H\_BY\_DP\_INCLUDED\_\ */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

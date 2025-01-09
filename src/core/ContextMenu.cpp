@@ -67,6 +67,9 @@ CContextMenu::CContextMenu(CBaseObject *obj, QWidget *parent) : QMenu(parent), m
 				addSeparator();
 				addAction(QIcon(":/icons/Save.ico"), "Save as...", this, SLOT(saveObjAs()));
 				addSeparator();
+				addAction("apply last transformation and move up", this, SLOT(slot_apply_last_transform()));
+				addAction("create reverse transformation", this, SLOT(slot_create_inversed_transform()));
+				addSeparator();
 				addMenu(createCopyMenu());
 				addMenu(createMoveMenu());
 				addSeparator();
@@ -74,7 +77,8 @@ CContextMenu::CContextMenu(CBaseObject *obj, QWidget *parent) : QMenu(parent), m
 				addSeparator();
 				addMenu(AP::mainWin().ui.menuModel);
 				addSeparator();
-				addAction(QIcon(":/icons/Erase.ico"), "delete", this, SLOT(slotDeleteObject()));
+				addAction(QIcon(":/icons/Erase.ico"), "delete and keep childeren", this, SLOT(slot_delete_and_keep_children()));
+				addAction(QIcon(":/icons/Erase.ico"), "delete all below", this, SLOT(slotDeleteObject()));
 				break;
 			case CBaseObject::Type::IMAGE:
 				AP::WORKSPACE::setCurrentModel(m_obj->id());
@@ -107,6 +111,7 @@ CContextMenu::CContextMenu(CBaseObject *obj, QWidget *parent) : QMenu(parent), m
 			case CBaseObject::Type::MESH:
 				addAction(QIcon(":/icons/Save.ico"), "export as...", this, SLOT(saveObjAs()));
 				addSeparator();
+				addAction("apply last transformation and move up", this, SLOT(slot_apply_last_transform()));
 				addMenu(createCopyMenu());
 				addMenu(createMoveMenu());
 				addSeparator();
@@ -307,6 +312,117 @@ void CContextMenu::saveObjAs()
 
 	tmpObj->removeChild(m_obj->id());
 	delete tmpObj;
+}
+
+void CContextMenu::slot_apply_last_transform()
+{
+	// Kopiujemy obiekt z rodzica do dziadka,
+	// przekształcając go tak by zachował pozycję
+	
+	
+
+	if (m_obj == nullptr)
+		return; 	// obiekt nie istnieje
+
+	CBaseObject* parent = m_obj->getParent();
+	
+
+	if ( (parent == nullptr) || (!parent->hasType(CBaseObject::Type::MODEL)) )
+		return;	// rodzicem obiektu nie jest przekształcenie
+
+	CTransform parent_transform = ((CModel3D*)parent)->transform();
+
+	CBaseObject* grandpa = parent->getParent();
+	
+	if ( (grandpa != nullptr) && (!grandpa->hasType(CBaseObject::Type::MODEL)) )
+		return;	// dziadkiem obiektu nie jest przekształcenie lub workspace
+
+	CTransform grandpa_transform; // zerowe przekształcenie 
+
+	if (m_obj->hasType(CBaseObject::Type::MODEL))
+	{
+		CModel3D* mdl = (CModel3D*)m_obj;
+		Eigen::Matrix4d T = mdl->transform().toEigenMatrix4d();
+		Eigen::Matrix4d Tp = parent_transform.toEigenMatrix4d();
+
+		T = T * Tp;
+
+		mdl->transform().fromEigenMatrix4d(T);
+
+		AP::OBJECT::removeChild(parent, mdl);
+		if (grandpa == nullptr)
+		{
+			AP::WORKSPACE::addModel(mdl);
+		}
+		else
+		{
+			AP::OBJECT::addChild(grandpa, mdl);
+		}
+	}
+	else if (m_obj->hasType(CBaseObject::Type::MESH) || m_obj->hasType(CBaseObject::Type::CLOUD) || m_obj->hasType(CBaseObject::Type::ORDEREDCLOUD))
+	{
+		CPointCloud* mesh = (CPointCloud*)m_obj;
+		mesh->applyTransformation(parent_transform, grandpa_transform);
+
+		if (grandpa == nullptr)
+		{
+			grandpa = new CModel3D();
+			AP::WORKSPACE::addModel((CModel3D*)grandpa);
+		}
+
+		AP::OBJECT::removeChild(parent, mesh);
+		AP::OBJECT::addChild(grandpa, mesh);
+	}
+}
+
+void CContextMenu::slot_delete_and_keep_children()
+{
+	if (m_obj->hasType(CBaseObject::Type::MODEL))
+	{
+		CBaseObject* p = m_obj->getParent();
+		if (p != nullptr)
+		{
+			for (auto d : ((CObject*)m_obj)->children())
+			{
+				CBaseObject* c = d.second;
+				AP::OBJECT::addChild(p, c);
+			}
+			((CObject*)m_obj)->children().clear();
+
+			for (auto d : ((CObject*)m_obj)->annotations())
+			{
+				AP::OBJECT::addChild(p, (CBaseObject*)d.second);
+			}
+			((CObject*)m_obj)->annotations().clear();
+			AP::WORKSPACE::removeModel((CModel3D*)m_obj, true);
+		}
+		else
+		{
+			;// AP::WORKSPACE::addModel(obj);
+		}
+	}
+}
+
+void CContextMenu::slot_create_inversed_transform()
+{
+	if (m_obj->hasType(CBaseObject::Type::MODEL))
+	{
+		CModel3D* obj = new CModel3D();
+		obj->transform().fromEigenMatrix4d( ((CModel3D*)m_obj)->transform().toEigenMatrix4d().inverse() );
+		obj->setLabel(m_obj->getLabel() + ".inv");
+		obj->resetBoundingBox(CBoundingBox::NullBB);
+
+		CBaseObject *p = m_obj->getParent();
+		if (p == nullptr)
+		{
+			AP::WORKSPACE::addModel(obj);
+		}
+		else
+		{
+			AP::OBJECT::addChild(p, obj);
+		}
+	}
+
 }
 
 #include "Histogram.h"

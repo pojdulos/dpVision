@@ -1,0 +1,238 @@
+\doxysection{BVH.\+h}
+\hypertarget{_b_v_h_8h_source}{}\label{_b_v_h_8h_source}\index{src/core/BVH.h@{src/core/BVH.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#include\ <algorithm>}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <limits>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <cmath>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <array>}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}Mesh.h"{}}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_ray}{Ray}}\ \{}
+\DoxyCodeLine{00009\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\ origin;\ \ \ \ \textcolor{comment}{//\ Pocz¹tek\ promienia}}
+\DoxyCodeLine{00010\ \ \ \ \ \mbox{\hyperlink{class_c_vector3}{CVector3f}}\ direction;\ \textcolor{comment}{//\ Kierunek\ promienia}}
+\DoxyCodeLine{00011\ \};}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ AABB\ -\/\ Axis-\/Aligned\ Bounding\ Box}}
+\DoxyCodeLine{00014\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_a_a_b_b}{AABB}}\ \{}
+\DoxyCodeLine{00015\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\ min,\ max;}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{comment}{//\ Rozszerz\ AABB\ o\ punkt}}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keywordtype}{void}\ expand(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\&\ p)\ \{}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ min\ =\ \{\ std::min(min.x,\ p.x),\ std::min(min.y,\ p.y),\ std::min(min.z,\ p.z)\ \};}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ max\ =\ \{\ std::max(max.x,\ p.x),\ std::max(max.y,\ p.y),\ std::max(max.z,\ p.z)\ \};}
+\DoxyCodeLine{00021\ \ \ \ \ \}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{comment}{//\ Sprawdzenie\ przeciêcia\ z\ innym\ AABB}}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keywordtype}{bool}\ intersects(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_a_a_b_b}{AABB}}\&\ other)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (min.x\ <=\ other.max.x\ \&\&\ max.x\ >=\ other.min.x)\ \&\&}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \ \ \ \ (min.y\ <=\ other.max.y\ \&\&\ max.y\ >=\ other.min.y)\ \&\&}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \ \ \ \ (min.z\ <=\ other.max.z\ \&\&\ max.z\ >=\ other.min.z);}
+\DoxyCodeLine{00028\ \ \ \ \ \}}
+\DoxyCodeLine{00029\ \};}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{comment}{//\ Wêze³\ BVH}}
+\DoxyCodeLine{00032\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_b_v_h_node}{BVHNode}}\ \{}
+\DoxyCodeLine{00033\ \ \ \ \ \mbox{\hyperlink{struct_a_a_b_b}{AABB}}\ bbox;}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keywordtype}{int}\ leftChild\ =\ -\/1;\ \ \ \textcolor{comment}{//\ Indeks\ lewego\ dziecka}}
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keywordtype}{int}\ rightChild\ =\ -\/1;\ \ \textcolor{comment}{//\ Indeks\ prawego\ dziecka}}
+\DoxyCodeLine{00036\ \ \ \ \ std::vector<int>\ triangleIndices;\ \textcolor{comment}{//\ Indeksy\ trójk¹tów (dla\ liœci)}}
+\DoxyCodeLine{00037\ \};}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{comment}{//\ Budowa\ BVH}}
+\DoxyCodeLine{00040\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_b_v_h}{BVH}}\ \{}
+\DoxyCodeLine{00041\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00042\ \ \ \ \ \mbox{\hyperlink{class_b_v_h}{BVH}}(\mbox{\hyperlink{class_c_mesh}{CMesh}}\ *mesh)\ :\ triangles(mesh-\/>faces()),\ vertices(mesh-\/>vertices())\ \{}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ rootNode\ =\ build(0,\ mesh-\/>faces().size(),\ 0);}
+\DoxyCodeLine{00044\ \ \ \ \ \}}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \ \ \ \ \mbox{\hyperlink{class_b_v_h}{BVH}}(\textcolor{keyword}{const}\ CMesh::Faces\&\ triangles,\ \textcolor{keyword}{const}\ CMesh::Vertices\&\ vertices)\ :\ triangles(triangles),\ vertices(vertices)\ \{}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ rootNode\ =\ build(0,\ triangles.size(),\ 0);}
+\DoxyCodeLine{00048\ \ \ \ \ \}}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keyword}{const}\ std::vector<BVHNode>\&\ getNodes()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ nodes;\ \}}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{comment}{//\ Funkcja\ do\ sprawdzenia\ przeciêcia\ promienia\ z\ trójk¹tem\ (algorytm\ Möllera-\/Trumbore)}}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keywordtype}{bool}\ rayIntersectsTriangle(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_ray}{Ray}}\&\ ray,}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\&\ V0,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\&\ V1,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\&\ V2,}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\&\ t,\ \textcolor{keywordtype}{float}\&\ u,\ \textcolor{keywordtype}{float}\&\ v)\ \{}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ \_EPSILON\ =\ 1e-\/6f;\ \textcolor{comment}{//\ Tolerancja\ numeryczna}}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Krawêdzie\ trójk¹ta}}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_c_vector3}{CVector3f}}\ E1\ =\ V1\ -\/\ V0;}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_c_vector3}{CVector3f}}\ E2\ =\ V2\ -\/\ V0;}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Wektor\ normalny\ do\ p³aszczyzny\ trójk¹ta}}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_c_vector3}{CVector3f}}\ P\ =\ ray.direction.crossProduct(E2);}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Wyznacznik\ macierzy\ (determinant)}}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ det\ =\ E1.dotProduct(P);}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Jeœli\ det\ jest\ bliski\ zeru,\ promieñ jest\ równoleg³y\ do\ p³aszczyzny\ trójk¹ta}}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (fabs(det)\ <\ \_EPSILON)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ invDet\ =\ 1.0f\ /\ det;}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Wektor\ od\ V0\ do\ pocz¹tku\ promienia}}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_c_vector3}{CVector3f}}\ T\ =\ ray.origin\ -\/\ V0;}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Oblicz\ wspó³czynnik\ u\ (po³o¿enie\ barycentryczne)}}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ u\ =\ T.dotProduct(P)\ *\ invDet;}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (u\ <\ 0.0f\ ||\ u\ >\ 1.0f)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Oblicz\ wspó³czynnik\ v}}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_c_vector3}{CVector3f}}\ Q\ =\ T.crossProduct(E1);}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ v\ =\ ray.direction.dotProduct(Q)\ *\ invDet;}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (v\ <\ 0.0f\ ||\ u\ +\ v\ >\ 1.0f)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Oblicz\ t\ (odleg³oœæ od\ pocz¹tku\ promienia)}}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ t\ =\ E2.dotProduct(Q)\ *\ invDet;}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ SprawdŸ,\ czy\ t\ jest\ dodatnie\ (przeciêcie\ znajduje\ siê "{}przed"{}\ promieniem)}}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ t\ >\ \_EPSILON;}
+\DoxyCodeLine{00091\ \ \ \ \ \}}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keywordtype}{bool}\ rayIntersectsAABB(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_ray}{Ray}}\&\ ray,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_a_a_b_b}{AABB}}\&\ box)\ \{}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ tmin\ =\ (box.min.x\ -\/\ ray.origin.x)\ /\ ray.direction.x;}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ tmax\ =\ (box.max.x\ -\/\ ray.origin.x)\ /\ ray.direction.x;}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tmin\ >\ tmax)\ std::swap(tmin,\ tmax);}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ tymin\ =\ (box.min.y\ -\/\ ray.origin.y)\ /\ ray.direction.y;}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ tymax\ =\ (box.max.y\ -\/\ ray.origin.y)\ /\ ray.direction.y;}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tymin\ >\ tymax)\ std::swap(tymin,\ tymax);}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((tmin\ >\ tymax)\ ||\ (tymin\ >\ tmax))\ \{}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};\ \textcolor{comment}{//\ Brak\ przeciêcia}}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tymin\ >\ tmin)\ tmin\ =\ tymin;}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tymax\ <\ tmax)\ tmax\ =\ tymax;}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ tzmin\ =\ (box.min.z\ -\/\ ray.origin.z)\ /\ ray.direction.z;}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ tzmax\ =\ (box.max.z\ -\/\ ray.origin.z)\ /\ ray.direction.z;}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tzmin\ >\ tzmax)\ std::swap(tzmin,\ tzmax);}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((tmin\ >\ tzmax)\ ||\ (tzmin\ >\ tmax))\ \{}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};\ \textcolor{comment}{//\ Brak\ przeciêcia}}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};\ \textcolor{comment}{//\ Promieñ przecina\ AABB}}
+\DoxyCodeLine{00122\ \ \ \ \ \}}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \ \ \ \ \textcolor{keywordtype}{bool}\ traverseBVH(\textcolor{keywordtype}{int}\ nodeIndex,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_ray}{Ray}}\&\ ray)\ \{}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_b_v_h_node}{BVHNode}}\&\ \mbox{\hyperlink{structnode}{node}}\ =\ nodes[nodeIndex];}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 1.\ Test\ przeciêcia\ promienia\ z\ AABB}}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!rayIntersectsAABB(ray,\ \mbox{\hyperlink{structnode}{node}}.bbox))\ \{}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};\ \textcolor{comment}{//\ Brak\ przeciêcia,\ odrzucamy\ ten\ wêze³}}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ hitFound\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 2.\ Jeœli\ to\ liœæ, testuj\ trójk¹ty}}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{structnode}{node}}.leftChild\ ==\ -\/1\ \&\&\ \mbox{\hyperlink{structnode}{node}}.rightChild\ ==\ -\/1)\ \{}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ triIndex\ :\ \mbox{\hyperlink{structnode}{node}}.triangleIndices)\ \{}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\&\ tri\ =\ triangles[triIndex];}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ t,\ u,\ v;}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (rayIntersectsTriangle(ray,\ vertices[tri[0]],\ vertices[tri[1]],\ vertices[tri[2]],\ t,\ u,\ v))\ \{}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ hitFound\ =\ \textcolor{keyword}{true};\ \textcolor{comment}{//\ Znaleziono\ przeciêcie}}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 3.\ Jeœli\ to\ wêze³\ wewnêtrzny,\ przeszukaj\ dzieci}}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{structnode}{node}}.leftChild\ !=\ -\/1)\ \{}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ hitFound\ |=\ traverseBVH(\mbox{\hyperlink{structnode}{node}}.leftChild,\ ray);}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{structnode}{node}}.rightChild\ !=\ -\/1)\ \{}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ hitFound\ |=\ traverseBVH(\mbox{\hyperlink{structnode}{node}}.rightChild,\ ray);}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ hitFound;}
+\DoxyCodeLine{00155\ \ \ \ \ \}}
+\DoxyCodeLine{00156\ }
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00158\ }
+\DoxyCodeLine{00159\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00160\ \ \ \ \ std::vector<BVHNode>\ nodes;}
+\DoxyCodeLine{00161\ \ \ \ \ \textcolor{keywordtype}{int}\ rootNode;}
+\DoxyCodeLine{00162\ }
+\DoxyCodeLine{00163\ \ \ \ \ \textcolor{comment}{//\ Dane\ trójk¹tów i\ wierzcho³ków}}
+\DoxyCodeLine{00164\ \ \ \ \ \textcolor{keyword}{const}\ CMesh::Faces\&\ triangles;\ \ \ \ \ \ \textcolor{comment}{//\ Indeksy\ wierzcho³ków}}
+\DoxyCodeLine{00165\ \ \ \ \ \textcolor{keyword}{const}\ CMesh::Vertices\&\ vertices;\ \ \ \ \textcolor{comment}{//\ Wspó³rzêdne\ wierzcho³ków}}
+\DoxyCodeLine{00166\ }
+\DoxyCodeLine{00167\ \ \ \ \ \textcolor{comment}{//\ Rekurencyjna\ budowa\ BVH}}
+\DoxyCodeLine{00168\ \ \ \ \ \textcolor{keywordtype}{int}\ build(\textcolor{keywordtype}{int}\ start,\ \textcolor{keywordtype}{int}\ end,\ \textcolor{keywordtype}{int}\ depth)\ \{}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_b_v_h_node}{BVHNode}}\ \mbox{\hyperlink{structnode}{node}};}
+\DoxyCodeLine{00170\ }
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Oblicz\ AABB\ dla\ aktualnego\ zbioru\ trójk¹tów}}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structnode}{node}}.bbox\ =\ computeAABB(start,\ end);}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Jeœli\ ma³o\ trójk¹tów, utwórz liœæ}}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (end\ -\/\ start\ <=\ 2)\ \{}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ start;\ i\ <\ end;\ ++i)\ \{}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structnode}{node}}.triangleIndices.push\_back(i);}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \ \ \ \ nodes.push\_back(\mbox{\hyperlink{structnode}{node}});}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ nodes.size()\ -\/\ 1;}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00182\ }
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Podziel\ trójk¹ty\ na\ dwa\ podzbiory}}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ mid\ =\ (start\ +\ end)\ /\ 2;}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ std::nth\_element(triangleIndices.begin()\ +\ start,\ triangleIndices.begin()\ +\ mid,\ triangleIndices.begin()\ +\ end,}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ \ \ \ \ [\textcolor{keyword}{this},\ depth](\textcolor{keywordtype}{int}\ a,\ \textcolor{keywordtype}{int}\ b)\ \{}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ return\ centroid(triangles[a])[depth\ \%\ 3]\ <\ centroid(triangles[b])[depth\ \%\ 3];}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ \ \ \ \ \});}
+\DoxyCodeLine{00189\ }
+\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Rekurencja\ dla\ dzieci}}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ leftChild\ =\ build(start,\ mid,\ depth\ +\ 1);}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ rightChild\ =\ build(mid,\ end,\ depth\ +\ 1);}
+\DoxyCodeLine{00193\ }
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structnode}{node}}.leftChild\ =\ leftChild;}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structnode}{node}}.rightChild\ =\ rightChild;}
+\DoxyCodeLine{00196\ }
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ nodes.push\_back(\mbox{\hyperlink{structnode}{node}});}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ nodes.size()\ -\/\ 1;}
+\DoxyCodeLine{00199\ \ \ \ \ \}}
+\DoxyCodeLine{00200\ }
+\DoxyCodeLine{00201\ \ \ \ \ \textcolor{comment}{//\ Obliczenie\ AABB\ dla\ zbioru\ trójk¹tów}}
+\DoxyCodeLine{00202\ \ \ \ \ \mbox{\hyperlink{struct_a_a_b_b}{AABB}}\ computeAABB(\textcolor{keywordtype}{int}\ start,\ \textcolor{keywordtype}{int}\ end)\ \{}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_a_a_b_b}{AABB}}\ bbox\ =\ \{}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\{}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::numeric\_limits<float>::max(),}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::numeric\_limits<float>::max(),}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::numeric\_limits<float>::max()}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \ \ \ \ \},}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\{}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ -\/std::numeric\_limits<float>::max(),}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ -\/std::numeric\_limits<float>::max(),}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ -\/std::numeric\_limits<float>::max()}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00215\ }
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ start;\ i\ <\ end;\ ++i)\ \{}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ v\ =\ 0;\ v\ <\ 3;\ v++)\ \{}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ bbox.expand(vertices[triangles[i][v]]);}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ bbox;}
+\DoxyCodeLine{00222\ \ \ \ \ \}}
+\DoxyCodeLine{00223\ }
+\DoxyCodeLine{00224\ \ \ \ \ \textcolor{comment}{//\ Obliczenie\ centroidu\ trójk¹ta}}
+\DoxyCodeLine{00225\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\ centroid(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_face}{CFace}}\&\ tri)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (vertices[tri[0]]\ +\ vertices[tri[1]]\ +\ vertices[tri[2]])\ *\ (1.0f\ /\ 3.0f);}
+\DoxyCodeLine{00227\ \ \ \ \ \}}
+\DoxyCodeLine{00228\ }
+\DoxyCodeLine{00229\ \ \ \ \ \textcolor{comment}{//\ Indeksy\ trójk¹tów do\ przetwarzania}}
+\DoxyCodeLine{00230\ \ \ \ \ std::vector<int>\ triangleIndices;}
+\DoxyCodeLine{00231\ \};}
+\DoxyCodeLine{00232\ }
+
+\end{DoxyCode}

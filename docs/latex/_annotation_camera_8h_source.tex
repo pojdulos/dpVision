@@ -1,0 +1,131 @@
+\doxysection{Annotation\+Camera.\+h}
+\hypertarget{_annotation_camera_8h_source}{}\label{_annotation_camera_8h_source}\index{src/core/AnnotationCamera.h@{src/core/AnnotationCamera.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}Annotation.h"{}}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}Punkt3D.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}Wektor3D.h"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}RGBA.h"{}}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <list>}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_annotation_camera}{CAnnotationCamera}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_c_annotation}{CAnnotation}}}
+\DoxyCodeLine{00014\ \{}
+\DoxyCodeLine{00015\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00016\ \ \ \ \ \textcolor{keyword}{struct\ }DPVISION\_EXPORT\ \mbox{\hyperlink{struct_c_annotation_camera_1_1_sensor}{Sensor}}\ \{}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ xResolution;}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ yResolution;}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ realWidth;}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ realHeight;}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ mmPixelWidth;}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ mmPixelHeight;}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ pxFocalLenght;}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ mmFocalLength;}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_c_annotation_camera_1_1_sensor}{Sensor}}()\ :\ xResolution(1800),\ yResolution(1200),\ mmFocalLength(50.0),\ realWidth(36.0),\ realHeight(24.0)}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \ \ \ \ mmPixelWidth\ =\ realWidth\ /\ xResolution;}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \ \ \ \ mmPixelHeight\ =\ realHeight\ /\ yResolution;}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \ \ \ \ pxFocalLenght\ =\ mmFocalLength\ *\ 2.0\ /\ (mmPixelWidth\ +\ mmPixelHeight);}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_c_annotation_camera_1_1_sensor}{Sensor}}(\textcolor{keywordtype}{int}\ xR,\ \textcolor{keywordtype}{int}\ yR,\ \textcolor{keywordtype}{double}\ fL=50.0)\ :\ xResolution(xR),\ yResolution(yR),\ mmFocalLength(fL),\ realWidth(36.0),\ realHeight(24.0)}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ mmPixelWidth\ =\ realWidth\ /\ xResolution;}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \ \ \ \ mmPixelHeight\ =\ realHeight\ /\ yResolution;}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \ \ \ \ pxFocalLenght\ =\ mmFocalLength\ *\ 2.0\ /\ (mmPixelWidth\ +\ mmPixelHeight);}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_c_annotation_camera_1_1_sensor}{Sensor}}(\ \mbox{\hyperlink{struct_c_annotation_camera_1_1_sensor}{Sensor}}\ \&s\ )}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \ \ \ \ xResolution\ =\ s.xResolution;}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \ \ \ \ yResolution\ =\ s.yResolution;}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \ \ \ \ mmFocalLength\ =\ s.mmFocalLength;}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \ \ \ \ realWidth\ =\ s.realWidth;}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \ \ \ \ realHeight\ =\ s.realHeight;}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \ \ \ \ mmPixelWidth\ =\ s.mmPixelWidth;}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \ \ \ \ mmPixelHeight\ =\ s.mmPixelHeight;}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ \ \ pxFocalLenght\ =\ s.pxFocalLenght;}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setFocalLenght(\textcolor{keywordtype}{double}\ mm)\ \{\ mmFocalLength\ =\ mm;\ \}}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setResolution(\textcolor{keywordtype}{int}\ xResolution,\ \textcolor{keywordtype}{int}\ yResolution)}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \ \ \ \ xResolution\ =\ xResolution;}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \ \ \ \ yResolution\ =\ yResolution;}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \ \ \ \ realWidth\ =\ (double)xResolution\ *\ mmPixelWidth;}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \ \ \ \ realHeight\ =\ (double)yResolution\ *\ mmPixelHeight;}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setPixelSize(\textcolor{keywordtype}{double}\ pw,\ \textcolor{keywordtype}{double}\ ph)}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \ \ \ \ mmPixelWidth\ =\ pw;}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \ \ \ \ mmPixelHeight\ =\ ph;}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \ \ \ \ realWidth\ =\ (double)xResolution\ *\ mmPixelWidth;}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \ \ \ \ realHeight\ =\ (double)yResolution\ *\ mmPixelHeight;}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00074\ \ \ \ \ \};}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00077\ \ \ \ \ \mbox{\hyperlink{struct_c_annotation_camera_1_1_sensor}{Sensor}}\ m\_sensor;}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{comment}{//\ OpenGL\ style\ matrix\ (translation\ components\ occupy\ the\ 13th,\ 14th,\ and\ 15th\ elements\ of\ the\ 16-\/element\ matrix)}}
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keywordtype}{double}\ m\_matrix[16]\ =\ \{\ 1.0,\ 0.0,\ 0.0,\ 0.0,}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0.0,\ 1.0,\ 0.0,\ 0.0,}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0.0,\ 0.0,\ 1.0,\ 0.0,}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0.0,\ 0.0,\ 0.0,\ 1.0\ \};}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00086\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_camera}{CAnnotationCamera}}(\ \mbox{\hyperlink{class_c_base_object}{CBaseObject}}\ *m\ =\ \textcolor{keyword}{nullptr})\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(m)}
+\DoxyCodeLine{00087\ \ \ \ \ \{}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}Camera"{}});}
+\DoxyCodeLine{00089\ \ \ \ \ \};}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_camera}{CAnnotationCamera}}(\ \mbox{\hyperlink{class_c_annotation_camera}{CAnnotationCamera}}\ \&p\ )\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(p)}
+\DoxyCodeLine{00092\ \ \ \ \ \{}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}Camera"{}});}
+\DoxyCodeLine{00094\ \ \ \ \ \}}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_camera}{\string~CAnnotationCamera}}()\ \{\};}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{int}\ type()\ \{\ \textcolor{keywordflow}{return}\ CAnnotation::CAMERA;\ \}}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{class_c_annotation_camera}{CAnnotationCamera}}*\ create(Sensor\ s,\ \textcolor{keywordtype}{double}\ matrix[16],\ std::string\ label);}
+\DoxyCodeLine{00101\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{class_c_annotation_camera}{CAnnotationCamera}}*\ create(\ Sensor\ s,\ std::string\ matrixSTR,\ std::string\ label);}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \ \ \ \ }
+\DoxyCodeLine{00104\ \ \ \ \ Sensor\&\ sensor()\ \{\ \textcolor{keywordflow}{return}\ m\_sensor;\ \}}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{keywordtype}{double}*\ matrix()\ \{\ \textcolor{keywordflow}{return}\ m\_matrix;\ \}}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \ \ \ \ \textcolor{comment}{//\ Remember:\ "{}rows"{}\ and\ "{}cols"{}\ are\ in\ "{}math"{}\ notation\ here,}}
+\DoxyCodeLine{00109\ \ \ \ \ \textcolor{comment}{//\ so\ I\ expect\ that\ translation\ components\ are\ in\ 3\ column}}
+\DoxyCodeLine{00110\ \ \ \ \ \textcolor{keywordtype}{double}\ \&matrix(\ \textcolor{keywordtype}{int}\ col,\ \textcolor{keywordtype}{int}\ row\ )}
+\DoxyCodeLine{00111\ \ \ \ \ \{}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ m\_matrix\ is\ OpenGL\ style,\ so\ I\ need\ to\ invert\ it}}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ m\_matrix[4\ *\ col\ +\ row];}
+\DoxyCodeLine{00114\ \ \ \ \ \}}
+\DoxyCodeLine{00115\ }
+\DoxyCodeLine{00116\ \ \ \ \ \textcolor{keywordtype}{void}\ setMatrix(std::string\ matrixSTR);}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \ \ \ \ \textcolor{keywordtype}{void}\ setMatrix(\textcolor{keywordtype}{double}\ matrix[16]);}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \ \ \ \ \textcolor{keyword}{virtual}\ std::wstring\ getInfoRow();}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ renderSelf()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00124\ \};}
+\DoxyCodeLine{00125\ }
+
+\end{DoxyCode}

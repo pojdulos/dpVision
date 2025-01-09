@@ -1,0 +1,86 @@
+\doxysection{Annotation\+Plane.\+h}
+\hypertarget{_annotation_plane_8h_source}{}\label{_annotation_plane_8h_source}\index{src/core/AnnotationPlane.h@{src/core/AnnotationPlane.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}Annotation.h"{}}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}Plane.h"{}}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}Punkt3D.h"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}Wektor3D.h"{}}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}RGBA.h"{}}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{comment}{//class\ CTransform;}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_annotation_plane}{CAnnotationPlane}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_c_annotation}{CAnnotation}},\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_c_plane}{CPlane}}}
+\DoxyCodeLine{00012\ \{}
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keywordtype}{double}\ m\_size;}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00016\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_plane}{CAnnotationPlane}}(\ \mbox{\hyperlink{class_c_base_object}{CBaseObject}}\ *m\ =\ \textcolor{keyword}{nullptr})\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(\ m\ ),\mbox{\hyperlink{class_c_plane}{CPlane}}()}
+\DoxyCodeLine{00017\ \ \ \ \ \{}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}plane"{}});}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ m\_color.SetFloat(0.0f,\ 1.0f,\ 1.0f,\ 0.5f);}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ m\_selcolor.SetFloat(1.0f,\ 0.0f,\ 0.0f,\ 0.5f);}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ m\_size\ =\ 10;}
+\DoxyCodeLine{00022\ \ \ \ \ \};}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_plane}{CAnnotationPlane}}(\textcolor{keywordtype}{int}\ objId)\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(objId),\ \mbox{\hyperlink{class_c_plane}{CPlane}}()}
+\DoxyCodeLine{00025\ \ \ \ \ \{}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}plane"{}});}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ m\_color.SetFloat(0.0f,\ 1.0f,\ 1.0f,\ 0.5f);}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ m\_selcolor.SetFloat(1.0f,\ 0.0f,\ 0.0f,\ 0.5f);}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ m\_size\ =\ 10;}
+\DoxyCodeLine{00030\ \ \ \ \ \};}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_plane}{CAnnotationPlane}}(\ \mbox{\hyperlink{class_c_annotation_plane}{CAnnotationPlane}}\ \&t\ )\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(\ t\ ),\mbox{\hyperlink{class_c_plane}{CPlane}}(\ t\ )}
+\DoxyCodeLine{00033\ \ \ \ \ \{}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \textcolor{comment}{//setLabel("{}plane"{});}}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \textcolor{comment}{//m\_color.SetFloat(0.0f,\ 1.0f,\ 1.0f,\ 0.5f);}}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \textcolor{comment}{//m\_selcolor.SetFloat(1.0f,\ 0.0f,\ 0.0f,\ 0.5f);}}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ m\_size\ =\ t.m\_size;}
+\DoxyCodeLine{00038\ \ \ \ \ \};}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_plane}{CAnnotationPlane}}(\ \mbox{\hyperlink{class_c_plane}{CPlane}}\ p\ )\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(-\/1),\ \mbox{\hyperlink{class_c_plane}{CPlane}}(p)}
+\DoxyCodeLine{00042\ \ \ \ \ \{}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}plane"{}});}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ m\_normal.normalize();}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ m\_color.SetFloat(0.0f,\ 1.0f,\ 1.0f,\ 0.5f);}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ m\_selcolor.SetFloat(1.0f,\ 0.0f,\ 0.0f,\ 0.5f);}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ m\_size\ =\ 10;}
+\DoxyCodeLine{00048\ \ \ \ \ \};}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_plane}{CAnnotationPlane}}(\mbox{\hyperlink{class_c_point3}{CPoint3d}}\ p,\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\ n)\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(-\/1),\ \mbox{\hyperlink{class_c_plane}{CPlane}}(p,\ n)}
+\DoxyCodeLine{00051\ \ \ \ \ \{}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}plane"{}});}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ m\_normal.normalize();}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ m\_color.SetFloat(0.0f,\ 1.0f,\ 1.0f,\ 0.5f);}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ m\_selcolor.SetFloat(1.0f,\ 0.0f,\ 0.0f,\ 0.5f);}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ m\_size\ =\ 10;}
+\DoxyCodeLine{00057\ \ \ \ \ \};}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_plane}{\string~CAnnotationPlane}}(\textcolor{keywordtype}{void})\textcolor{keyword}{\ override\ }\{\};}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{int}\ type()\ \{\ \textcolor{keywordflow}{return}\ CAnnotation::PLANE;\ \}}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{class_c_annotation_plane}{CAnnotationPlane}}*\ getCopy()\textcolor{keyword}{\ override}}
+\DoxyCodeLine{00065\ \textcolor{keyword}{\ \ \ \ }\{}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_c_annotation_plane}{CAnnotationPlane}}(*\textcolor{keyword}{this});}
+\DoxyCodeLine{00067\ \ \ \ \ \}}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{keywordtype}{void}\ setSize(\textcolor{keywordtype}{double}\ s)\ \{\ m\_size\ =\ s;\ \};}
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keywordtype}{double}\ getSize()\ \{\ \textcolor{keywordflow}{return}\ m\_size;\ \};}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ applyTransformation(\mbox{\hyperlink{class_c_transform}{CTransform}}\ \&prevT,\ \mbox{\hyperlink{class_c_transform}{CTransform}}\ \&newT)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keyword}{virtual}\ std::wstring\ getInfoRow()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keyword}{virtual}\ std::wstring\ getTypeWSTR()\textcolor{keyword}{\ override\ }\{\ \textcolor{keywordflow}{return}\ L\textcolor{stringliteral}{"{}plane"{}};\ \};}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ renderSelf()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \};}
+\DoxyCodeLine{00080\ }
+
+\end{DoxyCode}

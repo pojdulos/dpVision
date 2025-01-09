@@ -7,6 +7,8 @@ CImage::CImage() : CModel3D(), QImage()
 {
 	setLabel("image");
 	fitToWindow = false;
+
+	CModel3D::bDrawBB = false;
 }
 
 CImage::CImage(const QString& path, const char* format) : CModel3D(), QImage(path, format)
@@ -15,11 +17,13 @@ CImage::CImage(const QString& path, const char* format) : CModel3D(), QImage(pat
 	m_path = path;
 	fitToWindow = false;
 
-	float w = (float)this->width() / 100.0f;
-	float h = (float)this->height() / 100.0f;
+	img3d_half_width = (float)this->width() / 100.0f;
+	img3d_half_height = (float)this->height() / 100.0f;
 
-	setMin(CPoint3d(-w, -h, 0));
-	setMax(CPoint3d(w, h, 0));
+	setMin(CPoint3d(-img3d_half_width, -img3d_half_height, 0));
+	setMax(CPoint3d(img3d_half_width, img3d_half_height, 0));
+
+	CModel3D::bDrawBB = false;
 }
 
 
@@ -28,11 +32,13 @@ CImage::CImage(const QImage& i) : CModel3D(), QImage(i)
 	setLabel("image");
 	fitToWindow = false;
 
-	float w = (float)this->width() / 100.0f;
-	float h = (float)this->height() / 100.0f;
+	img3d_half_width = (float)this->width() / 100.0f;
+	img3d_half_height = (float)this->height() / 100.0f;
 
-	setMin(CPoint3d(-w, -h, 0));
-	setMax(CPoint3d(w, h, 0));
+	setMin(CPoint3d(-img3d_half_width, -img3d_half_height, 0));
+	setMax(CPoint3d(img3d_half_width, img3d_half_height, 0));
+
+	CModel3D::bDrawBB = false;
 }
 
 CImage::CImage(const CImage& i) : CModel3D( i ), QImage( i )
@@ -40,11 +46,13 @@ CImage::CImage(const CImage& i) : CModel3D( i ), QImage( i )
 	setLabel("image");
 	fitToWindow = false;
 
-	float w = (float)this->width() / 100.0f;
-	float h = (float)this->height() / 100.0f;
+	img3d_half_width = (float)this->width() / 100.0f;
+	img3d_half_height = (float)this->height() / 100.0f;
 
-	setMin(CPoint3d(-w, -h, 0));
-	setMax(CPoint3d(w, h, 0));
+	setMin(CPoint3d(-img3d_half_width, -img3d_half_height, 0));
+	setMax(CPoint3d(img3d_half_width, img3d_half_height, 0));
+
+	CModel3D::bDrawBB = false;
 }
 
 CImage::CImage(const uchar* b, int ww, int hh, CImage::Format f) : CModel3D(), QImage(b, ww, hh, f)
@@ -52,11 +60,13 @@ CImage::CImage(const uchar* b, int ww, int hh, CImage::Format f) : CModel3D(), Q
 	setLabel("image");
 	fitToWindow = false;
 
-	float w = (float)this->width() / 100.0f;
-	float h = (float)this->height() / 100.0f;
+	img3d_half_width = (float)this->width() / 100.0f;
+	img3d_half_height = (float)this->height() / 100.0f;
 
-	setMin(CPoint3d(-w, -h, 0));
-	setMax(CPoint3d(w, h, 0));
+	setMin(CPoint3d(-img3d_half_width, -img3d_half_height, 0));
+	setMax(CPoint3d(img3d_half_width, img3d_half_height, 0));
+
+	CModel3D::bDrawBB = false;
 }
 
 CImage::CImage(int ww, int hh, CImage::Format f) : CModel3D(), QImage(ww, hh, f)
@@ -64,11 +74,13 @@ CImage::CImage(int ww, int hh, CImage::Format f) : CModel3D(), QImage(ww, hh, f)
 	setLabel("image");
 	fitToWindow = false;
 
-	float w = (float)this->width() / 100.0f;
-	float h = (float)this->height() / 100.0f;
+	img3d_half_width = (float)this->width() / 100.0f;
+	img3d_half_height = (float)this->height() / 100.0f;
 
-	setMin(CPoint3d(-w, -h, 0));
-	setMax(CPoint3d(w, h, 0));
+	setMin(CPoint3d(-img3d_half_width, -img3d_half_height, 0));
+	setMax(CPoint3d(img3d_half_width, img3d_half_height, 0));
+
+	CModel3D::bDrawBB = false;
 }
 
 CImage::~CImage() {}
@@ -150,8 +162,6 @@ void CImage::renderSelf()
 	if (m_showSelf)
 	{
 		QOpenGLTexture ogltx(*this);
-		float w = (float) this->width() / 100.0f;
-		float h = (float) this->height() / 100.0f;
 
 		glLoadName(m_Id);
 		glPushName(m_Id);
@@ -167,10 +177,10 @@ void CImage::renderSelf()
 
 		glBegin(GL_QUADS);
 
-		glTexCoord2f(0.0, 0.0); 		glVertex2f(-w,  h);
-		glTexCoord2f(1.0, 0.0); 		glVertex2f( w,  h);
-		glTexCoord2f(1.0, 1.0); 		glVertex2f( w, -h);
-		glTexCoord2f(0.0, 1.0); 		glVertex2f(-w, -h);
+		glTexCoord2f(0.0, 0.0); 		glVertex2f(-img3d_half_width,  img3d_half_height);
+		glTexCoord2f(1.0, 0.0); 		glVertex2f( img3d_half_width,  img3d_half_height);
+		glTexCoord2f(1.0, 1.0); 		glVertex2f( img3d_half_width, -img3d_half_height);
+		glTexCoord2f(0.0, 1.0); 		glVertex2f(-img3d_half_width, -img3d_half_height);
 
 		glEnd();
 

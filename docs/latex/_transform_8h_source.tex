@@ -1,0 +1,203 @@
+\doxysection{Transform.\+h}
+\hypertarget{_transform_8h_source}{}\label{_transform_8h_source}\index{src/core/Transform.h@{src/core/Transform.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}Global.h"{}}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}Punkt3D.h"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}Wektor3D.h"{}}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}Quaternion.h"{}}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include<Eigen/Geometry>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <QtGui/QMatrix4x4>}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{keyword}{class\ \ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_transform}{CTransform}}}
+\DoxyCodeLine{00013\ \{}
+\DoxyCodeLine{00014\ \ \ \ \ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\ m\_tra;\ \textcolor{comment}{//\ translacja}}
+\DoxyCodeLine{00015\ \ \ \ \ \mbox{\hyperlink{class_c_quaternion}{CQuaternion}}\ m\_rot;\ \textcolor{comment}{//\ kwaternion\ obrotu}}
+\DoxyCodeLine{00016\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ m\_sca;\ \textcolor{comment}{//\ skala}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keywordtype}{bool}\ m\_bLocked;\ \textcolor{comment}{//\ czy\ zablokowa{\ucr}\ mo{\ucr}liwo{\ucr}{\ucr}\ zmiany\ pozycji}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keywordtype}{bool}\ m\_show\_screw;}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keywordtype}{bool}\ m\_bRelocateCtr;\ \textcolor{comment}{//\ czy\ centrowa{\ucr}\ obiekt\ na\ scenie\ podczas\ rysowania}}
+\DoxyCodeLine{00023\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ m\_origin;\ \textcolor{comment}{//\ okre{\ucr}la\ {\ucr}rodek\ obrotu\ we\ wsp{\ucr}rz{\ucr}dnych\ obiektu\ -\/\ i\ jednocze{\ucr}nie\ punkt\ 0,0\ dla\ centrowania}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ ZERO,}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ WEIGHT\_CTR,}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ BBOX\_CTR}
+\DoxyCodeLine{00030\ \ \ \ \ \}\ Origin;}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \ \ \mbox{\hyperlink{class_c_transform}{CTransform}}();}
+\DoxyCodeLine{00034\ \ \ \ \ \mbox{\hyperlink{class_c_transform}{CTransform}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_transform}{CTransform}}\ \&t);}
+\DoxyCodeLine{00035\ \ \ \ \ \mbox{\hyperlink{class_c_transform}{CTransform}}(\textcolor{keyword}{const}\ Eigen::Matrix4d\&\ mat);}
+\DoxyCodeLine{00036\ \ \ \ \ \mbox{\hyperlink{class_c_transform}{\string~CTransform}}();}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keywordtype}{void}\ reset();}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{comment}{//\ Obroty\ s{\ucr}\ zwykle\ wykonywane\ wok{\ucr}\ punktu\ 0,0,\ aby\ obiekt\ nie\ "{}lata{\ucr}"{}\ po\ scenie\ podczas\ obracania}}
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{comment}{//\ jego\ {\ucr}rodek\ obrotu\ jest\ domy{\ucr}lnie\ ustawiany\ w\ {\ucr}rodku\ obiektu,\ wg\ wzoru:\ (max+min)/2}}
+\DoxyCodeLine{00042\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&origin()\ \{\ \textcolor{keywordflow}{return}\ m\_origin;\ \}}
+\DoxyCodeLine{00043\ \ \ \ \ }
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{comment}{//\ Deprecated,\ the\ same\ as\ origin()\ }}
+\DoxyCodeLine{00045\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&centerOfRotation()\ \{\ \textcolor{keywordflow}{return}\ m\_origin;\ \}}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{comment}{//\ mo{\ucr}na\ to\ oczywi{\ucr}cie\ zmieni{\ucr}\ i\ ustawi{\ucr}\ go\ praktycznie\ dowolnie:}}
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ setOrigin(\mbox{\hyperlink{class_c_point3}{CPoint3d}}\ c\ =\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}(0,\ 0,\ 0))\ \{\ m\_origin\ =\ c;\ \}}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{comment}{//\ Deprecated,\ the\ same\ as\ setOrigin(CPoint3f\ c)}}
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ setCenterOfRotation(\mbox{\hyperlink{class_c_point3}{CPoint3d}}\ c)\ \{\ setOrigin(c);\ \}}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{comment}{//\ czasami\ istnieje\ potrzeba\ wycentrowania\ obiektu\ na\ scenie,\ bo\ np.\ jego\ wsp{\ucr}rz{\ucr}dne\ s{\ucr}\ bardzo\ odleg{\ucr}e\ od\ centrum\ uk{\ucr}adu}}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{comment}{//\ i\ nie\ mie{\ucr}ci{\ucr}by\ sie\ na\ ekranie.\ {\ucr}eby\ nie\ wprowadza{\ucr}\ dodatkowych\ zmiennych,\ wykorzystujemy\ {\ucr}rodek\ obrotu\ jako\ punkt}}
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{comment}{//\ to{\ucr}samy\ z\ pocz{\ucr}tkiem\ "{}wirtualnego"{}\ uk{\ucr}adu\ wsp{\ucr}rz{\ucr}dnych}}
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keywordtype}{bool}\ isTheOriginMovedToTheCenterOfRotation()\ \{\ \textcolor{keywordflow}{return}\ m\_bRelocateCtr;\ \};}
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keywordtype}{void}\ moveTheOriginToTheCenterOfRotation(\textcolor{keywordtype}{bool}\ b)\ \{\ m\_bRelocateCtr\ =\ b;\ \};}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{comment}{//void\ fromGLMatrixD(double\ matrix[16]);}}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{comment}{//Przyj{\ucr}{\ucr}em,\ {\ucr}e\ skala\ b{\ucr}dzie\ jednakowa\ w\ ka{\ucr}dej\ z\ osi}}
+\DoxyCodeLine{00063\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&scale()\ \{\ \textcolor{keywordflow}{return}\ m\_sca;\ \}}
+\DoxyCodeLine{00064\ \ \ \ \ }
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{keywordtype}{void}\ setScale(\mbox{\hyperlink{class_c_point3}{CPoint3d}}\ s)\ \{\ m\_sca\ =\ s;\ \};}
+\DoxyCodeLine{00066\ \ \ \ \ \textcolor{keywordtype}{void}\ setScale(\textcolor{keywordtype}{double}\ s)\ \{\ m\_sca.x\ =\ m\_sca.y\ =\ m\_sca.z\ =\ s;\ \};}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \ \ \ \ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\ \&translation()\ \{\ \textcolor{keywordflow}{return}\ m\_tra;\ \}}
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\&\ translate(\mbox{\hyperlink{class_c_vector3}{CVector3d}}\ ruch);}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \ \ \mbox{\hyperlink{class_c_quaternion}{CQuaternion}}\ \&rotation()\ \{\ \textcolor{keywordflow}{return}\ m\_rot;\ \}}
+\DoxyCodeLine{00072\ \ \ \ \ }
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keywordtype}{void}\ rotate(std::vector<std::pair<CVector3d,\ double>>\ axisAngle,\ \textcolor{keywordtype}{bool}\ internal\ =\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keywordtype}{void}\ rotate(\mbox{\hyperlink{class_c_point3}{CPoint3d}}\ origin,\ std::vector<std::pair<CVector3d,\ double>>\ axisAngle,\ \textcolor{keywordtype}{bool}\ internal\ =\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ rotateDeg(std::vector<std::pair<CVector3d,\ double>>\ axisAngle,\ \textcolor{keywordtype}{bool}\ internal\ =\ \textcolor{keyword}{true})}
+\DoxyCodeLine{00077\ \ \ \ \ \{}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{auto}\&\ aa\ :\ axisAngle)}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \ \ \ \ aa.second\ =\ deg2rad(aa.second);}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ rotate(axisAngle,\ internal);}
+\DoxyCodeLine{00081\ \ \ \ \ \}}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ rotateDeg(\mbox{\hyperlink{class_c_point3}{CPoint3d}}\ origin,\ std::vector<std::pair<CVector3d,\ double>>\ axisAngle,\ \textcolor{keywordtype}{bool}\ internal\ =\ \textcolor{keyword}{true})}
+\DoxyCodeLine{00084\ \ \ \ \ \{}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{auto}\&\ aa\ :\ axisAngle)}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \ \ \ \ aa.second\ =\ deg2rad(aa.second);}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ rotate(origin,\ axisAngle,\ internal);}
+\DoxyCodeLine{00088\ \ \ \ \ \}}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \ \ \ \ \textcolor{keywordtype}{void}\ showScrew(\textcolor{keywordtype}{bool}\ b)\ \{\ m\_show\_screw\ =\ b;\ \}}
+\DoxyCodeLine{00091\ \ \ \ \ \textcolor{keywordtype}{bool}\ isScrewVisible()\ \{\ \textcolor{keywordflow}{return}\ m\_show\_screw;\ \}}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \ \ \ \ \textcolor{keywordtype}{void}\ rotateAroundAxis(\mbox{\hyperlink{class_c_vector3}{CVector3d}}\ axis,\ \textcolor{keywordtype}{double}\ angle,\ \textcolor{keywordtype}{bool}\ internal\ =\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keywordtype}{void}\ rotateAroundAxis(\mbox{\hyperlink{class_c_point3}{CPoint3d}}\ origin,\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\ axis,\ \textcolor{keywordtype}{double}\ angle,\ \textcolor{keywordtype}{bool}\ internal\ =\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ rotateAroundAxisDeg(\mbox{\hyperlink{class_c_vector3}{CVector3d}}\ axis,\ \textcolor{keywordtype}{double}\ angle,\ \textcolor{keywordtype}{bool}\ internal\ =\ \textcolor{keyword}{true})}
+\DoxyCodeLine{00097\ \ \ \ \ \{}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ rotateAroundAxis(axis,\ deg2rad(angle),\ internal);}
+\DoxyCodeLine{00099\ \ \ \ \ \}}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ rotateAroundAxisDeg(\mbox{\hyperlink{class_c_point3}{CPoint3d}}\ origin,\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\ axis,\ \textcolor{keywordtype}{double}\ angle,\ \textcolor{keywordtype}{bool}\ internal\ =\ \textcolor{keyword}{true})}
+\DoxyCodeLine{00102\ \ \ \ \ \{}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ rotateAroundAxis(origin,\ axis,\ deg2rad(angle),\ internal);}
+\DoxyCodeLine{00104\ \ \ \ \ \}}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{keywordtype}{void}\ rotateByMatrix3x3(\textcolor{keywordtype}{double}\ m[9]);}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \ \ \ \ \textcolor{keywordtype}{bool}\ isLocked()\ \{\ \textcolor{keywordflow}{return}\ m\_bLocked;\ \}}
+\DoxyCodeLine{00109\ \ \ \ \ \textcolor{keywordtype}{bool}\ lock(\textcolor{keywordtype}{bool}\ b)\ \{\ \textcolor{keywordflow}{return}\ m\_bLocked\ =\ b;\ \}}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \ \ \ \ \textcolor{keywordtype}{void}\ fromGLMatrixF(\textcolor{keywordtype}{float}*\ matrix);}
+\DoxyCodeLine{00112\ \ \ \ \ \textcolor{keywordtype}{void}\ fromGLMatrixD(\textcolor{keywordtype}{double}*\ matrix);}
+\DoxyCodeLine{00113\ \ \ \ \ \textcolor{keywordtype}{void}\ fromRowMatrixD(\textcolor{keywordtype}{double}*\ matrix);}
+\DoxyCodeLine{00114\ \ \ \ \ \textcolor{keywordtype}{void}\ fromEigenMatrix4d(Eigen::Matrix4d\ m);}
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{keywordtype}{void}\ fromQMatrix4x4(QMatrix4x4\ m);}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \ \ \ \ \textcolor{keywordtype}{void}\ toGLMatrixF(\textcolor{keywordtype}{float}\ *matrix);}
+\DoxyCodeLine{00119\ \ \ \ \ \textcolor{keywordtype}{void}\ toGLMatrixD(\textcolor{keywordtype}{double}*\ matrix);}
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{keywordtype}{void}\ toRowMatrixD(\textcolor{keywordtype}{double}*\ matrix);}
+\DoxyCodeLine{00121\ \ \ \ \ Eigen::Matrix4d\ toEigenMatrix4d();}
+\DoxyCodeLine{00122\ \ \ \ \ QMatrix4x4\ toQMatrix4x4();}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00125\ \ \ \ \ \textcolor{keywordtype}{bool}\ invertMatrixD(\textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ m[16],\ \textcolor{keywordtype}{double}\ invOut[16]);}
+\DoxyCodeLine{00126\ \ \ \ \ \textcolor{keywordtype}{bool}\ invertMatrixF(\textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ m[16],\ \textcolor{keywordtype}{float}\ invOut[16]);}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ \ \ \ \ \textcolor{keywordtype}{void}\ toInvertedGLMatrixF(\textcolor{keywordtype}{float}*\ matrix);}
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{keywordtype}{void}\ toInvertedGLMatrixD(\textcolor{keywordtype}{double}*\ matrix);}
+\DoxyCodeLine{00130\ \ \ \ \ \textcolor{keywordtype}{void}\ toInvertedRowMatrixD(\textcolor{keywordtype}{double}*\ matrix);}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{class_c_transform}{CTransform}}\ fromTo(\mbox{\hyperlink{class_c_transform}{CTransform}}\ from,\ \mbox{\hyperlink{class_c_transform}{CTransform}}\ to);}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00135\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \mbox{\hyperlink{class_c_vector3}{CVector3<\_W>}}\ operator*(\mbox{\hyperlink{class_c_vector3}{CVector3<\_W>}}\ p)\ \{}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ Eigen::Vector4d(this-\/>toEigenMatrix4d()\ *\ p.toVector4());}
+\DoxyCodeLine{00137\ \ \ \ \ \};}
+\DoxyCodeLine{00138\ }
+\DoxyCodeLine{00139\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \mbox{\hyperlink{class_c_point3}{CPoint3<\_W>}}\ operator*(\mbox{\hyperlink{class_c_point3}{CPoint3<\_W>}}\ p)\ \{}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ Eigen::Vector4d(this-\/>toEigenMatrix4d()\ *\ p.toVector4());}
+\DoxyCodeLine{00141\ \ \ \ \ \};}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \mbox{\hyperlink{class_c_vector3}{CVector3<\_W>}}\ operator/(\mbox{\hyperlink{class_c_vector3}{CVector3<\_W>}}\ p)\ \{}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ Eigen::Vector4d(this-\/>toEigenMatrix4d()\ *\ p.toVector4());}
+\DoxyCodeLine{00145\ \ \ \ \ \};}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \mbox{\hyperlink{class_c_point3}{CPoint3<\_W>}}\ operator/(\mbox{\hyperlink{class_c_point3}{CPoint3<\_W>}}\ p)\ \{}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ Eigen::Vector4d(this-\/>toEigenMatrix4d().inverse()\ *\ p.toVector4());}
+\DoxyCodeLine{00149\ \ \ \ \ \};}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00152\ }
+\DoxyCodeLine{00153\ \ \ \ \ \textcolor{comment}{//CPoint3d\ l2w\_test(const\ CPoint3d\ pkt);}}
+\DoxyCodeLine{00154\ \ \ \ \ \textcolor{comment}{//CPoint3d\ w2l\_test(const\ CPoint3d\ pkt);}}
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00156\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ l2w(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ pkt1);}
+\DoxyCodeLine{00157\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ w2l(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ pkt1);}
+\DoxyCodeLine{00158\ }
+\DoxyCodeLine{00159\ \ \ \ \ \textcolor{keyword}{inline}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ local2world(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ pkt1)\ \{\ \textcolor{keywordflow}{return}\ l2w(pkt1);\ \};}
+\DoxyCodeLine{00160\ \ \ \ \ \textcolor{keyword}{inline}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ world2local(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ pkt1)\ \{\ \textcolor{keywordflow}{return}\ w2l(pkt1);\ \};}
+\DoxyCodeLine{00161\ }
+\DoxyCodeLine{00162\ }
+\DoxyCodeLine{00163\ \ \ \ \ std::wstring\ infoRow();}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00165\ \ \ \ \ QString\ toString(QString\ prefix\ =\ \textcolor{stringliteral}{"{}"{}},\ QString\ suffix\ =\ \textcolor{stringliteral}{"{}"{}},\ QString\ separator\ =\ \textcolor{stringliteral}{"{}\ "{}},\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ format\ =\ \textcolor{stringliteral}{"{}\%.8f"{}});}
+\DoxyCodeLine{00166\ }
+\DoxyCodeLine{00167\ \ \ \ \ \textcolor{keywordtype}{void}\ fromRowMatrix(QString\ text,\ QString\ separator=\ \textcolor{stringliteral}{"{}(\(\backslash\)\(\backslash\)s+)"{}});}
+\DoxyCodeLine{00168\ }
+\DoxyCodeLine{00169\ \ \ \ \ \textcolor{keywordtype}{void}\ renderScrew(\textcolor{keywordtype}{float}\ r,\ \textcolor{keywordtype}{float}\ g,\ \textcolor{keywordtype}{float}\ b);}
+\DoxyCodeLine{00170\ }
+\DoxyCodeLine{00171\ \ \ \ \ \textcolor{keywordtype}{void}\ render();}
+\DoxyCodeLine{00172\ \};}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00174\ }
+\DoxyCodeLine{00175\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3<\_W>}}\ operator/(\mbox{\hyperlink{class_c_point3}{CPoint3<\_W>}}\ p,\ \mbox{\hyperlink{class_c_transform}{CTransform}}\ t)}
+\DoxyCodeLine{00176\ \{}
+\DoxyCodeLine{00177\ \ \ \ \ \textcolor{keywordflow}{return}\ Eigen::Matrix<\_W,\ 4,\ 1>(t.toEigenMatrix4d().inverse()\ *\ p.toVector4());}
+\DoxyCodeLine{00178\ \}}
+\DoxyCodeLine{00179\ }
+\DoxyCodeLine{00180\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_vector3}{CVector3<\_W>}}\ operator/(\mbox{\hyperlink{class_c_vector3}{CVector3<\_W>}}\ p,\ \mbox{\hyperlink{class_c_transform}{CTransform}}\ t)}
+\DoxyCodeLine{00181\ \{}
+\DoxyCodeLine{00182\ \ \ \ \ \textcolor{keywordflow}{return}\ Eigen::Matrix<\_W,\ 4,\ 1>(t.toEigenMatrix4d().inverse()\ *\ p.toVector4());}
+\DoxyCodeLine{00183\ \}}
+\DoxyCodeLine{00184\ }
+\DoxyCodeLine{00185\ }
+\DoxyCodeLine{00186\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3<\_W>}}\ operator*(Eigen::Matrix<\_W,\ 4,\ 4>\ m,\ \mbox{\hyperlink{class_c_point3}{CPoint3<\_W>}}\ p)}
+\DoxyCodeLine{00187\ \{}
+\DoxyCodeLine{00188\ \ \ \ \ \textcolor{keywordflow}{return}\ Eigen::Matrix<\_W,\ 4,\ 1>(m\ *\ p.toVector4());}
+\DoxyCodeLine{00189\ \}}
+\DoxyCodeLine{00190\ }
+\DoxyCodeLine{00191\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_vector3}{CVector3<\_W>}}\ operator*(Eigen::Matrix<\_W,\ 4,\ 4>\ m,\ \mbox{\hyperlink{class_c_vector3}{CVector3<\_W>}}\ v)}
+\DoxyCodeLine{00192\ \{}
+\DoxyCodeLine{00193\ \ \ \ \ \textcolor{keywordflow}{return}\ Eigen::Matrix<\_W,\ 4,\ 1>(m\ *\ v.toVector4());}
+\DoxyCodeLine{00194\ \}}
+\DoxyCodeLine{00195\ }
+\DoxyCodeLine{00196\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_c_transform}{CTransform}}*\ \mbox{\hyperlink{class_c_transform}{PtrTransform}};}
+\DoxyCodeLine{00197\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_c_transform}{CTransform}}\&\ \mbox{\hyperlink{class_c_transform}{RefTransform}};}
+
+\end{DoxyCode}

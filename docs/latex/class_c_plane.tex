@@ -1,0 +1,119 @@
+\doxysection{CPlane Class Reference}
+\hypertarget{class_c_plane}{}\label{class_c_plane}\index{CPlane@{CPlane}}
+Inheritance diagram for CPlane\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_c_plane}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_plane_ae58bc0ff5801667f87da422ae1a210c7}\label{class_c_plane_ae58bc0ff5801667f87da422ae1a210c7} 
+{\bfseries CPlane} (const \mbox{\hyperlink{class_c_plane}{CPlane}} \&p)
+\item 
+\Hypertarget{class_c_plane_aec384a5903d7d2bf7d22518a48b0c0b9}\label{class_c_plane_aec384a5903d7d2bf7d22518a48b0c0b9} 
+{\bfseries CPlane} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&c, const \mbox{\hyperlink{class_c_vector3}{CVector3d}} \&n)
+\item 
+\Hypertarget{class_c_plane_af6a881942ffa35d04321ee8a2a0f37b8}\label{class_c_plane_af6a881942ffa35d04321ee8a2a0f37b8} 
+{\bfseries CPlane} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} p0, \mbox{\hyperlink{class_c_point3}{CPoint3d}} p1, \mbox{\hyperlink{class_c_point3}{CPoint3d}} p2)
+\item 
+\Hypertarget{class_c_plane_afc7bd33391309927f58eb7ad4c3c836c}\label{class_c_plane_afc7bd33391309927f58eb7ad4c3c836c} 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries get\+Center} ()
+\item 
+\Hypertarget{class_c_plane_a5735501f4dc07790252d4ac3e537ab1e}\label{class_c_plane_a5735501f4dc07790252d4ac3e537ab1e} 
+void {\bfseries set\+Center} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} c)
+\item 
+\Hypertarget{class_c_plane_a1b72575fe16d44abcebdcdaa8b4590e9}\label{class_c_plane_a1b72575fe16d44abcebdcdaa8b4590e9} 
+\mbox{\hyperlink{class_c_vector3}{CVector3d}} {\bfseries get\+Normal} ()
+\item 
+\Hypertarget{class_c_plane_a26dc0fa46060266a71e7ab93e09dea65}\label{class_c_plane_a26dc0fa46060266a71e7ab93e09dea65} 
+void {\bfseries set\+Normal} (\mbox{\hyperlink{class_c_vector3}{CVector3d}} n)
+\item 
+\Hypertarget{class_c_plane_a5a63dd61932d767338e7ca0f0dfcd49c}\label{class_c_plane_a5a63dd61932d767338e7ca0f0dfcd49c} 
+void {\bfseries invert\+Normal} ()
+\item 
+\Hypertarget{class_c_plane_ace1a57849a0517106430148246780321}\label{class_c_plane_ace1a57849a0517106430148246780321} 
+double {\bfseries a} ()
+\item 
+\Hypertarget{class_c_plane_ada8aae3db2a1fa5addd3b2509261d8cd}\label{class_c_plane_ada8aae3db2a1fa5addd3b2509261d8cd} 
+double {\bfseries b} ()
+\item 
+\Hypertarget{class_c_plane_a677b3d8cee259ef59b462a510c6cbde7}\label{class_c_plane_a677b3d8cee259ef59b462a510c6cbde7} 
+double {\bfseries c} ()
+\item 
+\Hypertarget{class_c_plane_aca8a32ca5d0a8222ae2c45540432ffa9}\label{class_c_plane_aca8a32ca5d0a8222ae2c45540432ffa9} 
+double {\bfseries d} ()
+\item 
+\Hypertarget{class_c_plane_a9c4238820a48dc06c2aad89f5c65584b}\label{class_c_plane_a9c4238820a48dc06c2aad89f5c65584b} 
+double {\bfseries recalc\+\_\+D} ()
+\item 
+\Hypertarget{class_c_plane_a974deba5101d5a33329b3f680fb20d88}\label{class_c_plane_a974deba5101d5a33329b3f680fb20d88} 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries projection\+Of\+Point} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} p)
+\item 
+\Hypertarget{class_c_plane_a3c699987cac542b7c3b111c523ba18cb}\label{class_c_plane_a3c699987cac542b7c3b111c523ba18cb} 
+bool {\bfseries intersection\+With\+Plane} (\mbox{\hyperlink{class_c_plane}{CPlane}} \&p2, \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&r\+\_\+point, \mbox{\hyperlink{class_c_vector3}{CVector3d}} \&r\+\_\+normal)
+\item 
+\Hypertarget{class_c_plane_a0da96f2513f2096c3fae6b667885252d}\label{class_c_plane_a0da96f2513f2096c3fae6b667885252d} 
+double {\bfseries point\+Distance} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} P)
+\item 
+\Hypertarget{class_c_plane_ad44de2199c3052b4a61b23d964cdb23d}\label{class_c_plane_ad44de2199c3052b4a61b23d964cdb23d} 
+bool {\bfseries ray\+Intersection} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} P1, \mbox{\hyperlink{class_c_vector3}{CVector3d}} v, double max\+Dist, \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&outP)
+\item 
+\Hypertarget{class_c_plane_ae3de8c7a621b87adabcb1c4ef56f1731}\label{class_c_plane_ae3de8c7a621b87adabcb1c4ef56f1731} 
+bool {\bfseries ray\+Intersect3D} (\mbox{\hyperlink{class_c_vector3}{CVector3d}} v\+Ray, \mbox{\hyperlink{class_c_point3}{CPoint3d}} p\+P0, \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&p\+Intersection\+Point, double \&p\+Distance)
+\item 
+\Hypertarget{class_c_plane_adf73eb78cfdd532f18da480388411309}\label{class_c_plane_adf73eb78cfdd532f18da480388411309} 
+bool {\bfseries line\+Segment\+Intersection} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} P1, \mbox{\hyperlink{class_c_point3}{CPoint3d}} P2, \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&outP)
+\item 
+\Hypertarget{class_c_plane_a1e25f41a5b086b32219273a3fc20ccf7}\label{class_c_plane_a1e25f41a5b086b32219273a3fc20ccf7} 
+void {\bfseries regresion\+From\+Points} (std\+::vector$<$ \mbox{\hyperlink{class_c_point3}{CPoint3d}} $>$ pts)
+\item 
+\Hypertarget{class_c_plane_aa414c639811fc8783d759c6062460d28}\label{class_c_plane_aa414c639811fc8783d759c6062460d28} 
+bool {\bfseries regresion\+From\+Points} (std\+::set$<$ \mbox{\hyperlink{class_c_vertex}{CVertex}} $>$ \&pts)
+\item 
+\Hypertarget{class_c_plane_a92eab6bab2b49809754804aa5c209248}\label{class_c_plane_a92eab6bab2b49809754804aa5c209248} 
+void {\bfseries regresion\+From\+Points} (std\+::set$<$ size\+\_\+t $>$ \&idxs, std\+::vector$<$ \mbox{\hyperlink{class_c_point3}{CPoint3f}} $>$ \&pts)
+\item 
+\Hypertarget{class_c_plane_af5fee1ec858fcb6ec6f7d679e97a09e9}\label{class_c_plane_af5fee1ec858fcb6ec6f7d679e97a09e9} 
+void {\bfseries regresion\+From\+Points} (std\+::set$<$ INDEX\+\_\+\+TYPE $>$ \&idxs, std\+::vector$<$ \mbox{\hyperlink{class_c_vertex}{CVertex}} $>$ \&pts)
+\item 
+\Hypertarget{class_c_plane_a481eb2d2d86f5ea7c500b9ccbc624e4e}\label{class_c_plane_a481eb2d2d86f5ea7c500b9ccbc624e4e} 
+double {\bfseries test\+Point\+PositionD} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} p)
+\item 
+\Hypertarget{class_c_plane_a9b39da6d2ef4093b219f8a486899735c}\label{class_c_plane_a9b39da6d2ef4093b219f8a486899735c} 
+int {\bfseries test\+Point\+Position} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} p)
+\item 
+\Hypertarget{class_c_plane_ace78f0a68f4f25161b0ca6a75eb601c2}\label{class_c_plane_ace78f0a68f4f25161b0ca6a75eb601c2} 
+\mbox{\hyperlink{class_c_mesh}{CMesh}} \texorpdfstring{$\ast$}{*} {\bfseries get\+Mesh} (double size, int divX=1, int divY=1)
+\item 
+\Hypertarget{class_c_plane_a7cdb22107a95b8228bbb239ea23dd779}\label{class_c_plane_a7cdb22107a95b8228bbb239ea23dd779} 
+void {\bfseries to\+Matrix} (double \texorpdfstring{$\ast$}{*}m)
+\item 
+\Hypertarget{class_c_plane_ac7c0885494a9c8fe24521a653a7807f5}\label{class_c_plane_ac7c0885494a9c8fe24521a653a7807f5} 
+\mbox{\hyperlink{class_c_transform}{CTransform}} {\bfseries to\+Transform1} ()
+\item 
+\Hypertarget{class_c_plane_a910001f68cc7d82708030ee42c273e26}\label{class_c_plane_a910001f68cc7d82708030ee42c273e26} 
+\mbox{\hyperlink{class_c_transform}{CTransform}} {\bfseries to\+Transform} ()
+\item 
+\Hypertarget{class_c_plane_aa507798d1f1170417f113a8829ea8f47}\label{class_c_plane_aa507798d1f1170417f113a8829ea8f47} 
+\mbox{\hyperlink{class_c_plane}{CPlane}} {\bfseries get\+\_\+transformed} (Eigen\+::\+Matrix4d M)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_plane_a557e68109a54cb56974dc6161b9a50a2}\label{class_c_plane_a557e68109a54cb56974dc6161b9a50a2} 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries m\+\_\+center}
+\item 
+\Hypertarget{class_c_plane_ab87474cf7ff7aa283952c495ce860046}\label{class_c_plane_ab87474cf7ff7aa283952c495ce860046} 
+\mbox{\hyperlink{class_c_vector3}{CVector3d}} {\bfseries m\+\_\+normal}
+\item 
+\Hypertarget{class_c_plane_ab488b1ae86ad1bb92a7955c479f6092c}\label{class_c_plane_ab488b1ae86ad1bb92a7955c479f6092c} 
+double {\bfseries m\+\_\+d}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/core/Plane.\+h\item 
+src/core/Plane.\+cpp\end{DoxyCompactItemize}

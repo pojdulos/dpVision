@@ -1,0 +1,122 @@
+\doxysection{Image.\+h}
+\hypertarget{_image_8h_source}{}\label{_image_8h_source}\index{src/core/Image.h@{src/core/Image.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <QtGui/QImage>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <QtCore/QString>}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}Model3D.h"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{keyword}{class\ \ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_image}{CImage}}\ :\ \textcolor{keyword}{protected}\ \mbox{\hyperlink{class_c_model3_d}{CModel3D}},\ \textcolor{keyword}{protected}\ QImage}
+\DoxyCodeLine{00008\ \{}
+\DoxyCodeLine{00009\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00010\ \ \ \ \ \mbox{\hyperlink{class_c_image}{CImage}}(\textcolor{keyword}{const}\ QImage\&\ i);}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ QImage::Format\ Format;}
+\DoxyCodeLine{00014\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ Qt::GlobalColor\ Color;}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \ \ \ \ \textcolor{keywordtype}{bool}\ fitToWindow;}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{comment}{/*}}
+\DoxyCodeLine{00019\ \textcolor{comment}{\ \ \ \ constructor\ creating\ an\ null-\/size\ CImage\ instance,\ so\ instance-\/>isNull()\ returns\ true.}}
+\DoxyCodeLine{00020\ \textcolor{comment}{\ \ \ \ */}}
+\DoxyCodeLine{00021\ \ \ \ \ \mbox{\hyperlink{class_c_image}{CImage}}();}
+\DoxyCodeLine{00022\ \ \ \ \ }
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{comment}{/*}}
+\DoxyCodeLine{00024\ \textcolor{comment}{\ \ \ \ This\ constructor\ always\ (!!!)\ returns\ valid\ CImage\ instance,\ but\ it\ is\ a\ null-\/size\ image\ if\ load\ error.}}
+\DoxyCodeLine{00025\ \textcolor{comment}{\ \ \ \ So\ never\ check\ if\ NULL\ is\ returned\ by\ 'new'\ command,\ but\ check\ if\ newImage-\/>isNull()\ returns\ true.}}
+\DoxyCodeLine{00026\ \textcolor{comment}{\ \ \ \ You\ can\ also\ use\ static\ CImage*\ load(path)\ method.\ It\ returns\ NULL\ on\ load\ error\ and\ don't\ create\ invalid\ CImage\ instance.}}
+\DoxyCodeLine{00027\ \textcolor{comment}{\ \ \ \ */}}
+\DoxyCodeLine{00028\ \ \ \ \ \mbox{\hyperlink{class_c_image}{CImage}}(\textcolor{keyword}{const}\ QString\&\ path,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ format\ =\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00029\ \ \ \ \ \mbox{\hyperlink{class_c_image}{CImage}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ path)\ \{\ \mbox{\hyperlink{class_c_image}{CImage}}(QString(path));\ \}}
+\DoxyCodeLine{00030\ \ \ \ \ \mbox{\hyperlink{class_c_image}{CImage}}(\textcolor{keyword}{const}\ std::string\ path)\ \{\ \mbox{\hyperlink{class_c_image}{CImage}}(QString::fromStdString(path));\ \}}
+\DoxyCodeLine{00031\ \ \ \ \ \mbox{\hyperlink{class_c_image}{CImage}}(\textcolor{keyword}{const}\ std::wstring\ path)\ \{\ \mbox{\hyperlink{class_c_image}{CImage}}(QString::fromStdWString(path));\ \}}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{comment}{//copying\ constructor}}
+\DoxyCodeLine{00034\ \ \ \ \ \mbox{\hyperlink{class_c_image}{CImage}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_image}{CImage}}\&\ i);}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \ \ \ \ \mbox{\hyperlink{class_c_image}{CImage}}(\textcolor{keyword}{const}\ uchar*\ data,\ \textcolor{keywordtype}{int}\ w,\ \textcolor{keywordtype}{int}\ h,\ CImage::Format\ f);}
+\DoxyCodeLine{00037\ \ \ \ \ }
+\DoxyCodeLine{00038\ \ \ \ \ \mbox{\hyperlink{class_c_image}{CImage}}(\textcolor{keywordtype}{int}\ w,\ \textcolor{keywordtype}{int}\ h,\ CImage::Format\ f);}
+\DoxyCodeLine{00039\ \ \ \ \ }
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{class_c_image}{\string~CImage}}();}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{class_c_image}{CImage}}*\ load(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ path);}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{class_c_image}{CImage}}*\ load(\textcolor{keyword}{const}\ QString\ path);}
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{class_c_image}{CImage}}*\ load(\textcolor{keyword}{const}\ std::string\ path);}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{class_c_image}{CImage}}*\ load(\textcolor{keyword}{const}\ std::wstring\ path);}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keywordtype}{void}\ save(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ path);}
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keywordtype}{void}\ save(\textcolor{keyword}{const}\ QString\ path);}
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keywordtype}{void}\ save(\textcolor{keyword}{const}\ std::string\ path);}
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keywordtype}{void}\ save(\textcolor{keyword}{const}\ std::wstring\ path);}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keyword}{using\ }CModel3D::id;}
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keyword}{using\ }CModel3D::setLabel;}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keyword}{using\ }CModel3D::getLabel;}
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keyword}{using\ }CModel3D::setSelfVisibility;}
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keyword}{using\ }CModel3D::path;}
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keyword}{using\ }CModel3D::setPath;}
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keyword}{using\ }CModel3D::getTransform;}
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keyword}{using\ }CModel3D::transform;}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keyword}{using\ }CModel3D::render;}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{class_c_image}{CImage}}*\ getCopy()\textcolor{keyword}{\ override\ }\{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_c_image}{CImage}}(*\textcolor{keyword}{this});\ \}}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \ \ \ \ \mbox{\hyperlink{class_c_image}{CImage}}*\ copy(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y,\ \textcolor{keywordtype}{int}\ w,\ \textcolor{keywordtype}{int}\ h)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \ \ \textcolor{keyword}{using\ }QImage::isNull;}
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keyword}{using\ }QImage::width;}
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keyword}{using\ }QImage::height;}
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{keyword}{using\ }QImage::depth;}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keyword}{using\ }QImage::scanLine;}
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keyword}{using\ }QImage::constScanLine;}
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keyword}{using\ }QImage::bits;}
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keyword}{using\ }QImage::constBits;}
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keyword}{using\ }QImage::setColorCount;}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \ \ \ \ \textcolor{keyword}{using\ }QImage::mirrored;}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \ \ QImage\ toQImage()\ \{\ \textcolor{keywordflow}{return}\ *(QImage*)\textcolor{keyword}{this};\ \};}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \ \ \ \ uint64\_t\ sizeInBytes()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{keywordtype}{void}\ fill(CImage::Color\ color);}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{comment}{//kolor\ w\ formacie:\ \#AARRGGBB}}
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keywordtype}{void}\ setColor(\textcolor{keywordtype}{int}\ i,\ uint32\_t\ argb);}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \ \ \ \ \textcolor{comment}{//kolor\ w\ formacie:\ \#AARRGGBB}}
+\DoxyCodeLine{00089\ \ \ \ \ uint32\_t\ pixel(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \ \ \ \ \textcolor{comment}{//kolor\ w\ formacie:\ \#AARRGGBB}}
+\DoxyCodeLine{00092\ \ \ \ \ \textcolor{keywordtype}{void}\ setPixel(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y,\ uint32\_t\ pixel);}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ setRectWidth(\textcolor{keywordtype}{float}\ w)\ \{\ img3d\_half\_width\ =\ w\ /\ 2.0f;\ \};}
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{float}\ rectWidth()\ \{\ \textcolor{keywordflow}{return}\ img3d\_half\_width\ *\ 2.0f;\ \};}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ setRectHeight(\textcolor{keywordtype}{float}\ h)\ \{\ img3d\_half\_height\ =\ h\ /\ 2.0f;\ \};}
+\DoxyCodeLine{00098\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{float}\ rectHeight()\ \{\ \textcolor{keywordflow}{return}\ img3d\_half\_height\ *\ 2.0f;\ \};}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ setRect(\textcolor{keywordtype}{float}\ w,\ \textcolor{keywordtype}{float}\ h)\ \{\ img3d\_half\_width\ =\ w\ /\ 2.0f;\ img3d\_half\_height\ =\ h\ /\ 2.0f;\ \};}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \ \ \ \ CImage::Format\ format()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ renderSelf()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{int}\ type()\textcolor{keyword}{\ override\ }\{\ \textcolor{keywordflow}{return}\ CObject::Type::IMAGE;\ \};}
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{comment}{//void\ info(std::wstring\ i[4])\ override;}}
+\DoxyCodeLine{00108\ \ \ \ \ \textcolor{keyword}{virtual}\ std::wstring\ infoRow()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \ \ \ \ \textcolor{keyword}{static}\ std::pair<int,\ int>\ loadToBYTEvector(std::wstring\ fname,\ std::vector<BYTE>\&\ bufor,\ \textcolor{keywordtype}{int}\&\ depth);}
+\DoxyCodeLine{00111\ \ \ \ \ \textcolor{keyword}{static}\ std::pair<int,\ int>\ loadToRGBAvector(std::wstring\ fname,\ std::vector<CRGBA>\&\ bufor,\ uchar\ alpha\ =\ 255);}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00114\ \ \ \ \ \textcolor{keywordtype}{float}\ img3d\_half\_width,\ img3d\_half\_height,\ img3d\_Z;}
+\DoxyCodeLine{00115\ \};}
+\DoxyCodeLine{00116\ }
+
+\end{DoxyCode}

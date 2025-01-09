@@ -1,0 +1,62 @@
+\doxysection{CMaterial Class Reference}
+\hypertarget{class_c_material}{}\label{class_c_material}\index{CMaterial@{CMaterial}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_material_a4aeaa97f1b822711d2f0fafe1a93625e}\label{class_c_material_a4aeaa97f1b822711d2f0fafe1a93625e} 
+typedef \mbox{\hyperlink{class_c_texture}{CTexture}} {\bfseries Texture}
+\item 
+\Hypertarget{class_c_material_a3bdb04801343c767a6149a29914d51fa}\label{class_c_material_a3bdb04801343c767a6149a29914d51fa} 
+typedef std\+::vector$<$ \mbox{\hyperlink{class_c_t_coord}{CTCoord}} $>$ {\bfseries Texture\+Coordinates}
+\item 
+\Hypertarget{class_c_material_a9ec5b5150381157a7703cc004abb59f2}\label{class_c_material_a9ec5b5150381157a7703cc004abb59f2} 
+typedef std\+::vector$<$ \mbox{\hyperlink{class_c_t_index}{CTIndex}} $>$ {\bfseries Texture\+Indexes}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_material_ad5f54a3dbf97464e5fc1fac809c7e1e8}\label{class_c_material_ad5f54a3dbf97464e5fc1fac809c7e1e8} 
+{\bfseries CMaterial} (\mbox{\hyperlink{class_c_material}{CMaterial}} \&m)
+\item 
+\Hypertarget{class_c_material_a1caefb1d95492cabc2396d58211f4571}\label{class_c_material_a1caefb1d95492cabc2396d58211f4571} 
+bool {\bfseries attach\+Texture} (const QString \&)
+\item 
+\Hypertarget{class_c_material_a0491e2fb4eb950c45cd7ddeda5561d0a}\label{class_c_material_a0491e2fb4eb950c45cd7ddeda5561d0a} 
+bool {\bfseries has\+Texture\+Indexes} ()
+\item 
+\Hypertarget{class_c_material_a9ad90b5f327a2d37931cd8c02d348af4}\label{class_c_material_a9ad90b5f327a2d37931cd8c02d348af4} 
+bool {\bfseries has\+Texture\+Coords} ()
+\item 
+\Hypertarget{class_c_material_a87c3911d0b5d0a8c5fc80f35ef0ac270}\label{class_c_material_a87c3911d0b5d0a8c5fc80f35ef0ac270} 
+bool {\bfseries has\+Texture} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_material_a91ea9fef09b5823f638ca05051210973}\label{class_c_material_a91ea9fef09b5823f638ca05051210973} 
+bool {\bfseries m\+\_\+force}
+\item 
+\Hypertarget{class_c_material_a83da5f9fe41129af2c056845cef1b586}\label{class_c_material_a83da5f9fe41129af2c056845cef1b586} 
+CMaterial\+::\+Texture\+Coordinates {\bfseries texcoord}
+\item 
+\Hypertarget{class_c_material_a47c2160ac34ea7a527d2969a7b8024b7}\label{class_c_material_a47c2160ac34ea7a527d2969a7b8024b7} 
+CMaterial\+::\+Texture\+Indexes {\bfseries texindex}
+\item 
+\Hypertarget{class_c_material_aa5ed832e25a7cb8f3a07b43b3e62706a}\label{class_c_material_aa5ed832e25a7cb8f3a07b43b3e62706a} 
+\mbox{\hyperlink{class_c_texture}{CMaterial\+::\+Texture}} \texorpdfstring{$\ast$}{*} {\bfseries tekstura}
+\item 
+\Hypertarget{class_c_material_a215527d4ce1c4d0ec2a0a3612f0c1c82}\label{class_c_material_a215527d4ce1c4d0ec2a0a3612f0c1c82} 
+QString {\bfseries Tex\+Info}
+\item 
+\Hypertarget{class_c_material_a4099b5f1cb70b8332a1f7668193c31ea}\label{class_c_material_a4099b5f1cb70b8332a1f7668193c31ea} 
+\mbox{\hyperlink{struct_s_g_l_colors}{SGLColors}} {\bfseries Front\+Color}
+\item 
+\Hypertarget{class_c_material_a94d454fba9fcc55ac704ffc0c2fee680}\label{class_c_material_a94d454fba9fcc55ac704ffc0c2fee680} 
+\mbox{\hyperlink{struct_s_g_l_colors}{SGLColors}} {\bfseries Back\+Color}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/core/Material.\+h\item 
+src/core/Material.\+cpp\end{DoxyCompactItemize}

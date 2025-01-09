@@ -20,6 +20,8 @@ public:
 
 	void addPluginToList( int id, QString txt );
 
+	void deactivateCurrentPlugin();
+
 public slots:
 	void currentItemChanged( QListWidgetItem *curr, QListWidgetItem *prev );
 	void runSelectedPlugin( QListWidgetItem* );

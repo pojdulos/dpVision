@@ -1,0 +1,107 @@
+\doxysection{CQuaternion Class Reference}
+\hypertarget{class_c_quaternion}{}\label{class_c_quaternion}\index{CQuaternion@{CQuaternion}}
+Inheritance diagram for CQuaternion\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_c_quaternion}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_quaternion_ac47adf109268aedaa96804f9ce758b4f}\label{class_c_quaternion_ac47adf109268aedaa96804f9ce758b4f} 
+{\bfseries CQuaternion} (double angle, const \mbox{\hyperlink{class_c_vector3}{CVector3d}} \&axis)
+\item 
+\Hypertarget{class_c_quaternion_a7e81190575b263b2ebaf62836950c372}\label{class_c_quaternion_a7e81190575b263b2ebaf62836950c372} 
+{\bfseries CQuaternion} (double w, double x, double y, double z)
+\item 
+\Hypertarget{class_c_quaternion_af5082e775bbbb219bbe26fc4009980e2}\label{class_c_quaternion_af5082e775bbbb219bbe26fc4009980e2} 
+{\footnotesize template$<$typename \+\_\+Q $>$ }\\{\bfseries CQuaternion} (const Eigen\+::\+Angle\+Axis$<$ \+\_\+Q $>$ \&aa)
+\item 
+\Hypertarget{class_c_quaternion_a2ae27a81f124d4cf56ef172766dd11d8}\label{class_c_quaternion_a2ae27a81f124d4cf56ef172766dd11d8} 
+{\footnotesize template$<$typename \+\_\+Q $>$ }\\{\bfseries CQuaternion} (const Eigen\+::\+Matrix\+Base$<$ \+\_\+Q $>$ \&mm)
+\item 
+\Hypertarget{class_c_quaternion_a12111a02756e014477b95901a12e6794}\label{class_c_quaternion_a12111a02756e014477b95901a12e6794} 
+{\footnotesize template$<$typename \+\_\+Q $>$ }\\{\bfseries CQuaternion} (const Eigen\+::\+Quaternion$<$ \+\_\+Q $>$ \&quat)
+\item 
+\Hypertarget{class_c_quaternion_a95c4c5b74cea96d0397c9ee9a8434c15}\label{class_c_quaternion_a95c4c5b74cea96d0397c9ee9a8434c15} 
+{\bfseries CQuaternion} (const QQuaternion qq)
+\item 
+\Hypertarget{class_c_quaternion_a4af9be8306e99a35f3622edbb38f15d5}\label{class_c_quaternion_a4af9be8306e99a35f3622edbb38f15d5} 
+QQuaternion {\bfseries to\+Qt} ()
+\item 
+\Hypertarget{class_c_quaternion_aa996688fe2fd9befa8368f1b91d36adc}\label{class_c_quaternion_aa996688fe2fd9befa8368f1b91d36adc} 
+\mbox{\hyperlink{class_c_vector3}{CVector3d}} {\bfseries euler\+Angles} ()
+\item 
+\Hypertarget{class_c_quaternion_a0b294f4e0300b9c6a0b5660acb426cd2}\label{class_c_quaternion_a0b294f4e0300b9c6a0b5660acb426cd2} 
+\mbox{\hyperlink{class_c_vector3}{CVector3d}} {\bfseries euler\+Angles\+Deg} ()
+\item 
+\Hypertarget{class_c_quaternion_a42e25f473f6727f83d58b53471f6c3eb}\label{class_c_quaternion_a42e25f473f6727f83d58b53471f6c3eb} 
+void {\bfseries from\+Euler\+Angles} (\mbox{\hyperlink{class_c_vector3}{CVector3d}} v)
+\item 
+\Hypertarget{class_c_quaternion_a70897d11682a60f57c6d887f6a65ae57}\label{class_c_quaternion_a70897d11682a60f57c6d887f6a65ae57} 
+void {\bfseries from\+Euler\+Angles} (double x, double y, double z)
+\item 
+\Hypertarget{class_c_quaternion_a2cd16c191bfaf9b5686d2add12f1d084}\label{class_c_quaternion_a2cd16c191bfaf9b5686d2add12f1d084} 
+void {\bfseries from\+Euler\+Angles\+Deg} (\mbox{\hyperlink{class_c_vector3}{CVector3d}} v)
+\item 
+\Hypertarget{class_c_quaternion_aa0c69111dddcd52c5bafa53178b965d0}\label{class_c_quaternion_aa0c69111dddcd52c5bafa53178b965d0} 
+void {\bfseries from\+Euler\+Angles\+Deg} (double x, double y, double z)
+\item 
+\Hypertarget{class_c_quaternion_a00787589c8ee5eb200e1387fedca8d5c}\label{class_c_quaternion_a00787589c8ee5eb200e1387fedca8d5c} 
+void {\bfseries from\+Rotation\+Matrix} (double \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}m)
+\item 
+\Hypertarget{class_c_quaternion_a26dda9c823bbb7133fbfb933d6d75e58}\label{class_c_quaternion_a26dda9c823bbb7133fbfb933d6d75e58} 
+void {\bfseries set\+Identity} ()
+\item 
+\Hypertarget{class_c_quaternion_a401caab7b61e73266f70eec4a7029d99}\label{class_c_quaternion_a401caab7b61e73266f70eec4a7029d99} 
+\mbox{\hyperlink{class_c_quaternion}{CQuaternion}} {\bfseries negate} ()
+\item 
+\Hypertarget{class_c_quaternion_aa278c9f0e531bd8f0580a7f08ff9e2fe}\label{class_c_quaternion_aa278c9f0e531bd8f0580a7f08ff9e2fe} 
+void {\bfseries mult\+And\+Set} (const \mbox{\hyperlink{class_c_quaternion}{CQuaternion}} \&quat)
+\item 
+\Hypertarget{class_c_quaternion_a1293e9608f1763b5103a79d5dbaa02c9}\label{class_c_quaternion_a1293e9608f1763b5103a79d5dbaa02c9} 
+double {\bfseries dot\+Product} (const \mbox{\hyperlink{class_c_quaternion}{CQuaternion}} \&quat)
+\item 
+\Hypertarget{class_c_quaternion_a3020c758fdb9c791a4f50abd5e5eb244}\label{class_c_quaternion_a3020c758fdb9c791a4f50abd5e5eb244} 
+\mbox{\hyperlink{class_c_quaternion}{CQuaternion}} {\bfseries diff} (const \mbox{\hyperlink{class_c_quaternion}{CQuaternion}} \&quat)
+\item 
+\Hypertarget{class_c_quaternion_aaefc368069aa751950dda32d82d1b8f2}\label{class_c_quaternion_aaefc368069aa751950dda32d82d1b8f2} 
+\mbox{\hyperlink{class_c_quaternion}{CQuaternion}} {\bfseries log} ()
+\item 
+\Hypertarget{class_c_quaternion_a7813033c2d08530856f8eca34dbb92ea}\label{class_c_quaternion_a7813033c2d08530856f8eca34dbb92ea} 
+\mbox{\hyperlink{class_c_quaternion}{CQuaternion}} {\bfseries exp} ()
+\item 
+\Hypertarget{class_c_quaternion_a4b956761d9f5de330a9ab440f3ae2613}\label{class_c_quaternion_a4b956761d9f5de330a9ab440f3ae2613} 
+\mbox{\hyperlink{class_c_quaternion}{CQuaternion}} {\bfseries pow} (double exponent)
+\item 
+\Hypertarget{class_c_quaternion_a858ef57015ae87af94de9a88ea141897}\label{class_c_quaternion_a858ef57015ae87af94de9a88ea141897} 
+void {\bfseries to\+GLMatrixF} (float \texorpdfstring{$\ast$}{*}matrix)
+\item 
+\Hypertarget{class_c_quaternion_a74640fe6c138c67b666d643d7789625c}\label{class_c_quaternion_a74640fe6c138c67b666d643d7789625c} 
+void {\bfseries to\+GLMatrixD} (double \texorpdfstring{$\ast$}{*}matrix)
+\item 
+\Hypertarget{class_c_quaternion_a81463ea318173b728648347a502f91c2}\label{class_c_quaternion_a81463ea318173b728648347a502f91c2} 
+void {\bfseries to\+Inverted\+GLMatrixF} (float \texorpdfstring{$\ast$}{*}matrix)
+\item 
+\Hypertarget{class_c_quaternion_a25f5a90a93c9113a2facef0e3e30a974}\label{class_c_quaternion_a25f5a90a93c9113a2facef0e3e30a974} 
+void {\bfseries to\+Inverted\+GLMatrixD} (double \texorpdfstring{$\ast$}{*}matrix)
+\item 
+\Hypertarget{class_c_quaternion_add0d40dab3d1fc78e91ec70cc3f67ae5}\label{class_c_quaternion_add0d40dab3d1fc78e91ec70cc3f67ae5} 
+Eigen\+::\+Matrix4d {\bfseries to\+Eigen\+Matrix4d} ()
+\item 
+\Hypertarget{class_c_quaternion_a667a9f7ca27005df11412149463b90a2}\label{class_c_quaternion_a667a9f7ca27005df11412149463b90a2} 
+QMatrix4x4 {\bfseries to\+QMatrix4x4} ()
+\item 
+\Hypertarget{class_c_quaternion_a3e3fb38a96e06aaa2625b9300fa24689}\label{class_c_quaternion_a3e3fb38a96e06aaa2625b9300fa24689} 
+{\footnotesize template$<$typename \+\_\+W $>$ }\\\mbox{\hyperlink{class_c_vector3}{CVector3}}$<$ \+\_\+W $>$ {\bfseries operator\texorpdfstring{$\ast$}{*}} (\mbox{\hyperlink{class_c_vector3}{CVector3}}$<$ \+\_\+W $>$ p) const
+\item 
+\Hypertarget{class_c_quaternion_a2c56819f094abaf9277bc46d18f0fbe5}\label{class_c_quaternion_a2c56819f094abaf9277bc46d18f0fbe5} 
+{\footnotesize template$<$typename \+\_\+W $>$ }\\\mbox{\hyperlink{class_c_point3}{CPoint3}}$<$ \+\_\+W $>$ {\bfseries operator\texorpdfstring{$\ast$}{*}} (\mbox{\hyperlink{class_c_point3}{CPoint3}}$<$ \+\_\+W $>$ p) const
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/core/Quaternion.\+h\item 
+src/core/Quaternion.\+cpp\end{DoxyCompactItemize}

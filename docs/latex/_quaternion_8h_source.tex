@@ -1,0 +1,123 @@
+\doxysection{Quaternion.\+h}
+\hypertarget{_quaternion_8h_source}{}\label{_quaternion_8h_source}\index{src/core/Quaternion.h@{src/core/Quaternion.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\#ifndef\ QUATERNION\_H}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//\#define\ QUATERNION\_H}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <cmath>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}Utilities.h"{}}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include<Eigen/Geometry>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <QtGui/QMatrix4x4>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ "{}Point3.h"{}}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}Vector3.h"{}}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#define\ EPSILON\ 0.0001}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ Basic\ class\ representing\ quaternions}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ NOTE\ :\ within\ the\ quaternion\ class\ I\ assume\ that\ magnitude\ of\ each\ quaternion\ equals\ 'one'.}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ With\ this\ assumption\ in\ mind\ calculations\ on\ quaternions\ can\ be\ implemented\ more\ efficently.}}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ "{}Wektor3D.h"{}}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{comment}{//using\ namespace\ Eigen;}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{class\ \ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_quaternion}{CQuaternion}}\ :\ \textcolor{keyword}{public}\ Eigen::Quaterniond}
+\DoxyCodeLine{00026\ \{}
+\DoxyCodeLine{00027\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keyword}{using\ }Eigen::Quaterniond::operator*;}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \ \ \mbox{\hyperlink{class_c_quaternion}{CQuaternion}}()\ :\ Eigen::Quaterniond()\ \{\ setIdentity();\ \}}
+\DoxyCodeLine{00031\ \ \ \ \ \mbox{\hyperlink{class_c_quaternion}{CQuaternion}}(\textcolor{keywordtype}{double}\ angle,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\&\ axis)\ :\ Eigen::Quaterniond(Eigen::AngleAxisd(angle,\ Eigen::Vector3d(axis.x,\ axis.y,\ axis.z)))\ \{\}}
+\DoxyCodeLine{00032\ \ \ \ \ \mbox{\hyperlink{class_c_quaternion}{CQuaternion}}(\textcolor{keywordtype}{double}\ w,\ \textcolor{keywordtype}{double}\ x,\ \textcolor{keywordtype}{double}\ y,\ \textcolor{keywordtype}{double}\ z)\ :\ Eigen::Quaterniond(w,\ x,\ y,\ z)\ \{\}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_Q>\ \mbox{\hyperlink{class_c_quaternion}{CQuaternion}}(\textcolor{keyword}{const}\ Eigen::AngleAxis<\_Q>\&\ aa)\ :\ Eigen::Quaterniond(aa)\ \{\}}
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_Q>\ \mbox{\hyperlink{class_c_quaternion}{CQuaternion}}(\textcolor{keyword}{const}\ Eigen::MatrixBase<\_Q>\&\ mm)\ :\ Eigen::Quaterniond(mm)\ \{\}}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_Q>\ \mbox{\hyperlink{class_c_quaternion}{CQuaternion}}(\textcolor{keyword}{const}\ Eigen::Quaternion<\_Q>\&\ quat)\ :\ Eigen::Quaterniond(quat)\ \{\}}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ \mbox{\hyperlink{class_c_quaternion}{CQuaternion}}(\textcolor{keyword}{const}\ QQuaternion\ qq)\ :\ Eigen::Quaterniond(qq.scalar(),\ qq.x(),\ qq.y(),\ qq.z())\ \{\}}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \ \ \ \mbox{\hyperlink{class_c_quaternion}{\string~CQuaternion}}()\ \{\}}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keyword}{inline}\ QQuaternion\ toQt()\ \{\ \textcolor{keywordflow}{return}\ QQuaternion(w(),\ x(),\ y(),\ z());\ \}}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ \ \ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\ eulerAngles();}
+\DoxyCodeLine{00045\ \ \ \ \ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\ eulerAnglesDeg();}
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keywordtype}{void}\ fromEulerAngles(\mbox{\hyperlink{class_c_vector3}{CVector3d}}\ v);}
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keywordtype}{void}\ fromEulerAngles(\textcolor{keywordtype}{double}\ x,\ \textcolor{keywordtype}{double}\ y,\ \textcolor{keywordtype}{double}\ z);}
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keywordtype}{void}\ fromEulerAnglesDeg(\mbox{\hyperlink{class_c_vector3}{CVector3d}}\ v);}
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keywordtype}{void}\ fromEulerAnglesDeg(\textcolor{keywordtype}{double}\ x,\ \textcolor{keywordtype}{double}\ y,\ \textcolor{keywordtype}{double}\ z);}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keywordtype}{void}\ fromRotationMatrix(\textcolor{keywordtype}{double}**\ m);}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keywordtype}{void}\ setIdentity()\ \{\ *\textcolor{keyword}{this}\ =\ Identity();\ \}}
+\DoxyCodeLine{00054\ \ \ \ \ }
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keyword}{inline}\ \mbox{\hyperlink{class_c_quaternion}{CQuaternion}}\ negate()\ \{\ \textcolor{keywordflow}{return}\ Eigen::Quaterniond(-\/w(),\ -\/x(),\ -\/y(),\ -\/z());\ \}}
+\DoxyCodeLine{00056\ \ \ \ \ }
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ multAndSet(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_quaternion}{CQuaternion}}\&\ quat)\ \{\ (*this)\ *=\ quat;\ \}}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{comment}{//\ Quaternion\ dot\ product\ ('cosine\ of\ the\ angle'\ between\ two\ quaternions)}}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{double}\ dotProduct(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_quaternion}{CQuaternion}}\&\ quat)\ \{\ \textcolor{keywordflow}{return}\ this-\/>dot(quat);\ \ \}}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{comment}{//\ Quaternion\ difference\ (angular\ displacement\ from\ one\ orientation\ to\ another)}}
+\DoxyCodeLine{00063\ \ \ \ \ \mbox{\hyperlink{class_c_quaternion}{CQuaternion}}\ \ diff(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_quaternion}{CQuaternion}}\&\ quat)\ \{\ \textcolor{keywordflow}{return}\ (this-\/>inverse()\ *\ quat);\ \}}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{comment}{//\ Quaternion\ logarithm\ (\ log\ ([cos(a)\ n\ sin(a)])\ =\ [\ 0\ a*n\ ]\ )}}
+\DoxyCodeLine{00066\ \ \ \ \ \mbox{\hyperlink{class_c_quaternion}{CQuaternion}}\ log();}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{comment}{//\ Quaternion\ exponential\ function\ (\ exp\ ([0\ a*n])\ =\ [\ cos(a)\ \ n*sin(a)\ ]\ )}}
+\DoxyCodeLine{00069\ \ \ \ \ \mbox{\hyperlink{class_c_quaternion}{CQuaternion}}\ exp();}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{comment}{//\ Quaternion\ exponentiation\ (takes\ a\ fraction\ of\ the\ rotation)}}
+\DoxyCodeLine{00072\ \ \ \ \ \mbox{\hyperlink{class_c_quaternion}{CQuaternion}}\ pow(\textcolor{keywordtype}{double}\ exponent);}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{comment}{//\ Creates\ an\ OpenGL-\/style\ rotation\ matrix\ from\ the\ quaternion}}
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keywordtype}{void}\ toGLMatrixF(\textcolor{keywordtype}{float}*\ matrix);}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keywordtype}{void}\ toGLMatrixD(\textcolor{keywordtype}{double}*\ matrix);}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \ \ \textcolor{comment}{//\ Creates\ an\ inverse\ of\ OpenGL-\/style\ rotation\ matrix\ from\ the\ quaternion}}
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ toInvertedGLMatrixF(\textcolor{keywordtype}{float}*\ matrix)\ \{\ ((\mbox{\hyperlink{class_c_quaternion}{CQuaternion}})inverse()).toGLMatrixF(matrix);\ \}}
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ toInvertedGLMatrixD(\textcolor{keywordtype}{double}*\ matrix)\ \{\ ((\mbox{\hyperlink{class_c_quaternion}{CQuaternion}})inverse()).toGLMatrixD(matrix);\ \}}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \ \ \ \ Eigen::Matrix4d\ toEigenMatrix4d();}
+\DoxyCodeLine{00083\ \ \ \ \ QMatrix4x4\ toQMatrix4x4();}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \mbox{\hyperlink{class_c_vector3}{CVector3<\_W>}}\ operator*(\mbox{\hyperlink{class_c_vector3}{CVector3<\_W>}}\ p)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_vector3}{CVector3<\_W>}}(*\textcolor{keyword}{this}\ *\ p.toVector3());}
+\DoxyCodeLine{00087\ \ \ \ \ \};}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ \_W>\ \mbox{\hyperlink{class_c_point3}{CPoint3<\_W>}}\ operator*(\mbox{\hyperlink{class_c_point3}{CPoint3<\_W>}}\ p)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_point3}{CPoint3<\_W>}}(*\textcolor{keyword}{this}\ *\ p.toVector3());}
+\DoxyCodeLine{00091\ \ \ \ \ \};}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{comment}{//double\ GetAngle()\ const\ \{}}
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{comment}{//\ \ return\ 2.0\ *\ acos(w());}}
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{comment}{//\}}}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00099\ \ \ \ \ \textcolor{comment}{//void\ GetVector(double*\ vector)\ const\ \{}}
+\DoxyCodeLine{00100\ \ \ \ \ \textcolor{comment}{//\ \ double\ temp\ =\ 1.0\ -\/\ w()\ *\ w();\ \ \ \ \ \ //\ (sin\ x)\string^2\ =\ 1.0\ -\/\ (cos\ x)\string^2}}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \ \ \ \ \textcolor{comment}{//\ \ if\ (temp\ <=\ 0.0005)\ \ \ \ \ //\ Identity\ quaternion\ or\ numerical\ imprecision.}}
+\DoxyCodeLine{00103\ \ \ \ \ \textcolor{comment}{//\ \ \{}}
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ vector[0]\ =\ 0.0;}}
+\DoxyCodeLine{00105\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ vector[1]\ =\ 0.0;}}
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ vector[2]\ =\ 0.0;}}
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{comment}{//\ \ \}}}
+\DoxyCodeLine{00108\ \ \ \ \ \textcolor{comment}{//\ \ else}}
+\DoxyCodeLine{00109\ \ \ \ \ \textcolor{comment}{//\ \ \{}}
+\DoxyCodeLine{00110\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ temp\ =\ 1.0\ /\ sqrt(temp);}}
+\DoxyCodeLine{00111\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ vector[0]\ =\ x()\ *\ temp;}}
+\DoxyCodeLine{00112\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ vector[1]\ =\ y()\ *\ temp;}}
+\DoxyCodeLine{00113\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ vector[2]\ =\ z()\ *\ temp;}}
+\DoxyCodeLine{00114\ \ \ \ \ \textcolor{comment}{//\ \ \}}}
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{comment}{//\}}}
+\DoxyCodeLine{00116\ \};}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00119\ \textcolor{comment}{//\#endif}}
+
+\end{DoxyCode}

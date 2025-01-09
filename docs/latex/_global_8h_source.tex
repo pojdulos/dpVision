@@ -1,0 +1,73 @@
+\doxysection{Global.\+h}
+\hypertarget{_global_8h_source}{}\label{_global_8h_source}\index{src/core/Global.h@{src/core/Global.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#ifndef\ DPVISION\_GLOBAL\_DEFINITIONS\_H}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#define\ DPVISION\_GLOBAL\_DEFINITIONS\_H}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#define\ INIFILE\ "{}dpVision.ini"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#define\ APPNAME\ "{}dpVision"{}}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#ifndef\ PI}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#define\ PI\ \ \ \ \ \ \ 3.1415926535897932384626433832795}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#ifndef\ PI\_180}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#define\ PI\_180\ \ (PI/180.0)}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#ifndef\ PI\_2}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#define\ PI\_2\ \ \ \ \ 1.5707963267948966192313216916398}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#ifndef\ MAX\_FLOAT}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#define\ MAX\_FLOAT\ 3.402823e38f}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#ifndef\ MIN\_FLOAT}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#define\ MIN\_FLOAT\ -\/3.402823e38f}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#ifndef\ INDEX\_TYPE}}
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#define\ INDEX\_TYPE\ uint32\_t}}
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#define\ TEMPORARY\_ID\ 0000000000}}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#define\ MODEL\_ID\_OFFSET\ 1000000}}
+\DoxyCodeLine{00037\ \textcolor{comment}{//\#define\ MODEL\_DATA\_SPACE\ 1000000}}
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#define\ NO\_CURRENT\_MODEL\ -\/1}}
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#define\ PLUGIN\_ID\_OFFSET\ 2000000000}}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#define\ SINGLE\_IMAGE\ 2}}
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#define\ LEFT\_IMAGE\ 1}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#define\ RIGHT\_IMAGE\ 0}}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#define\ \_DEF\_AMBIENT\ 0.2f,\ 0.2f,\ 0.2f,\ 1.0f}}
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#define\ \_DEF\_DIFFUSE\ 0.8f,\ 0.8f,\ 0.8f,\ 1.0f}}
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\#define\ \_DEF\_SPECULAR\ 0.0f,\ 0.0f,\ 0.0f,\ 1.0f}}
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#define\ \_DEF\_EMISSION\ 0.0f,\ 0.0f,\ 0.0f,\ 1.0f}}
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\#define\ \_DEF\_SHININESS\ 0.0f}}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{\#define\ \_DP\_Z\_TLA\ -\/9000.0f}}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \textcolor{comment}{//typedef\ union\ \{}}
+\DoxyCodeLine{00054\ \textcolor{comment}{//\ \ unsigned\ int\ opt0;}}
+\DoxyCodeLine{00055\ \textcolor{comment}{//\ \ unsigned\ int\ opt1;}}
+\DoxyCodeLine{00056\ \textcolor{comment}{//\ \ struct\ \{}}
+\DoxyCodeLine{00057\ \textcolor{comment}{//\ \ \ \ \ \ unsigned\ opt2\_1\ :1;}}
+\DoxyCodeLine{00058\ \textcolor{comment}{//\ \ \ \ \ \ unsigned\ opt2\_2\ :1;}}
+\DoxyCodeLine{00059\ \textcolor{comment}{//\ \ \ \ \ \ unsigned\ opt2\_3\ :1;}}
+\DoxyCodeLine{00060\ \textcolor{comment}{//\ \ \ \ \ \ unsigned\ opt2\_4\ :1;}}
+\DoxyCodeLine{00061\ \textcolor{comment}{//\ \ \ \ \ \ unsigned\ \ \ \ :0;\ \ \ \ \ //\ wyrównanie\ do\ unsigned\ int}}
+\DoxyCodeLine{00062\ \textcolor{comment}{//\ \ \ \ \ \ unsigned\ opt3\_1\ :1;}}
+\DoxyCodeLine{00063\ \textcolor{comment}{//\ \ \ \ \ \ unsigned\ opt3\_2\ :1;}}
+\DoxyCodeLine{00064\ \textcolor{comment}{//\ \ \};}}
+\DoxyCodeLine{00065\ \textcolor{comment}{//\}\ \_MyOpt;}}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//DPVISION\_GLOBAL\_DEFINITIONS\_H}}
+
+\end{DoxyCode}

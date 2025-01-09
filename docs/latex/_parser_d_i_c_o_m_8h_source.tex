@@ -1,0 +1,40 @@
+\doxysection{Parser\+DICOM.\+h}
+\hypertarget{_parser_d_i_c_o_m_8h_source}{}\label{_parser_d_i_c_o_m_8h_source}\index{src/plugins/parserDICOM/ParserDICOM.h@{src/plugins/parserDICOM/ParserDICOM.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}Parser.h"{}}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}imebra/imebra.h"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}Volumetric.h"{}}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <exception>}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{keyword}{class\ }\textcolor{keyword}{\_\_declspec(dllexport)}\ CParserDICOM\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_c_parser}{CParser}}}
+\DoxyCodeLine{00011\ \{}
+\DoxyCodeLine{00012\ \ \ \ \ Volumetric::ColorSpace\ m\_csp\ =\ Volumetric::ColorSpace::MONOCHROME2;}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00015\ \ \ \ \ CParserDICOM(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00016\ \ \ \ \ \string~CParserDICOM(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{comment}{//std::string\ decomposeFname(std::string\ fname,\ std::string\&\ number);}}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ parse\_dicom\_file(std::string\ dicomPath,\ uint16\_t\ slide,\ \mbox{\hyperlink{class_volumetric_1_1_slice_type}{Volumetric::SliceType}}\&\ slice,\ Volumetric::SliceMetadata\&\ metadata,\ \textcolor{keywordtype}{bool}\ isReversed);}
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{comment}{//void\ displayDicomTags(std::string\ fileName);}}
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keywordtype}{long}\ read\_files(\mbox{\hyperlink{class_volumetric}{Volumetric}}\ *volum,\ \textcolor{keywordtype}{int}\ nbOfFiles,\ std::string\ dirPath,\ std::string\ shortName,\ std::string\ firstNumber,\ std::string\ suffix);}
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keywordtype}{long}\ read\_frames(\mbox{\hyperlink{class_volumetric}{Volumetric}}*\ volum,\ imebra::DataSet\&\ dataSet,\ \textcolor{keywordtype}{int}\ nbOfFrames);}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keywordtype}{int}\ similarFilesExists(QString\&\ first\_file\_path,\ QString\&\ short\_name,\ QString\&\ last\_file\_path,\ QString\&\ first\_number,\ QString\&\ last\_number\ );}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{comment}{//long\ readFromLastToFirst(Volumetric\ *volum,\ int\ nbOfFiles,\ std::string\ dirPath,\ std::string\ shortName,\ std::string\ firstNumber,\ std::string\ suffix);}}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ Run();}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \ \ \ \ imebra::Image\ createImebraImageFromVoxels(\textcolor{keyword}{const}\ std::vector<Volumetric::VoxelType>\&\ voxels,\ std::uint32\_t\ width,\ std::uint32\_t\ height);}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keywordtype}{bool}\ \_export(\mbox{\hyperlink{class_volumetric}{Volumetric}}*\ volum,\ QString\ dir\_name=\textcolor{stringliteral}{"{}"{}},\ QString\ fname\_base=\textcolor{stringliteral}{"{}slice"{}});}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{bool}\ save(\mbox{\hyperlink{class_c_model3_d}{CModel3D}}*\ obj,\ \textcolor{keyword}{const}\ QString\ path);}
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{bool}\ save(QVector<CBaseObject*>\ objects,\ \textcolor{keyword}{const}\ QString\ path);}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \};}
+
+\end{DoxyCode}

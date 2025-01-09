@@ -1,0 +1,194 @@
+\doxysection{CTransform Class Reference}
+\hypertarget{class_c_transform}{}\label{class_c_transform}\index{CTransform@{CTransform}}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_transform_a310b1ee08788349bb9cedfdbcf0c0707}\label{class_c_transform_a310b1ee08788349bb9cedfdbcf0c0707} 
+enum {\bfseries Origin} \{ {\bfseries ZERO}
+, {\bfseries WEIGHT\+\_\+\+CTR}
+, {\bfseries BBOX\+\_\+\+CTR}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_transform_a7476af0d4d08c67f31ffce6b96fb3858}\label{class_c_transform_a7476af0d4d08c67f31ffce6b96fb3858} 
+{\bfseries CTransform} (const \mbox{\hyperlink{class_c_transform}{CTransform}} \&t)
+\item 
+\Hypertarget{class_c_transform_a7104b353d916a0b16feb8195a15b0b86}\label{class_c_transform_a7104b353d916a0b16feb8195a15b0b86} 
+{\bfseries CTransform} (const Eigen\+::\+Matrix4d \&mat)
+\item 
+\Hypertarget{class_c_transform_ae92fbedbb837f1d7e7818313d6e33399}\label{class_c_transform_ae92fbedbb837f1d7e7818313d6e33399} 
+void {\bfseries reset} ()
+\item 
+\Hypertarget{class_c_transform_af191d3889e65bc7c43afa12093440637}\label{class_c_transform_af191d3889e65bc7c43afa12093440637} 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} \& {\bfseries origin} ()
+\item 
+\Hypertarget{class_c_transform_ac6eaf6344eaccee3d2e6f976dab95967}\label{class_c_transform_ac6eaf6344eaccee3d2e6f976dab95967} 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} \& {\bfseries center\+Of\+Rotation} ()
+\item 
+\Hypertarget{class_c_transform_a04c84c8db4ea0db2fed10d6ce207d66e}\label{class_c_transform_a04c84c8db4ea0db2fed10d6ce207d66e} 
+void {\bfseries set\+Origin} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} c=\mbox{\hyperlink{class_c_point3}{CPoint3d}}(0, 0, 0))
+\item 
+\Hypertarget{class_c_transform_aecde844fad58ad4eef33781aa327f6f9}\label{class_c_transform_aecde844fad58ad4eef33781aa327f6f9} 
+void {\bfseries set\+Center\+Of\+Rotation} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} c)
+\item 
+\Hypertarget{class_c_transform_ace10cc24ae0f210cd699f5c53dc6cf0b}\label{class_c_transform_ace10cc24ae0f210cd699f5c53dc6cf0b} 
+bool {\bfseries is\+The\+Origin\+Moved\+To\+The\+Center\+Of\+Rotation} ()
+\item 
+\Hypertarget{class_c_transform_ad2c96917ff7dbf000510464839409a51}\label{class_c_transform_ad2c96917ff7dbf000510464839409a51} 
+void {\bfseries move\+The\+Origin\+To\+The\+Center\+Of\+Rotation} (bool b)
+\item 
+\Hypertarget{class_c_transform_a26929c15d057011018a74356e7d2457a}\label{class_c_transform_a26929c15d057011018a74356e7d2457a} 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} \& {\bfseries scale} ()
+\item 
+\Hypertarget{class_c_transform_a067ca3f6aafbd1927425f79bd7a12bc2}\label{class_c_transform_a067ca3f6aafbd1927425f79bd7a12bc2} 
+void {\bfseries set\+Scale} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} s)
+\item 
+\Hypertarget{class_c_transform_a2e7c21ca642d5fb8f4c7f4c34028b964}\label{class_c_transform_a2e7c21ca642d5fb8f4c7f4c34028b964} 
+void {\bfseries set\+Scale} (double s)
+\item 
+\Hypertarget{class_c_transform_ad0d87f11e0720610b5e34493f07034f2}\label{class_c_transform_ad0d87f11e0720610b5e34493f07034f2} 
+\mbox{\hyperlink{class_c_vector3}{CVector3d}} \& {\bfseries translation} ()
+\item 
+\Hypertarget{class_c_transform_a1cf278f3ff34ec1bc8f47e590a047470}\label{class_c_transform_a1cf278f3ff34ec1bc8f47e590a047470} 
+const \mbox{\hyperlink{class_c_vector3}{CVector3d}} \& {\bfseries translate} (\mbox{\hyperlink{class_c_vector3}{CVector3d}} ruch)
+\item 
+\Hypertarget{class_c_transform_ae733c16f678890c400cde3dbaa79d8db}\label{class_c_transform_ae733c16f678890c400cde3dbaa79d8db} 
+\mbox{\hyperlink{class_c_quaternion}{CQuaternion}} \& {\bfseries rotation} ()
+\item 
+\Hypertarget{class_c_transform_a8e2bc5521efca78cb989668bb2394dbc}\label{class_c_transform_a8e2bc5521efca78cb989668bb2394dbc} 
+void {\bfseries rotate} (std\+::vector$<$ std\+::pair$<$ \mbox{\hyperlink{class_c_vector3}{CVector3d}}, double $>$ $>$ axis\+Angle, bool internal=true)
+\item 
+\Hypertarget{class_c_transform_afc77924b7e4839d4e5bf92a2f2177f47}\label{class_c_transform_afc77924b7e4839d4e5bf92a2f2177f47} 
+void {\bfseries rotate} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} origin, std\+::vector$<$ std\+::pair$<$ \mbox{\hyperlink{class_c_vector3}{CVector3d}}, double $>$ $>$ axis\+Angle, bool internal=true)
+\item 
+\Hypertarget{class_c_transform_ade3cdd6d74ca5926322e09e6ea7af5ff}\label{class_c_transform_ade3cdd6d74ca5926322e09e6ea7af5ff} 
+void {\bfseries rotate\+Deg} (std\+::vector$<$ std\+::pair$<$ \mbox{\hyperlink{class_c_vector3}{CVector3d}}, double $>$ $>$ axis\+Angle, bool internal=true)
+\item 
+\Hypertarget{class_c_transform_af9cc5b58a7c61c6d3611adfd75dc65fc}\label{class_c_transform_af9cc5b58a7c61c6d3611adfd75dc65fc} 
+void {\bfseries rotate\+Deg} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} origin, std\+::vector$<$ std\+::pair$<$ \mbox{\hyperlink{class_c_vector3}{CVector3d}}, double $>$ $>$ axis\+Angle, bool internal=true)
+\item 
+\Hypertarget{class_c_transform_a74918c87f339d7204ad6bfd6f21e0043}\label{class_c_transform_a74918c87f339d7204ad6bfd6f21e0043} 
+void {\bfseries show\+Screw} (bool b)
+\item 
+\Hypertarget{class_c_transform_aee98f89280ed8711d2f7747a47730c13}\label{class_c_transform_aee98f89280ed8711d2f7747a47730c13} 
+bool {\bfseries is\+Screw\+Visible} ()
+\item 
+\Hypertarget{class_c_transform_afac3d170d1539a081e0baf5be800522c}\label{class_c_transform_afac3d170d1539a081e0baf5be800522c} 
+void {\bfseries rotate\+Around\+Axis} (\mbox{\hyperlink{class_c_vector3}{CVector3d}} axis, double angle, bool internal=true)
+\item 
+\Hypertarget{class_c_transform_aad82274a24536f00e1cfbefdc1465cc3}\label{class_c_transform_aad82274a24536f00e1cfbefdc1465cc3} 
+void {\bfseries rotate\+Around\+Axis} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} origin, \mbox{\hyperlink{class_c_vector3}{CVector3d}} axis, double angle, bool internal=true)
+\item 
+\Hypertarget{class_c_transform_a37793dc4fe247eaa9ea2bd3638514709}\label{class_c_transform_a37793dc4fe247eaa9ea2bd3638514709} 
+void {\bfseries rotate\+Around\+Axis\+Deg} (\mbox{\hyperlink{class_c_vector3}{CVector3d}} axis, double angle, bool internal=true)
+\item 
+\Hypertarget{class_c_transform_a21dad7df038813ed35be1298180a782a}\label{class_c_transform_a21dad7df038813ed35be1298180a782a} 
+void {\bfseries rotate\+Around\+Axis\+Deg} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} origin, \mbox{\hyperlink{class_c_vector3}{CVector3d}} axis, double angle, bool internal=true)
+\item 
+\Hypertarget{class_c_transform_a95ba665885b93997cc6760714b458a16}\label{class_c_transform_a95ba665885b93997cc6760714b458a16} 
+void {\bfseries rotate\+By\+Matrix3x3} (double m\mbox{[}9\mbox{]})
+\item 
+\Hypertarget{class_c_transform_ae70c164da4bca0b70c36cb33c9a6526b}\label{class_c_transform_ae70c164da4bca0b70c36cb33c9a6526b} 
+bool {\bfseries is\+Locked} ()
+\item 
+\Hypertarget{class_c_transform_a5603ba08ae8f02072a0e41b5cfe24c07}\label{class_c_transform_a5603ba08ae8f02072a0e41b5cfe24c07} 
+bool {\bfseries lock} (bool b)
+\item 
+\Hypertarget{class_c_transform_a1252dcd5d65c234f33f6b2f1b45b8c99}\label{class_c_transform_a1252dcd5d65c234f33f6b2f1b45b8c99} 
+void {\bfseries from\+GLMatrixF} (float \texorpdfstring{$\ast$}{*}matrix)
+\item 
+\Hypertarget{class_c_transform_a8a3f8a51be12fb96c5e27aaf102c343a}\label{class_c_transform_a8a3f8a51be12fb96c5e27aaf102c343a} 
+void {\bfseries from\+GLMatrixD} (double \texorpdfstring{$\ast$}{*}matrix)
+\item 
+\Hypertarget{class_c_transform_a484e03dcac80f67b304856a4ff52ba87}\label{class_c_transform_a484e03dcac80f67b304856a4ff52ba87} 
+void {\bfseries from\+Row\+MatrixD} (double \texorpdfstring{$\ast$}{*}matrix)
+\item 
+\Hypertarget{class_c_transform_aedf19828dd27b4e98e06d773f8c9e54a}\label{class_c_transform_aedf19828dd27b4e98e06d773f8c9e54a} 
+void {\bfseries from\+Eigen\+Matrix4d} (Eigen\+::\+Matrix4d m)
+\item 
+\Hypertarget{class_c_transform_af84f922e753e882fd891175e31de15e2}\label{class_c_transform_af84f922e753e882fd891175e31de15e2} 
+void {\bfseries from\+QMatrix4x4} (QMatrix4x4 m)
+\item 
+\Hypertarget{class_c_transform_a84a92cdaa2cf88a330e2460aa767c1f7}\label{class_c_transform_a84a92cdaa2cf88a330e2460aa767c1f7} 
+void {\bfseries to\+GLMatrixF} (float \texorpdfstring{$\ast$}{*}matrix)
+\item 
+\Hypertarget{class_c_transform_abcdcf8d96ab79bdff27e5ca1d83bf799}\label{class_c_transform_abcdcf8d96ab79bdff27e5ca1d83bf799} 
+void {\bfseries to\+GLMatrixD} (double \texorpdfstring{$\ast$}{*}matrix)
+\item 
+\Hypertarget{class_c_transform_ad7266a1ab084354d1963cb5d2a9bd5fa}\label{class_c_transform_ad7266a1ab084354d1963cb5d2a9bd5fa} 
+void {\bfseries to\+Row\+MatrixD} (double \texorpdfstring{$\ast$}{*}matrix)
+\item 
+\Hypertarget{class_c_transform_ad634c43aa6e0a6173b1439a67b0541da}\label{class_c_transform_ad634c43aa6e0a6173b1439a67b0541da} 
+Eigen\+::\+Matrix4d {\bfseries to\+Eigen\+Matrix4d} ()
+\item 
+\Hypertarget{class_c_transform_a90031743d4a989fd8267a0ca40eb5d85}\label{class_c_transform_a90031743d4a989fd8267a0ca40eb5d85} 
+QMatrix4x4 {\bfseries to\+QMatrix4x4} ()
+\item 
+\Hypertarget{class_c_transform_a9eb25d74baca156841a428e76f017f47}\label{class_c_transform_a9eb25d74baca156841a428e76f017f47} 
+bool {\bfseries invert\+MatrixD} (const double m\mbox{[}16\mbox{]}, double inv\+Out\mbox{[}16\mbox{]})
+\item 
+\Hypertarget{class_c_transform_a630235296dcb4fc2d0722ae53f0ef9ee}\label{class_c_transform_a630235296dcb4fc2d0722ae53f0ef9ee} 
+bool {\bfseries invert\+MatrixF} (const float m\mbox{[}16\mbox{]}, float inv\+Out\mbox{[}16\mbox{]})
+\item 
+\Hypertarget{class_c_transform_a11ca0daebd2d0fd79e4dfd1a12643dc9}\label{class_c_transform_a11ca0daebd2d0fd79e4dfd1a12643dc9} 
+void {\bfseries to\+Inverted\+GLMatrixF} (float \texorpdfstring{$\ast$}{*}matrix)
+\item 
+\Hypertarget{class_c_transform_a6cfbca7d5e5d44914ba27be7803b82e1}\label{class_c_transform_a6cfbca7d5e5d44914ba27be7803b82e1} 
+void {\bfseries to\+Inverted\+GLMatrixD} (double \texorpdfstring{$\ast$}{*}matrix)
+\item 
+\Hypertarget{class_c_transform_ab0d60e619ddf92700ef1ff064b16de27}\label{class_c_transform_ab0d60e619ddf92700ef1ff064b16de27} 
+void {\bfseries to\+Inverted\+Row\+MatrixD} (double \texorpdfstring{$\ast$}{*}matrix)
+\item 
+\Hypertarget{class_c_transform_abf83ee8cb2835a8a080fdbeae54026d4}\label{class_c_transform_abf83ee8cb2835a8a080fdbeae54026d4} 
+{\footnotesize template$<$typename \+\_\+W $>$ }\\\mbox{\hyperlink{class_c_vector3}{CVector3}}$<$ \+\_\+W $>$ {\bfseries operator\texorpdfstring{$\ast$}{*}} (\mbox{\hyperlink{class_c_vector3}{CVector3}}$<$ \+\_\+W $>$ p)
+\item 
+\Hypertarget{class_c_transform_afd0680f121587448db2eaeba80576f9b}\label{class_c_transform_afd0680f121587448db2eaeba80576f9b} 
+{\footnotesize template$<$typename \+\_\+W $>$ }\\\mbox{\hyperlink{class_c_point3}{CPoint3}}$<$ \+\_\+W $>$ {\bfseries operator\texorpdfstring{$\ast$}{*}} (\mbox{\hyperlink{class_c_point3}{CPoint3}}$<$ \+\_\+W $>$ p)
+\item 
+\Hypertarget{class_c_transform_a847a8706caa3e9543bfa247e59095673}\label{class_c_transform_a847a8706caa3e9543bfa247e59095673} 
+{\footnotesize template$<$typename \+\_\+W $>$ }\\\mbox{\hyperlink{class_c_vector3}{CVector3}}$<$ \+\_\+W $>$ {\bfseries operator/} (\mbox{\hyperlink{class_c_vector3}{CVector3}}$<$ \+\_\+W $>$ p)
+\item 
+\Hypertarget{class_c_transform_a5388823d1f75a3751e5690388a2960ea}\label{class_c_transform_a5388823d1f75a3751e5690388a2960ea} 
+{\footnotesize template$<$typename \+\_\+W $>$ }\\\mbox{\hyperlink{class_c_point3}{CPoint3}}$<$ \+\_\+W $>$ {\bfseries operator/} (\mbox{\hyperlink{class_c_point3}{CPoint3}}$<$ \+\_\+W $>$ p)
+\item 
+\Hypertarget{class_c_transform_a4a594c2bc288e7b6ea1ef2692ffa970a}\label{class_c_transform_a4a594c2bc288e7b6ea1ef2692ffa970a} 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries l2w} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} pkt1)
+\item 
+\Hypertarget{class_c_transform_ad8273ef33a7398234875ad4a77b02fad}\label{class_c_transform_ad8273ef33a7398234875ad4a77b02fad} 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries w2l} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} pkt1)
+\item 
+\Hypertarget{class_c_transform_af7495375a72a7ba9aa5771d72fa83996}\label{class_c_transform_af7495375a72a7ba9aa5771d72fa83996} 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries local2world} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} pkt1)
+\item 
+\Hypertarget{class_c_transform_a2454e451e4d1fc59a46d09c114dcaa2c}\label{class_c_transform_a2454e451e4d1fc59a46d09c114dcaa2c} 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries world2local} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} pkt1)
+\item 
+\Hypertarget{class_c_transform_affdb98176eea6de2c90e9949f12121bf}\label{class_c_transform_affdb98176eea6de2c90e9949f12121bf} 
+std\+::wstring {\bfseries info\+Row} ()
+\item 
+\Hypertarget{class_c_transform_a9a478850413c665629ef07d4054a6974}\label{class_c_transform_a9a478850413c665629ef07d4054a6974} 
+QString {\bfseries to\+String} (QString prefix="{}"{}, QString suffix="{}"{}, QString separator="{} "{}, const char \texorpdfstring{$\ast$}{*}format="{}\%.\+8f"{})
+\item 
+\Hypertarget{class_c_transform_a776df81935f4447961fcf95ae1e772a9}\label{class_c_transform_a776df81935f4447961fcf95ae1e772a9} 
+void {\bfseries from\+Row\+Matrix} (QString text, QString separator="{}(\textbackslash{}\textbackslash{}s+)"{})
+\item 
+\Hypertarget{class_c_transform_a7f340e7ad6ad0b787b1facb88f7d00bf}\label{class_c_transform_a7f340e7ad6ad0b787b1facb88f7d00bf} 
+void {\bfseries render\+Screw} (float r, float g, float b)
+\item 
+\Hypertarget{class_c_transform_abe0bca2ed92036f737da1cca97c6e60f}\label{class_c_transform_abe0bca2ed92036f737da1cca97c6e60f} 
+void {\bfseries render} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_transform_a3dd6f8c0ed87f6866bd6490e2b558803}\label{class_c_transform_a3dd6f8c0ed87f6866bd6490e2b558803} 
+static \mbox{\hyperlink{class_c_transform}{CTransform}} {\bfseries from\+To} (\mbox{\hyperlink{class_c_transform}{CTransform}} from, \mbox{\hyperlink{class_c_transform}{CTransform}} to)
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/core/Transform.\+h\item 
+src/core/Transform.\+cpp\end{DoxyCompactItemize}

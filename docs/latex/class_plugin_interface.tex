@@ -1,0 +1,328 @@
+\doxysection{Plugin\+Interface Class Reference}
+\hypertarget{class_plugin_interface}{}\label{class_plugin_interface}\index{PluginInterface@{PluginInterface}}
+
+
+Base class for all plugins.  
+
+
+
+
+{\ttfamily \#include $<$Plugin\+Interface.\+h$>$}
+
+Inheritance diagram for Plugin\+Interface\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_plugin_interface}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_plugin_interface_1_1_pick_event}{Pick\+Event}}
+\begin{DoxyCompactList}\small\item\em Structure storing information about object picking event. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_plugin_interface_a09df9802851cc4c99dd3fe9abe6e692a}\label{class_plugin_interface_a09df9802851cc4c99dd3fe9abe6e692a} 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+Plugin\+Interface} ()
+\begin{DoxyCompactList}\small\item\em Virtual destructor. \end{DoxyCompactList}\item 
+unsigned int \mbox{\hyperlink{class_plugin_interface_abd140fffa0e711b1f2f3e687e55c13bc}{id}} ()
+\begin{DoxyCompactList}\small\item\em Gets the plugin ID. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_plugin_interface_ac497f99af9ed9f2eb71899b410510583}{set\+ID}} (unsigned int \mbox{\hyperlink{class_plugin_interface_abd140fffa0e711b1f2f3e687e55c13bc}{id}})
+\begin{DoxyCompactList}\small\item\em Sets the plugin ID. \end{DoxyCompactList}\item 
+QString \mbox{\hyperlink{class_plugin_interface_a62f1a3ed8c0bf8433fca8123d419e6a1}{uuid}} () const
+\begin{DoxyCompactList}\small\item\em Gets the plugin UUID. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_plugin_interface_a282fc1f4352204f44f3a60a62bf71b88}{set\+UUID}} (const QString \&\mbox{\hyperlink{class_plugin_interface_a62f1a3ed8c0bf8433fca8123d419e6a1}{uuid}})
+\begin{DoxyCompactList}\small\item\em Sets the plugin UUID. \end{DoxyCompactList}\item 
+QString \mbox{\hyperlink{class_plugin_interface_a00d4125cbbb060896bbcf300a0382a54}{name}} () const
+\begin{DoxyCompactList}\small\item\em Gets the plugin name. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_plugin_interface_a36eba75d9861f31e52d8deeae0536a44}{set\+Name}} (const QString \&\mbox{\hyperlink{class_plugin_interface_a00d4125cbbb060896bbcf300a0382a54}{name}})
+\begin{DoxyCompactList}\small\item\em Sets the plugin name. \end{DoxyCompactList}\item 
+QString \mbox{\hyperlink{class_plugin_interface_a3fa8b30bbf9b59a155475d050e3fb563}{path}} () const
+\begin{DoxyCompactList}\small\item\em Gets the plugin path. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_plugin_interface_aadaabee909e088fe4f70203601a88feb}{set\+Path}} (const QString \&\mbox{\hyperlink{class_plugin_interface_a3fa8b30bbf9b59a155475d050e3fb563}{path}})
+\begin{DoxyCompactList}\small\item\em Sets the plugin path. \end{DoxyCompactList}\item 
+virtual int \mbox{\hyperlink{class_plugin_interface_aca11bf5187e2037f3e96a2a9991b6536}{is\+Hidden}} ()
+\begin{DoxyCompactList}\small\item\em Checks if the plugin should be hidden. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_plugin_interface_a73766796b4ecb03544dc19a49087cc89}{has\+UUID}} (const QString \&str\+UUID)
+\begin{DoxyCompactList}\small\item\em Checks if plugin has the specified UUID. \end{DoxyCompactList}\item 
+\Hypertarget{class_plugin_interface_acb543dcd9abe4745a20719e20fb4ae7a}\label{class_plugin_interface_acb543dcd9abe4745a20719e20fb4ae7a} 
+virtual void {\bfseries on\+Run} ()
+\begin{DoxyCompactList}\small\item\em Called on double-\/click on plugin name. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_plugin_interface_a35d8ce5db20da5d18afee4a243df418e}{on\+Load}} ()
+\begin{DoxyCompactList}\small\item\em Called when plugin is loaded. \end{DoxyCompactList}\item 
+\Hypertarget{class_plugin_interface_ae9114a6a6fdb69e2050acbb348c181cf}\label{class_plugin_interface_ae9114a6a6fdb69e2050acbb348c181cf} 
+virtual void {\bfseries on\+Unload} ()
+\begin{DoxyCompactList}\small\item\em Called before plugin unload. \end{DoxyCompactList}\item 
+\Hypertarget{class_plugin_interface_a831f8163229dcd1d77e0f77296c6a3e4}\label{class_plugin_interface_a831f8163229dcd1d77e0f77296c6a3e4} 
+virtual void {\bfseries on\+Activate} ()
+\begin{DoxyCompactList}\small\item\em Called when plugin is activated. \end{DoxyCompactList}\item 
+\Hypertarget{class_plugin_interface_a45fa40344da23380966554b6056c78b1}\label{class_plugin_interface_a45fa40344da23380966554b6056c78b1} 
+virtual void {\bfseries on\+Deactivate} ()
+\begin{DoxyCompactList}\small\item\em Called when plugin is deactivated. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_plugin_interface_af67cbd534b0dbfab066236f64d51f02e}{on\+Button}} (std\+::wstring \mbox{\hyperlink{class_plugin_interface_a00d4125cbbb060896bbcf300a0382a54}{name}})
+\begin{DoxyCompactList}\small\item\em Called when button on Plugin\+Panel is pressed (deprecated) \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_plugin_interface_a436061b89c40d5ef802f5275faf7f99d}{on\+Button}} (const QString \&\mbox{\hyperlink{class_plugin_interface_a00d4125cbbb060896bbcf300a0382a54}{name}})
+\begin{DoxyCompactList}\small\item\em Called when button on Plugin\+Panel is pressed. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_plugin_interface_a7e690c946e231a63c4498faec7f48a9e}{on\+Mouse\+Pick}} (\mbox{\hyperlink{struct_plugin_interface_1_1_pick_event}{Pick\+Event}} pick\+Event)
+\begin{DoxyCompactList}\small\item\em Called when plugin is active and Ctrl+\+Mouse\+Click is performed on any model. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_plugin_interface_a9deb12b2cb1432ef60cce02ae947bdb4}{on\+Model\+Indication}} (int obj\+Id)
+\begin{DoxyCompactList}\small\item\em Called when plugin is active and Shift+\+Mouse\+Click is performed on any model. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_plugin_interface_a4dc5a4bf45a772c3bbd14547f432c2b5}\label{class_plugin_interface_a4dc5a4bf45a772c3bbd14547f432c2b5} 
+unsigned int {\bfseries m\+\_\+\+ID}
+\begin{DoxyCompactList}\small\item\em Unique plugin identifier. \end{DoxyCompactList}\item 
+\Hypertarget{class_plugin_interface_a3643edace176f3cafa51e2c8007454bc}\label{class_plugin_interface_a3643edace176f3cafa51e2c8007454bc} 
+QString {\bfseries m\+\_\+\+UUID}
+\begin{DoxyCompactList}\small\item\em Plugin UUID. \end{DoxyCompactList}\item 
+\Hypertarget{class_plugin_interface_a517e1275a365fd7bc12dddbd307ec846}\label{class_plugin_interface_a517e1275a365fd7bc12dddbd307ec846} 
+QString {\bfseries m\+\_\+\+Name}
+\begin{DoxyCompactList}\small\item\em Plugin name. \end{DoxyCompactList}\item 
+\Hypertarget{class_plugin_interface_afed07ab7ff24a97ee30e86c4eb25f4d5}\label{class_plugin_interface_afed07ab7ff24a97ee30e86c4eb25f4d5} 
+QString {\bfseries m\+\_\+\+Path}
+\begin{DoxyCompactList}\small\item\em Plugin file path. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Base class for all plugins. 
+
+Defines the basic interface and functionality required by the plugin system 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_plugin_interface_a73766796b4ecb03544dc19a49087cc89}\index{PluginInterface@{PluginInterface}!hasUUID@{hasUUID}}
+\index{hasUUID@{hasUUID}!PluginInterface@{PluginInterface}}
+\doxysubsubsection{\texorpdfstring{hasUUID()}{hasUUID()}}
+{\footnotesize\ttfamily \label{class_plugin_interface_a73766796b4ecb03544dc19a49087cc89} 
+bool Plugin\+Interface\+::has\+UUID (\begin{DoxyParamCaption}\item[{const QString \&}]{str\+UUID}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Checks if plugin has the specified UUID. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em str\+UUID} & UUID to check \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if UUID matches, false otherwise 
+\end{DoxyReturn}
+\Hypertarget{class_plugin_interface_abd140fffa0e711b1f2f3e687e55c13bc}\index{PluginInterface@{PluginInterface}!id@{id}}
+\index{id@{id}!PluginInterface@{PluginInterface}}
+\doxysubsubsection{\texorpdfstring{id()}{id()}}
+{\footnotesize\ttfamily \label{class_plugin_interface_abd140fffa0e711b1f2f3e687e55c13bc} 
+unsigned int Plugin\+Interface\+::id (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the plugin ID. 
+
+\begin{DoxyReturn}{Returns}
+Plugin ID 
+\end{DoxyReturn}
+\Hypertarget{class_plugin_interface_aca11bf5187e2037f3e96a2a9991b6536}\index{PluginInterface@{PluginInterface}!isHidden@{isHidden}}
+\index{isHidden@{isHidden}!PluginInterface@{PluginInterface}}
+\doxysubsubsection{\texorpdfstring{isHidden()}{isHidden()}}
+{\footnotesize\ttfamily \label{class_plugin_interface_aca11bf5187e2037f3e96a2a9991b6536} 
+virtual int Plugin\+Interface\+::is\+Hidden (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Checks if the plugin should be hidden. 
+
+\begin{DoxyReturn}{Returns}
+0 if plugin is not hidden, non-\/zero otherwise 
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Used to hide certain plugins, like File\+Parsers 
+\end{DoxyNote}
+\Hypertarget{class_plugin_interface_a00d4125cbbb060896bbcf300a0382a54}\index{PluginInterface@{PluginInterface}!name@{name}}
+\index{name@{name}!PluginInterface@{PluginInterface}}
+\doxysubsubsection{\texorpdfstring{name()}{name()}}
+{\footnotesize\ttfamily \label{class_plugin_interface_a00d4125cbbb060896bbcf300a0382a54} 
+QString Plugin\+Interface\+::name (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the plugin name. 
+
+\begin{DoxyReturn}{Returns}
+Plugin name 
+\end{DoxyReturn}
+\Hypertarget{class_plugin_interface_a436061b89c40d5ef802f5275faf7f99d}\index{PluginInterface@{PluginInterface}!onButton@{onButton}}
+\index{onButton@{onButton}!PluginInterface@{PluginInterface}}
+\doxysubsubsection{\texorpdfstring{onButton()}{onButton()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{class_plugin_interface_a436061b89c40d5ef802f5275faf7f99d} 
+virtual void Plugin\+Interface\+::on\+Button (\begin{DoxyParamCaption}\item[{const QString \&}]{name}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Called when button on Plugin\+Panel is pressed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Button name \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \mbox{\hyperlink{class_sample_plugin_a0747d76361811f26810e97afe4ed1b6e}{Sample\+Plugin}}.
+
+\Hypertarget{class_plugin_interface_af67cbd534b0dbfab066236f64d51f02e}\index{PluginInterface@{PluginInterface}!onButton@{onButton}}
+\index{onButton@{onButton}!PluginInterface@{PluginInterface}}
+\doxysubsubsection{\texorpdfstring{onButton()}{onButton()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{class_plugin_interface_af67cbd534b0dbfab066236f64d51f02e} 
+virtual void Plugin\+Interface\+::on\+Button (\begin{DoxyParamCaption}\item[{std\+::wstring}]{name}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Called when button on Plugin\+Panel is pressed (deprecated) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Button name \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_plugin_interface_a35d8ce5db20da5d18afee4a243df418e}\index{PluginInterface@{PluginInterface}!onLoad@{onLoad}}
+\index{onLoad@{onLoad}!PluginInterface@{PluginInterface}}
+\doxysubsubsection{\texorpdfstring{onLoad()}{onLoad()}}
+{\footnotesize\ttfamily \label{class_plugin_interface_a35d8ce5db20da5d18afee4a243df418e} 
+virtual void Plugin\+Interface\+::on\+Load (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Called when plugin is loaded. 
+
+
+
+Reimplemented in \mbox{\hyperlink{class_sample_plugin_a9562f259334d116407a82233f5416e13}{Sample\+Plugin}}.
+
+\Hypertarget{class_plugin_interface_a9deb12b2cb1432ef60cce02ae947bdb4}\index{PluginInterface@{PluginInterface}!onModelIndication@{onModelIndication}}
+\index{onModelIndication@{onModelIndication}!PluginInterface@{PluginInterface}}
+\doxysubsubsection{\texorpdfstring{onModelIndication()}{onModelIndication()}}
+{\footnotesize\ttfamily \label{class_plugin_interface_a9deb12b2cb1432ef60cce02ae947bdb4} 
+virtual bool Plugin\+Interface\+::on\+Model\+Indication (\begin{DoxyParamCaption}\item[{int}]{obj\+Id}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Called when plugin is active and Shift+\+Mouse\+Click is performed on any model. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em obj\+Id} & ID of indicated object \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if event was handled, false otherwise 
+\end{DoxyReturn}
+\Hypertarget{class_plugin_interface_a7e690c946e231a63c4498faec7f48a9e}\index{PluginInterface@{PluginInterface}!onMousePick@{onMousePick}}
+\index{onMousePick@{onMousePick}!PluginInterface@{PluginInterface}}
+\doxysubsubsection{\texorpdfstring{onMousePick()}{onMousePick()}}
+{\footnotesize\ttfamily \label{class_plugin_interface_a7e690c946e231a63c4498faec7f48a9e} 
+virtual bool Plugin\+Interface\+::on\+Mouse\+Pick (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_plugin_interface_1_1_pick_event}{Pick\+Event}}}]{pick\+Event}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Called when plugin is active and Ctrl+\+Mouse\+Click is performed on any model. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pick\+Event} & Pick event information \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if event was handled, false otherwise 
+\end{DoxyReturn}
+\Hypertarget{class_plugin_interface_a3fa8b30bbf9b59a155475d050e3fb563}\index{PluginInterface@{PluginInterface}!path@{path}}
+\index{path@{path}!PluginInterface@{PluginInterface}}
+\doxysubsubsection{\texorpdfstring{path()}{path()}}
+{\footnotesize\ttfamily \label{class_plugin_interface_a3fa8b30bbf9b59a155475d050e3fb563} 
+QString Plugin\+Interface\+::path (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the plugin path. 
+
+\begin{DoxyReturn}{Returns}
+Plugin path 
+\end{DoxyReturn}
+\Hypertarget{class_plugin_interface_ac497f99af9ed9f2eb71899b410510583}\index{PluginInterface@{PluginInterface}!setID@{setID}}
+\index{setID@{setID}!PluginInterface@{PluginInterface}}
+\doxysubsubsection{\texorpdfstring{setID()}{setID()}}
+{\footnotesize\ttfamily \label{class_plugin_interface_ac497f99af9ed9f2eb71899b410510583} 
+void Plugin\+Interface\+::set\+ID (\begin{DoxyParamCaption}\item[{unsigned int}]{id}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the plugin ID. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & New plugin ID \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_plugin_interface_a36eba75d9861f31e52d8deeae0536a44}\index{PluginInterface@{PluginInterface}!setName@{setName}}
+\index{setName@{setName}!PluginInterface@{PluginInterface}}
+\doxysubsubsection{\texorpdfstring{setName()}{setName()}}
+{\footnotesize\ttfamily \label{class_plugin_interface_a36eba75d9861f31e52d8deeae0536a44} 
+void Plugin\+Interface\+::set\+Name (\begin{DoxyParamCaption}\item[{const QString \&}]{name}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the plugin name. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & New plugin name \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_plugin_interface_aadaabee909e088fe4f70203601a88feb}\index{PluginInterface@{PluginInterface}!setPath@{setPath}}
+\index{setPath@{setPath}!PluginInterface@{PluginInterface}}
+\doxysubsubsection{\texorpdfstring{setPath()}{setPath()}}
+{\footnotesize\ttfamily \label{class_plugin_interface_aadaabee909e088fe4f70203601a88feb} 
+void Plugin\+Interface\+::set\+Path (\begin{DoxyParamCaption}\item[{const QString \&}]{path}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the plugin path. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & New plugin path \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_plugin_interface_a282fc1f4352204f44f3a60a62bf71b88}\index{PluginInterface@{PluginInterface}!setUUID@{setUUID}}
+\index{setUUID@{setUUID}!PluginInterface@{PluginInterface}}
+\doxysubsubsection{\texorpdfstring{setUUID()}{setUUID()}}
+{\footnotesize\ttfamily \label{class_plugin_interface_a282fc1f4352204f44f3a60a62bf71b88} 
+void Plugin\+Interface\+::set\+UUID (\begin{DoxyParamCaption}\item[{const QString \&}]{uuid}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the plugin UUID. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em uuid} & New plugin UUID \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_plugin_interface_a62f1a3ed8c0bf8433fca8123d419e6a1}\index{PluginInterface@{PluginInterface}!uuid@{uuid}}
+\index{uuid@{uuid}!PluginInterface@{PluginInterface}}
+\doxysubsubsection{\texorpdfstring{uuid()}{uuid()}}
+{\footnotesize\ttfamily \label{class_plugin_interface_a62f1a3ed8c0bf8433fca8123d419e6a1} 
+QString Plugin\+Interface\+::uuid (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Gets the plugin UUID. 
+
+\begin{DoxyReturn}{Returns}
+Plugin UUID 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/core/\mbox{\hyperlink{_plugin_interface_8h}{Plugin\+Interface.\+h}}\end{DoxyCompactItemize}

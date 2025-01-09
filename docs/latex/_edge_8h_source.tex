@@ -1,0 +1,103 @@
+\doxysection{Edge.\+h}
+\hypertarget{_edge_8h_source}{}\label{_edge_8h_source}\index{src/core/Edge.h@{src/core/Edge.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}dll\_global.h"{}}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}Global.h"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <set>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <list>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_edge}{CEdge}}\ :\ \textcolor{keyword}{public}\ std::pair<INDEX\_TYPE,\ INDEX\_TYPE>}
+\DoxyCodeLine{00011\ \{}
+\DoxyCodeLine{00012\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00013\ \ \ \ \ INDEX\_TYPE\ face;}
+\DoxyCodeLine{00014\ \ \ \ \ std::set<INDEX\_TYPE>\ faces;}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \ \ \ \ \mbox{\hyperlink{class_c_edge}{CEdge}}()}
+\DoxyCodeLine{00017\ \ \ \ \ \{}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ first\ =\ 0;}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ second\ =\ 0;}
+\DoxyCodeLine{00020\ \ \ \ \ \}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \ \ \ \ \mbox{\hyperlink{class_c_edge}{CEdge}}(INDEX\_TYPE\ f,\ INDEX\_TYPE\ s)}
+\DoxyCodeLine{00023\ \ \ \ \ \{}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \textcolor{comment}{//if\ (first\ <\ second)}}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\{}}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \ \ \ \ first\ =\ f;}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \ \ \ \ second\ =\ s;}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\}}}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \textcolor{comment}{//else}}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\{}}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ \ first\ =\ s;}}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ \ second\ =\ f;}}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\}}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ face\ =\ 0;}
+\DoxyCodeLine{00036\ \ \ \ \ \};}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ \mbox{\hyperlink{class_c_edge}{CEdge}}(INDEX\_TYPE\ f,\ INDEX\_TYPE\ s,\ INDEX\_TYPE\ t)}
+\DoxyCodeLine{00039\ \ \ \ \ \{}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \textcolor{comment}{//if\ (first\ <\ second)}}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\{}}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \ \ \ \ first\ =\ f;}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \ \ \ \ second\ =\ s;}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\}}}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \textcolor{comment}{//else}}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\{}}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ \ first\ =\ s;}}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ \ second\ =\ f;}}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\}}}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ face\ =\ t;}
+\DoxyCodeLine{00052\ \ \ \ \ \};}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \ \ \mbox{\hyperlink{class_c_edge}{CEdge}}(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_edge}{CEdge}}\ \&e\ )}
+\DoxyCodeLine{00055\ \ \ \ \ \{}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \textcolor{comment}{//if\ (e.first\ <\ e.second)}}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\{}}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \ \ \ \ first\ =\ e.first;}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \ \ \ \ second\ =\ e.second;}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\}}}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \textcolor{comment}{//else}}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\{}}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ \ first\ =\ e.second;\ }}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ \ second\ =\ e.first;}}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\}}}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ face\ =\ e.face;}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ faces\ =\ e.faces;}
+\DoxyCodeLine{00069\ \ \ \ \ \};}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keywordtype}{bool}\ isValid()\ \{\ \textcolor{keywordflow}{return}\ (first\ !=\ second)\ \&\&\ !faces.empty()\ \&\&\ (faces.size()\ <\ 2);\ \}}
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{comment}{//bool\ isBoundary()\ \{\ return\ faces.size()\ ==\ 1;\ \}}}
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keywordtype}{bool}\ hasUnexpectedFaces()\ \{\ \textcolor{keywordflow}{return}\ faces.size()\ >\ 1;\ \}}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keywordtype}{void}\ addFace(INDEX\_TYPE\ idx);}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keywordtype}{bool}\ hasFace(INDEX\_TYPE\ idx)\ \{\ \textcolor{keywordflow}{return}\ faces.find(idx)\ !=\ faces.end();\ \}}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \};}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \ \mbox{\hyperlink{class_c_set_of_edges}{CSetOfEdges}}\ :\ \textcolor{keyword}{public}\ std::set<\ CEdge\ >}
+\DoxyCodeLine{00082\ \{}
+\DoxyCodeLine{00083\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00084\ \ \ \ \ CSetOfEdges::iterator\ findFirstVertex(INDEX\_TYPE\ index);}
+\DoxyCodeLine{00085\ \ \ \ \ CSetOfEdges::iterator\ findSecondVertex(INDEX\_TYPE\ index);}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \ \ \ \ CSetOfEdges::iterator\ find(INDEX\_TYPE\ f,\ INDEX\_TYPE\ s);}
+\DoxyCodeLine{00088\ \ \ \ \ CSetOfEdges::iterator\ find(\mbox{\hyperlink{class_c_edge}{CEdge}}\ e);}
+\DoxyCodeLine{00089\ \};}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \ \mbox{\hyperlink{class_c_list_of_edges}{CListOfEdges}}\ :\ \textcolor{keyword}{public}\ std::list<\ CEdge\ >\ \{}
+\DoxyCodeLine{00093\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00094\ \ \ \ \ CListOfEdges::iterator\ findFirstVertex(INDEX\_TYPE\ index);}
+\DoxyCodeLine{00095\ \ \ \ \ CListOfEdges::iterator\ findSecondVertex(INDEX\_TYPE\ index);}
+\DoxyCodeLine{00096\ \};}
+\DoxyCodeLine{00097\ }
+
+\end{DoxyCode}

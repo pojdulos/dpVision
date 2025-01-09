@@ -205,7 +205,7 @@ void CParserDPVISION::saveMTL(QuaZip& zip, CMaterial& material, QString path, QS
 		
 		std::cout << tmpFile.fileName().toStdString() << Qt::endl;
 
-		material.tekstura->m_image.save(&tmpFile, "png");
+		material.tekstura->toImage().save(&tmpFile, "png");
 		
 		copyFileToZip(zip, path + matName + ".png", tmpFile.fileName());
 	}

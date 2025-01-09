@@ -1,0 +1,71 @@
+\doxysection{Triangle.\+h}
+\hypertarget{_triangle_8h_source}{}\label{_triangle_8h_source}\index{src/core/Triangle.h@{src/core/Triangle.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}Global.h"{}}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{comment}{//\#include\ <vector>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}BoundingBox.h"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{comment}{//using\ namespace\ std;}}
+\DoxyCodeLine{00008\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_c_mesh}{CMesh}};}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}Vertex.h"{}}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{keyword}{class\ \ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_triangle}{CTriangle}}\ \{}
+\DoxyCodeLine{00013\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00014\ \ \ \ \ \textcolor{keyword}{union\ }\{}
+\DoxyCodeLine{00015\ \ \ \ \ \ \ \ \ \textcolor{comment}{//struct\ \{\ CVertex\ m\_pA,\ m\_pB,\ m\_pC;\ \};}}
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_c_vertex}{CVertex}}\ m\_pV[3];}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ CVertex::Type\ m\_v[9];}
+\DoxyCodeLine{00018\ \ \ \ \ \};}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \ \ \ \ \mbox{\hyperlink{class_c_triangle}{CTriangle}}();}
+\DoxyCodeLine{00021\ \ \ \ \ \mbox{\hyperlink{class_c_triangle}{CTriangle}}(\mbox{\hyperlink{class_c_point3}{CPoint3d}}\ pA,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ pB,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ pC);}
+\DoxyCodeLine{00022\ \ \ \ \ \mbox{\hyperlink{class_c_triangle}{CTriangle}}(\textcolor{keywordtype}{int}\ idx,\ \mbox{\hyperlink{class_c_mesh}{CMesh}}\&\ mesh);}
+\DoxyCodeLine{00023\ \ \ \ \ \mbox{\hyperlink{class_c_triangle}{CTriangle}}(\textcolor{keywordtype}{int}\ idx,\ \mbox{\hyperlink{class_c_mesh}{CMesh}}*\ mesh);}
+\DoxyCodeLine{00024\ \ \ \ \ \mbox{\hyperlink{class_c_triangle}{\string~CTriangle}}();}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{comment}{//static\ CTriangle\ *\ fromCFace(CFace\ \&f,\ CMesh\ \&mesh);}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \mbox{\hyperlink{class_c_bounding_box}{CBoundingBox}}\ getBoundingBox();}
+\DoxyCodeLine{00029\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ getMidpoint();}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \ \ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\ getNormal();}
+\DoxyCodeLine{00032\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ getClosestPoint(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\&\ sourcePosition);}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keywordtype}{bool}\ rayPlaneIntersect3D(\mbox{\hyperlink{class_c_point3}{CPoint3d}}\ origin,\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\ dir,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&pIntersectionPoint,\ \textcolor{keywordtype}{double}\ \&pDistance);}
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keywordtype}{bool}\ inTriangle(\mbox{\hyperlink{class_c_point3}{CPoint3d}}\ pt);}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keywordtype}{bool}\ hit(\mbox{\hyperlink{class_c_point3}{CPoint3d}}\ origin,\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\ dir,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&iP);}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ \mbox{\hyperlink{class_c_triangle}{CTriangle}}\ transformByMatrix(Eigen::Matrix4d\ matrix);}
+\DoxyCodeLine{00039\ \ \ \ \ \mbox{\hyperlink{class_c_triangle}{CTriangle}}\ transformByMatrix(Eigen::Matrix3d\ matrix);}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Container>}
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{class_c_bounding_box}{CBoundingBox}}\ getBoundingBox(Container\ \&container)}
+\DoxyCodeLine{00043\ \ \ \ \ \{}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_c_bounding_box}{CBoundingBox}}\ bb(\ CBoundingBox::InitialValues::InvalidBB\ );}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ \&v\ :\ container)\ \{}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \ \ \ \ bb.expand(v-\/>getBoundingBox());}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ bb;}
+\DoxyCodeLine{00051\ \ \ \ \ \}}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Container>}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ getMidpoint(\ Container\ \&container\ )}
+\DoxyCodeLine{00055\ \ \ \ \ \{}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ midpt(0,\ 0,\ 0);}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ \&v\ :\ container\ )\ \{}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \ \ \ \ midpt\ =\ midpt\ +\ (v-\/>getMidpoint()\ *\ (1.0\ /\ container.size()));}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ midpt;}
+\DoxyCodeLine{00063\ \ \ \ \ \}}
+\DoxyCodeLine{00064\ \};}
+\DoxyCodeLine{00065\ }
+
+\end{DoxyCode}

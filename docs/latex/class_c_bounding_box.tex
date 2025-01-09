@@ -1,0 +1,134 @@
+\doxysection{CBounding\+Box Class Reference}
+\hypertarget{class_c_bounding_box}{}\label{class_c_bounding_box}\index{CBoundingBox@{CBoundingBox}}
+Inheritance diagram for CBounding\+Box\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.705314cm]{class_c_bounding_box}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_bounding_box_ae038c7cb07ded81ab8f4dacb0857d33d}\label{class_c_bounding_box_ae038c7cb07ded81ab8f4dacb0857d33d} 
+enum {\bfseries Initial\+Values} \{ {\bfseries Null\+BB}
+, {\bfseries Invalid\+BB}
+ \}
+\item 
+\Hypertarget{class_c_bounding_box_ab1000ce98eebe38c2ff2881b0d5843aa}\label{class_c_bounding_box_ab1000ce98eebe38c2ff2881b0d5843aa} 
+enum {\bfseries Style} \{ {\bfseries Dont\+Render} = 0
+, {\bfseries Not\+Selected} = 1
+, {\bfseries Unlocked} = 2
+, {\bfseries Locked} = 3
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_bounding_box_af09efaabe9203201fa19dabbda6b7340}\label{class_c_bounding_box_af09efaabe9203201fa19dabbda6b7340} 
+void {\bfseries set\+Min} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&v)
+\item 
+\Hypertarget{class_c_bounding_box_afd369e51a69703347085afeb881572a7}\label{class_c_bounding_box_afd369e51a69703347085afeb881572a7} 
+void {\bfseries set\+Max} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&v)
+\item 
+\Hypertarget{class_c_bounding_box_a6c1ed838d57590421ada5db484045014}\label{class_c_bounding_box_a6c1ed838d57590421ada5db484045014} 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} \& {\bfseries get\+Min} ()
+\item 
+\Hypertarget{class_c_bounding_box_abd2587ab54c482f0a2597e3542a9e7f8}\label{class_c_bounding_box_abd2587ab54c482f0a2597e3542a9e7f8} 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} \& {\bfseries get\+Max} ()
+\item 
+\Hypertarget{class_c_bounding_box_a960d94a896afdefbb1fea364ee4e3338}\label{class_c_bounding_box_a960d94a896afdefbb1fea364ee4e3338} 
+void {\bfseries reset} (Initial\+Values v=Initial\+Values\+::\+Invalid\+BB)
+\item 
+\Hypertarget{class_c_bounding_box_ac1789157d9dcf42ad331234e4415a9dc}\label{class_c_bounding_box_ac1789157d9dcf42ad331234e4415a9dc} 
+double {\bfseries dX} ()
+\item 
+\Hypertarget{class_c_bounding_box_a1df52fa1a84a782d0351ab35b3feaf61}\label{class_c_bounding_box_a1df52fa1a84a782d0351ab35b3feaf61} 
+double {\bfseries dY} ()
+\item 
+\Hypertarget{class_c_bounding_box_a19915257f72551fe12fbf2ac33c60b6f}\label{class_c_bounding_box_a19915257f72551fe12fbf2ac33c60b6f} 
+double {\bfseries dZ} ()
+\item 
+\Hypertarget{class_c_bounding_box_ae2467c4481b57428379b3aa336b516b7}\label{class_c_bounding_box_ae2467c4481b57428379b3aa336b516b7} 
+double {\bfseries d\+X2} ()
+\item 
+\Hypertarget{class_c_bounding_box_a4c4dd4606e48083f8ba15e4ee5e6eb4c}\label{class_c_bounding_box_a4c4dd4606e48083f8ba15e4ee5e6eb4c} 
+double {\bfseries d\+Y2} ()
+\item 
+\Hypertarget{class_c_bounding_box_af054aa7592f305223f1b3d6236aa5177}\label{class_c_bounding_box_af054aa7592f305223f1b3d6236aa5177} 
+double {\bfseries d\+Z2} ()
+\item 
+\Hypertarget{class_c_bounding_box_aa62e7d8de426b07e8e92f50c5b2d4266}\label{class_c_bounding_box_aa62e7d8de426b07e8e92f50c5b2d4266} 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries get\+Midpoint} ()
+\item 
+\Hypertarget{class_c_bounding_box_a4031ea5c5361c68e43e858f5bd2ed66d}\label{class_c_bounding_box_a4031ea5c5361c68e43e858f5bd2ed66d} 
+bool {\bfseries intersects} (\mbox{\hyperlink{class_c_bound_vector}{CBound\+Vector}} r)
+\item 
+\Hypertarget{class_c_bounding_box_a9f0e0c57a2f87514b1eb27f784567a64}\label{class_c_bounding_box_a9f0e0c57a2f87514b1eb27f784567a64} 
+bool {\bfseries intersects} (\mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} b)
+\item 
+\Hypertarget{class_c_bounding_box_a7635011c34a346353dc147bdf2606d6a}\label{class_c_bounding_box_a7635011c34a346353dc147bdf2606d6a} 
+bool {\bfseries is\+Null} ()
+\item 
+\Hypertarget{class_c_bounding_box_a18f0a5253ee884b26084a35af2ef4bc4}\label{class_c_bounding_box_a18f0a5253ee884b26084a35af2ef4bc4} 
+bool {\bfseries is\+Valid} ()
+\item 
+\Hypertarget{class_c_bounding_box_a97878c833310e7f02d19880f73b6c490}\label{class_c_bounding_box_a97878c833310e7f02d19880f73b6c490} 
+bool {\bfseries is\+Invalid} ()
+\item 
+\Hypertarget{class_c_bounding_box_a5b2b619d8ebfc24a9c1da6023d1d83a6}\label{class_c_bounding_box_a5b2b619d8ebfc24a9c1da6023d1d83a6} 
+void {\bfseries expand} (const \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} b)
+\item 
+\Hypertarget{class_c_bounding_box_a64fdb558a8a00f7b77a3ae3cb4c02cce}\label{class_c_bounding_box_a64fdb558a8a00f7b77a3ae3cb4c02cce} 
+void {\bfseries expand} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} p)
+\item 
+\Hypertarget{class_c_bounding_box_aa27d6991f1114b4913ad175eb5bc5707}\label{class_c_bounding_box_aa27d6991f1114b4913ad175eb5bc5707} 
+void {\bfseries expand} (double value)
+\item 
+\Hypertarget{class_c_bounding_box_a88bc410fe6b1cf44d5f7ba3ce3e1ac26}\label{class_c_bounding_box_a88bc410fe6b1cf44d5f7ba3ce3e1ac26} 
+bool {\bfseries contains} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&p)
+\item 
+\Hypertarget{class_c_bounding_box_acfbb47e6301827dc4b87f31d2f486351}\label{class_c_bounding_box_acfbb47e6301827dc4b87f31d2f486351} 
+bool {\bfseries hit} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} origin, \mbox{\hyperlink{class_c_vector3}{CVector3d}} dir, \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&coord)
+\item 
+\Hypertarget{class_c_bounding_box_a6e76ff6e2f830378600ef3f3ae81cf4e}\label{class_c_bounding_box_a6e76ff6e2f830378600ef3f3ae81cf4e} 
+int {\bfseries longest\+\_\+axis} ()
+\item 
+\Hypertarget{class_c_bounding_box_a31f036b91da79d00d7f55f1adb1a39eb}\label{class_c_bounding_box_a31f036b91da79d00d7f55f1adb1a39eb} 
+{\bfseries CBounding\+Box} (Initial\+Values v=Initial\+Values\+::\+Invalid\+BB)
+\item 
+\Hypertarget{class_c_bounding_box_acfd18e2ae50fd1face3c1a2cd4b6843e}\label{class_c_bounding_box_acfd18e2ae50fd1face3c1a2cd4b6843e} 
+{\bfseries CBounding\+Box} (const \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} \&bb)
+\item 
+\Hypertarget{class_c_bounding_box_a0fb2d49655d8ed31d353a8da40c32dd3}\label{class_c_bounding_box_a0fb2d49655d8ed31d353a8da40c32dd3} 
+{\bfseries CBounding\+Box} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} a, \mbox{\hyperlink{class_c_point3}{CPoint3d}} b, \mbox{\hyperlink{class_c_point3}{CPoint3d}} c)
+\item 
+\Hypertarget{class_c_bounding_box_a3dd36e4fc64e2ff6095cd8aa14d1f37a}\label{class_c_bounding_box_a3dd36e4fc64e2ff6095cd8aa14d1f37a} 
+{\bfseries CBounding\+Box} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} min, \mbox{\hyperlink{class_c_point3}{CPoint3d}} max)
+\item 
+\Hypertarget{class_c_bounding_box_a4ec8453d7ee6dae099c7e335f462ecfa}\label{class_c_bounding_box_a4ec8453d7ee6dae099c7e335f462ecfa} 
+virtual void {\bfseries draw} (Style r=Dont\+Render, bool checked=false)
+\item 
+\Hypertarget{class_c_bounding_box_a4c8022c25b2b40a8df3a6dfe7b612ba2}\label{class_c_bounding_box_a4c8022c25b2b40a8df3a6dfe7b612ba2} 
+QVector$<$ \mbox{\hyperlink{class_c_point3}{CPoint3d}} $>$ {\bfseries get\+Corners} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_bounding_box_aec8d3c8cb927198b3953ec59c40fe36b}\label{class_c_bounding_box_aec8d3c8cb927198b3953ec59c40fe36b} 
+static \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} {\bfseries intersection} (\mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} a, \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} b)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_bounding_box_a427c9e9e706ff56a71728fe9b5b05e0a}\label{class_c_bounding_box_a427c9e9e706ff56a71728fe9b5b05e0a} 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries m\+\_\+min}
+\item 
+\Hypertarget{class_c_bounding_box_ad02d5f66d288363853235a20edc70bf1}\label{class_c_bounding_box_ad02d5f66d288363853235a20edc70bf1} 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries m\+\_\+max}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/core/Bounding\+Box.\+h\item 
+src/core/Bounding\+Box.\+cpp\end{DoxyCompactItemize}

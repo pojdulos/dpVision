@@ -227,6 +227,8 @@ public:
 private:
 	bool m_floatingCamera;
 
+	bool im_rendering_now;
+
 	CCamera cam;
 
 	int iNfontList;

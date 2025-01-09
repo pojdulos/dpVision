@@ -1,0 +1,40 @@
+\doxysection{Flow\+Layout.\+h}
+\hypertarget{_flow_layout_8h_source}{}\label{_flow_layout_8h_source}\index{src/core/FlowLayout.h@{src/core/FlowLayout.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <QLayout>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <QStyle>}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_flow_layout}{FlowLayout}}\ :\ \textcolor{keyword}{public}\ QLayout}
+\DoxyCodeLine{00006\ \{}
+\DoxyCodeLine{00007\ \ \ \ \ Q\_OBJECT}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00010\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{class_flow_layout}{FlowLayout}}(QWidget*\ parent,\ \textcolor{keywordtype}{int}\ margin\ =\ -\/1,\ \textcolor{keywordtype}{int}\ hSpacing\ =\ -\/1,\ \textcolor{keywordtype}{int}\ vSpacing\ =\ -\/1);}
+\DoxyCodeLine{00011\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{class_flow_layout}{FlowLayout}}(\textcolor{keywordtype}{int}\ margin\ =\ -\/1,\ \textcolor{keywordtype}{int}\ hSpacing\ =\ -\/1,\ \textcolor{keywordtype}{int}\ vSpacing\ =\ -\/1);}
+\DoxyCodeLine{00012\ \ \ \ \ \mbox{\hyperlink{class_flow_layout}{\string~FlowLayout}}();}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \ \ \ \ \textcolor{keywordtype}{void}\ addItem(QLayoutItem*\ item)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keywordtype}{int}\ horizontalSpacing()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00016\ \ \ \ \ \textcolor{keywordtype}{int}\ verticalSpacing()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00017\ \ \ \ \ Qt::Orientations\ expandingDirections()\ \textcolor{keyword}{const\ override};}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keywordtype}{bool}\ hasHeightForWidth()\ \textcolor{keyword}{const\ override};}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keywordtype}{int}\ heightForWidth(\textcolor{keywordtype}{int})\ \textcolor{keyword}{const\ override};}
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keywordtype}{int}\ count()\ \textcolor{keyword}{const\ override};}
+\DoxyCodeLine{00021\ \ \ \ \ QLayoutItem*\ itemAt(\textcolor{keywordtype}{int}\ index)\ \textcolor{keyword}{const\ override};}
+\DoxyCodeLine{00022\ \ \ \ \ QSize\ minimumSize()\ \textcolor{keyword}{const\ override};}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keywordtype}{void}\ setGeometry(\textcolor{keyword}{const}\ QRect\&\ rect)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00024\ \ \ \ \ QSize\ sizeHint()\ \textcolor{keyword}{const\ override};}
+\DoxyCodeLine{00025\ \ \ \ \ QLayoutItem*\ takeAt(\textcolor{keywordtype}{int}\ index)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keywordtype}{int}\ doLayout(\textcolor{keyword}{const}\ QRect\&\ rect,\ \textcolor{keywordtype}{bool}\ testOnly)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keywordtype}{int}\ smartSpacing(QStyle::PixelMetric\ pm)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \ \ QList<QLayoutItem*>\ itemList;}
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{keywordtype}{int}\ m\_hSpace;}
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keywordtype}{int}\ m\_vSpace;}
+\DoxyCodeLine{00034\ \};}
+
+\end{DoxyCode}

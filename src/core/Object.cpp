@@ -1,4 +1,5 @@
 #include "Object.h"
+#include "Object.h"
 #include "Annotation.h"
 
 // konstruktor ze wskazaniem rodzica
@@ -34,13 +35,23 @@ CObject::CObject(const CObject &b) : CBaseObject(b), CBoundingBox(b) //CMinMax(b
 
 CObject::~CObject()
 {
-	auto it = m_data.rbegin();
-	while (it != m_data.rend())
+	while (!m_data.empty())
 	{
-		delete (*it).second;
-		it++;
+		try {
+			delete m_data.begin()->second;
+		} catch (...) {
+			std::cout << "B³¹d podczas kasowania obiektu potomnego\n";
+		}
+		m_data.erase(m_data.begin());
 	}
-	m_data.clear();
+
+	//auto it = m_data.rbegin();
+	//while (it != m_data.rend())
+	//{
+	//	delete (*it).second;
+	//	it++;
+	//}
+	//m_data.clear();
 }
 
 void CObject::applyTransformation(CTransform& from, CTransform& to)
@@ -71,14 +82,20 @@ CBaseObject* CObject::getSomethingWithId(int id)
 	{
 		for (const auto& d : m_data)
 		{
-			CBaseObject* result = ((CObject*)d.second)->getSomethingWithId(id);
-			if (result != nullptr) return result;
+			if (d.second->hasCategory(CBaseObject::OBJECT))
+			{
+				CBaseObject* result = ((CObject*)d.second)->getSomethingWithId(id);
+				if (result != nullptr) return result;
+			}
 		}
 
 		for (const auto& a : m_annotations)
 		{
-			CBaseObject* result = a.second->getSomethingWithId(id);
-			if (result != nullptr) return result;
+			if (a.second->hasCategory(CBaseObject::ANNOTATION))
+			{
+				CBaseObject* result = a.second->getSomethingWithId(id);
+				if (result != nullptr) return result;
+			}
 		}
 	}
 	
@@ -230,6 +247,21 @@ bool CObject::removeChild(int id)
 		}
 	}
 	return false;
+}
+
+void CObject::removeAllChilds()
+{
+	CObject::Children c = this->children();
+	CObject::Annotations a = this->annotations();
+
+	for (auto cc : c) {
+		this->removeChild(cc.first);
+		delete cc.second;
+	}
+	for (auto aa : a) {
+		CAnnotation* an = this->removeAnnotation(aa.first);
+		if (an!=nullptr) delete an;
+	}
 }
 
 

@@ -1,0 +1,115 @@
+\doxysection{Bounding\+Box.\+h}
+\hypertarget{_bounding_box_8h_source}{}\label{_bounding_box_8h_source}\index{src/core/BoundingBox.h@{src/core/BoundingBox.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}dll\_global.h"{}}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}Global.h"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}Point3.h"{}}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}Vector3.h"{}}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}Vertex.h"{}}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <cfloat>}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_c_bound_vector}{CBoundVector}};}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{keyword}{class\ \ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_bounding_box}{CBoundingBox}}}
+\DoxyCodeLine{00016\ \{}
+\DoxyCodeLine{00017\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ NullBB,}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ InvalidBB}
+\DoxyCodeLine{00021\ \ \ \ \ \}\ InitialValues;}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ DontRender\ =\ 0,}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ NotSelected\ =\ 1,}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ Unlocked\ =\ 2,}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ Locked\ =\ 3,}
+\DoxyCodeLine{00028\ \ \ \ \ \}\ Style;}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keywordtype}{void}\ setMin(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&v)\ \{\ m\_min\ =\ v;\ \};}
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keywordtype}{void}\ setMax(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&v)\ \{\ m\_max\ =\ v;\ \};}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&\ getMin()\ \{\ \textcolor{keywordflow}{return}\ m\_min;\ \};}
+\DoxyCodeLine{00034\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&\ getMax()\ \{\ \textcolor{keywordflow}{return}\ m\_max;\ \};}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keywordtype}{void}\ reset(InitialValues\ v\ =\ InitialValues::InvalidBB);}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keywordtype}{double}\ dX()\ \{\ \textcolor{keywordflow}{return}\ m\_max.X()\ -\/\ m\_min.X();\ \};}
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keywordtype}{double}\ dY()\ \{\ \textcolor{keywordflow}{return}\ m\_max.Y()\ -\/\ m\_min.Y();\ \};}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keywordtype}{double}\ dZ()\ \{\ \textcolor{keywordflow}{return}\ m\_max.Z()\ -\/\ m\_min.Z();\ \};}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keywordtype}{double}\ dX2()\ \{\ \textcolor{keywordflow}{return}\ dX()\ /\ 2.0;\ \};}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keywordtype}{double}\ dY2()\ \{\ \textcolor{keywordflow}{return}\ dY()\ /\ 2.0;\ \};}
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keywordtype}{double}\ dZ2()\ \{\ \textcolor{keywordflow}{return}\ dZ()\ /\ 2.0;\ \};}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ getMidpoint()\ \{\ \textcolor{keywordflow}{return}\ (m\_min\ +\ m\_max)\ /\ 2.0;\ \}}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keywordtype}{bool}\ intersects(\mbox{\hyperlink{class_c_bound_vector}{CBoundVector}}\ r);}
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keywordtype}{bool}\ intersects(\mbox{\hyperlink{class_c_bounding_box}{CBoundingBox}}\ b);}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{class_c_bounding_box}{CBoundingBox}}\ intersection(\mbox{\hyperlink{class_c_bounding_box}{CBoundingBox}}\ a,\ \mbox{\hyperlink{class_c_bounding_box}{CBoundingBox}}\ b);}
+\DoxyCodeLine{00052\ \ \ \ \ }
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keywordtype}{bool}\ isNull()}
+\DoxyCodeLine{00054\ \ \ \ \ \{}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (m\_max.X()\ ==\ m\_min.X())\ \&\&\ (m\_max.Y()\ ==\ m\_min.Y())\ \&\&\ (m\_max.Z()\ ==\ m\_min.Z());}
+\DoxyCodeLine{00056\ \ \ \ \ \};}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keywordtype}{bool}\ isValid()}
+\DoxyCodeLine{00059\ \ \ \ \ \{}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (m\_max.X()\ >=\ m\_min.X())\ \&\&\ (m\_max.Y()\ >=\ m\_min.Y())\ \&\&\ (m\_max.Z()\ >=\ m\_min.Z());\ }
+\DoxyCodeLine{00061\ \ \ \ \ \};}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keywordtype}{bool}\ isInvalid()}
+\DoxyCodeLine{00064\ \ \ \ \ \{}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (m\_max.X()\ ==\ -\/DBL\_MAX)\ ||\ (m\_max.Y()\ ==\ -\/DBL\_MAX)\ ||\ (m\_max.Z()\ ==\ -\/DBL\_MAX)}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \ \ \ \ ||\ (m\_min.X()\ ==\ DBL\_MAX)\ ||\ (m\_min.Y()\ ==\ DBL\_MAX)\ ||\ (m\_min.Z()\ ==\ DBL\_MAX)}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \ \ \ \ ||\ (m\_max.X()\ <\ m\_min.X())\ ||\ (m\_max.Y()\ <\ m\_min.Y())\ ||\ (m\_max.Z()\ <\ m\_min.Z());}
+\DoxyCodeLine{00068\ \ \ \ \ \};}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keywordtype}{void}\ expand(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_bounding_box}{CBoundingBox}}\ b);}
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keywordtype}{void}\ expand(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ p);}
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keywordtype}{void}\ expand(\textcolor{keywordtype}{double}\ value\ );}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keywordtype}{bool}\ contains(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&p);}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \ \ \ \ \textcolor{comment}{//template\ <typename\ Container>}}
+\DoxyCodeLine{00078\ \ \ \ \ \textcolor{comment}{//void\ expand(Container\ \&container,\ bool\ resetIt=false)}}
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{comment}{//\{}}
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{comment}{//\ \ if\ (resetIt)\ reset(CBoundingBox::InitialValues::InvalidBB);}}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{comment}{//\ \ for\ (const\ auto\ \&v\ :\ container)\ \{}}
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ expand(v);}}
+\DoxyCodeLine{00084\ \ \ \ \ \textcolor{comment}{//\ \ \}}}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{comment}{//\ \ return\ bb;}}
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{comment}{//\}}}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{keywordtype}{bool}\ hit(\mbox{\hyperlink{class_c_point3}{CPoint3d}}\ origin,\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\ dir,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&coord);}
+\DoxyCodeLine{00090\ \ \ \ \ \textcolor{keywordtype}{int}\ longest\_axis();}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \ \ \ \ \mbox{\hyperlink{class_c_bounding_box}{CBoundingBox}}(InitialValues\ v\ =\ InitialValues::InvalidBB);}
+\DoxyCodeLine{00093\ \ \ \ \ \mbox{\hyperlink{class_c_bounding_box}{CBoundingBox}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_bounding_box}{CBoundingBox}}\ \&bb);}
+\DoxyCodeLine{00094\ \ \ \ \ \mbox{\hyperlink{class_c_bounding_box}{CBoundingBox}}(\mbox{\hyperlink{class_c_point3}{CPoint3d}}\ a,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ b,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ c);}
+\DoxyCodeLine{00095\ \ \ \ \ \mbox{\hyperlink{class_c_bounding_box}{CBoundingBox}}(\mbox{\hyperlink{class_c_point3}{CPoint3d}}\ min,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ max);}
+\DoxyCodeLine{00096\ \ \ \ \ \mbox{\hyperlink{class_c_bounding_box}{\string~CBoundingBox}}();}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ draw(\ Style\ r\ =\ DontRender,\ \textcolor{keywordtype}{bool}\ checked\ =\ \textcolor{keyword}{false}\ );}
+\DoxyCodeLine{00099\ \ \ \ \ QVector<CPoint3d>\ getCorners();}
+\DoxyCodeLine{00100\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00101\ \ \ \ \ \textcolor{keywordtype}{void}\ drawBox(\textcolor{keywordtype}{bool}\ dashed\ =\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00105\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ m\_min;}
+\DoxyCodeLine{00106\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ m\_max;}
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{comment}{//CVector3d\ m\_whd;}}
+\DoxyCodeLine{00108\ \};}
+\DoxyCodeLine{00109\ }
+
+\end{DoxyCode}

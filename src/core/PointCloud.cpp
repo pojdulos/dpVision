@@ -55,7 +55,7 @@ std::wstring CPointCloud::infoRow()
 
 #define PACKET_SIZE (size_t)1000000
 
-void CPointCloud::renderBACKUP()
+void CPointCloud::renderSelf()
 {
 	glPushMatrix();
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -135,12 +135,8 @@ void CPointCloud::renderBACKUP()
 #define mediump
 #define lowp
 
-//void CPointCloud::render()
-//{
-//	renderSelf();
-//}
 
-void CPointCloud::renderSelf()
+void CPointCloud::renderBACKUP()
 {
 	if (m_vertices.empty()) return;
 

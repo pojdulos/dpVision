@@ -1,0 +1,61 @@
+\doxysection{Material.\+h}
+\hypertarget{_material_8h_source}{}\label{_material_8h_source}\index{src/core/Material.h@{src/core/Material.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}dll\_global.h"{}}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}Global.h"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}RGBA.h"{}}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}Texture.h"{}}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}TCoord.h"{}}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}TIndex.h"{}}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ "{}DPFileInfo.h"{}}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_s_g_l_colors}{SGLColors}}}
+\DoxyCodeLine{00014\ \{}
+\DoxyCodeLine{00015\ \ \ \ \ \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}}\ ambient;}
+\DoxyCodeLine{00016\ \ \ \ \ \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}}\ diffuse;}
+\DoxyCodeLine{00017\ \ \ \ \ \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}}\ specular;}
+\DoxyCodeLine{00018\ \ \ \ \ \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}}\ emission;}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keywordtype}{float}\ shininess;}
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keywordtype}{float}\ transparency;}
+\DoxyCodeLine{00021\ \};}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_c_material}{CMaterial}}}
+\DoxyCodeLine{00025\ \{}
+\DoxyCodeLine{00026\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00027\ \ \ \ \ \mbox{\hyperlink{class_c_material}{CMaterial}}();}
+\DoxyCodeLine{00028\ \ \ \ \ \mbox{\hyperlink{class_c_material}{CMaterial}}(\ \mbox{\hyperlink{class_c_material}{CMaterial}}\ \&m\ );}
+\DoxyCodeLine{00029\ \ \ \ \ \mbox{\hyperlink{class_c_material}{\string~CMaterial}}();}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keywordtype}{bool}\ m\_force;}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_c_texture}{CTexture}}\ \mbox{\hyperlink{class_c_texture}{Texture}};}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keyword}{typedef}\ std::vector<CTCoord>\ TextureCoordinates;}
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keyword}{typedef}\ std::vector<CTIndex>\ TextureIndexes;}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{comment}{//\ TEXTURE\ DATA\ -\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00038\ \ \ \ \ CMaterial::TextureCoordinates\ texcoord;}
+\DoxyCodeLine{00039\ \ \ \ \ CMaterial::TextureIndexes\ texindex;}
+\DoxyCodeLine{00040\ \ \ \ \ \mbox{\hyperlink{class_c_texture}{CMaterial::Texture}}*\ tekstura;}
+\DoxyCodeLine{00041\ \ \ \ \ QString\ TexInfo;}
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{comment}{//\ SOME\ OPENGL\ EXTENTIONS\ -\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00044\ \ \ \ \ \mbox{\hyperlink{struct_s_g_l_colors}{SGLColors}}\ FrontColor;}
+\DoxyCodeLine{00045\ \ \ \ \ \mbox{\hyperlink{struct_s_g_l_colors}{SGLColors}}\ BackColor;}
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keywordtype}{bool}\ attachTexture(\textcolor{keyword}{const}\ QString\ \&);}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ hasTextureIndexes()\ \{\ \textcolor{keywordflow}{return}\ !\ texindex.empty();\ \};}
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ hasTextureCoords()\ \{\ \textcolor{keywordflow}{return}\ !\ texcoord.empty();\ \};}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ hasTexture()\ \{\ \textcolor{keywordflow}{return}\ (tekstura\ !=\ \textcolor{keyword}{nullptr})\ \&\&\ tekstura-\/>isCreated()\ \&\&\ hasTextureCoords()\ \&\&\ hasTextureIndexes();\ \};}
+\DoxyCodeLine{00054\ \};}
+\DoxyCodeLine{00055\ }
+
+\end{DoxyCode}

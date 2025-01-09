@@ -1,0 +1,139 @@
+\doxysection{KDTree.\+h}
+\hypertarget{_k_d_tree_8h_source}{}\label{_k_d_tree_8h_source}\index{src/core/KDTree.h@{src/core/KDTree.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ KDTREE\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ KDTREE\_H}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}dll\_global.h"{}}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00006\ \textcolor{comment}{Szymon\ Rusinkiewicz}}
+\DoxyCodeLine{00007\ \textcolor{comment}{Princeton\ University}}
+\DoxyCodeLine{00008\ \textcolor{comment}{}}
+\DoxyCodeLine{00009\ \textcolor{comment}{KDtree.h}}
+\DoxyCodeLine{00010\ \textcolor{comment}{A\ K-\/D\ tree\ for\ points,\ with\ limited\ capabilities\ (find\ nearest\ point\ to}}
+\DoxyCodeLine{00011\ \textcolor{comment}{a\ given\ point,\ or\ to\ a\ ray).}}
+\DoxyCodeLine{00012\ \textcolor{comment}{}}
+\DoxyCodeLine{00013\ \textcolor{comment}{Note\ that\ in\ order\ to\ be\ generic,\ this\ *doesn't*\ use\ Vecs\ and\ the\ like...}}
+\DoxyCodeLine{00014\ \textcolor{comment}{*/}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ <cstddef>}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <set>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <algorithm>}}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ RandomIt\ >}
+\DoxyCodeLine{00022\ \textcolor{keywordtype}{void}\ sortHeap(RandomIt\ first,\ RandomIt\ last)}
+\DoxyCodeLine{00023\ \{}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keywordflow}{while}\ (first\ !=\ last)}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ std::pop\_heap(first,\ last-\/-\/);}
+\DoxyCodeLine{00026\ \}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ RandomIt,\ \textcolor{keyword}{class}\ Compare\ >}
+\DoxyCodeLine{00029\ \textcolor{keywordtype}{void}\ sortHeap(RandomIt\ first,\ RandomIt\ last,\ Compare\ \mbox{\hyperlink{structcomp}{comp}})}
+\DoxyCodeLine{00030\ \{}
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keywordflow}{while}\ (first\ !=\ last)}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ std::pop\_heap(first,\ last-\/-\/,\ \mbox{\hyperlink{structcomp}{comp}});}
+\DoxyCodeLine{00033\ \}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{keyword}{namespace\ }trimesh\ \{}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ using\ ::std::size\_t;}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{comment}{//\ A\ point\ together\ with\ a\ distance\ -\/\ default\ comparison\ is\ by\ "{}first"{},}}
+\DoxyCodeLine{00040\ \textcolor{comment}{//\ i.e.,\ distance}}
+\DoxyCodeLine{00041\ \textcolor{keyword}{typedef}\ std::pair<float,\ const\ float\ *>\ pt\_with\_d;}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{classtrimesh_1_1_k_dtree}{KDtree}}\ \{}
+\DoxyCodeLine{00044\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtrimesh_1_1_k_dtree_1_1_node}{Node}};}
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtrimesh_1_1_k_dtree_1_1_node_storage_block}{NodeStorageBlock}};}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \ \ \ \ \mbox{\hyperlink{structtrimesh_1_1_k_dtree_1_1_node}{Node}}\ *root;}
+\DoxyCodeLine{00049\ \ \ \ \ \mbox{\hyperlink{structtrimesh_1_1_k_dtree_1_1_node_storage_block}{NodeStorageBlock}}\ *storage;}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \ \ std::vector<NodeStorageBlock*>\ kontener;}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keywordtype}{void}\ build(\textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ *ptlist,\ \textcolor{keywordtype}{size\_t}\ n);}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keywordtype}{void}\ build(\textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ **pts,\ \textcolor{keywordtype}{size\_t}\ n);}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{comment}{//\ Compatibility\ function\ for\ closest-\/compatible-\/point\ searches}}
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtrimesh_1_1_k_dtree_1_1_compat_func}{CompatFunc}}}
+\DoxyCodeLine{00060\ \ \ \ \ \{}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{bool}\ operator\ ()\ (\textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ *p)\ \textcolor{keyword}{const}\ =\ 0;}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{structtrimesh_1_1_k_dtree_1_1_compat_func}{\string~CompatFunc}}()\ \{\}\ \ \textcolor{comment}{//\ To\ make\ the\ compiler\ shut\ up}}
+\DoxyCodeLine{00063\ \ \ \ \ \};}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{comment}{//\ Constructors\ from\ an\ array\ or\ vector\ of\ points}}
+\DoxyCodeLine{00066\ \ \ \ \ \mbox{\hyperlink{classtrimesh_1_1_k_dtree}{KDtree}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ *ptlist,\ \textcolor{keywordtype}{size\_t}\ n)\ :\ root(NULL),\ storage(NULL)}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \{\ build(ptlist,\ n);\ \}}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ T>\ \mbox{\hyperlink{classtrimesh_1_1_k_dtree}{KDtree}}(const\ ::std::vector<T>\ \&v)\ :\ root(NULL),\ storage(NULL)}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \{\ build((\textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ *)\ \&v[0],\ v.size());\ \}}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{comment}{//\ Constructors\ from\ an\ array\ or\ vector\ of\ pointers\ to\ points}}
+\DoxyCodeLine{00073\ \ \ \ \ KDtree(\textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ **pts,\ \textcolor{keywordtype}{size\_t}\ n)\ :\ root(NULL),\ storage(NULL)}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \{\ build(pts,\ n);\ \}}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ T>\ KDtree(::std::vector<T\ *>\ \&pts)\ :\ root(NULL),\ storage(NULL)}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \{\ build((\textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ **)\ \&pts[0],\ pts.size());\ \}}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{comment}{//\ Destructor\ -\/\ frees\ the\ whole\ tree}}
+\DoxyCodeLine{00080\ \ \ \ \ \string~KDtree();}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{comment}{//=====================================================================}}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ \ \ \ \ \textcolor{comment}{//\ The\ queries:\ returns\ closest\ point\ to\ a\ point\ or\ a\ ray,}}
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{comment}{//\ provided\ it's\ within\ sqrt(maxdist2)\ and\ is\ compatible}}
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ *closest\_to\_pt(\textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ *p,}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ maxdist2\ =\ 0.0f,}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ CompatFunc\ *iscompat\ =\ NULL)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ *closest\_to\_ray(\textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ *p,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ *dir,}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ maxdist2\ =\ 0.0f,}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ CompatFunc\ *iscompat\ =\ NULL)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \ \ \ \ \textcolor{comment}{//=====================================================================}}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{comment}{//\ Find\ the\ k\ nearest\ neighbors}}
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keywordtype}{void}\ find\_k\_closest\_to\_pt(::std::vector<const\ float\ *>\ \&knn,}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ k,}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ *p,}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ maxdist2\ =\ 0.0f,}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ CompatFunc\ *iscompat\ =\ NULL)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \ \ \ \ \textcolor{keywordtype}{void}\ find\_k\_closest\_to\_ray(::std::vector<const\ float\ *>\ \&knn,\ }
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ k,}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ *p,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ *dir,}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ maxdist2\ =\ 0.0f,}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ CompatFunc\ *iscompat\ =\ NULL)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \ \ \ \ \textcolor{comment}{//=====================================================================}}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \ \ \ \ \textcolor{keywordtype}{bool}\ is\_any\_in\_distance\_to\_pt(\textcolor{keywordtype}{float}\ distance,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}*\ p)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \ \ \ \ \textcolor{keywordtype}{void}\ find\_all\_in\_distance\_to\_pt(::std::vector<const\ float*>\&\ knn,}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ distance,}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ *\ p,}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ CompatFunc\ *\ iscompat\ =\ NULL)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \ \ \ \ \textcolor{keywordtype}{void}\ find\_all\_in\_distance\_to\_ray(::std::vector<const\ float*>\&\ knn,}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ distance,}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ *\ p,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ *\ dir,}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ CompatFunc\ *\ iscompat\ =\ NULL)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00121\ }
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{keywordtype}{void}\ find\_all\_in\_distance\_to\_ray\_2(::std::vector<pt\_with\_d>\&\ knn,}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ distance,}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ *\ p,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ *\ dir,}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ CompatFunc\ *\ iscompat\ =\ NULL)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00126\ \ \ \ \ \textcolor{comment}{//=====================================================================}}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00129\ \};}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \}\ \textcolor{comment}{//\ namespace\ trimesh}}
+\DoxyCodeLine{00132\ }
+\DoxyCodeLine{00133\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

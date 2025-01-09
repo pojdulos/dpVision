@@ -1,0 +1,135 @@
+\doxysection{CParser\+OBJ Class Reference}
+\hypertarget{class_c_parser_o_b_j}{}\label{class_c_parser_o_b_j}\index{CParserOBJ@{CParserOBJ}}
+Inheritance diagram for CParser\+OBJ\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_c_parser_o_b_j}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Slots}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_parser_o_b_j_a45f8bf7a5d52dc0eef68d6ea837a917b}\label{class_c_parser_o_b_j_a45f8bf7a5d52dc0eef68d6ea837a917b} 
+void {\bfseries on\+Load\+Cancelled} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Signals}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_parser_o_b_j_a0bfc777c7c11f507ee398451dcfa57f6}\label{class_c_parser_o_b_j_a0bfc777c7c11f507ee398451dcfa57f6} 
+void {\bfseries send\+Progress} (int)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual bool \mbox{\hyperlink{class_c_parser_o_b_j_aee5647adc628b1ac49990791301d2a07}{in\+Plugin}} () override
+\item 
+virtual size\+\_\+t \mbox{\hyperlink{class_c_parser_o_b_j_abd5fceb4e94cde07010037b0b75f1cc9}{Run}} () override
+\item 
+\Hypertarget{class_c_parser_o_b_j_af12d59a364e938e27a5d71ee1fe4f0b2}\label{class_c_parser_o_b_j_af12d59a364e938e27a5d71ee1fe4f0b2} 
+void {\bfseries set\+Children\+Vertices} (\mbox{\hyperlink{class_c_object}{CObject}} \texorpdfstring{$\ast$}{*}obj, CPoint\+Cloud\+::\+Vertices \&tmpV, CPoint\+Cloud\+::\+Colors \&tmpC, CPoint\+Cloud\+::\+Normals \&tmpN, CMaterial\+::\+Texture\+Coordinates \&tmp\+TC)
+\item 
+\Hypertarget{class_c_parser_o_b_j_a11ae84ea5c1635a9c432f8c165b07715}\label{class_c_parser_o_b_j_a11ae84ea5c1635a9c432f8c165b07715} 
+void {\bfseries save\+MTL} (QText\+Stream \&mtl\+Stream, \mbox{\hyperlink{class_c_material}{CMaterial}} \&material, QString mat\+Name)
+\item 
+\Hypertarget{class_c_parser_o_b_j_a32e7eee25c6e6a1aea8c1c76e7b7a805}\label{class_c_parser_o_b_j_a32e7eee25c6e6a1aea8c1c76e7b7a805} 
+void {\bfseries save\+Mesh} (QText\+Stream \&obj\+File, \mbox{\hyperlink{class_c_mesh}{CMesh}} \texorpdfstring{$\ast$}{*}src, size\+\_\+t \&v\+Start)
+\item 
+\Hypertarget{class_c_parser_o_b_j_a49c32c402fee6e4ad6924afe7f53e8bc}\label{class_c_parser_o_b_j_a49c32c402fee6e4ad6924afe7f53e8bc} 
+void {\bfseries save\+Cloud} (QText\+Stream \&obj\+File, \mbox{\hyperlink{class_c_point_cloud}{CPoint\+Cloud}} \texorpdfstring{$\ast$}{*}src, size\+\_\+t \&v\+Start)
+\item 
+\Hypertarget{class_c_parser_o_b_j_ae1ad5d6dc467b45af5df86f0a1385434}\label{class_c_parser_o_b_j_ae1ad5d6dc467b45af5df86f0a1385434} 
+void {\bfseries save\+Children} (QText\+Stream \&obj\+Stream, QText\+Stream \&mtl\+Stream, \mbox{\hyperlink{class_c_object}{CObject}} \texorpdfstring{$\ast$}{*}obj, QString prefix, size\+\_\+t \&v\+Start)
+\item 
+virtual bool \mbox{\hyperlink{class_c_parser_o_b_j_aaf44ce9bcd63c4b660ff9508222ca85e}{save}} () override
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_c_parser}{CParser}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual \mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*} {\bfseries load} (const QString path, bool wait=true)
+\item 
+virtual bool {\bfseries save} (\mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*}obj, const QString path)
+\item 
+virtual bool {\bfseries save} (QVector$<$ \mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} $>$ objects, const QString path)
+\item 
+virtual bool {\bfseries can\+Load\+Ext} (const QString ext)
+\item 
+virtual bool {\bfseries can\+Save\+Ext} (const QString ext)
+\item 
+virtual void {\bfseries get\+Load\+Exts} (QString \&ext)
+\item 
+virtual void {\bfseries get\+Load\+Exts} (std\+::wstring \&ext)
+\item 
+virtual void {\bfseries get\+Save\+Exts} (QString \&ext)
+\item 
+virtual void {\bfseries get\+Save\+Exts} (std\+::wstring \&ext)
+\item 
+bool {\bfseries Is\+OK} ()
+\item 
+std\+::string {\bfseries Last\+Error} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_c_parser}{CParser}}}
+\begin{DoxyCompactItemize}
+\item 
+void {\bfseries set\+Descr} (const QString descr)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_c_parser}{CParser}}}
+\begin{DoxyCompactItemize}
+\item 
+bool {\bfseries b\+Is\+Not\+Set}
+\item 
+\mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+model}
+\item 
+\mbox{\hyperlink{class_c_file_info}{CFile\+Info}} {\bfseries plik\+Siatki}
+\item 
+\mbox{\hyperlink{class_c_mesh}{CMesh}} \texorpdfstring{$\ast$}{*} {\bfseries p\+Mesh\+Data}
+\item 
+bool {\bfseries m\+\_\+b\+OK}
+\item 
+std\+::string {\bfseries m\+\_\+s\+Error}
+\item 
+QString {\bfseries m\+\_\+descr}
+\item 
+QSet$<$ QString $>$ {\bfseries m\+\_\+exts}
+\item 
+QSet$<$ QString $>$ {\bfseries m\+\_\+save\+\_\+exts}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_c_parser_o_b_j_aee5647adc628b1ac49990791301d2a07}\index{CParserOBJ@{CParserOBJ}!inPlugin@{inPlugin}}
+\index{inPlugin@{inPlugin}!CParserOBJ@{CParserOBJ}}
+\doxysubsubsection{\texorpdfstring{inPlugin()}{inPlugin()}}
+{\footnotesize\ttfamily \label{class_c_parser_o_b_j_aee5647adc628b1ac49990791301d2a07} 
+virtual bool CParser\+OBJ\+::in\+Plugin (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_parser}{CParser}}.
+
+\Hypertarget{class_c_parser_o_b_j_abd5fceb4e94cde07010037b0b75f1cc9}\index{CParserOBJ@{CParserOBJ}!Run@{Run}}
+\index{Run@{Run}!CParserOBJ@{CParserOBJ}}
+\doxysubsubsection{\texorpdfstring{Run()}{Run()}}
+{\footnotesize\ttfamily \label{class_c_parser_o_b_j_abd5fceb4e94cde07010037b0b75f1cc9} 
+size\+\_\+t CParser\+OBJ\+::\+Run (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_parser}{CParser}}.
+
+\Hypertarget{class_c_parser_o_b_j_aaf44ce9bcd63c4b660ff9508222ca85e}\index{CParserOBJ@{CParserOBJ}!save@{save}}
+\index{save@{save}!CParserOBJ@{CParserOBJ}}
+\doxysubsubsection{\texorpdfstring{save()}{save()}}
+{\footnotesize\ttfamily \label{class_c_parser_o_b_j_aaf44ce9bcd63c4b660ff9508222ca85e} 
+bool CParser\+OBJ\+::save (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_parser}{CParser}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/core/Parser\+OBJ.\+h\item 
+src/core/Parser\+OBJ.\+cpp\end{DoxyCompactItemize}

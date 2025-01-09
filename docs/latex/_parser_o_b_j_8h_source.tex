@@ -1,0 +1,74 @@
+\doxysection{Parser\+OBJ.\+h}
+\hypertarget{_parser_o_b_j_8h_source}{}\label{_parser_o_b_j_8h_source}\index{src/core/ParserOBJ.h@{src/core/ParserOBJ.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}dll\_global.h"{}}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}Parser.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <QtCore>}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct__predata}{\_predata}}\ \{}
+\DoxyCodeLine{00009\ \ \ \ \ \textcolor{keywordtype}{int}\ f;}
+\DoxyCodeLine{00010\ \ \ \ \ \textcolor{keywordtype}{int}\ fn;}
+\DoxyCodeLine{00011\ \ \ \ \ \textcolor{keywordtype}{int}\ ft;}
+\DoxyCodeLine{00012\ \ \ \ \ \textcolor{keywordtype}{int}\ v;}
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keywordtype}{int}\ vn;}
+\DoxyCodeLine{00014\ \ \ \ \ \textcolor{keywordtype}{int}\ vt;}
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keywordtype}{int}\ vc;}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \ \ \ \ \mbox{\hyperlink{struct__predata}{\_predata}}(\textcolor{keywordtype}{void})\ \{\ f\ =\ fn\ =\ ft\ =\ v\ =\ vn\ =\ vt\ =\ vc\ =\ 0;\ \};}
+\DoxyCodeLine{00018\ \};}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_meshinfo}{Meshinfo}}\ \{}
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keywordtype}{bool}\ hasVC;}
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keywordtype}{bool}\ hasVN;}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keywordtype}{bool}\ hasVT;}
+\DoxyCodeLine{00024\ \};}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_c_parser_o_b_j}{CParserOBJ}}\ :\textcolor{keyword}{public}\ QObject,\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_c_parser}{CParser}}}
+\DoxyCodeLine{00028\ \{}
+\DoxyCodeLine{00029\ \ \ \ \ Q\_OBJECT}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keywordtype}{bool}\ cancelled;}
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{keywordtype}{bool}\ m\_firstFace;}
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keywordtype}{bool}\ m\_bN,\ m\_bT;}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keywordtype}{void}\ ParseObjMTLFile(\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{wchar\_t}\ *npl\ );}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ parseF(std::string\&\ bufor,\ \textcolor{keywordtype}{size\_t}\&\ lbf,\ \textcolor{keywordtype}{size\_t}\&\ lbti);}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ std::map<QString,\ CMaterial*>\ mats;}
+\DoxyCodeLine{00039\ \ \ \ \ QString\ currentName;}
+\DoxyCodeLine{00040\ \ \ \ \ \mbox{\hyperlink{class_c_material}{CMaterial}}*\ currentMaterial;}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ std::map<int,\ Meshinfo>\ meshinfo;}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00045\ \ \ \ \ \mbox{\hyperlink{class_c_parser_o_b_j}{CParserOBJ}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00046\ \ \ \ \ \mbox{\hyperlink{class_c_parser_o_b_j}{\string~CParserOBJ}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{bool}\ inPlugin()\textcolor{keyword}{\ override\ }\{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};\ \};}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{size\_t}\ Run()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keywordtype}{void}\ setChildrenVertices(\mbox{\hyperlink{class_c_object}{CObject}}*\ obj,\ CPointCloud::Vertices\&\ tmpV,\ CPointCloud::Colors\&\ tmpC,\ CPointCloud::Normals\&\ tmpN,\ CMaterial::TextureCoordinates\&\ tmpTC);}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{comment}{//virtual\ CModel3D*\ load(std::wstring\ path)\ override;}}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keywordtype}{void}\ saveMTL(QTextStream\&\ mtlStream,\ \mbox{\hyperlink{class_c_material}{CMaterial}}\&\ material,\ QString\ matName);}
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keywordtype}{void}\ saveMesh(QTextStream\&\ objFile,\ \mbox{\hyperlink{class_c_mesh}{CMesh}}*\ src,\ \textcolor{keywordtype}{size\_t}\&\ vStart);}
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keywordtype}{void}\ saveCloud(QTextStream\&\ objFile,\ \mbox{\hyperlink{class_c_point_cloud}{CPointCloud}}*\ src,\ \textcolor{keywordtype}{size\_t}\&\ vStart);}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keywordtype}{void}\ saveChildren(QTextStream\&\ objStream,\ QTextStream\&\ mtlStream,\ \mbox{\hyperlink{class_c_object}{CObject}}*\ obj,\ QString\ prefix,\ \textcolor{keywordtype}{size\_t}\&\ vStart);}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{bool}\ save()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00063\ signals:}
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keywordtype}{void}\ sendProgress(\textcolor{keywordtype}{int});}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \textcolor{keyword}{public}\ slots:}
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keywordtype}{void}\ onLoadCancelled();}
+\DoxyCodeLine{00068\ \};}
+
+\end{DoxyCode}

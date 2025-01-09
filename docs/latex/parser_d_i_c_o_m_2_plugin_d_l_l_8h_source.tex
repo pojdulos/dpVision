@@ -1,0 +1,30 @@
+\doxysection{Plugin\+DLL.\+h}
+\hypertarget{parser_d_i_c_o_m_2_plugin_d_l_l_8h_source}{}\label{parser_d_i_c_o_m_2_plugin_d_l_l_8h_source}\index{src/plugins/parserDICOM/PluginDLL.h@{src/plugins/parserDICOM/PluginDLL.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once;}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ The\ following\ ifdef\ block\ is\ the\ standard\ way\ of\ creating\ macros\ which\ make\ exporting\ }}
+\DoxyCodeLine{00003\ \textcolor{comment}{//\ from\ a\ DLL\ simpler.\ All\ files\ within\ this\ DLL\ are\ compiled\ with\ the\ PLUGINDLL\_EXPORTS}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ symbol\ defined\ on\ the\ command\ line.\ this\ symbol\ should\ not\ be\ defined\ on\ any\ project}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ that\ uses\ this\ DLL.\ This\ way\ any\ other\ project\ whose\ source\ files\ include\ this\ file\ see\ }}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ PLUGINDLL\_API\ functions\ as\ being\ imported\ from\ a\ DLL,\ whereas\ this\ DLL\ sees\ symbols}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//\ defined\ with\ this\ macro\ as\ being\ exported.}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#ifdef\ DPVISION\_PLUGIN\_DLL}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#define\ PLUGINDLL\_API\ \_\_declspec(dllexport)}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#define\ PLUGINDLL\_API\ \_\_declspec(dllimport)}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{keyword}{class\ }Plugin;}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ This\ class\ is\ exported\ from\ the\ PluginDLL.dll}}
+\DoxyCodeLine{00017\ \textcolor{keyword}{class\ }PLUGINDLL\_API\ \mbox{\hyperlink{class_c_plugin_d_l_l}{CPluginDLL}}\ \{}
+\DoxyCodeLine{00018\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00019\ \ \ \ \ \mbox{\hyperlink{class_c_plugin_d_l_l}{CPluginDLL}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{comment}{//\ TODO:\ add\ your\ methods\ here.}}
+\DoxyCodeLine{00021\ \};}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{extern}\ \textcolor{stringliteral}{"{}C"{}}\ PLUGINDLL\_API\ Plugin*\ CreatePlugin(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00024\ \textcolor{keyword}{extern}\ \textcolor{stringliteral}{"{}C"{}}\ PLUGINDLL\_API\ \textcolor{keywordtype}{void}\ DestroyPlugin(\textcolor{keywordtype}{void});}
+
+\end{DoxyCode}

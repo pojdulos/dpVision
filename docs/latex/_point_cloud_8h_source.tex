@@ -1,0 +1,191 @@
+\doxysection{Point\+Cloud.\+h}
+\hypertarget{_point_cloud_8h_source}{}\label{_point_cloud_8h_source}\index{src/core/PointCloud.h@{src/core/PointCloud.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}Texture.h"{}}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}Global.h"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}Material.h"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}Object.h"{}}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}Vertex.h"{}}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}KDtree.h"{}}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}UI.h"{}}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_c_plane}{CPlane}};}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_point_cloud}{CPointCloud}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_c_object}{CObject}}}
+\DoxyCodeLine{00015\ \{}
+\DoxyCodeLine{00016\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keyword}{typedef}\ std::vector<CVertex>\ Vertices;}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keyword}{typedef}\ std::vector<CRGBA>\ Colors;}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keyword}{typedef}\ std::vector<CVector3f>\ Normals;}
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keyword}{typedef}\ std::vector<CMaterial*>\ Materials;}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_point_cloud_1_1_k_dtree}{KDtree}}\ :\ \textcolor{keyword}{private}\ \mbox{\hyperlink{classtrimesh_1_1_k_dtree}{trimesh::KDtree}}}
+\DoxyCodeLine{00023\ \ \ \ \ \{}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ CPointCloud::Vertices\ \&m\_vertices;}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \ \ \ \ PRESERVE\ =\ \textcolor{keyword}{false},}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \ \ \ \ REBUILD\ =\ \textcolor{keyword}{true}}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_c_point_cloud_1_1_k_dtree}{KDtree}}(CPointCloud::Vertices\ \&v)\ :\ \mbox{\hyperlink{classtrimesh_1_1_k_dtree}{trimesh::KDtree}}(v),\ m\_vertices(v)\ \{\};}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_c_point_cloud_1_1_k_dtree}{\string~KDtree}}()\ \{\};}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{int}\ closest\_to\_pt(\mbox{\hyperlink{class_c_point3}{CPoint3f}}\ p,\ \textcolor{keywordtype}{float}\ maxdist\ =\ 0.0f)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00036\ \textcolor{keyword}{\ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_vertex}{CVertex}}\ *v\ =\ (\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_vertex}{CVertex}}\ *)trimesh::KDtree::closest\_to\_pt(p.toVector(),\ maxdist*maxdist,\ NULL);}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (v\ ==\ NULL)\ ?\ -\/1\ :\ (v\ -\/\ \&m\_vertices[0]);}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{int}\ closest\_to\_ray(\mbox{\hyperlink{class_c_point3}{CPoint3f}}\ p,\ \mbox{\hyperlink{class_c_vector3}{CVector3f}}\ dir,\ \textcolor{keywordtype}{float}\ maxdist\ =\ 0.0f)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00044\ \textcolor{keyword}{\ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_vertex}{CVertex}}\ *v\ =\ (\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_vertex}{CVertex}}\ *)trimesh::KDtree::closest\_to\_ray(p.toVector(),\ dir.toVector(),\ maxdist*maxdist,\ NULL);}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (v\ ==\ NULL)\ ?\ -\/1\ :\ (v\ -\/\ \&m\_vertices[0]);}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ std::vector<INDEX\_TYPE>\ find\_k\_closest\_to\_pt(\textcolor{keywordtype}{int}\ k,\ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\ p,\ \textcolor{keywordtype}{float}\ maxdist\ =\ 0.0f)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ std::vector<INDEX\_TYPE>\ find\_k\_closest\_to\_ray(\textcolor{keywordtype}{int}\ k,\ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\ p,\ \mbox{\hyperlink{class_c_vector3}{CVector3f}}\ dir,\ \textcolor{keywordtype}{float}\ maxdist\ =\ 0.0f)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ is\_any\_in\_distance\_to\_pt(\textcolor{keywordtype}{float}\ distance,\ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\ p)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ std::vector<INDEX\_TYPE>\ find\_all\_in\_distance\_to\_pt(\textcolor{keywordtype}{float}\ distance,\ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\ p)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ std::vector<INDEX\_TYPE>\ find\_all\_in\_distance\_to\_ray(\textcolor{keywordtype}{float}\ distance,\ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\ p,\ \mbox{\hyperlink{class_c_vector3}{CVector3f}}\ dir\ )\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ std::vector<std::pair<INDEX\_TYPE,\ float>>\ find\_all\_in\_distance\_to\_ray\_2(\textcolor{keywordtype}{float}\ distance,\ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\ p,\ \mbox{\hyperlink{class_c_vector3}{CVector3f}}\ dir)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ clear();}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ rebuild();}
+\DoxyCodeLine{00059\ \ \ \ \ \};}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00063\ \ \ \ \ Vertices\ m\_vertices;}
+\DoxyCodeLine{00064\ \ \ \ \ Colors\ m\_vcolors;}
+\DoxyCodeLine{00065\ \ \ \ \ Normals\ m\_vnormals;}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \ \ Materials\ m\_materials;}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \ \ \ \ \mbox{\hyperlink{class_c_point_cloud_1_1_k_dtree}{CPointCloud::KDtree}}\ *m\_kdtree;}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ m\_pointSize;}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \ \ \mbox{\hyperlink{class_c_point_cloud}{CPointCloud}}(\mbox{\hyperlink{class_c_base_object}{CBaseObject}}\ *p=\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00075\ \ \ \ \ \mbox{\hyperlink{class_c_point_cloud}{CPointCloud}}(\mbox{\hyperlink{class_c_point_cloud}{CPointCloud}}\&);}
+\DoxyCodeLine{00076\ \ \ \ \ \mbox{\hyperlink{class_c_point_cloud}{\string~CPointCloud}}();}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{int}\ type()\textcolor{keyword}{\ override\ }\{\ \textcolor{keywordflow}{return}\ CObject::Type::CLOUD;\ \};}
+\DoxyCodeLine{00079\ \ \ \ \ std::wstring\ infoRow()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{class_c_point_cloud}{CPointCloud}}*\ getCopy()\textcolor{keyword}{\ override\ }\{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_c_point_cloud}{CPointCloud}}(*\textcolor{keyword}{this});\ \};}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{comment}{//inline\ CVertex\ \&vertex(size\_t\ i)\ \{\ return\ m\_vertices.at(i);\ \};}}
+\DoxyCodeLine{00084\ \ \ \ \ \textcolor{comment}{//inline\ CRGBA\ \&vertexColor(size\_t\ i)\ \{\ return\ m\_vcolors.at(i);\ \};}}
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{comment}{//inline\ CVector3f\ \&vertexNormal(size\_t\ i)\ \{\ return\ m\_vnormals.at(i);\ \};}}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keyword}{inline}\ Vertices\ \&vertices()\ \{\ \textcolor{keywordflow}{return}\ m\_vertices;\ \};}
+\DoxyCodeLine{00088\ \ \ \ \ \textcolor{keyword}{inline}\ Colors\ \&vcolors()\ \{\ \textcolor{keywordflow}{return}\ m\_vcolors;\ \};}
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{keyword}{inline}\ Normals\ \&vnormals()\ \{\ \textcolor{keywordflow}{return}\ m\_vnormals;\ \};}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \ \ \ \ \textcolor{comment}{//\ Fast,\ return\ reference.\ But\ to\ access\ the\ vector\ out\ of\ index\ will\ result\ in\ undefined\ behavior}}
+\DoxyCodeLine{00092\ \ \ \ \ \textcolor{keyword}{inline}\ \mbox{\hyperlink{class_c_vertex}{CVertex}}\&\ vertex(\textcolor{keywordtype}{size\_t}\ idx)}
+\DoxyCodeLine{00093\ \ \ \ \ \{}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ m\_vertices[idx];}
+\DoxyCodeLine{00095\ \ \ \ \ \};}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \ \ \ \ \textcolor{comment}{//\ Slower\ than\ vertex(),\ return\ reference\ too.\ Signals\ if\ the\ requested\ position\ is\ out\ of\ range\ by\ throwing\ an\ out\_of\_range\ exception.}}
+\DoxyCodeLine{00098\ \ \ \ \ \textcolor{keyword}{inline}\ \mbox{\hyperlink{class_c_vertex}{CVertex}}\&\ vertexAt(\textcolor{keywordtype}{size\_t}\ idx)}
+\DoxyCodeLine{00099\ \ \ \ \ \{}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ m\_vertices.at(idx);}
+\DoxyCodeLine{00101\ \ \ \ \ \};}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \ \ \ \ \textcolor{comment}{//\ Returns\ a\ copy\ of\ the\ vertex\ as\ opposed\ to\ vertex()\ and\ vertexAt().}}
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{comment}{//\ You\ can\ check\ if\ the\ index\ was\ correct\ using\ the\ 'status'\ variable.}}
+\DoxyCodeLine{00105\ \ \ \ \ \textcolor{comment}{//\ Remember\ that\ if\ the\ index\ was\ invalid,\ the\ vertex\ returned\ is\ (0.0,0.0,0.0)}}
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{keyword}{inline}\ \mbox{\hyperlink{class_c_vertex}{CVertex}}\ getVertex(\textcolor{keywordtype}{size\_t}\ idx,\ \textcolor{keywordtype}{bool}\ *status\ =\ \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{00107\ \ \ \ \ \{}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_vertices.size()\ >\ idx)}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (status\ !=\ \textcolor{keyword}{nullptr})\ *status\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ m\_vertices[idx];}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (status\ !=\ \textcolor{keyword}{nullptr})\ *status\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_vertex}{CVertex}}();}
+\DoxyCodeLine{00115\ \ \ \ \ \};}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{size\_t}\ addVertex(\mbox{\hyperlink{class_c_vertex}{CVertex}}\ v)\ \{}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ m\_vertices.push\_back(v);}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ expandBoundingBox(v);}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ m\_modified\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ m\_vertices.size()\ -\/\ 1;}
+\DoxyCodeLine{00123\ \ \ \ \ \};}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00125\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{size\_t}\ addVertex(\textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{float}\ z)\ \{\ \textcolor{keywordflow}{return}\ addVertex(\mbox{\hyperlink{class_c_vertex}{CVertex}}(x,\ y,\ z));\ \};}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ addVertex(\mbox{\hyperlink{class_c_vertex}{CVertex}}\ v,\ \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}}\ c);}
+\DoxyCodeLine{00128\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ addVertex(\mbox{\hyperlink{class_c_vertex}{CVertex}}\ v,\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\ n);}
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ addVertex(\mbox{\hyperlink{class_c_vertex}{CVertex}}\ v,\ \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}}\ c,\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\ n);}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \ \ \ \ \textcolor{keywordtype}{bool}\ setVertex(\textcolor{keywordtype}{size\_t}\ idx,\ \mbox{\hyperlink{class_c_vertex}{CVertex}}\ v);}
+\DoxyCodeLine{00132\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ setVertex(\textcolor{keywordtype}{size\_t}\ idx,\ \textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{float}\ z)\ \{\ \textcolor{keywordflow}{return}\ setVertex(idx,\ \mbox{\hyperlink{class_c_vertex}{CVertex}}(x,\ y,\ z));\ \};}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \ \ \textcolor{keywordtype}{bool}\ setVertexColor(\textcolor{keywordtype}{size\_t}\ idx,\ \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}}\ vColor);}
+\DoxyCodeLine{00135\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ setVertexColor(\textcolor{keywordtype}{size\_t}\ idx,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ r,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ g,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ b,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ a=255U)\ \{\ \textcolor{keywordflow}{return}\ setVertexColor(idx,\ \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}}(r,\ g,\ b,\ a));\ \};}
+\DoxyCodeLine{00136\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ setVertexColor(\textcolor{keywordtype}{size\_t}\ idx,\ \textcolor{keywordtype}{float}\ r,\ \textcolor{keywordtype}{float}\ g,\ \textcolor{keywordtype}{float}\ b,\ \textcolor{keywordtype}{float}\ a=1.0f)\ \{\ \textcolor{keywordflow}{return}\ setVertexColor(idx,\ \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}}(r,\ g,\ b,\ a));\ \};}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \ \ \ \ \textcolor{keywordtype}{bool}\ setVertexNormal(\textcolor{keywordtype}{size\_t}\ idx,\ \mbox{\hyperlink{class_c_vector3}{CVector3f}}\ vNormal);}
+\DoxyCodeLine{00139\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ setVertexNormal(\textcolor{keywordtype}{size\_t}\ idx,\ \textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{float}\ z)\ \{\ \textcolor{keywordflow}{return}\ setVertexNormal(idx,\ \mbox{\hyperlink{class_c_vector3}{CVector3f}}(x,\ y,\ z));\ \};}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \ \ \ \ \textcolor{keywordtype}{bool}\ removeVertex(\textcolor{keywordtype}{size\_t}\ idx);}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00145\ \ \ \ \ \textcolor{keyword}{inline}\ Materials\ \&materials()\ \{\ \textcolor{keywordflow}{return}\ m\_materials;\ \}}
+\DoxyCodeLine{00146\ \ \ \ \ \textcolor{keyword}{inline}\ \mbox{\hyperlink{class_c_material}{CMaterial}}\&\ getMaterial(INDEX\_TYPE\ idx\ =\ 0)\ \{\ \textcolor{keywordflow}{return}\ *m\_materials[idx];\ \};}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00148\ \ \ \ \ \textcolor{comment}{//static\ int\ getPointSize()\ \{\ return\ m\_pointSize;\ \};}}
+\DoxyCodeLine{00149\ \ \ \ \ \textcolor{comment}{//static\ void\ setPointSize(int\ s)\ \{\ m\_pointSize\ =\ s;\ \};}}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ \ \ \ \ \mbox{\hyperlink{class_c_vertex}{CVertex}}\ \&\ operator[](INDEX\_TYPE\ index)\ \{\ \textcolor{keywordflow}{return}\ m\_vertices[index];\ \}}
+\DoxyCodeLine{00152\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_vertex}{CVertex}}\ \&\ operator[](INDEX\_TYPE\ index)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ m\_vertices[index];\ \}}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{size\_t}\ size()\ \{\ \textcolor{keywordflow}{return}\ m\_vertices.size();\ \};}
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00156\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ hasVertexColors()\ \{\ \textcolor{keywordflow}{return}\ !m\_vcolors.empty()\ \&\&\ (m\_vcolors.size()\ >=\ m\_vertices.size());\ \};}
+\DoxyCodeLine{00157\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ hasVertexNormals()\ \{\ \textcolor{keywordflow}{return}\ !m\_vnormals.empty()\ \&\&\ (m\_vnormals.size()\ >=\ m\_vertices.size());\ \};}
+\DoxyCodeLine{00158\ }
+\DoxyCodeLine{00159\ \ \ \ \ \textcolor{keywordtype}{void}\ renderBACKUP();}
+\DoxyCodeLine{00160\ }
+\DoxyCodeLine{00161\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ renderSelf()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00162\ \ \ \ \ \textcolor{comment}{//virtual\ void\ render()\ override;}}
+\DoxyCodeLine{00163\ }
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00166\ \ \ \ \ \textcolor{keywordtype}{void}\ rebuildBoundingBox();}
+\DoxyCodeLine{00167\ }
+\DoxyCodeLine{00168\ \ \ \ \ \textcolor{keywordtype}{void}\ createKDtree();}
+\DoxyCodeLine{00169\ \ \ \ \ \textcolor{keywordtype}{void}\ removeKDtree();}
+\DoxyCodeLine{00170\ \ \ \ \ \mbox{\hyperlink{class_c_point_cloud_1_1_k_dtree}{CPointCloud::KDtree}}\ \&\ getKDtree(\textcolor{keywordtype}{bool}\ rebuild);}
+\DoxyCodeLine{00171\ }
+\DoxyCodeLine{00172\ \ \ \ \ \mbox{\hyperlink{class_c_vertex}{CVertex}}\ getClosestVertex(\mbox{\hyperlink{class_c_point3}{CPoint3f}}\ pkt,\ \mbox{\hyperlink{class_c_vector3}{CVector3f}}\ vec);}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00174\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\ getCenterOfWeight();}
+\DoxyCodeLine{00175\ }
+\DoxyCodeLine{00176\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ applyTransformation(\mbox{\hyperlink{class_c_transform}{CTransform}}\&\ from,\ \mbox{\hyperlink{class_c_transform}{CTransform}}\&\ to)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00177\ }
+\DoxyCodeLine{00178\ \ \ \ \ \textcolor{keywordtype}{void}\ transformByMatrixF(\textcolor{keywordtype}{float}\ matrix[16]);}
+\DoxyCodeLine{00179\ \ \ \ \ \textcolor{keywordtype}{void}\ transformByMatrixD(\textcolor{keywordtype}{double}\ matrix[16]);}
+\DoxyCodeLine{00180\ \ \ \ \ \textcolor{keywordtype}{void}\ cutPlane(\mbox{\hyperlink{class_c_plane}{CPlane}}*\ m\_cutPlane,\ \mbox{\hyperlink{class_c_point_cloud}{CPointCloud}}*\ \&rest);}
+\DoxyCodeLine{00181\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{class_c_point_cloud}{CPointCloud}}*\ findNClosest(\mbox{\hyperlink{class_c_point_cloud}{CPointCloud}}*\ ruchoma,\ \mbox{\hyperlink{class_c_point_cloud}{CPointCloud}}*\ nieruchoma,\ \textcolor{keywordtype}{int}\ limit);}
+\DoxyCodeLine{00182\ \};}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00184\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_c_point_cloud}{CPointCloud}}*\ \mbox{\hyperlink{class_c_point_cloud}{PtrPointCloud}};}
+\DoxyCodeLine{00185\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_c_point_cloud}{CPointCloud}}\&\ \mbox{\hyperlink{class_c_point_cloud}{RefPointCloud}};}
+
+\end{DoxyCode}

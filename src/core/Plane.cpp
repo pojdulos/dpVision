@@ -1,4 +1,5 @@
 #include "Plane.h"
+#include "Plane.h"
 
 #include "Mesh.h"
 
@@ -271,4 +272,17 @@ CTransform CPlane::toTransform()
 	mat4d.block<3, 3>(0, 0) = calculateRotationMatrix({ m_normal.x, m_normal.y, m_normal.z });
 
 	return CTransform(mat4d);
+}
+
+CPlane CPlane::get_transformed(Eigen::Matrix4d M)
+{
+	CPoint3d p0 = this->m_center;
+	CPoint3d p1 = this->m_center + this->m_normal;
+
+	p0 = p0.transformByMatrix(M);
+	p1 = p1.transformByMatrix(M);
+
+	CPlane plane(p0, (p1 - p0).getNormalized());
+	
+	return plane;
 }

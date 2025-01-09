@@ -1,0 +1,403 @@
+\doxysection{CAnnotation\+Box Class Reference}
+\hypertarget{class_c_annotation_box}{}\label{class_c_annotation_box}\index{CAnnotationBox@{CAnnotationBox}}
+Inheritance diagram for CAnnotation\+Box\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_c_annotation_box}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_annotation_box_a5d6bc6c14788bdadb07c3d1bc7789f02}\label{class_c_annotation_box_a5d6bc6c14788bdadb07c3d1bc7789f02} 
+{\bfseries CAnnotation\+Box} (\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*}m=nullptr)
+\item 
+\Hypertarget{class_c_annotation_box_a5e48ded2b8627971d8ebf7d32a18f32b}\label{class_c_annotation_box_a5e48ded2b8627971d8ebf7d32a18f32b} 
+{\bfseries CAnnotation\+Box} (\mbox{\hyperlink{class_c_annotation_box}{CAnnotation\+Box}} \&p)
+\item 
+virtual int \mbox{\hyperlink{class_c_annotation_box_a5a65beee1de3d940fc9dfb50b5e3c69f}{type}} ()
+\item 
+virtual std\+::wstring \mbox{\hyperlink{class_c_annotation_box_a375f008f05bcccff71df89e3d325090d}{get\+Info\+Row}} ()
+\item 
+virtual void \mbox{\hyperlink{class_c_annotation_box_a7f6c47e64c0b349ea5f5baa413ce9f89}{render\+Self}} () override
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_c_annotation}{CAnnotation}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries CAnnotation} (\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*}parent=nullptr)
+\item 
+{\bfseries CAnnotation} (int parent\+Id)
+\item 
+{\bfseries CAnnotation} (const \mbox{\hyperlink{class_c_annotation}{CAnnotation}} \&a)
+\item 
+virtual \mbox{\hyperlink{class_c_annotation}{CAnnotation}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_c_annotation_ab5aff1a029b94f4c15603bbf02ef3071}{get\+Copy}} () override
+\item 
+virtual CBase\+Object\+::\+Category \mbox{\hyperlink{class_c_annotation_a9aa0c4fb9c0c558f05ebc28fbc9b3f9d}{category}} ()
+\item 
+void {\bfseries set\+Color} (\mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}} c)
+\item 
+\mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}} \& {\bfseries get\+Color} ()
+\item 
+void {\bfseries set\+Color} (QColor c)
+\item 
+void {\bfseries set\+Sel\+Color} (\mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}} c)
+\item 
+\mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}} \& {\bfseries get\+Sel\+Color} ()
+\item 
+\mbox{\hyperlink{class_c_transform}{CTransform}} \& {\bfseries get\+Transform} ()
+\item 
+\mbox{\hyperlink{class_c_transform}{CTransform}} \& {\bfseries transform} ()
+\item 
+Annotations \& {\bfseries annotations} ()
+\item 
+int {\bfseries add\+Annotation} (\mbox{\hyperlink{class_c_annotation}{CAnnotation}} \texorpdfstring{$\ast$}{*}ad)
+\item 
+\mbox{\hyperlink{class_c_annotation}{CAnnotation}} \texorpdfstring{$\ast$}{*} {\bfseries remove\+Annotation} (int id)
+\item 
+\mbox{\hyperlink{class_c_annotation}{CAnnotation}} \texorpdfstring{$\ast$}{*} {\bfseries annotation} (int id)
+\item 
+\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries get\+Something\+With\+Id} (int id)
+\item 
+virtual void {\bfseries to\+Dom\+Element} (QDom\+Element \&)
+\item 
+std\+::wstring \mbox{\hyperlink{class_c_annotation_ace6683d42a25aa02681e241ccd5a120e}{info\+Row}} () override
+\item 
+virtual void \mbox{\hyperlink{class_c_annotation_a54965692d64e647b1ba391059c59e10e}{clear}} () override
+\item 
+virtual std\+::wstring {\bfseries get\+Type\+WSTR} ()
+\item 
+virtual void \mbox{\hyperlink{class_c_annotation_ab1fecb5ab93c6460588d665c4f837114}{render\+Transform}} () override
+\item 
+virtual void \mbox{\hyperlink{class_c_annotation_a95278873d9a3c9942f709d8ee3d1afff}{render\+Kids}} () override
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries CBase\+Object} (\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*}p=nullptr)
+\item 
+{\bfseries CBase\+Object} (int obj\+Id)
+\item 
+{\bfseries CBase\+Object} (const \mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \&b)
+\item 
+virtual bool {\bfseries has\+Category} (CBase\+Object\+::\+Category cat)
+\item 
+virtual bool {\bfseries has\+Type} (CBase\+Object\+::\+Type typ)
+\item 
+virtual const QString {\bfseries xml\+Info} ()
+\item 
+virtual void {\bfseries apply\+Transformation} (\mbox{\hyperlink{class_c_transform}{CTransform}} \&, \mbox{\hyperlink{class_c_transform}{CTransform}} \&)
+\item 
+virtual void {\bfseries switch\+Opt} (int, int)
+\item 
+virtual void {\bfseries after\+Load} (\mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*})
+\item 
+virtual void {\bfseries render} ()
+\item 
+virtual void {\bfseries prepare} ()
+\item 
+virtual bool {\bfseries is\+Modified} ()
+\item 
+virtual void {\bfseries set\+Modified} (bool b=true)
+\item 
+virtual void {\bfseries info} (std\+::wstring i\mbox{[}4\mbox{]})
+\item 
+\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries get\+Parent} ()
+\item 
+void {\bfseries set\+Parent} (\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*}p)
+\item 
+void {\bfseries set\+Parent} (int obj\+Id)
+\item 
+virtual void {\bfseries set\+Visible} (bool v)
+\item 
+virtual void {\bfseries set\+Self\+Visibility} (bool v)
+\item 
+virtual void {\bfseries set\+Kids\+Visibility} (bool v)
+\item 
+virtual bool {\bfseries get\+Self\+Visibility} ()
+\item 
+virtual bool {\bfseries get\+Kids\+Visibility} ()
+\item 
+virtual bool {\bfseries switch\+Self\+Visibility} ()
+\item 
+virtual bool {\bfseries switch\+Kids\+Visibility} ()
+\item 
+virtual void {\bfseries show\+Children} (bool show, QSet$<$ CBase\+Object\+::\+Type $>$ inc=\{\}, QSet$<$ CBase\+Object\+::\+Type $>$ exc=\{\})
+\item 
+int {\bfseries id} ()
+\item 
+int {\bfseries parent\+Id} ()
+\item 
+virtual bool {\bfseries set\+Selected} (bool sel)
+\item 
+virtual bool {\bfseries is\+Selected} ()
+\item 
+virtual \mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries find\+Id} (int)
+\item 
+virtual bool {\bfseries has\+Children} ()
+\item 
+virtual bool {\bfseries has\+Transformation} ()
+\item 
+virtual Eigen\+::\+Matrix4d {\bfseries get\+Transformation\+Matrix} ()
+\item 
+virtual Eigen\+::\+Matrix4d {\bfseries get\+Global\+Transformation\+Matrix} ()
+\item 
+const QString \& {\bfseries get\+Label} ()
+\item 
+const std\+::string {\bfseries get\+LabelA} ()
+\item 
+const std\+::wstring {\bfseries get\+LabelW} ()
+\item 
+void {\bfseries set\+Label} (const QString \&label)
+\item 
+void {\bfseries set\+Label} (const char \texorpdfstring{$\ast$}{*}label)
+\item 
+void {\bfseries set\+Label} (const std\+::string \&label)
+\item 
+void {\bfseries set\+Label} (const std\+::wstring \&label)
+\item 
+void {\bfseries add\+Keyword} (const QString keyword)
+\item 
+void {\bfseries del\+Keyword} (const QString keyword)
+\item 
+bool {\bfseries has\+Keyword} (const QString keyword)
+\item 
+QSet$<$ QString $>$ \& {\bfseries keywords} ()
+\item 
+void {\bfseries set\+Descr} (const QString descr)
+\item 
+const QString \& {\bfseries get\+Descr} ()
+\item 
+virtual void {\bfseries set\+Path} (const QString \&path)
+\item 
+virtual const QString \& {\bfseries path} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}}}
+\begin{DoxyCompactItemize}
+\item 
+void {\bfseries set\+Min} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&v)
+\item 
+void {\bfseries set\+Max} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&v)
+\item 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} \& {\bfseries get\+Min} ()
+\item 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} \& {\bfseries get\+Max} ()
+\item 
+void {\bfseries reset} (Initial\+Values v=Initial\+Values\+::\+Invalid\+BB)
+\item 
+double {\bfseries dX} ()
+\item 
+double {\bfseries dY} ()
+\item 
+double {\bfseries dZ} ()
+\item 
+double {\bfseries d\+X2} ()
+\item 
+double {\bfseries d\+Y2} ()
+\item 
+double {\bfseries d\+Z2} ()
+\item 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries get\+Midpoint} ()
+\item 
+bool {\bfseries intersects} (\mbox{\hyperlink{class_c_bound_vector}{CBound\+Vector}} r)
+\item 
+bool {\bfseries intersects} (\mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} b)
+\item 
+bool {\bfseries is\+Null} ()
+\item 
+bool {\bfseries is\+Valid} ()
+\item 
+bool {\bfseries is\+Invalid} ()
+\item 
+void {\bfseries expand} (const \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} b)
+\item 
+void {\bfseries expand} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} p)
+\item 
+void {\bfseries expand} (double value)
+\item 
+bool {\bfseries contains} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&p)
+\item 
+bool {\bfseries hit} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} origin, \mbox{\hyperlink{class_c_vector3}{CVector3d}} dir, \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&coord)
+\item 
+int {\bfseries longest\+\_\+axis} ()
+\item 
+{\bfseries CBounding\+Box} (Initial\+Values v=Initial\+Values\+::\+Invalid\+BB)
+\item 
+{\bfseries CBounding\+Box} (const \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} \&bb)
+\item 
+{\bfseries CBounding\+Box} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} a, \mbox{\hyperlink{class_c_point3}{CPoint3d}} b, \mbox{\hyperlink{class_c_point3}{CPoint3d}} c)
+\item 
+{\bfseries CBounding\+Box} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} min, \mbox{\hyperlink{class_c_point3}{CPoint3d}} max)
+\item 
+virtual void {\bfseries draw} (Style r=Dont\+Render, bool checked=false)
+\item 
+QVector$<$ \mbox{\hyperlink{class_c_point3}{CPoint3d}} $>$ {\bfseries get\+Corners} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Types inherited from \mbox{\hyperlink{class_c_annotation}{CAnnotation}}}
+\begin{DoxyCompactItemize}
+\item 
+typedef std\+::map$<$ int, \mbox{\hyperlink{class_c_annotation}{CAnnotation}} \texorpdfstring{$\ast$}{*} $>$ {\bfseries Annotations}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Types inherited from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_base_object_afb0822280ac2bb225cb43c99e8f6dc84}\label{class_c_base_object_afb0822280ac2bb225cb43c99e8f6dc84} 
+enum {\bfseries Category} \{ {\bfseries UNKNOWN}
+, {\bfseries OBJECT}
+, {\bfseries ANNOTATION}
+ \}
+\item 
+\Hypertarget{class_c_base_object_aa0d965c2b5d9bd03c45ba2b0fe4fe8c6}\label{class_c_base_object_aa0d965c2b5d9bd03c45ba2b0fe4fe8c6} 
+enum {\bfseries Type} \{ \newline
+{\bfseries GENERIC}
+, {\bfseries GROUP}
+, {\bfseries MODEL}
+, {\bfseries MOVEMENT}
+, \newline
+{\bfseries IMAGE}
+, {\bfseries CLOUD}
+, {\bfseries ORDEREDCLOUD}
+, {\bfseries MESH}
+, \newline
+{\bfseries VOLUMETRIC}
+, {\bfseries VOLUMETRIC\+\_\+\+NEW}
+, {\bfseries VOLTK}
+, {\bfseries LIDAR}
+, \newline
+{\bfseries OTHER}
+, {\bfseries BASEANNOTATION}
+, {\bfseries POINT}
+, {\bfseries POINTS}
+, \newline
+{\bfseries BOUNDVECTORS}
+, {\bfseries VERTEX}
+, {\bfseries SETOFVERTICES}
+, {\bfseries PATH}
+, \newline
+{\bfseries VPATH}
+, {\bfseries ELASTICPATH}
+, {\bfseries PLANE}
+, {\bfseries BOX}
+, \newline
+{\bfseries CURVATUREMAP}
+, {\bfseries ATSHELL}
+, {\bfseries SETOFFACES}
+, {\bfseries EDGES}
+, \newline
+{\bfseries POLYGON}
+, {\bfseries POLYGON2D}
+, {\bfseries CAMERA}
+, {\bfseries SETOFCAMERAS}
+, \newline
+{\bfseries PYRAMID}
+, {\bfseries CYLINDER}
+, {\bfseries PODKOWA}
+, {\bfseries HISTOGRAM}
+, \newline
+{\bfseries TRIPLE}
+, {\bfseries SPHERE}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Types inherited from \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_bounding_box_ae038c7cb07ded81ab8f4dacb0857d33d}\label{class_c_bounding_box_ae038c7cb07ded81ab8f4dacb0857d33d} 
+enum {\bfseries Initial\+Values} \{ {\bfseries Null\+BB}
+, {\bfseries Invalid\+BB}
+ \}
+\item 
+\Hypertarget{class_c_bounding_box_ab1000ce98eebe38c2ff2881b0d5843aa}\label{class_c_bounding_box_ab1000ce98eebe38c2ff2881b0d5843aa} 
+enum {\bfseries Style} \{ {\bfseries Dont\+Render} = 0
+, {\bfseries Not\+Selected} = 1
+, {\bfseries Unlocked} = 2
+, {\bfseries Locked} = 3
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}}}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} {\bfseries intersection} (\mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} a, \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} b)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{class_c_annotation}{CAnnotation}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}} {\bfseries m\+\_\+color}
+\item 
+\mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}} {\bfseries m\+\_\+selcolor}
+\item 
+Annotations {\bfseries m\+\_\+annotations}
+\item 
+\mbox{\hyperlink{class_c_transform}{CTransform}} {\bfseries m\+\_\+transform}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+bool {\bfseries m\+\_\+modified}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+int {\bfseries m\+\_\+\+Id}
+\item 
+QString {\bfseries m\+\_\+label}
+\item 
+QString {\bfseries m\+\_\+descr}
+\item 
+QSet$<$ QString $>$ {\bfseries m\+\_\+keywords}
+\item 
+QString {\bfseries m\+\_\+path}
+\item 
+\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+parent}
+\item 
+bool {\bfseries m\+\_\+selected}
+\item 
+bool {\bfseries m\+\_\+show\+Self}
+\item 
+bool {\bfseries m\+\_\+show\+Kids}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries m\+\_\+min}
+\item 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries m\+\_\+max}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_c_annotation_box_a375f008f05bcccff71df89e3d325090d}\index{CAnnotationBox@{CAnnotationBox}!getInfoRow@{getInfoRow}}
+\index{getInfoRow@{getInfoRow}!CAnnotationBox@{CAnnotationBox}}
+\doxysubsubsection{\texorpdfstring{getInfoRow()}{getInfoRow()}}
+{\footnotesize\ttfamily \label{class_c_annotation_box_a375f008f05bcccff71df89e3d325090d} 
+std\+::wstring CAnnotation\+Box\+::get\+Info\+Row (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_annotation}{CAnnotation}}.
+
+\Hypertarget{class_c_annotation_box_a7f6c47e64c0b349ea5f5baa413ce9f89}\index{CAnnotationBox@{CAnnotationBox}!renderSelf@{renderSelf}}
+\index{renderSelf@{renderSelf}!CAnnotationBox@{CAnnotationBox}}
+\doxysubsubsection{\texorpdfstring{renderSelf()}{renderSelf()}}
+{\footnotesize\ttfamily \label{class_c_annotation_box_a7f6c47e64c0b349ea5f5baa413ce9f89} 
+void CAnnotation\+Box\+::render\+Self (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}.
+
+\Hypertarget{class_c_annotation_box_a5a65beee1de3d940fc9dfb50b5e3c69f}\index{CAnnotationBox@{CAnnotationBox}!type@{type}}
+\index{type@{type}!CAnnotationBox@{CAnnotationBox}}
+\doxysubsubsection{\texorpdfstring{type()}{type()}}
+{\footnotesize\ttfamily \label{class_c_annotation_box_a5a65beee1de3d940fc9dfb50b5e3c69f} 
+virtual int CAnnotation\+Box\+::type (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_annotation}{CAnnotation}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/core/Annotation\+Box.\+h\item 
+src/core/Annotation\+Box.\+cpp\end{DoxyCompactItemize}

@@ -1,0 +1,20 @@
+\doxysection{dll\+\_\+global2.\+h}
+\hypertarget{dll__global2_8h_source}{}\label{dll__global2_8h_source}\index{src/core/dll\_global2.h@{src/core/dll\_global2.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifdef\ DPVISION\_DLL\_API}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#\ \ \ undef\ DPVISION\_DLL\_API}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#ifndef\ DPVISION\_STATIC}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#\ if\ defined(DPVISION\_PLUGIN\_DLL)}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#\ \ define\ DPVISION\_DLL\_API\ \_\_declspec(dllimport)}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#\ else}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#\ \ define\ DPVISION\_DLL\_API\ \_\_declspec(dllexport)}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#\ endif}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#\ define\ DPVISION\_DLL\_API}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00014\ }
+
+\end{DoxyCode}

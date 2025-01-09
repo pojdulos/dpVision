@@ -1,0 +1,39 @@
+\doxysection{Vertex\+Array.\+h}
+\hypertarget{_vertex_array_8h_source}{}\label{_vertex_array_8h_source}\index{src/core/VertexArray.h@{src/core/VertexArray.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}Vertex.h"{}}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#define\ BLOCK\_SIZE\ 50}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_s_vertex_block}{SVertexBlock}}\ }
+\DoxyCodeLine{00008\ \{}
+\DoxyCodeLine{00009\ \ \ \ \ \mbox{\hyperlink{class_c_vertex}{CVertex}}\ d[BLOCK\_SIZE];}
+\DoxyCodeLine{00010\ \};}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_c_vertex_array}{CVertexArray}}}
+\DoxyCodeLine{00013\ \{}
+\DoxyCodeLine{00014\ \ \ \ \ std::vector<SVertexBlock>\ vBaza;}
+\DoxyCodeLine{00015\ \ \ \ \ }
+\DoxyCodeLine{00016\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ iSize;}
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ iLimit;}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00020\ \ \ \ \ \mbox{\hyperlink{class_c_vertex_array}{CVertexArray}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00021\ \ \ \ \ \mbox{\hyperlink{class_c_vertex_array}{\string~CVertexArray}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \mbox{\hyperlink{class_c_vertex}{CVertex}}\ \&operator[](\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ i);}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keywordtype}{void}\ push\_back(\ \mbox{\hyperlink{class_c_vertex}{CVertex}}\ v\ );}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keywordtype}{void}\ pop\_back();}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ size()\ \{\textcolor{keywordflow}{return}\ iSize;\};}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{comment}{//unsigned\ long\ begin()\ \{\ return\ 0;\ \};}}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{comment}{//unsigned\ long\ end()\ \{\ return\ iSize-\/1;\ \};}}
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keywordtype}{void}\ clear();}
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{keywordtype}{bool}\ empty()\ \{\ \textcolor{keywordflow}{return}\ (iSize==0);\ \};}
+\DoxyCodeLine{00033\ \};}
+
+\end{DoxyCode}

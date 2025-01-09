@@ -1,0 +1,92 @@
+\doxysection{Annotation\+Set\+Of\+Faces.\+h}
+\hypertarget{_annotation_set_of_faces_8h_source}{}\label{_annotation_set_of_faces_8h_source}\index{src/core/AnnotationSetOfFaces.h@{src/core/AnnotationSetOfFaces.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}Annotation.h"{}}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}Punkt3D.h"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}Wektor3D.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}RGBA.h"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}Model3D.h"{}}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_c_mesh}{CMesh}};}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{keyword}{typedef}\ std::set<INDEX\_TYPE>\ SetOfFIndices;}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_annotation_set_of_faces}{CAnnotationSetOfFaces}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_c_annotation}{CAnnotation}},\ \textcolor{keyword}{public}\ SetOfFIndices}
+\DoxyCodeLine{00013\ \{}
+\DoxyCodeLine{00014\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_prop_annotation_set_of_faces}{PropAnnotationSetOfFaces}};}
+\DoxyCodeLine{00015\ \ \ \ \ \mbox{\hyperlink{class_c_mesh}{CMesh}}*\ m\_mesh;}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00018\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_set_of_faces}{CAnnotationSetOfFaces}}(\ \mbox{\hyperlink{class_c_model3_d}{CModel3D}}\ *m\ =\ \textcolor{keyword}{nullptr})\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(\ m\ )}
+\DoxyCodeLine{00019\ \ \ \ \ \{}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}f-\/indices\ set"{}});}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ m\_mesh\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00022\ \ \ \ \ \};}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_set_of_faces}{CAnnotationSetOfFaces}}(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_annotation_set_of_faces}{CAnnotationSetOfFaces}}\&\ p\ )\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(\ p\ ),\ SetOfFIndices(p)}
+\DoxyCodeLine{00025\ \ \ \ \ \{}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ m\_mesh\ =\ p.m\_mesh;}
+\DoxyCodeLine{00027\ \ \ \ \ \};}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_set_of_faces}{CAnnotationSetOfFaces}}(\ \textcolor{keyword}{const}\ SetOfFIndices\&\ list\ )\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(),\ SetOfFIndices(list)}
+\DoxyCodeLine{00030\ \ \ \ \ \{}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}f-\/indices\ set"{}});}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ m\_mesh\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00033\ \ \ \ \ \};}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_set_of_faces}{\string~CAnnotationSetOfFaces}}()\textcolor{keyword}{\ override\ }\{\ SetOfFIndices::clear();\ \}\ \textcolor{comment}{//\ m\_data.clear();\ \};}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{class_c_annotation_set_of_faces}{CAnnotationSetOfFaces}}*\ getCopy()\textcolor{keyword}{\ override}}
+\DoxyCodeLine{00038\ \textcolor{keyword}{\ \ \ \ }\{}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_c_annotation_set_of_faces}{CAnnotationSetOfFaces}}(*\textcolor{keyword}{this});}
+\DoxyCodeLine{00040\ \ \ \ \ \}}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_set_of_faces}{CAnnotationSetOfFaces}}\&\ operator=(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_annotation_set_of_faces}{CAnnotationSetOfFaces}}\&\ p)}
+\DoxyCodeLine{00043\ \ \ \ \ \{}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ SetOfFIndices::operator=(p);}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}copy\ of\ "{}}\ +\ p.m\_label);}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ m\_mesh\ =\ p.m\_mesh;}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00049\ \ \ \ \ \};}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_set_of_faces}{CAnnotationSetOfFaces}}\&\ operator=(\textcolor{keyword}{const}\ SetOfFIndices\&\ list)}
+\DoxyCodeLine{00052\ \ \ \ \ \{}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ SetOfFIndices::operator=(list);}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}f-\/indices\ set"{}});}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ m\_mesh\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00058\ \ \ \ \ \};}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keywordtype}{void}\ setDest(\mbox{\hyperlink{class_c_mesh}{CMesh}}*\ m)\ \{\ m\_mesh\ =\ m;\ \};}
+\DoxyCodeLine{00061\ \ \ \ \ \mbox{\hyperlink{class_c_mesh}{CMesh}}*\ getDest();}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keyword}{inline}\ \mbox{\hyperlink{class_c_mesh}{CMesh}}*\&\ dstMesh()\ \{\ \textcolor{keywordflow}{return}\ m\_mesh;\ \}}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ clear()\textcolor{keyword}{\ override}}
+\DoxyCodeLine{00066\ \textcolor{keyword}{\ \ \ \ }\{}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ CAnnotation::clear();}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ SetOfFIndices::clear();}
+\DoxyCodeLine{00069\ \ \ \ \ \};}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \ \ \ \ \mbox{\hyperlink{class_c_mesh}{CMesh}}*\ toMesh();}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{int}\ type()\ \{\ \textcolor{keywordflow}{return}\ CAnnotation::Type::SETOFFACES;\ \}}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keyword}{virtual}\ std::wstring\ getTypeWSTR()\ \{\ \textcolor{keywordflow}{return}\ L\textcolor{stringliteral}{"{}set\ of\ f-\/indices"{}};\ \};}
+\DoxyCodeLine{00077\ \ \ \ \ \textcolor{keyword}{virtual}\ std::wstring\ getInfoRow();}
+\DoxyCodeLine{00078\ \ \ \ \ }
+\DoxyCodeLine{00079\ \ \ \ \ QString\ toString(QString\ prefix\ =\ \textcolor{stringliteral}{"{}"{}},\ QString\ suffix\ =\ \textcolor{stringliteral}{"{}"{}},\ QString\ separator\ =\ \textcolor{stringliteral}{"{}\ "{}});}
+\DoxyCodeLine{00080\ \ \ \ \ }
+\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ renderSelf()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00082\ \};}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \textcolor{comment}{//\ dla\ zachowania\ zgodnoœci}}
+\DoxyCodeLine{00086\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{class_c_annotation_set_of_faces}{CAnnotationSetOfFaces}}\ \mbox{\hyperlink{class_c_annotation_set_of_faces}{CAnnotationVFaces}};}
+
+\end{DoxyCode}

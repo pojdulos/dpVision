@@ -1,0 +1,48 @@
+\doxysection{Transform\+Matrix.\+h}
+\hypertarget{_transform_matrix_8h_source}{}\label{_transform_matrix_8h_source}\index{src/core/TransformMatrix.h@{src/core/TransformMatrix.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}Vector3.h"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_transform_matrix}{CTransformMatrix}}}
+\DoxyCodeLine{00007\ \{}
+\DoxyCodeLine{00008\ \ \ \ \ \textcolor{keywordtype}{double}\ m\_data[16];\ \textcolor{comment}{//\ OpenGL\ style\ matrix}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00011\ \ \ \ \ \mbox{\hyperlink{class_c_transform_matrix}{CTransformMatrix}}();}
+\DoxyCodeLine{00012\ \ \ \ \ \mbox{\hyperlink{class_c_transform_matrix}{CTransformMatrix}}(\mbox{\hyperlink{class_c_transform_matrix}{CTransformMatrix}}\&);}
+\DoxyCodeLine{00013\ \ \ \ \ \mbox{\hyperlink{class_c_transform_matrix}{CTransformMatrix}}(\textcolor{keywordtype}{double}\ d[16]);}
+\DoxyCodeLine{00014\ \ \ \ \ \mbox{\hyperlink{class_c_transform_matrix}{\string~CTransformMatrix}}();}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \ \ \ \ \textcolor{keywordtype}{double}*\ data()\ \{\ \textcolor{keywordflow}{return}\ m\_data;\ \}}
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keywordtype}{double}\&\ at(\textcolor{keywordtype}{int}\ col,\ \textcolor{keywordtype}{int}\ row);}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \ \ \ \ std::string\ toString(\textcolor{keywordtype}{bool}\ transpose\ =\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keywordtype}{void}\ fromString(std::string\ str,\ \textcolor{keywordtype}{bool}\ transpose\ =\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keywordtype}{void}\ setIdentity();}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \ \ \ \ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\ translation()\ \{}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}(m\_data[12],\ m\_data[13],\ m\_data[14]);}
+\DoxyCodeLine{00026\ \ \ \ \ \};}
+\DoxyCodeLine{00027\ \ \ \ \ }
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keywordtype}{double}\ scaleX()\ \{}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}(m\_data[0],\ m\_data[1],\ m\_data[2]).length();}
+\DoxyCodeLine{00030\ \ \ \ \ \};}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{keywordtype}{double}\ scaleY()\ \{}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}(m\_data[4],\ m\_data[5],\ m\_data[6]).length();}
+\DoxyCodeLine{00034\ \ \ \ \ \};}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keywordtype}{double}\ scaleZ()\ \{}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}(m\_data[8],\ m\_data[9],\ m\_data[10]).length();}
+\DoxyCodeLine{00038\ \ \ \ \ \};}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \};}
+\DoxyCodeLine{00042\ }
+
+\end{DoxyCode}

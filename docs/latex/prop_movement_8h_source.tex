@@ -1,0 +1,94 @@
+\doxysection{prop\+Movement.\+h}
+\hypertarget{prop_movement_8h_source}{}\label{prop_movement_8h_source}\index{src/core/propMovement.h@{src/core/propMovement.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ PROPMOVEMENT\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ PROPMOVEMENT\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}propBaseObject.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}ui\_propMovement.h"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}Wektor3D.h"{}}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}Quaternion.h"{}}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <QItemEditorFactory>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <QSpinBox>}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ "{}Movement.h"{}}}
+\DoxyCodeLine{00014\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_c_model3_d}{CModel3D}};}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{keyword}{class\ }QStandardItemModel;}
+\DoxyCodeLine{00017\ \textcolor{keyword}{class\ }QStandardItem;}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#define\ EXPERIMENTAL\_MOVEMENT\_UI}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{comment}{//class\ ItemEditorFactory\ :\ public\ QItemEditorFactory}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\{}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ \ QWidget*\ createEditor(int\ userType,\ QWidget*\ parent)\ const}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ \ \{}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ \ \ \ \ \ if\ (userType\ ==\ 4)}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ return\ new\ QSpinBox(parent);}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ \ \ \ \ \ return\ QItemEditorFactory::createEditor(userType,\ parent);}}
+\DoxyCodeLine{00029\ \textcolor{comment}{//\ \ \}}}
+\DoxyCodeLine{00030\ \textcolor{comment}{//\};}}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_prop_movement}{PropMovement}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_prop_widget}{PropWidget}}}
+\DoxyCodeLine{00033\ \{}
+\DoxyCodeLine{00034\ \ \ \ \ Q\_OBJECT}
+\DoxyCodeLine{00035\ \ \ \ \ \mbox{\hyperlink{class_c_movement}{CMovement}}*\ m\_animation;}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{class_prop_widget}{PropWidget}}*\ create(\mbox{\hyperlink{class_c_movement}{CMovement}}*\ m,\ QWidget*\ parent\ =\ 0);}
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keyword}{static}\ QVector<PropWidget*>\ create\_and\_get\_subwidgets(\mbox{\hyperlink{class_c_base_object}{CBaseObject}}*\ obj);}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keywordtype}{void}\ addSeparator(\textcolor{keyword}{const}\ QString\&\ title,\ QStandardItemModel*\ model);}
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keywordtype}{void}\ updateDouble(QString\ itemName,\ \textcolor{keywordtype}{double}\ v);}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keywordtype}{void}\ updateVector3d(QString\ itemName,\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\ q);}
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keywordtype}{void}\ updateQuaternion(QString\ itemName,\ \mbox{\hyperlink{class_c_quaternion}{CQuaternion}}\ q);}
+\DoxyCodeLine{00045\ \ \ \ \ }
+\DoxyCodeLine{00046\ \ \ \ \ QStandardItem*\ addFrame(QStandardItem*\ parent,\ \textcolor{keywordtype}{int}\ frameKey,\ \mbox{\hyperlink{class_c_movement_1_1_frame_val}{CMovement::FrameVal}}\ frameVal);}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \ \ \ \ QStandardItem*\ addQuaternion(QStandardItem*\ parent,\ \mbox{\hyperlink{class_c_quaternion}{CQuaternion}}\ q,\ \textcolor{keyword}{const}\ QString\&\ title,\ \textcolor{keywordtype}{double}\ min,\ \textcolor{keywordtype}{double}\ max,\ \textcolor{keywordtype}{double}\ step,\ \textcolor{keywordtype}{bool}\ loop\ =\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00049\ \ \ \ \ QStandardItem*\ addVector3d(QStandardItem*\ parent,\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\ v,\ \textcolor{keyword}{const}\ QString\&\ title,\ \textcolor{keywordtype}{double}\ min,\ \textcolor{keywordtype}{double}\ max,\ \textcolor{keywordtype}{double}\ step,\ \textcolor{keywordtype}{bool}\ loop\ =\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00050\ \ \ \ \ QStandardItem*\ addDouble(QStandardItem*\ parent,\ \textcolor{keywordtype}{double}\ v,\ \textcolor{keyword}{const}\ QString\&\ title,\ \textcolor{keywordtype}{double}\ min,\ \textcolor{keywordtype}{double}\ max,\ \textcolor{keywordtype}{double}\ step,\ \textcolor{keywordtype}{bool}\ loop\ =\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00051\ \ \ \ \ QStandardItem*\ addBool(\textcolor{keyword}{const}\ QString\&\ title,\ QStandardItemModel*\ model,\ \textcolor{keywordtype}{bool}\ b);}
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keywordtype}{void}\ setTreeView();}
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{class_prop_movement}{PropMovement}}(\mbox{\hyperlink{class_c_movement}{CMovement}}\ *m,\ QWidget\ *parent\ =\ 0,\ \textcolor{keywordtype}{bool}\ isCameraTransform\ =\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00054\ \ \ \ \ \mbox{\hyperlink{class_prop_movement}{\string~PropMovement}}();}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{comment}{//virtual\ void\ paintEvent(QPaintEvent\ *\ event)\ override;}}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ updateProperties()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{comment}{//void\ showModelProperties(\ bool\ b\ )\ \{\ ui.groupBoxModel-\/>setVisible(\ b\ );\ \}}}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \textcolor{keyword}{public}\ slots:}
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keywordtype}{void}\ clearMatrix();}
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{keywordtype}{void}\ copyToClipboard();}
+\DoxyCodeLine{00066\ \ \ \ \ \textcolor{keywordtype}{void}\ pasteFromClipboard();}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keywordtype}{void}\ onItemChanged(QStandardItem*);}
+\DoxyCodeLine{00069\ \ \ \ \ }
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keywordtype}{void}\ onCurrentChanged(\textcolor{keyword}{const}\ QModelIndex\&\ current,\ \textcolor{keyword}{const}\ QModelIndex\&\ previous);}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keywordtype}{void}\ dataChanged(QStandardItem*\ item);}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keywordtype}{void}\ onSliderValueChanged(\textcolor{keywordtype}{int}\ val);}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keywordtype}{void}\ onPlayButtonClicked();}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \ \ \textcolor{keywordtype}{void}\ onTreeViewItemClicked(QModelIndex);}
+\DoxyCodeLine{00079\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00080\ \ \ \ \ Ui::propMovement\ ui;}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keywordtype}{void}\ updateGroupFrame();}
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{keywordtype}{void}\ updateMatrix();}
+\DoxyCodeLine{00084\ \ \ \ \ \textcolor{keywordtype}{void}\ updatePropertiesTree();}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \};}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ PROPMOVEMENT\_H}}
+
+\end{DoxyCode}

@@ -1,0 +1,314 @@
+\doxysection{GLViewer.\+h}
+\hypertarget{_g_l_viewer_8h_source}{}\label{_g_l_viewer_8h_source}\index{src/core/GLViewer.h@{src/core/GLViewer.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#ifndef\ GL\_VIEWERx\_H}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#define\ GL\_VIEWERx\_H}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{comment}{//\#include\ "{}Global.h"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}UI.h"{}}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}AP.h"{}}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <QTGui/QMatrix4x4>}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{comment}{//\#include\ "{}Shader.h"{}}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}Wektor3D.h"{}}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ "{}Camera.h"{}}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}Quaternion.h"{}}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ "{}Transform.h"{}}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#define\ LEFT\_EYE\_PROJECTION\ -\/1}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#define\ RIGHT\_EYE\_PROJECTION\ 1}}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <QTWidgets/QOpenGLWidget>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <QtGui/QOpenGLFunctions>}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\#include\ <QtGui/QOpenGLFunctions\_3\_2\_Core>}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <QtOpenGL>}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ "{}RGBA.h"{}}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#include\ <set>}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_c_bound_vector}{CBoundVector}};}
+\DoxyCodeLine{00031\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_c_annotation_pyramid}{CAnnotationPyramid}};}
+\DoxyCodeLine{00032\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_c_vol_t_k}{CVolTK}};}
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#include\ "{}Volumetric.h"{}}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_g_l_viewer}{GLViewer}}\ :\ \textcolor{keyword}{public}\ QOpenGLWidget,\ \textcolor{keyword}{protected}\ QOpenGLFunctions}
+\DoxyCodeLine{00036\ \{}
+\DoxyCodeLine{00037\ \ \ \ \ Q\_OBJECT}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keywordtype}{int}\ AxesStyle;}
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ AxesStyle\_NONE\ =\ 0;}
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ AxesStyle\_ARROWS\ =\ 1;}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ AxesStyle\_LINES\ =\ 2;}
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ AxesStyle\_PLANES\ =\ 3;}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ AxesStyle\_END\ =\ 4;}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{\ }
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ STEREO\_NONE=0,}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ STEREO\_REDCYAN,}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ STEREO\_REDBLUE,}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ STEREO\_REDGREEN,}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ STEREO\_CYANRED,}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ STEREO\_BLUERED,}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ STEREO\_GREENRED,}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ STEREO\_QUADBUFF=32,}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ STEREO\_INTERLACED,}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ STEREO\_COLUMNINTERLACED,}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ STEREO\_SIDEBYSIDE,}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ STEREO\_ABOVEBELOW}
+\DoxyCodeLine{00060\ \ \ \ \ \}\ StereoType;}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ switchOn,}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ switchOff,}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ switchToggle}
+\DoxyCodeLine{00066\ \ \ \ \ \}\ Switch;}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ PERSPECTIVE\ =\ 0,}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ ORTHOGONAL\ =\ 128}
+\DoxyCodeLine{00071\ \ \ \ \ \}\ Projection;}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{class_g_l_viewer}{GLViewer}}(QWidget\ *parent\ =\ 0);}
+\DoxyCodeLine{00074\ \ \ \ \ \mbox{\hyperlink{class_g_l_viewer}{\string~GLViewer}}();}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keywordtype}{bool}\ switchStereo(\ GLViewer::Switch\ option\ )\ \{}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\ option\ ==\ GLViewer::Switch::switchToggle\ )}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ bStereo\ =\ !bStereo;\ }
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (\ option\ ==\ GLViewer::Switch::switchOn\ )}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ bStereo\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ bStereo\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00083\ \ \ \ \ \};}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{keyword}{const}\ GLViewer::StereoType\ setStereoMode(\ GLViewer::StereoType\ mode,\ GLViewer::Switch\ option\ =\ GLViewer::Switch::switchOn\ )\ \{\ bStereo\ =\ (\ option\ ==\ GLViewer::Switch::switchOn\ );\ \textcolor{keywordflow}{return}\ iStereoMode\ =\ mode;\ \};}
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keyword}{const}\ GLViewer::StereoType\ getStereoMode()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ iStereoMode;\ \};}
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keyword}{const}\ GLViewer::StereoType\ nextStereoMode()\ \{\ \textcolor{keywordflow}{if}\ (\ bStereo\ )\ \{\ (GLViewer::StereoType)(1+(\textcolor{keywordtype}{int})iStereoMode);\ \textcolor{keywordflow}{if}\ (\ iStereoMode\ >\ GLViewer::StereoType::STEREO\_GREENRED\ )\ iStereoMode\ =\ GLViewer::StereoType::STEREO\_REDCYAN;\ \}\ \textcolor{keywordflow}{return}\ iStereoMode;\ \};}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{keywordtype}{void}\ resetGeometry();}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \ \ \ \ \textcolor{keyword}{inline}\ \mbox{\hyperlink{class_c_transform}{CTransform}}\ \&transform()\ \{\ \textcolor{keywordflow}{return}\ m\_transform;\ \}}
+\DoxyCodeLine{00092\ \ \ \ \ }
+\DoxyCodeLine{00093\ \ \ \ \ \textcolor{keywordtype}{void}\ setProjection(\ GLViewer::Projection\ );}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keywordtype}{void}\ applyProjection();}
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{keywordtype}{bool}\ currentProjectionIs(GLViewer::Projection);}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \ \ \ \ \textcolor{keywordtype}{void}\ setCameraFloating(\ \textcolor{keywordtype}{bool}\ f\ )\ \{\ m\_floatingCamera\ =\ f;\ \}}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \ \ \ \ \textcolor{keywordtype}{void}\ setAxesVisible(AxesStyle\ s)\ \{\ m\_drawAxes\ =\ s;\ \};}
+\DoxyCodeLine{00100\ \ \ \ \ \textcolor{keywordtype}{void}\ toggleAxesVisibility()\ \{\ m\_drawAxes+=1;\ \textcolor{keywordflow}{if}\ (m\_drawAxes==AxesStyle\_END)\ m\_drawAxes=AxesStyle\_NONE;\ \};}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \ \ \ \ \textcolor{keywordtype}{void}\ screenshot(QString\ path\ =\ QString());}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{keywordtype}{void}\ setSelectionMode(\textcolor{keywordtype}{int}\ mode);}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{keywordtype}{void}\ deleteSelectedVoxelsVolTK(\mbox{\hyperlink{class_c_vol_t_k}{CVolTK}}\&\ cloud,\ \mbox{\hyperlink{class_c_transform}{CTransform}}\&\ transform,\ \textcolor{keywordtype}{bool}\ deleteSelected);}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \ \ \ \ \textcolor{keywordtype}{void}\ deleteSelectedVoxels(\mbox{\hyperlink{class_volumetric}{Volumetric}}*\ vol,\ \textcolor{keywordtype}{bool}\ deleteSelected);}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \ \ \ \ \textcolor{keywordtype}{void}\ deleteSelectedVertices(\textcolor{keywordtype}{bool}\ deleteSelected=\textcolor{keyword}{true});}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \ \ \ \ \textcolor{keywordtype}{void}\ drawMaskCircle(QPoint\ pos);}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ \textcolor{keyword}{public}\ slots:}
+\DoxyCodeLine{00115\ }
+\DoxyCodeLine{00116\ \ \ \ \ \textcolor{comment}{//the\ required\ function\ definitions\ for\ the\ mouse\ events.}}
+\DoxyCodeLine{00117\ \ \ \ \ \textcolor{keywordtype}{void}\ mousePressEvent(\ QMouseEvent*\ event\ )\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00118\ \ \ \ \ \textcolor{keywordtype}{void}\ mouseReleaseEvent(\ QMouseEvent*\ event\ )\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00119\ \ \ \ \ \textcolor{keywordtype}{void}\ rotate(\textcolor{keywordtype}{double}\ dx,\ \textcolor{keywordtype}{double}\ dy);}
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{keywordtype}{void}\ translate(\textcolor{keywordtype}{double}\ dx,\ \textcolor{keywordtype}{double}\ dy,\ \textcolor{keywordtype}{double}\ dz=0.0);}
+\DoxyCodeLine{00121\ \ \ \ \ \textcolor{keywordtype}{void}\ mouseMoveEvent(\ QMouseEvent*\ event\ )\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{keywordtype}{void}\ wheelEvent(QWheelEvent*\ event)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \ \ \ \ \textcolor{keywordtype}{void}\ setBGcolor(GLfloat\ col);}
+\DoxyCodeLine{00125\ \ \ \ \ \textcolor{keywordtype}{void}\ setBGcolor(\mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}}\&\ col);}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ \ \ \ \ \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}}\&\ getBGcolor();}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{keywordtype}{void}\ recalcView();}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \ \ \ \ \textcolor{keywordtype}{void}\ setVAngle(GLdouble\ angle);}
+\DoxyCodeLine{00132\ \ \ \ \ GLdouble\ getVAngle();}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \ \ \textcolor{keywordtype}{void}\ setOrthoSize(GLdouble\ fov);}
+\DoxyCodeLine{00135\ \ \ \ \ GLdouble\ getOrthoSize();}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ signals:}
+\DoxyCodeLine{00139\ \ \ \ \ \textcolor{keywordtype}{void}\ xRotationChanged(\textcolor{keywordtype}{int}\ angle);}
+\DoxyCodeLine{00140\ \ \ \ \ \textcolor{keywordtype}{void}\ yRotationChanged(\textcolor{keywordtype}{int}\ angle);}
+\DoxyCodeLine{00141\ \ \ \ \ \textcolor{keywordtype}{void}\ zRotationChanged(\textcolor{keywordtype}{int}\ angle);}
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{keywordtype}{void}\ translationChanged(\textcolor{keywordtype}{double}\ x,\ \textcolor{keywordtype}{double}\ y,\ \textcolor{keywordtype}{double}\ z);}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00145\ \ \ \ \ \textcolor{comment}{//\ required,\ used\ to\ initialized\ the\ OpenGL\ environment}}
+\DoxyCodeLine{00146\ \ \ \ \ \textcolor{keywordtype}{void}\ initializeGL()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00147\ \ \ \ \ }
+\DoxyCodeLine{00148\ \ \ \ \ \textcolor{comment}{//\ used\ to\ draw\ in\ the\ window}}
+\DoxyCodeLine{00149\ \ \ \ \ \textcolor{keywordtype}{void}\ paintGL()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ \ \ \ \ \textcolor{comment}{//\ used\ to\ reset\ the\ drawing\ frustum\ when\ the\ window\ is\ resized}}
+\DoxyCodeLine{00152\ \ \ \ \ \textcolor{keywordtype}{void}\ resizeGL(\ \textcolor{keywordtype}{int}\ w,\ \textcolor{keywordtype}{int}\ h\ )\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ \ \ \ \ \textcolor{keywordtype}{void}\ draw3Dcontent();}
+\DoxyCodeLine{00155\ \ \ \ \ \textcolor{keywordtype}{void}\ drawOverlays(QPainter\ \&\ painter);}
+\DoxyCodeLine{00156\ }
+\DoxyCodeLine{00157\ \ \ \ \ \textcolor{keywordtype}{void}\ PickObject(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y);}
+\DoxyCodeLine{00158\ \ \ \ \ }
+\DoxyCodeLine{00159\ \ \ \ \ \textcolor{keywordtype}{void}\ PickMeshPoint(\textcolor{keywordtype}{double}\ xx,\ \textcolor{keywordtype}{double}\ yy,\ \mbox{\hyperlink{class_c_model3_d}{CModel3D}}*\ obj);}
+\DoxyCodeLine{00160\ \ \ \ \ \textcolor{keywordtype}{void}\ PickCloudPoint(\textcolor{keywordtype}{double}\ xx,\ \textcolor{keywordtype}{double}\ yy,\ \mbox{\hyperlink{class_c_model3_d}{CModel3D}}*\ obj);}
+\DoxyCodeLine{00161\ \ \ \ \ \textcolor{keywordtype}{void}\ PickPoint(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y);}
+\DoxyCodeLine{00162\ \ \ \ \ \textcolor{keywordtype}{int}\ readSelectBuffer(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y);}
+\DoxyCodeLine{00163\ }
+\DoxyCodeLine{00164\ \ \ \ \ \textcolor{keywordtype}{void}\ cameraTransformations();}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00166\ \ \ \ \ \textcolor{keywordtype}{void}\ Render();}
+\DoxyCodeLine{00167\ \ \ \ \ \textcolor{keywordtype}{void}\ RenderScene();}
+\DoxyCodeLine{00168\ \ \ \ \ \textcolor{keywordtype}{void}\ RenderSceneMono();}
+\DoxyCodeLine{00169\ \ \ \ \ \textcolor{keywordtype}{void}\ RenderSceneAnaglyph();}
+\DoxyCodeLine{00170\ }
+\DoxyCodeLine{00171\ \ \ \ \ \textcolor{keywordtype}{void}\ RenderRightView();}
+\DoxyCodeLine{00172\ \ \ \ \ \textcolor{keywordtype}{void}\ RenderLeftView();}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00174\ \ \ \ \ \textcolor{keywordtype}{void}\ RenderSceneAboveBelow();}
+\DoxyCodeLine{00175\ \ \ \ \ \textcolor{keywordtype}{void}\ RenderSceneInterlaced();}
+\DoxyCodeLine{00176\ \ \ \ \ \textcolor{keywordtype}{void}\ RenderSceneColumnInterlaced();}
+\DoxyCodeLine{00177\ \ \ \ \ \textcolor{keywordtype}{void}\ RenderSceneSideBySide();}
+\DoxyCodeLine{00178\ \ \ \ \ \textcolor{keywordtype}{void}\ RenderSceneQuadBuff();}
+\DoxyCodeLine{00179\ }
+\DoxyCodeLine{00180\ \ \ \ \ \textcolor{keywordtype}{void}\ axis3D(\textcolor{keywordtype}{double}\ W1,\ \textcolor{keywordtype}{double}\ L1,\ \textcolor{keywordtype}{double}\ W2,\ \textcolor{keywordtype}{double}\ W3);}
+\DoxyCodeLine{00181\ }
+\DoxyCodeLine{00182\ \ \ \ \ \textcolor{keywordtype}{void}\ triad3D(\textcolor{keywordtype}{double}\ W1\ =\ 0.02,\ \textcolor{keywordtype}{double}\ L1\ =\ 0.8,\ \textcolor{keywordtype}{double}\ W2\ =\ 0.04,\ \textcolor{keywordtype}{double}\ W3\ =\ 0.08,\ \textcolor{keywordtype}{bool}\ active\ =\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00184\ \ \ \ \ \textcolor{keywordtype}{void}\ glSetFont();}
+\DoxyCodeLine{00185\ }
+\DoxyCodeLine{00186\ \ \ \ \ \textcolor{keywordtype}{void}\ glDrawString(GLfloat\ x,\ GLfloat\ y,\ QString\ \textcolor{keywordtype}{string});}
+\DoxyCodeLine{00187\ }
+\DoxyCodeLine{00188\ \ \ \ \ \textcolor{keywordtype}{void}\ toolBar(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00189\ }
+\DoxyCodeLine{00190\ \ \ \ \ \textcolor{keywordtype}{void}\ objectTriad(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00191\ }
+\DoxyCodeLine{00192\ \ \ \ \ \textcolor{keywordtype}{void}\ cameraTriad(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00193\ }
+\DoxyCodeLine{00194\ \ \ \ \ \textcolor{keywordtype}{void}\ rysujOsie();}
+\DoxyCodeLine{00195\ }
+\DoxyCodeLine{00196\ \ \ \ \ \textcolor{keywordtype}{void}\ StereoProjection\ (\ \textcolor{keywordtype}{double}\ dfLeftBorder,\ \textcolor{keywordtype}{double}\ dfRightBorder,\textcolor{keywordtype}{double}\ dfBottomBorder,\ \textcolor{keywordtype}{double}\ dFVertical,\textcolor{keywordtype}{double}\ dfNearBorder,\ \textcolor{keywordtype}{double}\ dfFarBorder,\textcolor{keywordtype}{double}\ dfTargetPlane,\ \textcolor{keywordtype}{double}\ dfCameraToTargetDistance,\textcolor{keywordtype}{double}\ dfStereoMagnitudeAdj,\ \textcolor{keywordtype}{double}\ dfParallaxBalanceAdj,\textcolor{keywordtype}{int}\ WhichEyeProjection);}
+\DoxyCodeLine{00197\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ SlideStereoCameras(\ \textcolor{keywordtype}{double}\ step\ )\ \{\ \textcolor{keywordflow}{return}\ FCameraSeparation\ +=\ step;\ \};}
+\DoxyCodeLine{00198\ }
+\DoxyCodeLine{00199\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00200\ \ \ \ \ \textcolor{keywordtype}{bool}\ convertWinToWorld(\mbox{\hyperlink{class_c_point3}{CPoint3d}},\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&);}
+\DoxyCodeLine{00201\ \ \ \ \ \textcolor{keywordtype}{bool}\ screen2obj(\textcolor{keywordtype}{double}\ xx,\ \textcolor{keywordtype}{double}\ yy,\ \mbox{\hyperlink{class_c_model3_d}{CModel3D}}*\ obj,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\&\ in,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\&\ out,\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\&\ ray);}
+\DoxyCodeLine{00202\ \ \ \ \ \textcolor{keywordtype}{bool}\ inTriangle(\mbox{\hyperlink{class_c_point3}{CPoint3d}}\ pt,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ pA,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ pB,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ pC);}
+\DoxyCodeLine{00203\ \ \ \ \ \textcolor{keywordtype}{bool}\ inRectangle(\mbox{\hyperlink{class_c_point3}{CPoint3d}}\ pt,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ A,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ B,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ C,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ D);}
+\DoxyCodeLine{00204\ \ \ \ \ \textcolor{keywordtype}{void}\ findIntersection(\mbox{\hyperlink{class_c_point3}{CPoint3d}}\ origin,\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\ direction,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ A,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ B,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ C,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ D,\ std::vector<std::pair<double,\ CPoint3d>>\&\ intersections);}
+\DoxyCodeLine{00205\ \ \ \ \ \textcolor{keywordtype}{bool}\ getEntryAndExit(\mbox{\hyperlink{class_c_point3}{CPoint3d}}\ pMin,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ pMax,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ origin,\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\ direction,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\&\ entry,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\&\ exit);}
+\DoxyCodeLine{00206\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_pyramid}{CAnnotationPyramid}}*\ getPyramid(\textcolor{keywordtype}{double}\ xx,\ \textcolor{keywordtype}{double}\ yy,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ entry,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ exit,\ \mbox{\hyperlink{class_c_model3_d}{CModel3D}}*\ obj,\ \textcolor{keywordtype}{double}\&\ r);}
+\DoxyCodeLine{00207\ \ \ \ \ \textcolor{keywordtype}{bool}\ isInPixelShadow(\textcolor{keywordtype}{double}\ pxlX,\ \textcolor{keywordtype}{double}\ pxlY,\ \textcolor{keywordtype}{double}\ ptX,\ \textcolor{keywordtype}{double}\ ptY);}
+\DoxyCodeLine{00208\ \ \ \ \ \textcolor{keywordtype}{bool}\ convertWorldToWin(\mbox{\hyperlink{class_c_point3}{CPoint3d}},\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&);}
+\DoxyCodeLine{00209\ \ \ \ \ }
+\DoxyCodeLine{00210\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ world2win(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\&\ world);}
+\DoxyCodeLine{00211\ \ \ \ \ }
+\DoxyCodeLine{00212\ \ \ \ \ \textcolor{comment}{//template<typename\ \_W>\ bool\ convertWinToWorld(\ CTriple<\_W>,\ CTriple<\_W>\ \&\ );}}
+\DoxyCodeLine{00213\ \ \ \ \ \textcolor{comment}{//template<typename\ \_W>\ bool\ convertWorldToWin(\ CTriple<\_W>,\ CTriple<\_W>\ \&\ );}}
+\DoxyCodeLine{00214\ }
+\DoxyCodeLine{00215\ \ \ \ \ \textcolor{keywordtype}{bool}\ convertCoords(GLdouble\ winX,\ GLdouble\ winY,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&pkt0,\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&pkt1);}
+\DoxyCodeLine{00216\ }
+\DoxyCodeLine{00217\ \ \ \ \ \textcolor{keywordtype}{int}\ m\_selectionMode;}
+\DoxyCodeLine{00218\ \ \ \ \ \textcolor{keywordtype}{bool}\ m\_redraw3d;}
+\DoxyCodeLine{00219\ }
+\DoxyCodeLine{00220\ \ \ \ \ QImage\ m\_im;}
+\DoxyCodeLine{00221\ \ \ \ \ QImage\ m\_mask;}
+\DoxyCodeLine{00222\ }
+\DoxyCodeLine{00223\ \ \ \ \ QPoint\ m\_mousePos;}
+\DoxyCodeLine{00224\ \ \ \ \ \textcolor{keywordtype}{int}\ m\_selSize;}
+\DoxyCodeLine{00225\ \ \ \ \ \textcolor{keyword}{inline}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ camPos()\ \{\ \textcolor{keywordflow}{return}\ cam.m\_pos;\ \};}
+\DoxyCodeLine{00226\ }
+\DoxyCodeLine{00227\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00228\ \ \ \ \ \textcolor{keywordtype}{bool}\ m\_floatingCamera;}
+\DoxyCodeLine{00229\ }
+\DoxyCodeLine{00230\ \ \ \ \ \textcolor{keywordtype}{bool}\ im\_rendering\_now;}
+\DoxyCodeLine{00231\ }
+\DoxyCodeLine{00232\ \ \ \ \ \mbox{\hyperlink{class_c_camera}{CCamera}}\ cam;}
+\DoxyCodeLine{00233\ }
+\DoxyCodeLine{00234\ \ \ \ \ \textcolor{keywordtype}{int}\ iNfontList;}
+\DoxyCodeLine{00235\ }
+\DoxyCodeLine{00236\ \ \ \ \ \mbox{\hyperlink{class_c_transform}{CTransform}}\ m\_transform;}
+\DoxyCodeLine{00237\ }
+\DoxyCodeLine{00238\ \ \ \ \ QPoint\ lastPos;}
+\DoxyCodeLine{00239\ \ \ \ \ \textcolor{comment}{//To\ indicate\ whether\ the\ mouse\ is\ moving\ while\ a\ mouse\ button\ is\ pressed}}
+\DoxyCodeLine{00240\ \ \ \ \ \textcolor{keywordtype}{int}\ moving;}
+\DoxyCodeLine{00241\ \ \ \ \ \textcolor{keywordtype}{float}\ px0,\ py0,\ px1,\ py1;}
+\DoxyCodeLine{00242\ }
+\DoxyCodeLine{00243\ \ \ \ \ LONG\ sL;}
+\DoxyCodeLine{00244\ \ \ \ \ LONG\ sB;}
+\DoxyCodeLine{00245\ \ \ \ \ LONG\ sW;}
+\DoxyCodeLine{00246\ \ \ \ \ LONG\ sH;}
+\DoxyCodeLine{00247\ }
+\DoxyCodeLine{00248\ \ \ \ \ \textcolor{keywordtype}{float}\ \_near;}
+\DoxyCodeLine{00249\ \ \ \ \ \textcolor{keywordtype}{float}\ \_far;}
+\DoxyCodeLine{00250\ \ \ \ \ \textcolor{keywordtype}{float}\ \_fAspect;}
+\DoxyCodeLine{00251\ \ \ \ \ GLdouble\ \_dViewingAngle;}
+\DoxyCodeLine{00252\ \ \ \ \ GLdouble\ \_dOrthoViewSize;}
+\DoxyCodeLine{00253\ }
+\DoxyCodeLine{00254\ \ \ \ \ \textcolor{comment}{//float\ \_fBgColor;}}
+\DoxyCodeLine{00255\ \ \ \ \ \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}}\ \_fBgColor;}
+\DoxyCodeLine{00256\ }
+\DoxyCodeLine{00257\ \ \ \ \ GLdouble\ \_left;}
+\DoxyCodeLine{00258\ \ \ \ \ GLdouble\ \_right;}
+\DoxyCodeLine{00259\ \ \ \ \ GLdouble\ \_bottom;}
+\DoxyCodeLine{00260\ \ \ \ \ GLdouble\ \_top;}
+\DoxyCodeLine{00261\ }
+\DoxyCodeLine{00262\ \ \ \ \ GLViewer::Projection\ \_projection;}
+\DoxyCodeLine{00263\ }
+\DoxyCodeLine{00264\ \ \ \ \ \textcolor{keywordtype}{bool}\ bStereo;}
+\DoxyCodeLine{00265\ \ \ \ \ GLViewer::StereoType\ iStereoMode;}
+\DoxyCodeLine{00266\ }
+\DoxyCodeLine{00267\ \ \ \ \ AxesStyle\ m\_drawAxes;}
+\DoxyCodeLine{00268\ }
+\DoxyCodeLine{00269\ \ \ \ \ \textcolor{keywordtype}{bool}\ m\_itWasMaximized;}
+\DoxyCodeLine{00270\ }
+\DoxyCodeLine{00271\ \ \ \ \ \textcolor{comment}{//-\/-\/-\/\ STEREO\_PROJECTION\_SETTINGS\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\///}}
+\DoxyCodeLine{00272\ \ \ \ \ \textcolor{keywordtype}{double}\ \ FCameraSeparation;}
+\DoxyCodeLine{00273\ \ \ \ \ \textcolor{keywordtype}{double}\ \ FStereoMagnitudeAdjustment;}
+\DoxyCodeLine{00274\ \ \ \ \ \textcolor{keywordtype}{double}\ \ FParallaxBalanceAdjustment;}
+\DoxyCodeLine{00275\ \ \ \ \ \textcolor{keywordtype}{double}\ \ FDistance;}
+\DoxyCodeLine{00276\ \ \ \ \ \textcolor{keywordtype}{double}\ \ StereoLeftBorder;}
+\DoxyCodeLine{00277\ \ \ \ \ \textcolor{keywordtype}{double}\ \ StereoRightBorder;}
+\DoxyCodeLine{00278\ \ \ \ \ \textcolor{keywordtype}{double}\ \ FVertical;}
+\DoxyCodeLine{00279\ \ \ \ \ \textcolor{keywordtype}{double}\ \ StereoBottomBorder;}
+\DoxyCodeLine{00280\ \ \ \ \ \textcolor{keywordtype}{double}\ \ FNear;}
+\DoxyCodeLine{00281\ \ \ \ \ \textcolor{keywordtype}{double}\ \ FFar;}
+\DoxyCodeLine{00282\ \ \ \ \ \textcolor{keywordtype}{double}\ \ FPlan;}
+\DoxyCodeLine{00283\ \ \ \ \ \textcolor{comment}{//-\/-\/-\/\ /STEREO\_PROJECTION\_SETTINGS\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\///}}
+\DoxyCodeLine{00284\ }
+\DoxyCodeLine{00285\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00286\ \ \ \ \ \textcolor{keywordtype}{void}\ useShaders(\ \textcolor{keywordtype}{bool}\ );}
+\DoxyCodeLine{00287\ \ \ \ \ \textcolor{keywordtype}{bool}\ shaderOn;}
+\DoxyCodeLine{00288\ \ \ \ \ \textcolor{comment}{//CShader\ shaderProgram;}}
+\DoxyCodeLine{00289\ \ \ \ \ GLenum\ prog;}
+\DoxyCodeLine{00290\ }
+\DoxyCodeLine{00291\ }
+\DoxyCodeLine{00292\ }
+\DoxyCodeLine{00293\ \ \ \ \ \textcolor{comment}{//***********************************************************************}}
+\DoxyCodeLine{00294\ \ \ \ \ \textcolor{comment}{//Transformacje\ punktu\ w\ układzie\ współrzędnych\ obiektu}}
+\DoxyCodeLine{00295\ \ \ \ \ \textcolor{comment}{//***********************************************************************}}
+\DoxyCodeLine{00296\ \textcolor{comment}{//\ \ CTriple<double>\ multByRot(const\ CTriple<double>\ rot1,\ const\ CTriple<double>\ pkt);}}
+\DoxyCodeLine{00297\ \textcolor{comment}{//\ \ CTriple<double>\ moveByTra(const\ CTriple<double>\ tra,\ const\ CTriple<double>\ pkt);}}
+\DoxyCodeLine{00298\ \textcolor{comment}{//\ \ CTriple<double>\ scaleBySca(const\ double\ sca,\ const\ CTriple<double>\ pkt);}}
+\DoxyCodeLine{00299\ }
+\DoxyCodeLine{00300\ \textcolor{comment}{//\ \ CTriple<double>\ localToWorldTransformation(const\ CTriple<double>\ pkt1);}}
+\DoxyCodeLine{00301\ \textcolor{comment}{//\ \ CTriple<double>\ worldToLocalTransformation(const\ CTriple<double>\ pkt1);}}
+\DoxyCodeLine{00302\ }
+\DoxyCodeLine{00303\ }
+\DoxyCodeLine{00304\ }
+\DoxyCodeLine{00305\ \ \ \ \ \textcolor{keywordtype}{void}\ closeEvent(QCloseEvent\ *\ closeEvent)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00306\ \};}
+\DoxyCodeLine{00307\ }
+\DoxyCodeLine{00308\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ GLVIEWERx\_H}}
+
+\end{DoxyCode}

@@ -1,0 +1,305 @@
+\doxysection{XKDTree\+Node.\+h}
+\hypertarget{_x_k_d_tree_node_8h_source}{}\label{_x_k_d_tree_node_8h_source}\index{src/core/XKDTreeNode.h@{src/core/XKDTreeNode.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#ifndef\ XKDTREENODE\_H}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#define\ XKDTREENODE\_H}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}XKDTreeBuffer.h"{}}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}XVector.h"{}}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#define\ MAXNODEDATASIZE\ 64}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ \_Typ,\ \textcolor{keywordtype}{int}\ \_Dim>\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_x_k_d_tree_node}{XKDTreeNode}}}
+\DoxyCodeLine{00013\ \{}
+\DoxyCodeLine{00014\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_x_k_d_tree_node_1_1_x_k_d_tree_node_b_box}{XKDTreeNodeBBox}}\ \{}
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_x_vector}{XVector<\_Typ,\ \_Dim>}}\ Min;}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_x_vector}{XVector<\_Typ,\ \_Dim>}}\ Max;}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_x_vector}{XVector<\_Typ,\ \_Dim>}}\ Ctr;}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \_Typ\ R;}
+\DoxyCodeLine{00020\ \ \ \ \ \}\ m\_bb;}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keywordtype}{int}\ splitaxis;}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \ \ \ \ \mbox{\hyperlink{class_x_k_d_tree_node}{XKDTreeNode}}*\ m\_left;}
+\DoxyCodeLine{00025\ \ \ \ \ \mbox{\hyperlink{class_x_k_d_tree_node}{XKDTreeNode}}*\ m\_right;}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \ \ \ \ \mbox{\hyperlink{class_x_k_d_tree_buffer}{XKDTreeBuffer<\_Typ,\ \_Dim>}}*\ m\_kdtreeBuffer;}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \ \ \ \ std::vector<INDEX\_TYPE>\ m\_indices;}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \ \ \mbox{\hyperlink{class_x_k_d_tree_node}{XKDTreeNode}}(\mbox{\hyperlink{class_x_k_d_tree_buffer}{XKDTreeBuffer<\_Typ,\ \_Dim>}}*\ kdtreeBuffer,\ \mbox{\hyperlink{class_x_k_d_tree_node}{XKDTreeNode}}*\ parent\ =\ \textcolor{keyword}{nullptr})\ :\ m\_left(nullptr),\ m\_right(nullptr),\ m\_kdtreeBuffer(kdtreeBuffer)}
+\DoxyCodeLine{00032\ \ \ \ \ \{}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (parent\ !=\ \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \ \ \ \ m\_indices.reserve(parent-\/>m\_indices.size());}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \ \ \ \ m\_bb.Min\ =\ m\_bb.Max\ =\ kdtreeBuffer-\/>dataPtr[parent-\/>m\_indices[0]];}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \ \ \ \ m\_indices.reserve(kdtreeBuffer-\/>dataSize);}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \ \ \ \ m\_bb.Min\ =\ m\_bb.Max\ =\ kdtreeBuffer-\/>dataPtr[0];}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ \ \ \};}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \ \ \ \ \mbox{\hyperlink{class_x_k_d_tree_node}{\string~XKDTreeNode}}()}
+\DoxyCodeLine{00047\ \ \ \ \ \{}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_left\ !=\ \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{delete}\ m\_left;}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_right\ !=\ \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{delete}\ m\_right;}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \textcolor{comment}{//m\_indices.clear();}}
+\DoxyCodeLine{00055\ \ \ \ \ \}}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keywordtype}{void}\ insert(\textcolor{keywordtype}{int}\ idx,\ \mbox{\hyperlink{class_x_vector}{XVector<\_Typ,\ \_Dim>}}\&\ e)}
+\DoxyCodeLine{00058\ \ \ \ \ \{}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \textcolor{comment}{//XVector<\_Typ,\ \_Dim>\&\ e\ =\ m\_kdtreeBuffer-\/>dataPtr[idx];}}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ \_Dim;\ i++)}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_bb.Min[i]\ >\ e[i])\ m\_bb.Min[i]\ =\ e[i];}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_bb.Max[i]\ <\ e[i])\ m\_bb.Max[i]\ =\ e[i];}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ m\_indices.push\_back(idx);}
+\DoxyCodeLine{00068\ \ \ \ \ \}}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keywordtype}{void}\ build()\textcolor{comment}{//int\ level=0)}}
+\DoxyCodeLine{00071\ \ \ \ \ \{}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_indices.size()\ <=\ MAXNODEDATASIZE)}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ m\_bb.Ctr\ =\ (m\_bb.Max\ +\ m\_bb.Min)\ /\ 2;}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ m\_bb.R\ =\ m\_bb.Ctr.distTo(m\_bb.Max);}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \textcolor{comment}{//szukam\ indeksu\ najd³u¿szej\ osi}}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ splitaxis\ =\ 0;}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \_Typ\ max\_diff\ =\ m\_bb.Max[0]\ -\/\ m\_bb.Min[0];}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 1;\ i\ <\ \_Dim;\ i++)}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \ \ \ \ \_Typ\ diff\ =\ m\_bb.Max[i]\ -\/\ m\_bb.Min[i];}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (diff\ >\ max\_diff)}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ max\_diff\ =\ diff;}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ splitaxis\ =\ i;}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \_Typ\ right\_min\ =\ m\_bb.Min[splitaxis]\ +\ (max\_diff\ /\ 2);}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ m\_left\ =\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_x_k_d_tree_node}{XKDTreeNode}}(m\_kdtreeBuffer,\ \textcolor{keyword}{this});}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ m\_right\ =\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_x_k_d_tree_node}{XKDTreeNode}}(m\_kdtreeBuffer,\ \textcolor{keyword}{this});}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{auto}\ idx\ :\ m\_indices)}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_x_vector}{XVector<\_Typ,\ \_Dim>}}\&\ e\ =\ m\_kdtreeBuffer-\/>dataPtr[idx];}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (e[splitaxis]\ <\ right\_min)}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_left-\/>insert(idx,\ e);}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_right-\/>insert(idx,\ e);}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ m\_indices.clear();}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ std::vector<INDEX\_TYPE>().swap(m\_indices);}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_left-\/>m\_indices.empty())}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{delete}\ m\_left;}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \ \ \ \ m\_left\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \ \ \ \ m\_left-\/>build();\textcolor{comment}{//\ level\ +\ 1);}}
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_right-\/>m\_indices.empty())}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{delete}\ m\_right;}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \ \ \ \ m\_right\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \ \ \ \ m\_right-\/>build();\textcolor{comment}{//\ level\ +\ 1);}}
+\DoxyCodeLine{00126\ \ \ \ \ \}}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{keywordtype}{void}\ find\_k\_closest\_to\_pt()}
+\DoxyCodeLine{00130\ \ \ \ \ \{}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!m\_indices.empty())}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \ \ \ \ \_Typ\ dist2;}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\&\ idx\ :\ m\_indices)}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ dist2\ =\ m\_kdtreeBuffer-\/>pattern.dist2to(m\_kdtreeBuffer-\/>dataPtr[idx]);}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((dist2\ <\ m\_kdtreeBuffer-\/>lastGood\_d2)\ ||\ (m\_kdtreeBuffer-\/>results.size()\ <\ m\_kdtreeBuffer-\/>searchLimit))}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_kdtreeBuffer-\/>results.push\_back(std::make\_pair(dist2,\ idx));}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ push\_heap(m\_kdtreeBuffer-\/>results.begin(),\ m\_kdtreeBuffer-\/>results.end());}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ po\ tym\ najwiêkszy\ element\ trafia\ do\ results[0]}}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_kdtreeBuffer-\/>results.size()\ >\ m\_kdtreeBuffer-\/>searchLimit)}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ pop\_heap(m\_kdtreeBuffer-\/>results.begin(),\ m\_kdtreeBuffer-\/>results.end());}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ po\ tym\ najwiêkszy\ element\ trafia\ do\ results[k-\/1],\ a\ w\ results[0]\ jest\ drugi\ najwiêkszy}}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_kdtreeBuffer-\/>results.pop\_back();}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ usuwa\ results[k-\/1]}}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00152\ }
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_kdtreeBuffer-\/>lastGood\_d2\ =\ m\_kdtreeBuffer-\/>results[0].first;}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \ \ \ \ m\_kdtreeBuffer-\/>lastGood\_d\ =\ sqrt(m\_kdtreeBuffer-\/>lastGood\_d2);}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((m\_kdtreeBuffer-\/>results.size()\ >=\ m\_kdtreeBuffer-\/>searchLimit)\ \&\&\ }
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \ \ \ \ (m\_bb.Ctr.dist2to(m\_kdtreeBuffer-\/>pattern)\ >=\ sqr(m\_bb.R\ +\ m\_kdtreeBuffer-\/>lastGood\_d))\ )}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00163\ }
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ \_Typ\ myd\ =\ m\_bb.Ctr[splitaxis]\ -\/\ m\_kdtreeBuffer-\/>pattern[splitaxis];}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (myd\ >=\ 0.0f)}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_left\ !=\ \textcolor{keyword}{nullptr})\ m\_left-\/>find\_k\_closest\_to\_pt();}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((m\_right\ !=\ \textcolor{keyword}{nullptr})\ \&\&\ ((myd\ <\ m\_kdtreeBuffer-\/>lastGood\_d)\ ||\ (m\_kdtreeBuffer-\/>results.size()\ !=\ m\_kdtreeBuffer-\/>searchLimit)))}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_right-\/>find\_k\_closest\_to\_pt();}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_right\ !=\ \textcolor{keyword}{nullptr})\ m\_right-\/>find\_k\_closest\_to\_pt();}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((m\_left\ !=\ \textcolor{keyword}{nullptr})\ \&\&\ ((-\/myd\ <\ m\_kdtreeBuffer-\/>lastGood\_d)\ ||\ (m\_kdtreeBuffer-\/>results.size()\ !=\ m\_kdtreeBuffer-\/>searchLimit)))}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_left-\/>find\_k\_closest\_to\_pt();}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00178\ \ \ \ \ \}}
+\DoxyCodeLine{00179\ }
+\DoxyCodeLine{00180\ }
+\DoxyCodeLine{00181\ \ \ \ \ \textcolor{keywordtype}{void}\ find\_all\_in\_distance\_to\_pt()}
+\DoxyCodeLine{00182\ \ \ \ \ \{}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!m\_indices.empty())}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ \ \ \ \ \_Typ\ dist2;}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\&\ idx\ :\ m\_indices)}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ dist2\ =\ m\_kdtreeBuffer-\/>pattern.dist2to(m\_kdtreeBuffer-\/>dataPtr[idx]);}
+\DoxyCodeLine{00189\ }
+\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (dist2\ <\ m\_kdtreeBuffer-\/>maxdist2)}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_kdtreeBuffer-\/>results.push\_back(std::make\_pair(dist2,\ idx));}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00197\ }
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_bb.Ctr.dist2to(m\_kdtreeBuffer-\/>pattern)\ >\ sqr(m\_bb.R\ +\ m\_kdtreeBuffer-\/>maxdist))}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00200\ }
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \_Typ\ myd\ =\ m\_bb.Ctr[splitaxis]\ -\/\ m\_kdtreeBuffer-\/>pattern[splitaxis];}
+\DoxyCodeLine{00202\ }
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (myd\ >=\ 0.0f)}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_left\ !=\ \textcolor{keyword}{nullptr})\ m\_left-\/>find\_all\_in\_distance\_to\_pt();}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((m\_right\ !=\ \textcolor{keyword}{nullptr})\ \&\&\ (myd\ <=\ m\_kdtreeBuffer-\/>maxdist))\ m\_right-\/>find\_all\_in\_distance\_to\_pt();}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_right\ !=\ \textcolor{keyword}{nullptr})\ m\_right-\/>find\_all\_in\_distance\_to\_pt();}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((m\_left\ !=\ \textcolor{keyword}{nullptr})\ \&\&\ (-\/myd\ <=\ m\_kdtreeBuffer-\/>maxdist)\ )\ m\_left-\/>find\_all\_in\_distance\_to\_pt();}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00213\ \ \ \ \ \}}
+\DoxyCodeLine{00214\ }
+\DoxyCodeLine{00215\ }
+\DoxyCodeLine{00216\ \ \ \ \ \textcolor{keywordtype}{void}\ find\_k\_closest\_to\_ray()}
+\DoxyCodeLine{00217\ \ \ \ \ \{}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!m\_indices.empty())}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \ \ \ \ \ \ \_Typ\ dist2;}
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\&\ idx\ :\ m\_indices)}
+\DoxyCodeLine{00222\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ dist2\ =\ m\_kdtreeBuffer-\/>dataPtr[idx].dist2toRay(m\_kdtreeBuffer-\/>pattern,\ m\_kdtreeBuffer-\/>rayDir);}
+\DoxyCodeLine{00224\ }
+\DoxyCodeLine{00225\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((dist2\ <\ m\_kdtreeBuffer-\/>lastGood\_d2)\ ||\ (m\_kdtreeBuffer-\/>results.size()\ <\ m\_kdtreeBuffer-\/>searchLimit))}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_kdtreeBuffer-\/>results.push\_back(std::make\_pair(dist2,\ idx));}
+\DoxyCodeLine{00228\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ push\_heap(m\_kdtreeBuffer-\/>results.begin(),\ m\_kdtreeBuffer-\/>results.end());}
+\DoxyCodeLine{00229\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ po\ tym\ najwiêkszy\ element\ trafia\ do\ results[0]}}
+\DoxyCodeLine{00230\ }
+\DoxyCodeLine{00231\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_kdtreeBuffer-\/>results.size()\ >\ m\_kdtreeBuffer-\/>searchLimit)}
+\DoxyCodeLine{00232\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00233\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ pop\_heap(m\_kdtreeBuffer-\/>results.begin(),\ m\_kdtreeBuffer-\/>results.end());}
+\DoxyCodeLine{00234\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ po\ tym\ najwiêkszy\ element\ trafia\ do\ results[k-\/1],\ a\ w\ results[0]\ jest\ drugi\ najwiêkszy}}
+\DoxyCodeLine{00235\ }
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_kdtreeBuffer-\/>results.pop\_back();}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ usuwa\ results[k-\/1]}}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00239\ }
+\DoxyCodeLine{00240\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_kdtreeBuffer-\/>lastGood\_d2\ =\ m\_kdtreeBuffer-\/>results[0].first;}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00243\ \ \ \ \ \ \ \ \ \ \ \ \ m\_kdtreeBuffer-\/>lastGood\_d\ =\ sqrt(m\_kdtreeBuffer-\/>lastGood\_d2);}
+\DoxyCodeLine{00244\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00245\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00246\ }
+\DoxyCodeLine{00247\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Check\ whether\ to\ abort}}
+\DoxyCodeLine{00248\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((m\_kdtreeBuffer-\/>results.size()\ >=\ m\_kdtreeBuffer-\/>searchLimit)\ \&\&}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ \ \ \ \ (m\_bb.Ctr.dist2toRay(m\_kdtreeBuffer-\/>pattern,\ m\_kdtreeBuffer-\/>rayDir)\ >=\ sqr(m\_bb.R\ +\ m\_kdtreeBuffer-\/>lastGood\_d)))}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00251\ }
+\DoxyCodeLine{00252\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_kdtreeBuffer-\/>pattern[splitaxis]\ <\ m\_bb.Ctr[splitaxis])}
+\DoxyCodeLine{00253\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00254\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_left\ !=\ \textcolor{keyword}{nullptr})\ m\_left-\/>find\_k\_closest\_to\_ray();}
+\DoxyCodeLine{00255\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_right\ !=\ \textcolor{keyword}{nullptr})\ m\_right-\/>find\_k\_closest\_to\_ray();}
+\DoxyCodeLine{00256\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00257\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_right\ !=\ \textcolor{keyword}{nullptr})\ m\_right-\/>find\_k\_closest\_to\_ray();}
+\DoxyCodeLine{00260\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_left\ !=\ \textcolor{keyword}{nullptr})\ m\_left-\/>find\_k\_closest\_to\_ray();}
+\DoxyCodeLine{00261\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00262\ \ \ \ \ \}}
+\DoxyCodeLine{00263\ }
+\DoxyCodeLine{00264\ }
+\DoxyCodeLine{00265\ \ \ \ \ \textcolor{keywordtype}{void}\ find\_all\_in\_distance\_to\_ray()}
+\DoxyCodeLine{00266\ \ \ \ \ \{}
+\DoxyCodeLine{00267\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!m\_indices.empty())}
+\DoxyCodeLine{00268\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ \ \ \ \ \_Typ\ dist2;}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\&\ idx\ :\ m\_indices)}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00272\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ dist2\ =\ m\_kdtreeBuffer-\/>dataPtr[idx].dist2toRay(m\_kdtreeBuffer-\/>pattern,\ m\_kdtreeBuffer-\/>rayDir);}
+\DoxyCodeLine{00273\ }
+\DoxyCodeLine{00274\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (dist2\ <\ m\_kdtreeBuffer-\/>maxdist2)}
+\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00276\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_kdtreeBuffer-\/>results.push\_back(std::make\_pair(dist2,\ idx));}
+\DoxyCodeLine{00277\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00278\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00279\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00281\ }
+\DoxyCodeLine{00282\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_bb.Ctr.dist2toRay(m\_kdtreeBuffer-\/>pattern,\ m\_kdtreeBuffer-\/>rayDir)\ >=\ sqr(m\_bb.R\ +\ m\_kdtreeBuffer-\/>maxdist))}
+\DoxyCodeLine{00283\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00284\ }
+\DoxyCodeLine{00285\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_kdtreeBuffer-\/>pattern[splitaxis]\ <\ m\_bb.Ctr[splitaxis])}
+\DoxyCodeLine{00286\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00287\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_left\ !=\ \textcolor{keyword}{nullptr})\ m\_left-\/>find\_all\_in\_distance\_to\_ray();}
+\DoxyCodeLine{00288\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_right\ !=\ \textcolor{keyword}{nullptr})\ m\_right-\/>find\_all\_in\_distance\_to\_ray();}
+\DoxyCodeLine{00289\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00290\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00291\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00292\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_right\ !=\ \textcolor{keyword}{nullptr})\ m\_right-\/>find\_all\_in\_distance\_to\_ray();}
+\DoxyCodeLine{00293\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_left\ !=\ \textcolor{keyword}{nullptr})\ m\_left-\/>find\_all\_in\_distance\_to\_ray();}
+\DoxyCodeLine{00294\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00295\ \ \ \ \ \}}
+\DoxyCodeLine{00296\ }
+\DoxyCodeLine{00297\ \};}
+\DoxyCodeLine{00298\ }
+\DoxyCodeLine{00299\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

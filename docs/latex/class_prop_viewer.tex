@@ -1,0 +1,98 @@
+\doxysection{Prop\+Viewer Class Reference}
+\hypertarget{class_prop_viewer}{}\label{class_prop_viewer}\index{PropViewer@{PropViewer}}
+Inheritance diagram for Prop\+Viewer\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_prop_viewer}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Slots}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_prop_viewer_a6cb95d0e9b0f66ced822406606a26677}\label{class_prop_viewer_a6cb95d0e9b0f66ced822406606a26677} 
+void {\bfseries rot\+Xediting\+Finished} ()
+\item 
+\Hypertarget{class_prop_viewer_af0b023bdcf9a9618d57b771f92611b40}\label{class_prop_viewer_af0b023bdcf9a9618d57b771f92611b40} 
+void {\bfseries changed\+RotX} (double)
+\item 
+\Hypertarget{class_prop_viewer_a881e8ce9f9834319e70ebc870c2d1c0e}\label{class_prop_viewer_a881e8ce9f9834319e70ebc870c2d1c0e} 
+void {\bfseries changed\+RotY} (double)
+\item 
+\Hypertarget{class_prop_viewer_a095f0a9ccff7a2dabe70b69ca2c42a3f}\label{class_prop_viewer_a095f0a9ccff7a2dabe70b69ca2c42a3f} 
+void {\bfseries changed\+RotZ} (double)
+\item 
+\Hypertarget{class_prop_viewer_a76ba7e115c23f046083568d8b7df6786}\label{class_prop_viewer_a76ba7e115c23f046083568d8b7df6786} 
+void {\bfseries changed\+Tra\+XYZ} (double)
+\item 
+\Hypertarget{class_prop_viewer_a88950200217c53759f9f4281ce628231}\label{class_prop_viewer_a88950200217c53759f9f4281ce628231} 
+void {\bfseries changed\+Scale} (double)
+\item 
+\Hypertarget{class_prop_viewer_af8bf1fc2d9ba7205a6e71652c7a7f243}\label{class_prop_viewer_af8bf1fc2d9ba7205a6e71652c7a7f243} 
+void {\bfseries changed\+BGcolor} (double)
+\item 
+\Hypertarget{class_prop_viewer_a5d4672ee5cbc38b7927f3f85325abeee}\label{class_prop_viewer_a5d4672ee5cbc38b7927f3f85325abeee} 
+void {\bfseries changed\+Angle} (int)
+\item 
+\Hypertarget{class_prop_viewer_ab055ecfef6718ff89ec67bc7e306242d}\label{class_prop_viewer_ab055ecfef6718ff89ec67bc7e306242d} 
+void {\bfseries changed\+Ortho\+View\+Size} (double)
+\item 
+\Hypertarget{class_prop_viewer_a477fd66ce5195d8bfdf6ecd5dfbf6d26}\label{class_prop_viewer_a477fd66ce5195d8bfdf6ecd5dfbf6d26} 
+void {\bfseries radio\+Prop\+Toggled} (bool)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_prop_viewer_a2598888a01fede832f1024e3bffbfa0b}\label{class_prop_viewer_a2598888a01fede832f1024e3bffbfa0b} 
+{\bfseries Prop\+Viewer} (\mbox{\hyperlink{class_g_l_viewer}{GLViewer}} \texorpdfstring{$\ast$}{*}m, QWidget \texorpdfstring{$\ast$}{*}parent=0)
+\item 
+\Hypertarget{class_prop_viewer_af6e05f38401ac3b6eeb96373a541c6fd}\label{class_prop_viewer_af6e05f38401ac3b6eeb96373a541c6fd} 
+virtual void {\bfseries paint\+Event} (QPaint\+Event \texorpdfstring{$\ast$}{*}event) override
+\item 
+virtual void \mbox{\hyperlink{class_prop_viewer_a7941a64b3bebf5098f68d909ea61602b}{update\+Properties}} () override
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_prop_widget}{Prop\+Widget}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Prop\+Widget} (QWidget \texorpdfstring{$\ast$}{*}parent=0)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_prop_viewer_aaf8c9fdea8340712f4ac687b2f57e0f3}\label{class_prop_viewer_aaf8c9fdea8340712f4ac687b2f57e0f3} 
+static \mbox{\hyperlink{class_prop_widget}{Prop\+Widget}} \texorpdfstring{$\ast$}{*} {\bfseries create} (\mbox{\hyperlink{class_g_l_viewer}{GLViewer}} \texorpdfstring{$\ast$}{*}m, QWidget \texorpdfstring{$\ast$}{*}parent=0)
+\item 
+\Hypertarget{class_prop_viewer_a4c903970c3c8668b640a9dc529f4f1ae}\label{class_prop_viewer_a4c903970c3c8668b640a9dc529f4f1ae} 
+static QVector$<$ \mbox{\hyperlink{class_prop_widget}{Prop\+Widget}} \texorpdfstring{$\ast$}{*} $>$ {\bfseries create\+\_\+and\+\_\+get\+\_\+subwidgets} (\mbox{\hyperlink{class_g_l_viewer}{GLViewer}} \texorpdfstring{$\ast$}{*}m)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_prop_widget}{Prop\+Widget}}}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{class_prop_widget}{Prop\+Widget}} \texorpdfstring{$\ast$}{*} {\bfseries build} (QVector$<$ \mbox{\hyperlink{class_prop_widget}{Prop\+Widget}} \texorpdfstring{$\ast$}{*} $>$ content, QWidget \texorpdfstring{$\ast$}{*}parent=0)
+\item 
+static QVector$<$ \mbox{\hyperlink{class_prop_widget}{Prop\+Widget}} \texorpdfstring{$\ast$}{*} $>$ {\bfseries create\+\_\+and\+\_\+get\+\_\+subwidgets} (\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*}obj)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{class_prop_widget}{Prop\+Widget}}}
+\begin{DoxyCompactItemize}
+\item 
+QString {\bfseries tree\+Item\+Label}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_prop_viewer_a7941a64b3bebf5098f68d909ea61602b}\index{PropViewer@{PropViewer}!updateProperties@{updateProperties}}
+\index{updateProperties@{updateProperties}!PropViewer@{PropViewer}}
+\doxysubsubsection{\texorpdfstring{updateProperties()}{updateProperties()}}
+{\footnotesize\ttfamily \label{class_prop_viewer_a7941a64b3bebf5098f68d909ea61602b} 
+void Prop\+Viewer\+::update\+Properties (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_prop_widget}{Prop\+Widget}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/core/prop\+Viewer.\+h\item 
+src/core/prop\+Viewer.\+cpp\end{DoxyCompactItemize}

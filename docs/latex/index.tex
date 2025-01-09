@@ -1,0 +1,87 @@
+\chapter{dp\+Vision (data processing for vision)}
+\hypertarget{index}{}\label{index}\index{dpVision (data processing for vision)@{dpVision (data processing for vision)}}
+\label{index_md__r_e_a_d_m_e}%
+\Hypertarget{index_md__r_e_a_d_m_e}%
+ The dp\+Vision software framework offers a flexible platform for implementing and testing various data and image processing algorithms. It handles multimodal data across various formats and dimensions, acquired with different imaging techniques like 3D scanning or medical imaging. Support for various object types within a common space enables efficient multimodal image processing and algorithm testing, addressing the limitations of existing solutions.
+
+
+
+
+\begin{DoxyItemize}
+\item The application currently compiles and runs only on Windows
+\item Easy CMake-\/based configuration
+\item Building with Min\+GW and MSVC++ was tested.
+\end{DoxyItemize}\hypertarget{index_autotoc_md1}{}\doxysection{\texorpdfstring{prerequisites}{prerequisites}}\label{index_autotoc_md1}
+
+\begin{DoxyItemize}
+\item Qt5 (\href{https://www.qt.io/}{\texttt{ https\+://www.\+qt.\+io/}}), and\+:
+\begin{DoxyItemize}
+\item Qt\+Zlib or zlib if Qt\+Zlib is not found
+\item Qua\+Zip\+: \href{https://quazip.sourceforge.net/}{\texttt{ https\+://quazip.\+sourceforge.\+net/}}
+\end{DoxyItemize}
+\item Eigen3 (\href{https://eigen.tuxfamily.org/index.php?title=Main_Page}{\texttt{ https\+://eigen.\+tuxfamily.\+org/index.\+php?title=\+Main\+\_\+\+Page}})
+\item boost
+\begin{DoxyItemize}
+\item install boost package if your system can do it... (it is the fastest and most elegant way).
+\item or alternatively download current release from \href{https://www.boost.org/}{\texttt{ https\+://www.\+boost.\+org/}} and unpack it to 3rd\+Party folder (it is fast too)
+\item or alternatively (much slower but most recent sources) enter to 3rd\+Party folder and clone boost into it\+:
+\begin{DoxyItemize}
+\item git clone --recurse-\/submodules \href{https://github.com/boostorg/boost}{\texttt{ https\+://github.\+com/boostorg/boost}}
+\end{DoxyItemize}
+\item if you choosed second or third way, enter the 3rd\+Party folder and execute two commands (change slash to backslash on Windows)\+:
+\begin{DoxyItemize}
+\item ./bootstrap
+\item ./b2
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{index_autotoc_md2}{}\doxysection{\texorpdfstring{Build with Min\+GW}{Build with Min\+GW}}\label{index_autotoc_md2}
+
+\begin{DoxyItemize}
+\item clone this repository
+\end{DoxyItemize}
+
+{\ttfamily git clone \href{https://github.com/pojdulos/dpVision.git}{\texttt{ https\+://github.\+com/pojdulos/dp\+Vision.\+git}}}
+
+
+\begin{DoxyItemize}
+\item go into project directory
+\end{DoxyItemize}
+
+{\ttfamily cd dp\+Vision}
+
+
+\begin{DoxyItemize}
+\item create build folder and go into it
+\end{DoxyItemize}
+
+{\ttfamily mkdir build}
+
+{\ttfamily cd build}
+
+
+\begin{DoxyItemize}
+\item configure project for Min\+GW compiler (recommended) with CMake
+\end{DoxyItemize}
+
+{\ttfamily cmake -\/G"{}\+Unix Makefiles"{} -\/D CMAKE\+\_\+\+CXX\+\_\+\+COMPILER=g++ -\/DCMAKE\+\_\+\+BUILD\+\_\+\+TYPE=Release ../src}
+
+
+\begin{DoxyItemize}
+\item build project
+\end{DoxyItemize}
+
+{\ttfamily make}
+
+
+\begin{DoxyItemize}
+\item run dp\+Vision application
+\end{DoxyItemize}
+
+{\ttfamily ./dp\+Vision.exe}
+
+
+\begin{DoxyItemize}
+\item optionaly create portable folder
+\end{DoxyItemize}
+
+{\ttfamily make bin} 

@@ -1,0 +1,71 @@
+\doxysection{DPFile\+Info.\+h}
+\hypertarget{_d_p_file_info_8h_source}{}\label{_d_p_file_info_8h_source}\index{src/core/DPFileInfo.h@{src/core/DPFileInfo.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#ifndef\ \_DPFILEINFO\_H\_BY\_DP\_INCLUDED\_}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#define\ \_DPFILEINFO\_H\_BY\_DP\_INCLUDED\_}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}UI.h"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <QtCore/QString>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <QtCore/QFileInfo>}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_file_info}{CFileInfo}}\ :\ \textcolor{keyword}{public}\ QFileInfo}
+\DoxyCodeLine{00012\ \{}
+\DoxyCodeLine{00013\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00014\ \ \ \ \ \mbox{\hyperlink{class_c_file_info}{CFileInfo}}(\textcolor{keywordtype}{void})\ :\ QFileInfo()\ \{\}}
+\DoxyCodeLine{00015\ \ \ \ \ \mbox{\hyperlink{class_c_file_info}{CFileInfo}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ mypath)\ :\ QFileInfo(QString(mypath))\ \{\}}
+\DoxyCodeLine{00016\ \ \ \ \ \mbox{\hyperlink{class_c_file_info}{CFileInfo}}(\textcolor{keyword}{const}\ QString\ mypath)\ :\ QFileInfo(mypath)\ \{\}}
+\DoxyCodeLine{00017\ \ \ \ \ \mbox{\hyperlink{class_c_file_info}{CFileInfo}}(\textcolor{keyword}{const}\ std::string\ mypath)\ :\ QFileInfo(QString::fromStdString(mypath))\ \{\}}
+\DoxyCodeLine{00018\ \ \ \ \ \mbox{\hyperlink{class_c_file_info}{CFileInfo}}(\textcolor{keyword}{const}\ std::wstring\ mypath)\ :\ QFileInfo(QString::fromStdWString(mypath))\ \{\}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ setPath(\textcolor{keyword}{const}\ QString\ mypath)\ \{\ setFile(mypath);\ \}}
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ setPath(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ mypath)\ \{\ setFile(QString(mypath));\ \}}
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ setPath(\textcolor{keyword}{const}\ std::string\ mypath)\ \{\ setFile(QString::fromStdString(mypath));\ \}}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ setPath(\textcolor{keyword}{const}\ std::wstring\ mypath)\ \{\ setFile(QString::fromStdWString(mypath));\ \}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ }
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ setDir(\textcolor{keyword}{const}\ QString\ dir)\ \{\ setFile(dir\ +\ \textcolor{stringliteral}{"{}/"{}}\ +\ fileName());\ \}}
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ setDir(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ dir)\ \{\ setFile(QString(dir)\ +\ \textcolor{stringliteral}{"{}/"{}}\ +\ fileName());\ \}}
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ setDir(\textcolor{keyword}{const}\ std::string\ dir)\ \{\ setFile(QString::fromStdString(dir)\ +\ \textcolor{stringliteral}{"{}/"{}}\ +\ fileName());\ \}}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ setDir(\textcolor{keyword}{const}\ std::wstring\ dir)\ \{\ setFile(QString::fromStdWString(dir)\ +\ \textcolor{stringliteral}{"{}/"{}}\ +\ fileName());\ \}}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \ \ }
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ setName(\textcolor{keyword}{const}\ QString\ name)\ \{\ setFile(absolutePath()\ +\ \textcolor{stringliteral}{"{}/"{}}\ +\ name\ +\ \textcolor{stringliteral}{"{}."{}}\ +\ suffix());\ \}}
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ setName(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ name)\ \{\ setFile(absolutePath()\ +\ \textcolor{stringliteral}{"{}/"{}}\ +\ QString(name)\ +\ \textcolor{stringliteral}{"{}."{}}\ +\ suffix());\ \}}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ setName(\textcolor{keyword}{const}\ std::string\ name)\ \{\ setFile(absolutePath()\ +\ \textcolor{stringliteral}{"{}/"{}}\ +\ QString::fromStdString(name)\ +\ \textcolor{stringliteral}{"{}."{}}\ +\ suffix());\ \}}
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ setName(\textcolor{keyword}{const}\ std::wstring\ name)\ \{\ setFile(absolutePath()\ +\ \textcolor{stringliteral}{"{}/"{}}\ +\ QString::fromStdWString(name)\ +\ \textcolor{stringliteral}{"{}."{}}\ +\ suffix());\ \}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ setExt(\textcolor{keyword}{const}\ QString\ ext)\ \{\ setFile(absolutePath()\ +\ \textcolor{stringliteral}{"{}/"{}}\ +\ completeBaseName()\ +\ \textcolor{stringliteral}{"{}."{}}\ +\ ext);\ \}}
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ setExt(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ ext)\ \{\ setFile(absolutePath()\ +\ \textcolor{stringliteral}{"{}/"{}}\ +\ completeBaseName()\ +\ \textcolor{stringliteral}{"{}."{}}\ +\ QString(ext)\ );\ \}}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ setExt(\textcolor{keyword}{const}\ std::string\ ext)\ \{\ setFile(absolutePath()\ +\ \textcolor{stringliteral}{"{}/"{}}\ +\ completeBaseName()\ +\ \textcolor{stringliteral}{"{}."{}}\ +\ QString::fromStdString(ext));\ \}}
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ setExt(\textcolor{keyword}{const}\ std::wstring\ ext)\ \{\ setFile(absolutePath()\ +\ \textcolor{stringliteral}{"{}/"{}}\ +\ completeBaseName()\ +\ \textcolor{stringliteral}{"{}."{}}\ +\ QString::fromStdWString(ext));\ \}}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keyword}{inline}\ std::wstring\ absolutePathW(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ absolutePath().toStdWString();\ \};}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{inline}\ std::string\ absolutePathA(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ absolutePath().toStdString();\ \};}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keyword}{inline}\ std::wstring\ suffixW(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ suffix().toStdWString();\ \};}
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keyword}{inline}\ std::string\ suffixA(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ suffix().toStdString();\ \};}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keyword}{inline}\ std::wstring\ completeBaseNameW(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ completeBaseName().toStdWString();\ \};}
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keyword}{inline}\ std::string\ completeBaseNameA(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ completeBaseName().toStdString();\ \};}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keyword}{inline}\ std::wstring\ absoluteFilePathW(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ absoluteFilePath().toStdWString();\ \}}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keyword}{inline}\ std::string\ absoluteFilePathA(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ absoluteFilePath().toStdString();\ \}}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \ \ \ \ std::wstring\ fileNameW(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ fileName().toStdWString();\ \};}
+\DoxyCodeLine{00057\ \ \ \ \ std::string\ fileNameA(\textcolor{keywordtype}{void})\ \{\ \textcolor{keywordflow}{return}\ fileName().toStdString();\ \};}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ hasExt(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ myext)\ \{\ \textcolor{keywordflow}{return}\ 0\ ==\ QString(myext).compare(suffix(),\ Qt::CaseInsensitive);\ \}}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ hasExt(\textcolor{keyword}{const}\ QString\ myext)\ \{\ \textcolor{keywordflow}{return}\ 0\ ==\ myext.compare(suffix(),\ Qt::CaseInsensitive);\ \}}
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ hasExt(\textcolor{keyword}{const}\ std::string\ myext)\ \{\ \textcolor{keywordflow}{return}\ 0\ ==\ QString::fromStdString(myext).compare(suffix(),\ Qt::CaseInsensitive);\ \}}
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ hasExt(\textcolor{keyword}{const}\ std::wstring\ myext)\ \{\ \textcolor{keywordflow}{return}\ 0\ ==\ QString::fromStdWString(myext).compare(suffix(),\ Qt::CaseInsensitive);\ \}}
+\DoxyCodeLine{00063\ \};}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ \_DPFILEINFO\_H\_BY\_DP\_INCLUDED\_\ */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

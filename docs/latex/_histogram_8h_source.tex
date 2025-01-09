@@ -1,0 +1,143 @@
+\doxysection{Histogram.\+h}
+\hypertarget{_histogram_8h_source}{}\label{_histogram_8h_source}\index{src/core/Histogram.h@{src/core/Histogram.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <algorithm>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}RGBA.h"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}Annotation.h"{}}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}PointCloud.h"{}}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{keyword}{class\ \ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_histogram}{CHistogram}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_c_annotation}{CAnnotation}}}
+\DoxyCodeLine{00010\ \{}
+\DoxyCodeLine{00011\ \ \ \ \ std::vector<double>\ m\_data;}
+\DoxyCodeLine{00012\ \ \ \ \ \mbox{\hyperlink{class_c_point_cloud}{CPointCloud}}*\ m\_destination;}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \ \ \ \ \textcolor{keywordtype}{double}\ m\_dataMin;}
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keywordtype}{double}\ m\_dataMax;}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keywordtype}{double}\ m\_lowerLimit;}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keywordtype}{double}\ m\_upperLimit;}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keywordtype}{int}\ m\_levels;}
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keywordtype}{bool}\ m\_absValues;}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keywordtype}{double}\ m\_mean;}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keywordtype}{double}\ m\_stdev;}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keywordtype}{double}\ m\_werror;}
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keywordtype}{double}\ m\_wstdev;}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ BlueGreenRed,}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ Grayscale,}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ GreenRed}
+\DoxyCodeLine{00034\ \ \ \ \ \}\ ColorMode;}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *\ colorModeString[3]\ =\ \{}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}BlueGreenRed"{}},}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Grayscale"{}},}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GreenRed"{}}}
+\DoxyCodeLine{00040\ \ \ \ \ \};}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ std::vector<size\_t>\ m\_values;}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ m\_underRange;}
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ m\_overRange;}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ m\_undefined;}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keywordtype}{bool}\ m\_showOutOfRangeData;}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keywordtype}{bool}\ showOutlayers\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keywordtype}{bool}\ showLabels\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{comment}{//size\_t\ m\_valMax;}}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \ \ \ \ \mbox{\hyperlink{class_c_histogram}{CHistogram}}(\ std::vector<double>\ data,\ \textcolor{keywordtype}{int}\ levels=512\ );}
+\DoxyCodeLine{00056\ \ \ \ \ \mbox{\hyperlink{class_c_histogram}{CHistogram}}(\ \mbox{\hyperlink{class_c_model3_d}{CModel3D}}*\ parent,\ std::vector<double>\ data,\ \textcolor{keywordtype}{int}\ levels\ =\ 512);}
+\DoxyCodeLine{00057\ \ \ \ \ \mbox{\hyperlink{class_c_histogram}{\string~CHistogram}}();}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keywordtype}{void}\ setData(std::vector<double>\ \&data);}
+\DoxyCodeLine{00060\ \ \ \ \ std::vector<double>\ \&\ getData();}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keywordtype}{void}\ setDest(\mbox{\hyperlink{class_c_point_cloud}{CPointCloud}}*\ dest)\ \{\ m\_destination\ =\ dest;\ \};}
+\DoxyCodeLine{00063\ \ \ \ \ \mbox{\hyperlink{class_c_point_cloud}{CPointCloud}}*\ getDest()\ \{\ \textcolor{keywordflow}{return}\ m\_destination;\ \};}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{keywordtype}{double}\ getDataMin()\ \{\ \textcolor{keywordflow}{return}\ m\_dataMin;\ \};}
+\DoxyCodeLine{00066\ \ \ \ \ \textcolor{keywordtype}{double}\ getDataMax()\ \{\ \textcolor{keywordflow}{return}\ m\_dataMax;\ \};}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keywordtype}{double}\ getLowerLimit()\ \{\ \textcolor{keywordflow}{return}\ m\_lowerLimit;\ \};}
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{keywordtype}{double}\ getUpperLimit()\ \{\ \textcolor{keywordflow}{return}\ m\_upperLimit;\ \};}
+\DoxyCodeLine{00070\ \ \ \ \ std::pair<double,\ double>\ getLimits()\ \{\ \textcolor{keywordflow}{return}\ std::pair<double,\ double>(m\_lowerLimit,\ m\_upperLimit);\ \}}
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keywordtype}{void}\ setLowerLimit(\textcolor{keywordtype}{double}\ lower\ =\ DBL\_MAX);}
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keywordtype}{void}\ setUpperLimit(\textcolor{keywordtype}{double}\ upper\ =\ -\/DBL\_MAX);}
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keywordtype}{void}\ setLimits(\textcolor{keywordtype}{double}\ lower\ =\ DBL\_MAX,\ \textcolor{keywordtype}{double}\ upper\ =\ -\/DBL\_MAX);}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keywordtype}{void}\ setLevels(\textcolor{keywordtype}{int}\ levels);}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keywordtype}{int}\ getLevels()\ \{\ \textcolor{keywordflow}{return}\ m\_levels;\ \};}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \ \ \textcolor{keywordtype}{void}\ setAbsValues(\textcolor{keywordtype}{bool}\ b);}
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{keywordtype}{bool}\ getAbsValues()\ \{\ \textcolor{keywordflow}{return}\ m\_absValues;\ \};}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keywordtype}{double}\ getMean()\ \{\ \textcolor{keywordflow}{return}\ m\_mean;\ \};}
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{keywordtype}{double}\ getStDev()\ \{\ \textcolor{keywordflow}{return}\ m\_stdev;\ \};}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{keywordtype}{double}\ getWerror()\ \{\ \textcolor{keywordflow}{return}\ m\_werror;\ \};}
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keywordtype}{double}\ getWstDev()\ \{\ \textcolor{keywordflow}{return}\ m\_wstdev;\ \};}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \ \ \ \ \textcolor{keywordtype}{double}\ getStep()\ \{\ \textcolor{keywordflow}{return}\ (m\_upperLimit\ -\/\ m\_lowerLimit)\ /\ m\_levels;\ \};}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \ \ \ \ \textcolor{keywordtype}{int}\ getHistogramIndex(\ \textcolor{keywordtype}{double}\ value\ );}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \ \ \ \ \textcolor{keywordtype}{void}\ setColorMode(CHistogram::ColorMode\ mode)\ \{\ m\_colormode\ =\ mode;\ \};}
+\DoxyCodeLine{00094\ \ \ \ \ CHistogram::ColorMode\ getColorMode()\ \{\ \textcolor{keywordflow}{return}\ m\_colormode;\ \};}
+\DoxyCodeLine{00095\ \ \ \ \ }
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keyword}{inline}\ \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}}\ getColor(\textcolor{keywordtype}{int}\ index)\ \{\ \textcolor{keywordflow}{return}\ getColor(index,\ m\_colormode);\ \};}
+\DoxyCodeLine{00097\ \ \ \ \ \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}}\ getColor(\textcolor{keywordtype}{int}\ index,\ CHistogram::ColorMode\ mode\ );}
+\DoxyCodeLine{00098\ \ \ \ \ QColor\ getQColor(\textcolor{keywordtype}{int}\ index);}
+\DoxyCodeLine{00099\ \ \ \ \ \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}}\ getColorGR(\textcolor{keywordtype}{int}\ index);}
+\DoxyCodeLine{00100\ \ \ \ \ \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}}\ getColorBGR(\textcolor{keywordtype}{int}\ index);}
+\DoxyCodeLine{00101\ \ \ \ \ \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}}\ getColorGray(\textcolor{keywordtype}{int}\ index);}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \ \ \ \ \textcolor{keywordtype}{void}\ repaint();}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ setSelfVisibility(\textcolor{keywordtype}{bool}\ sel)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{keywordtype}{void}\ colorizeParentVertices(\textcolor{keywordtype}{bool}\ b=\textcolor{keyword}{true});}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \ \ \ \ \textcolor{keyword}{static}\ std::pair<double,double>\ unifyLimits(std::vector<CHistogram*>);}
+\DoxyCodeLine{00110\ \ \ \ \ \textcolor{keyword}{static}\ std::pair<double,\ double>\ unifyLimits(std::vector<CHistogram*>,\ std::pair<double,\ double>\ );}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \ \ \ \ CHistogram::ColorMode\ m\_colormode;}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ \ \ \ \ std::pair<double,\ double>\ range(\textcolor{keywordtype}{int}\ i);}
+\DoxyCodeLine{00115\ }
+\DoxyCodeLine{00116\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ value(\textcolor{keywordtype}{size\_t}\ i)\ \{\ \textcolor{keywordflow}{return}\ m\_values.at(i);\ \};}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{size\_t}\ maxBarValue()\ \{\ \textcolor{keywordflow}{return}\ *std::max\_element(std::begin(m\_values),\ std::end(m\_values));\ \};}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{int}\ type()\textcolor{keyword}{\ override\ }\{\ \textcolor{keywordflow}{return}\ CAnnotation::HISTOGRAM;\ \}}
+\DoxyCodeLine{00121\ \ \ \ \ \textcolor{keyword}{virtual}\ std::wstring\ getTypeWSTR()\ \{\ \textcolor{keywordflow}{return}\ L\textcolor{stringliteral}{"{}histogram"{}};\ \};}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ savePLT(std::wstring\ fdir,\ std::wstring\ fname,\ std::vector<CHistogram*>\ v,\ \textcolor{keywordtype}{bool}\ eqLevels\ );}
+\DoxyCodeLine{00124\ \ \ \ \ }
+\DoxyCodeLine{00125\ \ \ \ \ \textcolor{keywordtype}{void}\ save(QString\ fdir,\ QString\ fname);}
+\DoxyCodeLine{00126\ \ \ \ \ \textcolor{keywordtype}{void}\ save(std::wstring\ fdir,\ std::wstring\ fname);}
+\DoxyCodeLine{00127\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ save(std::vector<CHistogram*>,\ std::wstring\ fdir,\ std::wstring\ fname,\ \textcolor{keywordtype}{bool}\ showOutOfRangeData=\textcolor{keyword}{false});}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{keywordtype}{double}\ getNormalDistributionVal(\textcolor{keywordtype}{double}\ x);}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \ \ \ \ \textcolor{keywordtype}{void}\ calcGlobalError(\textcolor{keywordtype}{double}\ lowerLimit\ =\ -\/DBL\_MAX,\ \textcolor{keywordtype}{double}\ upperLimit\ =\ DBL\_MAX);}
+\DoxyCodeLine{00132\ }
+\DoxyCodeLine{00133\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00134\ \ \ \ \ \textcolor{keywordtype}{void}\ recalcValues();}
+\DoxyCodeLine{00135\ }
+\DoxyCodeLine{00136\ \};}
+\DoxyCodeLine{00137\ }
+
+\end{DoxyCode}

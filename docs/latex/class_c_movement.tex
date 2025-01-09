@@ -1,0 +1,514 @@
+\doxysection{CMovement Class Reference}
+\hypertarget{class_c_movement}{}\label{class_c_movement}\index{CMovement@{CMovement}}
+Inheritance diagram for CMovement\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_c_movement}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{class_c_movement_1_1_frame_val}{Frame\+Val}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_movement_a77ff3890544daf31ac8026a234b27033}\label{class_c_movement_a77ff3890544daf31ac8026a234b27033} 
+typedef QList$<$ \mbox{\hyperlink{class_c_movement_1_1_frame_val}{Frame\+Val}} $>$ {\bfseries Seq\+List}
+\item 
+\Hypertarget{class_c_movement_ad4f910a9229c546c1d9969a2f57340b9}\label{class_c_movement_ad4f910a9229c546c1d9969a2f57340b9} 
+typedef QList\+Iterator$<$ \mbox{\hyperlink{class_c_movement_1_1_frame_val}{Frame\+Val}} $>$ {\bfseries Seq\+List\+Iterator}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Types inherited from \mbox{\hyperlink{class_c_object}{CObject}}}
+\begin{DoxyCompactItemize}
+\item 
+typedef std\+::map$<$ int, \mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} $>$ {\bfseries Children}
+\item 
+typedef std\+::map$<$ int, \mbox{\hyperlink{class_c_annotation}{CAnnotation}} \texorpdfstring{$\ast$}{*} $>$ {\bfseries Annotations}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Types inherited from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_base_object_afb0822280ac2bb225cb43c99e8f6dc84}\label{class_c_base_object_afb0822280ac2bb225cb43c99e8f6dc84} 
+enum {\bfseries Category} \{ {\bfseries UNKNOWN}
+, {\bfseries OBJECT}
+, {\bfseries ANNOTATION}
+ \}
+\item 
+\Hypertarget{class_c_base_object_aa0d965c2b5d9bd03c45ba2b0fe4fe8c6}\label{class_c_base_object_aa0d965c2b5d9bd03c45ba2b0fe4fe8c6} 
+enum {\bfseries Type} \{ \newline
+{\bfseries GENERIC}
+, {\bfseries GROUP}
+, {\bfseries MODEL}
+, {\bfseries MOVEMENT}
+, \newline
+{\bfseries IMAGE}
+, {\bfseries CLOUD}
+, {\bfseries ORDEREDCLOUD}
+, {\bfseries MESH}
+, \newline
+{\bfseries VOLUMETRIC}
+, {\bfseries VOLUMETRIC\+\_\+\+NEW}
+, {\bfseries VOLTK}
+, {\bfseries LIDAR}
+, \newline
+{\bfseries OTHER}
+, {\bfseries BASEANNOTATION}
+, {\bfseries POINT}
+, {\bfseries POINTS}
+, \newline
+{\bfseries BOUNDVECTORS}
+, {\bfseries VERTEX}
+, {\bfseries SETOFVERTICES}
+, {\bfseries PATH}
+, \newline
+{\bfseries VPATH}
+, {\bfseries ELASTICPATH}
+, {\bfseries PLANE}
+, {\bfseries BOX}
+, \newline
+{\bfseries CURVATUREMAP}
+, {\bfseries ATSHELL}
+, {\bfseries SETOFFACES}
+, {\bfseries EDGES}
+, \newline
+{\bfseries POLYGON}
+, {\bfseries POLYGON2D}
+, {\bfseries CAMERA}
+, {\bfseries SETOFCAMERAS}
+, \newline
+{\bfseries PYRAMID}
+, {\bfseries CYLINDER}
+, {\bfseries PODKOWA}
+, {\bfseries HISTOGRAM}
+, \newline
+{\bfseries TRIPLE}
+, {\bfseries SPHERE}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Types inherited from \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_bounding_box_ae038c7cb07ded81ab8f4dacb0857d33d}\label{class_c_bounding_box_ae038c7cb07ded81ab8f4dacb0857d33d} 
+enum {\bfseries Initial\+Values} \{ {\bfseries Null\+BB}
+, {\bfseries Invalid\+BB}
+ \}
+\item 
+\Hypertarget{class_c_bounding_box_ab1000ce98eebe38c2ff2881b0d5843aa}\label{class_c_bounding_box_ab1000ce98eebe38c2ff2881b0d5843aa} 
+enum {\bfseries Style} \{ {\bfseries Dont\+Render} = 0
+, {\bfseries Not\+Selected} = 1
+, {\bfseries Unlocked} = 2
+, {\bfseries Locked} = 3
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_movement_a393eff31af3b10b8ca961adc1351cba3}\label{class_c_movement_a393eff31af3b10b8ca961adc1351cba3} 
+{\bfseries CMovement} (const \mbox{\hyperlink{class_c_movement}{CMovement}} \&m)
+\item 
+\Hypertarget{class_c_movement_a02bd785c0102fbf9f7523ccf12658b1f}\label{class_c_movement_a02bd785c0102fbf9f7523ccf12658b1f} 
+{\bfseries CMovement} (const Seq\+List \&s)
+\item 
+int \mbox{\hyperlink{class_c_movement_a2ffb8011de764619e01427c60afb2dc5}{type}} () override
+\item 
+\mbox{\hyperlink{class_c_movement}{CMovement}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_c_movement_a3e9529648bc5db93db935a78d83298e8}{get\+Copy}} () override
+\item 
+void \mbox{\hyperlink{class_c_movement_a960ea966e1c80fba7838faff1bc904ce}{info}} (std\+::wstring i\mbox{[}4\mbox{]}) override
+\item 
+std\+::wstring \mbox{\hyperlink{class_c_movement_a5dac57f0c3ba3c364585f07fb4b66a9c}{info\+Row}} () override
+\item 
+virtual bool \mbox{\hyperlink{class_c_movement_a690b9666ae44f7942b691e516c90d167}{has\+Transformation}} () override
+\item 
+virtual Eigen\+::\+Matrix4d \mbox{\hyperlink{class_c_movement_ae4b30f6e22ea909dd13b60c6c436b4c0}{get\+Transformation\+Matrix}} () override
+\item 
+virtual void \mbox{\hyperlink{class_c_movement_a9ec761471c08d727d6c95bb47799e585}{render\+Kids}} () override
+\item 
+\Hypertarget{class_c_movement_a800e9db31552a28b9843ef7355011aa0}\label{class_c_movement_a800e9db31552a28b9843ef7355011aa0} 
+void {\bfseries start\+Playing} ()
+\item 
+\Hypertarget{class_c_movement_ad381c52335d3471497903ab7b7e6cbe8}\label{class_c_movement_ad381c52335d3471497903ab7b7e6cbe8} 
+void {\bfseries stop\+Playing} ()
+\item 
+\Hypertarget{class_c_movement_a722b45dc31eba4f6accb412e67e316c4}\label{class_c_movement_a722b45dc31eba4f6accb412e67e316c4} 
+bool {\bfseries is\+Playing} ()
+\item 
+\Hypertarget{class_c_movement_a4d8650032d3db481646ac8d9b1b8d4e3}\label{class_c_movement_a4d8650032d3db481646ac8d9b1b8d4e3} 
+void {\bfseries set\+Key} (int k)
+\item 
+\Hypertarget{class_c_movement_aa5e2781d6f68c8f395afa5cd52865bb5}\label{class_c_movement_aa5e2781d6f68c8f395afa5cd52865bb5} 
+int {\bfseries increase\+Key} (bool \+\_\+loop=false)
+\item 
+\Hypertarget{class_c_movement_aa6856057e73d4d734041a07533a8406f}\label{class_c_movement_aa6856057e73d4d734041a07533a8406f} 
+int {\bfseries current\+Key} ()
+\item 
+\Hypertarget{class_c_movement_ac9aca3ae2d2829b19639d3f1fe91cef6}\label{class_c_movement_ac9aca3ae2d2829b19639d3f1fe91cef6} 
+int {\bfseries size} () const
+\item 
+\Hypertarget{class_c_movement_aeec48e8312aeb05782a5020cb005aaf2}\label{class_c_movement_aeec48e8312aeb05782a5020cb005aaf2} 
+\mbox{\hyperlink{class_c_movement_1_1_frame_val}{Frame\+Val}} \& {\bfseries current\+Frame} ()
+\item 
+\Hypertarget{class_c_movement_a239b4f5fdc53763cab2e68fbb26712f9}\label{class_c_movement_a239b4f5fdc53763cab2e68fbb26712f9} 
+\mbox{\hyperlink{class_c_movement_1_1_frame_val}{Frame\+Val}} \& {\bfseries frame} (int k)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_c_object}{CObject}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries CObject} (\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*}p=nullptr)
+\item 
+{\bfseries CObject} (int parent\+Id)
+\item 
+{\bfseries CObject} (const \mbox{\hyperlink{class_c_object}{CObject}} \&b)
+\item 
+virtual void \mbox{\hyperlink{class_c_object_a65aea5b119e08012177ac96c2d849489}{apply\+Transformation}} (\mbox{\hyperlink{class_c_transform}{CTransform}} \&from, \mbox{\hyperlink{class_c_transform}{CTransform}} \&to) override
+\item 
+virtual CBase\+Object\+::\+Category \mbox{\hyperlink{class_c_object_afc9d0d4ff86e34f7216b02b596c8b846}{category}} () override
+\item 
+std\+::wstring \mbox{\hyperlink{class_c_object_a1acca3ec7c4b98f67fcc6af150df33c3}{info\+Row}} () override
+\item 
+void \mbox{\hyperlink{class_c_object_a8b27b9ed5c67b8dfefded169cc5036e9}{info}} (std\+::wstring i\mbox{[}4\mbox{]}) override
+\item 
+virtual \mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries get\+Something\+With\+Id} (int id)
+\item 
+Annotations \& {\bfseries annotations} ()
+\item 
+\mbox{\hyperlink{class_c_annotation}{CAnnotation}} \texorpdfstring{$\ast$}{*} {\bfseries annotation} (int id)
+\item 
+int {\bfseries add\+Annotation} (\mbox{\hyperlink{class_c_annotation}{CAnnotation}} \texorpdfstring{$\ast$}{*}ad)
+\item 
+\mbox{\hyperlink{class_c_annotation}{CAnnotation}} \texorpdfstring{$\ast$}{*} {\bfseries remove\+Annotation} (int)
+\item 
+bool {\bfseries remove\+Annotation} (\mbox{\hyperlink{class_c_annotation}{CAnnotation}} \texorpdfstring{$\ast$}{*}an)
+\item 
+bool \mbox{\hyperlink{class_c_object_a518a6a907213a652a64b0ec546f2142a}{has\+Children}} () override
+\item 
+virtual void \mbox{\hyperlink{class_c_object_ac06f9e0d06bb6c219d0bb13a3c210641}{show\+Children}} (bool show, QSet$<$ CBase\+Object\+::\+Type $>$ inc=\{\}, QSet$<$ CBase\+Object\+::\+Type $>$ exc=\{\}) override
+\item 
+\mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} \& {\bfseries get\+Bounding\+Box} ()
+\item 
+\mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} \& {\bfseries expand\+Bounding\+Box} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&p)
+\item 
+void {\bfseries reset\+Bounding\+Box} (CBounding\+Box\+::\+Initial\+Values v=CBounding\+Box\+::\+Initial\+Values\+::\+Invalid\+BB)
+\item 
+void {\bfseries calc\+Min\+Max} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&v)
+\item 
+int {\bfseries add\+Child} (\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*}d)
+\item 
+bool {\bfseries remove\+Child} (int id=0)
+\item 
+void {\bfseries remove\+All\+Childs} ()
+\item 
+\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries get\+Child} (int id=0)
+\item 
+\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries get\+Child} (const QString \&label)
+\item 
+Children \& {\bfseries children} ()
+\item 
+std\+::vector$<$ unsigned int $>$ {\bfseries get\+Children\+Ids} ()
+\item 
+int {\bfseries count\+Children} (CBase\+Object\+::\+Type type)
+\item 
+std\+::vector$<$ \mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} $>$ {\bfseries get\+Children} ()
+\item 
+std\+::vector$<$ \mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} $>$ {\bfseries get\+Children} (CBase\+Object\+::\+Type type)
+\item 
+\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_c_object_a819e7d19293e24131d81ddcc1825d67f}{find\+Id}} (int id) override
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries CBase\+Object} (\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*}p=nullptr)
+\item 
+{\bfseries CBase\+Object} (int obj\+Id)
+\item 
+{\bfseries CBase\+Object} (const \mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \&b)
+\item 
+virtual bool {\bfseries has\+Category} (CBase\+Object\+::\+Category cat)
+\item 
+virtual bool {\bfseries has\+Type} (CBase\+Object\+::\+Type typ)
+\item 
+virtual const QString {\bfseries xml\+Info} ()
+\item 
+virtual void {\bfseries switch\+Opt} (int, int)
+\item 
+virtual void {\bfseries after\+Load} (\mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*})
+\item 
+virtual void {\bfseries render\+Transform} ()
+\item 
+virtual void {\bfseries render\+Self} ()
+\item 
+virtual void {\bfseries render} ()
+\item 
+virtual void {\bfseries prepare} ()
+\item 
+virtual void {\bfseries clear} ()
+\item 
+virtual bool {\bfseries is\+Modified} ()
+\item 
+virtual void {\bfseries set\+Modified} (bool b=true)
+\item 
+\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries get\+Parent} ()
+\item 
+void {\bfseries set\+Parent} (\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*}p)
+\item 
+void {\bfseries set\+Parent} (int obj\+Id)
+\item 
+virtual void {\bfseries set\+Visible} (bool v)
+\item 
+virtual void {\bfseries set\+Self\+Visibility} (bool v)
+\item 
+virtual void {\bfseries set\+Kids\+Visibility} (bool v)
+\item 
+virtual bool {\bfseries get\+Self\+Visibility} ()
+\item 
+virtual bool {\bfseries get\+Kids\+Visibility} ()
+\item 
+virtual bool {\bfseries switch\+Self\+Visibility} ()
+\item 
+virtual bool {\bfseries switch\+Kids\+Visibility} ()
+\item 
+int {\bfseries id} ()
+\item 
+int {\bfseries parent\+Id} ()
+\item 
+virtual bool {\bfseries set\+Selected} (bool sel)
+\item 
+virtual bool {\bfseries is\+Selected} ()
+\item 
+virtual Eigen\+::\+Matrix4d {\bfseries get\+Global\+Transformation\+Matrix} ()
+\item 
+const QString \& {\bfseries get\+Label} ()
+\item 
+const std\+::string {\bfseries get\+LabelA} ()
+\item 
+const std\+::wstring {\bfseries get\+LabelW} ()
+\item 
+void {\bfseries set\+Label} (const QString \&label)
+\item 
+void {\bfseries set\+Label} (const char \texorpdfstring{$\ast$}{*}label)
+\item 
+void {\bfseries set\+Label} (const std\+::string \&label)
+\item 
+void {\bfseries set\+Label} (const std\+::wstring \&label)
+\item 
+void {\bfseries add\+Keyword} (const QString keyword)
+\item 
+void {\bfseries del\+Keyword} (const QString keyword)
+\item 
+bool {\bfseries has\+Keyword} (const QString keyword)
+\item 
+QSet$<$ QString $>$ \& {\bfseries keywords} ()
+\item 
+void {\bfseries set\+Descr} (const QString descr)
+\item 
+const QString \& {\bfseries get\+Descr} ()
+\item 
+virtual void {\bfseries set\+Path} (const QString \&path)
+\item 
+virtual const QString \& {\bfseries path} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}}}
+\begin{DoxyCompactItemize}
+\item 
+void {\bfseries set\+Min} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&v)
+\item 
+void {\bfseries set\+Max} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&v)
+\item 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} \& {\bfseries get\+Min} ()
+\item 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} \& {\bfseries get\+Max} ()
+\item 
+void {\bfseries reset} (Initial\+Values v=Initial\+Values\+::\+Invalid\+BB)
+\item 
+double {\bfseries dX} ()
+\item 
+double {\bfseries dY} ()
+\item 
+double {\bfseries dZ} ()
+\item 
+double {\bfseries d\+X2} ()
+\item 
+double {\bfseries d\+Y2} ()
+\item 
+double {\bfseries d\+Z2} ()
+\item 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries get\+Midpoint} ()
+\item 
+bool {\bfseries intersects} (\mbox{\hyperlink{class_c_bound_vector}{CBound\+Vector}} r)
+\item 
+bool {\bfseries intersects} (\mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} b)
+\item 
+bool {\bfseries is\+Null} ()
+\item 
+bool {\bfseries is\+Valid} ()
+\item 
+bool {\bfseries is\+Invalid} ()
+\item 
+void {\bfseries expand} (const \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} b)
+\item 
+void {\bfseries expand} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} p)
+\item 
+void {\bfseries expand} (double value)
+\item 
+bool {\bfseries contains} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&p)
+\item 
+bool {\bfseries hit} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} origin, \mbox{\hyperlink{class_c_vector3}{CVector3d}} dir, \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&coord)
+\item 
+int {\bfseries longest\+\_\+axis} ()
+\item 
+{\bfseries CBounding\+Box} (Initial\+Values v=Initial\+Values\+::\+Invalid\+BB)
+\item 
+{\bfseries CBounding\+Box} (const \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} \&bb)
+\item 
+{\bfseries CBounding\+Box} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} a, \mbox{\hyperlink{class_c_point3}{CPoint3d}} b, \mbox{\hyperlink{class_c_point3}{CPoint3d}} c)
+\item 
+{\bfseries CBounding\+Box} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} min, \mbox{\hyperlink{class_c_point3}{CPoint3d}} max)
+\item 
+virtual void {\bfseries draw} (Style r=Dont\+Render, bool checked=false)
+\item 
+QVector$<$ \mbox{\hyperlink{class_c_point3}{CPoint3d}} $>$ {\bfseries get\+Corners} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_movement_af2a467330a9e0c9a98003bd138435c14}\label{class_c_movement_af2a467330a9e0c9a98003bd138435c14} 
+Seq\+List {\bfseries m\+\_\+seqlist}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{class_c_object}{CObject}}}
+\begin{DoxyCompactItemize}
+\item 
+Children {\bfseries m\+\_\+data}
+\item 
+Annotations {\bfseries m\+\_\+annotations}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+bool {\bfseries m\+\_\+modified}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_movement_a9b49658540165b6d00007b47c6e62099}\label{class_c_movement_a9b49658540165b6d00007b47c6e62099} 
+bool {\bfseries m\+\_\+is\+Playing} = false
+\item 
+\Hypertarget{class_c_movement_a5f5a147bdb6cf085e4a6040a80c2caa2}\label{class_c_movement_a5f5a147bdb6cf085e4a6040a80c2caa2} 
+int {\bfseries m\+\_\+current\+Key} = 0
+\item 
+\Hypertarget{class_c_movement_a228cff95a38576cd76d525f2eb4fb8d1}\label{class_c_movement_a228cff95a38576cd76d525f2eb4fb8d1} 
+QTimer {\bfseries m\+\_\+animation\+Timer}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+int {\bfseries m\+\_\+\+Id}
+\item 
+QString {\bfseries m\+\_\+label}
+\item 
+QString {\bfseries m\+\_\+descr}
+\item 
+QSet$<$ QString $>$ {\bfseries m\+\_\+keywords}
+\item 
+QString {\bfseries m\+\_\+path}
+\item 
+\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+parent}
+\item 
+bool {\bfseries m\+\_\+selected}
+\item 
+bool {\bfseries m\+\_\+show\+Self}
+\item 
+bool {\bfseries m\+\_\+show\+Kids}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries m\+\_\+min}
+\item 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries m\+\_\+max}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}}}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} {\bfseries intersection} (\mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} a, \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} b)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_c_movement_a3e9529648bc5db93db935a78d83298e8}\index{CMovement@{CMovement}!getCopy@{getCopy}}
+\index{getCopy@{getCopy}!CMovement@{CMovement}}
+\doxysubsubsection{\texorpdfstring{getCopy()}{getCopy()}}
+{\footnotesize\ttfamily \label{class_c_movement_a3e9529648bc5db93db935a78d83298e8} 
+\mbox{\hyperlink{class_c_movement}{CMovement}} \texorpdfstring{$\ast$}{*} CMovement\+::get\+Copy (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_object}{CObject}}.
+
+\Hypertarget{class_c_movement_ae4b30f6e22ea909dd13b60c6c436b4c0}\index{CMovement@{CMovement}!getTransformationMatrix@{getTransformationMatrix}}
+\index{getTransformationMatrix@{getTransformationMatrix}!CMovement@{CMovement}}
+\doxysubsubsection{\texorpdfstring{getTransformationMatrix()}{getTransformationMatrix()}}
+{\footnotesize\ttfamily \label{class_c_movement_ae4b30f6e22ea909dd13b60c6c436b4c0} 
+virtual Eigen\+::\+Matrix4d CMovement\+::get\+Transformation\+Matrix (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}.
+
+\Hypertarget{class_c_movement_a690b9666ae44f7942b691e516c90d167}\index{CMovement@{CMovement}!hasTransformation@{hasTransformation}}
+\index{hasTransformation@{hasTransformation}!CMovement@{CMovement}}
+\doxysubsubsection{\texorpdfstring{hasTransformation()}{hasTransformation()}}
+{\footnotesize\ttfamily \label{class_c_movement_a690b9666ae44f7942b691e516c90d167} 
+virtual bool CMovement\+::has\+Transformation (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}.
+
+\Hypertarget{class_c_movement_a960ea966e1c80fba7838faff1bc904ce}\index{CMovement@{CMovement}!info@{info}}
+\index{info@{info}!CMovement@{CMovement}}
+\doxysubsubsection{\texorpdfstring{info()}{info()}}
+{\footnotesize\ttfamily \label{class_c_movement_a960ea966e1c80fba7838faff1bc904ce} 
+void CMovement\+::info (\begin{DoxyParamCaption}\item[{std\+::wstring}]{i}{\mbox{[}4\mbox{]}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}.
+
+\Hypertarget{class_c_movement_a5dac57f0c3ba3c364585f07fb4b66a9c}\index{CMovement@{CMovement}!infoRow@{infoRow}}
+\index{infoRow@{infoRow}!CMovement@{CMovement}}
+\doxysubsubsection{\texorpdfstring{infoRow()}{infoRow()}}
+{\footnotesize\ttfamily \label{class_c_movement_a5dac57f0c3ba3c364585f07fb4b66a9c} 
+std\+::wstring CMovement\+::info\+Row (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}.
+
+\Hypertarget{class_c_movement_a9ec761471c08d727d6c95bb47799e585}\index{CMovement@{CMovement}!renderKids@{renderKids}}
+\index{renderKids@{renderKids}!CMovement@{CMovement}}
+\doxysubsubsection{\texorpdfstring{renderKids()}{renderKids()}}
+{\footnotesize\ttfamily \label{class_c_movement_a9ec761471c08d727d6c95bb47799e585} 
+void CMovement\+::render\+Kids (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_object}{CObject}}.
+
+\Hypertarget{class_c_movement_a2ffb8011de764619e01427c60afb2dc5}\index{CMovement@{CMovement}!type@{type}}
+\index{type@{type}!CMovement@{CMovement}}
+\doxysubsubsection{\texorpdfstring{type()}{type()}}
+{\footnotesize\ttfamily \label{class_c_movement_a2ffb8011de764619e01427c60afb2dc5} 
+int CMovement\+::type (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_object}{CObject}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/core/Movement.\+h\item 
+src/core/Movement.\+cpp\end{DoxyCompactItemize}

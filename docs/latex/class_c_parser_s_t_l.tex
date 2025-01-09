@@ -1,0 +1,98 @@
+\doxysection{CParser\+STL Class Reference}
+\hypertarget{class_c_parser_s_t_l}{}\label{class_c_parser_s_t_l}\index{CParserSTL@{CParserSTL}}
+Inheritance diagram for CParser\+STL\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_c_parser_s_t_l}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+size\+\_\+t \mbox{\hyperlink{class_c_parser_s_t_l_a2d719d88a000189dcb7503ca71a41523}{Run}} ()
+\item 
+bool \mbox{\hyperlink{class_c_parser_s_t_l_a40ca8f40e9dc68908283b1c91fdfe1b7}{in\+Plugin}} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_c_parser}{CParser}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual \mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*} {\bfseries load} (const QString path, bool wait=true)
+\item 
+virtual bool {\bfseries save} (\mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*}obj, const QString path)
+\item 
+virtual bool {\bfseries save} (QVector$<$ \mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} $>$ objects, const QString path)
+\item 
+virtual bool {\bfseries can\+Load\+Ext} (const QString ext)
+\item 
+virtual bool {\bfseries can\+Save\+Ext} (const QString ext)
+\item 
+virtual void {\bfseries get\+Load\+Exts} (QString \&ext)
+\item 
+virtual void {\bfseries get\+Load\+Exts} (std\+::wstring \&ext)
+\item 
+virtual void {\bfseries get\+Save\+Exts} (QString \&ext)
+\item 
+virtual void {\bfseries get\+Save\+Exts} (std\+::wstring \&ext)
+\item 
+bool {\bfseries Is\+OK} ()
+\item 
+std\+::string {\bfseries Last\+Error} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_c_parser}{CParser}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual bool {\bfseries save} ()
+\item 
+void {\bfseries set\+Descr} (const QString descr)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_c_parser}{CParser}}}
+\begin{DoxyCompactItemize}
+\item 
+bool {\bfseries b\+Is\+Not\+Set}
+\item 
+\mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+model}
+\item 
+\mbox{\hyperlink{class_c_file_info}{CFile\+Info}} {\bfseries plik\+Siatki}
+\item 
+\mbox{\hyperlink{class_c_mesh}{CMesh}} \texorpdfstring{$\ast$}{*} {\bfseries p\+Mesh\+Data}
+\item 
+bool {\bfseries m\+\_\+b\+OK}
+\item 
+std\+::string {\bfseries m\+\_\+s\+Error}
+\item 
+QString {\bfseries m\+\_\+descr}
+\item 
+QSet$<$ QString $>$ {\bfseries m\+\_\+exts}
+\item 
+QSet$<$ QString $>$ {\bfseries m\+\_\+save\+\_\+exts}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_c_parser_s_t_l_a40ca8f40e9dc68908283b1c91fdfe1b7}\index{CParserSTL@{CParserSTL}!inPlugin@{inPlugin}}
+\index{inPlugin@{inPlugin}!CParserSTL@{CParserSTL}}
+\doxysubsubsection{\texorpdfstring{inPlugin()}{inPlugin()}}
+{\footnotesize\ttfamily \label{class_c_parser_s_t_l_a40ca8f40e9dc68908283b1c91fdfe1b7} 
+bool CParser\+STL\+::in\+Plugin (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_parser}{CParser}}.
+
+\Hypertarget{class_c_parser_s_t_l_a2d719d88a000189dcb7503ca71a41523}\index{CParserSTL@{CParserSTL}!Run@{Run}}
+\index{Run@{Run}!CParserSTL@{CParserSTL}}
+\doxysubsubsection{\texorpdfstring{Run()}{Run()}}
+{\footnotesize\ttfamily \label{class_c_parser_s_t_l_a2d719d88a000189dcb7503ca71a41523} 
+size\+\_\+t CParser\+STL\+::\+Run (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_parser}{CParser}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/core/Parser\+STL.\+h\item 
+src/core/Parser\+STL.\+cpp\end{DoxyCompactItemize}

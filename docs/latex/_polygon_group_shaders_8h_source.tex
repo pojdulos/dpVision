@@ -1,0 +1,152 @@
+\doxysection{Polygon\+Group\+Shaders.\+h}
+\hypertarget{_polygon_group_shaders_8h_source}{}\label{_polygon_group_shaders_8h_source}\index{src/core/PolygonGroupShaders.h@{src/core/PolygonGroupShaders.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#define\ PACKET\_SIZE\ (size\_t)100000}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#define\ POLYGON\_GROUP\_VERTEX\_SHADER\ R"{}(\#version\ 120}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\ \ \ \ attribute\ highp\ vec3\ inPosition;}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\ \ \ \ attribute\ vec2\ inTexCoord;}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\ \ \ \ attribute\ vec4\ inVColors;}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\ \ \ \ attribute\ vec3\ inNormals;}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\ \ \ \ attribute\ vec4\ alternativeColor;}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\ \ \ \ varying\ vec2\ TexCoord;}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\ \ \ \ varying\ vec4\ currentColor;}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\ \ \ \ varying\ vec3\ vNormal;}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\ \ \ \ uniform\ bool\ useTexture;}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\ \ \ \ uniform\ bool\ useVColors;}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\ \ \ \ uniform\ bool\ useVNormals;}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\ \ \ \ uniform\ bool\ useAlternativeColor;}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\ \ \ \ void\ main()}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\ \ \ \ \{}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ gl\_Position\ =\ gl\_ModelViewProjectionMatrix\ *\ vec4(inPosition,1.0);}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ if\ (useTexture)}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ TexCoord\ =\ inTexCoord;}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ else}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ TexCoord\ =\ vec2(-\/1.0,\ -\/1.0);}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ }}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ if\ (!useAlternativeColor)}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \{}}
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ if\ (useVColors)}}
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \{}}
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ currentColor\ =\ inVColors;}}
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \}}}
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ else}}
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \{}}
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ currentColor\ =\ alternativeColor;}}
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \}}}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \}}}
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ else}}
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \{}}
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ currentColor\ =\ alternativeColor;}}
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \}}}
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{}}
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ if\ (useVNormals)}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ //vNormal\ =\ inNormals;}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ vNormal\ =\ (gl\_ModelViewMatrix\ *\ vec4(inNormals,\ 0.0)).xyz;}}
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ else}}
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ //vNormal\ =\ vec3(0.0,\ 0.0,\ 1.0);}}
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ vNormal\ =\ (gl\_ModelViewMatrix\ *\ vec4(0.0,\ 0.0,\ 1.0,\ 0.0)).xyz;}}
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{}}
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{}}
+\DoxyCodeLine{00050\ \textcolor{preprocessor}{\ \ \ \ \}}}
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{)"{}}}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \textcolor{preprocessor}{\#define\ POLYGON\_GROUP\_FRAGMENT\_SHADER\ R"{}(\#version\ 120}}
+\DoxyCodeLine{00054\ \textcolor{preprocessor}{\ \ \ \ varying\ vec2\ TexCoord;}}
+\DoxyCodeLine{00055\ \textcolor{preprocessor}{\ \ \ \ varying\ vec4\ currentColor;}}
+\DoxyCodeLine{00056\ \textcolor{preprocessor}{\ \ \ \ varying\ vec3\ vNormal;}}
+\DoxyCodeLine{00057\ \textcolor{preprocessor}{\ \ \ \ uniform\ sampler2D\ ourTexture;}}
+\DoxyCodeLine{00058\ \textcolor{preprocessor}{\ \ \ \ uniform\ bool\ useTexture;}}
+\DoxyCodeLine{00059\ \textcolor{preprocessor}{\ \ \ \ uniform\ bool\ useVColors;}}
+\DoxyCodeLine{00060\ \textcolor{preprocessor}{\ \ \ \ uniform\ bool\ useVNormals;}}
+\DoxyCodeLine{00061\ \textcolor{preprocessor}{}}
+\DoxyCodeLine{00062\ \textcolor{preprocessor}{\ \ \ \ uniform\ vec3\ lightDir\ =\ vec3(0.0,\ 0.0,\ 1.0);\ //\ kierunek\ œwiat³a}}
+\DoxyCodeLine{00063\ \textcolor{preprocessor}{\ \ \ \ uniform\ vec3\ lightColor\ =\ vec3(1.0,\ 1.0,\ 1.0);\ //\ kolor\ œwiat³a}}
+\DoxyCodeLine{00064\ \textcolor{preprocessor}{\ \ \ \ uniform\ vec3\ viewDir\ =\ vec3(0.0,\ 0.0,\ 1.0);\ //\ kierunek\ widzenia}}
+\DoxyCodeLine{00065\ \textcolor{preprocessor}{\ \ \ \ uniform\ vec3\ ambientColor\ =\ vec3(0.2,\ 0.2,\ 0.2);\ //\ kolor\ œwiat³a\ otoczenia}}
+\DoxyCodeLine{00066\ \textcolor{preprocessor}{}}
+\DoxyCodeLine{00067\ \textcolor{preprocessor}{\ \ \ \ void\ main()}}
+\DoxyCodeLine{00068\ \textcolor{preprocessor}{\ \ \ \ \{}}
+\DoxyCodeLine{00069\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ vec4\ surfaceColor;}}
+\DoxyCodeLine{00070\ \textcolor{preprocessor}{}}
+\DoxyCodeLine{00071\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ if\ (useTexture\ \&\&\ TexCoord.x\ >=\ 0.0\ \&\&\ TexCoord.x\ <=\ 1.0\ \&\&\ TexCoord.y\ >=\ 0.0\ \&\&\ TexCoord.y\ <=\ 1.0)}}
+\DoxyCodeLine{00072\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ surfaceColor\ =\ texture2D(ourTexture,\ TexCoord);}}
+\DoxyCodeLine{00073\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ else}}
+\DoxyCodeLine{00074\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ surfaceColor\ =\ currentColor;}}
+\DoxyCodeLine{00075\ \textcolor{preprocessor}{}}
+\DoxyCodeLine{00076\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ if\ (useVNormals)}}
+\DoxyCodeLine{00077\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \{}}
+\DoxyCodeLine{00078\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ vec3\ N\ =\ normalize(vNormal);}}
+\DoxyCodeLine{00079\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ vec3\ L\ =\ normalize(lightDir);}}
+\DoxyCodeLine{00080\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ vec3\ V\ =\ normalize(viewDir);}}
+\DoxyCodeLine{00081\ \textcolor{preprocessor}{\ \ \ \ }}
+\DoxyCodeLine{00082\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ //\ Sk³adowa\ dyfuzyjna}}
+\DoxyCodeLine{00083\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ float\ diff\ =\ max(dot(N,\ L),\ 0.0);}}
+\DoxyCodeLine{00084\ \textcolor{preprocessor}{\ \ \ \ }}
+\DoxyCodeLine{00085\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ //\ Sk³adowa\ spekularna\ (zredukowany\ wp³yw)}}
+\DoxyCodeLine{00086\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ vec3\ H\ =\ normalize(L\ +\ V);\ }}
+\DoxyCodeLine{00087\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ float\ spec\ =\ pow(max(dot(N,\ H),\ 0.0),\ 16.0);\ //\ Zmniejszony\ wyk³adnik\ blasku}}
+\DoxyCodeLine{00088\ \textcolor{preprocessor}{\ \ \ \ }}
+\DoxyCodeLine{00089\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ vec3\ finalColor\ =\ ambientColor\ +\ (diff\ +\ 0.2\ *\ spec)\ *\ lightColor\ *\ surfaceColor.rgb;\ //\ Dodajemy\ sk³adow¹\ ambientaln¹\ i\ redukujemy\ wp³yw\ sk³adowej\ spekularnej}}
+\DoxyCodeLine{00090\ \textcolor{preprocessor}{\ \ \ \ }}
+\DoxyCodeLine{00091\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ gl\_FragColor\ =\ vec4(finalColor,\ surfaceColor.a);}}
+\DoxyCodeLine{00092\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \}}}
+\DoxyCodeLine{00093\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ else}}
+\DoxyCodeLine{00094\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \{}}
+\DoxyCodeLine{00095\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ gl\_FragColor\ =\ surfaceColor;}}
+\DoxyCodeLine{00096\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \}}}
+\DoxyCodeLine{00097\ \textcolor{preprocessor}{\ \ \ \ \}}}
+\DoxyCodeLine{00098\ \textcolor{preprocessor}{)"{}}}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \textcolor{preprocessor}{\#define\ POLYGON\_GROUP\_FRAGMENT\_SHADER\_1\ R"{}(\#version\ 120}}
+\DoxyCodeLine{00102\ \textcolor{preprocessor}{\ \ \ \ varying\ vec2\ TexCoord;}}
+\DoxyCodeLine{00103\ \textcolor{preprocessor}{\ \ \ \ varying\ vec4\ currentColor;}}
+\DoxyCodeLine{00104\ \textcolor{preprocessor}{\ \ \ \ varying\ vec3\ vNormal;}}
+\DoxyCodeLine{00105\ \textcolor{preprocessor}{\ \ \ \ uniform\ sampler2D\ ourTexture;}}
+\DoxyCodeLine{00106\ \textcolor{preprocessor}{\ \ \ \ uniform\ bool\ useTexture;}}
+\DoxyCodeLine{00107\ \textcolor{preprocessor}{\ \ \ \ uniform\ bool\ useVColors;}}
+\DoxyCodeLine{00108\ \textcolor{preprocessor}{\ \ \ \ uniform\ bool\ useVNormals;}}
+\DoxyCodeLine{00109\ \textcolor{preprocessor}{}}
+\DoxyCodeLine{00110\ \textcolor{preprocessor}{\ \ \ \ uniform\ vec3\ lightDir\ =\ vec3(0.0,\ 0.0,\ 1.0);\ //\ kierunek\ œwiat³a}}
+\DoxyCodeLine{00111\ \textcolor{preprocessor}{\ \ \ \ uniform\ vec3\ lightColor\ =\ vec3(1.0,\ 1.0,\ 1.0);\ //\ kolor\ œwiat³a}}
+\DoxyCodeLine{00112\ \textcolor{preprocessor}{\ \ \ \ uniform\ vec3\ viewDir\ =\ vec3(0.0,\ 0.0,\ 1.0);\ //\ kierunek\ widzenia}}
+\DoxyCodeLine{00113\ \textcolor{preprocessor}{}}
+\DoxyCodeLine{00114\ \textcolor{preprocessor}{\ \ \ \ void\ main()}}
+\DoxyCodeLine{00115\ \textcolor{preprocessor}{\ \ \ \ \{}}
+\DoxyCodeLine{00116\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ vec4\ surfaceColor;}}
+\DoxyCodeLine{00117\ \textcolor{preprocessor}{}}
+\DoxyCodeLine{00118\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ if\ (useTexture\ \&\&\ TexCoord.x\ >=\ 0.0\ \&\&\ TexCoord.x\ <=\ 1.0\ \&\&\ TexCoord.y\ >=\ 0.0\ \&\&\ TexCoord.y\ <=\ 1.0)}}
+\DoxyCodeLine{00119\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ surfaceColor\ =\ texture2D(ourTexture,\ TexCoord);}}
+\DoxyCodeLine{00120\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ else}}
+\DoxyCodeLine{00121\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ surfaceColor\ =\ currentColor;}}
+\DoxyCodeLine{00122\ \textcolor{preprocessor}{}}
+\DoxyCodeLine{00123\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ if\ (useVNormals)}}
+\DoxyCodeLine{00124\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \{}}
+\DoxyCodeLine{00125\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ vec3\ N\ =\ normalize(vNormal);}}
+\DoxyCodeLine{00126\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ vec3\ L\ =\ normalize(lightDir);}}
+\DoxyCodeLine{00127\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ vec3\ V\ =\ normalize(viewDir);}}
+\DoxyCodeLine{00128\ \textcolor{preprocessor}{\ \ \ \ }}
+\DoxyCodeLine{00129\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ //\ Sk³adowa\ dyfuzyjna}}
+\DoxyCodeLine{00130\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ float\ diff\ =\ max(dot(N,\ L),\ 0.0);}}
+\DoxyCodeLine{00131\ \textcolor{preprocessor}{\ \ \ \ }}
+\DoxyCodeLine{00132\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ //\ Sk³adowa\ spekularna}}
+\DoxyCodeLine{00133\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ vec3\ H\ =\ normalize(L\ +\ V);\ }}
+\DoxyCodeLine{00134\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ float\ spec\ =\ pow(max(dot(N,\ H),\ 0.0),\ 32.0);\ //\ 32.0\ to\ tzw.\ wyk³adnik\ blasku}}
+\DoxyCodeLine{00135\ \textcolor{preprocessor}{}}
+\DoxyCodeLine{00136\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ vec3\ finalColor\ =\ (diff\ +\ spec)\ *\ lightColor\ *\ surfaceColor.rgb;}}
+\DoxyCodeLine{00137\ \textcolor{preprocessor}{\ \ \ \ }}
+\DoxyCodeLine{00138\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ gl\_FragColor\ =\ vec4(finalColor,\ surfaceColor.a);}}
+\DoxyCodeLine{00139\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \}}}
+\DoxyCodeLine{00140\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ else}}
+\DoxyCodeLine{00141\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \{}}
+\DoxyCodeLine{00142\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ gl\_FragColor\ =\ surfaceColor;}}
+\DoxyCodeLine{00143\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \}}}
+\DoxyCodeLine{00144\ \textcolor{preprocessor}{\ \ \ \ \}}}
+\DoxyCodeLine{00145\ \textcolor{preprocessor}{)"{}}}
+\DoxyCodeLine{00146\ }
+
+\end{DoxyCode}

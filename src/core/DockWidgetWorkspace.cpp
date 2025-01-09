@@ -186,27 +186,30 @@ QVector<CBaseObject*> DockWidgetWorkspace::getSelectedObjects()
 
 		CBaseObject* obj = item->getObject();
 
-		CBaseObject* parent = obj->getParent();
+		if (obj != nullptr)
+		{
+			CBaseObject* parent = obj->getParent();
 
-		if (parent == nullptr)
-		{
-			result.insert(obj);
-		}
-		else
-		{
-			while (parent != nullptr)
+			if (parent == nullptr)
 			{
-				if (result.contains(parent))
+				result.insert(obj);
+			}
+			else
+			{
+				while (parent != nullptr)
 				{
-					break;
-				}
+					if (result.contains(parent))
+					{
+						break;
+					}
 
-				parent = parent->getParent();
+					parent = parent->getParent();
 
-				if (parent == nullptr)
-				{
-					result.insert(obj);
-					break;
+					if (parent == nullptr)
+					{
+						result.insert(obj);
+						break;
+					}
 				}
 			}
 		}

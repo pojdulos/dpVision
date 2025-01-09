@@ -473,6 +473,9 @@ void CPolygonGroup::renderSelf_OLD()
 	CMesh* mesh = (CMesh*)m_parent;
 	CMaterial& material = mesh->getMaterial(m_matIdx);
 
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_DST_COLOR);
+
 	if ((mesh->hasVertexColors() || hasColors()) && !material.m_force)
 	{
 		glEnable(GL_COLOR_MATERIAL);
@@ -595,7 +598,7 @@ void CPolygonGroup::renderSelf_OLD()
 
 	glEnd();
 
-
+	//glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_COLOR_MATERIAL);
 };

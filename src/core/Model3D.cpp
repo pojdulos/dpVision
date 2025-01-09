@@ -203,6 +203,8 @@ void CModel3D::importChildrenGeometry()
 		}
 	}
 
+	if (CBoundingBox::isInvalid())
+		resetBoundingBox(CBoundingBox::NullBB);
 //	m_min = ((CObject*)getChild())->getMin();
 //	m_max = ((CObject*)getChild())->getMax();
 

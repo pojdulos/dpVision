@@ -1,0 +1,32 @@
+\doxysection{TCoord.\+h}
+\hypertarget{_t_coord_8h_source}{}\label{_t_coord_8h_source}\index{src/core/TCoord.h@{src/core/TCoord.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_t_coord}{CTCoord}}\ \{}
+\DoxyCodeLine{00006\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00007\ \ \ \ \ \textcolor{keyword}{union\ }\{}
+\DoxyCodeLine{00008\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ arr[2];}
+\DoxyCodeLine{00009\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\{\ \textcolor{keywordtype}{float}\ s,\ t;\ \};}
+\DoxyCodeLine{00010\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\{\ \textcolor{keywordtype}{float}\ first,\ second;\ \};}
+\DoxyCodeLine{00011\ \ \ \ \ \};}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \ \ \ \ \mbox{\hyperlink{class_c_t_coord}{CTCoord}}():s(0.0f),t(0.0f)\ \{\};}
+\DoxyCodeLine{00014\ \ \ \ \ \mbox{\hyperlink{class_c_t_coord}{CTCoord}}(\ \textcolor{keywordtype}{float}\ as,\ \textcolor{keywordtype}{float}\ at\ ):s(as),t(at)\ \{\};}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \ \ \ \ \textcolor{keywordtype}{float}\&\ operator[](std::size\_t\ index)\ \{}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ arr[index];}
+\DoxyCodeLine{00018\ \ \ \ \ \}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\&\ operator[](std::size\_t\ index)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ arr[index];}
+\DoxyCodeLine{00022\ \ \ \ \ \}}
+\DoxyCodeLine{00023\ \};}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_array_of_t_coord}{CArrayOfTCoord}}\ :\ \textcolor{keyword}{public}\ std::vector<CTCoord>\ \{\};}
+\DoxyCodeLine{00026\ }
+
+\end{DoxyCode}

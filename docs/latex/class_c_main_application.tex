@@ -1,0 +1,113 @@
+\doxysection{CMain\+Application Class Reference}
+\hypertarget{class_c_main_application}{}\label{class_c_main_application}\index{CMainApplication@{CMainApplication}}
+Inheritance diagram for CMain\+Application\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_c_main_application}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_main_application_a2a9e90289b044dad5808cd78ad7426b8}\label{class_c_main_application_a2a9e90289b044dad5808cd78ad7426b8} 
+{\bfseries CMain\+Application} (int \&argc, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}argv)
+\item 
+\Hypertarget{class_c_main_application_a870e304bc8e947e34d7aed7fa93ce301}\label{class_c_main_application_a870e304bc8e947e34d7aed7fa93ce301} 
+const QString \& {\bfseries app\+Exec\+Dir} ()
+\item 
+\Hypertarget{class_c_main_application_a592b7cf0449b63c99320a5c626ac194a}\label{class_c_main_application_a592b7cf0449b63c99320a5c626ac194a} 
+const QString \& {\bfseries app\+Data\+Dir} ()
+\item 
+\Hypertarget{class_c_main_application_a254740f721aac4ca83ce74e343421c18}\label{class_c_main_application_a254740f721aac4ca83ce74e343421c18} 
+const QString \& {\bfseries app\+Temp\+Dir} ()
+\item 
+\Hypertarget{class_c_main_application_ac487cd08f493930b0100f552b1a2b82a}\label{class_c_main_application_ac487cd08f493930b0100f552b1a2b82a} 
+\mbox{\hyperlink{class_plugin_interface}{Plugin\+Interface}} \texorpdfstring{$\ast$}{*} {\bfseries get\+Plugin} (unsigned int id)
+\item 
+\Hypertarget{class_c_main_application_a79f14bf6526ad62dfc6307806bd9d3b6}\label{class_c_main_application_a79f14bf6526ad62dfc6307806bd9d3b6} 
+\mbox{\hyperlink{class_plugin_interface}{Plugin\+Interface}} \texorpdfstring{$\ast$}{*} {\bfseries get\+Plugin} (const char \texorpdfstring{$\ast$}{*}str\+UUID)
+\item 
+\Hypertarget{class_c_main_application_aac2d22eb0d836b96b4a7a1b83dc6b58a}\label{class_c_main_application_aac2d22eb0d836b96b4a7a1b83dc6b58a} 
+bool {\bfseries load\+Qt\+Plugin} (const QString \&plugin\+Path)
+\item 
+\Hypertarget{class_c_main_application_a926b6ad65fdcf46b4e91fa7986eeb2b4}\label{class_c_main_application_a926b6ad65fdcf46b4e91fa7986eeb2b4} 
+bool {\bfseries load\+Win\+Plugin} (const QString \&plugin\+Path)
+\item 
+\Hypertarget{class_c_main_application_ad792e786dc83ab6ff3c0522ffb0ecbd3}\label{class_c_main_application_ad792e786dc83ab6ff3c0522ffb0ecbd3} 
+bool {\bfseries load\+Plugin} (const QString \&plugin\+Path)
+\item 
+\Hypertarget{class_c_main_application_aee17406c50db2c763da50fd9e1d20d45}\label{class_c_main_application_aee17406c50db2c763da50fd9e1d20d45} 
+void {\bfseries unload\+Plugin} (const QString plugin\+Path)
+\item 
+\Hypertarget{class_c_main_application_a491d954b6c9f6838cb545d1dd619eafa}\label{class_c_main_application_a491d954b6c9f6838cb545d1dd619eafa} 
+void {\bfseries unload\+Plugin} (const unsigned int id)
+\item 
+\Hypertarget{class_c_main_application_ad4a468d295e2179d9c9758e395d75384}\label{class_c_main_application_ad4a468d295e2179d9c9758e395d75384} 
+void {\bfseries Unload\+All\+Plugins} ()
+\item 
+\Hypertarget{class_c_main_application_a91db66c28dc5ca26cc3e9332d7cae61d}\label{class_c_main_application_a91db66c28dc5ca26cc3e9332d7cae61d} 
+void {\bfseries Load\+All\+Plugins} ()
+\item 
+\Hypertarget{class_c_main_application_a57f4beac94c2190ff9add02576b3664e}\label{class_c_main_application_a57f4beac94c2190ff9add02576b3664e} 
+void {\bfseries Run\+Plugin} (const unsigned int id)
+\item 
+\Hypertarget{class_c_main_application_a86a9d42af55170f469d73170c1c6adba}\label{class_c_main_application_a86a9d42af55170f469d73170c1c6adba} 
+bool {\bfseries run\+Plugin} (const char \texorpdfstring{$\ast$}{*}str\+UUID)
+\item 
+\Hypertarget{class_c_main_application_a9026da7ebe7c43086cdb37d290c00a7a}\label{class_c_main_application_a9026da7ebe7c43086cdb37d290c00a7a} 
+int {\bfseries get\+Unique\+Id} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_main_application_aeea7ba2dd6f3b0b1e66b4ea4691aa0d1}\label{class_c_main_application_aeea7ba2dd6f3b0b1e66b4ea4691aa0d1} 
+bool {\bfseries is\+Initialised}
+\item 
+\Hypertarget{class_c_main_application_a2b40506362a8ae490bd28bef7b85d8fc}\label{class_c_main_application_a2b40506362a8ae490bd28bef7b85d8fc} 
+bool {\bfseries b\+Global\+Picking}
+\item 
+\Hypertarget{class_c_main_application_af61f7fa7f828b6a26a1153e89b932723}\label{class_c_main_application_af61f7fa7f828b6a26a1153e89b932723} 
+bool {\bfseries b\+Pick\+Snap}
+\item 
+\Hypertarget{class_c_main_application_ad65241dfe1075fc7954af46788fead87}\label{class_c_main_application_ad65241dfe1075fc7954af46788fead87} 
+CPlugins {\bfseries plugins}
+\item 
+\Hypertarget{class_c_main_application_a24abc124d1a81258e93f47b1d0187cbf}\label{class_c_main_application_a24abc124d1a81258e93f47b1d0187cbf} 
+\mbox{\hyperlink{class_plugin_interface}{Plugin\+Interface}} \texorpdfstring{$\ast$}{*} {\bfseries active\+Plugin}
+\item 
+\Hypertarget{class_c_main_application_a1fe2ac516118981a2795cd0319d9baed}\label{class_c_main_application_a1fe2ac516118981a2795cd0319d9baed} 
+QSettings \texorpdfstring{$\ast$}{*} {\bfseries settings}
+\item 
+\Hypertarget{class_c_main_application_af5abb4e0edd072457efeccc8c443f483}\label{class_c_main_application_af5abb4e0edd072457efeccc8c443f483} 
+bool {\bfseries verbose\+\_\+mode}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_main_application_a2700dcef0a17b6f306423ef58159e1e3}\label{class_c_main_application_a2700dcef0a17b6f306423ef58159e1e3} 
+static \mbox{\hyperlink{class_c_main_application}{CMain\+Application}} \texorpdfstring{$\ast$}{*} {\bfseries the\+App} = nullptr
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_main_application_ad4901bbba8f7af3acb5a4dda52da726d}\label{class_c_main_application_ad4901bbba8f7af3acb5a4dda52da726d} 
+QString\+List {\bfseries v\+Lista\+Plikow}
+\item 
+\Hypertarget{class_c_main_application_a0d42bfebff1ead21839eda2d9984ec2a}\label{class_c_main_application_a0d42bfebff1ead21839eda2d9984ec2a} 
+QString {\bfseries s\+Exe\+Dir}
+\item 
+\Hypertarget{class_c_main_application_a15838b5d252fa0009f8a2efb74edc33f}\label{class_c_main_application_a15838b5d252fa0009f8a2efb74edc33f} 
+QString {\bfseries s\+App\+Dir}
+\item 
+\Hypertarget{class_c_main_application_a2d38601033e694929246a3452a39fecf}\label{class_c_main_application_a2d38601033e694929246a3452a39fecf} 
+QString {\bfseries s\+Tmp\+Dir}
+\item 
+\Hypertarget{class_c_main_application_a5ee2ac806010ff1f95e1a8d3b7a6ec37}\label{class_c_main_application_a5ee2ac806010ff1f95e1a8d3b7a6ec37} 
+int {\bfseries m\+\_\+last\+Object\+Id}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/core/Main\+Application.\+h\item 
+src/core/Main\+Application.\+cpp\end{DoxyCompactItemize}

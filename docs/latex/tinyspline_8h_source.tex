@@ -1,0 +1,313 @@
+\doxysection{tinyspline.\+h}
+\hypertarget{tinyspline_8h_source}{}\label{tinyspline_8h_source}\index{src/core/tinyspline.h@{src/core/tinyspline.h}}
+\mbox{\hyperlink{tinyspline_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#ifndef\ TINYSPLINE\_H}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#define\ TINYSPLINE\_H}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <stddef.h>}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#ifdef\ \ \_\_cplusplus}}
+\DoxyCodeLine{00009\ \textcolor{keyword}{extern}\ \textcolor{stringliteral}{"{}C"{}}\ \{}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#define\ TINYSPLINE\_DOUBLE\_PRECISION}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{comment}{/******************************************************************************}}
+\DoxyCodeLine{00015\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00016\ \textcolor{comment}{*\ System\ Dependent\ Configuration\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00017\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00018\ \textcolor{comment}{*\ The\ following\ configuration\ values\ must\ be\ adjusted\ to\ your\ system.\ Some\ of\ *}}
+\DoxyCodeLine{00019\ \textcolor{comment}{*\ them\ may\ be\ configured\ using\ preprocessor\ definitions.\ The\ default\ values\ \ \ *}}
+\DoxyCodeLine{00020\ \textcolor{comment}{*\ should\ be\ fine\ for\ most\ modern\ hardware,\ such\ as\ x86,\ x86\_64,\ and\ arm.\ \ \ \ \ \ *}}
+\DoxyCodeLine{00021\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00022\ \textcolor{comment}{******************************************************************************/}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#ifdef\ TINYSPLINE\_DOUBLE\_PRECISION}}
+\DoxyCodeLine{00024\ \textcolor{keyword}{typedef}\ \textcolor{keywordtype}{double}\ tsReal;}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00026\ \textcolor{keyword}{typedef}\ \textcolor{keywordtype}{float}\ tsReal;}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#define\ FLT\_MAX\_ABS\_ERROR\ 1e-\/5}}
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#define\ FLT\_MAX\_REL\_ERROR\ 1e-\/8}}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{comment}{/******************************************************************************}}
+\DoxyCodeLine{00035\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00036\ \textcolor{comment}{*\ Data\ Types\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00037\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00038\ \textcolor{comment}{*\ The\ following\ section\ defines\ all\ data\ types\ available\ in\ TinySpline.\ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00039\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00040\ \textcolor{comment}{******************************************************************************/}}
+\DoxyCodeLine{00053\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}}
+\DoxyCodeLine{00054\ \{}
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{comment}{/*\ No\ error.\ */}}
+\DoxyCodeLine{00056\ \ \ \ \ TS\_SUCCESS\ =\ 0,}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{comment}{/*\ Unable\ to\ allocate\ memory\ (using\ malloc/realloc).\ */}}
+\DoxyCodeLine{00059\ \ \ \ \ TS\_MALLOC\ =\ -\/1,}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{comment}{/*\ The\ dimension\ of\ the\ control\ points\ are\ 0.\ */}}
+\DoxyCodeLine{00062\ \ \ \ \ TS\_DIM\_ZERO\ =\ -\/2,}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{comment}{/*\ Degree\ of\ spline\ (deg)\ >=\ number\ of\ control\ points\ (n\_ctrlp).\ */}}
+\DoxyCodeLine{00065\ \ \ \ \ TS\_DEG\_GE\_NCTRLP\ =\ -\/3,}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{comment}{/*\ Spline\ is\ not\ defined\ at\ knot\ value\ u.\ */}}
+\DoxyCodeLine{00068\ \ \ \ \ TS\_U\_UNDEFINED\ =\ -\/4,}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{comment}{/*\ Multiplicity\ of\ a\ knot\ (s)\ >\ order\ of\ spline.\ \ */}}
+\DoxyCodeLine{00071\ \ \ \ \ TS\_MULTIPLICITY\ =\ -\/5,}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{comment}{/*\ Decreasing\ knot\ vector.\ */}}
+\DoxyCodeLine{00074\ \ \ \ \ TS\_KNOTS\_DECR\ =\ -\/6,}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{comment}{/*\ Unexpected\ number\ of\ knots.\ */}}
+\DoxyCodeLine{00077\ \ \ \ \ TS\_NUM\_KNOTS\ =\ -\/7,}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{comment}{/*\ Spline\ is\ not\ derivable\ */}}
+\DoxyCodeLine{00080\ \ \ \ \ TS\_UNDERIVABLE\ =\ -\/8}
+\DoxyCodeLine{00081\ \}\ \mbox{\hyperlink{tinyspline_8h_a565ff3761d90530714283629d1850e9a}{tsError}};}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00089\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}}
+\DoxyCodeLine{00090\ \{}
+\DoxyCodeLine{00091\ \ \ \ \ \textcolor{comment}{/*\ Not\ available/Undefined.\ */}}
+\DoxyCodeLine{00092\ \ \ \ \ TS\_NONE\ =\ 0,}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{comment}{/*\ Uniformly\ spaced\ knot\ vector.\ */}}
+\DoxyCodeLine{00095\ \ \ \ \ TS\_OPENED\ =\ 1,}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \ \ \ \ \textcolor{comment}{/*\ Uniformly\ spaced\ knot\ vector\ with\ clamped\ end\ knots.\ */}}
+\DoxyCodeLine{00098\ \ \ \ \ TS\_CLAMPED\ =\ 2,}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \ \ \ \ \textcolor{comment}{/*\ Uniformly\ spaced\ knot\ vector\ with\ s(u)\ =\ order\ of\ spline.\ */}}
+\DoxyCodeLine{00101\ \ \ \ \ TS\_BEZIERS\ =\ 3}
+\DoxyCodeLine{00102\ \}\ \mbox{\hyperlink{tinyspline_8h_aab5b8110f44d56c12ee1bbf0c76a29a4}{tsBSplineType}};}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00138\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct}}
+\DoxyCodeLine{00139\ \{}
+\DoxyCodeLine{00140\ \ \ \ \ \textcolor{comment}{/*\ Degree\ of\ B-\/Spline\ basis\ function.\ */}}
+\DoxyCodeLine{00141\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ deg;}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ \ \ \ \ \textcolor{comment}{/*\ A\ convenience\ field\ for\ deg+1.\ */}}
+\DoxyCodeLine{00144\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ order;}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00146\ \ \ \ \ \textcolor{comment}{/*\ Dimension\ of\ a\ control\ points.\ */}}
+\DoxyCodeLine{00147\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ dim;}
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00149\ \ \ \ \ \textcolor{comment}{/*\ Number\ of\ control\ points.\ */}}
+\DoxyCodeLine{00150\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ n\_ctrlp;}
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00152\ \ \ \ \ \textcolor{comment}{/*\ Number\ of\ knots\ (n\_ctrlp\ +\ deg\ +\ 1).\ */}}
+\DoxyCodeLine{00153\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ n\_knots;}
+\DoxyCodeLine{00154\ }
+\DoxyCodeLine{00155\ \ \ \ \ \textcolor{comment}{/*\ Control\ points\ of\ a\ spline.\ */}}
+\DoxyCodeLine{00156\ \ \ \ \ tsReal\ *ctrlp;}
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00158\ \ \ \ \ \textcolor{comment}{/*\ Knot\ vector\ of\ a\ spline\ (ascending\ order).\ */}}
+\DoxyCodeLine{00159\ \ \ \ \ tsReal\ *knots;}
+\DoxyCodeLine{00160\ \}\ \mbox{\hyperlink{structts_b_spline}{tsBSpline}};}
+\DoxyCodeLine{00161\ }
+\DoxyCodeLine{00248\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct}}
+\DoxyCodeLine{00249\ \{}
+\DoxyCodeLine{00250\ \ \ \ \ \textcolor{comment}{/*\ The\ evaluated\ knot\ value.\ */}}
+\DoxyCodeLine{00251\ \ \ \ \ tsReal\ u;}
+\DoxyCodeLine{00252\ }
+\DoxyCodeLine{00253\ \ \ \ \ \textcolor{comment}{/*\ The\ index\ [u\_k,\ u\_k+1)\ */}}
+\DoxyCodeLine{00254\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ k;}
+\DoxyCodeLine{00255\ }
+\DoxyCodeLine{00256\ \ \ \ \ \textcolor{comment}{/*\ Multiplicity\ of\ u\_k.\ */}}
+\DoxyCodeLine{00257\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ s;}
+\DoxyCodeLine{00258\ }
+\DoxyCodeLine{00259\ \ \ \ \ \textcolor{comment}{/*\ How\ many\ times\ u\ must\ be\ inserted\ to\ get\ the\ resulting\ point.\ */}}
+\DoxyCodeLine{00260\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ h;}
+\DoxyCodeLine{00261\ }
+\DoxyCodeLine{00262\ \ \ \ \ \textcolor{comment}{/*\ Dimension\ of\ a\ control\ point.\ */}}
+\DoxyCodeLine{00263\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ dim;}
+\DoxyCodeLine{00264\ }
+\DoxyCodeLine{00265\ \ \ \ \ \textcolor{comment}{/*\ Number\ of\ points\ in\ 'points'.\ */}}
+\DoxyCodeLine{00266\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ n\_points;}
+\DoxyCodeLine{00267\ }
+\DoxyCodeLine{00268\ \ \ \ \ \textcolor{comment}{/*\ Points\ of\ the\ net\ used\ to\ evaluate\ u\_k.\ */}}
+\DoxyCodeLine{00269\ \ \ \ \ tsReal\ *points;}
+\DoxyCodeLine{00270\ }
+\DoxyCodeLine{00271\ \ \ \ \ \textcolor{comment}{/*\ A\ convenient\ pointer\ to\ the\ result\ in\ 'points'.\ */}}
+\DoxyCodeLine{00272\ \ \ \ \ tsReal\ *result;}
+\DoxyCodeLine{00273\ \}\ \mbox{\hyperlink{structts_de_boor_net}{tsDeBoorNet}};}
+\DoxyCodeLine{00274\ }
+\DoxyCodeLine{00275\ }
+\DoxyCodeLine{00276\ }
+\DoxyCodeLine{00277\ \textcolor{comment}{/******************************************************************************}}
+\DoxyCodeLine{00278\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00279\ \textcolor{comment}{*\ Constructors,\ Destructors,\ Copy,\ and\ Move\ Functions\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00280\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00281\ \textcolor{comment}{*\ The\ following\ section\ contains\ functions\ to\ create\ and\ delete\ instances\ of\ \ *}}
+\DoxyCodeLine{00282\ \textcolor{comment}{*\ the\ data\ types\ listed\ above.\ Additionally,\ each\ data\ type\ has\ a\ copy\ and\ \ \ \ *}}
+\DoxyCodeLine{00283\ \textcolor{comment}{*\ move\ function.\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00284\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00285\ \textcolor{comment}{******************************************************************************/}}
+\DoxyCodeLine{00294\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{tinyspline_8h_a81921b5de014d0d57f2497f59cda468a}{ts\_bspline\_default}}(\mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *\_spline\_);}
+\DoxyCodeLine{00295\ }
+\DoxyCodeLine{00322\ \mbox{\hyperlink{tinyspline_8h_a565ff3761d90530714283629d1850e9a}{tsError}}\ \mbox{\hyperlink{tinyspline_8h_a47bb44e7d8ad35c56d7b1b3f9b875fcd}{ts\_bspline\_new}}(\textcolor{keywordtype}{size\_t}\ n\_ctrlp,\ \textcolor{keywordtype}{size\_t}\ dim,\ \textcolor{keywordtype}{size\_t}\ deg,}
+\DoxyCodeLine{00323\ \ \ \ \ \mbox{\hyperlink{tinyspline_8h_aab5b8110f44d56c12ee1bbf0c76a29a4}{tsBSplineType}}\ type,\ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *\_spline\_);}
+\DoxyCodeLine{00324\ }
+\DoxyCodeLine{00342\ \mbox{\hyperlink{tinyspline_8h_a565ff3761d90530714283629d1850e9a}{tsError}}\ \mbox{\hyperlink{tinyspline_8h_a4c1d28e8f52a4f05e19a5ca2cfd404fc}{ts\_bspline\_copy}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *original,\ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *\_copy\_);}
+\DoxyCodeLine{00343\ }
+\DoxyCodeLine{00355\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{tinyspline_8h_add802363d781d08f56f41c1482a0bccd}{ts\_bspline\_move}}(\mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *from,\ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *\_to\_);}
+\DoxyCodeLine{00356\ }
+\DoxyCodeLine{00366\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{tinyspline_8h_a1ae22ecf7c8865fc2eddeecfaa78c237}{ts\_bspline\_free}}(\mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *\_spline\_);}
+\DoxyCodeLine{00367\ }
+\DoxyCodeLine{00376\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{tinyspline_8h_a1305fb75200937ca3f20953d4e16a6c4}{ts\_deboornet\_default}}(\mbox{\hyperlink{structts_de_boor_net}{tsDeBoorNet}}\ *\_deBoorNet\_);}
+\DoxyCodeLine{00377\ }
+\DoxyCodeLine{00395\ \mbox{\hyperlink{tinyspline_8h_a565ff3761d90530714283629d1850e9a}{tsError}}\ \mbox{\hyperlink{tinyspline_8h_af92380de0c8654d714e524cbdcb24ac4}{ts\_deboornet\_copy}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structts_de_boor_net}{tsDeBoorNet}}\ *original,\ \mbox{\hyperlink{structts_de_boor_net}{tsDeBoorNet}}\ *\_copy\_);}
+\DoxyCodeLine{00396\ }
+\DoxyCodeLine{00408\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{tinyspline_8h_a020c7a42e7e1baba7e696e8940e1f089}{ts\_deboornet\_move}}(\mbox{\hyperlink{structts_de_boor_net}{tsDeBoorNet}}\ *from,\ \mbox{\hyperlink{structts_de_boor_net}{tsDeBoorNet}}\ *\_to\_);}
+\DoxyCodeLine{00409\ }
+\DoxyCodeLine{00419\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{tinyspline_8h_a56418fe544ac9fdfe25103ed7d69df3e}{ts\_deboornet\_free}}(\mbox{\hyperlink{structts_de_boor_net}{tsDeBoorNet}}\ *\_deBoorNet\_);}
+\DoxyCodeLine{00420\ }
+\DoxyCodeLine{00421\ }
+\DoxyCodeLine{00422\ }
+\DoxyCodeLine{00423\ \textcolor{comment}{/******************************************************************************}}
+\DoxyCodeLine{00424\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00425\ \textcolor{comment}{*\ Interpolation\ and\ Approximation\ Functions\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00426\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00427\ \textcolor{comment}{*\ The\ following\ section\ contains\ functions\ to\ interpolate\ and\ approximate\ \ \ \ \ *}}
+\DoxyCodeLine{00428\ \textcolor{comment}{*\ arbitrary\ splines.\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00429\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00430\ \textcolor{comment}{******************************************************************************/}}
+\DoxyCodeLine{00468\ \mbox{\hyperlink{tinyspline_8h_a565ff3761d90530714283629d1850e9a}{tsError}}\ \mbox{\hyperlink{tinyspline_8h_a95bd68ed4b4effcb893e50a79ea1a9f4}{ts\_bspline\_interpolate\_cubic}}(\textcolor{keyword}{const}\ tsReal\ *points,\ \textcolor{keywordtype}{size\_t}\ n,}
+\DoxyCodeLine{00469\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ dim,\ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *\_spline\_);}
+\DoxyCodeLine{00470\ }
+\DoxyCodeLine{00471\ }
+\DoxyCodeLine{00472\ }
+\DoxyCodeLine{00473\ \textcolor{comment}{/******************************************************************************}}
+\DoxyCodeLine{00474\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00475\ \textcolor{comment}{*\ Query\ Functions\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00476\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00477\ \textcolor{comment}{*\ The\ following\ section\ contains\ functions\ to\ query\ splines.\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00478\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00479\ \textcolor{comment}{******************************************************************************/}}
+\DoxyCodeLine{00501\ \mbox{\hyperlink{tinyspline_8h_a565ff3761d90530714283629d1850e9a}{tsError}}\ \mbox{\hyperlink{tinyspline_8h_a6942a2ceb8e46933ea035bae2177db95}{ts\_bspline\_evaluate}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *spline,\ tsReal\ u,}
+\DoxyCodeLine{00502\ \ \ \ \ \mbox{\hyperlink{structts_de_boor_net}{tsDeBoorNet}}\ *\_deBoorNet\_);}
+\DoxyCodeLine{00503\ }
+\DoxyCodeLine{00504\ }
+\DoxyCodeLine{00505\ }
+\DoxyCodeLine{00506\ \textcolor{comment}{/******************************************************************************}}
+\DoxyCodeLine{00507\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00508\ \textcolor{comment}{*\ Transformation\ functions\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00509\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00510\ \textcolor{comment}{*\ TinySpline\ is\ a\ library\ focusing\ on\ transformations.\ That\ is,\ most\ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00511\ \textcolor{comment}{*\ functions\ are\ used\ to\ transform\ splines\ by\ modifying\ their\ state,\ e.g.,\ \ \ \ \ *}}
+\DoxyCodeLine{00512\ \textcolor{comment}{*\ their\ number\ of\ control\ points,\ their\ degree,\ and\ so\ on.\ Accordingly,\ each\ \ *}}
+\DoxyCodeLine{00513\ \textcolor{comment}{*\ transformation\ functions\ specifies\ an\ input\ and\ output\ parameter\ (along\ \ \ \ \ *}}
+\DoxyCodeLine{00514\ \textcolor{comment}{*\ with\ the\ other\ parameters\ required\ to\ calculate\ the\ actual\ transformation).\ *}}
+\DoxyCodeLine{00515\ \textcolor{comment}{*\ By\ passing\ a\ different\ pointer\ to\ the\ output\ parameter,\ the\ transformation\ \ *}}
+\DoxyCodeLine{00516\ \textcolor{comment}{*\ result\ is\ calculated\ and\ stored\ without\ changing\ the\ state\ of\ the\ input.\ \ \ \ *}}
+\DoxyCodeLine{00517\ \textcolor{comment}{*\ This\ is\ in\ particular\ useful\ when\ dealing\ with\ errors\ as\ the\ original\ state\ *}}
+\DoxyCodeLine{00518\ \textcolor{comment}{*\ will\ never\ be\ modified.\ For\ instance,\ let's\ have\ a\ look\ at\ the\ following\ \ \ \ *}}
+\DoxyCodeLine{00519\ \textcolor{comment}{*\ code\ snippet:\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00520\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00521\ \textcolor{comment}{*\ \ \ \ \ tsBSpline\ in\ =\ ...\ \ \ \ //\ an\ arbitrary\ spline\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00522\ \textcolor{comment}{*\ \ \ \ \ tsBSpline\ out;\ \ \ \ \ \ \ \ //\ result\ of\ transformation\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00523\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00524\ \textcolor{comment}{*\ \ \ \ \ //\ Subdivide\ 'in'\ into\ sequence\ of\ bezier\ curves\ and\ store\ the\ result\ \ \ *}}
+\DoxyCodeLine{00525\ \textcolor{comment}{*\ \ \ \ \ //\ in\ 'out'.\ Does\ not\ change\ 'in'\ in\ any\ way.\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00526\ \textcolor{comment}{*\ \ \ \ \ tsError\ err\ =\ ts\_bspline\_to\_beziers(\&in,\ \&out);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00527\ \textcolor{comment}{*\ \ \ \ \ if\ (err\ !=\ TS\_SUCCESS)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00528\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ //\ fortunately,\ 'in'\ has\ not\ been\ changed\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00529\ \textcolor{comment}{*\ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00530\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00531\ \textcolor{comment}{*\ Even\ if\ 'ts\_bspline\_to\_beziers'\ fails,\ the\ state\ of\ 'in'\ has\ not\ been\ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00532\ \textcolor{comment}{*\ changed\ allowing\ you\ to\ handle\ the\ error\ properly.\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00533\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00534\ \textcolor{comment}{*\ Unless\ stated\ otherwise,\ the\ order\ of\ the\ parameters\ for\ transformation\ \ \ \ \ *}}
+\DoxyCodeLine{00535\ \textcolor{comment}{*\ functions\ is:\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00536\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00537\ \textcolor{comment}{*\ \ \ \ \ function(input,\ [additional\_input],\ output,\ [additional\_output])\ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00538\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00539\ \textcolor{comment}{*\ 'additional\_input'\ are\ parameters\ required\ to\ calculate\ the\ actual\ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00540\ \textcolor{comment}{*\ transformation.\ 'additional\_output'\ are\ parameters\ storing\ further\ result.\ \ *}}
+\DoxyCodeLine{00541\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00542\ \textcolor{comment}{*\ Note:\ None\ of\ TinySpline's\ transformation\ functions\ frees\ the\ memory\ of\ the\ *}}
+\DoxyCodeLine{00543\ \textcolor{comment}{*\ \ \ \ \ \ \ output\ parameter.\ Thus,\ when\ using\ the\ same\ output\ parameter\ multiple\ *}}
+\DoxyCodeLine{00544\ \textcolor{comment}{*\ \ \ \ \ \ \ times,\ make\ sure\ to\ free\ memory\ before\ each\ call.\ Otherwise,\ you\ will\ *}}
+\DoxyCodeLine{00545\ \textcolor{comment}{*\ \ \ \ \ \ \ have\ a\ bad\ time\ with\ memory\ leaks:\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00546\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00547\ \textcolor{comment}{*\ \ \ \ \ tsBSpline\ in\ =\ ...\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ //\ an\ arbitrary\ spline\ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00548\ \textcolor{comment}{*\ \ \ \ \ tsBSpline\ out;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ //\ result\ of\ transformations\ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00549\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00550\ \textcolor{comment}{*\ \ \ \ \ ts\_bspline\_to\_beziers(\&in,\ \&out);\ \ \ //\ first\ transformation\ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00551\ \textcolor{comment}{*\ \ \ \ \ ...\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ //\ some\ code\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00552\ \textcolor{comment}{*\ \ \ \ \ ts\_bspline\_free(\&out);\ \ \ \ \ \ \ \ \ \ \ \ \ \ //\ avoid\ memory\ leak.\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00553\ \textcolor{comment}{*\ \ \ \ \ ts\_bspline\_buckle(\&in,\ \&out);\ \ \ \ \ \ \ //\ next\ transformation\ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00554\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00555\ \textcolor{comment}{*\ If\ you\ want\ to\ modify\ your\ input\ directly\ without\ having\ a\ separate\ output,\ *}}
+\DoxyCodeLine{00556\ \textcolor{comment}{*\ pass\ it\ as\ input\ and\ output\ at\ once:\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00557\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00558\ \textcolor{comment}{*\ \ \ \ \ tsBSpline\ s\ =\ ...\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ //\ an\ arbitrary\ spline\ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00559\ \textcolor{comment}{*\ \ \ \ \ tsReal\ *knots\ =\ ...\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ //\ a\ knot\ vector\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00560\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00561\ \textcolor{comment}{*\ \ \ \ \ ts\_bspline\_set\_knots(\&s,\ knots,\ \&s);\ \ \ \ //\ copy\ 'knots'\ into\ 's'\ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00562\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00563\ \textcolor{comment}{*\ Note:\ If\ a\ transformation\ function\ fails\ *and*\ input\ !=\ output,\ all\ fields\ \ *}}
+\DoxyCodeLine{00564\ \textcolor{comment}{*\ \ \ \ \ \ \ of\ the\ output\ parameter\ are\ set\ to\ 0/NULL.\ If\ input\ ==\ output,\ your\ \ \ *}}
+\DoxyCodeLine{00565\ \textcolor{comment}{*\ \ \ \ \ \ \ input\ may\ have\ an\ invalid\ state\ in\ case\ of\ errors.\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00566\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00567\ \textcolor{comment}{******************************************************************************/}}
+\DoxyCodeLine{00610\ \mbox{\hyperlink{tinyspline_8h_a565ff3761d90530714283629d1850e9a}{tsError}}\ \mbox{\hyperlink{tinyspline_8h_a0a5a92576e4848286f4b3dd69764403f}{ts\_bspline\_derive}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *spline,\ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *\_derivative\_);}
+\DoxyCodeLine{00611\ }
+\DoxyCodeLine{00634\ \mbox{\hyperlink{tinyspline_8h_a565ff3761d90530714283629d1850e9a}{tsError}}\ \mbox{\hyperlink{tinyspline_8h_a2573b8c00454a0e97140c8429336a2b9}{ts\_bspline\_set\_ctrlp}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *spline,\ \textcolor{keyword}{const}\ tsReal\ *ctrlp,}
+\DoxyCodeLine{00635\ \ \ \ \ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *\_result\_);}
+\DoxyCodeLine{00636\ }
+\DoxyCodeLine{00658\ \mbox{\hyperlink{tinyspline_8h_a565ff3761d90530714283629d1850e9a}{tsError}}\ \mbox{\hyperlink{tinyspline_8h_a5b42b65d67a158aadfebb2ec0fe54f61}{ts\_bspline\_set\_knots}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *spline,\ \textcolor{keyword}{const}\ tsReal\ *knots,}
+\DoxyCodeLine{00659\ \ \ \ \ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *\_result\_);}
+\DoxyCodeLine{00660\ }
+\DoxyCodeLine{00701\ \mbox{\hyperlink{tinyspline_8h_a565ff3761d90530714283629d1850e9a}{tsError}}\ \mbox{\hyperlink{tinyspline_8h_a6199d07c43a843c4283d6c631ece80d7}{ts\_bspline\_fill\_knots}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *spline,\ \mbox{\hyperlink{tinyspline_8h_aab5b8110f44d56c12ee1bbf0c76a29a4}{tsBSplineType}}\ type,}
+\DoxyCodeLine{00702\ \ \ \ \ tsReal\ min,\ tsReal\ max,\ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *\_result\_);}
+\DoxyCodeLine{00703\ }
+\DoxyCodeLine{00728\ \mbox{\hyperlink{tinyspline_8h_a565ff3761d90530714283629d1850e9a}{tsError}}\ \mbox{\hyperlink{tinyspline_8h_a4c1c871b8fed7f04e630fd18691970f4}{ts\_bspline\_insert\_knot}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *spline,\ tsReal\ u,\ \textcolor{keywordtype}{size\_t}\ n,}
+\DoxyCodeLine{00729\ \ \ \ \ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *\_result\_,\ \textcolor{keywordtype}{size\_t}\ *\_k\_);}
+\DoxyCodeLine{00730\ }
+\DoxyCodeLine{00753\ \mbox{\hyperlink{tinyspline_8h_a565ff3761d90530714283629d1850e9a}{tsError}}\ \mbox{\hyperlink{tinyspline_8h_a7f5b74412f8e277f02ca1924a7a40e67}{ts\_bspline\_resize}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *spline,\ \textcolor{keywordtype}{int}\ n,\ \textcolor{keywordtype}{int}\ back,}
+\DoxyCodeLine{00754\ \ \ \ \ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *\_resized\_);}
+\DoxyCodeLine{00755\ }
+\DoxyCodeLine{00777\ \mbox{\hyperlink{tinyspline_8h_a565ff3761d90530714283629d1850e9a}{tsError}}\ \mbox{\hyperlink{tinyspline_8h_ad7ef815b2cf46c808df814f8cb7b404b}{ts\_bspline\_split}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *spline,\ tsReal\ u,}
+\DoxyCodeLine{00778\ \ \ \ \ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *\_split\_,\ \textcolor{keywordtype}{size\_t}\ *\_k\_);}
+\DoxyCodeLine{00779\ }
+\DoxyCodeLine{00811\ \mbox{\hyperlink{tinyspline_8h_a565ff3761d90530714283629d1850e9a}{tsError}}\ \mbox{\hyperlink{tinyspline_8h_ab238dc562fee3a4c6ab2d2be94aa5765}{ts\_bspline\_buckle}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *original,\ tsReal\ b,}
+\DoxyCodeLine{00812\ \ \ \ \ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *\_buckled\_);}
+\DoxyCodeLine{00813\ }
+\DoxyCodeLine{00831\ \mbox{\hyperlink{tinyspline_8h_a565ff3761d90530714283629d1850e9a}{tsError}}\ \mbox{\hyperlink{tinyspline_8h_ad6c51a67e74d453fc66ec940ab466967}{ts\_bspline\_to\_beziers}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *spline,\ \mbox{\hyperlink{structts_b_spline}{tsBSpline}}\ *\_beziers\_);}
+\DoxyCodeLine{00832\ }
+\DoxyCodeLine{00833\ }
+\DoxyCodeLine{00834\ }
+\DoxyCodeLine{00835\ \textcolor{comment}{/******************************************************************************}}
+\DoxyCodeLine{00836\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00837\ \textcolor{comment}{*\ Utility\ Functions\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00838\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00839\ \textcolor{comment}{*\ The\ following\ section\ contains\ utility\ functions\ used\ by\ TinySpline\ which\ \ \ *}}
+\DoxyCodeLine{00840\ \textcolor{comment}{*\ also\ may\ be\ helpful\ when\ working\ with\ this\ library.\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00841\ \textcolor{comment}{*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *}}
+\DoxyCodeLine{00842\ \textcolor{comment}{******************************************************************************/}}
+\DoxyCodeLine{00856\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{tinyspline_8h_aa9f0e1a305d27413b486a498ab1ca0e6}{ts\_fequals}}(tsReal\ x,\ tsReal\ y);}
+\DoxyCodeLine{00857\ }
+\DoxyCodeLine{00863\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \mbox{\hyperlink{tinyspline_8h_a6743d564d2d3a5a4a19a4714ae84a74e}{ts\_enum\_str}}(\mbox{\hyperlink{tinyspline_8h_a565ff3761d90530714283629d1850e9a}{tsError}}\ err);}
+\DoxyCodeLine{00864\ }
+\DoxyCodeLine{00870\ \mbox{\hyperlink{tinyspline_8h_a565ff3761d90530714283629d1850e9a}{tsError}}\ \mbox{\hyperlink{tinyspline_8h_aa686ba3aafb41fa30251ec262cc503d1}{ts\_str\_enum}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *str);}
+\DoxyCodeLine{00871\ }
+\DoxyCodeLine{00876\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{tinyspline_8h_a997ea4b1b2b78d2e0c4d93d84adbc9dc}{ts\_arr\_fill}}(tsReal\ *arr,\ \textcolor{keywordtype}{size\_t}\ num,\ tsReal\ val);}
+\DoxyCodeLine{00877\ }
+\DoxyCodeLine{00891\ tsReal\ \mbox{\hyperlink{tinyspline_8h_ae72388da6ae6bd7a748a78bec84818eb}{ts\_ctrlp\_dist2}}(\textcolor{keyword}{const}\ tsReal\ *x,\ \textcolor{keyword}{const}\ tsReal\ *y,\ \textcolor{keywordtype}{size\_t}\ dim);}
+\DoxyCodeLine{00892\ }
+\DoxyCodeLine{00893\ }
+\DoxyCodeLine{00894\ }
+\DoxyCodeLine{00895\ \textcolor{preprocessor}{\#ifdef\ \ \_\_cplusplus}}
+\DoxyCodeLine{00896\ \}}
+\DoxyCodeLine{00897\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00898\ }
+\DoxyCodeLine{00899\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{/*\ TINYSPLINE\_H\ */}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00900\ }
+
+\end{DoxyCode}

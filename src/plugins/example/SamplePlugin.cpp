@@ -4,12 +4,17 @@
 #include "MainApplication.h"
 
 #include "AnnotationPoint.h"
+#include "AnnotationPlane.h"
 #include "FileConnector.h"
 
 #include "AP.h"
 
 #include <QPushButton>
 
+/**
+ * @brief Called when button on PluginPanel is pressed
+ * @param name Button name
+ */
 void SamplePlugin::onButton(const QString &name)
 {
 	qInfo() << "onButton  " << name << Qt::endl;
@@ -21,8 +26,15 @@ void SamplePlugin::onButton(const QString &name)
 	{
 		loadObject();
 	}
+	else if (name == "cutMesh")
+	{
+		cutMesh();
+	}
 }
 
+/**
+ * @brief Called when plugin is loaded
+ */
 void SamplePlugin::onLoad()
 {
 	UI::PLUGINPANEL::create( m_ID, "Working example" );
@@ -33,13 +45,17 @@ void SamplePlugin::onLoad()
 	
 	UI::PLUGINPANEL::addButton(m_ID, "createBox", "Create box", nextPos++, 0);
 	UI::PLUGINPANEL::addButton(m_ID, "loadObject", "Load object", nextPos++, 0);
+	UI::PLUGINPANEL::addButton(m_ID, "cutMesh", "Cut mesh", nextPos++, 0);
 
 	//QObject::connect(UI::PLUGINPANEL::addButton(m_ID, "create box", "createBox", nextPos++, 0), SIGNAL(clicked()), SLOT(createBox()));
 
 	UI::PLUGINPANEL::setEnabled(m_ID, true);
 }
 
-
+/**
+ * @brief loads model in path, if file in path do not exists, displays OpenFileName dialog and next loads choosen model
+ * @param path path to model file
+ */
 void SamplePlugin::loadObject(const QString &path)
 {
 	QString fileName = path;
@@ -61,6 +77,9 @@ void SamplePlugin::loadObject(const QString &path)
 	}
 }
 
+/**
+ * @brief creates simple mesh and shows it in workspace
+ */
 void SamplePlugin::createBox()
 {
 	CMesh* mesh = new CMesh;
@@ -105,3 +124,155 @@ void SamplePlugin::createBox()
 }
 
 
+/**
+ * @brief Calculates the signed distance of a point from a plane defined by a centroid and a normal vector.
+ * @param point The point to evaluate.
+ * @param centroid The centroid point of the plane.
+ * @param normal The normal vector of the plane.
+ * @return double The signed distance from the point to the plane.
+ */
+static double PlaneDistance(const CPoint3d& point, const CPoint3d& centroid, const CVector3d& normal) {
+	// The plane equation is given by: (point - centroid) . normal = 0
+	// The signed distance is calculated as:
+	return ((point.x - centroid.x) * normal.x +
+		(point.y - centroid.y) * normal.y +
+		(point.z - centroid.z) * normal.z);
+}
+
+/**
+ * @brief Divides a triangular mesh into two parts based on a plane.
+ * @param mesh The input triangular mesh.
+ * @param centroid The centroid point of the plane.
+ * @param normal The normal vector of the plane.
+ * @param aboveTriangles Output vector for faces (as vertex indices) above the plane.
+ * @param belowTriangles Output vector for faces (as vertex indices) below the plane.
+ */
+static void DivideMesh(CMesh* mesh, const CPoint3d& centroid, const CVector3d& normal,
+	CMesh::Faces& aboveTriangles, CMesh::Faces& belowTriangles) {
+	
+	for (auto& face : mesh->faces()) {
+		// Calculate the position of each vertex relative to the plane
+		double d1 = PlaneDistance(mesh->vertices()[face.A()], centroid, normal);
+		double d2 = PlaneDistance(mesh->vertices()[face.B()], centroid, normal);
+		double d3 = PlaneDistance(mesh->vertices()[face.C()], centroid, normal);
+
+		// Classify the triangle based on its vertices' positions relative to the plane
+		if (d1 > 0 && d2 > 0 && d3 > 0) {
+			aboveTriangles.push_back(face); // All vertices are above the plane
+		}
+		else if (d1 < 0 && d2 < 0 && d3 < 0) {
+			belowTriangles.push_back(face); // All vertices are below the plane
+		}
+		else {
+			// Triangle intersects the plane, further processing can be done if needed
+			// For now, we will just ignore these triangles
+		}
+	}
+}
+
+
+void SamplePlugin::cutMesh() {
+	QString fileName = UI::FILECHOOSER::getOpenFileName(
+		tr("Open File"),
+		AP::mainApp().settings->value("recentFile").toString(),
+		CFileConnector::getLoadExts());
+
+	CModel3D* obj = nullptr;
+	if (!fileName.isEmpty()) // if empty: you pressed Cancel 
+	{
+		if (QFileInfo(fileName).exists())
+		{
+			// load the model and if exists add it to workspace
+			// using AP namespace is good choise because it automaticaly refreshes viewer
+			obj = AP::WORKSPACE::loadModel(fileName);
+
+			if (obj == nullptr)
+			{
+				UI::MESSAGEBOX::error("Something went wrong", "Can't read file");
+				return;
+			}
+		}
+		else // this should not have happened
+		{
+			UI::MESSAGEBOX::error("Something went wrong", "File doesn't exists");
+			return;
+		}
+
+	
+		// object can heave more than one child, but if you don't specify id of child
+		// you always get first child in list or nullptr if none
+		CBaseObject* child = obj->getChild();
+
+		CPoint3d centroid(0, 0, 0);
+		CVector3d normal(0, 1, 0);
+
+
+		CAnnotationPlane* plane = new CAnnotationPlane(centroid, normal);
+		plane->setSize(50);
+
+		// add plane to workspace
+		// using AP namespace is good choise because it automaticaly refreshes viewer
+		AP::OBJECT::addChild(obj, plane);
+
+		if (child->hasType(CObject::MESH))
+		{
+			CMesh* mesh = (CMesh*)child;
+
+			CMesh::Faces aboveTriangles, belowTriangles;
+
+			DivideMesh(mesh, centroid, normal, aboveTriangles, belowTriangles);
+
+			// create deep copy of original mesh
+			CMesh* mesh1 = mesh->getCopy();
+			
+			// replace vector of faces with result of divide
+			mesh1->faces() = aboveTriangles;
+			
+			// Removes vertices not assigned to any face and corects indices
+			mesh1->removeUnusedVertices();
+			
+			// currently you must set CModel3D as a parent of any other objects
+			// it is good because CModel3D is the "transformation object",
+			// so it let you to rotate, translate and scale
+			CModel3D* obj1 = new CModel3D();
+
+			// set obj1 as parent of your mesh
+			obj1->addChild(mesh1);
+
+			// and optionaly correct parents boundingbox
+			obj1->importChildrenGeometry();
+
+			// you can rename every object as you want
+			obj1->setLabel("upper part");
+			
+			// add to workspace for display it in viewer and in workspace tree dialog
+			AP::WORKSPACE::addObject(obj1);
+
+			// create deep copy of original mesh
+			CMesh* mesh2 = mesh->getCopy();
+
+			// replace vector of faces with result of divide
+			mesh2->faces() = belowTriangles;
+
+			// Removes vertices not assigned to any face and corects indices
+			mesh2->removeUnusedVertices();
+
+			CModel3D* obj2 = new CModel3D();
+
+			obj2->addChild(mesh2);
+			obj2->importChildrenGeometry();
+			obj2->setLabel("bottom part");
+
+			AP::WORKSPACE::addObject(obj2);
+		}
+		else
+		{
+			UI::MESSAGEBOX::error("Something went wrong", "Object is not mesh");
+			return;
+		}
+
+		// refresh viewers, probably it is not needed
+		UI::updateAllViews();
+	}
+
+}

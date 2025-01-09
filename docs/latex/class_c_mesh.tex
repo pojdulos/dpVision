@@ -1,0 +1,850 @@
+\doxysection{CMesh Class Reference}
+\hypertarget{class_c_mesh}{}\label{class_c_mesh}\index{CMesh@{CMesh}}
+Inheritance diagram for CMesh\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{class_c_mesh}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_mesh_a551e8e5b9a9ec7f382ffa7a03b6cd173}\label{class_c_mesh_a551e8e5b9a9ec7f382ffa7a03b6cd173} 
+typedef std\+::vector$<$ \mbox{\hyperlink{class_c_face}{CFace}} $>$ {\bfseries Faces}
+\item 
+\Hypertarget{class_c_mesh_ae3dc174f856b3842cf9f4f425ff9e1a1}\label{class_c_mesh_ae3dc174f856b3842cf9f4f425ff9e1a1} 
+typedef std\+::vector$<$ \mbox{\hyperlink{struct__vsplit}{SVsplit}} $>$ {\bfseries Vsplits}
+\item 
+\Hypertarget{class_c_mesh_a6796a2f57d3d991f4175d3e54e39683f}\label{class_c_mesh_a6796a2f57d3d991f4175d3e54e39683f} 
+typedef \mbox{\hyperlink{class_c_set_of_edges}{CSet\+Of\+Edges}} {\bfseries Edges}
+\item 
+\Hypertarget{class_c_mesh_af6a16fe8665e208e89e10cb9a8c62722}\label{class_c_mesh_af6a16fe8665e208e89e10cb9a8c62722} 
+typedef \mbox{\hyperlink{class_c_list_of_edges}{CList\+Of\+Edges}} {\bfseries Edges\+Cycle}
+\item 
+\Hypertarget{class_c_mesh_afb969faba88e9364fdfef437c870275f}\label{class_c_mesh_afb969faba88e9364fdfef437c870275f} 
+typedef std\+::set$<$ INDEX\+\_\+\+TYPE $>$ {\bfseries Neighbors}
+\item 
+\Hypertarget{class_c_mesh_a98d02156eb181da9b8e5d834dc687156}\label{class_c_mesh_a98d02156eb181da9b8e5d834dc687156} 
+typedef std\+::map$<$ INDEX\+\_\+\+TYPE, CMesh\+::\+Neighbors $>$ {\bfseries Neighborhood}
+\item 
+\Hypertarget{class_c_mesh_a53c0e51c8da94e8ff764a7d80fa13c14}\label{class_c_mesh_a53c0e51c8da94e8ff764a7d80fa13c14} 
+typedef std\+::map$<$ INDEX\+\_\+\+TYPE, std\+::set$<$ INDEX\+\_\+\+TYPE $>$ $>$ {\bfseries V2\+Fmap}
+\item 
+\Hypertarget{class_c_mesh_aa68925cde31e2050539bbb436020e5d3}\label{class_c_mesh_aa68925cde31e2050539bbb436020e5d3} 
+typedef std\+::map$<$ INDEX\+\_\+\+TYPE, std\+::pair$<$ std\+::set$<$ INDEX\+\_\+\+TYPE $>$, std\+::set$<$ INDEX\+\_\+\+TYPE $>$ $>$ $>$ {\bfseries V2\+Emap}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Types inherited from \mbox{\hyperlink{class_c_point_cloud}{CPoint\+Cloud}}}
+\begin{DoxyCompactItemize}
+\item 
+typedef std\+::vector$<$ \mbox{\hyperlink{class_c_vertex}{CVertex}} $>$ {\bfseries Vertices}
+\item 
+typedef std\+::vector$<$ \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}} $>$ {\bfseries Colors}
+\item 
+typedef std\+::vector$<$ \mbox{\hyperlink{class_c_vector3}{CVector3f}} $>$ {\bfseries Normals}
+\item 
+typedef std\+::vector$<$ \mbox{\hyperlink{class_c_material}{CMaterial}} \texorpdfstring{$\ast$}{*} $>$ {\bfseries Materials}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Types inherited from \mbox{\hyperlink{class_c_object}{CObject}}}
+\begin{DoxyCompactItemize}
+\item 
+typedef std\+::map$<$ int, \mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} $>$ {\bfseries Children}
+\item 
+typedef std\+::map$<$ int, \mbox{\hyperlink{class_c_annotation}{CAnnotation}} \texorpdfstring{$\ast$}{*} $>$ {\bfseries Annotations}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Types inherited from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_base_object_afb0822280ac2bb225cb43c99e8f6dc84}\label{class_c_base_object_afb0822280ac2bb225cb43c99e8f6dc84} 
+enum {\bfseries Category} \{ {\bfseries UNKNOWN}
+, {\bfseries OBJECT}
+, {\bfseries ANNOTATION}
+ \}
+\item 
+\Hypertarget{class_c_base_object_aa0d965c2b5d9bd03c45ba2b0fe4fe8c6}\label{class_c_base_object_aa0d965c2b5d9bd03c45ba2b0fe4fe8c6} 
+enum {\bfseries Type} \{ \newline
+{\bfseries GENERIC}
+, {\bfseries GROUP}
+, {\bfseries MODEL}
+, {\bfseries MOVEMENT}
+, \newline
+{\bfseries IMAGE}
+, {\bfseries CLOUD}
+, {\bfseries ORDEREDCLOUD}
+, {\bfseries MESH}
+, \newline
+{\bfseries VOLUMETRIC}
+, {\bfseries VOLUMETRIC\+\_\+\+NEW}
+, {\bfseries VOLTK}
+, {\bfseries LIDAR}
+, \newline
+{\bfseries OTHER}
+, {\bfseries BASEANNOTATION}
+, {\bfseries POINT}
+, {\bfseries POINTS}
+, \newline
+{\bfseries BOUNDVECTORS}
+, {\bfseries VERTEX}
+, {\bfseries SETOFVERTICES}
+, {\bfseries PATH}
+, \newline
+{\bfseries VPATH}
+, {\bfseries ELASTICPATH}
+, {\bfseries PLANE}
+, {\bfseries BOX}
+, \newline
+{\bfseries CURVATUREMAP}
+, {\bfseries ATSHELL}
+, {\bfseries SETOFFACES}
+, {\bfseries EDGES}
+, \newline
+{\bfseries POLYGON}
+, {\bfseries POLYGON2D}
+, {\bfseries CAMERA}
+, {\bfseries SETOFCAMERAS}
+, \newline
+{\bfseries PYRAMID}
+, {\bfseries CYLINDER}
+, {\bfseries PODKOWA}
+, {\bfseries HISTOGRAM}
+, \newline
+{\bfseries TRIPLE}
+, {\bfseries SPHERE}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Types inherited from \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_bounding_box_ae038c7cb07ded81ab8f4dacb0857d33d}\label{class_c_bounding_box_ae038c7cb07ded81ab8f4dacb0857d33d} 
+enum {\bfseries Initial\+Values} \{ {\bfseries Null\+BB}
+, {\bfseries Invalid\+BB}
+ \}
+\item 
+\Hypertarget{class_c_bounding_box_ab1000ce98eebe38c2ff2881b0d5843aa}\label{class_c_bounding_box_ab1000ce98eebe38c2ff2881b0d5843aa} 
+enum {\bfseries Style} \{ {\bfseries Dont\+Render} = 0
+, {\bfseries Not\+Selected} = 1
+, {\bfseries Unlocked} = 2
+, {\bfseries Locked} = 3
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_mesh_aa67bc6a5795d62a0e60cb5ae2a80aee4}\label{class_c_mesh_aa67bc6a5795d62a0e60cb5ae2a80aee4} 
+{\bfseries CMesh} (\mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*}p=nullptr)
+\item 
+\Hypertarget{class_c_mesh_a32a78d620b3bfe4f5e9a85955269dc25}\label{class_c_mesh_a32a78d620b3bfe4f5e9a85955269dc25} 
+{\bfseries CMesh} (\mbox{\hyperlink{class_c_mesh}{CMesh}} \&m)
+\item 
+int \mbox{\hyperlink{class_c_mesh_aa6e4ece3eadcbf1097352ef1a5995b27}{type}} () override
+\item 
+virtual \mbox{\hyperlink{class_c_mesh}{CMesh}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_c_mesh_a25d49ac8473a370d60c158fc5466b2ee}{get\+Copy}} () override
+\item 
+std\+::wstring \mbox{\hyperlink{class_c_mesh_aeb109e0f348e980ac03c9cab1266bb7d}{info\+Row}} () override
+\item 
+void \mbox{\hyperlink{class_c_mesh_af125e4658f2dda11f4912950f7e26c1b}{info}} (std\+::wstring i\mbox{[}4\mbox{]}) override
+\item 
+\Hypertarget{class_c_mesh_a760f8967ee66c8b1f306238d7a106d0f}\label{class_c_mesh_a760f8967ee66c8b1f306238d7a106d0f} 
+\mbox{\hyperlink{class_c_polygon_group}{CPolygon\+Group}} \& {\bfseries poly} ()
+\item 
+\Hypertarget{class_c_mesh_a1523ab269a951fa7e76eab965b3db63e}\label{class_c_mesh_a1523ab269a951fa7e76eab965b3db63e} 
+Faces \& {\bfseries faces} ()
+\item 
+\Hypertarget{class_c_mesh_a8fbdd6216b8fbf357c3ead9290df85f4}\label{class_c_mesh_a8fbdd6216b8fbf357c3ead9290df85f4} 
+Normals \& {\bfseries fnormals} ()
+\item 
+\Hypertarget{class_c_mesh_aa250e9bff7250fe004d6d87f679e43b5}\label{class_c_mesh_aa250e9bff7250fe004d6d87f679e43b5} 
+Colors \& {\bfseries fcolors} ()
+\item 
+\Hypertarget{class_c_mesh_a208cd931ba23a77e0d92f3d414b6d3ea}\label{class_c_mesh_a208cd931ba23a77e0d92f3d414b6d3ea} 
+\mbox{\hyperlink{class_c_face}{CFace}} \& {\bfseries face} (INDEX\+\_\+\+TYPE idx)
+\item 
+\Hypertarget{class_c_mesh_a00c94978d3b66a6413e322896a64febc}\label{class_c_mesh_a00c94978d3b66a6413e322896a64febc} 
+\mbox{\hyperlink{class_c_triangle}{CTriangle}} {\bfseries get\+Face\+As\+Triangle} (INDEX\+\_\+\+TYPE idx)
+\item 
+\Hypertarget{class_c_mesh_a1a941374c96d37028beb5efe6353cdc0}\label{class_c_mesh_a1a941374c96d37028beb5efe6353cdc0} 
+\mbox{\hyperlink{class_c_vertex}{CVertex}} \& {\bfseries vertex} (INDEX\+\_\+\+TYPE face\+\_\+idx, int vid)
+\item 
+\Hypertarget{class_c_mesh_a23d20a0b7d2cdbabeeead807fc79d946}\label{class_c_mesh_a23d20a0b7d2cdbabeeead807fc79d946} 
+bool {\bfseries calc\+VN} (bool weighted=true)
+\item 
+\Hypertarget{class_c_mesh_a680d3f7f21157b2e086ee9a79cf7b534}\label{class_c_mesh_a680d3f7f21157b2e086ee9a79cf7b534} 
+bool {\bfseries calc\+FN} ()
+\item 
+virtual void \mbox{\hyperlink{class_c_mesh_acb10ffe0f7543549e480de5388659ea5}{render\+Self}} () override
+\item 
+virtual void \mbox{\hyperlink{class_c_mesh_ad13a0adb03792fb1282c347290b5abb5}{prepare}} () override
+\item 
+\Hypertarget{class_c_mesh_aa6c74d079be2e27e910b35e9d41c1125}\label{class_c_mesh_aa6c74d079be2e27e910b35e9d41c1125} 
+int {\bfseries ray\+Triangle\+Intersect3D} (INDEX\+\_\+\+TYPE j, \mbox{\hyperlink{class_c_vector3}{CVector3f}} v\+Ray, \mbox{\hyperlink{class_c_point3}{CPoint3f}} p\+P0, \mbox{\hyperlink{class_c_point3}{CPoint3f}} \&p\+Intersection\+Point, double \&p\+Distance)
+\item 
+\Hypertarget{class_c_mesh_a087ba10558a79003280dcb7be39a581d}\label{class_c_mesh_a087ba10558a79003280dcb7be39a581d} 
+int {\bfseries ray\+Triangle\+Intersect3D} (INDEX\+\_\+\+TYPE j, \mbox{\hyperlink{class_c_vector3}{CVector3d}} v\+Ray, \mbox{\hyperlink{class_c_point3}{CPoint3d}} p\+P0, \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&p\+Intersection\+Point, double \&p\+Distance)
+\item 
+\Hypertarget{class_c_mesh_a1cd2817b56ad3014f7ff3ddfaa5a7fc8}\label{class_c_mesh_a1cd2817b56ad3014f7ff3ddfaa5a7fc8} 
+bool {\bfseries get\+Closest\+Face} (\mbox{\hyperlink{class_c_point3}{CPoint3f}} pkt0, \mbox{\hyperlink{class_c_vector3}{CVector3f}} v\+Ray, \mbox{\hyperlink{class_c_point3}{CPoint3f}} \&intersection, INDEX\+\_\+\+TYPE \&indx, bool only\+Front=true)
+\item 
+\Hypertarget{class_c_mesh_a7d6d20ffbb2d14fb43edaa769d7b6952}\label{class_c_mesh_a7d6d20ffbb2d14fb43edaa769d7b6952} 
+bool {\bfseries get\+Closest\+Face} (\mbox{\hyperlink{class_c_point3}{CPoint3f}} pkt0, \mbox{\hyperlink{class_c_vector3}{CVector3f}} v\+Ray, std\+::set$<$ INDEX\+\_\+\+TYPE $>$ podzbior, \mbox{\hyperlink{class_c_point3}{CPoint3f}} \&Intersection\+Point, INDEX\+\_\+\+TYPE \&indx, bool only\+Front=true)
+\item 
+\Hypertarget{class_c_mesh_a488e2f4cffbb5e4ec8f2b36838882c75}\label{class_c_mesh_a488e2f4cffbb5e4ec8f2b36838882c75} 
+int {\bfseries get\+List\+Of\+Intersections} (\mbox{\hyperlink{class_c_point3}{CPoint3f}} pkt0, \mbox{\hyperlink{class_c_vector3}{CVector3f}} v\+Ray, std\+::vector$<$ float $>$ \&in, std\+::vector$<$ float $>$ \&out)
+\item 
+\Hypertarget{class_c_mesh_a77b50df516874dde5ebf44ad502a51b4}\label{class_c_mesh_a77b50df516874dde5ebf44ad502a51b4} 
+int {\bfseries get\+List\+Of\+Intersections2} (\mbox{\hyperlink{class_c_point3}{CPoint3f}} pkt0, \mbox{\hyperlink{class_c_vector3}{CVector3f}} v\+Ray, std\+::map$<$ INDEX\+\_\+\+TYPE, std\+::pair$<$ float, int $>$ $>$ \&in, int ignore\+Vertex=-\/1)
+\item 
+\Hypertarget{class_c_mesh_a52c56be22ec4f2f167d6da6d5a6c085d}\label{class_c_mesh_a52c56be22ec4f2f167d6da6d5a6c085d} 
+float {\bfseries get\+Interior\+Length} (\mbox{\hyperlink{class_c_point3}{CPoint3f}} pkt0, \mbox{\hyperlink{class_c_vector3}{CVector3f}} v\+Ray, float \&max\+Len)
+\item 
+\Hypertarget{class_c_mesh_a02afba1c3b5eb384d281111d40907a08}\label{class_c_mesh_a02afba1c3b5eb384d281111d40907a08} 
+std\+::vector$<$ \mbox{\hyperlink{class_c_vector3}{CVector3f}} $>$ \& {\bfseries get\+Vectors} (\mbox{\hyperlink{class_c_point3}{CPoint3f}} pkt0)
+\item 
+\Hypertarget{class_c_mesh_a7208d60850973811269cf3951761b33c}\label{class_c_mesh_a7208d60850973811269cf3951761b33c} 
+void {\bfseries create\+V2\+Fmap} (CMesh\+::\+V2\+Fmap \&map)
+\item 
+\Hypertarget{class_c_mesh_a2bc6926e45172818b3788d7fc7ce15fa}\label{class_c_mesh_a2bc6926e45172818b3788d7fc7ce15fa} 
+void {\bfseries create\+V2\+Emap} (CMesh\+::\+V2\+Emap \&v2e)
+\item 
+\Hypertarget{class_c_mesh_a1d4a88331d482879adca00095db8ad4f}\label{class_c_mesh_a1d4a88331d482879adca00095db8ad4f} 
+void {\bfseries create\+Maps} (CMesh\+::\+V2\+Fmap \&v2f, CMesh\+::\+V2\+Emap \&v2e)
+\item 
+\Hypertarget{class_c_mesh_a512d3d071e8e4e6dbf809aa949c03cc1}\label{class_c_mesh_a512d3d071e8e4e6dbf809aa949c03cc1} 
+void {\bfseries find\+Neighbors\+Of\+Face} (INDEX\+\_\+\+TYPE idxF, CMesh\+::\+V2\+Fmap \&map, CMesh\+::\+Neighbors \texorpdfstring{$\ast$}{*}sasiadki, int limit=1)
+\item 
+\Hypertarget{class_c_mesh_aa651e992a162c9ff98aec66aadbb53be}\label{class_c_mesh_aa651e992a162c9ff98aec66aadbb53be} 
+void {\bfseries find\+Boundary\+Faces} (std\+::set$<$ INDEX\+\_\+\+TYPE $>$ \&brzegowe, CMesh\+::\+V2\+Fmap \&map)
+\item 
+\Hypertarget{class_c_mesh_aecc97b67c825caa2a5be49373eaee197}\label{class_c_mesh_aecc97b67c825caa2a5be49373eaee197} 
+void {\bfseries find\+Boundary\+Faces} (CMesh\+::\+Neighborhood \&brzegowe, CMesh\+::\+V2\+Fmap \&map)
+\item 
+\Hypertarget{class_c_mesh_a036a6b3c284f55d252cc6ba10fbead91}\label{class_c_mesh_a036a6b3c284f55d252cc6ba10fbead91} 
+void {\bfseries find\+Boundary\+Faces} (std\+::set$<$ INDEX\+\_\+\+TYPE $>$ \&brzegowe, CMesh\+::\+V2\+Fmap \&map, std\+::set$<$ INDEX\+\_\+\+TYPE $>$ \&scianki)
+\item 
+\Hypertarget{class_c_mesh_aaf8e250e5d05a27cd57c73c95b935d59}\label{class_c_mesh_aaf8e250e5d05a27cd57c73c95b935d59} 
+void {\bfseries find\+Boundary\+Faces} (CMesh\+::\+Neighborhood \&brzegowe, CMesh\+::\+V2\+Fmap \&map, std\+::set$<$ INDEX\+\_\+\+TYPE $>$ \&scianki)
+\item 
+\Hypertarget{class_c_mesh_abb7176f7f5f32602739f524317fcb00e}\label{class_c_mesh_abb7176f7f5f32602739f524317fcb00e} 
+void {\bfseries find\+Boundary\+Edges} (\mbox{\hyperlink{class_c_set_of_edges}{CMesh\+::\+Edges}} \&edges, CMesh\+::\+Neighborhood scianki\+Brzegowe)
+\item 
+\Hypertarget{class_c_mesh_a61c08cf0144f8f2a51e866b3979301f5}\label{class_c_mesh_a61c08cf0144f8f2a51e866b3979301f5} 
+void {\bfseries get\+Edges} (\mbox{\hyperlink{class_c_set_of_edges}{CMesh\+::\+Edges}} \&edges)
+\item 
+\Hypertarget{class_c_mesh_a796a8d48c82ff0c904dcd94f598861c7}\label{class_c_mesh_a796a8d48c82ff0c904dcd94f598861c7} 
+void {\bfseries get\+Edges} (\mbox{\hyperlink{class_c_set_of_edges}{CMesh\+::\+Edges}} \&edges, std\+::set$<$ INDEX\+\_\+\+TYPE $>$ \&scianki)
+\item 
+\Hypertarget{class_c_mesh_abdf949722dcc2c6089c1e8dd7b813607}\label{class_c_mesh_abdf949722dcc2c6089c1e8dd7b813607} 
+void {\bfseries find\+Boundary\+Edges} (\mbox{\hyperlink{class_c_set_of_edges}{CMesh\+::\+Edges}} \&edges)
+\item 
+\Hypertarget{class_c_mesh_a7fe1871a2de50c035c7b0470591d8eb0}\label{class_c_mesh_a7fe1871a2de50c035c7b0470591d8eb0} 
+void {\bfseries find\+Boundary\+Edges} (\mbox{\hyperlink{class_c_set_of_edges}{CMesh\+::\+Edges}} \&edges, std\+::set$<$ INDEX\+\_\+\+TYPE $>$ \&scianki)
+\item 
+\Hypertarget{class_c_mesh_aec2ee8afa21dff33769fefda5e718bf4}\label{class_c_mesh_aec2ee8afa21dff33769fefda5e718bf4} 
+void {\bfseries remove\+Duplicate\+Vertices} (double eps=0.\+0)
+\item 
+\Hypertarget{class_c_mesh_aa306fd9b27617c786f2434cd1b6bed9e}\label{class_c_mesh_aa306fd9b27617c786f2434cd1b6bed9e} 
+void {\bfseries remove\+Duplicate\+Vertices} (CMesh\+::\+V2\+Fmap \&map, double eps=0.\+0)
+\item 
+\Hypertarget{class_c_mesh_a45070cca67eb3c1f8181efbfb87def27}\label{class_c_mesh_a45070cca67eb3c1f8181efbfb87def27} 
+std\+::map$<$ int, CMesh\+::\+Neighbors $>$ {\bfseries multi\+Neighbourhood} (CMesh\+::\+Neighborhood \&map, INDEX\+\_\+\+TYPE idx, int dist, double max\+Dist)
+\item 
+\Hypertarget{class_c_mesh_a8b3697364eef4cbc6ae4a669998ed0d9}\label{class_c_mesh_a8b3697364eef4cbc6ae4a669998ed0d9} 
+void {\bfseries create\+Neighborhood\+Map\+Of\+Vertices} (CMesh\+::\+Neighborhood \&map, bool bidirectional=false)
+\item 
+\Hypertarget{class_c_mesh_a51ab15980e7a730818d488ab78277544}\label{class_c_mesh_a51ab15980e7a730818d488ab78277544} 
+void {\bfseries create\+Neighborhood\+Map\+Of\+Vertices} (CMesh\+::\+Neighborhood \&map, std\+::set$<$ INDEX\+\_\+\+TYPE $>$ \&scianki, bool bidirectional=false)
+\item 
+\Hypertarget{class_c_mesh_a17f47b02307ebe423ee518493a872275}\label{class_c_mesh_a17f47b02307ebe423ee518493a872275} 
+void {\bfseries transform\+By\+MatrixF} (float matrix\mbox{[}16\mbox{]})
+\item 
+\Hypertarget{class_c_mesh_ad7ea1216dc3b201cff37dcf12d28ab7b}\label{class_c_mesh_ad7ea1216dc3b201cff37dcf12d28ab7b} 
+void {\bfseries transform\+By\+MatrixD} (double matrix\mbox{[}16\mbox{]})
+\item 
+\Hypertarget{class_c_mesh_a8e883f24f5f16cdb8ef2320e7cc5c687}\label{class_c_mesh_a8e883f24f5f16cdb8ef2320e7cc5c687} 
+void {\bfseries cut\+Plane} (\mbox{\hyperlink{class_c_plane}{CPlane}} m\+\_\+cut\+Plane, \mbox{\hyperlink{class_c_mesh}{CMesh}} \texorpdfstring{$\ast$}{*}reszta=nullptr, \mbox{\hyperlink{class_c_mesh}{CMesh}} \texorpdfstring{$\ast$}{*}krawedz=nullptr, \mbox{\hyperlink{class_c_annotation_points}{CAnnotation\+Points}} \texorpdfstring{$\ast$}{*}pts=nullptr)
+\item 
+\Hypertarget{class_c_mesh_a88a6add251ce04d2ad483b2ece17d13f}\label{class_c_mesh_a88a6add251ce04d2ad483b2ece17d13f} 
+void {\bfseries correct\+Normals} ()
+\item 
+\Hypertarget{class_c_mesh_aa60d3d0da083c60341a5b4f8ac7cf972}\label{class_c_mesh_aa60d3d0da083c60341a5b4f8ac7cf972} 
+void {\bfseries invert\+Normals} ()
+\item 
+\Hypertarget{class_c_mesh_aec572fd698d8a5bfab9953716f4f44ed}\label{class_c_mesh_aec572fd698d8a5bfab9953716f4f44ed} 
+void {\bfseries remove\+Unused\+Vertices} ()
+\item 
+virtual void \mbox{\hyperlink{class_c_mesh_adb5decf7dfa9e57b0454b0129a1503d4}{apply\+Transformation}} (\mbox{\hyperlink{class_c_transform}{CTransform}} \&from, \mbox{\hyperlink{class_c_transform}{CTransform}} \&to) override
+\item 
+\Hypertarget{class_c_mesh_a0d7f1319a40cfc3e83b899c4bc177005}\label{class_c_mesh_a0d7f1319a40cfc3e83b899c4bc177005} 
+void {\bfseries remove\+Face} (INDEX\+\_\+\+TYPE idx)
+\item 
+\Hypertarget{class_c_mesh_a5edf2968370bca616d43d1be2aaa202a}\label{class_c_mesh_a5edf2968370bca616d43d1be2aaa202a} 
+void {\bfseries remove\+Face} (CMesh\+::\+Faces\+::iterator itf)
+\item 
+\Hypertarget{class_c_mesh_a7a8ae2284cf95b0a13525b97f666155c}\label{class_c_mesh_a7a8ae2284cf95b0a13525b97f666155c} 
+void {\bfseries remove\+Face} (CMesh\+::\+Faces\+::reverse\+\_\+iterator itfr)
+\item 
+\Hypertarget{class_c_mesh_a48d8996d815d0c695dab05360686a16f}\label{class_c_mesh_a48d8996d815d0c695dab05360686a16f} 
+INDEX\+\_\+\+TYPE {\bfseries add\+Face} (\mbox{\hyperlink{class_c_face}{CFace}} f)
+\item 
+\Hypertarget{class_c_mesh_ac9196b94179b3cce777a4827d10660bd}\label{class_c_mesh_ac9196b94179b3cce777a4827d10660bd} 
+INDEX\+\_\+\+TYPE {\bfseries add\+Face} (INDEX\+\_\+\+TYPE a, INDEX\+\_\+\+TYPE b, INDEX\+\_\+\+TYPE c)
+\item 
+\Hypertarget{class_c_mesh_a78cccc883704f85dd2ff0b516fe3fc19}\label{class_c_mesh_a78cccc883704f85dd2ff0b516fe3fc19} 
+INDEX\+\_\+\+TYPE {\bfseries add\+Face} (\mbox{\hyperlink{class_c_face}{CFace}} f, \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}} f\+Color)
+\item 
+\Hypertarget{class_c_mesh_aadea35c97c8788173a68524e3dce277b}\label{class_c_mesh_aadea35c97c8788173a68524e3dce277b} 
+INDEX\+\_\+\+TYPE {\bfseries add\+Face} (INDEX\+\_\+\+TYPE a, INDEX\+\_\+\+TYPE b, INDEX\+\_\+\+TYPE c, unsigned char rc, unsigned char gc, unsigned char bc, unsigned char ac=255)
+\item 
+\Hypertarget{class_c_mesh_a2a6b95eab9ffefda62cd7782d4ec3947}\label{class_c_mesh_a2a6b95eab9ffefda62cd7782d4ec3947} 
+INDEX\+\_\+\+TYPE {\bfseries add\+Face} (INDEX\+\_\+\+TYPE a, INDEX\+\_\+\+TYPE b, INDEX\+\_\+\+TYPE c, float rc, float gc, float bc, float ac=1.\+0f)
+\item 
+\Hypertarget{class_c_mesh_ab24fab2e5272acff700061927bd0448e}\label{class_c_mesh_ab24fab2e5272acff700061927bd0448e} 
+INDEX\+\_\+\+TYPE {\bfseries add\+FaceX} (std\+::vector$<$ INDEX\+\_\+\+TYPE $>$, \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}} c)
+\item 
+\Hypertarget{class_c_mesh_ad2b6451ce61c4a8b9f9a2179edd72f6b}\label{class_c_mesh_ad2b6451ce61c4a8b9f9a2179edd72f6b} 
+bool {\bfseries has\+Face\+Colors} ()
+\item 
+\Hypertarget{class_c_mesh_a45de0edcc7f3bb9cb2ac7e542e5996f0}\label{class_c_mesh_a45de0edcc7f3bb9cb2ac7e542e5996f0} 
+bool {\bfseries has\+Face\+Normals} ()
+\item 
+\Hypertarget{class_c_mesh_ac83389f93ef5aaf4d49d719b8df358d8}\label{class_c_mesh_ac83389f93ef5aaf4d49d719b8df358d8} 
+bool {\bfseries has\+Faces} ()
+\item 
+\Hypertarget{class_c_mesh_a6d20b5297da3d60e861e6119540a6717}\label{class_c_mesh_a6d20b5297da3d60e861e6119540a6717} 
+bool {\bfseries has\+Texture} ()
+\item 
+\Hypertarget{class_c_mesh_a01a4f27d7091e4722ca48549219c54f1}\label{class_c_mesh_a01a4f27d7091e4722ca48549219c54f1} 
+bool {\bfseries render\+Faces\+As\+Edges} ()
+\item 
+\Hypertarget{class_c_mesh_aba73a9172263bca32d4d1a41646bb2ee}\label{class_c_mesh_aba73a9172263bca32d4d1a41646bb2ee} 
+bool {\bfseries render\+Faces\+As\+Edges} (bool b)
+\item 
+\Hypertarget{class_c_mesh_a19aaf39dbed65ecbc9060d225cc8a079}\label{class_c_mesh_a19aaf39dbed65ecbc9060d225cc8a079} 
+bool {\bfseries render\+Faces\+As\+Points} ()
+\item 
+\Hypertarget{class_c_mesh_ac77eb4495c1a8b9b3d2c70f9d7382bb5}\label{class_c_mesh_ac77eb4495c1a8b9b3d2c70f9d7382bb5} 
+bool {\bfseries render\+Faces\+As\+Points} (bool b)
+\item 
+\Hypertarget{class_c_mesh_a7709b6e35683b23feda8d6b1fc034282}\label{class_c_mesh_a7709b6e35683b23feda8d6b1fc034282} 
+bool {\bfseries render\+Smooth\+Vertex} ()
+\item 
+\Hypertarget{class_c_mesh_ad88f4d9b4a416346c3c1ade175def649}\label{class_c_mesh_ad88f4d9b4a416346c3c1ade175def649} 
+bool {\bfseries render\+Smooth\+Vertex} (bool b)
+\item 
+\Hypertarget{class_c_mesh_a72242af250f4b3052befb627c92d3044}\label{class_c_mesh_a72242af250f4b3052befb627c92d3044} 
+bool {\bfseries render\+Faces\+Colors} ()
+\item 
+\Hypertarget{class_c_mesh_a8e0812c6a166c4f621d0629847febc5f}\label{class_c_mesh_a8e0812c6a166c4f621d0629847febc5f} 
+bool {\bfseries render\+Faces\+Colors} (bool b)
+\item 
+\Hypertarget{class_c_mesh_a5dc2477236b89d60bd3c14b11bc66923}\label{class_c_mesh_a5dc2477236b89d60bd3c14b11bc66923} 
+bool {\bfseries render\+With\+Texture} ()
+\item 
+\Hypertarget{class_c_mesh_acd89844275644feeaca476d3f55b5baa}\label{class_c_mesh_acd89844275644feeaca476d3f55b5baa} 
+bool {\bfseries render\+With\+Texture} (bool b)
+\item 
+virtual void \mbox{\hyperlink{class_c_mesh_a1679edaeb873a35994cb2e0360885534}{after\+Load}} (\mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*}p)
+\item 
+\Hypertarget{class_c_mesh_adb9bc85d5d7309bd7dc1095fdfb53c4f}\label{class_c_mesh_adb9bc85d5d7309bd7dc1095fdfb53c4f} 
+bool {\bfseries attach\+Texture} (\mbox{\hyperlink{class_c_file_info}{CFile\+Info}} plik\+Siatki)
+\item 
+\Hypertarget{class_c_mesh_aa1e0368567a5a7227f052033d0e6bd85}\label{class_c_mesh_aa1e0368567a5a7227f052033d0e6bd85} 
+void {\bfseries merge} (\mbox{\hyperlink{class_c_mesh}{CMesh}} \texorpdfstring{$\ast$}{*})
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_c_point_cloud}{CPoint\+Cloud}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries CPoint\+Cloud} (\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*}p=nullptr)
+\item 
+{\bfseries CPoint\+Cloud} (\mbox{\hyperlink{class_c_point_cloud}{CPoint\+Cloud}} \&)
+\item 
+int \mbox{\hyperlink{class_c_point_cloud_a8313835a2695ca3cdb1b2d14762b0d9d}{type}} () override
+\item 
+std\+::wstring \mbox{\hyperlink{class_c_point_cloud_a23c139048bf67aaa86eed3ba8296beec}{info\+Row}} () override
+\item 
+Vertices \& {\bfseries vertices} ()
+\item 
+Colors \& {\bfseries vcolors} ()
+\item 
+Normals \& {\bfseries vnormals} ()
+\item 
+\mbox{\hyperlink{class_c_vertex}{CVertex}} \& {\bfseries vertex} (size\+\_\+t idx)
+\item 
+\mbox{\hyperlink{class_c_vertex}{CVertex}} \& {\bfseries vertex\+At} (size\+\_\+t idx)
+\item 
+\mbox{\hyperlink{class_c_vertex}{CVertex}} {\bfseries get\+Vertex} (size\+\_\+t idx, bool \texorpdfstring{$\ast$}{*}status=nullptr)
+\item 
+size\+\_\+t {\bfseries add\+Vertex} (\mbox{\hyperlink{class_c_vertex}{CVertex}} v)
+\item 
+size\+\_\+t {\bfseries add\+Vertex} (float x, float y, float z)
+\item 
+size\+\_\+t {\bfseries add\+Vertex} (\mbox{\hyperlink{class_c_vertex}{CVertex}} v, \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}} c)
+\item 
+size\+\_\+t {\bfseries add\+Vertex} (\mbox{\hyperlink{class_c_vertex}{CVertex}} v, \mbox{\hyperlink{class_c_vector3}{CVector3d}} n)
+\item 
+size\+\_\+t {\bfseries add\+Vertex} (\mbox{\hyperlink{class_c_vertex}{CVertex}} v, \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}} c, \mbox{\hyperlink{class_c_vector3}{CVector3d}} n)
+\item 
+bool {\bfseries set\+Vertex} (size\+\_\+t idx, \mbox{\hyperlink{class_c_vertex}{CVertex}} v)
+\item 
+bool {\bfseries set\+Vertex} (size\+\_\+t idx, float x, float y, float z)
+\item 
+bool {\bfseries set\+Vertex\+Color} (size\+\_\+t idx, \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}} v\+Color)
+\item 
+bool {\bfseries set\+Vertex\+Color} (size\+\_\+t idx, unsigned char r, unsigned char g, unsigned char b, unsigned char a=255U)
+\item 
+bool {\bfseries set\+Vertex\+Color} (size\+\_\+t idx, float r, float g, float b, float a=1.\+0f)
+\item 
+bool {\bfseries set\+Vertex\+Normal} (size\+\_\+t idx, \mbox{\hyperlink{class_c_vector3}{CVector3f}} v\+Normal)
+\item 
+bool {\bfseries set\+Vertex\+Normal} (size\+\_\+t idx, float x, float y, float z)
+\item 
+bool {\bfseries remove\+Vertex} (size\+\_\+t idx)
+\item 
+Materials \& {\bfseries materials} ()
+\item 
+\mbox{\hyperlink{class_c_material}{CMaterial}} \& {\bfseries get\+Material} (INDEX\+\_\+\+TYPE idx=0)
+\item 
+\mbox{\hyperlink{class_c_vertex}{CVertex}} \& {\bfseries operator\mbox{[}$\,$\mbox{]}} (INDEX\+\_\+\+TYPE index)
+\item 
+const \mbox{\hyperlink{class_c_vertex}{CVertex}} \& {\bfseries operator\mbox{[}$\,$\mbox{]}} (INDEX\+\_\+\+TYPE index) const
+\item 
+size\+\_\+t {\bfseries size} ()
+\item 
+bool {\bfseries has\+Vertex\+Colors} ()
+\item 
+bool {\bfseries has\+Vertex\+Normals} ()
+\item 
+void {\bfseries render\+BACKUP} ()
+\item 
+void {\bfseries rebuild\+Bounding\+Box} ()
+\item 
+void {\bfseries create\+KDtree} ()
+\item 
+void {\bfseries remove\+KDtree} ()
+\item 
+\mbox{\hyperlink{class_c_point_cloud_1_1_k_dtree}{CPoint\+Cloud\+::\+KDtree}} \& {\bfseries get\+KDtree} (bool rebuild)
+\item 
+\mbox{\hyperlink{class_c_vertex}{CVertex}} {\bfseries get\+Closest\+Vertex} (\mbox{\hyperlink{class_c_point3}{CPoint3f}} pkt, \mbox{\hyperlink{class_c_vector3}{CVector3f}} vec)
+\item 
+\mbox{\hyperlink{class_c_point3}{CPoint3f}} {\bfseries get\+Center\+Of\+Weight} ()
+\item 
+void {\bfseries transform\+By\+MatrixF} (float matrix\mbox{[}16\mbox{]})
+\item 
+void {\bfseries transform\+By\+MatrixD} (double matrix\mbox{[}16\mbox{]})
+\item 
+void {\bfseries cut\+Plane} (\mbox{\hyperlink{class_c_plane}{CPlane}} \texorpdfstring{$\ast$}{*}m\+\_\+cut\+Plane, \mbox{\hyperlink{class_c_point_cloud}{CPoint\+Cloud}} \texorpdfstring{$\ast$}{*}\&rest)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_c_object}{CObject}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries CObject} (\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*}p=nullptr)
+\item 
+{\bfseries CObject} (int parent\+Id)
+\item 
+{\bfseries CObject} (const \mbox{\hyperlink{class_c_object}{CObject}} \&b)
+\item 
+virtual CBase\+Object\+::\+Category \mbox{\hyperlink{class_c_object_afc9d0d4ff86e34f7216b02b596c8b846}{category}} () override
+\item 
+void \mbox{\hyperlink{class_c_object_a8b27b9ed5c67b8dfefded169cc5036e9}{info}} (std\+::wstring i\mbox{[}4\mbox{]}) override
+\item 
+virtual \mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries get\+Something\+With\+Id} (int id)
+\item 
+Annotations \& {\bfseries annotations} ()
+\item 
+\mbox{\hyperlink{class_c_annotation}{CAnnotation}} \texorpdfstring{$\ast$}{*} {\bfseries annotation} (int id)
+\item 
+int {\bfseries add\+Annotation} (\mbox{\hyperlink{class_c_annotation}{CAnnotation}} \texorpdfstring{$\ast$}{*}ad)
+\item 
+\mbox{\hyperlink{class_c_annotation}{CAnnotation}} \texorpdfstring{$\ast$}{*} {\bfseries remove\+Annotation} (int)
+\item 
+bool {\bfseries remove\+Annotation} (\mbox{\hyperlink{class_c_annotation}{CAnnotation}} \texorpdfstring{$\ast$}{*}an)
+\item 
+bool \mbox{\hyperlink{class_c_object_a518a6a907213a652a64b0ec546f2142a}{has\+Children}} () override
+\item 
+virtual void \mbox{\hyperlink{class_c_object_ac06f9e0d06bb6c219d0bb13a3c210641}{show\+Children}} (bool show, QSet$<$ CBase\+Object\+::\+Type $>$ inc=\{\}, QSet$<$ CBase\+Object\+::\+Type $>$ exc=\{\}) override
+\item 
+\mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} \& {\bfseries get\+Bounding\+Box} ()
+\item 
+\mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} \& {\bfseries expand\+Bounding\+Box} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&p)
+\item 
+void {\bfseries reset\+Bounding\+Box} (CBounding\+Box\+::\+Initial\+Values v=CBounding\+Box\+::\+Initial\+Values\+::\+Invalid\+BB)
+\item 
+void {\bfseries calc\+Min\+Max} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&v)
+\item 
+int {\bfseries add\+Child} (\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*}d)
+\item 
+bool {\bfseries remove\+Child} (int id=0)
+\item 
+void {\bfseries remove\+All\+Childs} ()
+\item 
+\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries get\+Child} (int id=0)
+\item 
+\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries get\+Child} (const QString \&label)
+\item 
+Children \& {\bfseries children} ()
+\item 
+std\+::vector$<$ unsigned int $>$ {\bfseries get\+Children\+Ids} ()
+\item 
+int {\bfseries count\+Children} (CBase\+Object\+::\+Type type)
+\item 
+std\+::vector$<$ \mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} $>$ {\bfseries get\+Children} ()
+\item 
+std\+::vector$<$ \mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} $>$ {\bfseries get\+Children} (CBase\+Object\+::\+Type type)
+\item 
+\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_c_object_a819e7d19293e24131d81ddcc1825d67f}{find\+Id}} (int id) override
+\item 
+virtual void \mbox{\hyperlink{class_c_object_a7eddaa505b170e419a7384369a38e1aa}{render\+Kids}} () override
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries CBase\+Object} (\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*}p=nullptr)
+\item 
+{\bfseries CBase\+Object} (int obj\+Id)
+\item 
+{\bfseries CBase\+Object} (const \mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \&b)
+\item 
+virtual bool {\bfseries has\+Category} (CBase\+Object\+::\+Category cat)
+\item 
+virtual bool {\bfseries has\+Type} (CBase\+Object\+::\+Type typ)
+\item 
+virtual const QString {\bfseries xml\+Info} ()
+\item 
+virtual void {\bfseries switch\+Opt} (int, int)
+\item 
+virtual void {\bfseries render\+Transform} ()
+\item 
+virtual void {\bfseries render} ()
+\item 
+virtual void {\bfseries clear} ()
+\item 
+virtual bool {\bfseries is\+Modified} ()
+\item 
+virtual void {\bfseries set\+Modified} (bool b=true)
+\item 
+\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries get\+Parent} ()
+\item 
+void {\bfseries set\+Parent} (\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*}p)
+\item 
+void {\bfseries set\+Parent} (int obj\+Id)
+\item 
+virtual void {\bfseries set\+Visible} (bool v)
+\item 
+virtual void {\bfseries set\+Self\+Visibility} (bool v)
+\item 
+virtual void {\bfseries set\+Kids\+Visibility} (bool v)
+\item 
+virtual bool {\bfseries get\+Self\+Visibility} ()
+\item 
+virtual bool {\bfseries get\+Kids\+Visibility} ()
+\item 
+virtual bool {\bfseries switch\+Self\+Visibility} ()
+\item 
+virtual bool {\bfseries switch\+Kids\+Visibility} ()
+\item 
+int {\bfseries id} ()
+\item 
+int {\bfseries parent\+Id} ()
+\item 
+virtual bool {\bfseries set\+Selected} (bool sel)
+\item 
+virtual bool {\bfseries is\+Selected} ()
+\item 
+virtual bool {\bfseries has\+Transformation} ()
+\item 
+virtual Eigen\+::\+Matrix4d {\bfseries get\+Transformation\+Matrix} ()
+\item 
+virtual Eigen\+::\+Matrix4d {\bfseries get\+Global\+Transformation\+Matrix} ()
+\item 
+const QString \& {\bfseries get\+Label} ()
+\item 
+const std\+::string {\bfseries get\+LabelA} ()
+\item 
+const std\+::wstring {\bfseries get\+LabelW} ()
+\item 
+void {\bfseries set\+Label} (const QString \&label)
+\item 
+void {\bfseries set\+Label} (const char \texorpdfstring{$\ast$}{*}label)
+\item 
+void {\bfseries set\+Label} (const std\+::string \&label)
+\item 
+void {\bfseries set\+Label} (const std\+::wstring \&label)
+\item 
+void {\bfseries add\+Keyword} (const QString keyword)
+\item 
+void {\bfseries del\+Keyword} (const QString keyword)
+\item 
+bool {\bfseries has\+Keyword} (const QString keyword)
+\item 
+QSet$<$ QString $>$ \& {\bfseries keywords} ()
+\item 
+void {\bfseries set\+Descr} (const QString descr)
+\item 
+const QString \& {\bfseries get\+Descr} ()
+\item 
+virtual void {\bfseries set\+Path} (const QString \&path)
+\item 
+virtual const QString \& {\bfseries path} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}}}
+\begin{DoxyCompactItemize}
+\item 
+void {\bfseries set\+Min} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&v)
+\item 
+void {\bfseries set\+Max} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&v)
+\item 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} \& {\bfseries get\+Min} ()
+\item 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} \& {\bfseries get\+Max} ()
+\item 
+void {\bfseries reset} (Initial\+Values v=Initial\+Values\+::\+Invalid\+BB)
+\item 
+double {\bfseries dX} ()
+\item 
+double {\bfseries dY} ()
+\item 
+double {\bfseries dZ} ()
+\item 
+double {\bfseries d\+X2} ()
+\item 
+double {\bfseries d\+Y2} ()
+\item 
+double {\bfseries d\+Z2} ()
+\item 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries get\+Midpoint} ()
+\item 
+bool {\bfseries intersects} (\mbox{\hyperlink{class_c_bound_vector}{CBound\+Vector}} r)
+\item 
+bool {\bfseries intersects} (\mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} b)
+\item 
+bool {\bfseries is\+Null} ()
+\item 
+bool {\bfseries is\+Valid} ()
+\item 
+bool {\bfseries is\+Invalid} ()
+\item 
+void {\bfseries expand} (const \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} b)
+\item 
+void {\bfseries expand} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} p)
+\item 
+void {\bfseries expand} (double value)
+\item 
+bool {\bfseries contains} (const \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&p)
+\item 
+bool {\bfseries hit} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} origin, \mbox{\hyperlink{class_c_vector3}{CVector3d}} dir, \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&coord)
+\item 
+int {\bfseries longest\+\_\+axis} ()
+\item 
+{\bfseries CBounding\+Box} (Initial\+Values v=Initial\+Values\+::\+Invalid\+BB)
+\item 
+{\bfseries CBounding\+Box} (const \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} \&bb)
+\item 
+{\bfseries CBounding\+Box} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} a, \mbox{\hyperlink{class_c_point3}{CPoint3d}} b, \mbox{\hyperlink{class_c_point3}{CPoint3d}} c)
+\item 
+{\bfseries CBounding\+Box} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} min, \mbox{\hyperlink{class_c_point3}{CPoint3d}} max)
+\item 
+virtual void {\bfseries draw} (Style r=Dont\+Render, bool checked=false)
+\item 
+QVector$<$ \mbox{\hyperlink{class_c_point3}{CPoint3d}} $>$ {\bfseries get\+Corners} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_mesh_ae117aed1570cc6725f0c4b15f82e2cc2}\label{class_c_mesh_ae117aed1570cc6725f0c4b15f82e2cc2} 
+static \mbox{\hyperlink{class_c_mesh}{CMesh}} \texorpdfstring{$\ast$}{*} {\bfseries from\+Point\+Cloud} (\mbox{\hyperlink{class_c_point_cloud}{CPoint\+Cloud}} \&cloud)
+\item 
+\Hypertarget{class_c_mesh_a8452584edbd93c1c371deb48bd4aee2a}\label{class_c_mesh_a8452584edbd93c1c371deb48bd4aee2a} 
+static int {\bfseries ray\+Triangle\+Intersect3D} (\mbox{\hyperlink{class_c_point3}{CPoint3f}} pA, \mbox{\hyperlink{class_c_point3}{CPoint3f}} pB, \mbox{\hyperlink{class_c_point3}{CPoint3f}} pC, \mbox{\hyperlink{class_c_vector3}{CVector3f}} vN, \mbox{\hyperlink{class_c_vector3}{CVector3f}} v\+Ray, \mbox{\hyperlink{class_c_point3}{CPoint3f}} p\+P0, \mbox{\hyperlink{class_c_point3}{CPoint3f}} \&p\+Intersection\+Point, double \&p\+Distance)
+\item 
+\Hypertarget{class_c_mesh_a7dfc0abd6fdd0d869a54f3be23046f88}\label{class_c_mesh_a7dfc0abd6fdd0d869a54f3be23046f88} 
+static int {\bfseries ray\+Triangle\+Intersect3D} (\mbox{\hyperlink{class_c_point3}{CPoint3d}} pA, \mbox{\hyperlink{class_c_point3}{CPoint3d}} pB, \mbox{\hyperlink{class_c_point3}{CPoint3d}} pC, \mbox{\hyperlink{class_c_vector3}{CVector3d}} vN, \mbox{\hyperlink{class_c_vector3}{CVector3d}} v\+Ray, \mbox{\hyperlink{class_c_point3}{CPoint3d}} p\+P0, \mbox{\hyperlink{class_c_point3}{CPoint3d}} \&p\+Intersection\+Point, double \&p\+Distance)
+\item 
+\Hypertarget{class_c_mesh_a601f9c89dea620a2c647c7c24ed227c3}\label{class_c_mesh_a601f9c89dea620a2c647c7c24ed227c3} 
+static \mbox{\hyperlink{class_c_mesh}{CMesh}} \texorpdfstring{$\ast$}{*} {\bfseries create\+Primitive\+Plane} (double sizeX, double sizeY, int divX=0, int divY=0)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_c_point_cloud}{CPoint\+Cloud}}}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{class_c_point_cloud}{CPoint\+Cloud}} \texorpdfstring{$\ast$}{*} {\bfseries find\+NClosest} (\mbox{\hyperlink{class_c_point_cloud}{CPoint\+Cloud}} \texorpdfstring{$\ast$}{*}ruchoma, \mbox{\hyperlink{class_c_point_cloud}{CPoint\+Cloud}} \texorpdfstring{$\ast$}{*}nieruchoma, int limit)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}}}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} {\bfseries intersection} (\mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} a, \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}} b)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_mesh_ae7260e75343f15b9cb409b88ab55579b}\label{class_c_mesh_ae7260e75343f15b9cb409b88ab55579b} 
+CMesh\+::\+Vsplits {\bfseries vsplits}
+\item 
+\Hypertarget{class_c_mesh_adcffbd0e85172aa29fea49ff54e9bd1f}\label{class_c_mesh_adcffbd0e85172aa29fea49ff54e9bd1f} 
+int {\bfseries version}
+\item 
+\Hypertarget{class_c_mesh_a80fd855efc7fd5e1a76a781ecc7c1fd1}\label{class_c_mesh_a80fd855efc7fd5e1a76a781ecc7c1fd1} 
+unsigned int {\bfseries orgsize}
+\item 
+\Hypertarget{class_c_mesh_a2dbdc2e6c7a98db93fa752eba9f3e150}\label{class_c_mesh_a2dbdc2e6c7a98db93fa752eba9f3e150} 
+std\+::set$<$ std\+::vector$<$ INDEX\+\_\+\+TYPE $>$ \texorpdfstring{$\ast$}{*} $>$ {\bfseries edge\+Paths}
+\item 
+\Hypertarget{class_c_mesh_ab2530ea5f6f565e08cf835a9dc089b8e}\label{class_c_mesh_ab2530ea5f6f565e08cf835a9dc089b8e} 
+std\+::set$<$ std\+::vector$<$ INDEX\+\_\+\+TYPE $>$ \texorpdfstring{$\ast$}{*} $>$ {\bfseries edge\+Faces}
+\item 
+\Hypertarget{class_c_mesh_aad4cb67dcdce26ec8b26a07e54f8a3b8}\label{class_c_mesh_aad4cb67dcdce26ec8b26a07e54f8a3b8} 
+\mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}} {\bfseries selection\+Faces\+Color} = \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}}( 0.\+0f, 0.\+8f, 0.\+0f, 1.\+0f )
+\item 
+\Hypertarget{class_c_mesh_a09e35df01abe3cfc6f2d0c56a2563bca}\label{class_c_mesh_a09e35df01abe3cfc6f2d0c56a2563bca} 
+\mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}} {\bfseries selection\+Edges\+Color} = \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}}( 1.\+0f, 0.\+0f, 0.\+0f, 1.\+0f)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{class_c_object}{CObject}}}
+\begin{DoxyCompactItemize}
+\item 
+Children {\bfseries m\+\_\+data}
+\item 
+Annotations {\bfseries m\+\_\+annotations}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+bool {\bfseries m\+\_\+modified}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_c_mesh_ac309e73585fdc2847c12993cfeeb8181}\label{class_c_mesh_ac309e73585fdc2847c12993cfeeb8181} 
+\mbox{\hyperlink{class_c_polygon_group}{CPolygon\+Group}} {\bfseries m\+\_\+poly}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_c_point_cloud}{CPoint\+Cloud}}}
+\begin{DoxyCompactItemize}
+\item 
+Vertices {\bfseries m\+\_\+vertices}
+\item 
+Colors {\bfseries m\+\_\+vcolors}
+\item 
+Normals {\bfseries m\+\_\+vnormals}
+\item 
+Materials {\bfseries m\+\_\+materials}
+\item 
+\mbox{\hyperlink{class_c_point_cloud_1_1_k_dtree}{CPoint\+Cloud\+::\+KDtree}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+kdtree}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+int {\bfseries m\+\_\+\+Id}
+\item 
+QString {\bfseries m\+\_\+label}
+\item 
+QString {\bfseries m\+\_\+descr}
+\item 
+QSet$<$ QString $>$ {\bfseries m\+\_\+keywords}
+\item 
+QString {\bfseries m\+\_\+path}
+\item 
+\mbox{\hyperlink{class_c_base_object}{CBase\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries m\+\_\+parent}
+\item 
+bool {\bfseries m\+\_\+selected}
+\item 
+bool {\bfseries m\+\_\+show\+Self}
+\item 
+bool {\bfseries m\+\_\+show\+Kids}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_c_bounding_box}{CBounding\+Box}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries m\+\_\+min}
+\item 
+\mbox{\hyperlink{class_c_point3}{CPoint3d}} {\bfseries m\+\_\+max}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Static Public Attributes inherited from \mbox{\hyperlink{class_c_point_cloud}{CPoint\+Cloud}}}
+\begin{DoxyCompactItemize}
+\item 
+static int {\bfseries m\+\_\+point\+Size} = 1
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_c_mesh_a1679edaeb873a35994cb2e0360885534}\index{CMesh@{CMesh}!afterLoad@{afterLoad}}
+\index{afterLoad@{afterLoad}!CMesh@{CMesh}}
+\doxysubsubsection{\texorpdfstring{afterLoad()}{afterLoad()}}
+{\footnotesize\ttfamily \label{class_c_mesh_a1679edaeb873a35994cb2e0360885534} 
+void CMesh\+::after\+Load (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_c_model3_d}{CModel3D}} \texorpdfstring{$\ast$}{*}}]{p}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}.
+
+\Hypertarget{class_c_mesh_adb5decf7dfa9e57b0454b0129a1503d4}\index{CMesh@{CMesh}!applyTransformation@{applyTransformation}}
+\index{applyTransformation@{applyTransformation}!CMesh@{CMesh}}
+\doxysubsubsection{\texorpdfstring{applyTransformation()}{applyTransformation()}}
+{\footnotesize\ttfamily \label{class_c_mesh_adb5decf7dfa9e57b0454b0129a1503d4} 
+void CMesh\+::apply\+Transformation (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_c_transform}{CTransform}} \&}]{from}{, }\item[{\mbox{\hyperlink{class_c_transform}{CTransform}} \&}]{to}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_point_cloud}{CPoint\+Cloud}}.
+
+\Hypertarget{class_c_mesh_a25d49ac8473a370d60c158fc5466b2ee}\index{CMesh@{CMesh}!getCopy@{getCopy}}
+\index{getCopy@{getCopy}!CMesh@{CMesh}}
+\doxysubsubsection{\texorpdfstring{getCopy()}{getCopy()}}
+{\footnotesize\ttfamily \label{class_c_mesh_a25d49ac8473a370d60c158fc5466b2ee} 
+virtual \mbox{\hyperlink{class_c_mesh}{CMesh}} \texorpdfstring{$\ast$}{*} CMesh\+::get\+Copy (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_point_cloud}{CPoint\+Cloud}}.
+
+\Hypertarget{class_c_mesh_af125e4658f2dda11f4912950f7e26c1b}\index{CMesh@{CMesh}!info@{info}}
+\index{info@{info}!CMesh@{CMesh}}
+\doxysubsubsection{\texorpdfstring{info()}{info()}}
+{\footnotesize\ttfamily \label{class_c_mesh_af125e4658f2dda11f4912950f7e26c1b} 
+void CMesh\+::info (\begin{DoxyParamCaption}\item[{std\+::wstring}]{i}{\mbox{[}4\mbox{]}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}.
+
+\Hypertarget{class_c_mesh_aeb109e0f348e980ac03c9cab1266bb7d}\index{CMesh@{CMesh}!infoRow@{infoRow}}
+\index{infoRow@{infoRow}!CMesh@{CMesh}}
+\doxysubsubsection{\texorpdfstring{infoRow()}{infoRow()}}
+{\footnotesize\ttfamily \label{class_c_mesh_aeb109e0f348e980ac03c9cab1266bb7d} 
+std\+::wstring CMesh\+::info\+Row (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}.
+
+\Hypertarget{class_c_mesh_ad13a0adb03792fb1282c347290b5abb5}\index{CMesh@{CMesh}!prepare@{prepare}}
+\index{prepare@{prepare}!CMesh@{CMesh}}
+\doxysubsubsection{\texorpdfstring{prepare()}{prepare()}}
+{\footnotesize\ttfamily \label{class_c_mesh_ad13a0adb03792fb1282c347290b5abb5} 
+virtual void CMesh\+::prepare (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_base_object}{CBase\+Object}}.
+
+\Hypertarget{class_c_mesh_acb10ffe0f7543549e480de5388659ea5}\index{CMesh@{CMesh}!renderSelf@{renderSelf}}
+\index{renderSelf@{renderSelf}!CMesh@{CMesh}}
+\doxysubsubsection{\texorpdfstring{renderSelf()}{renderSelf()}}
+{\footnotesize\ttfamily \label{class_c_mesh_acb10ffe0f7543549e480de5388659ea5} 
+void CMesh\+::render\+Self (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_point_cloud}{CPoint\+Cloud}}.
+
+\Hypertarget{class_c_mesh_aa6e4ece3eadcbf1097352ef1a5995b27}\index{CMesh@{CMesh}!type@{type}}
+\index{type@{type}!CMesh@{CMesh}}
+\doxysubsubsection{\texorpdfstring{type()}{type()}}
+{\footnotesize\ttfamily \label{class_c_mesh_aa6e4ece3eadcbf1097352ef1a5995b27} 
+int CMesh\+::type (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_c_object}{CObject}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/core/Mesh.\+h\item 
+src/core/Mesh.\+cpp\end{DoxyCompactItemize}

@@ -1,0 +1,138 @@
+\doxysection{Annotation\+Point.\+h}
+\hypertarget{_annotation_point_8h_source}{}\label{_annotation_point_8h_source}\index{src/core/AnnotationPoint.h@{src/core/AnnotationPoint.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}Annotation.h"{}}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}Point3.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}Vector3.h"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}RGBA.h"{}}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_c_annotation_point}{CAnnotationPoint}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_c_annotation}{CAnnotation}},\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}}
+\DoxyCodeLine{00009\ \{}
+\DoxyCodeLine{00010\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ m\_faceId;}
+\DoxyCodeLine{00011\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\ m\_faceA;}
+\DoxyCodeLine{00012\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\ m\_faceB;}
+\DoxyCodeLine{00013\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\ m\_faceC;}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \ \ \ \ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\ m\_direction;}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keywordtype}{bool}\ m\_showNorm;}
+\DoxyCodeLine{00019\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_point}{CAnnotationPoint}}(\ \mbox{\hyperlink{class_c_base_object}{CBaseObject}}\ *m\ =\ \textcolor{keyword}{nullptr})\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(\ m\ ),\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}()}
+\DoxyCodeLine{00020\ \ \ \ \ \{}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}point"{}});}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ m\_direction.Set(\ 0,\ 0,\ 0\ );}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ m\_faceId\ =\ -\/1;}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ m\_showNorm\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00025\ \ \ \ \ \};}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_point}{CAnnotationPoint}}(\textcolor{keywordtype}{int}\ objId)\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(objId),\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}()}
+\DoxyCodeLine{00028\ \ \ \ \ \{}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}point"{}});}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ m\_direction.Set(0,\ 0,\ 0);}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ m\_faceId\ =\ -\/1;}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ m\_showNorm\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00033\ \ \ \ \ \};}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_point}{CAnnotationPoint}}(\ \mbox{\hyperlink{class_c_annotation_point}{CAnnotationPoint}}\ \&t\ )\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(\ t\ ),\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}(\ t\ )}
+\DoxyCodeLine{00036\ \ \ \ \ \{}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ m\_faceId\ =\ t.m\_faceId;}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ m\_faceA\ =\ t.m\_faceA;}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ m\_faceB\ =\ t.m\_faceB;}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ m\_faceC\ =\ t.m\_faceC;}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ m\_direction\ =\ t.m\_direction;}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ m\_showNorm\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00043\ \ \ \ \ \};}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_point}{CAnnotationPoint}}(\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ \&tx,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ \&ty,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ \&tz\ )\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(-\/1),\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}(\ tx,\ ty,\ tz\ )}
+\DoxyCodeLine{00047\ \ \ \ \ \{}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \textcolor{comment}{//m\_point.Set(tx,\ ty,\ tz);}}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}point"{}});}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ m\_direction.Set(\ 0,\ 0,\ 0\ );}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ m\_faceId\ =\ -\/1;}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ m\_showNorm\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00053\ \ \ \ \ \};}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_point}{CAnnotationPoint}}(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&t\ )\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(-\/1),\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}(\ t\ )}
+\DoxyCodeLine{00056\ \ \ \ \ \{}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \textcolor{comment}{//m\_point.Set(\ t\ );}}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}point"{}});}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ m\_direction.Set(\ 0,\ 0,\ 0\ );}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ m\_faceId\ =\ -\/1;}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ m\_showNorm\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00062\ \ \ \ \ \};}
+\DoxyCodeLine{00063\ \ \ \ \ }
+\DoxyCodeLine{00064\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_point}{CAnnotationPoint}}(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&t,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&t0\ )\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(-\/1),\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}(\ t\ )}
+\DoxyCodeLine{00065\ \ \ \ \ \{}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \textcolor{comment}{//m\_point.Set(t);}}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}point"{}});}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ m\_direction\ =\ \mbox{\hyperlink{class_c_vector3}{CVector3d}}(t0,\ t);}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ m\_direction.normalize();}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ m\_faceId\ =\ -\/1;}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ m\_showNorm\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00074\ \ \ \ \ \};}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_point}{CAnnotationPoint}}(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&t,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_r_g_b_a}{CRGBA}}\ kol\ )\ :\mbox{\hyperlink{class_c_annotation}{CAnnotation}}(-\/1),\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}(\ t\ )}
+\DoxyCodeLine{00077\ \ \ \ \ \{}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \textcolor{comment}{//m\_point.Set(\ t\ );}}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ setLabel(\textcolor{stringliteral}{"{}point"{}});}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ m\_direction.Set(\ 0,\ 0,\ 0\ );}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ m\_faceId\ =\ -\/1;}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ m\_showNorm\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00083\ \ \ \ \ \};}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \ \ \ \mbox{\hyperlink{class_c_annotation_point}{\string~CAnnotationPoint}}(\textcolor{keywordtype}{void})\{\};}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{class_c_annotation_point}{CAnnotationPoint}}*\ getCopy()\textcolor{keyword}{\ override}}
+\DoxyCodeLine{00088\ \textcolor{keyword}{\ \ \ \ }\{}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_c_annotation_point}{CAnnotationPoint}}(*\textcolor{keyword}{this});}
+\DoxyCodeLine{00090\ \ \ \ \ \}}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{int}\ type()\ \{\ \textcolor{keywordflow}{return}\ CAnnotation::POINT;\ \}}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ applyTransformation(\mbox{\hyperlink{class_c_transform}{CTransform}}\&\ from,\ \mbox{\hyperlink{class_c_transform}{CTransform}}\&\ to)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keywordtype}{void}\ setDirection(\mbox{\hyperlink{class_c_vector3}{CVector3d}}\ ray)\ \{\ m\_direction.Set(\ ray\ );\ \};}
+\DoxyCodeLine{00097\ \ \ \ \ \textcolor{keywordtype}{void}\ setDirection(\textcolor{keywordtype}{double}\ x,\ \textcolor{keywordtype}{double}\ y,\ \textcolor{keywordtype}{double}\ z)\ \{\ m\_direction.Set(x,y,z);\ \};}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \ \ \ \ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\ \&getDirection()\ \{\ \textcolor{keywordflow}{return}\ m\_direction;\ \};}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \ \ \ \ \textcolor{keywordtype}{void}\ setFace(\textcolor{keywordtype}{size\_t}\ faceid,\ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\ a,\ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\ b,\ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\ c)\ \{\ m\_faceId\ =\ faceid;\ m\_faceA\ =\ a;\ m\_faceB\ =\ b;\ m\_faceC\ =\ c;\ \};}
+\DoxyCodeLine{00102\ \ \ \ \ }
+\DoxyCodeLine{00103\ \ \ \ \ \textcolor{keywordtype}{void}\ setFaceId(\textcolor{keywordtype}{size\_t}\ faceid)\ \{\ m\_faceId\ =\ faceid;\ \};}
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ getFaceId()\ \{\ \textcolor{keywordflow}{return}\ m\_faceId;\ \};}
+\DoxyCodeLine{00105\ \ \ \ \ }
+\DoxyCodeLine{00106\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\ getFaceA()\ \{\ \textcolor{keywordflow}{return}\ m\_faceA;\ \};}
+\DoxyCodeLine{00107\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\ getFaceB()\ \{\ \textcolor{keywordflow}{return}\ m\_faceB;\ \};}
+\DoxyCodeLine{00108\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3f}}\ getFaceC()\ \{\ \textcolor{keywordflow}{return}\ m\_faceC;\ \};}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \ \ \ \ \textcolor{keyword}{virtual}\ std::wstring\ getInfoRow();}
+\DoxyCodeLine{00111\ \ \ \ \ \textcolor{keyword}{virtual}\ std::wstring\ getTypeWSTR()\ \{\ \textcolor{keywordflow}{return}\ L\textcolor{stringliteral}{"{}point"{}};\ \};}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ renderSelf()\ \textcolor{keyword}{override};\ }
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{comment}{//\ OBSOLETE\ FUNCTIONS\ FOR\ BACK\ COMPATIBILITY}}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \ \ \ \ \textcolor{comment}{//\ obsolete,\ use\ Set()}}
+\DoxyCodeLine{00118\ \ \ \ \ \textcolor{keywordtype}{void}\ setPoint(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ \&t)\ \{\ this-\/>Set(t);\ \};}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{comment}{//\ obsolete,\ use\ Set()}}
+\DoxyCodeLine{00121\ \ \ \ \ \textcolor{keywordtype}{void}\ setPoint(\textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ \&tx,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ \&ty,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ \&tz)\ \{\ this-\/>Set(tx,\ ty,\ tz);\ \};}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ \ \ \ \ \textcolor{comment}{//\ obsolete}}
+\DoxyCodeLine{00124\ \ \ \ \ \mbox{\hyperlink{class_c_point3}{CPoint3d}}\ getPoint()\ \{\ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};\ \};}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \ \ \ \ \textcolor{comment}{//obsolete,\ use\ setDirection()}}
+\DoxyCodeLine{00127\ \ \ \ \ \textcolor{keywordtype}{void}\ setRay(\mbox{\hyperlink{class_c_vector3}{CVector3d}}\ ray)\ \{\ m\_direction\ =\ ray;\ \};}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{comment}{//obsolete,\ use\ getDirection()}}
+\DoxyCodeLine{00130\ \ \ \ \ \mbox{\hyperlink{class_c_vector3}{CVector3d}}\ getRay()\ \{\ \textcolor{keywordflow}{return}\ m\_direction;\ \};}
+\DoxyCodeLine{00131\ \};}
+\DoxyCodeLine{00132\ }
+
+\end{DoxyCode}

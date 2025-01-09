@@ -1,0 +1,29 @@
+\doxysection{K3\+Screw.\+h}
+\hypertarget{_k3_screw_8h_source}{}\label{_k3_screw_8h_source}\index{src/core/K3Screw.h@{src/core/K3Screw.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}dll\_global.h"{}}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{comment}{//\#include\ <iostream>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <Eigen/Dense>}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{keyword}{typedef}\ Eigen::Matrix<double,\ 4,\ 4>\ Matrix4d;}
+\DoxyCodeLine{00009\ \textcolor{keyword}{typedef}\ Eigen::Matrix<double,\ 3,\ 3>\ Matrix3d;}
+\DoxyCodeLine{00010\ \textcolor{keyword}{typedef}\ Eigen::Vector3d\ Vector3d;}
+\DoxyCodeLine{00011\ \textcolor{comment}{//typedef\ Eigen::Vector4d\ Vector4d;}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{keyword}{class\ }DPVISION\_EXPORT\ \mbox{\hyperlink{class_k3_screw}{K3Screw}}}
+\DoxyCodeLine{00014\ \{}
+\DoxyCodeLine{00015\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00016\ \ \ \ \ \textcolor{keyword}{static}\ std::string\ dispMatrixXd(Eigen::MatrixXd\ m);}
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keyword}{static}\ std::tuple<Vector3d,\ Vector3d>\ K3Fletch(\textcolor{keyword}{const}\ Vector3d\&\ V);}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keyword}{static}\ Vector3d\ K3Normalize(\textcolor{keyword}{const}\ Vector3d\&\ V);}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keyword}{static}\ Vector3d\ K3AxisVersor(\textcolor{keyword}{const}\ Matrix3d\&\ R);}
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keyword}{static}\ Eigen::MatrixXd\ null(\textcolor{keyword}{const}\ Eigen::MatrixXd\&\ A,\ \textcolor{keywordtype}{double}\ rcond\ =\ -\/1.0);}
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keyword}{static}\ std::tuple<Vector3d,\ double,\ Vector3d,\ Vector3d>\ K3RigidToScrew(\textcolor{keyword}{const}\ Matrix4d\&\ M);}
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keyword}{static}\ Vector3d\ K3Projection(\textcolor{keyword}{const}\ Vector3d\&\ P,\ \textcolor{keyword}{const}\ Vector3d\&\ Q,\ \textcolor{keyword}{const}\ Vector3d\&\ v);}
+\DoxyCodeLine{00023\ \};}
+
+\end{DoxyCode}
