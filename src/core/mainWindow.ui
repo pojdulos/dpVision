@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Okno główne</string>
+   <string>dpVision</string>
   </property>
   <property name="windowIcon">
    <iconset resource="dpVision.qrc">
@@ -282,6 +282,8 @@
     </widget>
     <addaction name="actionAbout"/>
     <addaction name="separator"/>
+    <addaction name="actionSettings"/>
+    <addaction name="separator"/>
     <addaction name="menuDebug"/>
    </widget>
    <widget class="QMenu" name="menuCamera">
@@ -310,6 +312,8 @@
     <addaction name="separator"/>
     <addaction name="menuProjection"/>
     <addaction name="menuLook_direction"/>
+    <addaction name="separator"/>
+    <addaction name="actionScreenshot"/>
    </widget>
    <widget class="QMenu" name="menuSelect">
     <property name="title">
@@ -951,6 +955,16 @@
   <action name="actionee">
    <property name="text">
     <string>ee</string>
+   </property>
+  </action>
+  <action name="actionScreenshot">
+   <property name="text">
+    <string>Screenshot</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Settings...</string>
    </property>
   </action>
   <actiongroup name="GroupRender">
@@ -2181,6 +2195,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionScreenshot</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>actionScreenshot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionSettings</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>openSettingsDialog()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>294</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <designerdata>
   <property name="gridDeltaX">
@@ -2265,5 +2311,7 @@
   <slot>imageFit(bool)</slot>
   <slot>actionLookDir()</slot>
   <slot>switchConsole(bool)</slot>
+  <slot>actionScreenshot()</slot>
+  <slot>openSettingsDialog()</slot>
  </slots>
 </ui>

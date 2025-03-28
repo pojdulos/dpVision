@@ -79,111 +79,182 @@ int CMesh::rayTriangleIntersect3D(CPoint3f pA, CPoint3f pB, CPoint3f pC, CVector
 	return res;
 }
 
-int CMesh::rayTriangleIntersect3D(CPoint3d pA, CPoint3d pB, CPoint3d pC, CVector3d vN, CVector3d vRay, CPoint3d pP0, CPoint3d &pIntersectionPoint, double &pDistance)
+//int CMesh::rayTriangleIntersect3D(CPoint3d pA, CPoint3d pB, CPoint3d pC, CVector3d vN, CVector3d vRay, CPoint3d pP0, CPoint3d &pIntersectionPoint, double &pDistance)
+//{
+//	//	Return:		-1 = trójkąt jest nieprawidłowy ( segment lub punkt )
+//	//				-2 =  promień leży na płaszczyźnie trójkąta
+//	//				0 =  trójkąt i promień są rozłaczne ( brak punktu przecięcia )
+//	//				1 =  OK - znaleziono punkt przecięcia
+//	//				2 =  OK - ale promień trafia w trójkąt "od tyłu"
+//
+//	// liczba możliwie bliska zeru, żeby uniknąc błędu przy dzieleniu
+//	double prawieZero = 0.00000001;
+//
+//	CVector3d u = CVector3d(pA, pB);
+//	CVector3d v = CVector3d(pA, pC);
+//
+//	CVector3d vNorm(vN);
+//	
+//	if (0 == vN.length())
+//	{
+//		vNorm = u.crossProduct( v ); // iloczyn wektorowy !
+//	}
+//
+//	if (0 == vNorm.length())
+//	{
+//		return -1; // trójkąt nie jest trójkątem - co najmniej jedna krawędź ma długość zerową
+//	}
+//
+//	// wektor od wierzchołka trójkąta do punktu na promieniu
+//	CVector3d w0 = CVector3d(pA, pP0);
+//
+//	// iloczyn skalarny -> zero jeśli wektory prostopadłe
+//	double a = -vNorm.dotProduct(w0); // 0 -> w0 prostopadły do vNorm -> punkt pP0 leży na płaszczyźnie trójkąta
+//
+//	double b = vNorm.dotProduct(vRay);	// b == 0 -> vRay prostopadły do vNorm -> vRay jest równoległy do trójkąta
+//								// b < 0  -> vRay wpada od przodu -> OK
+//								// b > 0  -> vRay wpada od tyłu -> NIE OK
+//
+//	//if ( fabs(b) < prawieZero ) // to jest chyba niepotrzebne o ile sie nie pojawią błędy
+//	if (b == 0)
+//	{ // vRay jest równoległy do płaszczyzny trójkąta
+//		if (a != 0)
+//		{ // vRay nie ma punktu wspólnego z płaszczyzną trójkąta
+//			return 0;
+//		}
+//		else
+//		{ // vRay leży na płaszczyźnie trójkąta
+//		  //
+//		  // teoretycznie można by tu zaznaczać pierwszy trafiony punkt (na krawędzi trójkąta)
+//		  //
+//			return -2;
+//		}
+//	}
+//
+//	double r = a / b;
+//	//if (r < 0.0)
+//	//{ // promień oddala się od trójkąta -> brak przecięcia
+//	//	return 0;    
+//	//}
+//	// Może się przydać, ale tu nie moge tego brać pod uwagę,
+//	// bo mój "wyjściowy" punkt na promieniu może równie dobrze leżeć
+//	// nad płaszczyzną trójkąta (r>0), pod nią (r<0) jak i na niej (r=0).
+//
+//
+//	// Wyznaczam punkt przecięcia promienia z płaszczyzna ściany
+//	CVector3d vec = vRay*r;
+//
+//	pDistance = abs( r );
+//	pIntersectionPoint = pP0 + vec;
+//
+//	// --------------------------------------------------------------
+//	// Teraz sprawdzam czy pIntersectionPoint lezy w trójkącie tFace
+//	// --------------------------------------------------------------
+//	// to jest wyznaczane ze współrzędnych barycentrycznych
+//
+//	double uu = u.dotProduct(u);
+//	double uv = u.dotProduct(v);
+//	double vv = v.dotProduct(v);
+//
+//	CVector3d w = CVector3d(pA, pIntersectionPoint);
+//
+//	double wu = w.dotProduct(u);
+//	double wv = w.dotProduct(v);
+//
+//	double D = uv * uv - uu * vv;
+//
+//	// get and test parametric coords
+//	double s = (uv * wv - vv * wu) / D;
+//
+//	if (s < 0.0 || s > 1.0)         // pIntersectionPoint leży poza trójkątem
+//		return 0;
+//
+//	double t = (uv * wu - uu * wv) / D;
+//
+//	if (t < 0.0 || (s + t) > 1.0)  // pIntersectionPoint leży poza trójkątem
+//		return 0;
+//
+//	// Tu juz wiem, że punkt przecięcia leży w trójkącie,
+//	// ale jeszcze sprawdzam od której strony promień wchodzi w ściankę
+//	if (b > 0.0)
+//	{ // vRay trafia w trójkąt "od tyłu"
+//		return 2;
+//	}
+//
+//	return 1; // pIntersectionPoint leży na trójkącie tFace
+//}
+
+#define _EPSILON 1e-8
+int CMesh::rayTriangleIntersect3D(
+	CPoint3d pA, CPoint3d pB, CPoint3d pC,
+	CVector3d vN, CVector3d vRay, CPoint3d pP0,
+	CPoint3d& pIntersectionPoint, double& pDistance)
 {
-	//	Return:		-1 = trójkąt jest nieprawidłowy ( segment lub punkt )
-	//				-2 =  promień leży na płaszczyźnie trójkąta
-	//				0 =  trójkąt i promień są rozłaczne ( brak punktu przecięcia )
-	//				1 =  OK - znaleziono punkt przecięcia
-	//				2 =  OK - ale promień trafia w trójkąt "od tyłu"
+	CVector3d u(pA, pB);
+	CVector3d v(pA, pC);
 
-	// liczba możliwie bliska zeru, żeby uniknąc błędu przy dzieleniu
-	double prawieZero = 0.00000001;
-
-	CVector3d u = CVector3d(pA, pB);
-	CVector3d v = CVector3d(pA, pC);
-
-	CVector3d vNorm(vN);
-	
-	if (0 == vN.length())
+	CVector3d vNorm = vN;
+	if (vNorm.length() < _EPSILON)
 	{
-		vNorm = u.crossProduct( v ); // iloczyn wektorowy !
+		vNorm = u.crossProduct(v);
 	}
 
-	if (0 == vNorm.length())
+	if (vNorm.length() < _EPSILON)
 	{
-		return -1; // trójkąt nie jest trójkątem - co najmniej jedna krawędź ma długość zerową
+		return -1; // trójkąt nie jest poprawny
 	}
 
-	// wektor od wierzchołka trójkąta do punktu na promieniu
-	CVector3d w0 = CVector3d(pA, pP0);
+	CVector3d w0(pA, pP0);
 
-	// iloczyn skalarny -> zero jeśli wektory prostopadłe
-	double a = -vNorm.dotProduct(w0); // 0 -> w0 prostopadły do vNorm -> punkt pP0 leży na płaszczyźnie trójkąta
+	double a = -vNorm.dotProduct(w0);
+	double b = vNorm.dotProduct(vRay);
 
-	double b = vNorm.dotProduct(vRay);	// b == 0 -> vRay prostopadły do vNorm -> vRay jest równoległy do trójkąta
-								// b < 0  -> vRay wpada od przodu -> OK
-								// b > 0  -> vRay wpada od tyłu -> NIE OK
-
-	//if ( fabs(b) < prawieZero ) // to jest chyba niepotrzebne o ile sie nie pojawią błędy
-	if (b == 0)
-	{ // vRay jest równoległy do płaszczyzny trójkąta
-		if (a != 0)
-		{ // vRay nie ma punktu wspólnego z płaszczyzną trójkąta
-			return 0;
+	if (fabs(b) < _EPSILON)
+	{
+		if (fabs(a) >= _EPSILON)
+		{
+			return 0; // promień równoległy do płaszczyzny trójkąta, ale poza nią
 		}
-		else
-		{ // vRay leży na płaszczyźnie trójkąta
-		  //
-		  // teoretycznie można by tu zaznaczać pierwszy trafiony punkt (na krawędzi trójkąta)
-		  //
-			return -2;
-		}
+		
+		// promień leży w płaszczyźnie trójkąta – szukamy najbliższego punktu
+		pIntersectionPoint = CTriangle(pA, pB, pC).getClosestPoint(pP0);
+		pDistance = (pIntersectionPoint - pP0).length();
+		return 3; // specjalny kod dla tej sytuacji
 	}
 
 	double r = a / b;
-	//if (r < 0.0)
-	//{ // promień oddala się od trójkąta -> brak przecięcia
-	//	return 0;    
-	//}
-	// Może się przydać, ale tu nie moge tego brać pod uwagę,
-	// bo mój "wyjściowy" punkt na promieniu może równie dobrze leżeć
-	// nad płaszczyzną trójkąta (r>0), pod nią (r<0) jak i na niej (r=0).
 
+	CVector3d vec = vRay * r;
 
-	// Wyznaczam punkt przecięcia promienia z płaszczyzna ściany
-	CVector3d vec = vRay*r;
-
-	pDistance = abs( r );
+	pDistance = fabs(r);
 	pIntersectionPoint = pP0 + vec;
 
-	// --------------------------------------------------------------
-	// Teraz sprawdzam czy pIntersectionPoint lezy w trójkącie tFace
-	// --------------------------------------------------------------
-	// to jest wyznaczane ze współrzędnych barycentrycznych
-
+	// Sprawdzanie, czy punkt przecięcia leży wewnątrz trójkąta
 	double uu = u.dotProduct(u);
 	double uv = u.dotProduct(v);
 	double vv = v.dotProduct(v);
 
-	CVector3d w = CVector3d(pA, pIntersectionPoint);
+	CVector3d w(pA, pIntersectionPoint);
 
 	double wu = w.dotProduct(u);
 	double wv = w.dotProduct(v);
 
 	double D = uv * uv - uu * vv;
 
-	// get and test parametric coords
 	double s = (uv * wv - vv * wu) / D;
-
-	if (s < 0.0 || s > 1.0)         // pIntersectionPoint leży poza trójkątem
-		return 0;
-
-	double t = (uv * wu - uu * wv) / D;
-
-	if (t < 0.0 || (s + t) > 1.0)  // pIntersectionPoint leży poza trójkątem
-		return 0;
-
-	// Tu juz wiem, że punkt przecięcia leży w trójkącie,
-	// ale jeszcze sprawdzam od której strony promień wchodzi w ściankę
-	if (b > 0.0)
-	{ // vRay trafia w trójkąt "od tyłu"
-		return 2;
+	if (s < 0.0 || s > 1.0)
+	{
+		return 0; // punkt poza trójkątem
 	}
 
-	return 1; // pIntersectionPoint leży na trójkącie tFace
-}
+	double t = (uv * wu - uu * wv) / D;
+	if (t < 0.0 || (s + t) > 1.0)
+	{
+		return 0; // punkt poza trójkątem
+	}
 
+	return (b > 0.0) ? 2 : 1; // 2 - od tyłu, 1 - od przodu
+}
 
 int CMesh::rayTriangleIntersect3D( INDEX_TYPE j, CVector3f vRay, CPoint3f pP0, CPoint3f &pIntersectionPoint, double &pDistance )
 {
@@ -475,6 +546,25 @@ void CMesh::correctNormals()
 }
 
 
+CVector3d CMesh::getMainNormalVector()
+{
+	std::vector<CVector3d> vnormals(m_poly.size());
+
+	for (int i = m_poly.size() - 1; i >= 0; i--)
+	{
+		UI::STATUSBAR::printfTimed(1000, L"(CMesh) Computing main normal vector. %d more to be done", i);
+		vnormals[i] = m_poly[i].getNormal(m_vertices);
+	}
+
+	CVector3d result(0, 0, 0);
+	for (const auto& normal : vnormals) {
+		result += normal;
+	}
+	result.normalize();
+	return result;
+}
+
+
 bool CMesh::calcVN(bool weighted)
 {
 	CPointCloud::Normals tmpN(m_vertices.size(), CVector3d(0, 0, 0));
@@ -687,6 +777,22 @@ INDEX_TYPE CMesh::addFaceX(std::vector<INDEX_TYPE> dane, CRGBA col)
 		c = dane[i];
 
 		lastIDX = addFace(CFace(a, b, c), col);
+	}
+
+	return lastIDX;
+}
+
+INDEX_TYPE CMesh::addFaceX(std::vector<INDEX_TYPE> dane)
+{
+	INDEX_TYPE a = dane[0], b = dane[1], c = dane[2];
+
+	INDEX_TYPE lastIDX = addFace(CFace(a, b, c));
+
+	for (int i = 3; i < dane.size(); ++i) {
+		b = c;
+		c = dane[i];
+
+		lastIDX = addFace(CFace(a, b, c));
 	}
 
 	return lastIDX;

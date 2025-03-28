@@ -26,9 +26,9 @@ public:
 	CAnnotationTriangle(CTriangle& t) :CAnnotation(nullptr)
 	{
 		setLabel("triple");
-		m_pC = t.m_pV[2];
-		m_pA = t.m_pV[0];
-		m_pB = t.m_pV[1];
+		m_pC = t[2];
+		m_pA = t[0];
+		m_pB = t[1];
 	};
 
 	CAnnotationTriangle(CPoint3d A, CPoint3d B, CPoint3d C) :CAnnotation(nullptr)

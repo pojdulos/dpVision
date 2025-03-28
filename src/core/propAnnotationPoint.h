@@ -29,6 +29,7 @@ public slots:
 	void changedNormX(double x);
 	void changedNormY(double y);
 	void changedNormZ(double z);
+	void changedNormLen(double l);
 
 	void toggledShowNorm(bool b);
 

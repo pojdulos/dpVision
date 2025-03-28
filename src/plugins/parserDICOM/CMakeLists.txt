@@ -28,7 +28,7 @@ target_link_libraries (${PLUGIN_NAME}
 	dpVision::PluginManager
 	Qt5::Core
 	Eigen3::Eigen
-	opencv_world
+	#opencv_world
 )
 
 target_include_directories (${PLUGIN_NAME} PUBLIC

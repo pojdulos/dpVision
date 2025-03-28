@@ -20,7 +20,6 @@ PropViewer::~PropViewer()
 {
 }
 
-
 PropWidget* PropViewer::create(GLViewer* m, QWidget* parent)
 {
 	return PropWidget::build( PropViewer::create_and_get_subwidgets(m), parent );

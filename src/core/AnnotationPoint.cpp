@@ -111,26 +111,54 @@ void CAnnotationPoint::renderSelf()
 
 	if (m_showNorm && (0.0 != m_direction.length()))
 	{
-		glColor3f(1.0, 1.0, 0.0);
-		
-		glLineWidth(1.0f);
+		//glColor3f(1.0, 1.0, 0.0);
+		glColor3f(0.0, 0.5, 0.0);
+
+		glLineWidth(3.0f);
 		glBegin(GL_LINES);
-		//glVertex3f(-5*this->m_direction.X(), -5*this->m_direction.Y(), -5*this->m_direction.Z());
 		glVertex3f(0, 0, 0);
 		glVertex3f(10 * this->m_direction.X(), 10 * this->m_direction.Y(), 10 * this->m_direction.Z());
 		glEnd();
 
-		glLineWidth(3.0f);
-		glBegin(GL_LINES);
-		glVertex3f(9.6 * this->m_direction.X(), 9.6 * this->m_direction.Y(), 9.6 * this->m_direction.Z());
-		glVertex3f(9.8 * this->m_direction.X(), 9.8 * this->m_direction.Y(), 9.8 * this->m_direction.Z());
-		glEnd();
+		CVector3d vn = m_direction.getNormalized();
 
-		glLineWidth(5.0f);
-		glBegin(GL_LINES);
-		glVertex3f(9.4 * this->m_direction.X(), 9.4 * this->m_direction.Y(), 9.4 * this->m_direction.Z());
-		glVertex3f(9.6 * this->m_direction.X(), 9.6 * this->m_direction.Y(), 9.6 * this->m_direction.Z());
-		glEnd();
+		//glLineWidth(3.0f);
+		//
+		//glColor3f(1.0, 0.0, 0.0);
+
+		//glBegin(GL_LINES);
+		//glVertex3f(0, 0, 0);
+		////glVertex3f(10.0 * abs(vn.x), 0, 0);
+		//glVertex3f(10.0, 0, 0);
+		//glEnd();
+
+		//glColor3f(0.0, 0.5, 0.0);
+
+		//glBegin(GL_LINES);
+		//glVertex3f(0, 0, 0);
+		////glVertex3f(0, 10.0 * abs(vn.y), 0);
+		//glVertex3f(0, 10.0, 0);
+		//glEnd();
+
+		//glColor3f(0.0, 0.0, 1.0);
+
+		//glBegin(GL_LINES);
+		//glVertex3f(0, 0, 0);
+		////glVertex3f(0, 0, 10.0 *abs(vn.z));
+		//glVertex3f(0, 0, 10.0);
+		//glEnd();
+
+		//glLineWidth(3.0f);
+		//glBegin(GL_LINES);
+		//glVertex3f(9.6 * this->m_direction.X(), 9.6 * this->m_direction.Y(), 9.6 * this->m_direction.Z());
+		//glVertex3f(9.8 * this->m_direction.X(), 9.8 * this->m_direction.Y(), 9.8 * this->m_direction.Z());
+		//glEnd();
+
+		//glLineWidth(5.0f);
+		//glBegin(GL_LINES);
+		//glVertex3f(9.4 * this->m_direction.X(), 9.4 * this->m_direction.Y(), 9.4 * this->m_direction.Z());
+		//glVertex3f(9.6 * this->m_direction.X(), 9.6 * this->m_direction.Y(), 9.6 * this->m_direction.Z());
+		//glEnd();
 	}
 	
 	//glDrawString(this->x, this->y, this->m_label.toStdString().c_str());

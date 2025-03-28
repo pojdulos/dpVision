@@ -167,6 +167,7 @@ public:
 	void cutPlane(CPlane m_cutPlane, CMesh* reszta = nullptr, CMesh* krawedz = nullptr, CAnnotationPoints* pts = nullptr);
 
 	void correctNormals();
+	CVector3d getMainNormalVector();
 	void invertNormals();
 	void removeUnusedVertices();
 	
@@ -183,6 +184,8 @@ public:
 	inline INDEX_TYPE addFace(INDEX_TYPE a, INDEX_TYPE b, INDEX_TYPE c, float rc, float gc, float bc, float ac = 1.0f) { return addFace(CFace(a, b, c), CRGBA(rc, gc, bc, ac)); };
 	
 	INDEX_TYPE addFaceX(std::vector<INDEX_TYPE>, CRGBA c);
+
+	INDEX_TYPE addFaceX(std::vector<INDEX_TYPE> dane);
 
 	std::set<std::vector<INDEX_TYPE>*> edgePaths;
 	std::set<std::vector<INDEX_TYPE>*> edgeFaces;

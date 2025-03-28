@@ -442,7 +442,7 @@ void PropMovement::updateMatrix()
 		//qInfo() << ">> updateMatrix(), m_currentKey=" << m_currentKey << Qt::endl;
 
 		double matrix[16];
-		m_animation->currentFrame().t.toGLMatrixD(matrix);
+		m_animation->currentFrame().t.toRowMatrixD(matrix);
 		ui.matrixTable->blockSignals(true);
 		for (int i = 0; i < 16; i++)
 		{
@@ -475,19 +475,21 @@ void PropMovement::clearMatrix()
 
 void PropMovement::copyToClipboard()
 {
-	double matrix[16];
+	//double matrix[16];
 	QClipboard* cb = QApplication::clipboard();
 
-	QString text;
+	//QString text;
 
-	m_animation->currentFrame().t.toGLMatrixD(matrix);
+	//m_animation->currentFrame().t.toRowMatrixD(matrix);
 
-	for (int col = 0; col < 4; col++)
-		for (int row = 0; row < 4; row++)
-		{
-			double val = matrix[4 * row + col];
-			text.append(QString::number(val) + " ");
-		}
+	//for (int col = 0; col < 4; col++)
+	//	for (int row = 0; row < 4; row++)
+	//	{
+	//		double val = matrix[4 * row + col];
+	//		text.append(QString::number(val) + " ");
+	//	}
+
+	QString text = m_animation->currentFrame().t.toString();
 
 	cb->setText(text, QClipboard::Clipboard);
 }

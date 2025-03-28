@@ -58,12 +58,12 @@ void CAnnotationEdges::renderSelf()
 
 		if (m_selected)
 		{
-			glLineWidth(5.0);
+			glLineWidth(1.0);
 			glColor4ubv( m_selcolor.V() );
 		}
 		else
 		{
-			glLineWidth(3.0);
+			glLineWidth(1.0);
 			glColor4ubv( m_color.V() );
 		}
 

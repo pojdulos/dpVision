@@ -112,8 +112,8 @@ public:
 	bool		_removeAllModels();
 
 	// WORKSPACE
-	void	load( QString path );
-	bool	save( QString path );
+	//void	load( QString path );
+	//bool	save( QString path );
 	void	clear();
 	size_t	size() const { return m_data.size(); }
 	bool	empty() const { return m_data.empty(); }

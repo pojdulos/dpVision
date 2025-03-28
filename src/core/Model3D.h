@@ -47,13 +47,11 @@ protected:
 
 	CTransform m_transform;
 
-	bool bDrawBB;
-
 
 	//CFileInfo plikSiatki;
 
 	void renderAxes();
-	void renderBoundingBox();
+	//void renderBoundingBox();
 
 public:
 	CModel3D(CBaseObject* p = nullptr);
@@ -113,10 +111,6 @@ public:
 
 	bool isOK() { return m_bOK; }
 	std::string lastError() { return m_sError; }
-
-	const bool toggleDrawBB() { return bDrawBB = !bDrawBB; };
-	const bool DrawBB() const { return bDrawBB; };
-	const bool DrawBB(const bool b) { return (bDrawBB = b); };
 
 	//using CBaseObject::render;
 	virtual void renderTransform() override;

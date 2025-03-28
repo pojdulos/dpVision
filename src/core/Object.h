@@ -22,6 +22,12 @@ public:
 	typedef std::map<int, CBaseObject*> Children;
 	typedef std::map<int, CAnnotation*> Annotations;
 
+	bool bDrawBB;
+
+	const bool toggleDrawBB() { return bDrawBB = !bDrawBB; };
+	const bool DrawBB() const { return bDrawBB; };
+	const bool DrawBB(const bool b) { return (bDrawBB = b); };
+
 	Children m_data;
 	Annotations m_annotations;
 
@@ -93,6 +99,9 @@ public:
 
 	CBaseObject *findId( int id ) override;
 
+	void renderBoundingBox();
+
+	virtual void renderTransform() override;
 	virtual void renderKids() override;
 	//virtual void render() override;
 };

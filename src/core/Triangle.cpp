@@ -10,23 +10,23 @@ CTriangle::CTriangle() {}
 
 CTriangle::CTriangle(CPoint3d pA, CPoint3d pB, CPoint3d pC)
 {
-	m_pV[0] = pA;
-	m_pV[1] = pB;
-	m_pV[2] = pC;
+	a = pA;
+	b = pB;
+	c = pC;
 }
 
 CTriangle::CTriangle(int idx, CMesh* mesh)
 {
-	m_pV[0] = mesh->vertices()[mesh->faces()[idx].A()];
-	m_pV[1] = mesh->vertices()[mesh->faces()[idx].B()];
-	m_pV[2] = mesh->vertices()[mesh->faces()[idx].C()];
+	a = mesh->vertices()[mesh->faces()[idx].A()];
+	b = mesh->vertices()[mesh->faces()[idx].B()];
+	c = mesh->vertices()[mesh->faces()[idx].C()];
 }
 
 CTriangle::CTriangle(int idx, CMesh& mesh)
 {
-	m_pV[0] = mesh.vertices()[mesh.faces()[idx].A()];
-	m_pV[1] = mesh.vertices()[mesh.faces()[idx].B()];
-	m_pV[2] = mesh.vertices()[mesh.faces()[idx].C()];
+	a = mesh.vertices()[mesh.faces()[idx].A()];
+	b = mesh.vertices()[mesh.faces()[idx].B()];
+	c = mesh.vertices()[mesh.faces()[idx].C()];
 }
 
 //static CTriangle * CTriangle::fromCFace(CFace &f, CMesh &mesh)
@@ -48,29 +48,29 @@ CTriangle::CTriangle(int idx, CMesh& mesh)
 
 CBoundingBox CTriangle::getBoundingBox()
 {
-	return CBoundingBox(m_pV[0], m_pV[1], m_pV[2]);
+	return CBoundingBox(a, b, c);
 }
 
 
 CPoint3d CTriangle::getMidpoint()
 {
-	return CBoundingBox(m_pV[0], m_pV[1], m_pV[2]).getMidpoint();
+	return CBoundingBox(a, b, c).getMidpoint();
 }
 
 
 bool CTriangle::rayPlaneIntersect3D(CPoint3d origin, CVector3d dir, CPoint3d &pIntersectionPoint, double &pDistance)
 {
-	CVector3d vNorm = CVector3d(m_pV[0], m_pV[1]).crossProduct(CVector3d(m_pV[0], m_pV[2])).getNormalized();
+	CVector3d vNorm = CVector3d(a, b).crossProduct(CVector3d(a, c)).getNormalized();
 
 	if (0 == vNorm.length()) return false;
 
 	// wektor od wierzcho�ka tr�jk�ta do punktu na promieniu
-	CVector3d w0 = CVector3d(m_pV[0], origin);
+	CVector3d w0 = CVector3d(a, origin);
 
 	// iloczyn skalarny -> zero je�li wektory prostopad�e
 	double a = -vNorm.dotProduct(w0); // 0 -> w0 prostopad�y do vNorm -> punkt pP0 le�y na p�aszczy�nie tr�jk�ta
 
-	if (a == 0)
+	if (abs(a) < 0.00000001)
 	{
 		pIntersectionPoint = origin;
 		pDistance = 0.0;
@@ -102,8 +102,8 @@ bool CTriangle::rayPlaneIntersect3D(CPoint3d origin, CVector3d dir, CPoint3d &pI
 
 bool CTriangle::inTriangle(CPoint3d pt)
 {
-	CVector3d u = CVector3d(m_pV[0], m_pV[1]);
-	CVector3d v = CVector3d(m_pV[0], m_pV[2]);
+	CVector3d u = CVector3d(a, b);
+	CVector3d v = CVector3d(a, c);
 
 	// --------------------------------------------------------------
 	// sprawdzam czy pt lezy w tr�jk�cie tFace
@@ -114,7 +114,7 @@ bool CTriangle::inTriangle(CPoint3d pt)
 	double uv = u.dotProduct(v);
 	double vv = v.dotProduct(v);
 
-	CVector3d w = CVector3d(m_pV[0], pt);
+	CVector3d w = CVector3d(a, pt);
 
 	double wu = w.dotProduct(u);
 	double wv = w.dotProduct(v);
@@ -154,9 +154,9 @@ CTriangle CTriangle::transformByMatrix(Eigen::Matrix4d matrix)
 {
 	CTriangle result;
 
-	result.m_pV[0] = this->m_pV[0].transformByMatrix(matrix);
-	result.m_pV[1] = this->m_pV[1].transformByMatrix(matrix);
-	result.m_pV[2] = this->m_pV[2].transformByMatrix(matrix);
+	result.a = this->a.transformByMatrix(matrix);
+	result.b = this->b.transformByMatrix(matrix);
+	result.c = this->c.transformByMatrix(matrix);
 	return result;
 }
 
@@ -164,19 +164,19 @@ CTriangle CTriangle::transformByMatrix(Eigen::Matrix3d matrix)
 {
 	CTriangle result;
 
-	result.m_pV[0] = this->m_pV[0].transformByMatrix(matrix);
-	result.m_pV[1] = this->m_pV[1].transformByMatrix(matrix);
-	result.m_pV[2] = this->m_pV[2].transformByMatrix(matrix);
+	result.a = this->a.transformByMatrix(matrix);
+	result.b = this->b.transformByMatrix(matrix);
+	result.c = this->c.transformByMatrix(matrix);
 	return result;
 }
 
 CVector3d CTriangle::getNormal()
 {
 	// wektor f.A->f.B
-	CVector3d v1(m_pV[0], m_pV[1]);
+	CVector3d v1(a, b);
 
 	// wektor f.A->f.C
-	CVector3d v2(m_pV[0], m_pV[2]);
+	CVector3d v2(a, c);
 
 	// iloczyn wektorowy
 	CVector3d vn = v1.crossProduct(v2);
@@ -204,9 +204,9 @@ constexpr const T& clamp(const T& v, const T& lo, const T& hi)
 
 CPoint3d CTriangle::getClosestPoint(const CPoint3d& sourcePosition)
 {
-	CVector3d edge0(m_pV[0], m_pV[1]);
-	CVector3d edge1(m_pV[0], m_pV[2]);
-	CVector3d v0(sourcePosition, m_pV[0]);
+	CVector3d edge0(a, b);
+	CVector3d edge1(a, c);
+	CVector3d v0(sourcePosition, a);
 
 	float a = edge0.dotProduct(edge0);
 	float b = edge0.dotProduct(edge1);
@@ -296,5 +296,5 @@ CPoint3d CTriangle::getClosestPoint(const CPoint3d& sourcePosition)
 		}
 	}
 
-	return m_pV[0] + edge0 * s + edge1 * t;
+	return this->a + edge0 * s + edge1 * t;
 }

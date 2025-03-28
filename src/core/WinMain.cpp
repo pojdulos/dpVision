@@ -70,6 +70,9 @@ int main(int argc, char* argv[])
     //QLocale locale(QLocale::C);
     //QLocale::setDefault(locale);
 
+    //QFont font("Segoe UI", 12); // lub np. "Arial", 12
+    //qApp->setFont(font);
+
     if (parser.isSet(optionDark)) {
         QPalette palette = CMainApplication::palette();
         palette.setColor(QPalette::Window, QColor(53, 53, 53));
@@ -105,6 +108,7 @@ int main(int argc, char* argv[])
             "QScrollBar::handle { background-color: #555555; }"
             "QScrollBar::add-line { background-color: #353535; }"
             "QScrollBar::sub-line { background-color: #353535; }");
+
     }
 
     

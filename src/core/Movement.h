@@ -41,9 +41,9 @@ protected:
 public:
 	SeqList m_seqlist;
 
-	CMovement() : CObject(nullptr), m_isPlaying(false), m_currentKey(0)	{ setLabel("animation"); setTimer(); }
-	CMovement(const CMovement& m) : CObject(m), m_seqlist(m.m_seqlist), m_isPlaying(false), m_currentKey(0) { setTimer(); }
-	CMovement(const SeqList& s) : CObject(nullptr), m_seqlist(s), m_isPlaying(false), m_currentKey(0) { setLabel("animation"); setTimer(); }
+	CMovement() : CObject(nullptr), m_isPlaying(false), m_currentKey(0)	{ setLabel("animation"); bDrawBB = false; setTimer(); }
+	CMovement(const CMovement& m) : CObject(m), m_seqlist(m.m_seqlist), m_isPlaying(false), m_currentKey(0) { bDrawBB = false; setTimer(); }
+	CMovement(const SeqList& s) : CObject(nullptr), m_seqlist(s), m_isPlaying(false), m_currentKey(0) { setLabel("animation"); bDrawBB = false; setTimer(); }
 
 	virtual ~CMovement() { m_seqlist.clear(); m_animationTimer.stop(); }
 

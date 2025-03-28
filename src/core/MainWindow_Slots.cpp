@@ -14,6 +14,14 @@
 
 #include "Image.h"
 
+void CMainWindow::actionScreenshot() {
+	GLViewer* view = currentViewer();
+
+	if (view != nullptr)
+	{
+		view->screenshot();
+	}
+};
 
 void CMainWindow::closeEvent(QCloseEvent * event)
 {
@@ -791,26 +799,43 @@ void CMainWindow::imageFit(bool fit)
 	}
 }
 
+//void CMainWindow::bbShowHide(bool show)
+//{
+//	if ( NULL != AP::WORKSPACE::getCurrentModel() )
+//	{
+//		while ( show != AP::WORKSPACE::getCurrentModel()->toggleDrawBB() ) {};
+//
+//		if ( show )
+//		{
+//			UI::STATUSBAR::printf(  "Bounding box: on" );
+//		}
+//		else
+//		{
+//			UI::STATUSBAR::printf(  "Bounding box: off" );
+//		}
+//
+//		updateAllViews();
+//	}
+//	else
+//	{
+//		GLViewer *view = this->currentViewer();
+//		if (NULL != view)
+//		{
+//			view->toggleAxesVisibility();
+//
+//			updateActiveView();
+//		}
+//	}
+//}
+
+#include "DockWidgetWorkspace.h"
+
 void CMainWindow::bbShowHide(bool show)
 {
-	if ( NULL != AP::WORKSPACE::getCurrentModel() )
-	{
-		while ( show != AP::WORKSPACE::getCurrentModel()->toggleDrawBB() ) {};
+	QVector<CBaseObject*> objts = this->dockWorkspace->getSelectedObjects();
 
-		if ( show )
-		{
-			UI::STATUSBAR::printf(  "Bounding box: on" );
-		}
-		else
-		{
-			UI::STATUSBAR::printf(  "Bounding box: off" );
-		}
-
-		updateAllViews();
-	}
-	else
-	{
-		GLViewer *view = this->currentViewer();
+	if (objts.isEmpty()) {
+		GLViewer* view = this->currentViewer();
 		if (NULL != view)
 		{
 			view->toggleAxesVisibility();
@@ -818,35 +843,87 @@ void CMainWindow::bbShowHide(bool show)
 			updateActiveView();
 		}
 	}
+	else {
+		for (auto obj : objts) {
+			if (obj->hasCategory(CBaseObject::OBJECT)) {
+				if (!obj->hasType(CObject::MODEL) && !obj->hasType(CObject::MOVEMENT)) {
+					CObject* m = (CObject*)obj; 
+					
+					m->toggleDrawBB();
+										
+					//qInfo() << obj->getLabel() << QString(", BBox: %1 %2 %3 - %4 %5 %6")
+					//	.arg(m->getMin().x).arg(m->getMin().y).arg(m->getMin().z)
+					//	.arg(m->getMax().x).arg(m->getMax().y).arg(m->getMax().z);
+				}
+			}
+		}
+		updateAllViews();
+	}
 }
+
 
 void CMainWindow::openWorkspace()
 {
 	//QString path = QFileDialog::getOpenFileName(this, tr("Open Workspace"), "", tr("dpVision multiarchive file (*.dpvision);;Faro scene (*.Faro)"));
-	QString path = QFileDialog::getOpenFileName(this, tr("Open Workspace"), "", tr("dpVision multiarchive file (*.dpvision)"));
+	QString path = QFileDialog::getOpenFileName(this, tr("Open Workspace"), "", tr("dpVision multiarchive file (*.dpvision);;Digital patient workspace (*.dpw;*.atmdl)"));
 
-	if ("" != path)
+	if (path.isEmpty()) return;
+
+	CParser* parser = CFileConnector::getLoadParser(path);
+
+	if (parser == nullptr) return;
+
+	int reply = UI::MESSAGEBOX::question(L"You are about to removing all models in your workspace.\nRealy you want to do it?", L"Caution!");
+	
+	if (0 == reply)
 	{
-		int reply = UI::MESSAGEBOX::question(L"You are about to removing all models in your workspace.\nRealy you want to do it?", L"Caution!");
-		if (0 == reply)
-		{
-			AP::WORKSPACE::instance()->load(path);
-		}
+		AP::WORKSPACE::removeAllModels();
+		unsigned long t1, t2;
+
+		t1 = GetTickCount();
+
+		//CModel3D* obj = parser->load(path, true);
+		AP::WORKSPACE::loadModel(path, true);
+
+		t2 = GetTickCount();
+
+		qInfo() << "Load time: " << t2 - t1;
+
 	}
+	
+	if (!parser->inPlugin()) delete parser;
+
+	return;
 }
 
 void CMainWindow::saveWorkspace()
 {
-	QString path = QFileDialog::getSaveFileName(this, tr("Save Workspace"),"",tr("dpVision multiarchive file (*.dpvision)"));
+	QString path = QFileDialog::getSaveFileName(this, tr("Save Workspace"),"",tr("dpVision multiarchive file (*.dpvision);;Digital patient workspace (*.dpw)"));
 	
-	if ( "" != path ) 
+	if (path.isEmpty()) return;
+
+	CParser* parser = CFileConnector::getSaveParser(path);
+
+	if (parser == nullptr) return;
+
+	QVector<CBaseObject*> objects;
+
+	for (const auto& o : AP::WORKSPACE::instance()->children())
 	{
-		if (AP::WORKSPACE::instance()->save(path))
-		{
-			adjustForCurrentFile(path);
-			AP::mainApp().settings->setValue("recentFile", path);
-		}
+		objects << (CBaseObject*)o.second;
 	}
+
+	bool result = parser->save(objects, path);
+
+	if (!parser->inPlugin()) delete parser;
+
+	if (result)
+	{
+		adjustForCurrentFile(path);
+		AP::mainApp().settings->setValue("recentFile", path);
+	}
+
+	return;
 }
 
 void CMainWindow::removeAllModels()
@@ -1250,4 +1327,16 @@ void CMainWindow::switchConsole(bool b)
 void CMainWindow::userDefinedMenuItemSlot()
 {
 
+}
+
+#include "SettingsDialog.h"
+
+void CMainWindow::openSettingsDialog()
+{
+	if (!settingsDialog)
+		settingsDialog = new SettingsDialog(this);
+	settingsDialog->exec();
+	//settingsDialog->show();
+	//settingsDialog->raise();
+	//settingsDialog->activateWindow();
 }

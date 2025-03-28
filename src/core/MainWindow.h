@@ -22,6 +22,8 @@ class DockWidgetImageViewer;
 #include <QMdiSubWindow>
 #include <QPointer>
 
+class SettingsDialog;
+
 class CBaseObject;
 class GLViewer;
 class MdiChild;
@@ -133,10 +135,14 @@ private:
 	void adjustForCurrentFile(const QString& filePath);
 	void updateRecentActionList();
 
+private:
+	SettingsDialog* settingsDialog;
+
 private slots:
 	void openRecent();
 	void processNewConnection();
 	void proceessData();
+	void openSettingsDialog();
 
 public slots:
 	void userDefinedMenuItemSlot();
@@ -234,7 +240,7 @@ public slots:
 	void helpAbout();
 	void switchConsole(bool);
 
-
+	void actionScreenshot();
 };
 
 #endif // CMAINWINDOW

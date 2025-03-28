@@ -615,6 +615,24 @@ void GLViewer::deleteSelectedVoxels(Volumetric* vol, bool deleteSelected)
 	UI::PROGRESSBAR::hide();
 }
 
+#include <omp.h>
+
+void get_GL_matrices(GLViewer *v, GLdouble *modelview, GLdouble *projection, GLint *viewport) {
+	v->makeCurrent();
+	glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+	glGetDoublev(GL_PROJECTION_MATRIX, projection);
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	v->doneCurrent();
+}
+
+// Funkcja do równoległego przetwarzania
+CPoint3d world2win_parallel(const CPoint3d& world, GLdouble* modelview, GLdouble* projection, GLint* viewport) {
+	double winX, winY, winZ;
+
+	int res1 = gluProject(world.X(), world.Y(), world.Z(), modelview, projection, viewport, &winX, &winY, &winZ);
+
+	return CPoint3d(winX, (double)viewport[3] - winY, winZ);
+}
 
 void GLViewer::deleteSelectedVertices(bool deleteSelected)
 {
@@ -642,7 +660,7 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 
 					int size = cloud->vertices().size();
 					int step = size / 100;
-					int i = size - 1;
+					//int i = size - 1;
 
 					UI::PROGRESSBAR::init(0, size, 0);
 
@@ -654,62 +672,101 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 
 					std::map<size_t, size_t> idxMap;
 
-					//Eigen::Matrix4d m1 = cloud->getGlobalTransformationMatrix(); // point to workspace
-					//Eigen::Matrix4d m2 = m_transform.toEigenMatrix4d(); // workspace to viewer
+					Eigen::Matrix4d m1 = cloud->getGlobalTransformationMatrix(); // point to workspace
+					Eigen::Matrix4d m2 = m_transform.toEigenMatrix4d(); // workspace to viewer
 					
-					while (i >= 0)
+					m2.block<3, 1>(0, 3) -= cam.m_pos.toVector3();
+					
+					Eigen::Matrix4d M = m2 * m1;
+
+					cloud->vnormals().clear();
+
+					GLint viewport[4];
+					GLdouble modelview[16];
+					GLdouble projection[16];
+					get_GL_matrices(this, modelview, projection, viewport);
+
+					//#pragma omp parallel for
+					for (int i = 0; i < size; i++)
 					{
+						//UI::STATUSBAR::printfTimed(500, QString::number(i).toStdString().c_str());
+						//if ((i%10000)==0) printf("Start iteracji %d przez wątek %d\n", i, omp_get_thread_num());
+
 						CPoint3d point = cloud->vertices()[i];
-						CPoint3d workspace = obj->transform().l2w(point);
-						CPoint3d world = m_transform.l2w(workspace) - cam.m_pos;
-						CPoint3d win = world2win(world);
-						//Eigen::Vector4d pt(point.x, point.y, point.z, 1.0);
 
-						//Eigen::Vector4d workspacePt = m1 * pt;
-						//Eigen::Vector4d worldPt = m2 * workspacePt;
+						Eigen::Vector4d worldPt = M * point.toVector4();
 
-						//CPoint3d win = world2win(CPoint3d(worldPt[0], worldPt[1], worldPt[2]));
+						CPoint3d win = world2win_parallel(CPoint3d(worldPt[0], worldPt[1], worldPt[2]), modelview, projection, viewport);
 
-						QPoint pXY(win.x, win.y);
-
-						cloud->vnormals().clear();
-
-						if ((deleteSelected && (qRgba(0, 255, 255, 255) != m_mask.pixel(pXY))) || (!deleteSelected && (qRgba(0, 255, 255, 255) == m_mask.pixel(pXY))))
+						bool conditionMet = true;
+						if ((win.x >= 0) && (win.y >= 0) && (m_mask.width() > win.x) && (m_mask.height() > win.y))
 						{
-							tempV.push_back(point);
-							if (cloud->hasVertexColors()) tempC.push_back(cloud->vcolors()[i]);
-
-							idxMap[i] = tempV.size() - 1;
+							QPoint pXY(win.x, win.y);
+							conditionMet = (deleteSelected && (qRgba(0, 255, 255, 255) != m_mask.pixel(pXY)))
+								|| (!deleteSelected && (qRgba(0, 255, 255, 255) == m_mask.pixel(pXY)));
 						}
+						
+						if (conditionMet)
+						{
+							//#pragma omp critical
+							{
+								tempV.push_back(point);
+								idxMap[i] = tempV.size() - 1;
+								if (cloud->hasVertexColors())
+									tempC.push_back(cloud->vcolors()[i]);
+							}
+						}
+						
+						
 
-						i--;
-						if ((i % step) == 0) UI::PROGRESSBAR::setValue(size - i);
+						
+						//#pragma omp atomic
+						//std::cout << i << endl;
+						//UI::STATUSBAR::setText(QString::number(i));
+						if ((i % step) == 0) UI::PROGRESSBAR::setValue(i);
+						//printf("Koniec iteracji %d przez wątek %d\n", i, omp_get_thread_num());
 					}
-
+					
 					if (cloud->hasType(CObject::MESH))
 					{
 						CMesh* mesh = (CMesh*)cloud;
 						if (mesh->hasFaces())
 						{
+							mesh->fnormals().clear();
+
+							CMesh::Faces new_faces;
+
 							obj->switchOption(CModel3D::Opt::optRenderAsEdges, CModel3D::Switch::switchOff);
 							obj->switchOption(CModel3D::Opt::optRenderAsPoints, CModel3D::Switch::switchOn);
 
-							for (int j = mesh->faces().size() - 1; j >= 0; j--)
+							UI::PROGRESSBAR::init(0, mesh->faces().size(), 0);
+							for (int j = 0; j < mesh->faces().size(); j++)
 							{
+								if ((j%1000)==0) //UI::STATUSBAR::setText(QString("Reindexing faces: %1").arg(j));
+									UI::PROGRESSBAR::setValue(j);
 								CFace f = mesh->faces()[j];
-								if ((idxMap.find(f.A()) == idxMap.end()) || (idxMap.find(f.B()) == idxMap.end()) || (idxMap.find(f.C()) == idxMap.end()))
+								
+								if ((idxMap.find(f.A()) != idxMap.end()) &&
+									(idxMap.find(f.B()) != idxMap.end()) &&
+									(idxMap.find(f.C()) != idxMap.end()))
 								{
-									mesh->removeFace(j);
-								}
-								else
-								{
-									mesh->faces()[j].Set(CFace(idxMap[f.A()], idxMap[f.B()], idxMap[f.C()]));
+									new_faces.push_back(f);
 								}
 							}
+							
+							mesh->faces() = new_faces;
+					
+							obj->switchOption(CModel3D::Opt::optRenderAsPoints, CModel3D::Switch::switchOff);
+							obj->switchOption(CModel3D::Opt::optRenderAsEdges, CModel3D::Switch::switchOff);
 
+							mesh->removeUnusedVertices();
 						}
 					}
-
+					else
+					{
+						cloud->vertices().swap(tempV);
+						cloud->vcolors().swap(tempC);
+					}
 					idxMap.clear();
 
 					UI::PROGRESSBAR::hide();
@@ -717,15 +774,6 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 
 					//cloud->vertices().clear();
 					//cloud->vcolors().clear();
-
-					cloud->vertices().swap(tempV);
-					cloud->vcolors().swap(tempC);
-
-					if (cloud->hasType(CObject::MESH))
-					{
-						obj->switchOption(CModel3D::Opt::optRenderAsPoints, CModel3D::Switch::switchOff);
-						obj->switchOption(CModel3D::Opt::optRenderAsEdges, CModel3D::Switch::switchOff);
-					}
 
 					tempV.clear();
 					tempV.shrink_to_fit();
@@ -993,8 +1041,17 @@ void GLViewer::wheelEvent(QWheelEvent * event)
 	}
 	else if (m_selectionMode == 1)
 	{
-		m_selSize += (event->angleDelta().y() < 0) ? -1 : (event->angleDelta().y() > 0) ? 1 : 0;
-		if (m_selSize < 1) m_selSize = 1;
+		if (Qt::ControlModifier != QApplication::keyboardModifiers())
+		{
+			m_selSize += (event->angleDelta().y() < 0) ? -1 : (event->angleDelta().y() > 0) ? 1 : 0;
+			if (m_selSize < 1) m_selSize = 1;
+		}
+		else
+		{
+			m_selSize += (event->angleDelta().y() < 0) ? -10 : (event->angleDelta().y() > 0) ? 10 : 0;
+			if (m_selSize < 10) m_selSize = 10;
+		}
+		UI::STATUSBAR::setText(QString("Selection size: %1").arg(m_selSize));
 	}
 
 	moving = true;

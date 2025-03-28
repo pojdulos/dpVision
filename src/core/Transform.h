@@ -122,12 +122,12 @@ public:
 	QMatrix4x4 toQMatrix4x4();
 
 
-	bool invertMatrixD(const double m[16], double invOut[16]);
-	bool invertMatrixF(const float m[16], float invOut[16]);
+	//bool invertMatrixD(const double m[16], double invOut[16]);
+	//bool invertMatrixF(const float m[16], float invOut[16]);
 
-	void toInvertedGLMatrixF(float* matrix);
-	void toInvertedGLMatrixD(double* matrix);
-	void toInvertedRowMatrixD(double* matrix);
+	//void toInvertedGLMatrixF(float* matrix);
+	//void toInvertedGLMatrixD(double* matrix);
+	//void toInvertedRowMatrixD(double* matrix);
 
 	static CTransform fromTo(CTransform from, CTransform to);
 

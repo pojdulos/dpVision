@@ -244,8 +244,8 @@ void CWorkspace::InitLights()
 	m_lights[0].setDiffuse( 0.6f, 0.6f, 0.6f, 1.0f );
 	m_lights[0].setSpecular( 0.0f, 0.0f, 0.0f, 1.0f );
 	//m_lights[0].setPosition( 5.0f, 20.0f, -100.0f, 0.0f );
-	m_lights[0].setPosition( 0.0f, 0.0f, 1.0f, 0.0f );
-	m_lights[0].setSpot( -5.0f, -20.0f, -100.0f, 180.0f );
+	m_lights[0].setPosition( 0.0f, 0.0f, 1000.0f, 0.0f );
+	m_lights[0].setSpot( -5000.0f, -20000.0f, -100000.0f, 180.0f );
 
 	m_lights[0].fixed = true; //true;
 	m_lights[0].active = true; //true;
@@ -253,8 +253,8 @@ void CWorkspace::InitLights()
 	m_lights[1].setAmbient( 0.2f, 0.2f, 0.2f, 1.0f );
 	m_lights[1].setDiffuse( 0.4f, 0.4f, 0.4f, 1.0f );
 	m_lights[1].setSpecular( 0.6f, 0.6f, 0.6f, 1.0f );
-	m_lights[1].setPosition( 20.0f, 0.0f, -20.0f, 1.0f );
-	m_lights[1].setSpot( -20.0f, 0.0f, 20.0f, 60.0f );
+	m_lights[1].setPosition( 20000.0f, 0.0f, -20000.0f, 1.0f );
+	m_lights[1].setSpot( -20000.0f, 0.0f, 20000.0f, 60.0f );
 
 	m_lights[1].fixed = false;
 	m_lights[1].active = false;
@@ -651,61 +651,55 @@ CBoundingBox CWorkspace::topBB()
 /*
 	Load Workspace from file
 */
-void CWorkspace::load(QString path)
-{
-	CFileInfo fname;
-	fname.setPath(path);
-
-	if (fname.hasExt("dpvision"))
-	{
-		AP::WORKSPACE::removeAllModels();
-
-		CParserDPVISION* parser = new CParserDPVISION();
-
-		if (NULL != parser)
-		{
-			bool result = parser->load(path, true);
-
-			delete parser;
-		}
-	}
-	//else if (fname.hasExt("Faro"))
-	//{
-	//	AP::WORKSPACE::removeAllModels();
-
-	//	CWorkspaceFile::loadFaro(fname.absoluteFilePathW(), *this);
-	//}
-}
+//void CWorkspace::load(QString path)
+//{
+//	CFileInfo fname;
+//	fname.setPath(path);
+//
+//	if (fname.hasExt("dpvision"))
+//	{
+//		AP::WORKSPACE::removeAllModels();
+//
+//		CParserDPVISION* parser = new CParserDPVISION();
+//
+//		if (NULL != parser)
+//		{
+//			bool result = parser->load(path, true);
+//
+//			delete parser;
+//		}
+//	}
+//}
 
 
 /*
 	Save Workspace to file
 */
-bool CWorkspace::save(QString path)
-{
-	CFileInfo fname;
-	fname.setPath(path);
-
-	if (fname.hasExt("dpvision"))
-	{
-		CParserDPVISION* parser = new CParserDPVISION();
-
-		if (NULL != parser)
-		{
-			QVector<CBaseObject*> objects;
-
-			for (const auto& o : this->m_data)
-			{
-				objects << (CBaseObject*)o.second;
-			}
-
-			bool result = parser->save(objects, fname.absoluteFilePath());
-
-			delete parser;
-
-			return result;
-		}
-	}
-
-	return false;
-}
+//bool CWorkspace::save(QString path)
+//{
+//	CFileInfo fname;
+//	fname.setPath(path);
+//
+//	if (fname.hasExt("dpvision"))
+//	{
+//		CParserDPVISION* parser = new CParserDPVISION();
+//
+//		if (NULL != parser)
+//		{
+//			QVector<CBaseObject*> objects;
+//
+//			for (const auto& o : this->m_data)
+//			{
+//				objects << (CBaseObject*)o.second;
+//			}
+//
+//			bool result = parser->save(objects, fname.absoluteFilePath());
+//
+//			delete parser;
+//
+//			return result;
+//		}
+//	}
+//
+//	return false;
+//}

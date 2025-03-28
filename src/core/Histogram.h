@@ -54,6 +54,7 @@ public:
 
 	CHistogram( std::vector<double> data, int levels=512 );
 	CHistogram( CModel3D* parent, std::vector<double> data, int levels = 512);
+	CHistogram( CPointCloud* cloud, std::vector<double> data, int levels = 512);
 	~CHistogram();
 
 	void setData(std::vector<double> &data);

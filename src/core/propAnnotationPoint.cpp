@@ -59,17 +59,25 @@ void PropAnnotationPoint::updateProperties()
 		ui.ctrZ->setValue(a->z);
 		ui.ctrZ->blockSignals(false);
 
+		CVector3d v = a->getDirection();
+		double len = v.length();
+		v.normalize();
+
 		ui.dirX->blockSignals(true);
-		ui.dirX->setValue(a->getDirection().X());
+		ui.dirX->setValue(v.x);
 		ui.dirX->blockSignals(false);
 
 		ui.dirY->blockSignals(true);
-		ui.dirY->setValue(a->getDirection().Y());
+		ui.dirY->setValue(v.y);
 		ui.dirY->blockSignals(false);
 
 		ui.dirZ->blockSignals(true);
-		ui.dirZ->setValue(a->getDirection().Z());
+		ui.dirZ->setValue(v.z);
 		ui.dirZ->blockSignals(false);
+
+		ui.dirLen->blockSignals(true);
+		ui.dirLen->setValue(len);
+		ui.dirLen->blockSignals(false);
 
 		ui.showNorm->blockSignals(true);
 		ui.showNorm->setChecked(a->m_showNorm);
@@ -99,25 +107,61 @@ void PropAnnotationPoint::changedCtrZ(double z)
 
 void PropAnnotationPoint::changedNormX(double x)
 {
-	CVector3d n = obj->getDirection();
-	n.X(x);
-	obj->setDirection(n);
+	CVector3d v(ui.dirX->value(), ui.dirY->value(), ui.dirZ->value());
+	v.normalize();
+	double len = ui.dirLen->value();
+
+	obj->setDirection(v * len);
 	UI::updateAllViews();
 }
 
 void PropAnnotationPoint::changedNormY(double y)
 {
-	CVector3d n = obj->getDirection();
-	n.Y(y);
-	obj->setDirection(n);
+	CVector3d v(ui.dirX->value(), ui.dirY->value(), ui.dirZ->value());
+	v.normalize();
+	double len = ui.dirLen->value();
+
+	obj->setDirection(v * len);
 	UI::updateAllViews();
 }
 
 void PropAnnotationPoint::changedNormZ(double z)
 {
-	CVector3d n = obj->getDirection();
-	n.Z(z);
-	obj->setDirection(n);
+	double len = ui.dirLen->value();
+	double x = ui.dirX->value();
+	double y = ui.dirY->value();
+
+	if ((x != 0.0) && (y != 0.0)) {
+		double S = x * x + y * y;
+		double scale = sqrt((1.0 - z * z) / S);
+
+		x = x * scale;
+		y = y * scale;
+	}
+	else {
+		//y = x = sqrt((1.0 - z * z) / 2.0);
+		y = sqrt(1.0 - z * z);
+		x = 0.0;
+	}
+
+	ui.dirX->blockSignals(true);
+	ui.dirX->setValue(x);
+	ui.dirX->blockSignals(false);
+
+	ui.dirY->blockSignals(true);
+	ui.dirY->setValue(y);
+	ui.dirY->blockSignals(false);
+
+	obj->setDirection(CVector3d(x, y, z) * len);
+	UI::updateAllViews();
+}
+
+void PropAnnotationPoint::changedNormLen(double l)
+{
+	CVector3d v(ui.dirX->value(), ui.dirY->value(), ui.dirZ->value());
+	double len = ui.dirLen->value();
+
+	obj->setDirection(v*len);
 	UI::updateAllViews();
 }
 

@@ -343,389 +343,370 @@ void CTransform::fromQMatrix4x4(QMatrix4x4 m)
 
 void CTransform::toGLMatrixF( float *matrix )
 {
-	m_rot.toGLMatrixF(matrix);
+	Eigen::Matrix4f M = this->toEigenMatrix4d().transpose().cast<float>();
 
-	matrix[0] *= m_sca.x;
-	matrix[1] *= m_sca.x;
-	matrix[2] *= m_sca.x;
-
-	matrix[4] *= m_sca.y;
-	matrix[5] *= m_sca.y;
-	matrix[6] *= m_sca.y;
-
-	matrix[8] *= m_sca.z;
-	matrix[9] *= m_sca.z;
-	matrix[10] *= m_sca.z;
-
-	matrix[12] = m_tra.X();
-	matrix[13] = m_tra.Y();
-	matrix[14] = m_tra.Z();
+	std::memcpy(matrix, M.data(), 16 * sizeof(float));
 }
 
 void CTransform::toGLMatrixD(double* matrix)
 {
-	m_rot.toGLMatrixD(matrix);
+	Eigen::Matrix4d M = this->toEigenMatrix4d().transpose();
 
-	matrix[0] *= m_sca.x;
-	matrix[1] *= m_sca.x;
-	matrix[2] *= m_sca.x;
-
-	matrix[4] *= m_sca.y;
-	matrix[5] *= m_sca.y;
-	matrix[6] *= m_sca.y;
-
-	matrix[8] *= m_sca.z;
-	matrix[9] *= m_sca.z;
-	matrix[10] *= m_sca.z;
-
-	matrix[12] = m_tra.X();
-	matrix[13] = m_tra.Y();
-	matrix[14] = m_tra.Z();
+	std::memcpy(matrix, M.data(), 16 * sizeof(double));
 }
 
 void CTransform::toRowMatrixD(double* matrix)
 {
-	double tmpMatrix[16];
-	m_rot.toGLMatrixD(tmpMatrix); //UWAGA: macierz rotacji jest w formacie OpenGL (kolumnowym)
+	Eigen::Matrix4d M = this->toEigenMatrix4d();
 
-	// transponuje macierz rotacji i mno¿ê przez skalê
-	matrix[0] = tmpMatrix[0] * m_sca.x;
-	matrix[1] = tmpMatrix[4] * m_sca.y;
-	matrix[2] = tmpMatrix[8] * m_sca.z;
-
-	matrix[4] = tmpMatrix[1] * m_sca.x;
-	matrix[5] = tmpMatrix[5] * m_sca.y;
-	matrix[6] = tmpMatrix[9] * m_sca.z;
-
-	matrix[8] = tmpMatrix[2] * m_sca.x;
-	matrix[9] = tmpMatrix[6] * m_sca.y;
-	matrix[10] = tmpMatrix[10] * m_sca.z;
-
-	matrix[3] = m_tra.X();
-	matrix[7] = m_tra.Y();
-	matrix[11] = m_tra.Z();
-
-	matrix[12] = 0.0;
-	matrix[13] = 0.0;
-	matrix[14] = 0.0;
-	matrix[15] = 1.0;
+	std::memcpy(matrix, M.data(), 16 * sizeof(double));
 }
 
 
 Eigen::Matrix4d CTransform::toEigenMatrix4d()
 {
-	Eigen::Matrix4d m = m_rot.toEigenMatrix4d();
+	//GOOD LOOKING VERSION
+	//Eigen::Matrix4d S = Eigen::Matrix4d::Identity();
+	//S(0, 0) = m_sca.x;
+	//S(1, 1) = m_sca.y;
+	//S(2, 2) = m_sca.z;
 
-	m(0, 0) *= m_sca.x;		m(0, 1) *= m_sca.y;		m(0, 2) *= m_sca.z;		m(0, 3) = m_tra.x;
+	//Eigen::Matrix4d R = Eigen::Matrix4d::Identity();
+	//R.block<3, 3>(0, 0) = m_rot.toRotationMatrix();
 
-	m(1, 0) *= m_sca.x;		m(1, 1) *= m_sca.y;		m(1, 2) *= m_sca.z;		m(1, 3) = m_tra.y;
+	//Eigen::Matrix4d T = Eigen::Matrix4d::Identity();
+	//T(0, 3) = m_tra.x;
+	//T(1, 3) = m_tra.y;
+	//T(2, 3) = m_tra.z;
 
-	m(2, 0) *= m_sca.x;		m(2, 1) *= m_sca.y;		m(2, 2) *= m_sca.z;		m(2, 3) = m_tra.z;
+	//Eigen::Matrix4d M = T * R * S;
 
-	m(3, 0) = 0.0;			m(3, 1) = 0.0;			m(3, 2) = 0.0;			m(3, 3) = 1.0;
+	//return M;
 
+
+	//VERSION OPTIMISED FOR SPEED
+	Eigen::Matrix3d R = m_rot.toRotationMatrix();
+	Eigen::Matrix4d m;
+
+	m <<
+		R(0, 0) * m_sca.x, R(0, 1) * m_sca.y, R(0, 2) * m_sca.z, m_tra.x,
+		R(1, 0) * m_sca.x, R(1, 1) * m_sca.y, R(1, 2) * m_sca.z, m_tra.y,
+		R(2, 0) * m_sca.x, R(2, 1) * m_sca.y, R(2, 2) * m_sca.z, m_tra.z,
+		0.0, 0.0, 0.0, 1.0;
 	return m;
 }
 
 QMatrix4x4 CTransform::toQMatrix4x4()
 {
-	QMatrix4x4 m = m_rot.toQMatrix4x4();
+	//GOOD LOOKING VERSION
+	//QMatrix4x4 S(
+	//	{ (float)m_sca.x,	0.0f,				0.0f,			0.0f,
+	//	  0.0f,				(float)m_sca.y,		0.0f,			0.0f,
+	//	  0.0f,				0.0f,				(float)m_sca.z, 0.0f,
+	//	  0.0f,				0.0f,				0.0f,			1.0f });
 
-	m(0, 0) *= m_sca.x;		m(0, 1) *= m_sca.y;		m(0, 2) *= m_sca.z;		m(0, 3) = m_tra.x;
+	//QMatrix4x4 R = m_rot.toQMatrix4x4();
+	//
+	//QMatrix4x4 T(
+	//	{ 1.0f, 0.0f, 0.0f, (float)m_tra.x,
+	//	  0.0f, 1.0f, 0.0f, (float)m_tra.y,
+	//	  0.0f, 0.0f, 1.0f, (float)m_tra.z,
+	//	  0.0f, 0.0f, 0.0f, 1.0f });
 
-	m(1, 0) *= m_sca.x;		m(1, 1) *= m_sca.y;		m(1, 2) *= m_sca.z;		m(1, 3) = m_tra.y;
+	//QMatrix4x4 M = T * R * S;
 
-	m(2, 0) *= m_sca.x;		m(2, 1) *= m_sca.y;		m(2, 2) *= m_sca.z;		m(2, 3) = m_tra.z;
+	//return M;
 
-	m(3, 0) = 0.0;			m(3, 1) = 0.0;			m(3, 2) = 0.0;			m(3, 3) = 1.0;
+
+	//VERSION OPTIMISED FOR SPEED
+	QMatrix3x3 R = m_rot.toQt().toRotationMatrix();
+
+	QMatrix4x4 m;
+
+	m(0, 0) = R(0, 0) * m_sca.x; m(0, 1) = R(0, 1) * m_sca.y; m(0, 2) = R(0, 2) * m_sca.z; m(0, 3) = m_tra.x;
+	m(1, 0) = R(1, 0) * m_sca.x; m(1, 1) = R(1, 1) * m_sca.y; m(1, 2) = R(1, 2) * m_sca.z; m(1, 3) = m_tra.y;
+	m(2, 0) = R(2, 0) * m_sca.x; m(2, 1) = R(2, 1) * m_sca.y; m(2, 2) = R(2, 2) * m_sca.z; m(2, 3) = m_tra.z;
+	m(3, 0) = 0.0;               m(3, 1) = 0.0;               m(3, 2) = 0.0;               m(3, 3) = 1.0;
 
 	return m;
 }
 
-bool CTransform::invertMatrixD(const double m[16], double invOut[16])
-{
-	double inv[16], det;
-	int i;
-
-	inv[0] = m[5] * m[10] * m[15] -
-		m[5] * m[11] * m[14] -
-		m[9] * m[6] * m[15] +
-		m[9] * m[7] * m[14] +
-		m[13] * m[6] * m[11] -
-		m[13] * m[7] * m[10];
-
-	inv[4] = -m[4] * m[10] * m[15] +
-		m[4] * m[11] * m[14] +
-		m[8] * m[6] * m[15] -
-		m[8] * m[7] * m[14] -
-		m[12] * m[6] * m[11] +
-		m[12] * m[7] * m[10];
-
-	inv[8] = m[4] * m[9] * m[15] -
-		m[4] * m[11] * m[13] -
-		m[8] * m[5] * m[15] +
-		m[8] * m[7] * m[13] +
-		m[12] * m[5] * m[11] -
-		m[12] * m[7] * m[9];
-
-	inv[12] = -m[4] * m[9] * m[14] +
-		m[4] * m[10] * m[13] +
-		m[8] * m[5] * m[14] -
-		m[8] * m[6] * m[13] -
-		m[12] * m[5] * m[10] +
-		m[12] * m[6] * m[9];
-
-	inv[1] = -m[1] * m[10] * m[15] +
-		m[1] * m[11] * m[14] +
-		m[9] * m[2] * m[15] -
-		m[9] * m[3] * m[14] -
-		m[13] * m[2] * m[11] +
-		m[13] * m[3] * m[10];
-
-	inv[5] = m[0] * m[10] * m[15] -
-		m[0] * m[11] * m[14] -
-		m[8] * m[2] * m[15] +
-		m[8] * m[3] * m[14] +
-		m[12] * m[2] * m[11] -
-		m[12] * m[3] * m[10];
-
-	inv[9] = -m[0] * m[9] * m[15] +
-		m[0] * m[11] * m[13] +
-		m[8] * m[1] * m[15] -
-		m[8] * m[3] * m[13] -
-		m[12] * m[1] * m[11] +
-		m[12] * m[3] * m[9];
-
-	inv[13] = m[0] * m[9] * m[14] -
-		m[0] * m[10] * m[13] -
-		m[8] * m[1] * m[14] +
-		m[8] * m[2] * m[13] +
-		m[12] * m[1] * m[10] -
-		m[12] * m[2] * m[9];
-
-	inv[2] = m[1] * m[6] * m[15] -
-		m[1] * m[7] * m[14] -
-		m[5] * m[2] * m[15] +
-		m[5] * m[3] * m[14] +
-		m[13] * m[2] * m[7] -
-		m[13] * m[3] * m[6];
-
-	inv[6] = -m[0] * m[6] * m[15] +
-		m[0] * m[7] * m[14] +
-		m[4] * m[2] * m[15] -
-		m[4] * m[3] * m[14] -
-		m[12] * m[2] * m[7] +
-		m[12] * m[3] * m[6];
-
-	inv[10] = m[0] * m[5] * m[15] -
-		m[0] * m[7] * m[13] -
-		m[4] * m[1] * m[15] +
-		m[4] * m[3] * m[13] +
-		m[12] * m[1] * m[7] -
-		m[12] * m[3] * m[5];
-
-	inv[14] = -m[0] * m[5] * m[14] +
-		m[0] * m[6] * m[13] +
-		m[4] * m[1] * m[14] -
-		m[4] * m[2] * m[13] -
-		m[12] * m[1] * m[6] +
-		m[12] * m[2] * m[5];
-
-	inv[3] = -m[1] * m[6] * m[11] +
-		m[1] * m[7] * m[10] +
-		m[5] * m[2] * m[11] -
-		m[5] * m[3] * m[10] -
-		m[9] * m[2] * m[7] +
-		m[9] * m[3] * m[6];
-
-	inv[7] = m[0] * m[6] * m[11] -
-		m[0] * m[7] * m[10] -
-		m[4] * m[2] * m[11] +
-		m[4] * m[3] * m[10] +
-		m[8] * m[2] * m[7] -
-		m[8] * m[3] * m[6];
-
-	inv[11] = -m[0] * m[5] * m[11] +
-		m[0] * m[7] * m[9] +
-		m[4] * m[1] * m[11] -
-		m[4] * m[3] * m[9] -
-		m[8] * m[1] * m[7] +
-		m[8] * m[3] * m[5];
-
-	inv[15] = m[0] * m[5] * m[10] -
-		m[0] * m[6] * m[9] -
-		m[4] * m[1] * m[10] +
-		m[4] * m[2] * m[9] +
-		m[8] * m[1] * m[6] -
-		m[8] * m[2] * m[5];
-
-	det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
-
-	if (det == 0)
-		return false;
-
-	det = 1.0 / det;
-
-	for (i = 0; i < 16; i++)
-		invOut[i] = inv[i] * det;
-
-	return true;
-}
-
-bool CTransform::invertMatrixF(const float m[16], float invOut[16])
-{
-	float inv[16], det;
-	int i;
-
-	inv[0] = m[5] * m[10] * m[15] -
-		m[5] * m[11] * m[14] -
-		m[9] * m[6] * m[15] +
-		m[9] * m[7] * m[14] +
-		m[13] * m[6] * m[11] -
-		m[13] * m[7] * m[10];
-
-	inv[4] = -m[4] * m[10] * m[15] +
-		m[4] * m[11] * m[14] +
-		m[8] * m[6] * m[15] -
-		m[8] * m[7] * m[14] -
-		m[12] * m[6] * m[11] +
-		m[12] * m[7] * m[10];
-
-	inv[8] = m[4] * m[9] * m[15] -
-		m[4] * m[11] * m[13] -
-		m[8] * m[5] * m[15] +
-		m[8] * m[7] * m[13] +
-		m[12] * m[5] * m[11] -
-		m[12] * m[7] * m[9];
-
-	inv[12] = -m[4] * m[9] * m[14] +
-		m[4] * m[10] * m[13] +
-		m[8] * m[5] * m[14] -
-		m[8] * m[6] * m[13] -
-		m[12] * m[5] * m[10] +
-		m[12] * m[6] * m[9];
-
-	inv[1] = -m[1] * m[10] * m[15] +
-		m[1] * m[11] * m[14] +
-		m[9] * m[2] * m[15] -
-		m[9] * m[3] * m[14] -
-		m[13] * m[2] * m[11] +
-		m[13] * m[3] * m[10];
-
-	inv[5] = m[0] * m[10] * m[15] -
-		m[0] * m[11] * m[14] -
-		m[8] * m[2] * m[15] +
-		m[8] * m[3] * m[14] +
-		m[12] * m[2] * m[11] -
-		m[12] * m[3] * m[10];
-
-	inv[9] = -m[0] * m[9] * m[15] +
-		m[0] * m[11] * m[13] +
-		m[8] * m[1] * m[15] -
-		m[8] * m[3] * m[13] -
-		m[12] * m[1] * m[11] +
-		m[12] * m[3] * m[9];
-
-	inv[13] = m[0] * m[9] * m[14] -
-		m[0] * m[10] * m[13] -
-		m[8] * m[1] * m[14] +
-		m[8] * m[2] * m[13] +
-		m[12] * m[1] * m[10] -
-		m[12] * m[2] * m[9];
-
-	inv[2] = m[1] * m[6] * m[15] -
-		m[1] * m[7] * m[14] -
-		m[5] * m[2] * m[15] +
-		m[5] * m[3] * m[14] +
-		m[13] * m[2] * m[7] -
-		m[13] * m[3] * m[6];
-
-	inv[6] = -m[0] * m[6] * m[15] +
-		m[0] * m[7] * m[14] +
-		m[4] * m[2] * m[15] -
-		m[4] * m[3] * m[14] -
-		m[12] * m[2] * m[7] +
-		m[12] * m[3] * m[6];
-
-	inv[10] = m[0] * m[5] * m[15] -
-		m[0] * m[7] * m[13] -
-		m[4] * m[1] * m[15] +
-		m[4] * m[3] * m[13] +
-		m[12] * m[1] * m[7] -
-		m[12] * m[3] * m[5];
-
-	inv[14] = -m[0] * m[5] * m[14] +
-		m[0] * m[6] * m[13] +
-		m[4] * m[1] * m[14] -
-		m[4] * m[2] * m[13] -
-		m[12] * m[1] * m[6] +
-		m[12] * m[2] * m[5];
-
-	inv[3] = -m[1] * m[6] * m[11] +
-		m[1] * m[7] * m[10] +
-		m[5] * m[2] * m[11] -
-		m[5] * m[3] * m[10] -
-		m[9] * m[2] * m[7] +
-		m[9] * m[3] * m[6];
-
-	inv[7] = m[0] * m[6] * m[11] -
-		m[0] * m[7] * m[10] -
-		m[4] * m[2] * m[11] +
-		m[4] * m[3] * m[10] +
-		m[8] * m[2] * m[7] -
-		m[8] * m[3] * m[6];
-
-	inv[11] = -m[0] * m[5] * m[11] +
-		m[0] * m[7] * m[9] +
-		m[4] * m[1] * m[11] -
-		m[4] * m[3] * m[9] -
-		m[8] * m[1] * m[7] +
-		m[8] * m[3] * m[5];
-
-	inv[15] = m[0] * m[5] * m[10] -
-		m[0] * m[6] * m[9] -
-		m[4] * m[1] * m[10] +
-		m[4] * m[2] * m[9] +
-		m[8] * m[1] * m[6] -
-		m[8] * m[2] * m[5];
-
-	det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
-
-	if (det == 0)
-		return false;
-
-	det = 1.0 / det;
-
-	for (i = 0; i < 16; i++)
-		invOut[i] = inv[i] * det;
-
-	return true;
-}
-
-
-void CTransform::toInvertedGLMatrixD(double* matrix)
-{
-	double tmp[16];
-	
-	this->toGLMatrixD(tmp);
-	invertMatrixD(tmp, matrix);
-}
-
-void CTransform::toInvertedGLMatrixF(float* matrix)
-{
-	float tmp[16];
-
-	this->toGLMatrixF(tmp);
-	invertMatrixF(tmp, matrix);
-}
-
-void CTransform::toInvertedRowMatrixD(double* matrix)
-{
-	double tmp[16];
-
-	this->toRowMatrixD(tmp);
-	invertMatrixD(tmp, matrix);
-}
+//bool CTransform::invertMatrixD(const double m[16], double invOut[16])
+//{
+//	double inv[16], det;
+//	int i;
+//
+//	inv[0] = m[5] * m[10] * m[15] -
+//		m[5] * m[11] * m[14] -
+//		m[9] * m[6] * m[15] +
+//		m[9] * m[7] * m[14] +
+//		m[13] * m[6] * m[11] -
+//		m[13] * m[7] * m[10];
+//
+//	inv[4] = -m[4] * m[10] * m[15] +
+//		m[4] * m[11] * m[14] +
+//		m[8] * m[6] * m[15] -
+//		m[8] * m[7] * m[14] -
+//		m[12] * m[6] * m[11] +
+//		m[12] * m[7] * m[10];
+//
+//	inv[8] = m[4] * m[9] * m[15] -
+//		m[4] * m[11] * m[13] -
+//		m[8] * m[5] * m[15] +
+//		m[8] * m[7] * m[13] +
+//		m[12] * m[5] * m[11] -
+//		m[12] * m[7] * m[9];
+//
+//	inv[12] = -m[4] * m[9] * m[14] +
+//		m[4] * m[10] * m[13] +
+//		m[8] * m[5] * m[14] -
+//		m[8] * m[6] * m[13] -
+//		m[12] * m[5] * m[10] +
+//		m[12] * m[6] * m[9];
+//
+//	inv[1] = -m[1] * m[10] * m[15] +
+//		m[1] * m[11] * m[14] +
+//		m[9] * m[2] * m[15] -
+//		m[9] * m[3] * m[14] -
+//		m[13] * m[2] * m[11] +
+//		m[13] * m[3] * m[10];
+//
+//	inv[5] = m[0] * m[10] * m[15] -
+//		m[0] * m[11] * m[14] -
+//		m[8] * m[2] * m[15] +
+//		m[8] * m[3] * m[14] +
+//		m[12] * m[2] * m[11] -
+//		m[12] * m[3] * m[10];
+//
+//	inv[9] = -m[0] * m[9] * m[15] +
+//		m[0] * m[11] * m[13] +
+//		m[8] * m[1] * m[15] -
+//		m[8] * m[3] * m[13] -
+//		m[12] * m[1] * m[11] +
+//		m[12] * m[3] * m[9];
+//
+//	inv[13] = m[0] * m[9] * m[14] -
+//		m[0] * m[10] * m[13] -
+//		m[8] * m[1] * m[14] +
+//		m[8] * m[2] * m[13] +
+//		m[12] * m[1] * m[10] -
+//		m[12] * m[2] * m[9];
+//
+//	inv[2] = m[1] * m[6] * m[15] -
+//		m[1] * m[7] * m[14] -
+//		m[5] * m[2] * m[15] +
+//		m[5] * m[3] * m[14] +
+//		m[13] * m[2] * m[7] -
+//		m[13] * m[3] * m[6];
+//
+//	inv[6] = -m[0] * m[6] * m[15] +
+//		m[0] * m[7] * m[14] +
+//		m[4] * m[2] * m[15] -
+//		m[4] * m[3] * m[14] -
+//		m[12] * m[2] * m[7] +
+//		m[12] * m[3] * m[6];
+//
+//	inv[10] = m[0] * m[5] * m[15] -
+//		m[0] * m[7] * m[13] -
+//		m[4] * m[1] * m[15] +
+//		m[4] * m[3] * m[13] +
+//		m[12] * m[1] * m[7] -
+//		m[12] * m[3] * m[5];
+//
+//	inv[14] = -m[0] * m[5] * m[14] +
+//		m[0] * m[6] * m[13] +
+//		m[4] * m[1] * m[14] -
+//		m[4] * m[2] * m[13] -
+//		m[12] * m[1] * m[6] +
+//		m[12] * m[2] * m[5];
+//
+//	inv[3] = -m[1] * m[6] * m[11] +
+//		m[1] * m[7] * m[10] +
+//		m[5] * m[2] * m[11] -
+//		m[5] * m[3] * m[10] -
+//		m[9] * m[2] * m[7] +
+//		m[9] * m[3] * m[6];
+//
+//	inv[7] = m[0] * m[6] * m[11] -
+//		m[0] * m[7] * m[10] -
+//		m[4] * m[2] * m[11] +
+//		m[4] * m[3] * m[10] +
+//		m[8] * m[2] * m[7] -
+//		m[8] * m[3] * m[6];
+//
+//	inv[11] = -m[0] * m[5] * m[11] +
+//		m[0] * m[7] * m[9] +
+//		m[4] * m[1] * m[11] -
+//		m[4] * m[3] * m[9] -
+//		m[8] * m[1] * m[7] +
+//		m[8] * m[3] * m[5];
+//
+//	inv[15] = m[0] * m[5] * m[10] -
+//		m[0] * m[6] * m[9] -
+//		m[4] * m[1] * m[10] +
+//		m[4] * m[2] * m[9] +
+//		m[8] * m[1] * m[6] -
+//		m[8] * m[2] * m[5];
+//
+//	det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
+//
+//	if (det == 0)
+//		return false;
+//
+//	det = 1.0 / det;
+//
+//	for (i = 0; i < 16; i++)
+//		invOut[i] = inv[i] * det;
+//
+//	return true;
+//}
+//bool CTransform::invertMatrixF(const float m[16], float invOut[16])
+//{
+//	float inv[16], det;
+//	int i;
+//
+//	inv[0] = m[5] * m[10] * m[15] -
+//		m[5] * m[11] * m[14] -
+//		m[9] * m[6] * m[15] +
+//		m[9] * m[7] * m[14] +
+//		m[13] * m[6] * m[11] -
+//		m[13] * m[7] * m[10];
+//
+//	inv[4] = -m[4] * m[10] * m[15] +
+//		m[4] * m[11] * m[14] +
+//		m[8] * m[6] * m[15] -
+//		m[8] * m[7] * m[14] -
+//		m[12] * m[6] * m[11] +
+//		m[12] * m[7] * m[10];
+//
+//	inv[8] = m[4] * m[9] * m[15] -
+//		m[4] * m[11] * m[13] -
+//		m[8] * m[5] * m[15] +
+//		m[8] * m[7] * m[13] +
+//		m[12] * m[5] * m[11] -
+//		m[12] * m[7] * m[9];
+//
+//	inv[12] = -m[4] * m[9] * m[14] +
+//		m[4] * m[10] * m[13] +
+//		m[8] * m[5] * m[14] -
+//		m[8] * m[6] * m[13] -
+//		m[12] * m[5] * m[10] +
+//		m[12] * m[6] * m[9];
+//
+//	inv[1] = -m[1] * m[10] * m[15] +
+//		m[1] * m[11] * m[14] +
+//		m[9] * m[2] * m[15] -
+//		m[9] * m[3] * m[14] -
+//		m[13] * m[2] * m[11] +
+//		m[13] * m[3] * m[10];
+//
+//	inv[5] = m[0] * m[10] * m[15] -
+//		m[0] * m[11] * m[14] -
+//		m[8] * m[2] * m[15] +
+//		m[8] * m[3] * m[14] +
+//		m[12] * m[2] * m[11] -
+//		m[12] * m[3] * m[10];
+//
+//	inv[9] = -m[0] * m[9] * m[15] +
+//		m[0] * m[11] * m[13] +
+//		m[8] * m[1] * m[15] -
+//		m[8] * m[3] * m[13] -
+//		m[12] * m[1] * m[11] +
+//		m[12] * m[3] * m[9];
+//
+//	inv[13] = m[0] * m[9] * m[14] -
+//		m[0] * m[10] * m[13] -
+//		m[8] * m[1] * m[14] +
+//		m[8] * m[2] * m[13] +
+//		m[12] * m[1] * m[10] -
+//		m[12] * m[2] * m[9];
+//
+//	inv[2] = m[1] * m[6] * m[15] -
+//		m[1] * m[7] * m[14] -
+//		m[5] * m[2] * m[15] +
+//		m[5] * m[3] * m[14] +
+//		m[13] * m[2] * m[7] -
+//		m[13] * m[3] * m[6];
+//
+//	inv[6] = -m[0] * m[6] * m[15] +
+//		m[0] * m[7] * m[14] +
+//		m[4] * m[2] * m[15] -
+//		m[4] * m[3] * m[14] -
+//		m[12] * m[2] * m[7] +
+//		m[12] * m[3] * m[6];
+//
+//	inv[10] = m[0] * m[5] * m[15] -
+//		m[0] * m[7] * m[13] -
+//		m[4] * m[1] * m[15] +
+//		m[4] * m[3] * m[13] +
+//		m[12] * m[1] * m[7] -
+//		m[12] * m[3] * m[5];
+//
+//	inv[14] = -m[0] * m[5] * m[14] +
+//		m[0] * m[6] * m[13] +
+//		m[4] * m[1] * m[14] -
+//		m[4] * m[2] * m[13] -
+//		m[12] * m[1] * m[6] +
+//		m[12] * m[2] * m[5];
+//
+//	inv[3] = -m[1] * m[6] * m[11] +
+//		m[1] * m[7] * m[10] +
+//		m[5] * m[2] * m[11] -
+//		m[5] * m[3] * m[10] -
+//		m[9] * m[2] * m[7] +
+//		m[9] * m[3] * m[6];
+//
+//	inv[7] = m[0] * m[6] * m[11] -
+//		m[0] * m[7] * m[10] -
+//		m[4] * m[2] * m[11] +
+//		m[4] * m[3] * m[10] +
+//		m[8] * m[2] * m[7] -
+//		m[8] * m[3] * m[6];
+//
+//	inv[11] = -m[0] * m[5] * m[11] +
+//		m[0] * m[7] * m[9] +
+//		m[4] * m[1] * m[11] -
+//		m[4] * m[3] * m[9] -
+//		m[8] * m[1] * m[7] +
+//		m[8] * m[3] * m[5];
+//
+//	inv[15] = m[0] * m[5] * m[10] -
+//		m[0] * m[6] * m[9] -
+//		m[4] * m[1] * m[10] +
+//		m[4] * m[2] * m[9] +
+//		m[8] * m[1] * m[6] -
+//		m[8] * m[2] * m[5];
+//
+//	det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
+//
+//	if (det == 0)
+//		return false;
+//
+//	det = 1.0 / det;
+//
+//	for (i = 0; i < 16; i++)
+//		invOut[i] = inv[i] * det;
+//
+//	return true;
+//}
+//void CTransform::toInvertedGLMatrixD(double* matrix)
+//{
+//	Eigen::Matrix4d M = this->toEigenMatrix4d().transpose().inverse();
+//
+//	std::memcpy(matrix, M.data(), 16 * sizeof(double));
+//}
+//void CTransform::toInvertedGLMatrixF(float* matrix)
+//{
+//	Eigen::Matrix4f M = this->toEigenMatrix4d().transpose().inverse().cast<float>();
+//
+//	std::memcpy(matrix, M.data(), 16 * sizeof(float));
+//}
+//void CTransform::toInvertedRowMatrixD(double* matrix)
+//{
+//	Eigen::Matrix4d M = this->toEigenMatrix4d().inverse();
+//
+//	std::memcpy(matrix, M.data(), 16 * sizeof(double));
+//}
 
 CTransform CTransform::fromTo(CTransform from, CTransform to)
 {
@@ -738,22 +719,36 @@ CTransform CTransform::fromTo(CTransform from, CTransform to)
 
 CPoint3d CTransform::w2l(const CPoint3d pkt)
 {
-	CPoint3d tmp = pkt;
+	//CPoint3d tmp = pkt;
 
-	double	matrix[16];
-	this->toInvertedGLMatrixD(matrix);
+	Eigen::Vector4d v(pkt.x, pkt.y, pkt.z, 1.0);
+	Eigen::Matrix4d invM = this->toEigenMatrix4d().inverse();
 
-	return tmp.transformByMatrixD(matrix);
+	v = invM * v;
+
+	return CPoint3d(v);
+
+	//double	matrix[16];
+	//this->toInvertedGLMatrixD(matrix);
+
+	//return tmp.transformByMatrixD(matrix);
 }
 
 CPoint3d CTransform::l2w(const CPoint3d pkt)
 {
-	CPoint3d tmp = pkt;
+	Eigen::Vector4d v(pkt.x, pkt.y, pkt.z, 1.0);
+	Eigen::Matrix4d M = this->toEigenMatrix4d();
 
-	double	matrix[16];
-	this->toGLMatrixD(matrix);
+	v = M * v;
 
-	return tmp.transformByMatrixD(matrix);
+	return CPoint3d(v);
+
+	//CPoint3d tmp = pkt;
+
+	//double	matrix[16];
+	//this->toGLMatrixD(matrix);
+
+	//return tmp.transformByMatrixD(matrix);
 }
 
 
@@ -780,7 +775,7 @@ QString CTransform::toString(QString prefix, QString suffix, QString separator, 
 	
 	QString text(prefix);
 
-	this->toGLMatrixD(matrix);
+	this->toRowMatrixD(matrix);
 
 	for (int col = 0; col < 4; col++)
 		for (int row = 0; row < 4; row++)

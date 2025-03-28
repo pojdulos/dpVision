@@ -718,9 +718,10 @@ void CParserOBJ::setChildrenVertices(CObject* obj, CPointCloud::Vertices& tmpV, 
 			}
 			else
 			{
-				m->rebuildBoundingBox();
+				
 				m->renderSmoothVertex(false);
 			}
+			m->rebuildBoundingBox();
 		}
 
 		setChildrenVertices((CObject*)c.second, tmpV, tmpC, tmpN, tmpTC);

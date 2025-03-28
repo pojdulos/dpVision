@@ -536,7 +536,7 @@ void PropTransform::updateMatrix()
 	if (NULL != m_trans)
 	{
 		double matrix[16];
-		m_trans->toGLMatrixD(matrix);
+		m_trans->toRowMatrixD(matrix);
 		ui.matrixTable->blockSignals(true);
 		for (int i = 0; i < 16; i++)
 		{
@@ -579,19 +579,21 @@ void PropTransform::clearMatrix()
 
 void PropTransform::copyToClipboard()
 {
-	double matrix[16];
+	//double matrix[16];
 	QClipboard* cb = QApplication::clipboard();
 
-	QString text;
+	//QString text;
 
-	m_trans->toGLMatrixD(matrix);
+	//m_trans->toRowMatrixD(matrix);
 
-	for (int col = 0; col < 4; col++)
-		for (int row = 0; row < 4; row++)
-		{
-			double val = matrix[4 * row + col];
-			text.append(QString::number(val) + " ");
-		}
+	//for (int col = 0; col < 4; col++)
+	//	for (int row = 0; row < 4; row++)
+	//	{
+	//		double val = matrix[4 * row + col];
+	//		text.append(QString::number(val) + " ");
+	//	}
+
+	QString text = m_trans->toString();
 
 	cb->setText(text, QClipboard::Clipboard);
 }

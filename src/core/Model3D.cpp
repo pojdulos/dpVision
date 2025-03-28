@@ -29,7 +29,7 @@ CModel3D::CModel3D(CBaseObject* p) : CObject(p)
 
 	m_annotations.clear();
 
-	bDrawBB = true;
+	bDrawBB = false;
 
 	//m_fastmeshData.iMeshType = CMesh::MESHTYPE_NONE;
 	//m_fastmeshData.setParent( this );
@@ -39,7 +39,7 @@ CModel3D::CModel3D( const CModel3D &m ) : CObject(m)
 {
 	m_bOK = true;
 
-	bDrawBB = true;
+	bDrawBB = false;
 
 	//bAnime = (AP::mainApp().globalParams.RunAnimation != 0);
 	//iAnimeDir = (AP::mainApp().globalParams.RunAnimation < 0) ? -1 : 1;
@@ -49,7 +49,7 @@ CModel3D::CModel3D( const CModel3D &m ) : CObject(m)
 
 	//m_annotations = CModel3D::Annotations( m.m_annotations );
 
-	m_transform.setOrigin( (m_max + m_min) / 2 );
+	// m_transform.setOrigin( (m_max + m_min) / 2 );
 
 	//if ( ((CObject*)getChild())->type() == CObject::MESH )
 	//{
@@ -282,12 +282,12 @@ void CModel3D::prepare()
 void CModel3D::renderTransform()
 {
 	if (m_showSelf) m_transform.render();
+	if (bDrawBB) renderBoundingBox();
 }
 
 void CModel3D::renderSelf()
 {
-	if (bDrawBB) renderBoundingBox();
-	if (bDrawBB) renderAxes();
+	//if (bDrawBB) renderAxes();
 
 	//if (m_visible != Visibility::HIDE_ALL)
 	//{
@@ -531,7 +531,15 @@ CModel3D* CModel3D::load(const QString fext, const QString path, bool synchronou
 
 	if (nullptr != parser)
 	{
+		unsigned long t1, t2;
+
+		t1 = GetTickCount();
+
 		CModel3D* obj = parser->load(path, synchronous);
+
+		t2 = GetTickCount();
+
+		qInfo() << "Load time: " << t2 - t1;
 
 		if (!parser->inPlugin()) delete parser;
 
@@ -547,7 +555,15 @@ CModel3D* CModel3D::load(const QString path, bool synchronous)
 
 	if (nullptr != parser)
 	{
+		unsigned long t1, t2;
+
+		t1 = GetTickCount();
+
 		CModel3D* obj = parser->load( path, synchronous );
+
+		t2 = GetTickCount();
+
+		qInfo() << "Load time: " << t2 - t1;
 
 		if (!parser->inPlugin()) delete parser;
 
@@ -625,27 +641,27 @@ void drawBox(CPoint3f min, CPoint3f max, bool dashed=false)
 	glPopAttrib();
 }
 
-void CModel3D::renderBoundingBox()
-{
-	CBoundingBox::Style style;
-
-	if (AP::WORKSPACE::getCurrentModelId() != m_Id)
-		style = CBoundingBox::Style::NotSelected;
-	else
-		if (isLocked())
-			style = CBoundingBox::Style::Locked;
-		else
-			style = CBoundingBox::Style::Unlocked;
-
-	if (AP::WORKSPACE::SELECTION::isModelSelected(m_Id))
-	{
-		CBoundingBox::draw(style, true);
-	}
-	else
-	{
-		CBoundingBox::draw(style, false);
-	}
-}
+//void CModel3D::renderBoundingBox()
+//{
+//	CBoundingBox::Style style;
+//
+//	if (AP::WORKSPACE::getCurrentModelId() != m_Id)
+//		style = CBoundingBox::Style::NotSelected;
+//	else
+//		if (isLocked())
+//			style = CBoundingBox::Style::Locked;
+//		else
+//			style = CBoundingBox::Style::Unlocked;
+//
+//	if (AP::WORKSPACE::SELECTION::isModelSelected(m_Id))
+//	{
+//		CBoundingBox::draw(style, true);
+//	}
+//	else
+//	{
+//		CBoundingBox::draw(style, false);
+//	}
+//}
 
 //void CModel3D::renderBoundingBox()
 //{

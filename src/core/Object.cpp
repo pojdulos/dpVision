@@ -6,12 +6,16 @@
 CObject::CObject(CBaseObject *p) : CBaseObject(p), CBoundingBox()//, CMinMax()
 {
 	setLabel("object"); 
+	bDrawBB = true;
+
 };
 
 // konstruktor ze wskazaniem rodzica
 CObject::CObject(int parentId) : CBaseObject(parentId), CBoundingBox()
 {
 	setLabel("object");
+	bDrawBB = true;
+
 };
 
 // konstruktor kopiuj¹cy
@@ -30,6 +34,8 @@ CObject::CObject(const CObject &b) : CBaseObject(b), CBoundingBox(b) //CMinMax(b
 		child->setParent(this);
 		addAnnotation(child);
 	}
+	
+	bDrawBB = true;
 
 };
 
@@ -300,6 +306,20 @@ CBaseObject *CObject::findId( int id )
 //	if (m_visible != Visibility::HIDE_ALL)
 //		renderKids();
 //}
+
+void CObject::renderBoundingBox()
+{
+	QVector<CBaseObject*> objts = UI::DOCK::WORKSPACE::getSelectedObjects();
+
+	CBoundingBox::Style style = objts.contains(this) ? CBoundingBox::Style::Unlocked : CBoundingBox::Style::NotSelected;
+	
+	CBoundingBox::draw(style, this->isSelected());
+}
+
+void CObject::renderTransform()
+{
+	if (bDrawBB) renderBoundingBox();
+}
 
 void CObject::renderKids()
 {

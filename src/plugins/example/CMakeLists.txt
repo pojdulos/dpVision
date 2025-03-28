@@ -18,7 +18,7 @@ target_link_libraries (${_NAME}
 	dpVision::Core
 	dpVision::PluginManager
 	Qt5::Core
-	opencv_world
+	#opencv_world
 )
 
 if (MSVC)

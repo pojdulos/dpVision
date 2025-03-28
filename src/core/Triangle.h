@@ -9,13 +9,9 @@ class CMesh;
 
 #include "Vertex.h"
 
-class  DPVISION_EXPORT CTriangle {
+class DPVISION_EXPORT CTriangle {
 public:
-	union {
-		//struct { CVertex m_pA, m_pB, m_pC; };
-		CVertex m_pV[3];
-		CVertex::Type m_v[9];
-	};
+	CVertex a, b, c;
 
 	CTriangle();
 	CTriangle(CPoint3d pA, CPoint3d pB, CPoint3d pC);
@@ -23,6 +19,23 @@ public:
 	CTriangle(int idx, CMesh* mesh);
 	~CTriangle();
 
+	CVertex& operator[](size_t i) {
+		switch (i) {
+		case 0: return a;
+		case 1: return b;
+		case 2: return c;
+		default: throw std::out_of_range("CTriangle: index out of range");
+		}
+	}
+
+	const CVertex& operator[](size_t i) const {
+		switch (i) {
+		case 0: return a;
+		case 1: return b;
+		case 2: return c;
+		default: throw std::out_of_range("CTriangle: index out of range");
+		}
+	}
 	//static CTriangle * fromCFace(CFace &f, CMesh &mesh);
 
 	CBoundingBox getBoundingBox();

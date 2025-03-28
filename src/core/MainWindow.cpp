@@ -42,6 +42,9 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 	ui.menuImage->menuAction()->setVisible(false);
 	ui.action_File_SaveAs->setEnabled( false );
 
+
+	settingsDialog = nullptr;
+
 	//this->toolbar = new QToolBar("toolbar",this);
 	//this->addToolBar(toolbar);
 	//this->toolbar->setVisible(true);
