@@ -1,5 +1,7 @@
 message( "\nConfiguring Boost:\n" )
-find_package(Boost QUIET)
+#find_package(Boost QUIET)
+find_package(Boost CONFIG REQUIRED)
+
 if (Boost_FOUND)
 	message( "-- Boost found.")
 else (Boost_FOUND)
