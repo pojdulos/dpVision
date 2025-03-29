@@ -5,6 +5,7 @@
 
 #include "AP.h"
 
+#include "AppSettings.h"
 #include "MainApplication.h"
 #include "MainWindow.h"
 
@@ -27,14 +28,14 @@ void CMainWindow::closeEvent(QCloseEvent * event)
 {
 	//QRect r = this->geometry();
 
-	AP::mainApp().settings->setValue( "mainwindow/maximized", this->isMaximized() );
+	AppSettings::mainSettings()->setValue( "mainwindow/maximized", this->isMaximized() );
 
 	//if ( !this->isMaximized() ) {
 	//	AP::mainApp().settings->setValue("mainwindow/geometry", r);
 	//}
 
-	AP::mainApp().settings->setValue("mainwindow/dockState", this->saveState()); 
-	AP::mainApp().settings->setValue("mainwindow/geometry", this->saveGeometry());
+	AppSettings::mainSettings()->setValue("mainwindow/dockState", this->saveState());
+	AppSettings::mainSettings()->setValue("mainwindow/geometry", this->saveGeometry());
 	
 	deleteLater();
 	QMainWindow::closeEvent(event);
@@ -120,21 +121,21 @@ void CMainWindow::openRecent() {
 		if ( nullptr != AP::WORKSPACE::loadModel(action->data().toString().toStdWString(), false, false ))
 		{
 			adjustForCurrentFile(action->data().toString());
-			AP::mainApp().settings->setValue("recentFile", action->data().toString());
+			AppSettings::mainSettings()->setValue("recentFile", action->data().toString());
 		}
 }
 
 
 void CMainWindow::fileOpen()
 {
-	QString fileName = QFileDialog::getOpenFileName( this, tr("Open File"), AP::mainApp().settings->value("recentFile").toString(), CFileConnector::getLoadExts() );
+	QString fileName = QFileDialog::getOpenFileName( this, tr("Open File"), AppSettings::mainSettings()->value("recentFile").toString(), CFileConnector::getLoadExts() );
 	
 	if (!fileName.isEmpty())
 	{
 		if ( nullptr != AP::WORKSPACE::loadModel(fileName, false, false ))
 		{
 			adjustForCurrentFile(fileName);
-			AP::mainApp().settings->setValue("recentFile", fileName);
+			AppSettings::mainSettings()->setValue("recentFile", fileName);
 		}
 	}
 }
@@ -164,7 +165,7 @@ void CMainWindow::fileSave()
 				{
 					UI::STATUSBAR::setText(L"Saved: " + fileName.toStdWString());
 					adjustForCurrentFile(fileName);
-					AP::mainApp().settings->setValue("recentFile", fileName);
+					AppSettings::mainSettings()->setValue("recentFile", fileName);
 				}
 			}
 		}
@@ -179,7 +180,7 @@ void CMainWindow::fileSave()
 
 void CMainWindow::importImage()
 {
-	QString fileName = QFileDialog::getOpenFileName(this, tr("Import image"), AP::mainApp().settings->value("recentFile").toString(), QString("2D Images (*.bmp;*.gif;*.jpg;*.png;*.tif;*.tiff)"));
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Import image"), AppSettings::mainSettings()->value("recentFile").toString(), QString("2D Images (*.bmp;*.gif;*.jpg;*.png;*.tif;*.tiff)"));
 
 	if (!fileName.isEmpty())
 	{
@@ -920,7 +921,7 @@ void CMainWindow::saveWorkspace()
 	if (result)
 	{
 		adjustForCurrentFile(path);
-		AP::mainApp().settings->setValue("recentFile", path);
+		AppSettings::mainSettings()->setValue("recentFile", path);
 	}
 
 	return;

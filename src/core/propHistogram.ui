@@ -306,7 +306,7 @@ background-color: rgb(0,0,255)</string>
            </sizepolicy>
           </property>
           <property name="autoFillBackground">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="frameShape">
            <enum>QFrame::Box</enum>

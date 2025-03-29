@@ -28,6 +28,7 @@
 #include "PicViewer.h"
 #include "MdiChild.h"
 #include "Image.h"
+#include "AppSettings.h"
 
 
 CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
@@ -127,8 +128,8 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 		}
 		});
 
-	this->restoreState(AP::mainApp().settings->value("mainwindow/dockState").toByteArray());
-	this->restoreState(AP::mainApp().settings->value("mainwindow/geometry").toByteArray());
+	this->restoreState(AppSettings::mainSettings()->value("mainwindow/dockState").toByteArray());
+	this->restoreState(AppSettings::mainSettings()->value("mainwindow/geometry").toByteArray());
 }
 
 CMainWindow::~CMainWindow() {}
@@ -447,18 +448,18 @@ void CMainWindow::adjustForCurrentFile(const QString &filePath) {
 	QString currentFilePath = filePath;
 	setWindowFilePath(currentFilePath);
 
-	QStringList recentFilePaths = AP::mainApp().settings->value("recentFiles").toStringList();
+	QStringList recentFilePaths = AppSettings::mainSettings()->value("recentFiles").toStringList();
 	recentFilePaths.removeAll(filePath);
 	recentFilePaths.prepend(filePath);
 	while (recentFilePaths.size() > maxRecentFiles)
 		recentFilePaths.removeLast();
-	AP::mainApp().settings->setValue("recentFiles", recentFilePaths);
+	AppSettings::mainSettings()->setValue("recentFiles", recentFilePaths);
 
 	updateRecentActionList();
 }
 
 void CMainWindow::updateRecentActionList() {
-	QStringList recentFilePaths = AP::mainApp().settings->value("recentFiles").toStringList();
+	QStringList recentFilePaths = AppSettings::mainSettings()->value("recentFiles").toStringList();
 
 	auto itEnd = 0;
 	if (recentFilePaths.size() <= maxRecentFiles)

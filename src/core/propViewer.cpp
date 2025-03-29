@@ -14,6 +14,42 @@ PropViewer::PropViewer(GLViewer* m, QWidget *parent)	: PropWidget( parent )
 	treeItemLabel = "Camera properties";
 
 	ui.setupUi((QWidget*)this);
+
+	{
+		QPalette p = ui.spinViewRotX->palette();
+		p.setColor(QPalette::Text, Qt::red);
+		ui.spinViewRotX->setPalette(p);
+	}
+
+	{
+		QPalette p = ui.spinViewRotY->palette();
+		p.setColor(QPalette::Text, Qt::darkGreen);
+		ui.spinViewRotY->setPalette(p);
+	}
+
+	{
+		QPalette p = ui.spinViewRotZ->palette();
+		p.setColor(QPalette::Text, Qt::blue);
+		ui.spinViewRotZ->setPalette(p);
+	}
+
+	{
+		QPalette p = ui.spinViewTransX->palette();
+		p.setColor(QPalette::Text, Qt::red);
+		ui.spinViewTransX->setPalette(p);
+	}
+
+	{
+		QPalette p = ui.spinViewTransY->palette();
+		p.setColor(QPalette::Text, Qt::darkGreen);
+		ui.spinViewTransY->setPalette(p);
+	}
+
+	{
+		QPalette p = ui.spinViewTransZ->palette();
+		p.setColor(QPalette::Text, Qt::blue);
+		ui.spinViewTransZ->setPalette(p);
+	}
 }
 
 PropViewer::~PropViewer()

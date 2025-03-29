@@ -20,7 +20,5 @@ private:
 
     QCheckBox* darkModeCheckBox;
 
-    void applyDarkPalette();
-
     void setupTabs();
 };

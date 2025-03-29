@@ -43,23 +43,6 @@
 #include "Workspace.h"
 
 
-//void applyPaletteTo(QWidget* root, const QPalette& p)
-//{
-//	root->setPalette(p);
-//	root->setAutoFillBackground(true);
-//	root->setAttribute(Qt::WA_StyledBackground, true); // KLUCZOWE dla QWidgetów bez w³asnego t³a
-//	root->update();
-//
-//	for (QWidget* child : root->findChildren<QWidget*>())
-//	{
-//		child->setPalette(p);
-//		child->setAutoFillBackground(true);
-//		child->setAttribute(Qt::WA_StyledBackground, true);
-//		child->update();
-//	}
-//}
-
-
 DockWidgetProperties::DockWidgetProperties(QWidget *parent)	: QDockWidget(parent)
 {
 	ui.setupUi(this);
@@ -182,8 +165,6 @@ void DockWidgetProperties::updateProperties()
 	for (auto& kid : children)
 	{
 		((PropWidget*)kid)->updateProperties();
-
-		// applyPaletteTo(kid, qApp->palette());
 	}
 }
 

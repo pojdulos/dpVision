@@ -8,6 +8,7 @@
 #include "FileConnector.h"
 
 #include "AP.h"
+#include "AppSettings.h"
 
 #include <QPushButton>
 
@@ -61,7 +62,7 @@ void SamplePlugin::loadObject(const QString &path)
 	QString fileName = path;
 	
 	if (!QFileInfo(fileName).exists()) {
-		fileName = UI::FILECHOOSER::getOpenFileName(tr("Open File"), AP::mainApp().settings->value("recentFile").toString(), CFileConnector::getLoadExts());
+		fileName = UI::FILECHOOSER::getOpenFileName(tr("Open File"), AppSettings::mainSettings()->value("recentFile").toString(), CFileConnector::getLoadExts());
 	}
 	
 	if (!fileName.isEmpty()) // if empty: you pressed Cancel 
@@ -174,7 +175,7 @@ static void DivideMesh(CMesh* mesh, const CPoint3d& centroid, const CVector3d& n
 void SamplePlugin::cutMesh() {
 	QString fileName = UI::FILECHOOSER::getOpenFileName(
 		tr("Open File"),
-		AP::mainApp().settings->value("recentFile").toString(),
+		AppSettings::mainSettings()->value("recentFile").toString(),
 		CFileConnector::getLoadExts());
 
 	CModel3D* obj = nullptr;

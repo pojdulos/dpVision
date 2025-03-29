@@ -174,7 +174,7 @@
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="autoFillBackground">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="styleSheet">
             <string notr="true">background-color: #fff</string>
@@ -261,7 +261,7 @@
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="autoFillBackground">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="styleSheet">
             <string notr="true">background-color: #fff</string>
@@ -348,7 +348,7 @@
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="autoFillBackground">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="styleSheet">
             <string notr="true">background-color: #fff</string>
@@ -435,7 +435,7 @@
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="autoFillBackground">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="styleSheet">
             <string notr="true">background-color: #fff</string>
@@ -522,7 +522,7 @@
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="autoFillBackground">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="styleSheet">
             <string notr="true">background-color: #fff</string>
@@ -609,7 +609,7 @@
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="autoFillBackground">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="styleSheet">
             <string notr="true">background-color: #fff</string>
@@ -696,7 +696,7 @@
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="autoFillBackground">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="styleSheet">
             <string notr="true">background-color: #fff</string>

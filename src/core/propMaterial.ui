@@ -173,7 +173,7 @@
             <cursorShape>PointingHandCursor</cursorShape>
            </property>
            <property name="autoFillBackground">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="styleSheet">
             <string notr="true">background-color: rgb(255, 0, 0);</string>
@@ -403,7 +403,7 @@
           <string>R</string>
          </property>
          <property name="autoFillBackground">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="styleSheet">
           <string notr="true"/>

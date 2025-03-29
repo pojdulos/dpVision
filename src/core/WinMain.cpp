@@ -13,6 +13,8 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include "AppSettings.h"
+
 #include "AP.h"
 
 int main(int argc, char* argv[])
@@ -31,8 +33,6 @@ int main(int argc, char* argv[])
 #endif
 
     QT_REQUIRE_VERSION(argc, argv, "5.15.2")
-
-    QApplication::setStyle("fusion");
 
     CMainApplication::theApp = new CMainApplication(argc, argv);
 
@@ -66,57 +66,14 @@ int main(int argc, char* argv[])
     qDebug() << QString::fromUtf8("Ścieżka do pliku: %1").arg(filePath.isEmpty() ? "Nie podano" : filePath);
     qDebug() << QString::fromUtf8("Tryb pracy: %1").arg(mode);
 
-
     //QLocale locale(QLocale::C);
     //QLocale::setDefault(locale);
 
-    //QFont font("Segoe UI", 12); // lub np. "Arial", 12
-    //qApp->setFont(font);
-
-    if (parser.isSet(optionDark)) {
-        QPalette palette = CMainApplication::palette();
-        palette.setColor(QPalette::Window, QColor(53, 53, 53));
-        palette.setColor(QPalette::WindowText, Qt::white);
-        palette.setColor(QPalette::Base, QColor(25, 25, 25));
-        palette.setColor(QPalette::AlternateBase, QColor(53, 53, 53));
-        palette.setColor(QPalette::ToolTipBase, Qt::black);
-        palette.setColor(QPalette::ToolTipText, Qt::white);
-        palette.setColor(QPalette::Text, Qt::white);
-        palette.setColor(QPalette::Button, QColor(53, 53, 53));
-        palette.setColor(QPalette::ButtonText, Qt::white);
-        palette.setColor(QPalette::BrightText, Qt::red);
-        palette.setColor(QPalette::Link, QColor(42, 130, 218));
-        palette.setColor(QPalette::Highlight, QColor(42, 130, 218));
-        palette.setColor(QPalette::HighlightedText, Qt::black);
-        CMainApplication::setPalette(palette);
-
-        qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }"
-            "QWidget { background-color: #353535; color: #ffffff; }"
-            "QWidget:disabled { color: #555555 }"
-            "QMainWindow::separator { background-color: #353535; }"
-            "QFrame { border: 1px solid #353535; }"
-            "QPushButton { background-color: #353535; color: #ffffff; border: 1px solid #808080; padding: 4px }"
-            "QPushButton:hover { background-color: #555555; }"
-            "QPushButton:disabled { background-color: #353535; color: #555555; border: 1px solid #555555 }"
-            "QMenuBar { background-color: #353535; color: #ffffff; }"
-            "QMenuBar::item { background-color: #353535; color: #ffffff; }"
-            "QMenuBar::item:selected { background-color: #555555; }"
-            "QMenu { background-color: #353535; color: #ffffff; }"
-            "QMenu::item:selected { background-color: #555555; }"
-            "QStatusBar { background-color: #353535; color: #ffffff; }"
-            "QScrollBar { background-color: #353535; }"
-            "QScrollBar::handle { background-color: #555555; }"
-            "QScrollBar::add-line { background-color: #353535; }"
-            "QScrollBar::sub-line { background-color: #353535; }");
-
-    }
-
-    
-    //CMainApplication::theApp->preExec();
-
     Q_INIT_RESOURCE(dpVision);
 
-    if (CMainApplication::theApp->settings->value("mainwindow/maximized", false).toBool())
+    AppSettings::apply();
+
+    if (AppSettings::mainSettings()->value("mainwindow/maximized", false).toBool())
     {
         CMainWindow::instance()->showMaximized();
     }

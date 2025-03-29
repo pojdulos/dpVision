@@ -1,6 +1,7 @@
 #include "MainApplication.h"
 
 #include "AP.h"
+#include "AppSettings.h"
 
 #include "MainWindow.h"
 
@@ -13,10 +14,13 @@ CMainApplication::CMainApplication(int& argc, char** argv) : QApplication(argc, 
 	isInitialised = false;
 	verbose_mode = false;
 
+	setStyle("Fusion");
+
 	setOrganizationName("IITiS PAN");
 	setOrganizationDomain("iitis.pl");
 	setApplicationName("dpVision");
 
+	AppSettings::init();  // teraz settings będzie poprawnie tworzony
 	
 	sExeDir = applicationDirPath();
 
@@ -26,7 +30,7 @@ CMainApplication::CMainApplication(int& argc, char** argv) : QApplication(argc, 
 	sTmpDir = QString(qgetenv("TEMP")) + QDir::separator() + APPNAME;
 	if (!QDir(sTmpDir).exists()) QDir().mkdir(sTmpDir);
 
-	settings = new QSettings();
+	//settings = new QSettings();
 
 	bGlobalPicking = false;
 	bPickSnap = false;

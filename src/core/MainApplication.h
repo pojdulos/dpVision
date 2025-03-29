@@ -43,7 +43,7 @@ public:
 	CPlugins plugins;
 	PluginInterface *activePlugin;
 
-	QSettings *settings;
+	//QSettings *settings;
 	bool verbose_mode;
 
 	const QString& appExecDir() { return sExeDir; };

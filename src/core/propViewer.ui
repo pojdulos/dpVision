@@ -278,9 +278,6 @@
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="styleSheet">
-              <string notr="true">color: rgb(255, 0, 0)</string>
-             </property>
              <property name="suffix">
               <string>°</string>
              </property>
@@ -306,9 +303,6 @@
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="styleSheet">
-              <string notr="true">color: rgb(0, 128, 0)</string>
-             </property>
              <property name="suffix">
               <string>°</string>
              </property>
@@ -333,9 +327,6 @@
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">color: rgb(0,0,255)</string>
              </property>
              <property name="suffix">
               <string>°</string>
@@ -386,9 +377,6 @@
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="styleSheet">
-              <string notr="true">color: rgb(255, 0, 0)</string>
-             </property>
              <property name="decimals">
               <number>6</number>
              </property>
@@ -411,9 +399,6 @@
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="styleSheet">
-              <string notr="true">color: rgb(0, 128, 0)</string>
-             </property>
              <property name="decimals">
               <number>6</number>
              </property>
@@ -435,9 +420,6 @@
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">color: rgb(0,0,255)</string>
              </property>
              <property name="decimals">
               <number>6</number>
