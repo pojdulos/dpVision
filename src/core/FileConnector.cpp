@@ -278,7 +278,7 @@ void CFileConnector::unregParser( QString ext )
 
 QString CFileConnector::getLoadExts()
 {
-	std::wstring ext = L"All (*.*);;dpVision multiarchive (*.dpvision);;OBJ (*.obj);;STL (*.STL);;SMF (*.pmt;*.smf)";
+	std::wstring ext = L"All (*.*);;dpVision multiarchive (*.dpvision);;Digital patient workspace (*.dpw;*.atmdl);;OBJ (*.obj);;STL (*.STL);;SMF (*.pmt;*.smf)";
 
 	for (auto parser : m_parsers)
 	{
@@ -290,7 +290,7 @@ QString CFileConnector::getLoadExts()
 
 QString CFileConnector::getSaveExts()
 {
-	std::wstring ext = L"dpVision multiarchive (*.dpvision);;OBJ File (*.obj);;Progressive Mesh Text File (*.pmt);;Progressive Mesh XML File (*.xml)";
+	std::wstring ext = L"dpVision multiarchive (*.dpvision);;Digital patient workspace (*.dpw;*.atmdl);;OBJ File (*.obj);;Progressive Mesh Text File (*.pmt);;Progressive Mesh XML File (*.xml)";
 
 	for (auto parser : m_parsers)
 	{
@@ -325,6 +325,7 @@ QString CFileConnector::getExtByFileContent(QString path)
 #include "ParserSMF.h"
 #include "ParserSTL.h"
 #include "ParserDPV.h"
+#include "ParserATMDL.h"
 
 
 CParser * CFileConnector::getLoadParser( QString path )
@@ -335,6 +336,10 @@ CParser * CFileConnector::getLoadParser( QString path )
 	if (finfo.hasExt("dpvision"))
 	{
 		parser = new CParserDPVISION();
+	}
+	else if (finfo.hasExt("dpw") || finfo.hasExt("atmdl"))
+	{
+		parser = new CParserATMDL();
 	}
 	else if ( finfo.hasExt( "obj" ) )
 	{
@@ -378,6 +383,10 @@ CParser * CFileConnector::getSaveParser(QString path)
 	if (finfo.hasExt("dpvision"))
 	{
 		parser = new CParserDPVISION();
+	}
+	else if (finfo.hasExt("dpw") || finfo.hasExt("atmdl"))
+	{
+		parser = new CParserATMDL();
 	}
 	else if ( finfo.hasExt("obj") )
 	{

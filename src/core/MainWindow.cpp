@@ -10,7 +10,6 @@
 #include <QtCore/QFileInfo>
 
 #include <QtWidgets>
-#include <QMainWindow>
 #include <QMdiSubWindow>
 #include <QRect>
 
@@ -38,6 +37,34 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 	//setGeometry(r);
 
 	ui.setupUi(this);
+
+	//// Usuniêcie domyœlnego paska tytu³owego
+	//setWindowFlags(Qt::FramelessWindowHint);
+
+	//// Tworzenie niestandardowego TitleBar
+	//TitleBar* titleBar = new TitleBar(this);
+	//titleBar->setGeometry(0, 0, width(), 30);
+	//titleBar->raise();
+	//titleBar->show();
+
+	//// Widget kontenerowy dla ca³ego uk³adu
+	//QWidget* container = new QWidget();
+
+	//// Nowy uk³ad g³ówny okna
+	//QVBoxLayout* mainLayout = new QVBoxLayout();
+	//mainLayout->setMargin(0);
+	//mainLayout->setSpacing(0);
+
+	//// Dodanie TitleBar na samej górze
+	//mainLayout->addWidget(titleBar);
+
+	//// Dodanie centralnego widgetu z Qt Designer
+	//mainLayout->addWidget(ui.centralWidget);
+
+	//// Ustawienie nowego uk³adu jako uk³ad g³ówny
+	//container->setLayout(mainLayout);
+	//setCentralWidget(container);
+
 
 	ui.menuModel->menuAction()->setVisible(false);
 	ui.menuImage->menuAction()->setVisible(false);
@@ -128,8 +155,8 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 		}
 		});
 
+	this->restoreGeometry(AppSettings::mainSettings()->value("mainwindow/geometry").toByteArray());
 	this->restoreState(AppSettings::mainSettings()->value("mainwindow/dockState").toByteArray());
-	this->restoreState(AppSettings::mainSettings()->value("mainwindow/geometry").toByteArray());
 }
 
 CMainWindow::~CMainWindow() {}
@@ -138,9 +165,12 @@ CMainWindow::~CMainWindow() {}
 CMainWindow* CMainWindow::instance()
 {
 	static CMainWindow* m_instance;
-	if (m_instance == NULL)
+	if (m_instance == NULL) {
 		m_instance = new CMainWindow(); // don't delete it at end !!!
-								   // deleteLater() is called in closeEvent()
+		// deleteLater() is called in closeEvent()
+
+		//m_instance->setWindowFlags(Qt::FramelessWindowHint);
+	}
 	return m_instance;
 }
 

@@ -5,17 +5,23 @@
 
 #include "Plugin.h"
 
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QComboBox>
+#include <QtWidgets>
 
 DockWidgetPluginPanel::DockWidgetPluginPanel(QWidget *parent) : QDockWidget(parent)
 {
-	ui.setupUi(this);
+	setObjectName("DockWidgetPluginPanel");
 
-	ui.dockWidgetContents->layout()->setAlignment(Qt::Alignment::enum_type::AlignTop);
+	scrollArea = new QScrollArea(this);
+	scrollArea->setWidgetResizable(true);
+
+	// Tworzymy wewnêtrzny widget
+	innerWidget = new QWidget();
+	QVBoxLayout* layout = new QVBoxLayout(innerWidget);
+
+	innerWidget->setLayout(layout);
+	scrollArea->setWidget(innerWidget);
+
+	setWidget(scrollArea);
 }
 
 DockWidgetPluginPanel::~DockWidgetPluginPanel()
@@ -51,7 +57,7 @@ void DockWidgetPluginPanel::userButton()
 
 void DockWidgetPluginPanel::addPluginPanel(unsigned int pluginId, QString label)
 {
-	QGroupBox *userGroupBox = new QGroupBox(ui.dockWidgetContents);
+	QGroupBox *userGroupBox = new QGroupBox();
 	userGroupBox->setObjectName(QString::fromStdWString(std::to_wstring((long long)pluginId)));
 
 	if (label.compare(L"") != 0)
@@ -73,7 +79,9 @@ void DockWidgetPluginPanel::addPluginPanel(unsigned int pluginId, QString label)
 	userGroupBox->setVisible(false);
 
 	pluginUI[pluginId] = userGroupBox;
-	ui.dockWidgetContents->layout()->addWidget(userGroupBox);
+	
+	//ui.dockWidgetContents->layout()->addWidget(userGroupBox);
+	innerWidget->layout()->addWidget(userGroupBox);
 }
 
 void DockWidgetPluginPanel::removePluginPanel(unsigned int pluginId)

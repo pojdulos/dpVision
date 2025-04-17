@@ -9,47 +9,17 @@
 #include "MainWindow.h"
 #include "GLViewer.h"
 
+#include "AppSettings.h"
+
 PropViewer::PropViewer(GLViewer* m, QWidget *parent)	: PropWidget( parent )
 {
 	treeItemLabel = "Camera properties";
 
 	ui.setupUi((QWidget*)this);
 
-	{
-		QPalette p = ui.spinViewRotX->palette();
-		p.setColor(QPalette::Text, Qt::red);
-		ui.spinViewRotX->setPalette(p);
-	}
+	connect(AppSettingsNotifier::instance(), SIGNAL(darkModeChanged(bool)), this, SLOT(onDarkModeChanged(bool)));
 
-	{
-		QPalette p = ui.spinViewRotY->palette();
-		p.setColor(QPalette::Text, Qt::darkGreen);
-		ui.spinViewRotY->setPalette(p);
-	}
-
-	{
-		QPalette p = ui.spinViewRotZ->palette();
-		p.setColor(QPalette::Text, Qt::blue);
-		ui.spinViewRotZ->setPalette(p);
-	}
-
-	{
-		QPalette p = ui.spinViewTransX->palette();
-		p.setColor(QPalette::Text, Qt::red);
-		ui.spinViewTransX->setPalette(p);
-	}
-
-	{
-		QPalette p = ui.spinViewTransY->palette();
-		p.setColor(QPalette::Text, Qt::darkGreen);
-		ui.spinViewTransY->setPalette(p);
-	}
-
-	{
-		QPalette p = ui.spinViewTransZ->palette();
-		p.setColor(QPalette::Text, Qt::blue);
-		ui.spinViewTransZ->setPalette(p);
-	}
+	onDarkModeChanged(AppSettings::isDarkMode());
 }
 
 PropViewer::~PropViewer()
@@ -67,10 +37,10 @@ QVector<PropWidget*> PropViewer::create_and_get_subwidgets(GLViewer* m)
 }
 
 
-void PropViewer::paintEvent(QPaintEvent * event)
-{
-	QWidget::paintEvent(event);
-}
+//void PropViewer::paintEvent(QPaintEvent * event)
+//{
+//	QWidget::paintEvent(event);
+//}
 
 void PropViewer::updateProperties()
 {
@@ -295,4 +265,46 @@ void PropViewer::changedOrthoViewSize(double)
 void PropViewer::radioPropToggled(bool t)
 {
 	(t) ? AP::mainWin().projectionPerspective() : AP::mainWin().projectionOrthogonal();
+}
+
+void PropViewer::onDarkModeChanged(bool dark)
+{
+	QColor x_col = Qt::red;
+	QColor y_col = dark ? QColor(0, 255, 0) : Qt::darkGreen;
+	QColor z_col = dark ? QColor(96, 128, 255) : Qt::blue;
+
+	{
+		QPalette p = ui.spinViewTransX->palette();
+		p.setColor(QPalette::Text, x_col);
+		ui.spinViewTransX->setPalette(p);
+	}
+
+	{
+		QPalette p = ui.spinViewTransY->palette();
+		p.setColor(QPalette::Text, y_col);
+		ui.spinViewTransY->setPalette(p);
+	}
+
+	{
+		QPalette p = ui.spinViewTransZ->palette();
+		p.setColor(QPalette::Text, z_col);
+		ui.spinViewTransZ->setPalette(p);
+	}
+
+	{
+		QPalette p = ui.spinViewRotX->palette();
+		p.setColor(QPalette::Text, x_col);
+		ui.spinViewRotX->setPalette(p);
+	}
+
+	{
+		QPalette p = ui.spinViewRotY->palette();
+		p.setColor(QPalette::Text, y_col);
+		ui.spinViewRotY->setPalette(p);
+	}
+	{
+		QPalette p = ui.spinViewRotZ->palette();
+		p.setColor(QPalette::Text, z_col);
+		ui.spinViewRotZ->setPalette(p);
+	}
 }

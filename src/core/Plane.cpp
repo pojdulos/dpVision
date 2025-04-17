@@ -266,6 +266,14 @@ Eigen::Matrix3d calculateRotationMatrix(const std::vector<double>& newNormal) {
 	return R;
 }
 
+Eigen::Matrix4d CPlane::toEigenMatrix4d()
+{
+	Eigen::Matrix4d mat4d = Eigen::Matrix4d::Identity();
+	mat4d.block<3, 3>(0, 0) = calculateRotationMatrix({ m_normal.x, m_normal.y, m_normal.z });
+
+	return mat4d;
+}
+
 CTransform CPlane::toTransform()
 {
 	Eigen::Matrix4d mat4d = Eigen::Matrix4d::Identity();
@@ -273,6 +281,7 @@ CTransform CPlane::toTransform()
 
 	return CTransform(mat4d);
 }
+
 
 CPlane CPlane::get_transformed(Eigen::Matrix4d M)
 {

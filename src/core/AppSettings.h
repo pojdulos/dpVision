@@ -7,6 +7,16 @@
 
 #include "dll_global.h"
 
+class AppSettingsNotifier : public QObject {
+    Q_OBJECT
+public:
+    static AppSettingsNotifier* instance();
+
+signals:
+    void darkModeChanged(bool enabled);
+    void fontChanged(const QFont& font);
+};
+
 class DPVISION_EXPORT AppSettings {
 public:
     static void init();

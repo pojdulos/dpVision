@@ -53,7 +53,7 @@ public:
 
 	static QVector<PropWidget*> create_and_get_subwidgets(GLViewer* m);
 
-	virtual void paintEvent(QPaintEvent * event) override;
+	// virtual void paintEvent(QPaintEvent * event) override;
 	virtual void updateProperties() override;
 
 
@@ -71,6 +71,8 @@ public slots:
 	void changedOrthoViewSize(double);
 
 	void radioPropToggled(bool);
+
+	void onDarkModeChanged(bool);
 
 private:
 	Ui::propViewer ui;

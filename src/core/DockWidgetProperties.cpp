@@ -42,6 +42,7 @@
 #include "MainWindow.h"
 #include "Workspace.h"
 
+#include "AppSettings.h"
 
 DockWidgetProperties::DockWidgetProperties(QWidget *parent)	: QDockWidget(parent)
 {
@@ -49,14 +50,16 @@ DockWidgetProperties::DockWidgetProperties(QWidget *parent)	: QDockWidget(parent
 
 	ui.tree->setHeaderHidden(true);
 	ui.tree->setIndentation(0);
+
+	connect(AppSettingsNotifier::instance(), SIGNAL(darkModeChanged(bool)), this, SLOT(onDarkModeChanged(bool)));
 }
 
 DockWidgetProperties::~DockWidgetProperties() {}
 
-void DockWidgetProperties::paintEvent(QPaintEvent * event)
-{
-	QDockWidget::paintEvent(event);
-}
+//void DockWidgetProperties::paintEvent(QPaintEvent * event)
+//{
+//	QDockWidget::paintEvent(event);
+//}
 
 void DockWidgetProperties::selectionChanged( int id )
 {
@@ -209,4 +212,14 @@ void DockWidgetProperties::onCurrentObjectChanged(CBaseObject* obj)
 		selectionChanged(NO_CURRENT_MODEL);
 
 	update();
+}
+
+void DockWidgetProperties::onDarkModeChanged(bool dark)
+{
+	QPalette palette = ui.tree->palette();
+	QColor dialogBackgroundColor = QApplication::palette().color(QPalette::Window);
+
+	// Ustawienie koloru t³a w palecie
+	palette.setColor(QPalette::Base, dialogBackgroundColor);
+	ui.tree->setPalette(palette);
 }

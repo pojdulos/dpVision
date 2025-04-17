@@ -5,6 +5,14 @@
 //QFont AppSettings::appFont = QApplication::font();
 std::unique_ptr<QSettings> AppSettings::settings = nullptr;
 
+
+AppSettingsNotifier* AppSettingsNotifier::instance()
+{
+    static AppSettingsNotifier notifier;
+    return &notifier;
+}
+
+
 void AppSettings::init()
 {
     if (!settings)
@@ -28,7 +36,7 @@ void AppSettings::apply()
         dark.setColor(QPalette::Button, QColor(53, 53, 53));
         dark.setColor(QPalette::ButtonText, Qt::white);
         dark.setColor(QPalette::BrightText, Qt::red);
-        dark.setColor(QPalette::Highlight, QColor(142, 45, 197).lighter());
+        dark.setColor(QPalette::Highlight, QColor(128, 128, 64).lighter());
         dark.setColor(QPalette::HighlightedText, Qt::black);
 
         QApplication::setPalette(dark);
@@ -63,6 +71,7 @@ void AppSettings::setDarkMode(bool enable)
 
     settings->setValue("ui/darkMode", enable);
     settings->sync();
+    emit AppSettingsNotifier::instance()->darkModeChanged(enable);
 }
 
 bool AppSettings::isDarkMode()
@@ -76,6 +85,7 @@ void AppSettings::setFont(const QFont& font)
 
     settings->setValue("ui/font", font);
     settings->sync();
+    emit AppSettingsNotifier::instance()->fontChanged(font);
 }
 
 QFont AppSettings::getFont()

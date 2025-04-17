@@ -20,7 +20,7 @@ public:
 	explicit DockWidgetProperties(QWidget *parent = 0);
 	~DockWidgetProperties();
 
-	virtual void paintEvent(QPaintEvent * event) override;
+	// virtual void paintEvent(QPaintEvent * event) override;
 
 	void selectionChanged( int id );
 	void updateProperties();
@@ -32,6 +32,7 @@ public:
 public slots:
 	void onCurrentObjectChanged(int);
 	void onCurrentObjectChanged(CBaseObject*);
+	void onDarkModeChanged(bool);
 
 private:
 	Ui::DockWidgetProperties ui;

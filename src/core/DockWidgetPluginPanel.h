@@ -2,10 +2,10 @@
 #define DOCKWIDGETPLUGINPANEL_H
 
 #include <QtWidgets/QDockWidget>
-#include "ui_dockWidgetPluginPanel.h"
 
 class QGroupBox;
 class QPushButton;
+class QScrollArea;
 
 class DockWidgetPluginPanel : public QDockWidget
 {
@@ -53,9 +53,10 @@ public slots:
 	void comboTextChanged(const QString &text);
 
 private:
-	Ui::DockWidgetPluginPanel ui;
-
 	std::map<unsigned int, QGroupBox*> pluginUI;
+
+	QScrollArea* scrollArea;
+	QWidget* innerWidget;
 };
 
 #endif // DOCKWIDGETPLUGINPANEL_H

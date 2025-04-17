@@ -4,8 +4,10 @@
 
 #include "dll_global.h"
 
+#include <QMainWindow>
+#include <QAction>
+
 class QOpenGLWindow;
-class QMainWindow;
 class ProgressIndicator;
 
 class DockWidgetWorkspace;
@@ -33,6 +35,54 @@ class QLocalServer;
 class QLocalSocket;
 class QTcpServer;
 class QTcpSocket;
+
+
+//#include <QWidget>
+//#include <QMouseEvent>
+//#include <QPushButton>
+//#include <QHBoxLayout>
+//#include <QVBoxLayout>
+//
+//class TitleBar : public QWidget {
+//	Q_OBJECT
+//
+//public:
+//	explicit TitleBar(QWidget* parent = nullptr) : QWidget(parent) {
+//		setStyleSheet("background-color: #2E2E2E; height: 30px;");
+//
+//		// Przyk³adowy przycisk zamykania
+//		QPushButton* closeButton = new QPushButton("X", this);
+//		closeButton->setStyleSheet("background-color: #FF0000; color: white; border: none;");
+//		connect(closeButton, &QPushButton::clicked, parent, &QWidget::close);
+//
+//		// Uk³ad dla przycisków
+//		QHBoxLayout* layout = new QHBoxLayout(this);
+//		layout->addStretch(); // Przestrzeñ miêdzy przyciskami a krawêdzi¹
+//		layout->addWidget(closeButton);
+//		layout->setContentsMargins(0, 0, 0, 0);
+//		setLayout(layout);
+//	}
+//
+//protected:
+//	void mousePressEvent(QMouseEvent* event) {
+//		if (event->button() == Qt::LeftButton) {
+//			// Zapisz pozycjê kursora wzglêdem okna g³ównego
+//			dragPosition = event->globalPos() - parentWidget()->parentWidget()->frameGeometry().topLeft();
+//			event->accept();
+//		}
+//	}
+//
+//	void mouseMoveEvent(QMouseEvent* event) {
+//		if (event->buttons() & Qt::LeftButton) {
+//			// Przesuwaj ca³e okno g³ówne (QMainWindow)
+//			parentWidget()->parentWidget()->move(event->globalPos() - dragPosition);
+//			event->accept();
+//		}
+//	}
+//	
+//private:
+//	QPoint dragPosition;
+//};
 
 class DPVISION_EXPORT CMainWindow : public QMainWindow
 {
