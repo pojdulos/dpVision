@@ -247,6 +247,9 @@ namespace UI
              * @return Vector of selected object pointers
              */
 			DPVISION_EXPORT QVector<CBaseObject*> getSelectedObjects();
+			
+			
+			DPVISION_EXPORT CBaseObject* getCurrentItemObj();
 
             /**
              * @brief Item property management functions

@@ -68,6 +68,8 @@ public:
 	
 	void selectItem( int id );
 
+	CBaseObject* getCurrentItemObj();
+
 	int getCurrentItemId();
 
 	QVector<CBaseObject*> getSelectedObjects();

@@ -19,9 +19,14 @@ class CModel3D;
 class CFileInfo;
 class CTransform;
 
+class QMouseEvent;
+class QWheelEvent;
+
 class DPVISION_EXPORT CBaseObject
 {
+
 public:
+
 	//typedef enum {
 	//	HIDE_ALL = Qt::CheckState::Unchecked,
 	//	HIDE_SELF = Qt::CheckState::PartiallyChecked,
@@ -76,7 +81,8 @@ public:
 		PODKOWA,
 		HISTOGRAM,
 		TRIPLE,
-		SPHERE
+		SPHERE,
+		NEWTYPES
 	} Type;
 
 
@@ -113,6 +119,11 @@ public:
 	virtual void switchOpt(int /*key*/, int /*val*/) {};
 
 	virtual void afterLoad(CModel3D*) {};
+
+	virtual bool mousePressEvent(QMouseEvent* event) { return false; };
+	virtual bool mouseReleaseEvent(QMouseEvent* event) { return false; };
+	virtual bool mouseMoveEvent(QMouseEvent* event) { return false; };
+	virtual bool wheelEvent(QWheelEvent* event) { return false; };
 
 	virtual void renderTransform() {};
 	virtual void renderSelf() {};
@@ -189,6 +200,11 @@ public:
 	inline virtual void setPath(const QString& path) { m_path = path; }
 	inline virtual const QString& path() { return m_path; }
 	//virtual CBaseObject* getSomethingWithId(int id) { if (m_Id == id) return this; else return nullptr; };
+
+	inline virtual bool has_prop_widget() { return false; }
+	inline virtual QWidget* prop_widget() { return nullptr; };
+	inline virtual void prop_widget_update() {};
+
 protected:
 	int m_Id;
 	QString m_label;
@@ -208,5 +224,6 @@ protected:
 typedef CBaseObject* PtrBaseObject;
 typedef CBaseObject& RefBaseObject;
 
+Q_DECLARE_METATYPE(CBaseObject*)
 
 #endif /* _BaseObject_H_BY_DP_INCLUDED_ */

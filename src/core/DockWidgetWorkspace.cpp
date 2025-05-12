@@ -158,6 +158,22 @@ void DockWidgetWorkspace::selectItem( int id )
 	ui.treeView->blockSignals(false);
 }
 
+CBaseObject* DockWidgetWorkspace::getCurrentItemObj()
+{
+	QModelIndex current = ui.treeView->currentIndex();
+	if (current.isValid()) {
+		WorkspaceTreeModel* model = (WorkspaceTreeModel*)ui.treeView->model();
+		QStandardItem* qItem = model->itemFromIndex(current);
+		if (!qItem) return nullptr;
+
+		WorkspaceTreeItem* item = static_cast<WorkspaceTreeItem*>(qItem);
+		CBaseObject* currentObject = item->getObject();
+
+		return currentObject;
+	}
+	return nullptr;
+}
+
 int DockWidgetWorkspace::getCurrentItemId()
 {
 	QModelIndex current = ui.treeView->currentIndex();

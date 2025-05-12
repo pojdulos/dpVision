@@ -2,6 +2,17 @@
 #include "AP.h"
 #include "Workspace.h"
 
+#include <QMetaType>
+
+// Zarejestruj typ globalnie przy starcie aplikacji
+static int _registerCBaseObjectPtrMetaType()
+{
+	qRegisterMetaType<CBaseObject*>("CBaseObject*");
+	return 0;
+}
+
+// Wykonuje się przy załadowaniu modułu
+static const int _dummy = _registerCBaseObjectPtrMetaType();
 
 // konstruktor ze wskazaniem rodzica
 CBaseObject::CBaseObject(CBaseObject *p)
@@ -135,3 +146,4 @@ Eigen::Matrix4d CBaseObject::getGlobalTransformationMatrix()
 
 	return aktualnaMacierz;
 }
+

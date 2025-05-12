@@ -349,6 +349,11 @@ static void qNormalizeAngle( int &angle )
  */
 void GLViewer::mousePressEvent( QMouseEvent* event )
 {
+	CBaseObject* obj = UI::DOCK::WORKSPACE::getCurrentItemObj();
+	if (obj != nullptr) {
+		if (obj->mousePressEvent(event)) return;
+	}
+
 	mouse_key_pressed = true;
   //get the information about the position of the mouse.
     lastPos = event->pos();
@@ -813,6 +818,11 @@ void GLViewer::drawMaskCircle(QPoint pos)
  */
 void GLViewer::mouseReleaseEvent( QMouseEvent* event )
 {
+	CBaseObject* obj = UI::DOCK::WORKSPACE::getCurrentItemObj();
+	if (obj != nullptr) {
+		if (obj->mouseReleaseEvent(event)) return;
+	}
+
 	mouse_key_pressed = false;
 
 	if (m_selectionMode == 0)
@@ -925,6 +935,11 @@ void GLViewer::translate(double dx, double dy, double dz) {
  */
 void GLViewer::mouseMoveEvent( QMouseEvent* event )
 {
+	CBaseObject *obj = UI::DOCK::WORKSPACE::getCurrentItemObj();
+	if ( obj != nullptr) {
+		if (obj->mouseMoveEvent(event)) return;
+	}
+
 	if (m_selectionMode == 0) // Normal mode
 	{
 		double dx = double(event->pos().x()) - double(lastPos.x());
@@ -1010,6 +1025,11 @@ void GLViewer::mouseMoveEvent( QMouseEvent* event )
 
 void GLViewer::wheelEvent(QWheelEvent * event)
 {
+	CBaseObject* obj = UI::DOCK::WORKSPACE::getCurrentItemObj();
+	if (obj != nullptr) {
+		if (obj->wheelEvent(event)) return;
+	}
+
 	if (m_selectionMode == 0)
 	{
 		double		matrix[16];

@@ -7,8 +7,6 @@
 class CAnnotation;
 class CModel3D;
 
-Q_DECLARE_METATYPE(CBaseObject*)
-
 class DPVISION_EXPORT  WorkspaceTreeItem : public QStandardItem
 {
 public:

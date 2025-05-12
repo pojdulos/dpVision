@@ -91,7 +91,12 @@ void WorkspaceTreeItem::setObject(CBaseObject* obj)
 
 CBaseObject* WorkspaceTreeItem::getObject()
 {
-	return data(Qt::UserRole + 1).value<CBaseObject*>();
+	QVariant v = data(Qt::UserRole + 1);
+	if (!v.isValid()) {
+		qWarning() << "getObject: QVariant is invalid";
+		return nullptr;
+	}
+	return v.value<CBaseObject*>();
 }
 
 QList<QStandardItem*> WorkspaceTreeItem::getFields()

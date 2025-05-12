@@ -30,6 +30,7 @@
 #include "propVolumetric.h"
 #include "propImage.h"
 #include "propMovement.h"
+#include "propCustomWidget.h"
 
 
 #include <QLayout>
@@ -141,7 +142,12 @@ void DockWidgetProperties::selectionChanged( int id )
 							break;
 
 						default:
-							submodels = PropBaseObject::create_and_get_subwidgets(currentObject);
+							if (currentObject->has_prop_widget()) {
+								submodels = PropCustomWidget::create_and_get_subwidgets(currentObject);;
+							}
+							else {
+								submodels = PropBaseObject::create_and_get_subwidgets(currentObject);
+							}
 							break;
 					}
 					break;
