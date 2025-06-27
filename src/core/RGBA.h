@@ -11,7 +11,7 @@
 
 class DPVISION_EXPORT CRGBA {
 	union {
-		__int32 m_rgba;
+		uint32_t m_rgba;
 		unsigned char m_v[4];
 		struct {
 			unsigned char m_r;
@@ -126,7 +126,7 @@ public:
 						t[3]); //A
 	}
 
-	inline static CRGBA fromArgb32( __int32 argb ) {
+	inline static CRGBA fromArgb32( uint32_t argb ) {
 		unsigned char * t = (unsigned char *)&argb;
 		return CRGBA(	t[2], //R
 						t[1], //G
@@ -134,8 +134,8 @@ public:
 						t[3]); //A
 	}
 
-	inline __int32 toArgb32() {
-		__int32 argb = m_v[3];  //A
+	inline uint32_t toArgb32() {
+		uint32_t argb = m_v[3];  //A
 		argb <<= 8;
 		argb |= m_v[0]; //R
 		argb <<= 8;

@@ -3,8 +3,11 @@
 
 #include "dll_global.h"
 
-#include <QtWinExtras/QtWinExtras>
+#ifdef _WIN32
+    #include <QtWinExtras/QtWinExtras>
+#endif
 #include <QtCore/QString>
+#include <QOpenGLTexture>
 
 class DPVISION_EXPORT CTexture : public QOpenGLTexture
 {

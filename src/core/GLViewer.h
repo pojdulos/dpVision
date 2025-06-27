@@ -6,7 +6,8 @@
 #include "UI.h"
 #include "AP.h"
 
-#include <QTGui/QMatrix4x4>
+//#include <QTGui/QMatrix4x4>
+#include <QMatrix4x4>
 
 //#include "Shader.h"
 #include "Wektor3D.h"
@@ -18,7 +19,8 @@
 #define LEFT_EYE_PROJECTION -1
 #define RIGHT_EYE_PROJECTION 1
 
-#include <QTWidgets/QOpenGLWidget>
+//#include <QTWidgets/QOpenGLWidget>
+#include <QOpenGLWidget>
 #include <QtGui/QOpenGLFunctions>
 //#include <QtGui/QOpenGLFunctions_3_2_Core>
 #include <QtOpenGL>

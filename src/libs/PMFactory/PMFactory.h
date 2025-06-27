@@ -11,8 +11,8 @@
 #include "PMFerrors.h"
 #include "PMFfaces.h"
 
-#include "matrix3x3.h"
-#include "plane.h"
+#include "Matrix3x3.h"
+#include "Plane.h"
 
 #include <vector>
 #include <map>
@@ -30,7 +30,7 @@ typedef error_type Plane[4];
 typedef std::pair<double,double> _uv;
 
 typedef std::map<size_t,CVertex> Vertices;
-typedef std::map<size_t,BYTE> LoF; //Levels of Fixation
+typedef std::map<size_t,uint8_t> LoF; //Levels of Fixation
 
 typedef std::vector<SVsplit> Vsplits;
 

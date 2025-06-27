@@ -6,7 +6,7 @@
 #include "Object.h"
 
 #include "Vertex.h"
-#include "KDtree.h"
+#include "KDTree.h"
 #include "UI.h"
 
 class CPlane;

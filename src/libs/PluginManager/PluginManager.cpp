@@ -1,4 +1,18 @@
-#include "StdAfx.h"
+#include "stdafx.h"
+
+#ifdef _WIN32
+    #include <windows.h>
+    typedef HMODULE LibraryHandle;
+    #define LoadLibraryFunc LoadLibrary
+    #define GetSymbolFunc GetProcAddress
+    #define FreeLibraryFunc FreeLibrary
+#else
+    #include <dlfcn.h>
+    typedef void* LibraryHandle;
+    #define LoadLibraryFunc(path) dlopen(path, RTLD_LAZY)
+    #define GetSymbolFunc dlsym
+    #define FreeLibraryFunc dlclose
+#endif
 #include "PluginManager.h"
 
 // Define the prototype for a function that should exist in the DLL
@@ -8,7 +22,7 @@ typedef Plugin* (*fnCreatePlugin)(void);
 typedef void (*fnDestroyPlugin)(void);
 
 typedef std::map<QString, PluginInterface*> PluginMap;
-typedef std::map<QString, HMODULE > LibraryMap;
+typedef std::map<QString, LibraryHandle > LibraryMap;
 
 class PluginManagerPimpl
 {
@@ -42,10 +56,19 @@ PluginInterface* PluginManager::LoadPlugin( const QString& pluginPath )
     if ( iter == m_Implementation->m_Plugins.end() )
     {
         // Try to load the plugin library
-        HMODULE hModule = LoadLibraryW( pluginPath.toStdWString().c_str() );
+        LibraryHandle hModule =
+        #ifdef _WIN32
+            LoadLibraryFunc(pluginPath.toStdString().c_str());
+        #else
+            LoadLibraryFunc(pluginPath.toStdString().c_str());
+            if (!hModule) {
+                qWarning() << "dlopen error: " << dlerror();
+            }
+        #endif
+
         if ( hModule != NULL )
         {
-            fnCreatePlugin CreatePlugin = (fnCreatePlugin)GetProcAddress( hModule, "CreatePlugin" );
+            fnCreatePlugin CreatePlugin = (fnCreatePlugin)GetSymbolFunc( hModule, "CreatePlugin" );
             if ( CreatePlugin != NULL )
             {
                 // Invoke the function to get the plugin from the DLL.
@@ -63,13 +86,13 @@ PluginInterface* PluginManager::LoadPlugin( const QString& pluginPath )
                 {
                     qInfo() << "ERROR: Could not load plugin from " << pluginPath << Qt::endl;
                     // Unload the library.
-                    FreeLibrary(hModule);
+                    FreeLibraryFunc(hModule);
                 }
             }
             else
             {
                 qInfo() << "ERROR: Could not find symbol \"CreatePlugin\" in " << pluginPath << Qt::endl;
-                FreeLibrary(hModule);
+                FreeLibraryFunc(hModule);
             }
         }
         else
@@ -79,12 +102,14 @@ PluginInterface* PluginManager::LoadPlugin( const QString& pluginPath )
     }
     else
     {
-		MessageBoxW(
-        NULL,
-        (LPCWSTR)L"Plugin already loaded!!!",
-        (LPCWSTR)L"PluginManager", MB_DEFBUTTON2 );
-        qInfo() << "INFO: Library \"" << pluginPath << "\" already loaded." << Qt::endl;
-        //plugin = iter->second;
+        #ifdef _WIN32
+            MessageBoxW(
+                NULL,
+                (LPCWSTR)L"Plugin is already loaded!!!",
+                (LPCWSTR)L"PluginManager", MB_DEFBUTTON2 );
+        #else
+            qInfo() << "Plugin is already loaded!!!";
+        #endif
     }
 
     return plugin;
@@ -113,8 +138,8 @@ bool PluginManager::UnloadPlugin( const QString& pluginPath )
             if (pl != m_Implementation->m_Plugins.end())
                 m_Implementation->m_Plugins.erase(pl);
 
-            HMODULE hModule = (*iter).second;
-            fnDestroyPlugin DestroyPlugin = (fnDestroyPlugin)GetProcAddress( hModule, "DestroyPlugin" );
+            LibraryHandle hModule = (*iter).second;
+            fnDestroyPlugin DestroyPlugin = (fnDestroyPlugin)GetSymbolFunc( hModule, "DestroyPlugin" );
             if ( DestroyPlugin != NULL )
             {
                 DestroyPlugin();
@@ -124,7 +149,7 @@ bool PluginManager::UnloadPlugin( const QString& pluginPath )
                 qInfo() << "ERROR: Unable to find symbol \"DestroyPlugin\" in library \"" << pluginPath << Qt::endl;
             }
             // Unload the library and remove the library from the map.
-            FreeLibrary(hModule);
+            FreeLibraryFunc(hModule);
             m_Implementation->m_Libs.erase(iter);
 
             return true;

@@ -5,7 +5,7 @@
 #include "dll_global.h"
 
 #include "Triple.h"
-#include "matrix3x3.h"
+#include "Matrix3x3.h"
 
 #include "BoundVector.h"
 #include <set>

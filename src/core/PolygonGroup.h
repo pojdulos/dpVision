@@ -3,7 +3,7 @@
 #include "Face.h"
 #include "Material.h"
 #include "Texture.h"
-#include "QtOpenGL/QGLShaderProgram"
+#include <QOpenGLShaderProgram>
 
 class  DPVISION_EXPORT CPolygonGroup//	 : public CBaseObject
 {
