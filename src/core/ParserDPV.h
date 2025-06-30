@@ -6,7 +6,7 @@ class CPointCloud;
 //class QuaZip;
 class CWorkspace;
 
-#include <QtXML>
+#include <QtXml>
 
 #define IdToString(id) QString::number((id),16)
 

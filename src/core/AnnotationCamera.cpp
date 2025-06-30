@@ -5,8 +5,10 @@
 #include "AP.h"
 #include "UI.h"
 
-#include <Windows.h>
-#include <GL/GL.h>
+#ifdef _WIN32
+#include <windows.h>
+#endif
+#include <GL/gl.h>
 
 #include <regex>
 

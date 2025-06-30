@@ -3,7 +3,7 @@
 
 
 #include "GLViewer.h"
-#include <gl/glu.h>
+#include <GL/glu.h>
 
 
 void GLViewer::cameraTransformations()
@@ -535,6 +535,7 @@ void GLViewer::triad3D(double W1, double L1, double W2, double L2, bool active)
 
 void GLViewer::glSetFont()
 {
+#ifdef _WIN32
 	HFONT hFont;
 	LOGFONTA logfont;
 
@@ -554,11 +555,7 @@ void GLViewer::glSetFont()
 	logfont.lfQuality = CLEARTYPE_QUALITY;
 	logfont.lfPitchAndFamily = DEFAULT_PITCH;
 
-//#ifdef _MSC_VER
-//	wcscpy(logfont.lfFaceName, L"MS Sans Serif");
-//#elif defined __MINGW32__
 	strcpy(logfont.lfFaceName, "MS Sans Serif");
-//#endif    
 
 	// Create the font and display list
 	hFont = CreateFontIndirectA(&logfont);
@@ -570,6 +567,7 @@ void GLViewer::glSetFont()
 	wglUseFontBitmaps(hDC, 0, 255, iNfontList);
 
 	DeleteObject(hFont);
+#endif
 }
 
 

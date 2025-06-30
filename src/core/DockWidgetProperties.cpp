@@ -49,6 +49,8 @@ DockWidgetProperties::DockWidgetProperties(QWidget *parent)	: QDockWidget(parent
 {
 	ui.setupUi(this);
 
+	setObjectName("DockWidgetProperties");
+
 	ui.tree->setHeaderHidden(true);
 	ui.tree->setIndentation(0);
 

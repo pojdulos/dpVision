@@ -8,6 +8,7 @@
 
 #include <QtNetwork/QLocalSocket>
 #include <QtNetwork/QTcpSocket>
+#include <QCloseEvent>
 
 void CMainWindow::startServer()
 {

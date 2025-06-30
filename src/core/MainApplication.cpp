@@ -115,9 +115,11 @@ bool CMainApplication::loadQtPlugin(const QString &pluginPath)
 
 bool CMainApplication::loadWinPlugin( const QString &pluginPath )
 {
+	qInfo() << pluginPath;
 	PluginInterface *plugin = PluginManager::Instance().LoadPlugin( pluginPath );
 	if (plugin)
 	{
+		qInfo() << plugin->name();
 		unsigned int newID = PLUGIN_ID_OFFSET;
 		while ( plugins.find( newID ) != plugins.end() ) {
 			newID++;
@@ -219,8 +221,12 @@ void CMainApplication::UnloadAllPlugins()
 void CMainApplication::LoadAllPlugins()
 {
 	QString path = sExeDir + "/plugins/";
-	QStringList dlls = QDir(path).entryList(QStringList() << "*.dll" << "*.DLL", QDir::Files);
 
+#ifdef _WIN32
+	QStringList dlls = QDir(path).entryList(QStringList() << "*.dll" << "*.DLL", QDir::Files);
+#else
+	QStringList dlls = QDir(path).entryList(QStringList() << "*.so", QDir::Files);
+#endif
 	for ( QString filename : dlls )
 	{
 		loadPlugin(path + filename);

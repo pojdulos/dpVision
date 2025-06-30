@@ -42,7 +42,11 @@ public:
 	CPoint3d getMidpoint();
 
 	CVector3d getNormal();
-	CPoint3d getClosestPoint(const CPoint3d& sourcePosition);
+
+	static CPoint3d getClosestPoint(const CPoint3d& sourcePosition, const CVertex& _a, const CVertex& _b, const CVertex& _c);
+	inline CPoint3d getClosestPoint(const CPoint3d& sourcePosition) {
+		return CTriangle::getClosestPoint(sourcePosition, this->a, this->b, this->c);
+	};
 
 	bool rayPlaneIntersect3D(CPoint3d origin, CVector3d dir, CPoint3d &pIntersectionPoint, double &pDistance);
 	bool inTriangle(CPoint3d pt);

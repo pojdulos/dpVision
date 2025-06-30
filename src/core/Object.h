@@ -68,6 +68,7 @@ public:
 
 	virtual void showChildren(bool show, QSet<CBaseObject::Type> inc = {}, QSet<CBaseObject::Type> exc = {}) override;
 
+	
 	CBoundingBox & getBoundingBox() { return *this; };
 	CBoundingBox & expandBoundingBox(const CPoint3d &p) { CBoundingBox::expand(p); return *this; };
 	inline void resetBoundingBox(CBoundingBox::InitialValues v = CBoundingBox::InitialValues::InvalidBB) { CBoundingBox::reset(v); };

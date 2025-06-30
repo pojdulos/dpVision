@@ -7,17 +7,16 @@
 #include "BaseObject.h"
 #include "Object.h"
 
+
 CContextMenu::CContextMenu(CBaseObject *obj, QWidget *parent) : QMenu(parent), m_obj(obj)
 {
 	addAction("expand all", this, SLOT(slotExpandAll()));
 	addAction("collapse all", this, SLOT(slotCollapseAll()));
 	addSeparator();
-	addMenu(createAddObjectMenu());
-	addSeparator();
 	if (m_obj == nullptr)
 	{
-		//addAction("Create empty model", this, SLOT(slotCreateEmptyModel()));
-		//addSeparator();
+		addMenu(createAddObjectMenu());
+		addSeparator();
 		addMenu(AP::mainWin().ui.menuWorkspace);
 		addMenu(AP::mainWin().ui.menuCamera);
 	}
@@ -26,18 +25,16 @@ CContextMenu::CContextMenu(CBaseObject *obj, QWidget *parent) : QMenu(parent), m
 		addSeparator();
 		addAction("show all under this", this, SLOT(slotShowAll()));
 		addAction("hide all under this", this, SLOT(slotHideAll()));
+		addSeparator();
+		addMenu(createAddAnnoMenu());
 		switch (m_obj->category())
 		{
 		case CBaseObject::Category::ANNOTATION:
-			addMenu(createCopyMenu());
-			addMenu(createMoveMenu());
-			addSeparator();
 			switch (m_obj->type())
 			{
 			case CBaseObject::Type::HISTOGRAM:
 				addAction(QIcon(":/icons/Save.ico"), "export to csv/plt", this, SLOT(histogramSave()));
 				addAction(QIcon(":/icons/Visible.ico"), "show/hide", this, SLOT(pointHide()));
-				addAction(QIcon(":/icons/Erase.ico"), "delete", this, SLOT(slotDeleteObject()));
 				break;
 
 			case CBaseObject::Type::SETOFFACES:
@@ -47,89 +44,58 @@ CContextMenu::CContextMenu(CBaseObject *obj, QWidget *parent) : QMenu(parent), m
 				addAction(QIcon(":/icons/Save.ico"), "to Mesh...", this, SLOT(slotPlaneToMesh()));
 				addSeparator();
 				addAction(QIcon(":/icons/Visible.ico"), "show/hide", this, SLOT(pointHide()));
-				addAction(QIcon(":/icons/Erase.ico"), "delete", this, SLOT(slotDeleteObject()));
 				break;
 			case CBaseObject::Type::TRIPLE:
 				addAction(QIcon(":/icons/Save.ico"), "to Plane...", this, SLOT(slotTriangleToPlane()));
-				addSeparator();
 				break;
 			default:
 				addAction(QIcon(":/icons/Visible.ico"), "show/hide", this, SLOT(pointHide()));
-				addAction(QIcon(":/icons/Erase.ico"), "delete", this, SLOT(slotDeleteObject()));
 				break;
 			}
 			break;
 		case CBaseObject::Category::OBJECT:
+			addAction("test graph", this, SLOT(slot_test_graph()));
+			addSeparator();
+			addMenu(createAddObjectMenu());
+			addSeparator();
 			switch (m_obj->type())
 			{
 			case CBaseObject::Type::MODEL:
 				AP::WORKSPACE::setCurrentModel(m_obj->id());
-				addSeparator();
 				addAction(QIcon(":/icons/Save.ico"), "Save as...", this, SLOT(saveObjAs()));
-				addSeparator();
-				addAction("apply last transformation and move up", this, SLOT(slot_apply_last_transform()));
-				addAction("create reverse transformation", this, SLOT(slot_create_inversed_transform()));
-				addSeparator();
-				addMenu(createCopyMenu());
-				addMenu(createMoveMenu());
-				addSeparator();
-				addMenu(createAddAnnoMenu());
 				addSeparator();
 				addMenu(AP::mainWin().ui.menuModel);
 				addSeparator();
-				addAction(QIcon(":/icons/Erase.ico"), "delete and keep childeren", this, SLOT(slot_delete_and_keep_children()));
-				addAction(QIcon(":/icons/Erase.ico"), "delete all below", this, SLOT(slotDeleteObject()));
+				addAction("create inversed transformation", this, SLOT(slot_create_inversed_transform()));
 				break;
 			case CBaseObject::Type::IMAGE:
 				AP::WORKSPACE::setCurrentModel(m_obj->id());
-				//addMenu(createCopyMenu());
-				//addMenu(createMoveMenu());
-				//addSeparator();
 				addMenu(AP::mainWin().ui.menuImage);
-				addSeparator();
-				addAction(QIcon(":/icons/Erase.ico"), "delete", this, SLOT(slotDeleteObject()));
+				break;
+			case CBaseObject::Type::MOVEMENT:
+				addAction("copy all frames as new models", this, SLOT(slot_copy_frames_as_models()));
 				break;
 			case CBaseObject::Type::VOLUMETRIC_NEW:
-				addMenu(createCopyMenu());
-				addMenu(createMoveMenu());
 				addSeparator();
 				addMenu(createVolumetricMenu());
-				addSeparator();
-				addAction(QIcon(":/icons/Erase.ico"), "delete", this, SLOT(slotDeleteObject()));
 				break;
-			//case CBaseObject::Type::VOLTK:
-			//	addAction("show as images", this, SLOT(volTKshowImagesDlg()));
-			//	addSeparator();
-			//	addMenu(createCopyMenu());
-			//	addAction(QIcon(":/icons/Save.ico"), "convert to cloud of points", this, SLOT(volTKtoCloud()));
-			//	addAction(QIcon(":/icons/Save.ico"), "convert to mesh", this, SLOT(volTKtoMesh()));
-			//	//addAction(QIcon(":/icons/Visible.ico"), "show/hide", this, SLOT(pointHide()));
-			//	addSeparator();
-			//	addAction(QIcon(":/icons/Erase.ico"), "delete", this, SLOT(slotDeleteObject()));
-			//	break;
 			case CBaseObject::Type::CLOUD:
 			case CBaseObject::Type::MESH:
 				addAction(QIcon(":/icons/Save.ico"), "export as...", this, SLOT(saveObjAs()));
 				addSeparator();
-				addAction("apply last transformation and move up", this, SLOT(slot_apply_last_transform()));
-				addMenu(createCopyMenu());
-				addMenu(createMoveMenu());
-				addSeparator();
 				addAction("invert normals", this, SLOT(meshAction()))->setData(QVariant::fromValue((int)0));
-				addSeparator();
+				//addSeparator();
 				//addAction(QIcon(":/icons/Visible.ico"), "show/hide", this, SLOT(pointHide()));
-				addAction(QIcon(":/icons/Erase.ico"), "delete", this, SLOT(slotDeleteObject()));
 				break;
 			default:
-				addMenu(createCopyMenu());
-				addMenu(createMoveMenu());
 				//addAction(QIcon(":/icons/Visible.ico"), "show/hide", this, SLOT(pointHide()));
-				addSeparator();
-				addAction(QIcon(":/icons/Erase.ico"), "delete", this, SLOT(slotDeleteObject()));
 				break;
 			}
 			break;
 		}
+		addSeparator();
+		addMenu(createRepositionMenu());
+		addMenu(createDeleteMenu());
 	}
 }
 
@@ -148,6 +114,57 @@ QMenu* CContextMenu::createAddObjectMenu()
 	return menu;
 }
 
+QMenu* CContextMenu::createAddAnnoMenu()
+{
+	QMenu* menu = new QMenu("add Annotation");
+
+	if (menu == nullptr) return nullptr;
+
+	menu->addAction("point", this, SLOT(slotAddAnnotation()))->setData(QVariant::fromValue((int)CBaseObject::Type::POINT));
+	menu->addAction("plane", this, SLOT(slotAddAnnotation()))->setData(QVariant::fromValue((int)CBaseObject::Type::PLANE));
+	menu->addAction("sphere", this, SLOT(slotAddAnnotation()))->setData(QVariant::fromValue((int)CBaseObject::Type::SPHERE));
+
+	return menu;
+}
+
+
+QMenu* CContextMenu::createRepositionMenu()
+{
+	QMenu* menu = new QMenu("reposition object");
+	menu->setIcon(QIcon(":/icons/Copy.ico"));
+
+	menu->addAction("move/copy", this, SLOT(slot_repositioning()));
+
+	if (m_obj->hasType(CBaseObject::Type::MODEL) || m_obj && m_obj->hasType(CBaseObject::Type::MESH)
+		|| m_obj && m_obj->hasType(CBaseObject::Type::CLOUD) || m_obj && m_obj->hasType(CBaseObject::Type::ORDEREDCLOUD))
+	{
+		menu->addAction("apply last transformation and move up", this, SLOT(slot_apply_last_transform()));
+	}
+
+	menu->addSeparator();
+	if (m_obj && m_obj->hasCategory(CBaseObject::Category::OBJECT)) {
+		menu->addAction("set as root", this, SLOT(slot_make_me_root()));
+	}
+
+	return menu;
+}
+
+QMenu* CContextMenu::createDeleteMenu()
+{
+	QMenu* menu = new QMenu("delete");
+	menu->setIcon(QIcon(":/icons/Erase.ico"));
+	addSeparator();
+	if (m_obj && m_obj->hasCategory(CBaseObject::Category::OBJECT)) {
+		QAction* a = new QAction("only this object");
+		connect(a, SIGNAL(triggered()), this, SLOT(slot_delete_and_keep_children()));
+		a->setEnabled(m_obj->getParent());
+		menu->addAction(a);
+		//menu->addAction("only this object", this, SLOT(slot_delete_and_keep_children()));
+	}
+	menu->addAction("the entire subtree below", this, SLOT(slot_delete_object_with_subtree()));
+
+	return menu;
+}
 
 QMenu* CContextMenu::createCopySubMenu(QString label, CObject* obj)
 {
@@ -232,18 +249,6 @@ QMenu* CContextMenu::createMoveMenu()
 	return menu;
 }
 
-QMenu* CContextMenu::createAddAnnoMenu()
-{
-	QMenu* menu = new QMenu("add Annotation");
-
-	if (menu == nullptr) return nullptr;
-
-	menu->addAction("point", this, SLOT(slotAddAnnotation()))->setData(QVariant::fromValue((int)CBaseObject::Type::POINT));
-	menu->addAction("plane", this, SLOT(slotAddAnnotation()))->setData(QVariant::fromValue((int)CBaseObject::Type::PLANE));
-	menu->addAction("sphere", this, SLOT(slotAddAnnotation()))->setData(QVariant::fromValue((int) CBaseObject::Type::SPHERE));
-
-	return menu;
-}
 
 
 #include "PointCloud.h"
@@ -289,44 +294,365 @@ void CContextMenu::copyTo()
 
 void CContextMenu::saveObjAs()
 {
-	CModel3D* tmpObj;
-	if (m_obj->hasType(CBaseObject::Type::MODEL))
-	{
-		tmpObj = (CModel3D*) m_obj;
-	}
-	else
-	{
-		tmpObj = new CModel3D;
-		tmpObj->addChild(m_obj);
-	}
-
 	QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "", CFileConnector::getSaveExts());
 
 	if (!fileName.isEmpty())
 	{
-		if (tmpObj->save(fileName))
+		CModel3D* tmpObj;
+		if (m_obj->hasType(CBaseObject::Type::MODEL))
 		{
-			UI::STATUSBAR::setText(L"Saved: " + fileName.toStdWString());
+			if (((CModel3D*)m_obj)->save(fileName))
+			{
+				UI::STATUSBAR::setText(L"Saved: " + fileName.toStdWString());
+			}
+		}
+		else
+		{
+			tmpObj = new CModel3D;
+			tmpObj->addChild(m_obj);
+			if (tmpObj->save(fileName))
+			{
+				UI::STATUSBAR::setText(L"Saved: " + fileName.toStdWString());
+			}
+			tmpObj->removeChild(m_obj->id());
+			m_obj->setParent(nullptr);
+			delete tmpObj;
 		}
 	}
-
-	tmpObj->removeChild(m_obj->id());
-	delete tmpObj;
 }
+
+//std::vector<CObject*> getPathToRoot(CObject* obj) {
+//	std::vector<CObject*> path;
+//	CObject* curr = obj;
+//	while (curr->getParent() != nullptr) {
+//		curr = (CObject*)curr->getParent();
+//		path.push_back(curr);
+//	}
+//	return path;
+//}
+
+// Odwróć ścieżkę do korzenia
+void reversePath_BAK(std::vector<CBaseObject*>& path, CObject* start) {
+	CObject* new_parent = start;
+	Eigen::Matrix4d new_m = (new_parent->hasType(CObject::Type::MODEL)) ? ((CModel3D*)new_parent)->transform().toEigenMatrix4d() : Eigen::Matrix4d::Identity();
+	
+	for (CBaseObject* cur_obj : path)
+	{
+		CObject* cur_parent = (CObject*)cur_obj;
+		CObject* cur_grandpa = (CObject*)cur_parent->getParent();
+
+		if (cur_grandpa)
+			cur_grandpa->removeChild(cur_parent->id());
+
+		Eigen::Matrix4d cur_m = (cur_parent->hasType(CObject::Type::MODEL)) ? ((CModel3D*)cur_parent)->transform().toEigenMatrix4d() : Eigen::Matrix4d::Identity();
+		Eigen::Matrix4d inv_m = (new_parent->hasType(CObject::Type::MODEL)) ? (Eigen::Matrix4d)new_m.inverse() : Eigen::Matrix4d::Identity();
+
+		if (cur_parent->hasType(CObject::Type::MODEL)) 
+			((CModel3D*)cur_parent)->setTransform(inv_m);
+
+		new_parent->addChild(cur_parent);
+
+		new_parent = cur_parent;
+		new_m = cur_m;
+	}
+}
+
+
+void reversePath(std::vector<CBaseObject*>& path, CObject* start) {
+	
+	std::vector<CBaseObject*> revpath(path);
+	
+	std::reverse(revpath.begin(), revpath.end());
+	revpath.push_back(start);
+	revpath.push_back(nullptr);
+
+
+	for (int i = 0; i < revpath.size()-1; i++) {
+		CObject* objD = (CObject*)revpath[i];		// dotychczasowy rodzic
+		CObject* objA = (CObject*)revpath[i + 1];	// dotychczasowy potomek
+
+		// w najgorszym przypadku trzeba będzie skompensować aż dwie macierze transformacji:
+		// macierz dotychczasowego rodzica - bo dotychczasowy potomek wyjdzie poza jej wpływ więc jego położenie wzgledem rodzica sie zmieni
+		// macierz dotychczasowego potomka - bo dotychczasowy rodzic znajdzie sie teraz pod jej wpływem co zmieni jego położenie
+		// dlatego dopasowanie jest złożeniem dwóch macierzy odwrotnych
+
+		if (objA) {
+			Eigen::Matrix4d mD_inv = Eigen::Matrix4d::Identity();
+			if (objD->hasType(CObject::Type::MODEL))
+				mD_inv = ((CModel3D*)objD)->transform().toEigenMatrix4d().inverse();
+
+
+			Eigen::Matrix4d mA_inv = Eigen::Matrix4d::Identity();
+			if (objA->hasType(CObject::Type::MODEL))
+				mA_inv = ((CModel3D*)objA)->transform().toEigenMatrix4d().inverse();
+
+			Eigen::Matrix4d mDop = mA_inv * mD_inv;
+
+			CObject* p = (CObject*)objD->getParent();
+			if (p) p->removeChild(objD->id());
+
+			if (mDop.isIdentity()) {
+				objA->addChild(objD);
+			}
+			else {
+				CModel3D* objDop = new CModel3D();
+				objDop->setTransform(mDop);
+				objDop->setLabel("DOPASOWANIE");
+				objA->addChild(objDop);
+				objDop->addChild(objD);
+			}
+
+			//CModel3D* objA_inv = new CModel3D();
+			//objA_inv->setTransform(mA_inv);
+
+			//CModel3D* objD_inv = new CModel3D();
+			//objD_inv->setTransform(mD_inv);
+
+			//objA->addChild(objA_inv);
+			//objA_inv->addChild(objD_inv);
+			//objD_inv->addChild(objD);
+		}
+		else {
+			CObject* p = (CObject*)objD->getParent();
+			if (p) p->removeChild(objD->id());
+
+			objD->setParent(nullptr);
+		}
+	}
+}
+
+
+// 4. Główna funkcja
+bool makeObjectRoot(CObject* m_obj)
+{
+	if (m_obj == nullptr)
+		return false;
+
+	CObject* parent = (CObject*)m_obj->getParent();
+	if (parent == nullptr)
+		return false;
+
+	// Zbuduj ścieżkę do korzenia
+	auto path = m_obj->getPathToRoot();
+
+	// Znajdź korzeń drzewa
+	if (path.empty()) // already root
+		return true;
+	
+	//CBaseObject* top = path.back();
+
+
+	// Odwróć relacje wzdłuż ścieżki (przebuduj drzewo)
+	reversePath(path, m_obj);
+
+	parent->removeChild(m_obj->id());
+	m_obj->setParent(nullptr);
+
+	return true;
+}
+
+
+void CContextMenu::slot_make_me_root()
+{
+	if (m_obj == nullptr)
+		return; 	// object not exists or is not regular object
+
+	if (!m_obj->hasCategory(CBaseObject::Category::OBJECT)) {
+		UI::MESSAGEBOX::information("The object you have choosen probably is an annotation.\nCurrently only regular (data) object can be set as root.");
+		return;
+	}
+
+	CBaseObject* top = m_obj->getRoot();
+
+	if (top == m_obj) {
+		UI::MESSAGEBOX::information("An object is already root,\nso you are not changing anything");
+		return;
+	}
+
+	Eigen::Matrix4d globalM = m_obj->getGlobalTransformationMatrix();
+
+	AP::WORKSPACE::removeModel((CModel3D*)top, false);
+
+	if (makeObjectRoot((CObject*)m_obj))
+	{
+		AP::WORKSPACE::addObject(m_obj);
+
+		if (m_obj->hasType(CObject::Type::MODEL))
+			((CModel3D*)m_obj)->transform().fromEigenMatrix4d(globalM);
+		else
+			((CModel3D*)m_obj->getParent())->transform().fromEigenMatrix4d(globalM);
+	}
+}
+
+
+#include "GraphViewer.h"
+
+void CContextMenu::slot_test_graph()
+{
+	static GraphViewer* gv = nullptr;
+
+	if (gv) delete gv;
+	
+	gv = new GraphViewer(m_obj);
+	gv->show();
+}
+
+void CContextMenu::slot_make_me_root2()
+{
+	if (m_obj == nullptr)
+		return; 	// object not exists
+
+	CBaseObject* parent = m_obj->getParent();
+
+	if (parent == nullptr)
+		return; 	// object is already root
+
+	// searching for the most top object in tree
+	CObject* top = (CObject*)m_obj;
+	while (top->getParent() != nullptr)
+		top = (CObject*)top->getParent();
+
+	Eigen::Matrix4d globalM = m_obj->getGlobalTransformationMatrix();
+
+	AP::OBJECT::removeChild(parent, m_obj);
+
+	AP::WORKSPACE::removeModel((CModel3D*)top, false);
+
+	CObject* new_parent = (CObject*)m_obj;
+
+	while (parent != nullptr) {
+		CObject* grandpa = (CObject*)parent->getParent();
+		if (grandpa != nullptr) grandpa->removeChild(parent->id());
+
+		if (parent->hasType(CObject::Type::MODEL)) {
+			// tu odwrócenie transformacji
+			Eigen::Matrix4Xd m = ((CModel3D*)parent)->transform().toEigenMatrix4d();
+
+			((CModel3D*)parent)->transform().reset();
+
+			CModel3D* tmp = new CModel3D();
+			tmp->transform().fromEigenMatrix4d(m.inverse());
+			tmp->setLabel("DOPASOWANIE");
+
+			((CModel3D*)parent)->addChild(tmp);
+
+			new_parent->addChild(parent);
+			new_parent = (CObject*)tmp;
+		}
+		else {
+			new_parent->addChild(parent);
+			new_parent = (CObject*)parent;
+		}
+		parent = grandpa;
+	}
+
+	AP::WORKSPACE::addObject(m_obj);
+
+	if (m_obj->hasType(CObject::Type::MODEL))
+		((CModel3D*)m_obj)->transform().fromEigenMatrix4d(globalM);
+	else
+		((CModel3D*)m_obj->getParent())->transform().fromEigenMatrix4d(globalM);
+}
+
+
+
+#include "TreeSelectDialog.h"
+#include "DockWidgetWorkspace.h"
+
+void CContextMenu::slot_repositioning()
+{
+	if (m_obj == nullptr)
+		return; 	// obiekt nie istnieje
+
+	QStandardItemModel* model = (QStandardItemModel*)UI::DOCK::WORKSPACE::instance()->getTreeView()->model();
+
+	TreeSelectDialog dlg(m_obj);
+	dlg.cloneModelToWidget(model);
+
+	if (dlg.exec() == QDialog::Accepted) {
+		CBaseObject* wybranyObiekt = dlg.selectedHandle();
+		QString action = dlg.getAction();
+		bool keep_pos = dlg.keepPosition();
+
+		if (action == "copy")
+		{
+			AP::OBJECT::copyTo(m_obj, wybranyObiekt, keep_pos);
+		}
+		else if (action == "move")
+		{
+			AP::OBJECT::moveTo(m_obj, wybranyObiekt, keep_pos);
+		}
+		else if (action == "rearrange")
+		{
+			if (!m_obj->hasCategory(CBaseObject::Category::OBJECT)) {
+				UI::MESSAGEBOX::information("The object you have choosen probably is an annotation.\nCurrently only regular (data) object can be set as root.");
+				return;
+			}
+
+			CBaseObject* tgt_top = (wybranyObiekt)?wybranyObiekt->getRoot():nullptr;
+			CBaseObject* top = m_obj->getRoot();
+
+			if (top == tgt_top) {
+				UI::MESSAGEBOX::information("An object cannot be a descendant of its own descendant");
+				return;
+			}
+
+			bool already_root = (top == m_obj);
+
+			if (already_root && (wybranyObiekt == nullptr)) {
+				UI::MESSAGEBOX::information("You are trying to move the root object to the workspace,\nso you are not changing anything");
+				return;
+			}
+
+			Eigen::Matrix4d globalM = m_obj->getGlobalTransformationMatrix();
+
+			AP::WORKSPACE::removeModel((CModel3D*)top, false);
+
+			if (already_root || makeObjectRoot((CObject*)m_obj))
+			{
+				if (wybranyObiekt != nullptr)
+				{
+					if (keep_pos && ! m_obj->hasType(CObject::Type::MODEL)) // musze dodać macierz dopasowujacą
+					{
+						CModel3D* mdl = new CModel3D();
+						mdl->addChild(m_obj);
+						mdl->setLabel("<**>");
+						mdl->importChildrenGeometry();
+						AP::OBJECT::addChild(wybranyObiekt, mdl);
+					}
+					else
+					{
+						AP::OBJECT::addChild(wybranyObiekt, m_obj);
+					}
+				}
+				else
+				{
+					AP::WORKSPACE::addObject(m_obj);
+				}
+
+				if (keep_pos)
+				{
+					if (m_obj->hasType(CObject::Type::MODEL))
+						((CModel3D*)m_obj)->transform().fromEigenMatrix4d(globalM);
+					else
+						((CModel3D*)m_obj->getParent())->transform().fromEigenMatrix4d(globalM);
+				}
+			}
+		}
+	}
+}
+
 
 void CContextMenu::slot_apply_last_transform()
 {
 	// Kopiujemy obiekt z rodzica do dziadka,
 	// przekształcając go tak by zachował pozycję
 	
-	
-
 	if (m_obj == nullptr)
 		return; 	// obiekt nie istnieje
 
 	CBaseObject* parent = m_obj->getParent();
 	
-
 	if ( (parent == nullptr) || (!parent->hasType(CBaseObject::Type::MODEL)) )
 		return;	// rodzicem obiektu nie jest przekształcenie
 
@@ -334,10 +660,11 @@ void CContextMenu::slot_apply_last_transform()
 
 	CBaseObject* grandpa = parent->getParent();
 	
-	if ( (grandpa != nullptr) && (!grandpa->hasType(CBaseObject::Type::MODEL)) )
-		return;	// dziadkiem obiektu nie jest przekształcenie lub workspace
+	//CTransform grandpa_transform; // zerowe przekształcenie 
+	CTransform null_transform; // zerowe przekształcenie 
 
-	CTransform grandpa_transform; // zerowe przekształcenie 
+	//if (grandpa != nullptr)
+	//	grandpa_transform = grandpa->getGlobalTransformationMatrix();
 
 	if (m_obj->hasType(CBaseObject::Type::MODEL))
 	{
@@ -345,7 +672,7 @@ void CContextMenu::slot_apply_last_transform()
 		Eigen::Matrix4d T = mdl->transform().toEigenMatrix4d();
 		Eigen::Matrix4d Tp = parent_transform.toEigenMatrix4d();
 
-		T = T * Tp;
+		T = Tp * T;
 
 		mdl->transform().fromEigenMatrix4d(T);
 
@@ -361,40 +688,45 @@ void CContextMenu::slot_apply_last_transform()
 	}
 	else if (m_obj->hasType(CBaseObject::Type::MESH) || m_obj->hasType(CBaseObject::Type::CLOUD) || m_obj->hasType(CBaseObject::Type::ORDEREDCLOUD))
 	{
-		CPointCloud* mesh = (CPointCloud*)m_obj;
-		mesh->applyTransformation(parent_transform, grandpa_transform);
+		((CPointCloud*)m_obj)->applyTransformation(parent_transform, null_transform);
 
-		if (grandpa == nullptr)
+		if (grandpa == nullptr) // workspace root
 		{
+			// na razie jeszcze na najwyższym poziomie drzewa musi byc Model3D
 			grandpa = new CModel3D();
 			AP::WORKSPACE::addModel((CModel3D*)grandpa);
 		}
 
-		AP::OBJECT::removeChild(parent, mesh);
-		AP::OBJECT::addChild(grandpa, mesh);
+		AP::OBJECT::removeChild(parent, m_obj);
+		AP::OBJECT::addChild(grandpa, m_obj);
 	}
 }
 
 void CContextMenu::slot_delete_and_keep_children()
 {
-	if (m_obj->hasType(CBaseObject::Type::MODEL))
+	if (m_obj->hasCategory(CBaseObject::Category::OBJECT))
 	{
-		CBaseObject* p = m_obj->getParent();
+		CObject* p = (CObject*)m_obj->getParent();
 		if (p != nullptr)
 		{
-			for (auto d : ((CObject*)m_obj)->children())
+			auto kids = ((CObject*)m_obj)->children();
+			for (auto d : kids)
 			{
 				CBaseObject* c = d.second;
+				AP::OBJECT::removeChild(m_obj, c);
 				AP::OBJECT::addChild(p, c);
 			}
-			((CObject*)m_obj)->children().clear();
+//			((CObject*)m_obj)->children().clear();
 
-			for (auto d : ((CObject*)m_obj)->annotations())
+			auto anno = ((CObject*)m_obj)->annotations();
+			for (auto d : anno)
 			{
+				AP::OBJECT::removeChild(m_obj, (CBaseObject*)d.second);
 				AP::OBJECT::addChild(p, (CBaseObject*)d.second);
 			}
-			((CObject*)m_obj)->annotations().clear();
-			AP::WORKSPACE::removeModel((CModel3D*)m_obj, true);
+//			((CObject*)m_obj)->annotations().clear();
+			
+			AP::OBJECT::remove(m_obj, true);
 		}
 		else
 		{
@@ -459,8 +791,7 @@ void CContextMenu::setOfFacesToMesh()
 	}
 }
 
-
-void CContextMenu::slotDeleteObject()
+void CContextMenu::slot_delete_object_with_subtree()
 {
 	AP::OBJECT::remove(m_obj, true);
 }
@@ -478,7 +809,6 @@ void CContextMenu::slotCreateEmptyModel()
 
 		AP::WORKSPACE::addModel(m);
 	}
-
 }
 
 void CContextMenu::slot_mesh_create()
@@ -542,6 +872,37 @@ void CContextMenu::slot_volumetric_export()
 		
 		CParser *parser = CFileConnector::getSaveParser(".dcm");
 		parser->save({ (Volumetric*)m_obj }, file_path);
+	}
+}
+
+#include "Movement.h"
+
+void CContextMenu::slot_copy_frames_as_models()
+{
+	if (m_obj->hasType(CBaseObject::Type::MOVEMENT))
+	{
+		CMovement* r = (CMovement*)m_obj;
+
+		for (CMovement::FrameVal& fv : r->m_seqlist)
+		{
+			CModel3D* mdl = new CModel3D();
+			mdl->setTransform(fv.t);
+			mdl->setLabel(fv.getLabel());
+
+			for (auto k : r->children()) {
+				mdl->addChild(k.second->getCopy());
+			}
+
+			for (auto k : r->annotations()) {
+				mdl->addAnnotation(k.second->getCopy());
+			}
+
+			CObject* p = (CObject*)r->getParent();
+			if (p)
+				AP::OBJECT::addChild(p, mdl);
+			else
+				AP::WORKSPACE::addModel(mdl);
+		}
 	}
 }
 

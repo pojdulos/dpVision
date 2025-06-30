@@ -140,7 +140,14 @@ size_t CParserSMF::ReadSMF_V3()
 {
 	if ( this->bIsNotSet ) return 0;
 
-	FILE *plik = _wfopen( plikSiatki.absoluteFilePathW().c_str(), L"r" );
+#ifdef _WIN32
+    FILE* plik = _wfopen(plikSiatki.absoluteFilePathW().c_str(), L"r");
+#else
+    QByteArray pathBytes = plikSiatki.absoluteFilePath().toUtf8();
+    FILE* plik = fopen(pathBytes.constData(), "r");
+#endif
+
+
 	if ( plik == NULL ) return 0;
 
 	size_t lbv=0, lbf=0, lbn=0, lbi=0, lbc=0, lbvsp=0;

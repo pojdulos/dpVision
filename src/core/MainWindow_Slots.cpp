@@ -14,9 +14,10 @@
 #include "MdiChild.h"
 
 #include "Image.h"
+#include <chrono>
 
 void CMainWindow::actionScreenshot() {
-	GLViewer* view = currentViewer();
+	GLViewer* view = this->currentViewer();
 
 	if (view != nullptr)
 	{
@@ -24,21 +25,13 @@ void CMainWindow::actionScreenshot() {
 	}
 };
 
-void CMainWindow::closeEvent(QCloseEvent * event)
+#include "DockWidgetWorkspace.h"
+
+void saveDockGeometry(QDockWidget* dock)
 {
-	//QRect r = this->geometry();
-
-	AppSettings::mainSettings()->setValue( "mainwindow/maximized", this->isMaximized() );
-
-	//if ( !this->isMaximized() ) {
-	//	AP::mainApp().settings->setValue("mainwindow/geometry", r);
-	//}
-
-	AppSettings::mainSettings()->setValue("mainwindow/dockState", this->saveState());
-	AppSettings::mainSettings()->setValue("mainwindow/geometry", this->saveGeometry());
-	
-	deleteLater();
-	QMainWindow::closeEvent(event);
+	QRect geom = dock->geometry();
+	AppSettings::mainSettings()->setValue("gui/mainwindow/" + dock->objectName() + "/width", geom.width());
+	AppSettings::mainSettings()->setValue("gui/mainwindow/" + dock->objectName() + "/height", geom.height());
 }
 
 void CMainWindow::keyPressEvent(QKeyEvent * e)
@@ -866,7 +859,7 @@ void CMainWindow::bbShowHide(bool show)
 void CMainWindow::openWorkspace()
 {
 	//QString path = QFileDialog::getOpenFileName(this, tr("Open Workspace"), "", tr("dpVision multiarchive file (*.dpvision);;Faro scene (*.Faro)"));
-	QString path = QFileDialog::getOpenFileName(this, tr("Open Workspace"), "", tr("dpVision multiarchive file (*.dpvision);;Digital patient workspace (*.dpw;*.atmdl)"));
+	QString path = QFileDialog::getOpenFileName(this, tr("Open Workspace"), "", tr("All workspace files (*.dpw;*.atmdl;*.dpvision);;Digital patient workspace (*.dpw;*.atmdl);;dpVision multiarchive file (*.dpvision)"));
 
 	if (path.isEmpty()) return;
 
@@ -879,16 +872,19 @@ void CMainWindow::openWorkspace()
 	if (0 == reply)
 	{
 		AP::WORKSPACE::removeAllModels();
-		unsigned long t1, t2;
+		//unsigned long t1, t2;
 
-		t1 = GetTickCount();
+		//t1 = GetTickCount();
+		auto t1 = std::chrono::steady_clock::now();
 
 		//CModel3D* obj = parser->load(path, true);
 		AP::WORKSPACE::loadModel(path, true);
 
-		t2 = GetTickCount();
+		//t2 = GetTickCount();
+		auto t2 = std::chrono::steady_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
 
-		qInfo() << "Load time: " << t2 - t1;
+		qInfo() << "Load time: " << duration;
 
 	}
 	
@@ -899,7 +895,7 @@ void CMainWindow::openWorkspace()
 
 void CMainWindow::saveWorkspace()
 {
-	QString path = QFileDialog::getSaveFileName(this, tr("Save Workspace"),"",tr("dpVision multiarchive file (*.dpvision);;Digital patient workspace (*.dpw)"));
+	QString path = QFileDialog::getSaveFileName(this, tr("Save Workspace"),"",tr("Digital patient workspace (*.dpw);;dpVision multiarchive file (*.dpvision)"));
 	
 	if (path.isEmpty()) return;
 
@@ -1307,6 +1303,7 @@ void CMainWindow::helpAbout()
 
 void CMainWindow::switchConsole(bool b)
 {
+#ifdef _WIN32
 	static FILE* oldstdout;
 	static FILE* oldstderr;
 	if (b)
@@ -1322,6 +1319,7 @@ void CMainWindow::switchConsole(bool b)
 		fclose(stderr);
 		FreeConsole();
 	}
+#endif
 }
 
 

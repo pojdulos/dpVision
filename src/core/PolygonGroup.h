@@ -1,4 +1,5 @@
 #pragma once
+
 #include "BaseObject.h"
 #include "Face.h"
 #include "Material.h"

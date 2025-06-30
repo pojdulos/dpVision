@@ -1,5 +1,5 @@
 #pragma once
-#include <QtWidgets/QMdiSubwindow>
+#include <QtWidgets/QMdiSubWindow>
 #include <QtWidgets/QMdiArea>
 
 #include "dll_global.h"

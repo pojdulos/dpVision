@@ -63,6 +63,8 @@ public:
 	void addItem(int id, int parentId);
 	void removeItem(int id);
 
+	inline QTreeView* getTreeView() { return ui.treeView; };
+
 	// obsolete, use: rebuildTree()
 	void updateTreeView() { rebuildTree(); };
 	
@@ -77,6 +79,7 @@ public:
 	void processSelection(const QItemSelection& selected, const QItemSelection& deselected);
 
 	QModelIndex findWorkspaceTreeModelIndex(int id);
+	QModelIndex findWorkspaceTreeModelByHandle(CBaseObject* obj);
 	void setItemCheckedById(int id, bool b);
 	void setItemVisibleById(int id, bool b);
 	void setItemKidsVisibleById(int id, bool b);

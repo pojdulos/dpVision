@@ -3,9 +3,7 @@
 
 #include "dll_global.h"
 
-#ifdef _WIN32
-    #include <QtWinExtras/QtWinExtras>
-#endif
+//#include <QtWinExtras/QtWinExtras>
 #include <QtCore/QString>
 #include <QOpenGLTexture>
 

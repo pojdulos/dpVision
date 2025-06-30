@@ -19,14 +19,14 @@ void CParserDPVISION::copyFileToZip(QuaZip& zip, QString pathInZip, QString inFi
 
 	if (!zipFile.open(QIODevice::WriteOnly, QuaZipNewInfo(pathInZip)))
 	{
-		std::cout << "nie otwar³o pliku w archiwum zip\n";
+		std::cout << "nie otwarï¿½o pliku w archiwum zip\n";
 		return;
 	}
 
 	QFile inFile(inFileName);
 	if (!inFile.open(QFile::ReadOnly))
 	{
-		std::cout << "nie otwar³o pliku wejœciowego\n";
+		std::cout << "nie otwarï¿½o pliku wejï¿½ciowego\n";
 		return;
 	}
 
@@ -343,9 +343,9 @@ void CParserDPVISION::createXmlNodeObject(CObject* obj, QDomElement& root, QDomD
 		CVolTK* volTK = (CVolTK*)obj;
 
 		child.setAttribute("type", "volumetric");
-		child.setAttribute("layers", volTK->kostka.m_lays);
-		child.setAttribute("rows", volTK->kostka.m_rows);
-		child.setAttribute("columns", volTK->kostka.m_cols);
+		child.setAttribute("layers", (qulonglong) volTK->kostka.m_lays);
+		child.setAttribute("rows", (qulonglong) volTK->kostka.m_rows);
+		child.setAttribute("columns", (qulonglong) volTK->kostka.m_cols);
 		QDomElement voxel = docu.createElement("voxelSize");
 		voxel.setAttribute("x", volTK->getVoxelSize().x);
 		voxel.setAttribute("y", volTK->getVoxelSize().y);

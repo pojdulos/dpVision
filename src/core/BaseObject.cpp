@@ -84,6 +84,25 @@ void CBaseObject::setParent(int objId)
 	m_parent = AP::WORKSPACE::getModel(objId);
 }
 
+std::vector<CBaseObject*> CBaseObject::getPathToRoot() {
+	std::vector<CBaseObject*> path;
+	CBaseObject* curr = this;
+	while (curr->getParent() != nullptr) {
+		curr = (CBaseObject*)curr->getParent();
+		path.push_back(curr);
+	}
+	return path;
+}
+
+CBaseObject* CBaseObject::getRoot() {
+	std::vector<CBaseObject*> path = getPathToRoot();
+	
+	if (path.empty()) // this object is root
+		return this;
+	
+	return path.back();
+}
+
 bool CBaseObject::switchSelfVisibility()
 {
 	setSelfVisibility(!m_showSelf);

@@ -20,6 +20,8 @@ void ThreadParserLoader::cancelWork()
 	cancelled = true;
 }
 
+#include <thread>
+#include <chrono>
 
 void ThreadParserLoader::doWork()
 {
@@ -31,7 +33,8 @@ void ThreadParserLoader::doWork()
 	}
 	else
 	{
-		_sleep(1000);
+		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
 
 		counter--;
 

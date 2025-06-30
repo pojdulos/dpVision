@@ -153,14 +153,14 @@ namespace AP
          * @param obj Object to move
          * @param newParent New parent object
          */
-        DPVISION_EXPORT void moveTo(CBaseObject* obj, CBaseObject* newParent);
+        DPVISION_EXPORT void moveTo(CBaseObject* obj, CBaseObject* newParent, bool keep_pos = true);
 
         /**
          * @brief Copies an object to a new parent
          * @param obj Object to copy
          * @param newParent New parent object
          */
-        DPVISION_EXPORT void copyTo(CBaseObject* obj, CBaseObject* newParent);
+        DPVISION_EXPORT void copyTo(CBaseObject* obj, CBaseObject* newParent, bool keep_pos = true);
     };
 
     /**

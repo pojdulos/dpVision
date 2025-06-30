@@ -540,7 +540,8 @@ std::vector<CRGBA> CWorkspace::getXRayImage( CPoint3f pkt0, int size )
 			
 			std::vector<CVector3f> x = mesh->getVectors( pkt0 );
 
-			ULONGLONG t0=GetTickCount64();
+			//ULONGLONG t0=GetTickCount64();
+			auto t0 = std::chrono::steady_clock::now();
 
 			for ( int x=0; x<size; x++ )
 			{
@@ -567,8 +568,11 @@ std::vector<CRGBA> CWorkspace::getXRayImage( CPoint3f pkt0, int size )
 
 					result.push_back( col );
 
-					ULONGLONG t1=GetTickCount64();
-					UI::STATUSBAR::printf( "Tested point [%d,%d] iL=%f, maxLen=%f (time:%ld)", x, y, iL, maxLen, t1-t0 );
+					// ULONGLONG t1=GetTickCount64();
+					auto t1 = std::chrono::steady_clock::now();
+					auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
+
+					UI::STATUSBAR::printf( "Tested point [%d,%d] iL=%f, maxLen=%f (time:%ld)", x, y, iL, maxLen, duration );
 				}
 			}
 

@@ -2,6 +2,8 @@ set(PLUGIN_NAME parserDICOM)
 set(PLUGIN_NAME ${PLUGIN_NAME} PARENT_SCOPE)
 message("Configuring ${PLUGIN_NAME}")
 
+message("Path: ${CMAKE_CURRENT_SOURCE_DIR}")
+
 file(GLOB ${PLUGIN_NAME}_SRC ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 file(GLOB ${PLUGIN_NAME}_HDR ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 file(GLOB ${PLUGIN_NAME}_IMEBRA_SRC ${CMAKE_CURRENT_SOURCE_DIR}/imebra/src/*.cpp)
@@ -14,9 +16,14 @@ add_library (${PLUGIN_NAME} SHARED
 	${${PLUGIN_NAME}_IMEBRA_IMPL}
 )
 
+if(WIN32)
+    target_compile_definitions(${PLUGIN_NAME} PRIVATE IMEBRA_WINDOWS)
+else()
+    target_compile_definitions(${PLUGIN_NAME} PRIVATE IMEBRA_POSIX)
+endif()
+
 target_compile_definitions(${PLUGIN_NAME} PRIVATE
 	DPVISION_PLUGIN_DLL
-	IMEBRA_USE_WINDOWS_CHARSET
 	IMEBRA_DLL
 	IMEBRA_DLL_EXPORTS
 	NOMINMAX
@@ -32,9 +39,16 @@ target_link_libraries (${PLUGIN_NAME}
 )
 
 target_include_directories (${PLUGIN_NAME} PUBLIC
+	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/imebra/include
 	${CMAKE_CURRENT_SOURCE_DIR}/imebra/implementation
 )
+
+message("Imebra include path: ${CMAKE_CURRENT_SOURCE_DIR}/imebra/include")
+file(GLOB IMEBRA_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/imebra/include/*.h)
+message("Imebra headers: ${IMEBRA_HEADERS}")
+
+
 
 if (MSVC)
 	set_target_properties( ${PLUGIN_NAME} PROPERTIES
@@ -53,8 +67,10 @@ else (MSVC)
 		LINKER_LANGUAGE CXX
 		RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/plugins"
 	)
+	if (WIN32)
 	target_link_libraries (${PLUGIN_NAME}
 		ws2_32
 	)
+	endif (WIN32)
 endif (MSVC)
 

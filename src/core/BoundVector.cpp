@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "BoundVector.h"
 
 CBoundVector::CBoundVector( CPoint3d origin, CVector3d direction )

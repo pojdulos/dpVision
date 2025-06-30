@@ -8,7 +8,7 @@ WorkspaceTreeItem::WorkspaceTreeItem(CBaseObject* obj) : QStandardItem()
 	{
 		QStandardItem::setText(obj->getLabel());
 
-		setObject(obj);
+		this->setObject(obj);
 
 		//	setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable);
 		setFlags(Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable);
@@ -52,8 +52,8 @@ WorkspaceTreeItem::WorkspaceTreeItem(CBaseObject* obj) : QStandardItem()
 
 void WorkspaceTreeItem::changeIcon(Column c, bool b)
 {
-	WorkspaceTreeItem* field = getField(c);
-	CBaseObject* obj = getObject();
+	WorkspaceTreeItem* field = this->getField(c);
+	CBaseObject* obj = this->getObject();
 
 	if (field != nullptr)
 	{
@@ -85,18 +85,18 @@ QIcon WorkspaceTreeItem::getNewIcon(CBaseObject::Type t, Column c, bool b)
 
 void WorkspaceTreeItem::setObject(CBaseObject* obj)
 {
-	setData(QVariant::fromValue(obj->id()), Qt::UserRole);
-	setData(QVariant::fromValue(obj), Qt::UserRole + 1);
+	this->setData(QVariant::fromValue(obj), Qt::UserRole);
+	this->setData(QVariant::fromValue(obj->id()), Qt::UserRole+1);
 }
 
 CBaseObject* WorkspaceTreeItem::getObject()
 {
-	QVariant v = data(Qt::UserRole + 1);
-	if (!v.isValid()) {
-		qWarning() << "getObject: QVariant is invalid";
-		return nullptr;
-	}
-	return v.value<CBaseObject*>();
+	return this->data(Qt::UserRole).value<CBaseObject*>();
+}
+
+int WorkspaceTreeItem::getObjectId()
+{
+	return this->data(Qt::UserRole+1).value<int>();
 }
 
 QList<QStandardItem*> WorkspaceTreeItem::getFields()

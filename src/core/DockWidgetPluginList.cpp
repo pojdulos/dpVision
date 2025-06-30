@@ -14,6 +14,8 @@ DockWidgetPluginList::DockWidgetPluginList(QWidget *parent)	: QDockWidget(parent
 {
 	ui.setupUi(this);
 
+	setObjectName("DockWidgetPluginsList");
+
 	//QObject::connect( ui.spinRotX, SIGNAL(valueChanged(double)), this, SLOT(updateModelRotX(double)) );
 	ui.dockWidgetContents->layout()->setAlignment( Qt::Alignment::enum_type::AlignTop );
 }

@@ -39,17 +39,17 @@ void CMovement::renderRotationAxe(CTransform curr, CTransform prev)
 
 	Eigen::AngleAxisd absAA(currQ.toRotationMatrix());
 	Eigen::Vector3d absAxis = absAA.axis();
-	double absAngle = absAA.angle(); // K¹t w radianach
+	double absAngle = absAA.angle(); // Kï¿½t w radianach
 	double absLen = 200.0;// 1000.0 * absAngle;
 
 	Eigen::AngleAxisd relAA(relQ.toRotationMatrix());
 	Eigen::Vector3d relAxis = relAA.axis();
-	double relAngle = relAA.angle(); // K¹t w radianach
+	double relAngle = relAA.angle(); // Kï¿½t w radianach
 	double relLen = 200.0;// 10000.0 * relAngle;
 
 	qInfo() << "-------------------------------------------------------------" << Qt::endl;
-	qInfo() << "ABS angle: " << rad2deg(absAngle) << "° translation: " << currT.length() << "mm" << Qt::endl;
-	qInfo() << "REL angle: " << rad2deg(relAngle) << "° translation: " << relT.length() << "mm" << Qt::endl;
+	qInfo() << "ABS angle: " << rad2deg(absAngle) << "ï¿½ translation: " << currT.length() << "mm" << Qt::endl;
+	qInfo() << "REL angle: " << rad2deg(relAngle) << "ï¿½ translation: " << relT.length() << "mm" << Qt::endl;
 
 	glPushMatrix();
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -155,7 +155,7 @@ void CMovement::stopPlaying()
 	m_animationTimer.stop();
 }
 
-inline void CMovement::setKey(int k) {
+void CMovement::setKey(int k) {
 	if (k < 0) m_currentKey = 0;
 	else if (k >= m_seqlist.size()) m_currentKey = m_seqlist.size() - 1;
 	else m_currentKey = k;

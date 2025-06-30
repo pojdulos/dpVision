@@ -1,6 +1,6 @@
 #include "WorkspaceFile.h"
 #include "MainWindow.h"
-#include "GLviewer.h"
+#include "GLViewer.h"
 //#include "ChildWindow.h"
 
 
@@ -76,16 +76,27 @@ void CWorkspaceFile::loadFaro(std::wstring p, CWorkspace & wksp)
 
 	wksp.clear();
 
-	GLuint lb = GetPrivateProfileIntA("faro", "NumScans", 0, path);
+	// GLuint lb = GetPrivateProfileIntA("faro", "NumScans", 0, path);
+	QSettings settings(QString::fromUtf8(path), QSettings::IniFormat);
+	GLuint lb = settings.value("faro/NumScans", 0).toUInt();
 
 	for (GLuint i = 0; i<lb; i++)
 	{
 		sprintf(section, "scan_%d", i);
-		GetPrivateProfileStringA(section, "OccupancyGrid", "", value, 255, path);
-		// Siatkê zajêtoœci trzeba bêdzie wczytaæ jako osobny model lub jako podelement modelu
-		// Trzeba to przemyœleæ i przedyskutowaæ
+		// GetPrivateProfileStringA(section, "OccupancyGrid", "", value, 255, path);
+		QString val = settings.value(QString("%1/OccupancyGrid").arg(section), "").toString();
+		QByteArray ba = val.toUtf8();
+		strncpy(value, ba.constData(), 255);
+		value[254] = '\0'; // dla pewnoÅ›ci zakoÅ„czenia
 
-		GetPrivateProfileStringA(section, "Name", "", value, 255, path);
+		// Siatkï¿½ zajï¿½toï¿½ci trzeba bï¿½dzie wczytaï¿½ jako osobny model lub jako podelement modelu
+		// Trzeba to przemyï¿½leï¿½ i przedyskutowaï¿½
+
+		// GetPrivateProfileStringA(section, "Name", "", value, 255, path);
+		val = settings.value(QString("%1/Name").arg(section), "").toString();
+		ba = val.toUtf8();
+		strncpy(value, ba.constData(), 255);
+		value[254] = '\0'; // dla pewnoÅ›ci zakoÅ„czenia
 
 		CFileInfo fwsname(value);
 
@@ -94,7 +105,7 @@ void CWorkspaceFile::loadFaro(std::wstring p, CWorkspace & wksp)
 		if (fwsname.hasExt("fws"))
 		{
 			// pliki fws potraktujemy specjalnie...
-			// tu trzeba by przerobiæ parser FWS, albo skopiowaæ co trzeba
+			// tu trzeba by przerobiï¿½ parser FWS, albo skopiowaï¿½ co trzeba
 
 
 
@@ -109,19 +120,35 @@ void CWorkspaceFile::loadFaro(std::wstring p, CWorkspace & wksp)
 				//obj->attachTexture();
 				//UI::STATUSBAR::printf( Last()->GetMeshInfoText().c_str() );
 
-				GetPrivateProfileStringA(section, "translation", "0.0,0.0,0.0", value, 255, path);
+				//GetPrivateProfileStringA(section, "translation", "0.0,0.0,0.0", value, 255, path);
+				QString val = settings.value(QString("%1/translation").arg(section), "0.0,0.0,0.0").toString();
+				QByteArray ba = val.toUtf8();
+				strncpy(value, ba.constData(), 255);
+				value[254] = '\0'; // dla pewnoÅ›ci zakoÅ„czenia
+
 				sscanf(value, "%f,%f,%f", &x, &y, &z);
 				obj->getTransform().translation() = CVector3d(x, y, z);
 
-				GetPrivateProfileStringA(section, "rotation", "0.0,0.0,0.0", value, 255, path);
+				//GetPrivateProfileStringA(section, "rotation", "0.0,0.0,0.0", value, 255, path);
+				val = settings.value(QString("%1/rotation").arg(section), "0.0,0.0,0.0").toString();
+				ba = val.toUtf8();
+				strncpy(value, ba.constData(), 255);
+				value[254] = '\0'; // dla pewnoÅ›ci zakoÅ„czenia
+
 				sscanf(value, "%f,%f,%f", &x, &y, &z);
 				obj->getTransform().rotation().fromEulerAnglesDeg( x, y, z);
 
-				GetPrivateProfileStringA(section, "scale", "0.0", value, 255, path);
+				//GetPrivateProfileStringA(section, "scale", "0.0", value, 255, path);
+				val = settings.value(QString("%1/scale").arg(section), "0.0").toString();
+				ba = val.toUtf8();
+				strncpy(value, ba.constData(), 255);
+				value[254] = '\0'; // dla pewnoÅ›ci zakoÅ„czenia
+
 				sscanf(value, "%f", &x);
 				obj->getTransform().setScale(x);
 
-				if (1 == GetPrivateProfileIntA(section, "lock", 0, path))
+				uint lb = settings.value(QString("%1/lock").arg(section), 0).toUInt();
+				if (1 == lb ) //GetPrivateProfileIntA(section, "lock", 0, path))
 					obj->setLocked(true);
 				else
 					obj->setLocked(false);

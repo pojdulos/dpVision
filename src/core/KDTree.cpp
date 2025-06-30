@@ -7,7 +7,7 @@ A K-D tree for points, with limited capabilities (find nearest point to
 a given point, or to a ray).
 */
 
-#include "KDtree.h"
+#include "KDTree.h"
 
 #include <cstddef>
 #include <cstring>

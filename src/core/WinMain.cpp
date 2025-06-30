@@ -1,4 +1,4 @@
-#include <Windows.h>
+//#include <Windows.h>
 #include "MainApplication.h"
 #include "MainWindow.h"
 #include <QApplication>
@@ -73,14 +73,18 @@ int main(int argc, char* argv[])
 
     AppSettings::apply();
 
-    if (AppSettings::mainSettings()->value("mainwindow/maximized", false).toBool())
-    {
-        CMainWindow::instance()->showMaximized();
-    }
-    else
-    {
-        CMainWindow::instance()->show();
-    }
+    //if (AppSettings::mainSettings()->value("mainwindow/maximized", false).toBool())
+    //{
+    //    CMainWindow::instance()->showMaximized();
+    //}
+    //else
+    //{
+    CMainWindow::instance()->show();
+    //}
+
+    //CMainWindow::instance()->restoreGeometry(AppSettings::mainSettings()->value("gui/mainwindow/geometry").toByteArray());
+    //CMainWindow::instance()->restoreState(AppSettings::mainSettings()->value("gui/mainwindow/dockState").toByteArray());
+
 
     UI::STATUSBAR::printf("loading plugins...");
 

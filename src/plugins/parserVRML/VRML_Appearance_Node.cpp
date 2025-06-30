@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 
 #include "ParserWRL.h"
 
@@ -38,10 +38,10 @@ void CParserWRL::VRML_ParseNode_Appearance( FILE *plik )
 				{
 					fscanf( plik, " url ", bufor );
 
-					// uwaga - nawias prostok¹tny czasem jest a czasem go nie ma !!!
+					// uwaga - nawias prostokï¿½tny czasem jest a czasem go nie ma !!!
 					fscanf( plik, " [ ", bufor );
 					
-					// cudzys³ów raczej zawsze jest
+					// cudzysï¿½ï¿½w raczej zawsze jest
 					fscanf( plik, " \" ", bufor );
 					
 					int i = -1;
@@ -56,7 +56,7 @@ void CParserWRL::VRML_ParseNode_Appearance( FILE *plik )
 					
 					pMeshData->getMaterial().TexInfo = QString( bufor );
 
-					// uwaga - nawias prostok¹tny czasem jest a czasem go nie ma !!!
+					// uwaga - nawias prostokï¿½tny czasem jest a czasem go nie ma !!!
 					fscanf( plik, " ] ", bufor );
 					VRML_IgnoreNode( plik, '{', '}' );
 				}

@@ -37,8 +37,10 @@ void dpLog::info(const char* format, ...)
 
 	//	vprintf_s(format, paramList);
 	char formatBuf[1024];
-	vsprintf_s(formatBuf, _countof(formatBuf), format, paramList);
+	// vsprintf_s(formatBuf, _countof(formatBuf), format, paramList);
+	vsnprintf(formatBuf, sizeof(formatBuf), format, paramList);
 
-		m_txtStream << formatBuf << Qt::endl;
+
+	m_txtStream << formatBuf << Qt::endl;
 }
 

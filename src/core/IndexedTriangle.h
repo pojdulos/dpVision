@@ -2,7 +2,7 @@
 
 #include "Triangle.h"
 
-using namespace std;
+//using namespace std;
 
 class  DPVISION_EXPORT CIndexedTriangle : public CTriangle {
 public:

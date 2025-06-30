@@ -17,6 +17,17 @@ struct DPVISION_EXPORT SBgImage {
 	CTexture* tex;
 };
 
+
+#ifndef _WIN32
+struct RECT {
+    long left;
+    long top;
+    long right;
+    long bottom;
+};
+#endif
+
+
 class DPVISION_EXPORT CBackgroundPlane
 {
 	//std::vector<SBgImage> vImages;

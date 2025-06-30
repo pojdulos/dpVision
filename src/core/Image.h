@@ -107,7 +107,7 @@ public:
 	//void info(std::wstring i[4]) override;
 	virtual std::wstring infoRow() override;
 
-	static std::pair<int, int> loadToBYTEvector(std::wstring fname, std::vector<BYTE>& bufor, int& depth);
+	static std::pair<int, int> loadToBYTEvector(std::wstring fname, std::vector<uint8_t>& bufor, int& depth);
 	static std::pair<int, int> loadToRGBAvector(std::wstring fname, std::vector<CRGBA>& bufor, uchar alpha = 255);
 
 private:

@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 
 #include "ParserWRL.h"
 
@@ -72,13 +72,13 @@ void CParserWRL::VRML_ParseNode_IndexedFaceSet( FILE *plik )
 				{
 					if ( 1 == fscanf( plik, " %d ", &a ) )
 					{
-						fscanf( plik, " , " ); // tu mo¿e nie byæ przecinka
+						fscanf( plik, " , " ); // tu moï¿½e nie byï¿½ przecinka
 						fscanf( plik, " %d ", &b );
-						fscanf( plik, " , " ); // tu mo¿e nie byæ przecinka
+						fscanf( plik, " , " ); // tu moï¿½e nie byï¿½ przecinka
 						fscanf( plik, " %d ", &c );
-						fscanf( plik, " , " ); // tu mo¿e nie byæ przecinka
+						fscanf( plik, " , " ); // tu moï¿½e nie byï¿½ przecinka
 						fscanf( plik, " -1 " );
-						fscanf( plik, " , " ); // tu mo¿e nie byæ przecinka
+						fscanf( plik, " , " ); // tu moï¿½e nie byï¿½ przecinka
 
 						indeks.a = a;
 						indeks.b = b;

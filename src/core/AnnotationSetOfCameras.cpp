@@ -6,8 +6,8 @@
 #include "AP.h"
 #include "UI.h"
 
-#include <Windows.h>
-#include <GL/GL.h>
+//#include <Windows.h>
+#include <GL/gl.h>
 
 #include <regex>
 

@@ -9,7 +9,7 @@
 
 #include "GLViewer.h"
 #include <QtOpenGL>
-#include "GL/Glu.h"
+#include <GL/glu.h>
 
 #include "AnnotationPyramid.h"
 #include "AnnotationPath.h"
@@ -100,7 +100,7 @@ CPoint3d GLViewer::world2win(const CPoint3d& world)
 //	else
 //	{
 //		doneCurrent();
-//		// Obs³uga b³êdu - mo¿e byæ rzut wyj¹tku lub zwrócenie punktu z wartoœciami wskazuj¹cymi na b³¹d
+//		// Obsï¿½uga bï¿½ï¿½du - moï¿½e byï¿½ rzut wyjï¿½tku lub zwrï¿½cenie punktu z wartoï¿½ciami wskazujï¿½cymi na bï¿½ï¿½d
 //		throw std::runtime_error("gluProject failed to transform world coordinates to window coordinates.");
 //	}
 //}
@@ -162,9 +162,9 @@ bool GLViewer::inTriangle(CPoint3d pt, CPoint3d pA, CPoint3d pB, CPoint3d pC)
 	CVector3d v = CVector3d(pA, pC);
 
 	// --------------------------------------------------------------
-	// sprawdzam czy pIntersectionPoint lezy w trójk¹cie tFace
+	// sprawdzam czy pIntersectionPoint lezy w trï¿½jkï¿½cie tFace
 	// --------------------------------------------------------------
-	// to jest wyznaczane ze wspó³rzêdnych barycentrycznych
+	// to jest wyznaczane ze wspï¿½rzï¿½dnych barycentrycznych
 
 	double uu = u.dotProduct(u);
 	double uv = u.dotProduct(v);
@@ -180,15 +180,15 @@ bool GLViewer::inTriangle(CPoint3d pt, CPoint3d pA, CPoint3d pB, CPoint3d pC)
 	// get and test parametric coords
 	double s = (uv * wv - vv * wu) / D;
 
-	if (s < 0.0 || s > 1.0)         // pIntersectionPoint le¿y poza trójk¹tem
+	if (s < 0.0 || s > 1.0)         // pIntersectionPoint leï¿½y poza trï¿½jkï¿½tem
 		return false;
 
 	double t = (uv * wu - uu * wv) / D;
 
-	if (t < 0.0 || (s + t) > 1.0)  // pIntersectionPoint le¿y poza trójk¹tem
+	if (t < 0.0 || (s + t) > 1.0)  // pIntersectionPoint leï¿½y poza trï¿½jkï¿½tem
 		return false;
 
-	return true; // pIntersectionPoint le¿y na trójk¹cie tFace
+	return true; // pIntersectionPoint leï¿½y na trï¿½jkï¿½cie tFace
 }
 
 
@@ -308,6 +308,7 @@ bool GLViewer::isInPixelShadow(double pxlX, double pxlY, double ptX, double ptY)
 		&& ((pxlY - r) <= ptY) && ((pxlY + r) > ptY));
 }
 
+#include <chrono>
 
 void GLViewer::PickMeshPoint(double xx, double yy, CModel3D* obj)
 {
@@ -320,7 +321,10 @@ void GLViewer::PickMeshPoint(double xx, double yy, CModel3D* obj)
 		CPoint3f IntersectionPoint;
 		INDEX_TYPE faceIdx;
 
-		ULONGLONG t0 = GetTickCount64();
+
+		auto t0 = std::chrono::steady_clock::now();
+		//ULONGLONG t0 = GetTickCount64();
+
 		if (mesh->getClosestFace(pkt0, vRay, /*ref*/IntersectionPoint, /*ref*/faceIdx))
 		{
 			bool usedInPlugin = false;
@@ -405,8 +409,12 @@ void GLViewer::PickMeshPoint(double xx, double yy, CModel3D* obj)
 			//------------------------------------------------------------------
 
 
-			ULONGLONG t1 = GetTickCount64();
-			UI::STATUSBAR::printf("Selected point [%lf,%lf,%lf] on object %d (time:%ld)", IntersectionPoint.X(), IntersectionPoint.Y(), IntersectionPoint.Z(), obj->id(), t1 - t0);
+			//ULONGLONG t1 = GetTickCount64();
+			auto t1 = std::chrono::steady_clock::now();
+			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
+
+			UI::STATUSBAR::printf("Selected point [%lf,%lf,%lf] on object %d (time:%ld)", IntersectionPoint.X(), IntersectionPoint.Y(), IntersectionPoint.Z(), obj->id(), duration);
+			
 		}
 	}
 }
@@ -419,7 +427,8 @@ void GLViewer::PickCloudPoint(double xx, double yy, CModel3D * obj)
 	{
 		CPointCloud* cloud = (CPointCloud*)obj->getChild();
 
-		ULONGLONG t0 = GetTickCount64();
+		//ULONGLONG t0 = GetTickCount64();
+		auto t0 = std::chrono::steady_clock::now();
 
 		double r;
 		CAnnotationPyramid* apy = getPyramid(xx, yy, pkt0, pkt1, obj, r);
@@ -514,8 +523,11 @@ void GLViewer::PickCloudPoint(double xx, double yy, CModel3D * obj)
 			delete pointsInPixelShadow;
 		}
 
-		ULONGLONG t1 = GetTickCount64();
-		UI::STATUSBAR::printf("Object clicked (%d) (time:%ld)", obj->id(), t1 - t0);
+		//ULONGLONG t1 = GetTickCount64();
+		auto t1 = std::chrono::steady_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
+
+		UI::STATUSBAR::printf("Object clicked (%d) (time:%ld)", obj->id(), duration);
 	}
 }
 

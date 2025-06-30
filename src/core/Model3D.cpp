@@ -531,15 +531,18 @@ CModel3D* CModel3D::load(const QString fext, const QString path, bool synchronou
 
 	if (nullptr != parser)
 	{
-		unsigned long t1, t2;
+		//unsigned long t1, t2;
 
-		t1 = GetTickCount();
+		// t1 = GetTickCount();
+		auto t0 = std::chrono::steady_clock::now();
 
 		CModel3D* obj = parser->load(path, synchronous);
 
-		t2 = GetTickCount();
+		// t2 = GetTickCount();
+		auto t1 = std::chrono::steady_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
 
-		qInfo() << "Load time: " << t2 - t1;
+		qInfo() << "Load time: " << duration;
 
 		if (!parser->inPlugin()) delete parser;
 
@@ -555,15 +558,18 @@ CModel3D* CModel3D::load(const QString path, bool synchronous)
 
 	if (nullptr != parser)
 	{
-		unsigned long t1, t2;
+		// unsigned long t1, t2;
 
-		t1 = GetTickCount();
+		// t1 = GetTickCount();
+		auto t0 = std::chrono::steady_clock::now();
 
 		CModel3D* obj = parser->load( path, synchronous );
 
-		t2 = GetTickCount();
+		// t2 = GetTickCount();
+		auto t1 = std::chrono::steady_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
 
-		qInfo() << "Load time: " << t2 - t1;
+		qInfo() << "Load time: " << duration;
 
 		if (!parser->inPlugin()) delete parser;
 

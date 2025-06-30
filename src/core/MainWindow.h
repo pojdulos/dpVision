@@ -182,8 +182,10 @@ private:
 
 	void createRecentActions();
 	void createRecentMenus();
-	void adjustForCurrentFile(const QString& filePath);
 	void updateRecentActionList();
+
+public:
+	void adjustForCurrentFile(const QString& filePath);
 
 private:
 	SettingsDialog* settingsDialog;

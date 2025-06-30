@@ -362,7 +362,7 @@ void GLViewer::mousePressEvent( QMouseEvent* event )
 	{
 		if (event->button() == Qt::MouseButton::LeftButton)
 		{
-			if (Qt::ControlModifier & event->modifiers())
+			if (Qt::AltModifier & event->modifiers())
 			{
 				if (Qt::ShiftModifier & event->modifiers())   //shift+control
 				{
@@ -537,7 +537,7 @@ int glhProjectf(double objx, double objy, double objz, double* modelview, double
 }
 
 #include <omp.h>
-#include "GL/Glu.h"
+#include <GL/glu.h>
 
 void GLViewer::deleteSelectedVoxels(Volumetric* vol, bool deleteSelected)
 {
@@ -1079,25 +1079,25 @@ void GLViewer::wheelEvent(QWheelEvent * event)
 	moving = false;
 }
 
-inline void GLViewer::setBGcolor(GLfloat col)
+void GLViewer::setBGcolor(GLfloat col)
 {
 	_fBgColor.SetFloat(col, col, col, 1.0);
 	glClearColor(_fBgColor.fR(), _fBgColor.fG(), _fBgColor.fB(), 0.0f);
 	
 }
 
-inline void GLViewer::setBGcolor(CRGBA& col)
+void GLViewer::setBGcolor(CRGBA& col)
 {
 	_fBgColor.SetFloat(col.fR(), col.fG(), col.fB(), 1.0);
 	glClearColor(_fBgColor.fR(), _fBgColor.fG(), _fBgColor.fB(), 0.0f);
 }
 
-inline CRGBA& GLViewer::getBGcolor()
+CRGBA& GLViewer::getBGcolor()
 {
 	return _fBgColor;
 }
 
-inline void GLViewer::recalcView()
+void GLViewer::recalcView()
 {
 	if (_fAspect >= 1.0)
 	{
@@ -1114,24 +1114,24 @@ inline void GLViewer::recalcView()
 	_left = -_right;
 }
 
-inline void GLViewer::setVAngle(GLdouble angle)
+void GLViewer::setVAngle(GLdouble angle)
 {
 	_dViewingAngle = angle;
 
 	recalcView();
 }
 
-inline GLdouble GLViewer::getVAngle()
+GLdouble GLViewer::getVAngle()
 {
 	return _dViewingAngle;
 }
 
-inline void GLViewer::setOrthoSize(GLdouble fov) {
+void GLViewer::setOrthoSize(GLdouble fov) {
 	_dOrthoViewSize = fov;
 	recalcView();
 }
 
-inline GLdouble GLViewer::getOrthoSize() {
+GLdouble GLViewer::getOrthoSize() {
 	return _dOrthoViewSize;
 }
 
@@ -1164,7 +1164,7 @@ void GLViewer::applyProjection()
 	}
 }
 
-inline bool GLViewer::currentProjectionIs(GLViewer::Projection p) {
+bool GLViewer::currentProjectionIs(GLViewer::Projection p) {
 	return _projection == p;
 }
 

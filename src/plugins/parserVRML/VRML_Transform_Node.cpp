@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 
 #include "ParserWRL.h"
 
@@ -24,13 +24,13 @@ void CParserWRL::VRML_ParseNode_Transform( FILE *plik )
 		else if ( ch == 't')
 		{	
 			// translation 0.000000 0.000000 0.000000
-			// na razie nie obs³ugujê
+			// na razie nie obsï¿½ugujï¿½
 		    if( ! VRML_GoToNextLine( plik ) ) return;
 		}
 		else if ( ch == 'r')
 		{	
 			// rotation	0.000000 0.000000 1.000000 0.000000
-			// na razie nie obs³ugujê
+			// na razie nie obsï¿½ugujï¿½
 		    if( ! VRML_GoToNextLine( plik ) ) return;
 		}
 		else if ( ch == '{' )

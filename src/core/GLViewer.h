@@ -1,4 +1,5 @@
 #pragma once
+
 #ifndef GL_VIEWERx_H
 #define GL_VIEWERx_H
 
@@ -33,6 +34,12 @@ class CBoundVector;
 class CAnnotationPyramid;
 class CVolTK;
 #include "Volumetric.h"
+
+
+#ifndef _WIN32
+typedef long LONG;
+#endif
+
 
 class DPVISION_EXPORT GLViewer : public QOpenGLWidget, protected QOpenGLFunctions
 {

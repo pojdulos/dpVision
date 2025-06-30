@@ -188,25 +188,29 @@ CVector3d CTriangle::getNormal()
 }
 
 
+//
+//template<class T, class Compare>
+//constexpr const T& clamp(const T& v, const T& lo, const T& hi, Compare comp)
+//{
+//	return assert(!comp(hi, lo)),
+//		comp(v, lo) ? lo : comp(hi, v) ? hi : v;
+//}
+//
+//template<class T>
+//constexpr const T& clamp(const T& v, const T& lo, const T& hi)
+//{
+//	return clamp(v, lo, hi, std::less<>());
+//}
 
-template<class T, class Compare>
-constexpr const T& clamp(const T& v, const T& lo, const T& hi, Compare comp)
-{
-	return assert(!comp(hi, lo)),
-		comp(v, lo) ? lo : comp(hi, v) ? hi : v;
-}
+#include <algorithm>
 
-template<class T>
-constexpr const T& clamp(const T& v, const T& lo, const T& hi)
-{
-	return clamp(v, lo, hi, std::less<>());
-}
+using std::clamp;
 
-CPoint3d CTriangle::getClosestPoint(const CPoint3d& sourcePosition)
+CPoint3d CTriangle::getClosestPoint(const CPoint3d& sourcePosition, const CVertex& _a, const CVertex& _b, const CVertex& _c )
 {
-	CVector3d edge0(a, b);
-	CVector3d edge1(a, c);
-	CVector3d v0(sourcePosition, a);
+	CVector3d edge0(_a, _b);
+	CVector3d edge1(_a, _c);
+	CVector3d v0(sourcePosition, _a);
 
 	float a = edge0.dotProduct(edge0);
 	float b = edge0.dotProduct(edge1);
@@ -296,5 +300,102 @@ CPoint3d CTriangle::getClosestPoint(const CPoint3d& sourcePosition)
 		}
 	}
 
-	return this->a + edge0 * s + edge1 * t;
+	return _a + edge0 * s + edge1 * t;
 }
+
+//CPoint3d CTriangle::getClosestPoint(const CPoint3d & sourcePosition)
+//{
+//	CVector3d edge0(a, b);
+//	CVector3d edge1(a, c);
+//	CVector3d v0(sourcePosition, a);
+//
+//	float a = edge0.dotProduct(edge0);
+//	float b = edge0.dotProduct(edge1);
+//	float c = edge1.dotProduct(edge1);
+//	float d = edge0.dotProduct(v0);
+//	float e = edge1.dotProduct(v0);
+//
+//	float det = a * c - b * b;
+//	float s = b * e - c * d;
+//	float t = b * d - a * e;
+//
+//	if (s + t < det)
+//	{
+//		if (s < 0.f)
+//		{
+//			if (t < 0.f)
+//			{
+//				if (d < 0.f)
+//				{
+//					s = clamp(-d / a, 0.f, 1.f);
+//					t = 0.f;
+//				}
+//				else
+//				{
+//					s = 0.f;
+//					t = clamp(-e / c, 0.f, 1.f);
+//				}
+//			}
+//			else
+//			{
+//				s = 0.f;
+//				t = clamp(-e / c, 0.f, 1.f);
+//			}
+//		}
+//		else if (t < 0.f)
+//		{
+//			s = clamp(-d / a, 0.f, 1.f);
+//			t = 0.f;
+//		}
+//		else
+//		{
+//			float invDet = 1.f / det;
+//			s *= invDet;
+//			t *= invDet;
+//		}
+//	}
+//	else
+//	{
+//		if (s < 0.f)
+//		{
+//			float tmp0 = b + d;
+//			float tmp1 = c + e;
+//			if (tmp1 > tmp0)
+//			{
+//				float numer = tmp1 - tmp0;
+//				float denom = a - 2 * b + c;
+//				s = clamp(numer / denom, 0.f, 1.f);
+//				t = 1 - s;
+//			}
+//			else
+//			{
+//				t = clamp(-e / c, 0.f, 1.f);
+//				s = 0.f;
+//			}
+//		}
+//		else if (t < 0.f)
+//		{
+//			if (a + d > b + e)
+//			{
+//				float numer = c + e - b - d;
+//				float denom = a - 2 * b + c;
+//				s = clamp(numer / denom, 0.f, 1.f);
+//				t = 1 - s;
+//			}
+//			else
+//			{
+//				s = clamp(-e / c, 0.f, 1.f);
+//				t = 0.f;
+//			}
+//		}
+//		else
+//		{
+//			float numer = c + e - b - d;
+//			float denom = a - 2 * b + c;
+//			s = clamp(numer / denom, 0.f, 1.f);
+//			t = 1.f - s;
+//		}
+//	}
+//
+//	return this->a + edge0 * s + edge1 * t;
+//}

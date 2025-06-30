@@ -3,8 +3,8 @@
 
 #include "AP.h"
 
-#include <Windows.h>
-#include <GL/GL.h>
+//#include <Windows.h>
+#include <GL/gl.h>
 
 CAnnotationVPath::CAnnotationVPath(ListOfVIndices& list, CModel3D* m) :CAnnotation(m), ListOfVIndices(list)
 {

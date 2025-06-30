@@ -36,18 +36,33 @@ namespace AP
 		return i;
 	}
 
-	void processEvents( bool immediate )
-	{
-		static unsigned long t475634 = 0;
-		unsigned long t1;
+	// void processEvents( bool immediate )
+	// {
+	// 	static unsigned long t475634 = 0;
+	// 	unsigned long t1;
 
-		t1 = GetTickCount();
+	// 	t1 = GetTickCount();
 		
-		//processEvents calls slows down the program, so no more than once per second
-		if ( immediate || ((int)(t1 - t475634) > 1000) )
+	// 	//processEvents calls slows down the program, so no more than once per second
+	// 	if ( immediate || ((int)(t1 - t475634) > 1000) )
+	// 	{
+	// 		QCoreApplication::processEvents();
+	// 		t475634 = t1;
+	// 	}
+	// }
+
+	#include <QElapsedTimer>
+
+	void processEvents(bool immediate)
+	{
+		static QElapsedTimer timer;
+		if (!timer.isValid())
+			timer.start();
+
+		if (immediate || timer.elapsed() > 1000)
 		{
 			QCoreApplication::processEvents();
-			t475634 = t1;
+			timer.restart();
 		}
 	}
 
@@ -374,8 +389,6 @@ namespace AP
 
 		bool removeModel( int id, bool deleteIt)
 		{
-			UI::DOCK::WORKSPACE::removeItem(id);
-
 			if (getWorkspace()->_removeModel(id, deleteIt))
 			{
 				CModel3D *obj = AP::WORKSPACE::getCurrentModel();
@@ -390,6 +403,8 @@ namespace AP
 					UI::DOCK::PROPERTIES::selectionChanged(NO_CURRENT_MODEL);
 				}
 					
+				UI::DOCK::WORKSPACE::removeItem(id);
+
 				UI::changeMenuAfterSelect();
 				UI::updateAllViews();
 			}
@@ -744,10 +759,16 @@ bool AP::OBJECT::removeChild(CBaseObject* obj, CBaseObject* child, bool deleteIt
 	return false;
 }
 
-void AP::OBJECT::moveTo(CBaseObject *obj, CBaseObject* newParent)
+void AP::OBJECT::moveTo(CBaseObject *obj, CBaseObject* newParent, bool keep_pos)
 {
 	if (obj != nullptr)
 	{
+		if ((newParent != nullptr) && newParent->hasCategory(CBaseObject::Category::ANNOTATION) && obj->hasCategory(CBaseObject::Category::OBJECT))
+		{
+			UI::MESSAGEBOX::error("regular object cannot be moved as a descendant of annotation");
+			return;
+		}
+
 		CBaseObject* oldParent = obj->getParent();
 
 		CTransform t0;
@@ -765,91 +786,125 @@ void AP::OBJECT::moveTo(CBaseObject *obj, CBaseObject* newParent)
 			}
 		}
 
-		CModel3D* newmodel = new CModel3D();
-		newmodel->setLabel("<=>");
-		newmodel->setDescr("Macierz dopasowania, wygenerowana podczas przenoszenia obiektu");
-
-		if (obj->hasCategory(CBaseObject::OBJECT))
+		if (keep_pos)
 		{
-			newmodel->addChild(obj);
-			newmodel->importChildrenGeometry();
+			CModel3D* newmodel = new CModel3D();
+			newmodel->setLabel("<=>");
+			newmodel->setDescr("Macierz dopasowania, wygenerowana podczas przenoszenia obiektu");
+
+			if (obj->hasCategory(CBaseObject::OBJECT))
+			{
+				newmodel->addChild(obj);
+				newmodel->importChildrenGeometry();
+			}
+			else if (obj->hasCategory(CBaseObject::ANNOTATION))
+			{
+				newmodel->addAnnotation((CAnnotation*)obj);
+			}
+
+			if (newParent == nullptr) // copyToNew
+			{
+				newmodel->setTransform(t0);
+
+				AP::WORKSPACE::addModel(newmodel);
+			}
+			else // copyTo existing
+			{
+				CTransform t1(newParent->getGlobalTransformationMatrix());
+				CTransform ft = CTransform::fromTo(t0, t1);
+
+				newmodel->setTransform(ft);
+
+				AP::OBJECT::addChild(newParent, newmodel);
+				//((CObject*)newParent)->importChildrenGeometry();
+			}
 		}
-		else if (obj->hasCategory(CBaseObject::ANNOTATION))
+		else
 		{
-			newmodel->addAnnotation((CAnnotation*)obj);
-		}
-
-		if (newParent == nullptr) // copyToNew
-		{
-			newmodel->setTransform(t0);
-
-			AP::WORKSPACE::addModel(newmodel);
-		}
-		else // copyTo existing
-		{
-			CTransform t1(newParent->getGlobalTransformationMatrix());
-			CTransform ft = CTransform::fromTo(t0, t1);
-
-			newmodel->setTransform(ft);
-
-			AP::OBJECT::addChild(newParent, newmodel);
-			//((CObject*)newParent)->importChildrenGeometry();
+			if (newParent == nullptr) // moveToNew
+			{
+				AP::WORKSPACE::addObject(obj);
+			}
+			else // moveTo existing
+			{
+				AP::OBJECT::addChild(newParent, obj);
+			}
 		}
 
 		UI::updateAllViews();
 	}
 }
 
-void AP::OBJECT::copyTo(CBaseObject* obj, CBaseObject* newParent)
+void AP::OBJECT::copyTo(CBaseObject* obj, CBaseObject* newParent, bool keep_pos)
 {
 	if (obj != nullptr)
 	{
+		if ((newParent != nullptr) && newParent->hasCategory(CBaseObject::Category::ANNOTATION) && obj->hasCategory(CBaseObject::Category::OBJECT))
+		{
+			UI::MESSAGEBOX::error("regular object cannot be copied as a descendant of annotation");
+			return;
+		}
+
 		CBaseObject* kopia = obj->getCopy();
 
-		CTransform t0;
-		if (obj->getParent() != nullptr)
-			t0 = CTransform(obj->getParent()->getGlobalTransformationMatrix());
-
-		CModel3D* newmodel = new CModel3D();
-		newmodel->setLabel("<=>");
-		newmodel->setDescr("Macierz dopasowania, wygenerowana podczas kopiowania obiektu");
-
-		if (newParent == nullptr) // copyToNew
+		if (keep_pos)
 		{
-			if (kopia->hasCategory(CBaseObject::OBJECT))
+			CTransform t0;
+			if (obj->getParent() != nullptr)
+				t0 = CTransform(obj->getParent()->getGlobalTransformationMatrix());
+
+			CModel3D* newmodel = new CModel3D();
+			newmodel->setLabel("<=>");
+			newmodel->setDescr("Macierz dopasowania, wygenerowana podczas kopiowania obiektu");
+
+			if (newParent == nullptr) // copyToNew
 			{
-				newmodel->addChild(kopia);
-				newmodel->importChildrenGeometry();
-				newmodel->setTransform(t0);
-				AP::WORKSPACE::addModel(newmodel);
+				if (kopia->hasCategory(CBaseObject::OBJECT))
+				{
+					newmodel->addChild(kopia);
+					newmodel->importChildrenGeometry();
+					newmodel->setTransform(t0);
+					AP::WORKSPACE::addModel(newmodel);
+				}
+				else if (kopia->hasCategory(CBaseObject::ANNOTATION))
+				{
+					newmodel->addAnnotation((CAnnotation*)kopia);
+					newmodel->setTransform(t0);
+					AP::WORKSPACE::addModel(newmodel);
+				}
 			}
-			else if (kopia->hasCategory(CBaseObject::ANNOTATION))
+			else // copyTo existing
 			{
-				newmodel->addAnnotation((CAnnotation*)kopia);
-				newmodel->setTransform(t0);
-				AP::WORKSPACE::addModel(newmodel);
+				CTransform t1(newParent->getGlobalTransformationMatrix());
+				CTransform ft = CTransform::fromTo(t0, t1);
+
+				if (ft.toQMatrix4x4().isIdentity())
+				{
+					AP::OBJECT::addChild(newParent, kopia);
+					delete newmodel;
+				}
+				else
+				{
+					newmodel->addChild(kopia);
+					newmodel->importChildrenGeometry();
+					newmodel->setTransform(ft);
+
+					AP::OBJECT::addChild(newParent, newmodel);
+				}
+
+				//((CObject*)newParent)->importChildrenGeometry();
 			}
 		}
-		else // copyTo existing
+		else
 		{
-			CTransform t1(newParent->getGlobalTransformationMatrix());
-			CTransform ft = CTransform::fromTo(t0, t1);
-
-			if (ft.toQMatrix4x4().isIdentity())
+			if (newParent == nullptr) // copyToNew
+			{
+				AP::WORKSPACE::addObject(kopia);
+			}
+			else // copyTo existing
 			{
 				AP::OBJECT::addChild(newParent, kopia);
-				delete newmodel;
 			}
-			else
-			{
-				newmodel->addChild(kopia);
-				newmodel->importChildrenGeometry();
-				newmodel->setTransform(ft);
-
-				AP::OBJECT::addChild(newParent, newmodel);
-			}
-
-			//((CObject*)newParent)->importChildrenGeometry();
 		}
 		UI::updateAllViews();
 	}

@@ -429,7 +429,7 @@ QBitmap ImageLabel::mask_to_bitmap()
 	return QBitmap::fromImage(monoImage);
 }
 
-inline QImage ImageLabel::mask_bitmap_to_image(const QBitmap& bitmap)
+QImage ImageLabel::mask_bitmap_to_image(const QBitmap& bitmap)
 {
 	QImage monoImage = bitmap.toImage();
 	QImage result(monoImage.size(), QImage::Format_ARGB32);
@@ -444,7 +444,7 @@ inline QImage ImageLabel::mask_bitmap_to_image(const QBitmap& bitmap)
 	return result;
 }
 
-inline QBitmap ImageLabel::mask_image_to_bitmap(const QImage& image)
+QBitmap ImageLabel::mask_image_to_bitmap(const QImage& image)
 {
 	QImage monoImage(image.size(), QImage::Format_Mono);
 

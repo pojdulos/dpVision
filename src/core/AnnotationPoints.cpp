@@ -3,8 +3,8 @@
 
 #include "AP.h"
 
-#include <Windows.h>
-#include <GL/GL.h>
+//#include <Windows.h>
+#include <GL/gl.h>
 
 void CAnnotationPoints::applyTransformation(CTransform &prevT, CTransform &newT)
 {

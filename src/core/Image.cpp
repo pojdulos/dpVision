@@ -254,15 +254,15 @@ std::wstring CImage::infoRow()
 
 
 
-std::pair<int, int> CImage::loadToBYTEvector(std::wstring fname, std::vector<BYTE>& bufor, int& depth)
+std::pair<int, int> CImage::loadToBYTEvector(std::wstring fname, std::vector<uint8_t>& bufor, int& depth)
 {
 	QImage image(QString::fromStdWString(fname));
 
 	depth = image.depth();
 
-	uchar* bits = image.bits(); // pozyskujê wskaŸnik na pocz¹tek tablicy bitów
+	uchar* bits = image.bits(); // pozyskujï¿½ wskaï¿½nik na poczï¿½tek tablicy bitï¿½w
 
-	uchar* bitsEnd = bits + image.sizeInBytes(); // obliczam wskaŸnik na koniec tablicy
+	uchar* bitsEnd = bits + image.sizeInBytes(); // obliczam wskaï¿½nik na koniec tablicy
 
 	bufor.clear();
 	bufor.reserve(image.sizeInBytes());
@@ -281,9 +281,9 @@ std::pair<int, int> CImage::loadToRGBAvector(std::wstring fname, std::vector<CRG
 	int depth = image.depth();
 
 	UI::STATUSBAR::printf(L"depth: %d", depth);
-	uchar* bits = image.bits(); // pozyskujê wskaŸnik na pocz¹tek tablicy bitów
+	uchar* bits = image.bits(); // pozyskujï¿½ wskaï¿½nik na poczï¿½tek tablicy bitï¿½w
 
-	uchar* bitsEnd = bits + image.sizeInBytes(); // obliczam wskaŸnik na koniec tablicy
+	uchar* bitsEnd = bits + image.sizeInBytes(); // obliczam wskaï¿½nik na koniec tablicy
 
 	bufor.clear();
 	bufor.reserve(image.sizeInBytes() / 4);

@@ -14,18 +14,25 @@ CParserSTL::~CParserSTL(void)
 
 size_t CParserSTL::ReadBinarySTL()
 {
-	FILE *plik;
-	plik = _wfopen( this->plikSiatki.absoluteFilePathW().c_str(), L"rb" );
+	// FILE *plik;
+	// plik = _wfopen( this->plikSiatki.absoluteFilePathW().c_str(), L"rb" );
+#ifdef _WIN32
+    FILE* plik = _wfopen(this->plikSiatki.absoluteFilePathW().c_str(), L"rb");
+#else
+    QByteArray pathBytes = plikSiatki.absoluteFilePath().toUtf8();
+    FILE* plik = fopen(pathBytes.constData(), "r");
+#endif
+
 
 	if (!plik) return 0;
   
 	GLuint lb = 0;
 	char bufor[80];
 
-	// 80 bajtów nag³ówka, zwykle jest tam nazwa pliku i zera - pomijam
+	// 80 bajtï¿½w nagï¿½ï¿½wka, zwykle jest tam nazwa pliku i zera - pomijam
 	fread( bufor, 1, 80, plik );
 
-	// uint (4 bajty) zawieraj¹cy liczbê œcian do wczytania
+	// uint (4 bajty) zawierajï¿½cy liczbï¿½ ï¿½cian do wczytania
 	fread( &lb, 4, 1, plik );
 
 	pMeshData->vertices().clear();
@@ -54,12 +61,12 @@ size_t CParserSTL::ReadBinarySTL()
 			p++;
 		}
 
-		// cztery trójki liczb typu float (czterobajtowe)
-		// najpierw wektor normalny a nastêpnie trzy wierzcho³ki
+		// cztery trï¿½jki liczb typu float (czterobajtowe)
+		// najpierw wektor normalny a nastï¿½pnie trzy wierzchoï¿½ki
 		fread( &t, 48, 1, plik );
 
-		// te dwa bajty s¹ zwykle pomijane, ale mog¹ zawieraæ
-		// np. informacjê o kolorze. Na razie nie korzystam z nich
+		// te dwa bajty sï¿½ zwykle pomijane, ale mogï¿½ zawieraï¿½
+		// np. informacjï¿½ o kolorze. Na razie nie korzystam z nich
 		fread( bufor, 2, 1, plik );
 
 		va.v = t.a;
@@ -144,8 +151,15 @@ size_t CParserSTL::ReadBinarySTL()
 
 size_t CParserSTL::ReadTextSTL()
 {
-	FILE *plik;
-	plik = _wfopen( this->plikSiatki.absoluteFilePathW().c_str(), L"r" );
+	// FILE *plik;
+	// plik = _wfopen( this->plikSiatki.absoluteFilePathW().c_str(), L"r" );
+#ifdef _WIN32
+    FILE* plik = _wfopen(this->plikSiatki.absoluteFilePathW().c_str(), L"r");
+#else
+    QByteArray pathBytes = plikSiatki.absoluteFilePath().toUtf8();
+    FILE* plik = fopen(pathBytes.constData(), "r");
+#endif
+
 
 	if (!plik) return 0;
   
@@ -284,10 +298,17 @@ size_t CParserSTL::Run()
 	m_model->addChild( pMeshData = new CMesh( m_model ) );
 	if ( pMeshData == NULL ) return 0;
 
-	// najpierw trzeba sprawdziæ czy tekstowy czy binarny, w tym celu pobieram pierwsz¹ liniê lub 80 bajtów
+	// najpierw trzeba sprawdziï¿½ czy tekstowy czy binarny, w tym celu pobieram pierwszï¿½ liniï¿½ lub 80 bajtï¿½w
 	char bufor[80];
 	
-	FILE *plik = _wfopen( this->plikSiatki.absoluteFilePathW().c_str(), L"r" );
+	// FILE *plik = _wfopen( this->plikSiatki.absoluteFilePathW().c_str(), L"r" );
+#ifdef _WIN32
+    FILE* plik = _wfopen(this->plikSiatki.absoluteFilePathW().c_str(), L"r");
+#else
+    QByteArray pathBytes = plikSiatki.absoluteFilePath().toUtf8();
+    FILE* plik = fopen(pathBytes.constData(), "r");
+#endif
+
 	
 	if ( ! plik ) return 0;
 
@@ -296,8 +317,8 @@ size_t CParserSTL::Run()
 
 	size_t lbs = 0;
 
-	// teraz sprawdzam, czy pierwsze 5 znaków == 'solid'
-	// w ka¿dym innym wypadku przyjmujê, ze to jest binarny stl
+	// teraz sprawdzam, czy pierwsze 5 znakï¿½w == 'solid'
+	// w kaï¿½dym innym wypadku przyjmujï¿½, ze to jest binarny stl
 	if ( (bufor[0]=='s') && (bufor[1]=='o') && (bufor[2]=='l') && (bufor[3]=='i') && (bufor[4]=='d') )
 	{
 		lbs = ReadTextSTL();

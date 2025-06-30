@@ -1,9 +1,9 @@
 #include "stdafx.h"
 
-#include <Windows.h>
+//#include <Windows.h>
 #include "Mesh.h"
 
-#include <GL\GL.h>
+#include <GL/gl.h>
 #include "VolTK.h"
 #include "RGBA.h"
 //#include "Model3D.h"
@@ -250,8 +250,11 @@ std::wstring CVolTK::infoRow()
 	return info;
 }
 
-
+#ifdef _WIN32
 #define PACKET_SIZE 100000ULL
+#else
+#define PACKET_SIZE 100000UL
+#endif
 
 #include <qglshaderprogram.h>
 #include "AP.h"
@@ -421,8 +424,8 @@ void main(void)
 
 float fixVal(float val)
 {
-	float k = 3.0;  // wspó³czynnik nachylenia krzywej
-	float x_0 = 0.3;  // x dla którego funkcja osi¹ga 0.5
+	float k = 3.0;  // wspï¿½czynnik nachylenia krzywej
+	float x_0 = 0.3;  // x dla ktï¿½rego funkcja osiï¿½ga 0.5
 
 	float c = 1.0f / (1.0f + exp(-k * (val * 10.0f - x_0)));
 

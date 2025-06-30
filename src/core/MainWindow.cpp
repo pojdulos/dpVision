@@ -30,12 +30,15 @@
 #include "AppSettings.h"
 
 
+void restoreDockGeometry(QDockWidget* dock)
+{
+	int width = AppSettings::mainSettings()->value("gui/mainwindow/" + dock->objectName() + "/width", 200).toInt();
+	int height = AppSettings::mainSettings()->value("gui/mainwindow/" + dock->objectName() + "/height", 200).toInt();
+	dock->resize(width, height);
+}
+
 CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 {
-	//QRect r = AP::mainApp().settings->value("mainwindow/geometry").value<QRect>();
-
-	//setGeometry(r);
-
 	ui.setupUi(this);
 
 	//// Usuniêcie domyœlnego paska tytu³owego
@@ -84,44 +87,32 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 	this->dockHisto->setVisible(false);
 
 	//-------------------------------------------------------
+	this->dockWorkspace = new DockWidgetWorkspace(this);
+	this->dockProperties = new DockWidgetProperties(this);
+	this->dockPluginList = new DockWidgetPluginList(this);
+	this->dockPluginPanel = new DockWidgetPluginPanel(this);
+	this->dockLights = new DockWidgetLights(this);
+	this->dockImage = new DockWidgetImageViewer(this);
+
+	this->dockLights->setVisible(false);
+	this->dockImage->setVisible(false);
 
 	//-------------------------------------------------------
 	// Lewy dock
-	this->dockWorkspace = new DockWidgetWorkspace(this);
-	this->addDockWidget(Qt::LeftDockWidgetArea, dockWorkspace);
-
-	this->dockProperties = new DockWidgetProperties(this);
+	this->addDockWidget(Qt::BottomDockWidgetArea, dockWorkspace);
 	this->addDockWidget(Qt::LeftDockWidgetArea, dockProperties);
-
-	this->dockLights = new DockWidgetLights( this );
-	this->addDockWidget( Qt::LeftDockWidgetArea, dockLights );
-	this->dockLights->setVisible(false);
-
+	this->addDockWidget(Qt::LeftDockWidgetArea, dockLights);
 	this->tabifyDockWidget(dockProperties, dockLights);
-
-	this->dockImage = new DockWidgetImageViewer(this);
 	this->addDockWidget(Qt::LeftDockWidgetArea, dockImage);
-	this->dockImage->setVisible(false);
-	//-------------------------------------------------------
 
 	//-------------------------------------------------------
 	// Prawy dock
-	this->dockPluginList = new DockWidgetPluginList(this);
 	this->addDockWidget(Qt::RightDockWidgetArea, dockPluginList);
-
-	this->dockPluginPanel = new DockWidgetPluginPanel(this);
 	this->addDockWidget(Qt::RightDockWidgetArea, dockPluginPanel);
 	//-------------------------------------------------------
 
-	QList<QDockWidget*> leftDocks = { dockWorkspace, dockProperties };
-	QList<QDockWidget*> rightDocks = { dockPluginList, dockPluginPanel };
-	float wh = this->size().height();
-	int hA = 0.25 * wh;
-	int hB = 0.75 * wh; 
-	QList<int> dockSizes = { hA, hB };
-
-	this->resizeDocks(leftDocks, dockSizes, Qt::Vertical);
-	this->resizeDocks(rightDocks, dockSizes, Qt::Vertical);
+	//this->setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+	//this->setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
 	this->progressIndicator = new ProgressIndicator(this->statusBar());
 	//this->progressIndicator->setMaximumHeight(16);
@@ -154,9 +145,6 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 			lastActiveWindow = window;  // Przechowuj wskaŸnik jako QPointer
 		}
 		});
-
-	this->restoreGeometry(AppSettings::mainSettings()->value("mainwindow/geometry").toByteArray());
-	this->restoreState(AppSettings::mainSettings()->value("mainwindow/dockState").toByteArray());
 }
 
 CMainWindow::~CMainWindow() {}
@@ -174,12 +162,37 @@ CMainWindow* CMainWindow::instance()
 	return m_instance;
 }
 
+void CMainWindow::closeEvent(QCloseEvent* event)
+{
+	AppSettings::mainSettings()->setValue("gui/mainwindow/dockState", this->saveState());
+	AppSettings::mainSettings()->setValue("gui/mainwindow/geometry", this->saveGeometry());
+
+	deleteLater();
+	QMainWindow::closeEvent(event);
+}
 
 void CMainWindow::showEvent(QShowEvent* ev)
 {
-	QMainWindow::showEvent(ev);
-	
 	static bool isInitialized = false;
+
+	static bool firstShow = true;
+	if (firstShow) {
+		this->restoreGeometry(AppSettings::mainSettings()->value("gui/mainwindow/geometry").toByteArray());
+
+		QByteArray dockState = AppSettings::mainSettings()->value("gui/mainwindow/dockState").toByteArray();
+		if (dockState.isEmpty()) {
+			dockWorkspace->setFixedHeight(500);
+			AppSettings::mainSettings()->setValue("gui/mainwindow/dockState", this->saveState());
+			dockWorkspace->setMinimumHeight(0);
+			dockWorkspace->setMaximumHeight(QWIDGETSIZE_MAX);
+			dockState = AppSettings::mainSettings()->value("gui/mainwindow/dockState").toByteArray();
+		}
+		this->restoreState(dockState);
+
+		firstShow = false;
+	}
+
+	QMainWindow::showEvent(ev);
 
 	if (ev->spontaneous())
 		return;

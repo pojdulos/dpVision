@@ -10,11 +10,12 @@
 DockWidgetPluginPanel::DockWidgetPluginPanel(QWidget *parent) : QDockWidget(parent)
 {
 	setObjectName("DockWidgetPluginPanel");
+	setWindowTitle("Plugin Panel");
 
 	scrollArea = new QScrollArea(this);
 	scrollArea->setWidgetResizable(true);
 
-	// Tworzymy wewnêtrzny widget
+	// Tworzymy wewnï¿½trzny widget
 	innerWidget = new QWidget();
 	QVBoxLayout* layout = new QVBoxLayout(innerWidget);
 
@@ -60,7 +61,7 @@ void DockWidgetPluginPanel::addPluginPanel(unsigned int pluginId, QString label)
 	QGroupBox *userGroupBox = new QGroupBox();
 	userGroupBox->setObjectName(QString::fromStdWString(std::to_wstring((long long)pluginId)));
 
-	if (label.compare(L"") != 0)
+	if (label.compare("") != 0)
 	{
 		userGroupBox->setTitle( label );
 	}

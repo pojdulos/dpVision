@@ -1,5 +1,5 @@
 #include "BoundingBox.h"
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "BoundingBox.h"
 
 #include "BoundVector.h"

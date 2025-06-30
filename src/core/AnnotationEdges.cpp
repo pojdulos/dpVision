@@ -3,8 +3,8 @@
 
 #include "AP.h"
 
-#include <Windows.h>
-#include <GL/GL.h>
+//#include <Windows.h>
+#include <GL/gl.h>
 
 void CAnnotationEdges::addEdge(CPoint3f f, CPoint3f s, size_t fId)
 {

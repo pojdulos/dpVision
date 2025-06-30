@@ -24,8 +24,14 @@ class DPVISION_EXPORT CMovement : public CObject
 public:
 	class FrameVal {
 	public:
-		FrameVal() { msec = 0; t = CTransform(); };
-		FrameVal(int _msec, CTransform _t) { msec = _msec; t = _t; };
+		FrameVal() : label("frame"),msec(0),t(CTransform()) {};
+		FrameVal(int _msec, CTransform _t) : label("frame"), msec(_msec), t(_t) {};
+		FrameVal(int _msec, QString _l, CTransform _t) : msec(_msec), label(_l), t(_t) {};
+
+		void setLabel(QString _l) { label = _l; };
+		QString getLabel() { return label; };
+
+		QString label;
 		int msec;
 		CTransform t;
 	};

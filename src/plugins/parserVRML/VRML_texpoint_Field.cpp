@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 
 #include "ParserWRL.h"
 
@@ -17,7 +17,7 @@ size_t CParserWRL::VRML_ParseField_texpoint( FILE *plik )
 		koord[1] = t;
 		pMeshData->getMaterial().texcoord.push_back( koord );
 		ltp++;
-		fscanf( plik, " , " ); // uwaga: przecinka mo¿e nie byæ
+		fscanf( plik, " , " ); // uwaga: przecinka moï¿½e nie byï¿½
 	}
 	fscanf( plik, " ] " );
 

@@ -11,6 +11,10 @@
 #include "quazipfile.h"
 #include "quazipdir.h"
 
+#include "AppSettings.h"
+#include "MainApplication.h"
+#include "MainWindow.h"
+
 
 CParserDPVISION::CParserDPVISION()
 {
@@ -120,6 +124,8 @@ CModel3D* CParserDPVISION::load(const QString path, bool wait)
 		return nullptr;
 	}
 
+
+
 	for (CModel3D* m : modele)
 	{
 		m->importChildrenGeometry();
@@ -127,6 +133,9 @@ CModel3D* CParserDPVISION::load(const QString path, bool wait)
 	}
 
 	UI::PROGRESSBAR::hide();
+
+	AP::mainWin().adjustForCurrentFile(path);
+	AppSettings::mainSettings()->setValue("recentFile", path);
 
 	UI::STATUSBAR::setText((QString("GOTOWE, liczba wczytanych modeli: ")+QString::number(modele.size())).toStdWString());
 	return nullptr;

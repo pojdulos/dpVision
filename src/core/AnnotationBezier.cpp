@@ -3,8 +3,10 @@
 
 #include "AP.h"
 
-#include <Windows.h>
-#include <GL/GL.h>
+#ifdef _WIN32
+#include <windows.h>
+#endif
+#include <GL/gl.h>
 
 std::wstring CAnnotationBezier::getInfoRow()
 {
@@ -49,7 +51,7 @@ std::vector<CPoint3d> CAnnotationBezier::krzywa()
 
 	for (int idx = 0; idx < m_list.size(); idx++)	// kolejne segmenty
 	{
-		for (int i = cut; i <= div-cut; i++) // biorê œrodkowe wartosci w segmencie
+		for (int i = cut; i <= div-cut; i++) // biorï¿½ ï¿½rodkowe wartosci w segmencie
 		{
 			CPoint3d p = deCastelJau( (GLdouble)i / div, n, idx );
 			wyliczone[idx].push_back(p);

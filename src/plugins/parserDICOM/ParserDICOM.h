@@ -7,7 +7,7 @@
 #include <exception>
 
 
-class __declspec(dllexport) CParserDICOM : public CParser
+class CParserDICOM : public CParser
 {
 	Volumetric::ColorSpace m_csp = Volumetric::ColorSpace::MONOCHROME2;
 

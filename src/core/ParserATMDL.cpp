@@ -513,10 +513,10 @@ CMovement::FrameVal CParserATMDL::parseProperty_frame(QTextStream& in)
 		double timeS = opis.contains("time") ? opis["time"].toDouble() : 1.0;
 		int msec = int(timeS * 1000.0);
 
-		//if (opis.contains("label")) obj->setLabel("F("+opis["time"] +"): " + opis["label"]);
+		QString label = (opis.contains("label")) ? opis["label"] : "frame";
 		//if (opis.contains("descr")) obj->setDescr(opis["descr"]);
 
-		return CMovement::FrameVal(msec, frameTransformation);
+		return CMovement::FrameVal(msec, label, frameTransformation);
 	}
 
 	return CMovement::FrameVal();
@@ -1332,7 +1332,7 @@ QString CParserATMDL::obj2atmdl(CBaseObject* obj, const QString& wciecie)
 			text += wciecie2 + "sequence {\n";
 			for (CMovement::FrameVal& fv : ((CMovement*)obj)->m_seqlist)
 			{
-				text += wciecie3 + "frame { delay " + QString::number(double(fv.msec) / 1000) + " matrix " + fv.t.toString("[","]",",") + " }\n";
+				text += wciecie3 + "frame { label \"" + fv.getLabel() + "\" delay " + QString::number(double(fv.msec) / 1000) + " matrix " + fv.t.toString("[", "]", ",") + " }\n";
 			}
 			text += wciecie2 + "}\n";
 			break;

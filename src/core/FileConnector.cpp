@@ -278,7 +278,7 @@ void CFileConnector::unregParser( QString ext )
 
 QString CFileConnector::getLoadExts()
 {
-	std::wstring ext = L"All (*.*);;dpVision multiarchive (*.dpvision);;Digital patient workspace (*.dpw;*.atmdl);;OBJ (*.obj);;STL (*.STL);;SMF (*.pmt;*.smf)";
+	std::wstring ext = L"All (*.*);;Digital patient workspace (*.dpw;*.atmdl);;dpVision multiarchive (*.dpvision);;OBJ (*.obj);;STL (*.STL);;SMF (*.pmt;*.smf)";
 
 	for (auto parser : m_parsers)
 	{
@@ -290,7 +290,7 @@ QString CFileConnector::getLoadExts()
 
 QString CFileConnector::getSaveExts()
 {
-	std::wstring ext = L"dpVision multiarchive (*.dpvision);;Digital patient workspace (*.dpw;*.atmdl);;OBJ File (*.obj);;Progressive Mesh Text File (*.pmt);;Progressive Mesh XML File (*.xml)";
+	std::wstring ext = L"Digital patient workspace (*.dpw;*.atmdl);;dpVision multiarchive (*.dpvision);;OBJ File (*.obj);;Progressive Mesh Text File (*.pmt);;Progressive Mesh XML File (*.xml)";
 
 	for (auto parser : m_parsers)
 	{
@@ -357,10 +357,12 @@ CParser * CFileConnector::getLoadParser( QString path )
 	{
 		QString ext = finfo.suffix();
 		
+
 		if (ext.isEmpty()) {
 			ext = getExtByFileContent(path);
 		}
 
+		
 		for (auto p : m_parsers)
 		{
 			if (p->canLoadExt(ext))

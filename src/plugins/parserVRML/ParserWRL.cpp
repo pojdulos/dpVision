@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 
 #include "ParserWRL.h"
 #include "Utilities.h"
@@ -105,9 +105,14 @@ size_t CParserWRL::ReadVRML()
 {
 	//std::string buffer = UI::stream2string( plikSiatki.absoluteFilePathW().c_str() );
 
-	FILE *plik;
+#ifdef _WIN32
+    FILE* plik = _wfopen(plikSiatki.absoluteFilePathW().c_str(), L"r");
+#else
+    QByteArray pathBytes = plikSiatki.absoluteFilePath().toUtf8();
+    FILE* plik = fopen(pathBytes.constData(), "r");
+#endif
 
-	if ( 0 != _wfopen_s( &plik, plikSiatki.absoluteFilePathW().c_str(), L"r" ) ) return 0;
+	if ( ! plik ) return 0;
   
 	char a1[9], a2[9], a3[9];
 	fscanf( plik, "%s %s %s", a1, a2, a3 );
@@ -115,7 +120,7 @@ size_t CParserWRL::ReadVRML()
 
 	if (strcmp(a1, "#VRML"))
 	{
-		// brak nag³ówka pliku vrml - wyskakujemy
+		// brak nagï¿½ï¿½wka pliku vrml - wyskakujemy
 		fclose(plik);
 		return 0;
 	}
@@ -131,7 +136,7 @@ size_t CParserWRL::ReadVRML()
 	}
 	else
 	{
-		// nieobs³ugiwana wersja
+		// nieobsï¿½ugiwana wersja
 		fclose(plik);
 		return 0;
 	}

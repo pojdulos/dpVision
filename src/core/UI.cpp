@@ -2,7 +2,7 @@
 
 #include "MainWindow.h"
 
-#include <Windows.h> // definiuje GetTickCount()
+//#include <Windows.h> // definiuje GetTickCount()
 
 #include "DockWidgetWorkspace.h"
 #include "DockWidgetProperties.h"
@@ -16,6 +16,7 @@
 
 #include "ProgressIndicator.h"
 
+#include <QElapsedTimer>
 #include <QtWidgets>
 
 #include "GLViewer.h"
@@ -48,20 +49,38 @@ void UI::adjustGroupBoxHeight(QGroupBox* groupBox, bool checked)
 	}
 }
 
+// bool UI::timeElapsed(int mst)
+// {
+// 	static DWORD t0001 = 0;
+
+// 	DWORD t1 = GetTickCount();
+// 	if ( ( t0001 + mst ) < t1 )
+// 	{
+// 		t0001 = t1;
+// 		AP::processEvents();
+// 		return true;
+// 	}
+// 	return false;
+// }
+
+
 bool UI::timeElapsed(int mst)
 {
-	static DWORD t0001 = 0;
+    static QElapsedTimer timer;
+    if (!timer.isValid())
+        timer.start();
 
-	DWORD t1 = GetTickCount();
-	if ( ( t0001 + mst ) < t1 )
-	{
-		t0001 = t1;
-		AP::processEvents();
-		return true;
-	}
-	return false;
+    if (timer.elapsed() >= mst)
+    {
+        timer.restart();
+        AP::processEvents();
+        return true;
+    }
+    return false;
 }
 
+
+#include "MainWindow.h"
 
 void UI::show()
 {
@@ -922,7 +941,8 @@ void UI::STATUSBAR::printf(const char *format, ...)
 	va_start(paramList, format);
 
 	char formatBuf[1024];
-	vsprintf_s(formatBuf, _countof(formatBuf), format, paramList);
+	// vsprintf_s(formatBuf, _countof(formatBuf), format, paramList);
+	vsnprintf(formatBuf, sizeof(formatBuf), format, paramList);
 
 	setText(formatBuf); 
 
@@ -935,55 +955,101 @@ void UI::STATUSBAR::printf(const wchar_t *format, ...)
 	va_start(paramList, format);
 
 	wchar_t formatBuf[1024];
-	vswprintf_s(formatBuf, _countof(formatBuf), format, paramList);
+	// vswprintf_s(formatBuf, _countof(formatBuf), format, paramList);
+	vswprintf(formatBuf, sizeof(formatBuf) / sizeof(formatBuf[0]), format, paramList);
 
 	setText(formatBuf); 
 
 	va_end(paramList);
 }
 
-void UI::STATUSBAR::printfTimed( int mst, const char *format, ...)
-{
-	static unsigned long t=0;
-	unsigned long t1;
+// void UI::STATUSBAR::printfTimed( int mst, const char *format, ...)
+// {
+// 	static unsigned long t=0;
+// 	unsigned long t1;
 
-	t1=GetTickCount();
-	if ( (int)( t1-t ) > mst )
-	{
-		va_list paramList;
-		va_start(paramList, format);
+// 	t1=GetTickCount();
+// 	if ( (int)( t1-t ) > mst )
+// 	{
+// 		va_list paramList;
+// 		va_start(paramList, format);
 
-		char formatBuf[1024];
-		vsprintf_s(formatBuf, _countof(formatBuf), format, paramList);
+// 		char formatBuf[1024];
+// 		vsprintf_s(formatBuf, _countof(formatBuf), format, paramList);
 		
-		va_end(paramList);
+// 		va_end(paramList);
 
-		setText(formatBuf);
+// 		setText(formatBuf);
 
-		t=t1;
-	}
+// 		t=t1;
+// 	}
+// }
+
+#include <QElapsedTimer>
+
+void UI::STATUSBAR::printfTimed(int mst, const char* format, ...)
+{
+    static QElapsedTimer timer;
+    if (!timer.isValid())
+        timer.start();
+
+    if (timer.elapsed() > mst)
+    {
+        va_list paramList;
+        va_start(paramList, format);
+
+        char formatBuf[1024];
+        vsnprintf(formatBuf, sizeof(formatBuf), format, paramList);
+
+        va_end(paramList);
+
+        setText(formatBuf);
+        timer.restart();
+    }
 }
 
-void UI::STATUSBAR::printfTimed( int mst, const wchar_t *format, ...)
+
+// void UI::STATUSBAR::printfTimed( int mst, const wchar_t *format, ...)
+// {
+// 	static unsigned long t=0;
+// 	unsigned long t1;
+
+// 	t1=GetTickCount();
+// 	if ( (int)( t1-t ) > mst )
+// 	{
+// 		va_list paramList;
+// 		va_start(paramList, format);
+
+// 		wchar_t formatBuf[1024];
+// 		vswprintf_s(formatBuf, _countof(formatBuf), format, paramList);
+
+// 		va_end(paramList);
+
+// 		setText(formatBuf);
+
+// 		t=t1;
+// 	}
+// }
+
+void UI::STATUSBAR::printfTimed(int mst, const wchar_t* format, ...)
 {
-	static unsigned long t=0;
-	unsigned long t1;
+    static QElapsedTimer timer;
+    if (!timer.isValid())
+        timer.start();
 
-	t1=GetTickCount();
-	if ( (int)( t1-t ) > mst )
-	{
-		va_list paramList;
-		va_start(paramList, format);
+    if (timer.elapsed() > mst)
+    {
+        va_list paramList;
+        va_start(paramList, format);
 
-		wchar_t formatBuf[1024];
-		vswprintf_s(formatBuf, _countof(formatBuf), format, paramList);
+        wchar_t formatBuf[1024];
+        vswprintf(formatBuf, sizeof(formatBuf), format, paramList);
 
-		va_end(paramList);
+        va_end(paramList);
 
-		setText(formatBuf);
-
-		t=t1;
-	}
+        setText(formatBuf);
+        timer.restart();
+    }
 }
 
 void UI::STATUSBAR::setText(const QString msg)
@@ -1102,41 +1168,62 @@ std::wstring UI::FILECHOOSER::getSaveFileName( std::wstring title, std::wstring 
 }
 
 
-// Convert a wide Unicode string to an UTF8 string
+// // Convert a wide Unicode string to an UTF8 string
+// std::string UI::utf8_encode(const std::wstring& wstr)
+// {
+// 	int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
+// 	std::string strTo(size_needed, 0);
+// 	WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
+// 	return strTo;
+// }
+
+// // Convert an UTF8 string to a wide Unicode String
+// std::wstring UI::utf8_decode(const std::string& str)
+// {
+// 	int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
+// 	std::wstring wstrTo(size_needed, 0);
+// 	MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), &wstrTo[0], size_needed);
+// 	return wstrTo;
+// }
+
+// // Convert an wide Unicode string to ANSI string
+// std::string UI::unicode2ansi(const std::wstring& wstr)
+// {
+// 	int size_needed = WideCharToMultiByte(CP_ACP, 0, &wstr[0], -1, NULL, 0, NULL, NULL);
+// 	std::string strTo(size_needed, 0);
+// 	WideCharToMultiByte(CP_ACP, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
+// 	return strTo;
+// }
+
+// // Convert an ANSI string to a wide Unicode String
+// std::wstring UI::ansi2unicode(const std::string& str)
+// {
+// 	int size_needed = MultiByteToWideChar(CP_ACP, 0, &str[0], (int)str.size(), NULL, 0);
+// 	std::wstring wstrTo(size_needed, 0);
+// 	MultiByteToWideChar(CP_ACP, 0, &str[0], (int)str.size(), &wstrTo[0], size_needed);
+// 	return wstrTo;
+// }
+
 std::string UI::utf8_encode(const std::wstring& wstr)
 {
-	int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
-	std::string strTo(size_needed, 0);
-	WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
-	return strTo;
+    return QString::fromStdWString(wstr).toUtf8().constData();
 }
 
-// Convert an UTF8 string to a wide Unicode String
 std::wstring UI::utf8_decode(const std::string& str)
 {
-	int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
-	std::wstring wstrTo(size_needed, 0);
-	MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), &wstrTo[0], size_needed);
-	return wstrTo;
+    return QString::fromUtf8(str.c_str()).toStdWString();
 }
 
-// Convert an wide Unicode string to ANSI string
 std::string UI::unicode2ansi(const std::wstring& wstr)
 {
-	int size_needed = WideCharToMultiByte(CP_ACP, 0, &wstr[0], -1, NULL, 0, NULL, NULL);
-	std::string strTo(size_needed, 0);
-	WideCharToMultiByte(CP_ACP, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
-	return strTo;
+    return QString::fromStdWString(wstr).toLocal8Bit().constData();
 }
 
-// Convert an ANSI string to a wide Unicode String
 std::wstring UI::ansi2unicode(const std::string& str)
 {
-	int size_needed = MultiByteToWideChar(CP_ACP, 0, &str[0], (int)str.size(), NULL, 0);
-	std::wstring wstrTo(size_needed, 0);
-	MultiByteToWideChar(CP_ACP, 0, &str[0], (int)str.size(), &wstrTo[0], size_needed);
-	return wstrTo;
+    return QString::fromLocal8Bit(str.c_str()).toStdWString();
 }
+
 
 std::wstring UI::utf8wstr(std::string s)
 {

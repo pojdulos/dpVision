@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 
 #include "ParserWRL.h"
 
@@ -10,7 +10,7 @@ size_t CParserWRL::VRML_ParseField_coordIndex( FILE *plik )
 	CFace face;
 	CVector3f vn;
 
-	/* moze zawieraæ: [ 0 1 2 -1, 3 4 5 -1, 6 7 8 -1, 9 10 11 -1 ] */
+	/* moze zawieraï¿½: [ 0 1 2 -1, 3 4 5 -1, 6 7 8 -1, 9 10 11 -1 ] */
 	/* albo: [ 0, 1, 2, -1, 3, 4, 5, -1, 6, 7, 8, -1, 9, 10, 11, -1 ] */
 
 	fscanf( plik, " [ " );
@@ -32,7 +32,7 @@ size_t CParserWRL::VRML_ParseField_coordIndex( FILE *plik )
 		ok = 1 == fscanf(plik, " %lu ", &a);
 #endif
 
-		fscanf( plik, " , " ); // tu mo¿e nie byæ przecinka
+		fscanf( plik, " , " ); // tu moï¿½e nie byï¿½ przecinka
 
 #ifdef WIN64
 		ok &= 1 == fscanf(plik, " %llu ", &b);
@@ -40,7 +40,7 @@ size_t CParserWRL::VRML_ParseField_coordIndex( FILE *plik )
 		ok &= 1 == fscanf(plik, " %lu ", &b);
 #endif
 
-		fscanf( plik, " , " ); // tu mo¿e nie byæ przecinka
+		fscanf( plik, " , " ); // tu moï¿½e nie byï¿½ przecinka
 
 #ifdef WIN64
 		ok &= 1 == fscanf(plik, " %llu ", &c);
@@ -48,7 +48,7 @@ size_t CParserWRL::VRML_ParseField_coordIndex( FILE *plik )
 		ok &= 1 == fscanf(plik, " %lu ", &c);
 #endif
 
-		fscanf( plik, " , " ); // tu mo¿e nie byæ przecinka
+		fscanf( plik, " , " ); // tu moï¿½e nie byï¿½ przecinka
 		fscanf( plik, " -1 " );
 
 		face.Set( a, b, c );

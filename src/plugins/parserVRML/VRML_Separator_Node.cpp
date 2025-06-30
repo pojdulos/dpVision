@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 
 #include "ParserWRL.h"
 
@@ -13,13 +13,13 @@ void CParserWRL::VRML_ParseNode_Separator( FILE *plik )
 		
 		switch (ch)
 		{
-			case '#': // komentarz do koñca linii
+			case '#': // komentarz do koï¿½ca linii
 				if (!VRML_GoToNextLine(plik)) return;
 				break;
 			case '}': // koniec Noda
 				return;
 				break;
-			case 'S': // zagnie¿d¿ony Separator
+			case 'S': // zagnieï¿½dï¿½ony Separator
 				fscanf(plik, "%s { ", bufor);
 				if (strstr(bufor, "eparator"))
 				{
@@ -47,7 +47,7 @@ void CParserWRL::VRML_ParseNode_Separator( FILE *plik )
 					VRML_ParseNode_IndexedFaceSet(plik);
 				}
 				break;
-			case '{': // to nie powinno wyst¹piæ
+			case '{': // to nie powinno wystï¿½piï¿½
 				VRML_IgnoreNode(plik, '{', '}');
 				break;
 		}

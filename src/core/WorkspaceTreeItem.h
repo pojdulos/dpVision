@@ -29,6 +29,8 @@ public:
 	
 	CBaseObject* getObject();
 
+	int getObjectId();
+
 	//inline void setId(int id) { setData( id, Qt::UserRole + 1 ); };
 	//inline int getId() { return data( Qt::UserRole + 1 ).value<int>(); }
 

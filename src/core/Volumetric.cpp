@@ -1,7 +1,9 @@
 #include "stdafx.h"
 
-#include <Windows.h>
-#include <GL\GL.h>
+#ifdef _WIN32
+#include <windows.h>
+#endif
+#include <GL/gl.h>
 
 #include "Volumetric.h"
 #include "Volumetric_shaders.h"
@@ -1243,7 +1245,7 @@ QImage Volumetric::getLayerAsImage(int nr, Volumetric::LayerPlane layer, bool tr
 		unsigned int cols = slice.columns();
 
 		QImage::Format imgFormat = QImage::Format::Format_Grayscale16;
-		WORD maxDisplVal = 0xffff;
+		uint16_t maxDisplVal = 0xffff;
 
 		QImage image = QImage(cols, rows, imgFormat);
 
@@ -1262,7 +1264,7 @@ QImage Volumetric::getLayerAsImage(int nr, Volumetric::LayerPlane layer, bool tr
 					if (val > m_maxDisplWin) val = m_maxDisplWin;
 				}
 
-				WORD piksel = static_cast<WORD>((double(val - _min) / double(_max - _min)) * double(maxDisplVal));
+				uint16_t piksel = static_cast<uint16_t>((double(val - _min) / double(_max - _min)) * double(maxDisplVal));
 				line[x] = piksel;
 			}
 		}
@@ -1400,7 +1402,7 @@ float Volumetric::interpolateVoxel(const Volumetric::VolumeType& volume, const C
 QImage Volumetric::generateFreeViewSliceImage(const CVector3f& normal, const CPoint3f& planePoint, const CVector3f& free_up, int width, int height, float scale, bool tresh)
 {
 	QImage::Format imgFormat = QImage::Format::Format_Grayscale16;
-	WORD maxDisplVal = 0xffff;
+	uint16_t maxDisplVal = 0xffff;
 
 	QImage image(width, height, imgFormat);
 
@@ -1440,12 +1442,12 @@ QImage Volumetric::generateFreeViewSliceImage(const CVector3f& normal, const CPo
 					if (val > m_maxDisplWin) val = m_maxDisplWin;
 				}
 
-				WORD piksel = static_cast<WORD>((double(val - _min) / double(_max - _min)) * double(maxDisplVal));
+				uint16_t piksel = static_cast<uint16_t>((double(val - _min) / double(_max - _min)) * double(maxDisplVal));
 				line[x] = piksel;
 			}
 			else
 			{
-				line[x] = static_cast<WORD>(0xf0ff);
+				line[x] = static_cast<uint16_t>(0xf0ff);
 			}
 		}
 	}
@@ -1517,7 +1519,7 @@ QImage Volumetric::getRTGasImage(Volumetric::LayerPlane plane, bool tresh)
 	int rows = 0;
 	int cols = 0;
 
-	WORD maxDisplVal = 0xffff;
+	uint16_t maxDisplVal = 0xffff;
 	QImage::Format imgFormat = QImage::Format::Format_Grayscale16;
 
 	if (plane == LayerPlane::XY) {
@@ -1589,7 +1591,7 @@ QImage Volumetric::getRTGasImage(Volumetric::LayerPlane plane, bool tresh)
 			double val = accum[row][col];
 
 			val = clamp(val, _min, _max);
-			WORD piksel = static_cast<WORD>(((val - _min) / (_max - _min)) * double(maxDisplVal));
+			uint16_t piksel = static_cast<uint16_t>(((val - _min) / (_max - _min)) * double(maxDisplVal));
 			line[col] = piksel;
 		}
 	}
@@ -1603,7 +1605,7 @@ QImage Volumetric::getRTGasImage(Volumetric::LayerPlane plane, bool tresh)
 QImage Volumetric::generateFreeViewRtgImage(const CVector3f& normal, const CPoint3f& planePoint, int width, int height, float scale, bool tresh)
 {
 	QImage::Format imgFormat = QImage::Format::Format_Grayscale16;
-	WORD maxDisplVal = 0xffff;
+	uint16_t maxDisplVal = 0xffff;
 
 	//QImage image(width, height, QImage::Format_Grayscale8);
 	QImage image(width, height, imgFormat);
@@ -1639,7 +1641,7 @@ QImage Volumetric::generateFreeViewRtgImage(const CVector3f& normal, const CPoin
 					if (val > m_maxDisplWin) val = m_maxDisplWin;
 				}
 
-				WORD piksel = static_cast<WORD>(((val - _min) / (_max - _min)) * double(maxDisplVal));
+				uint16_t piksel = static_cast<uint16_t>(((val - _min) / (_max - _min)) * double(maxDisplVal));
 
 				line[x] = piksel;
 			}

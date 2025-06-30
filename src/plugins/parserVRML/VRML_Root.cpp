@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 
 #include "ParserWRL.h"
 
@@ -44,7 +44,7 @@ void CParserWRL::VRML_Parse_Root( FILE *plik )
 			fscanf( plik, " %s ", bufor );
 			if ( strstr( bufor, "EF" ) )
 			{
-				// Na razie ignorujê definicje
+				// Na razie ignorujï¿½ definicje
 				fscanf( plik, " %s ", bufor ); 
 			}
 		}

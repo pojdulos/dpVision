@@ -5,8 +5,8 @@
 #include "Model3D.h"
 #include "Mesh.h"
 
-#include <Windows.h>
-#include <GL/GL.h>
+//#include <Windows.h>
+#include <GL/gl.h>
 
 std::wstring CAnnotationPolygon2D::getInfoRow()
 {

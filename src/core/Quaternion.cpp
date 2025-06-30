@@ -35,7 +35,7 @@
 //	// Now matrix[] is a 4x4 homogeneous matrix that can be applied to an OpenGL Matrix
 //}
 
-inline void CQuaternion::toGLMatrixF(float* matrix)
+void CQuaternion::toGLMatrixF(float* matrix)
 {
 	normalize();
 
@@ -84,7 +84,7 @@ inline void CQuaternion::toGLMatrixF(float* matrix)
 //}
 
 
-inline void CQuaternion::toGLMatrixD(double* matrix)
+void CQuaternion::toGLMatrixD(double* matrix)
 {
 	normalize();
 

@@ -154,6 +154,11 @@ public:
 	void setParent(CBaseObject *p) { m_parent = p; };
 	void setParent(int objId);
 
+
+	std::vector<CBaseObject*> getPathToRoot();
+
+	CBaseObject* getRoot();
+
 	virtual void setVisible(bool v) { m_showSelf = v; };
 
 	virtual void setSelfVisibility(bool v) { m_showSelf = v; }

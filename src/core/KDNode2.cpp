@@ -36,7 +36,7 @@ KDNode2* KDNode2::build(CMesh* mesh, int maxTrisSize)
 }
 
 
-KDNode2* KDNode2::build2(CMesh* mesh, vector<INDEX_TYPE>& tris, int depth, int maxTrisSize)
+KDNode2* KDNode2::build2(CMesh* mesh, std::vector<INDEX_TYPE>& tris, int depth, int maxTrisSize)
 {
 	KDNode2* node = new KDNode2();
 
@@ -56,8 +56,8 @@ KDNode2* KDNode2::build2(CMesh* mesh, vector<INDEX_TYPE>& tris, int depth, int m
 
 		double midpt = sum / tris.size();
 
-		vector<INDEX_TYPE> left_tris;
-		vector<INDEX_TYPE> right_tris;
+		std::vector<INDEX_TYPE> left_tris;
+		std::vector<INDEX_TYPE> right_tris;
 
 		for (INDEX_TYPE currentIndex : tris)
 		{
@@ -91,7 +91,7 @@ KDNode2* KDNode2::build2(CMesh* mesh, vector<INDEX_TYPE>& tris, int depth, int m
 	return node;
 }
 
-KDNode2 * KDNode2::build(CMesh* mesh, vector<INDEX_TYPE> &tris, int depth, int maxTrisSize)
+KDNode2 * KDNode2::build(CMesh* mesh, std::vector<INDEX_TYPE> &tris, int depth, int maxTrisSize)
 {
 	KDNode2 *node = new KDNode2();
 
@@ -103,8 +103,8 @@ KDNode2 * KDNode2::build(CMesh* mesh, vector<INDEX_TYPE> &tris, int depth, int m
 	{
 		CPoint3d midpt = node->m_bbox.getMidpoint();
 
-		vector<INDEX_TYPE> left_tris;
-		vector<INDEX_TYPE> right_tris;
+		std::vector<INDEX_TYPE> left_tris;
+		std::vector<INDEX_TYPE> right_tris;
 
 		int axis = node->m_bbox.longest_axis();
 

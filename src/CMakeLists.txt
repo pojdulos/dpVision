@@ -19,8 +19,9 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 
@@ -35,6 +36,7 @@ find_package(Qt5Widgets REQUIRED)
 find_package(Qt5OpenGL REQUIRED)
 find_package(Qt5Xml REQUIRED)
 find_package(Qt5Network REQUIRED)
+find_package(Qt5 COMPONENTS OpenGL REQUIRED)
 
 # Dodanie zasobów Qt
 qt5_add_resources(QRC_FILE ${PROJECT_SOURCE_DIR}/core/${EXE_NAME}.qrc)
@@ -110,9 +112,29 @@ function(find_subdirs parentDir keyword)
 endfunction()
 
 # Łączenie bibliotek
+# target_link_libraries(${EXE_NAME}
+#     opengl32
+#     glu32
+#     Qt5::Core
+#     Qt5::Gui
+#     Qt5::Widgets
+#     Qt5::OpenGL
+#     Qt5::Xml
+#     Qt5::Network
+#     OpenMP::OpenMP_CXX
+# )
+
+find_package(OpenGL REQUIRED)
+include_directories(${OPENGL_INCLUDE_DIRS})
+find_library(GLU_LIBRARY NAMES GLU glu)
+
+if (NOT GLU_LIBRARY)
+    message(FATAL_ERROR "GLU library not found. Please install libglu1-mesa-dev (Ubuntu)")
+endif()
+
 target_link_libraries(${EXE_NAME}
-    opengl32
-    glu32
+    OpenGL::GL
+    ${GLU_LIBRARY}
     Qt5::Core
     Qt5::Gui
     Qt5::Widgets
@@ -121,6 +143,7 @@ target_link_libraries(${EXE_NAME}
     Qt5::Network
     OpenMP::OpenMP_CXX
 )
+
 
 # Zewnętrzne biblioteki
 add_library(dpVision::Core INTERFACE IMPORTED)
@@ -136,6 +159,12 @@ include(cmake/ArchAndRuntime.cmake)
 include(cmake/getOpenCV.cmake)
 include(cmake/Zlib.cmake)
 include(cmake/QuaZip.cmake)
+
+# QuaZip używa Qt5 i nie dostarcza własnego configa, więc musisz dodać to ręcznie:
+include_directories(/usr/include/quazip5)
+# include_directories(/usr/include/QtQuaZip)  # niektóre wersje
+
+
 include(cmake/Eigen3.cmake)
 include(cmake/Boost.cmake)
 

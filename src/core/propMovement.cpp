@@ -154,7 +154,7 @@ void PropMovement::setTreeView()
 {
 	ui.treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
 	QStandardItemModel* model = new QStandardItemModel();
-	model->setHorizontalHeaderLabels(QStringList({ "order", "time", }));
+	model->setHorizontalHeaderLabels(QStringList({ "order", "label", "time", }));
 	ui.treeView->setModel(model);
 	ui.treeView->setUniformRowHeights(true);
 
@@ -184,6 +184,12 @@ QStandardItem* PropMovement::addFrame(QStandardItem* parent, int frameKey, CMove
 		leftItem->setData(QVariant::fromValue<int>(frameKey), Qt::ItemDataRole::UserRole);
 		leftItem->setEditable(false);
 
+		QStandardItem* leftItemLabel = new QStandardItem();
+		leftItemLabel->setData(QVariant(frameVal.getLabel()), Qt::ItemDataRole::DisplayRole);
+		leftItemLabel->setData(QVariant::fromValue<QString>(frameVal.getLabel()), Qt::ItemDataRole::EditRole);
+		leftItemLabel->setData(QVariant::fromValue<int>(frameKey), Qt::ItemDataRole::UserRole);
+
+
 		QString vs = QString::number(frameVal.msec);
 		//QString vs = frameVal.t.toString("[","]",",");
 
@@ -192,7 +198,7 @@ QStandardItem* PropMovement::addFrame(QStandardItem* parent, int frameKey, CMove
 		leftItemValue->setData(QVariant::fromValue<int>(frameVal.msec), Qt::ItemDataRole::EditRole);
 		leftItemValue->setData(QVariant::fromValue<int>(frameKey), Qt::ItemDataRole::UserRole);
 
-		parent->appendRow((QList< QStandardItem* >({ leftItem, leftItemValue })));
+		parent->appendRow((QList< QStandardItem* >({ leftItem, leftItemLabel, leftItemValue })));
 
 		return leftItem;
 	}

@@ -129,7 +129,7 @@ void CParser::getSaveExts(QString& ext)
 	{
 		if (!ext.isEmpty())
 		{
-			ext.append(L";;");
+			ext.append(";;");
 		}
 
 		ext.append(m_descr + " (");

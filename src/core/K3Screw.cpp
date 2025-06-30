@@ -17,6 +17,7 @@ std::string K3Screw::dispMatrixXd(Eigen::MatrixXd m)
     return result;
 }
 
+
 std::tuple<Vector3d, Vector3d> K3Screw::K3Fletch(const Vector3d& V) {
     int imin = 0;
     double minAbs = std::abs(V(0));

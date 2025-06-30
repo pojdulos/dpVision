@@ -19,6 +19,8 @@ DockWidgetWorkspace::DockWidgetWorkspace(QWidget *parent) : QDockWidget(parent)
 {
 	setupUi();
 
+	setObjectName("DockWidgetWorkspace");
+
 	WorkspaceTreeModel* model = new WorkspaceTreeModel(ui.treeView);
 	ui.treeView->setModel(model);
 
@@ -142,7 +144,7 @@ void DockWidgetWorkspace::selectItem( int id )
 	else {
 		WorkspaceTreeModel *model = (WorkspaceTreeModel *)ui.treeView->model();
 
-		QModelIndexList Items = model->match(model->index(0, 0), Qt::UserRole, QVariant::fromValue(id), 1, Qt::MatchRecursive);
+		QModelIndexList Items = model->match(model->index(0, 0), Qt::UserRole+1, QVariant::fromValue(id), 1, Qt::MatchRecursive);
 
 		if (Items.count() > 0)
 		{
@@ -264,7 +266,7 @@ QModelIndex DockWidgetWorkspace::findWorkspaceTreeModelIndex(int id)
 	WorkspaceTreeModel *model = (WorkspaceTreeModel*)ui.treeView->model();
 	QModelIndexList items = model->match(
 		model->index(0, 0),
-		Qt::UserRole,
+		Qt::UserRole+1,
 		QVariant::fromValue(id),
 		1, // look *
 		Qt::MatchRecursive);
@@ -274,6 +276,23 @@ QModelIndex DockWidgetWorkspace::findWorkspaceTreeModelIndex(int id)
 
 	return QModelIndex();
 }
+
+QModelIndex DockWidgetWorkspace::findWorkspaceTreeModelByHandle(CBaseObject* obj)
+{
+	WorkspaceTreeModel* model = (WorkspaceTreeModel*)ui.treeView->model();
+	QModelIndexList items = model->match(
+		model->index(0, 0),
+		Qt::UserRole,
+		QVariant::fromValue(obj),
+		1, // look *
+		Qt::MatchRecursive);
+
+	if (!items.empty())
+		return items.first();
+
+	return QModelIndex();
+}
+
 
 void DockWidgetWorkspace::modifyItemById(int id)
 {

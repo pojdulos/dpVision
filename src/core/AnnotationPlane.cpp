@@ -3,8 +3,10 @@
 
 #include "AP.h"
 
-#include <Windows.h>
-#include <GL/GL.h>
+#ifdef _WIN32
+#include <windows.h>
+#endif
+#include <GL/gl.h>
 
 void CAnnotationPlane::applyTransformation(CTransform &prevT, CTransform &newT)
 {
@@ -35,17 +37,17 @@ void CAnnotationPlane::renderSelf()
 {
 	if (m_normal.length())
 	{
-		// wzór wyjœciowy: n.x*v.x + n.y*v.y +n.z*v.z = 0
+		// wzï¿½r wyjï¿½ciowy: n.x*v.x + n.y*v.y +n.z*v.z = 0
 		// v.x = ( n.y*v.y + n.z*v.z ) / -n.x
 		// v.y = ( n.x*v.x + n.z*v.z ) / -n.y
 		// v.z = ( n.x*v.x + n.y*v.y ) / -n.z
 
-		// przyjmujê wstêpnie wartoœci v.x, v.y oraz v.z = 1.0 dla uproszczenia obliczeñ
+		// przyjmujï¿½ wstï¿½pnie wartoï¿½ci v.x, v.y oraz v.z = 1.0 dla uproszczenia obliczeï¿½
 		double x = 1.0;
 		double y = 1.0;
 		double z = 1.0;
 
-		// mianownik nie mo¿e byæ zerowy
+		// mianownik nie moï¿½e byï¿½ zerowy
 		if (m_normal.Z() != 0.0) {
 			z = (m_normal.X() + m_normal.Y()) / -m_normal.Z();
 		}
@@ -57,9 +59,9 @@ void CAnnotationPlane::renderSelf()
 		}
 
 		
-		CVector3d v1(CVector3d(x, y, z).getNormalized() * m_size);			// mamy wektor kierunkowy do pierwszego naro¿nika, który mno¿ymy od razu przez m_size
-		CVector3d v2(v1.crossProduct(m_normal).getNormalized() * m_size);	// wektor prostopad³y jednoczeœnie do normalnego i do v1 wyznaczy drugi naro¿nik
-		CVector3d v3(-v1);													// wektor przeciwny do v1 wyznacza trzeci naro¿nik,
+		CVector3d v1(CVector3d(x, y, z).getNormalized() * m_size);			// mamy wektor kierunkowy do pierwszego naroï¿½nika, ktï¿½ry mnoï¿½ymy od razu przez m_size
+		CVector3d v2(v1.crossProduct(m_normal).getNormalized() * m_size);	// wektor prostopadï¿½y jednoczeï¿½nie do normalnego i do v1 wyznaczy drugi naroï¿½nik
+		CVector3d v3(-v1);													// wektor przeciwny do v1 wyznacza trzeci naroï¿½nik,
 		CVector3d v4(-v2);													// a wektor przeciwny do v2 - czwarty
 
 		glPushMatrix();
