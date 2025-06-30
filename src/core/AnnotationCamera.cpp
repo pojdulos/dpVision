@@ -63,7 +63,7 @@ std::vector<std::string> resplit(const std::string& s, std::string rgx_str = "\\
 
 }
 
-inline void CAnnotationCamera::setMatrix(std::string matrixSTR)
+void CAnnotationCamera::setMatrix(std::string matrixSTR)
 {
 	std::regex rgx("\\s+");
 
@@ -86,7 +86,7 @@ inline void CAnnotationCamera::setMatrix(std::string matrixSTR)
 }
 
 
-inline void CAnnotationCamera::setMatrix(double matrix[16])
+void CAnnotationCamera::setMatrix(double matrix[16])
 {
 	m_matrix[0] = matrix[0];
 	m_matrix[1] = matrix[4];

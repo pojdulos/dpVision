@@ -1,8 +1,8 @@
 #include "Annotation.h"
 
-// konstruktor kopiuj¹cy
+// konstruktor kopiujï¿½cy
 
-inline CAnnotation::CAnnotation(const CAnnotation& a) : CBaseObject(a)
+CAnnotation::CAnnotation(const CAnnotation& a) : CBaseObject(a)
 {
 	m_color = a.m_color;
 	m_selcolor = a.m_selcolor;
