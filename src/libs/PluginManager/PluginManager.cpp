@@ -58,7 +58,11 @@ PluginInterface* PluginManager::LoadPlugin( const QString& pluginPath )
         // Try to load the plugin library
         LibraryHandle hModule =
         #ifdef _WIN32
-            LoadLibraryFunc(pluginPath.toStdWString().c_str());
+            #ifdef UNICODE
+                LoadLibraryFunc(pluginPath.toStdWString().c_str());
+            #else
+                LoadLibraryFunc(pluginPath.toStdString().c_str());
+            #endif      
         #else
             LoadLibraryFunc(pluginPath.toStdString().c_str());
             if (!hModule) {
