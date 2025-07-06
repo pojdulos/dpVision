@@ -7,8 +7,8 @@
 #include "Image.h"
 #include "AP.h"
 
-#include "dpLog.h"
-#include <QMessageLogger>
+//#include "dpLog.h"
+//#include <QMessageLogger>
 
 CParserDICOM::CParserDICOM()
 {

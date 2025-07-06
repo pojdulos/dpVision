@@ -2,26 +2,65 @@
 #ifndef _LOG_H_BY_DP_INCLUDED_
 #define _LOG_H_BY_DP_INCLUDED_
 
-#include <QtCore/QString>
-#include <QtCore/QFile>
-#include <QtCore/QTextStream>
-
 #include "MainApplication.h"
 #include "AP.h"
 
-class DPVISION_EXPORT dpLog
+#include <QString>
+#include <QFile>
+#include <QTextStream>
+#include <QMutex>
+
+class dpLogStream;
+
+class DPVISION_EXPORT dpLogger
 {
-	QFile m_logFile;
-	QTextStream m_txtStream;
-
-	dpLog(void);
-	~dpLog(void);
 public:
-	static dpLog* open(QString fname, QString prefix= AP::mainApp().appDataDir());
+    enum Level { Info, Warning, Error, Debug };
 
-	void close();
-	void info(QString msg);
-	void info(const char* format, ...);
+    static dpLogStream info();
+    static dpLogStream warn();
+    static dpLogStream error();
+    static dpLogStream debug();
+
+    static void setLogFile(const QString& filePath);
+    static void setLoggingEnabled(bool enabled);
+
+private:
+    friend class dpLogStream;
+    static void output(Level level, const QString& msg);
+
+    static QFile* logFile();
+    static QTextStream* logStream();
+    static QMutex& mutex();
+    static bool& loggingEnabled();
 };
 
-#endif /* _LOG_H_BY_DP_INCLUDED_ */
+
+class DPVISION_EXPORT dpLogStream
+{
+public:
+    dpLogStream(dpLogger::Level lvl);
+    ~dpLogStream();
+
+    template<typename T>
+    dpLogStream& operator<<(const T& value) {
+        stream << value;
+        return *this;
+    }
+
+    // Obs³uga np. std::endl
+    typedef dpLogStream& (*MyLogStreamManipulator)(dpLogStream&);
+    dpLogStream& operator<<(MyLogStreamManipulator manip) { return manip(*this); }
+
+private:
+    QString buffer;
+    QTextStream stream;
+    dpLogger::Level level;
+};
+
+inline dpLogStream dpInfo() { return dpLogger::info(); }
+inline dpLogStream dpWarn() { return dpLogger::warn(); }
+inline dpLogStream dpError() { return dpLogger::error(); }
+inline dpLogStream dpDebug() { return dpLogger::debug(); }
+
+#endif

@@ -1,46 +1,86 @@
 #include "dpLog.h"
 
-dpLog::dpLog(void){}
-dpLog::~dpLog(void){}
+#include <QDateTime>
+#include <QDebug>
 
-dpLog* dpLog::open(QString fname, QString prefix)
+#include <QDateTime>
+#include <QDebug>
+
+// --- Wewnêtrzne statyczne zmienne ---
+static QFile* s_logFile = nullptr;
+static QTextStream* s_logStream = nullptr;
+static QMutex s_mutex;
+static bool s_loggingEnabled = true;
+
+
+dpLogStream::dpLogStream(dpLogger::Level lvl)
+    : buffer(), stream(&buffer, QIODevice::WriteOnly), level(lvl)
 {
-	//QString prefix = AP::mainApp().appDataDir();
-
-	dpLog* newLog = new dpLog();
-	newLog->m_logFile.setFileName(prefix + QDir::separator() + fname);
-	if (newLog->m_logFile.open(QIODevice::Append | QIODevice::WriteOnly))
-	{
-		newLog->m_txtStream.setDevice(&newLog->m_logFile);
-		return newLog;
-	}
-
-	delete newLog;
-	return nullptr;
 }
 
-void dpLog::close()
+dpLogStream::~dpLogStream()
 {
-	if (m_logFile.isOpen())
-		m_logFile.close();
+    if (!buffer.isEmpty()) {
+        dpLogger::output(level, buffer);
+    }
 }
 
-void dpLog::info(QString msg)
+
+// --- Implementacja ---
+dpLogStream dpLogger::info() { return dpLogStream(Info); }
+dpLogStream dpLogger::warn() { return dpLogStream(Warning); }
+dpLogStream dpLogger::error() { return dpLogStream(Error); }
+dpLogStream dpLogger::debug() { return dpLogStream(Debug); }
+
+void dpLogger::setLogFile(const QString& filePath)
 {
-	m_txtStream << msg << Qt::endl;
+    QMutexLocker locker(&mutex());
+    if (s_logFile) {
+        s_logFile->close();
+        delete s_logStream;
+        delete s_logFile;
+        s_logFile = nullptr;
+        s_logStream = nullptr;
+    }
+    s_logFile = new QFile(filePath);
+    if (s_logFile->open(QIODevice::Append | QIODevice::Text)) {
+        s_logStream = new QTextStream(s_logFile);
+    }
 }
 
-void dpLog::info(const char* format, ...)
+void dpLogger::setLoggingEnabled(bool enabled)
 {
-	va_list paramList;
-	va_start(paramList, format);
-
-	//	vprintf_s(format, paramList);
-	char formatBuf[1024];
-	// vsprintf_s(formatBuf, _countof(formatBuf), format, paramList);
-	vsnprintf(formatBuf, sizeof(formatBuf), format, paramList);
-
-
-	m_txtStream << formatBuf << Qt::endl;
+    QMutexLocker locker(&mutex());
+    loggingEnabled() = enabled;
 }
 
+void dpLogger::output(Level level, const QString& msg)
+{
+    QMutexLocker locker(&mutex());
+    if (!loggingEnabled()) return;
+
+    QString levelStr;
+    switch (level) {
+    case Info:    levelStr = "INFO";    break;
+    case Warning: levelStr = "WARNING"; break;
+    case Error:   levelStr = "ERROR";   break;
+    case Debug:   levelStr = "DEBUG";   break;
+    }
+    QString timeStr = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+    QString fullMsg = QString("[%1] [%2] %3").arg(timeStr, levelStr, msg);
+
+    // Konsola (bez cudzys³owów)
+    qInfo().noquote() << fullMsg;
+
+    // Plik
+    if (s_logStream) {
+        (*s_logStream) << fullMsg << "\n";
+        s_logStream->flush();
+    }
+}
+
+// --- Wewnêtrzne gettery statyczne (do u¿ycia w destruktorze streamu) ---
+QFile* dpLogger::logFile() { return s_logFile; }
+QTextStream* dpLogger::logStream() { return s_logStream; }
+QMutex& dpLogger::mutex() { return s_mutex; }
+bool& dpLogger::loggingEnabled() { return s_loggingEnabled; }
