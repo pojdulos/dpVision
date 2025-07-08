@@ -641,7 +641,7 @@ CPoint3d world2win_parallel(const CPoint3d& world, GLdouble* modelview, GLdouble
 
 void GLViewer::deleteSelectedVertices(bool deleteSelected)
 {
-	CModel3D *obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 	if (NULL != obj)
 	{
 		setSelectionMode(99);
@@ -652,16 +652,16 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 			{
 				if (child.second->hasType(CObject::VOLUMETRIC_NEW))
 				{
-					deleteSelectedVoxels((Volumetric*)child.second, deleteSelected);
+					deleteSelectedVoxels((Volumetric*)child.second.get(), deleteSelected);
 				}
 				else if (child.second->hasType(CObject::VOLTK))
 				{
-					deleteSelectedVoxelsVolTK(*(CVolTK*)child.second, obj->transform(), deleteSelected);
+					deleteSelectedVoxelsVolTK(*(CVolTK*)child.second.get(), obj->transform(), deleteSelected);
 				}
 				else if (child.second->hasType(CObject::CLOUD) || child.second->hasType(CObject::ORDEREDCLOUD) || child.second->hasType(CObject::MESH))
 				{
 
-					CPointCloud* cloud = (CPointCloud*)child.second;
+					CPointCloud* cloud = (CPointCloud*)child.second.get();
 
 					int size = cloud->vertices().size();
 					int step = size / 100;
@@ -882,7 +882,7 @@ void GLViewer::rotate(double dx, double dy) {
 	CVector3d yAxis = invR * CVector3d::YAxis();
 	//CVector3d zAxis = invR * CVector3d::ZAxis();
 
-	CModel3D* obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 
 	if (NULL != obj)
 	{

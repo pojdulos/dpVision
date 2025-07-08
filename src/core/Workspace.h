@@ -47,7 +47,8 @@ class CWorkspace : public QObject
 
 public:
 	typedef CModel3D ChildType;
-	typedef std::map<int, ChildType*> Children;
+	//typedef std::map<int, ChildType*> Children;
+	typedef std::map<int, std::shared_ptr<ChildType>> Children;
 	typedef Children::iterator iterator;
 	typedef Children::value_type value_type;
 
@@ -70,20 +71,23 @@ private:
 	explicit CWorkspace();
 
 public:
-	~CWorkspace();
+	//~CWorkspace();
 
 	static CWorkspace* instance();
 
 	Children& children() { return m_data; }
 	
-	ChildType*& operator[](int i)
-	{
-		assert(m_data.find(i) != m_data.end());
-		return m_data[i];
-	}
+	//ChildType*& operator[](int i)
+	//{
+	//	assert(m_data.find(i) != m_data.end());
+	//	return m_data[i].get();
+	//}
 
-	ChildType* first() { if (m_data.empty()) return nullptr; return m_data.begin()->second; };
-	ChildType* last() { if (m_data.empty()) return nullptr; return m_data.rbegin()->second; };
+	//ChildType* first() { if (m_data.empty()) return nullptr; return m_data.begin()->second.get(); };
+	//ChildType* last() { if (m_data.empty()) return nullptr; return m_data.rbegin()->second.get(); };
+
+	std::shared_ptr<ChildType> first() { if (m_data.empty()) return nullptr; return m_data.begin()->second; };
+	std::shared_ptr<ChildType> last() { if (m_data.empty()) return nullptr; return m_data.rbegin()->second; };
 
 	CWorkspace::iterator begin() { return m_data.begin(); }
 	CWorkspace::iterator end() { return m_data.end(); }
@@ -99,13 +103,14 @@ public:
 	_light &	getLightRef( int nr ) { return m_lights[nr]; };
 	
 	// MODELE:
-	bool		_addModel( CModel3D *obj );
+	bool		_addModel(std::shared_ptr<CModel3D> obj );
+	inline bool	_addModel(CModel3D* obj) { return _addModel(std::shared_ptr<CModel3D>(obj)); }
 
 	int			_setCurrentModel( int i );
 
 	int			_getCurrentModelId() { return m_idOfCurrentModel; };
 
-	CModel3D *	_getModel( int i );
+	std::shared_ptr<CWorkspace::ChildType> _getModel( int i );
 
 	bool		_removeModel( int i, bool deleteIt = true);
 

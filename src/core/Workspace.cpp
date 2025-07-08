@@ -14,10 +14,10 @@ CWorkspace::CWorkspace() : QObject()
 	InitLights();
 }
 
-CWorkspace::~CWorkspace()
-{
-	clear();
-}
+//CWorkspace::~CWorkspace()
+//{
+	//clear();
+//}
 
 CWorkspace* CWorkspace::instance()
 {
@@ -30,12 +30,8 @@ CWorkspace* CWorkspace::instance()
 
 void CWorkspace::clear()
 {
-	while ( ! m_data.empty() )
-	{
-		delete m_data.begin()->second;
-		m_data.erase(m_data.begin());
-	}
 	m_selection.clear();
+	m_data.clear();
 
 	_setCurrentModel(NO_CURRENT_MODEL);
 }
@@ -47,7 +43,7 @@ void CWorkspace::clear()
 /*
 	Add an existing Model to the Workspace
 */
-bool CWorkspace::_addModel( CModel3D *pMdlR )
+bool CWorkspace::_addModel( std::shared_ptr<CModel3D> pMdlR )
 {
 	if (nullptr == pMdlR) return false;
 
@@ -77,7 +73,7 @@ bool CWorkspace::_removeModel( int i, bool deleteIt)
 			_setCurrentModel(NO_CURRENT_MODEL);
 		}
 		
-		if (deleteIt) delete m_data[i];
+		//if (deleteIt) delete m_data[i];
 
 		m_data.erase( i );
 		return true;
@@ -90,7 +86,7 @@ bool CWorkspace::_removeAllModels()
 {
 	for (Children::iterator it = m_data.begin(); it != m_data.end(); )
 	{
-		delete it->second;
+		//delete it->second;
 		it = m_data.erase(it);
 	}
 	m_selection.clear();
@@ -100,7 +96,7 @@ bool CWorkspace::_removeAllModels()
 	return true;
 }
 
-CModel3D* CWorkspace::_getModel( int i )
+std::shared_ptr<CWorkspace::ChildType> CWorkspace::_getModel( int i )
 {
 	if (NO_CURRENT_MODEL == i) return nullptr;
 
@@ -108,7 +104,7 @@ CModel3D* CWorkspace::_getModel( int i )
 
 	if ( it == m_data.end() ) return nullptr;
 
-	return (CModel3D*)m_data[ i ];
+	return m_data[ i ];
 }
 
 #include "GroupObject.h"
@@ -349,13 +345,12 @@ void TestVolum()
 
 CBaseObject* CWorkspace::getSomethingWithId(int id)
 {
-	CWorkspace::iterator model;
-	for (model = this->m_data.begin(); model != this->m_data.end(); model++)
+	for (auto &model : this->m_data )
 	{
-		if (model->second->id() == id) return model->second;
+		if (model.second->id() == id) return model.second.get();
 		else
 		{
-			CBaseObject* obj = model->second->getSomethingWithId(id);
+			CBaseObject* obj = model.second->getSomethingWithId(id);
 			if (obj != nullptr) return obj;
 		}
 	}
@@ -364,15 +359,14 @@ CBaseObject* CWorkspace::getSomethingWithId(int id)
 
 void CWorkspace::render()
 {
-	CWorkspace::iterator model;
-	for ( model = this->m_data.begin(); model != this->m_data.end(); model++ )
+	for (auto &model : this->m_data )
 	{
 		glPushMatrix();
 
 		//rysuje model
-		if ((*model).second != nullptr)
+		if (model.second != nullptr)
 		{
-			(*model).second->render();
+			model.second->render();
 		}
 		
 		// przywracam macierz widoku przestrzeni roboczej
@@ -495,14 +489,14 @@ void CWorkspace::reset()
 	if (this->m_idOfCurrentModel <0)
 	{
 		CWorkspace::iterator siatka;
-		for ( siatka = this->m_data.begin(); siatka != this->m_data.end(); siatka++ )
+		for ( auto &siatka : this->m_data )
 		{
-			((CModel3D*)(*siatka).second)->transform().reset();
+			if (siatka.second->hasTransformation()) siatka.second->transform().reset();
 		}
 	}
 	else if (! this->m_data.empty())
 	{
-		((CModel3D*)this->m_data[this->m_idOfCurrentModel])->transform().reset();
+		this->m_data[this->m_idOfCurrentModel]->transform().reset();
 	}
 }
 
@@ -531,7 +525,7 @@ std::vector<CRGBA> CWorkspace::getXRayImage( CPoint3f pkt0, int size )
 
 	if ( -1 != AP::WORKSPACE::getCurrentModelId() )
 	{
-			CModel3D *obj = AP::WORKSPACE::getCurrentModel();
+			std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 
 			//pkt0 = PointTransform( pkt0, obj->getRotation(), obj->getTranslation(), obj->getScale(), obj->getCtr(), obj->relocateCtr() );
 			pkt0 = obj->getTransform().world2local( pkt0 );
@@ -613,7 +607,7 @@ CBoundingBox CWorkspace::topBB()
 		CPoint3d min = m.second->getMin();
 		CPoint3d max = m.second->getMax();
 		
-		Eigen::Matrix4d T = ((CModel3D*)m.second)->transform().toEigenMatrix4d();
+		Eigen::Matrix4d T = m.second->transform().toEigenMatrix4d();
 
 		CPoint3d m1 = T * min;
 		CPoint3d m2 = T * CPoint3d(min.x, min.y, max.z);

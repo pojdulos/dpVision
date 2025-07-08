@@ -32,7 +32,7 @@ WorkspaceTreeItem* WorkspaceTreeModel::append(QStandardItem* root, CBaseObject* 
 		{
 			for (const auto& iter : kids)
 			{
-				this->append(i1, (CObject*)iter.second);
+				this->append(i1, (CObject*)iter.second.get());
 			}
 		}
 
@@ -42,7 +42,7 @@ WorkspaceTreeItem* WorkspaceTreeModel::append(QStandardItem* root, CBaseObject* 
 		{
 			for (const auto& iter : anns)
 			{
-				this->append(i1, iter.second);
+				this->append(i1, iter.second.get());
 			}
 		}
 	}
@@ -54,7 +54,7 @@ WorkspaceTreeItem* WorkspaceTreeModel::append(QStandardItem* root, CBaseObject* 
 		{
 			for (const auto& iter : anns)
 			{
-				this->append(i1, iter.second);
+				this->append(i1, iter.second.get());
 			}
 		}
 	}

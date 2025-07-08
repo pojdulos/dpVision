@@ -283,7 +283,7 @@ void CParserDPVISION::saveObject(QuaZip& zip, CBaseObject* obj, QString path)
 
 		for (const auto& c : ((CObject*)obj)->children())
 		{
-			saveObject(zip, c.second, path + objBaseName + "/");
+			saveObject(zip, c.second.get(), path + objBaseName + "/");
 		}
 	}
 }
@@ -364,7 +364,7 @@ void CParserDPVISION::createXmlNodeObject(CObject* obj, QDomElement& root, QDomD
 	{
 		if (c.second->hasCategory(CBaseObject::Category::OBJECT))
 		{
-			createXmlNodeObject((CObject*)c.second, root, docu, path + IdToString(obj->id()) + "/");
+			createXmlNodeObject((CObject*)c.second.get(), root, docu, path + IdToString(obj->id()) + "/");
 		}
 	}
 }
@@ -412,7 +412,7 @@ void CParserDPVISION::createXmlNodeAnnotation(CAnnotation* obj, QDomElement& roo
 
 	for (const auto& a : obj->annotations())
 	{
-		createXmlNodeAnnotation(a.second, root, docu);
+		createXmlNodeAnnotation(a.second.get(), root, docu);
 	}
 }
 
@@ -421,14 +421,14 @@ void CParserDPVISION::createAnnotationsXml(CObject* obj, QDomElement& root, QDom
 {
 	for (const auto& a : obj->annotations())
 	{
-		createXmlNodeAnnotation(a.second, root, docu);
+		createXmlNodeAnnotation(a.second.get(), root, docu);
 	}
 
 	for (const auto& c : obj->children())
 	{
 		if (c.second->hasCategory(CBaseObject::Category::OBJECT))
 		{
-			createAnnotationsXml((CObject*)c.second, root, docu);
+			createAnnotationsXml((CObject*)c.second.get(), root, docu);
 		}
 	}
 }

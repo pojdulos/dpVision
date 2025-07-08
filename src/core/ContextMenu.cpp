@@ -174,13 +174,13 @@ QMenu* CContextMenu::createCopySubMenu(QString label, CObject* obj)
 
 	for (const auto& m : obj->children())
 	{
-		if (((CObject*)m.second)->children().empty())
+		if (((CObject*)m.second.get())->children().empty())
 		{
-			menu2->addAction(m.second->getLabel(), this, SLOT(copyTo()))->setData(QVariant::fromValue((void*)m.second));
+			menu2->addAction(m.second->getLabel(), this, SLOT(copyTo()))->setData(QVariant::fromValue((void*)m.second.get()));
 		}
 		else
 		{
-			menu2->addMenu(createCopySubMenu(m.second->getLabel(), (CObject*)m.second));
+			menu2->addMenu(createCopySubMenu(m.second->getLabel(), (CObject*)m.second.get()));
 		}
 	}
 	return menu2;
@@ -197,11 +197,11 @@ QMenu* CContextMenu::createCopyMenu()
 	{
 		if (m.second->children().empty())
 		{
-			menu->addAction(m.second->getLabel(), this, SLOT(copyTo()))->setData(QVariant::fromValue((void*)m.second));
+			menu->addAction(m.second->getLabel(), this, SLOT(copyTo()))->setData(QVariant::fromValue((void*)m.second.get()));
 		}
 		else
 		{
-			menu->addMenu(createCopySubMenu(m.second->getLabel(), m.second));
+			menu->addMenu(createCopySubMenu(m.second->getLabel(), m.second.get()));
 		}
 	}
 	return menu;
@@ -216,13 +216,13 @@ QMenu* CContextMenu::createMoveSubMenu(QString label, CObject* obj)
 
 	for (const auto& m : obj->children())
 	{
-		if (((CObject*)m.second)->children().empty())
+		if (((CObject*)m.second.get())->children().empty())
 		{
-			menu2->addAction(m.second->getLabel(), this, SLOT(moveTo()))->setData(QVariant::fromValue((void*)m.second));
+			menu2->addAction(m.second->getLabel(), this, SLOT(moveTo()))->setData(QVariant::fromValue((void*)m.second.get()));
 		}
 		else
 		{
-			menu2->addMenu(createMoveSubMenu(m.second->getLabel(), (CObject*)m.second));
+			menu2->addMenu(createMoveSubMenu(m.second->getLabel(), (CObject*)m.second.get()));
 		}
 	}
 	return menu2;
@@ -239,11 +239,11 @@ QMenu* CContextMenu::createMoveMenu()
 	{
 		if (m.second->children().empty())
 		{
-			menu->addAction(m.second->getLabel(), this, SLOT(moveTo()))->setData(QVariant::fromValue((void*)m.second));
+			menu->addAction(m.second->getLabel(), this, SLOT(moveTo()))->setData(QVariant::fromValue((void*)m.second.get()));
 		}
 		else
 		{
-			menu->addMenu(createMoveSubMenu(m.second->getLabel(), m.second));
+			menu->addMenu(createMoveSubMenu(m.second->getLabel(), (CObject*)m.second.get()));
 		}
 	}
 	return menu;
@@ -712,17 +712,17 @@ void CContextMenu::slot_delete_and_keep_children()
 			auto kids = ((CObject*)m_obj)->children();
 			for (auto d : kids)
 			{
-				CBaseObject* c = d.second;
-				AP::OBJECT::removeChild(m_obj, c);
-				AP::OBJECT::addChild(p, c);
+				std::shared_ptr<CBaseObject> c = d.second;
+				AP::OBJECT::removeChild(m_obj, c.get());
+				AP::OBJECT::addChild(p, c.get());
 			}
 //			((CObject*)m_obj)->children().clear();
 
 			auto anno = ((CObject*)m_obj)->annotations();
 			for (auto d : anno)
 			{
-				AP::OBJECT::removeChild(m_obj, (CBaseObject*)d.second);
-				AP::OBJECT::addChild(p, (CBaseObject*)d.second);
+				AP::OBJECT::removeChild(m_obj, (CBaseObject*)d.second.get());
+				AP::OBJECT::addChild(p, (CBaseObject*)d.second.get());
 			}
 //			((CObject*)m_obj)->annotations().clear();
 			

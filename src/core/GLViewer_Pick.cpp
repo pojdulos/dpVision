@@ -540,14 +540,14 @@ void GLViewer::PickPoint(int x, int y)
 	double xx = 0.5 + x;
 	double yy = 0.5 + y;
 
-	CModel3D* obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 
 	if ( obj != nullptr )
 	{
 
 		if ( obj->type() == CObject::Type::GROUP )
 		{
-			obj = (CModel3D*) ((CGroupObject *)obj)->getSelectedChild();
+			obj = std::shared_ptr<CModel3D>((CModel3D*) ((CGroupObject *)obj.get())->getSelectedChild());
 		}
 
 		CMesh* mesh = (CMesh*)obj->getChild();
@@ -555,11 +555,11 @@ void GLViewer::PickPoint(int x, int y)
 
 		if (obj->getChild()->hasType(CObject::MESH))
 		{
-			PickMeshPoint(xx, yy, obj);
+			PickMeshPoint(xx, yy, obj.get());
 		}
 		else if ((mesh->hasType(CObject::CLOUD)) || (mesh->hasType(CObject::ORDEREDCLOUD)))
 		{
-			PickCloudPoint(xx, yy, obj);
+			PickCloudPoint(xx, yy, obj.get());
 		}
 		else
 		{

@@ -19,7 +19,7 @@ public:
 	CRGBA m_color;
 	CRGBA m_selcolor;
 
-	typedef std::map<int, CAnnotation*> Annotations;
+	typedef std::map<int, std::shared_ptr<CAnnotation>> Annotations;
 	//unused, always empty, may be used in inheriting class for subAnnotations
 	Annotations m_annotations; 
 
@@ -73,7 +73,7 @@ public:
 	{
 		if (ad == nullptr) return NO_CURRENT_MODEL;
 
-		m_annotations[ad->id()] = ad;
+		m_annotations[ad->id()] = std::shared_ptr<CAnnotation>(ad);
 		ad->setParent(this);
 
 		return ad->id();
@@ -85,7 +85,7 @@ public:
 		Annotations::iterator it = m_annotations.find(id);
 		if (it != m_annotations.end())
 		{
-			an = it->second;
+			an = it->second.get();
 			m_annotations.erase(id);
 			return an;
 		}
@@ -97,7 +97,7 @@ public:
 		Annotations::iterator it;
 		for (it = m_annotations.begin(); it != m_annotations.end(); it++)
 		{
-			if (it->first == id) return it->second;
+			if (it->first == id) return it->second.get();
 			CAnnotation* obj = it->second->annotation(id);
 			if (obj != nullptr) return obj;
 		}
@@ -112,10 +112,10 @@ public:
 
 	virtual inline void clear() override
 	{
-		for (auto& a : m_annotations)
-		{
-			delete a.second;
-		}
+		//for (auto& a : m_annotations)
+		//{
+		//	delete a.second;
+		//}
 		m_annotations.clear();
 	}
 

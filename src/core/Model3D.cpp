@@ -58,16 +58,16 @@ CModel3D::CModel3D( const CModel3D &m ) : CObject(m)
 }
 
 
-CModel3D::~CModel3D()
-{
+//CModel3D::~CModel3D()
+//{
 	// Nie jestem pewien czy tu nie ma wycieku pami�ci,
 	// ale pr�ba usuwania poszczeg�lnych annotacji za pomoc� delete
 	// ko�czy sie wyj�tkiem przy zamykaniu programu
 	// 
 	// temat do zbadania!!!
 
-	m_annotations.clear();
-}
+//	m_annotations.clear();
+//}
 
 
 void CModel3D::PMeshEcoll( GLuint rzm, bool checkPoints )
@@ -91,7 +91,7 @@ void CModel3D::PMeshEcoll( GLuint rzm, bool checkPoints )
 		{
 			if ( it->second->type() == CAnnotation::POINT )
 			{
-				pmf.mSolidPoints.insert( ((CAnnotationPoint*)it->second)->getPoint());
+				pmf.mSolidPoints.insert( ((CAnnotationPoint*)it->second.get())->getPoint());
 			}
 		}
 	}
@@ -198,7 +198,7 @@ void CModel3D::importChildrenGeometry()
 	{
 		if (child.second->hasCategory(CBaseObject::Category::OBJECT))
 		{
-			CObject* obj = (CObject*)child.second;
+			CObject* obj = (CObject*)child.second.get();
 			expand(*obj);
 		}
 	}

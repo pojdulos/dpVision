@@ -135,7 +135,7 @@ void CMainWindow::fileOpen()
 
 void CMainWindow::fileSave()
 {
-	CModel3D* obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 
 	if ( NULL != AP::WORKSPACE::getCurrentModel() )
 	{
@@ -145,7 +145,7 @@ void CMainWindow::fileSave()
 
 			if (!fileName.isEmpty())
 			{
-				((CImage*)obj)->save( fileName );
+				((CImage*)obj.get())->save( fileName );
 			}
 		}
 		else
@@ -369,7 +369,7 @@ void CMainWindow::projectionPerspective()
 
 void CMainWindow::modelVisibility( bool vis )
 {
-	CModel3D * obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 	if ( nullptr != obj )
 	{
 		if ( vis )
@@ -391,7 +391,7 @@ void CMainWindow::modelVisibility( bool vis )
 
 void CMainWindow::modelInvertNormals()
 {
-	CModel3D * obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 	if ( NULL != obj )
 	{
 		if ( ( CBaseObject::Category::OBJECT == obj->getChild()->category() ) && ( CObject::MESH == ((CObject*)obj->getChild())->type() ) )
@@ -411,7 +411,7 @@ void CMainWindow::modelInvertNormals()
 
 void CMainWindow::meshApplyTransformations()
 {
-	CModel3D * obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 	if (NULL != obj)
 	{
 		if ( obj->getChild()->category() == CBaseObject::Category::OBJECT )
@@ -736,7 +736,7 @@ void CMainWindow::actionLookDir()
 		dir = 6;
 	}
 
-	actionLookDir(dir, AP::WORKSPACE::getCurrentModel());
+	actionLookDir(dir, AP::WORKSPACE::getCurrentModel().get());
 }
 
 void CMainWindow::actionSelectSelectionDelete()
@@ -780,10 +780,10 @@ void CMainWindow::actionSelectNone()
 
 void CMainWindow::imageFit(bool fit)
 {
-	CModel3D * im = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> im = AP::WORKSPACE::getCurrentModel();
 	if ((im != nullptr) && im->hasType(CObject::IMAGE))
 	{
-		((CImage*)im)->fitToWindow = fit;
+		((CImage*)im.get())->fitToWindow = fit;
 	}
 
 	QMdiSubWindow* window = getPicViewerInstance(im->id());
@@ -907,7 +907,7 @@ void CMainWindow::saveWorkspace()
 
 	for (const auto& o : AP::WORKSPACE::instance()->children())
 	{
-		objects << (CBaseObject*)o.second;
+		objects << (CBaseObject*)o.second.get();
 	}
 
 	bool result = parser->save(objects, path);
@@ -937,7 +937,7 @@ void CMainWindow::removeSelectedModels()
 
 void CMainWindow::resetAllTransformations()
 {
-	for (std::map<int, CModel3D*>::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
+	for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
 	{
 		it->second->transform().reset();
 	}
@@ -959,7 +959,7 @@ void CMainWindow::resetSelectedTransformations()
 void CMainWindow::lockAllModels()
 {
 	//UI::MESSAGEBOX::information(L"Lock ALL");
-	for (std::map<int, CModel3D*>::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
+	for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
 	{
 		it->second->setLocked(true);
 		UI::DOCK::WORKSPACE::setItemLockedById(it->first, true);
@@ -974,7 +974,7 @@ void CMainWindow::lockSelectedModels()
 	std::list<int> sel = AP::getWorkspace()->getSelection();
 	for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
 	{
-		CModel3D *obj = AP::WORKSPACE::getModel(*it);
+		std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getModel(*it);
 		obj->setLocked(true);
 		UI::DOCK::WORKSPACE::setItemLockedById(*it, true);
 	}
@@ -986,7 +986,7 @@ void CMainWindow::lockSelectedModels()
 void CMainWindow::unlockAllModels()
 {
 	//UI::MESSAGEBOX::information(L"Lock ALL");
-	for (std::map<int, CModel3D*>::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
+	for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
 	{
 		it->second->setLocked(false);
 		UI::DOCK::WORKSPACE::setItemLockedById(it->first, false);
@@ -1001,7 +1001,7 @@ void CMainWindow::unlockSelectedModels()
 	std::list<int> sel = AP::getWorkspace()->getSelection();
 	for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
 	{
-		CModel3D *obj = AP::WORKSPACE::getModel(*it);
+		std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getModel(*it);
 		obj->setLocked(false);
 		UI::DOCK::WORKSPACE::setItemLockedById(*it, false);
 	}
@@ -1013,7 +1013,7 @@ void CMainWindow::unlockSelectedModels()
 void CMainWindow::selectAll()
 {
 	AP::getWorkspace()->clearSelection();
-	for (std::map<int, CModel3D*>::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
+	for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
 	{
 		AP::WORKSPACE::SELECTION::selectModel(it->first);
 	}
@@ -1086,7 +1086,7 @@ void CMainWindow::showSelectedModels()
 
 void CMainWindow::modelInSelection(bool b)
 {
-	CModel3D * obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 	if (nullptr != obj)
 	{
 		if (b)
@@ -1103,7 +1103,7 @@ void CMainWindow::modelInSelection(bool b)
 
 void CMainWindow::modelResetTransformations()
 {
-	CModel3D * obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 	if (nullptr != obj)
 	{
 		obj->transform().reset();
@@ -1116,7 +1116,7 @@ void CMainWindow::modelResetTransformations()
 
 void CMainWindow::modelLock( bool b )
 {
-	CModel3D * obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 	if ( nullptr != obj )
 	{
 		if ( obj->setLocked( b ) )
@@ -1152,18 +1152,18 @@ void CMainWindow::modelClose()
 		}
 	}
 
-	CModel3D* obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 
 	if (obj != nullptr)
 	{
 		if (obj->hasType(CObject::Type::IMAGE))
 		{
-			if (AP::WORKSPACE::removeImage((CImage*)obj))
+			if (AP::WORKSPACE::removeImage((CImage*)obj.get()))
 				UI::STATUSBAR::printf("Current image has been removed...");
 		}
 		else
 		{
-			if (AP::WORKSPACE::removeModel(obj))
+			if (AP::WORKSPACE::removeModel(obj.get()))
 				UI::STATUSBAR::printf("Current model has been removed...");
 		}
 	}
@@ -1175,7 +1175,7 @@ void CMainWindow::modelClose()
 
 void CMainWindow::pmEcol()
 {
-	CModel3D *obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 
 	if ( NULL != obj )
 	{
@@ -1184,19 +1184,19 @@ void CMainWindow::pmEcol()
 		Ui_pmDialog pmUi;
 		pmUi.setupUi(pmD);
 
-		pmUi.spinBox->setValue( ((CMesh*) AP::WORKSPACE::getCurrentModel()->getChild())->vertices().size() );
+		pmUi.spinBox->setValue(((CMesh*)AP::WORKSPACE::getCurrentModel()->getChild())->vertices().size());
 
 		if ( pmD->exec() )
 		{	
 			try {
-				CModel3D *obj = AP::WORKSPACE::getCurrentModel();
+				std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 				if ( NULL != obj )
 				{
 					QFileInfo f( obj->path() );
 
 					if ( pmUi.checkBox->isChecked() )
 					{
-						obj = obj->getCopy();
+						obj = std::shared_ptr<CModel3D>(obj->getCopy());
 						
 						QString fname( f.baseName() + "_" + QString::number( pmUi.spinBox->value() ) );
 		
@@ -1227,7 +1227,7 @@ void CMainWindow::pmEcol()
 
 void CMainWindow::pmVsplit()
 {
-	CModel3D *obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 
 	if ( NULL != obj )
 	{
@@ -1236,7 +1236,7 @@ void CMainWindow::pmVsplit()
 		Ui_pmDialog pmUi;
 		pmUi.setupUi(pmD);
 
-		pmUi.spinBox->setValue( ((CMesh*)AP::WORKSPACE::getCurrentModel()->getChild())->vertices().size() );
+		pmUi.spinBox->setValue(((CMesh*)AP::WORKSPACE::getCurrentModel()->getChild())->vertices().size());
 
 		if ( pmD->exec() )
 		{	

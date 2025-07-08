@@ -118,7 +118,7 @@ QVector<PropWidget*> PropModel::create_and_get_subwidgets(CBaseObject *obj)
 
 void PropModel::changedRotX( double val )
 {
-	CModel3D *obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 
 	if ( NULL != obj )
 	{
@@ -152,7 +152,7 @@ void PropModel::changedRotX( double val )
 
 void PropModel::changedRotY( double val )
 {
-	CModel3D *obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 
 	if (NULL != obj)
 	{
@@ -186,7 +186,7 @@ void PropModel::changedRotY( double val )
 
 void PropModel::changedRotZ( double val )
 {
-	CModel3D *obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 
 	if (NULL != obj)
 	{

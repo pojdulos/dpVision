@@ -51,10 +51,10 @@ CObject* CParserATMDL::clean_model(CModel3D *obj)
 
 			while (it != obj->annotations().end())
 			{
-				CAnnotation* an = (*it).second;
+				std::shared_ptr<CAnnotation> an = (*it).second;
 				it = obj->annotations().erase(it);
 
-				c->addAnnotation(an);
+				c->addAnnotation(an.get());
 			}
 		}
 
@@ -1278,7 +1278,7 @@ CModel3D* CParserATMDL::load(const QString path, bool wait)
 
 	if (root->children().size() == 1)
 	{
-		CBaseObject* tmp = (*root->children().begin()).second;
+		CBaseObject* tmp = (*root->children().begin()).second.get();
 
 		if (tmp->hasType(CBaseObject::Type::MODEL))
 		{
@@ -1381,17 +1381,17 @@ QString CParserATMDL::obj2atmdl(CBaseObject* obj, const QString& wciecie)
 		if (obj->hasChildren()) {
 			for (const auto& k : ((CObject*)obj)->children())
 			{
-				text += obj2atmdl(k.second, wciecie2);
+				text += obj2atmdl(k.second.get(), wciecie2);
 			}
 		}
 
 		for (const auto& k : ((CObject*)obj)->annotations()) {
-			text += obj2atmdl(k.second, wciecie2);
+			text += obj2atmdl(k.second.get(), wciecie2);
 		}
 	}
 	else if (obj->hasCategory(CBaseObject::ANNOTATION)) {
 		for (const auto& k : ((CAnnotation*)obj)->annotations()) {
-			text += obj2atmdl(k.second, wciecie2);
+			text += obj2atmdl(k.second.get(), wciecie2);
 		}
 	}
 

@@ -143,7 +143,7 @@ CBaseObject* CParserDPVISION::parseObject(const QDomElement& currentElement, Qua
 			QString destination = dataset.attribute("destination");
 
 			AddressMap::iterator it = mapaObiektow.find(destination);
-			if (it != mapaObiektow.end()) ((CAnnotationSetOfFaces*)obj)->setDest((CMesh*)it->ptr);
+			if (it != mapaObiektow.end()) ((CAnnotationSetOfFaces*)obj)->setDest(std::shared_ptr<CMesh>((CMesh*)it->ptr));
 
 			QStringList sl = dataset.text().split(" ");
 			for (const auto s : sl)

@@ -15,14 +15,30 @@ static int _registerCBaseObjectPtrMetaType()
 static const int _dummy = _registerCBaseObjectPtrMetaType();
 
 // konstruktor ze wskazaniem rodzica
-CBaseObject::CBaseObject(CBaseObject *p)
+//CBaseObject::CBaseObject(std::shared_ptr<CBaseObject> p)
+//{
+//	m_Id = AP::getUniqueId();
+//	
+//	m_label = "baseObject";
+//	m_descr = "";
+//	m_path = "";
+//	m_parent = p;
+//
+//	m_selected = false;
+//
+//	m_showSelf = true;
+//	m_showKids = true;
+//	m_modified = true;
+//};
+
+CBaseObject::CBaseObject(CBaseObject* p)
 {
 	m_Id = AP::getUniqueId();
-	
+
 	m_label = "baseObject";
 	m_descr = "";
 	m_path = "";
-	m_parent = p;
+	m_parent = std::shared_ptr<CBaseObject>(p);
 
 	m_selected = false;
 
@@ -86,10 +102,10 @@ void CBaseObject::setParent(int objId)
 
 std::vector<CBaseObject*> CBaseObject::getPathToRoot() {
 	std::vector<CBaseObject*> path;
-	CBaseObject* curr = this;
+	std::shared_ptr<CBaseObject> curr = std::shared_ptr<CBaseObject>(this);
 	while (curr->getParent() != nullptr) {
-		curr = (CBaseObject*)curr->getParent();
-		path.push_back(curr);
+		curr = curr->getParentPtr();
+		path.push_back(curr.get());
 	}
 	return path;
 }
@@ -120,7 +136,7 @@ void testMM(CBaseObject* obj)
 {
 	Eigen::Matrix4d aktualnaMacierz = obj->getTransformationMatrix();
 
-	CBaseObject* parent = obj->getParent();
+	std::shared_ptr<CBaseObject> parent = obj->getParentPtr();
 	while (parent != nullptr)
 	{
 		if (parent->hasTransformation())
@@ -128,7 +144,7 @@ void testMM(CBaseObject* obj)
 			Eigen::Matrix4d kolejnaMacierzZlisty = parent->getTransformationMatrix();
 			aktualnaMacierz = kolejnaMacierzZlisty * aktualnaMacierz;
 		}
-		parent = parent->getParent();
+		parent = parent->getParentPtr();
 	}
 
 	std::cout << std::endl << "TESTOWA:" << std::endl << aktualnaMacierz << std::endl;
@@ -138,20 +154,20 @@ Eigen::Matrix4d CBaseObject::getGlobalTransformationMatrix()
 {
 	Eigen::Matrix4d aktualnaMacierz = Eigen::Matrix4d::Identity();
 
-	std::vector<CBaseObject*> fifo;
+	std::vector<std::shared_ptr<CBaseObject>> fifo;
 
-	fifo.push_back(this);
+	fifo.push_back(std::shared_ptr<CBaseObject>(this));
 
-	CBaseObject* parent = this->getParent();
+	std::shared_ptr<CBaseObject> parent = this->getParentPtr();
 	while (parent != nullptr)
 	{
 		fifo.push_back(parent);
-		parent = parent->getParent();
+		parent = parent->getParentPtr();
 	}
 
 	for (int i = 0; i < fifo.size(); i++)
 	{
-		CBaseObject* currentObj = fifo[i];
+		std::shared_ptr<CBaseObject> currentObj = fifo[i];
 
 		if (currentObj->hasTransformation())
 		{

@@ -18,7 +18,7 @@ const bool CGroupObject::select(const bool b)
 		Children::iterator child = m_data.find(m_selectedChildId);
 		if (child != m_data.end())
 		{
-			((CModel3D*)child->second)->setSelected(false);
+			((CModel3D*)child->second.get())->setSelected(false);
 		}
 		m_selectedChildId = -1;
 	}
@@ -29,7 +29,7 @@ const bool CGroupObject::selectChild(int id, bool b)
 {
 	if (m_selectedChildId != -1)
 	{
-		((CModel3D*)m_data.find(m_selectedChildId)->second)->setSelected(false);
+		((CModel3D*)m_data.find(m_selectedChildId)->second.get())->setSelected(false);
 		m_selectedChildId = -1;
 	}
 
@@ -38,7 +38,7 @@ const bool CGroupObject::selectChild(int id, bool b)
 		Children::iterator it = m_data.find(id);
 		if (it != m_data.end())
 		{
-			((CModel3D*)it->second)->setSelected(b);
+			((CModel3D*)it->second.get())->setSelected(b);
 			m_selectedChildId = id;
 		}
 		else
@@ -57,7 +57,7 @@ CBaseObject * CGroupObject::getSelectedChild()
 		Children::iterator it = m_data.find(m_selectedChildId);
 		if (it != m_data.end())
 		{
-			return it->second;
+			return it->second.get();
 		}
 	}
 	return NULL;

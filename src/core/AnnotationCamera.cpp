@@ -143,15 +143,15 @@ void CAnnotationCamera::renderSelf()
 	glPolygonMode(GL_BACK, GL_FILL);
 
 	double scale = 1.0;
-	CBaseObject* parent = m_parent;
+	std::shared_ptr<CBaseObject> parent = m_parent;
 	if (parent != nullptr)
 	{
 		while (parent->getParent() != nullptr)
 		{
-			scale *= ((CAnnotation*)parent)->getTransform().scale().x;
-			parent = parent->getParent();
+			scale *= ((CAnnotation*)parent.get())->getTransform().scale().x;
+			parent = parent->getParentPtr();
 		}
-		scale *= ((CModel3D*)parent)->getTransform().scale().x;
+		scale *= ((CModel3D*)parent.get())->getTransform().scale().x;
 	}
 
 	double aspect = m_sensor.realWidth / m_sensor.realHeight;

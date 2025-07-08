@@ -47,7 +47,7 @@ void CAnnotationVPath::renderSelf()
 
 	if (this->size() > 1)
 	{
-		CMesh *mesh = (CMesh*)((CObject*)m_parent)->getChild();
+		CMesh *mesh = (CMesh*)((CObject*)m_parent.get())->getChild();
 
 		glPushMatrix();
 		glPushAttrib(GL_ALL_ATTRIB_BITS);

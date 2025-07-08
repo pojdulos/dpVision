@@ -42,7 +42,7 @@ DockWidgetModel::~DockWidgetModel()
 
 void DockWidgetModel::updateProperties()
 {
-	CModel3D *obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 
 	if ( NULL != obj )
 	{
@@ -98,7 +98,7 @@ void DockWidgetModel::updateTranslations(double x, double y, double z)
 
 void DockWidgetModel::updateModelRotX( double val )
 {
-	CModel3D *obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 
 	if ( NULL != obj )
 	{
@@ -119,7 +119,7 @@ void DockWidgetModel::updateModelRotX( double val )
 
 void DockWidgetModel::updateModelRotY( double val )
 {
-	CModel3D *obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 
 	if (NULL != obj)
 	{
@@ -139,7 +139,7 @@ void DockWidgetModel::updateModelRotY( double val )
 
 void DockWidgetModel::updateModelRotZ( double val )
 {
-	CModel3D *obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 
 	if (NULL != obj)
 	{

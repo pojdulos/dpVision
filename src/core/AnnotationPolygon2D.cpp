@@ -45,7 +45,7 @@ void CAnnotationPolygon2D::renderSelf()
 
 	glLineWidth(5);
 
-	CModel3D* obj = (CModel3D*)m_parent;
+	CModel3D* obj = (CModel3D*)m_parent.get();
 	CMesh* mesh = (CMesh*) obj->getChild();
 
 	glBegin(GL_POLYGON);

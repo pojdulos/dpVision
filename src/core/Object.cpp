@@ -8,7 +8,8 @@ CObject::CObject(CBaseObject *p) : CBaseObject(p), CBoundingBox()//, CMinMax()
 {
 	setLabel("object"); 
 	bDrawBB = true;
-
+	m_data.clear();
+	m_annotations.clear();
 };
 
 // konstruktor ze wskazaniem rodzica
@@ -16,12 +17,16 @@ CObject::CObject(int parentId) : CBaseObject(parentId), CBoundingBox()
 {
 	setLabel("object");
 	bDrawBB = true;
-
+	m_data.clear();
+	m_annotations.clear();
 };
 
 // konstruktor kopiuj¹cy
 CObject::CObject(const CObject &b) : CBaseObject(b), CBoundingBox(b) //CMinMax(b)
 {
+	m_data.clear();
+	m_annotations.clear();
+
 	for (Children::const_iterator it = b.m_data.begin(); it != b.m_data.end(); it++)
 	{
 		CBaseObject *child = it->second->getCopy();
@@ -40,17 +45,18 @@ CObject::CObject(const CObject &b) : CBaseObject(b), CBoundingBox(b) //CMinMax(b
 
 };
 
-CObject::~CObject()
-{
-	while (!m_data.empty())
-	{
-		try {
-			delete m_data.begin()->second;
-		} catch (...) {
-			std::cout << "B³¹d podczas kasowania obiektu potomnego\n";
-		}
-		m_data.erase(m_data.begin());
-	}
+//CObject::~CObject()
+//{
+//	m_data.clear();
+//	while (!m_data.empty())
+//	{
+		//try {
+		//	delete m_data.begin()->second;
+		//} catch (...) {
+		//	std::cout << "B³¹d podczas kasowania obiektu potomnego\n";
+		//}
+//		m_data.erase(m_data.begin());
+//	}
 
 	//auto it = m_data.rbegin();
 	//while (it != m_data.rend())
@@ -59,7 +65,7 @@ CObject::~CObject()
 	//	it++;
 	//}
 	//m_data.clear();
-}
+//}
 
 void CObject::applyTransformation(CTransform& from, CTransform& to)
 {
@@ -91,7 +97,7 @@ CBaseObject* CObject::getSomethingWithId(int id)
 		{
 			if (d.second->hasCategory(CBaseObject::OBJECT))
 			{
-				CBaseObject* result = ((CObject*)d.second)->getSomethingWithId(id);
+				CBaseObject* result = ((CObject*)d.second.get())->getSomethingWithId(id);
 				if (result != nullptr) return result;
 			}
 		}
@@ -113,7 +119,7 @@ int CObject::addAnnotation(CAnnotation* ad)
 {
 	if (ad == nullptr) return NO_CURRENT_MODEL;
 
-	m_annotations[ad->id()] = ad;
+	m_annotations[ad->id()] = std::shared_ptr<CAnnotation>(ad);
 	ad->setParent(this);
 
 	return ad->id();
@@ -185,7 +191,7 @@ CAnnotation* CObject::annotation(int id)
 	Annotations::iterator it;
 	for (it = m_annotations.begin(); it != m_annotations.end(); it++)
 	{
-		if (it->first == id) return it->second;
+		if (it->first == id) return it->second.get();
 		CAnnotation* obj = it->second->annotation(id);
 		if (obj != nullptr) return obj;
 	}
@@ -209,7 +215,7 @@ int CObject::addChild(CBaseObject *d)
 
 	d->setParent( this );
 
-	m_data.insert( Children::value_type(d->id(), d) );
+	this->m_data[d->id()] = std::shared_ptr<CBaseObject>(d);
 
 	return d->id();
 }
@@ -218,10 +224,10 @@ CBaseObject * CObject::getChild(int id)
 {
 	if (m_data.empty()) return nullptr;
 
-	if (id == 0) return m_data.begin()->second;
+	if (id == 0) return m_data.begin()->second.get();
 
 	if (m_data.find(id) == m_data.end()) return nullptr;
-	else return m_data.at(id);
+	else return m_data.at(id).get();
 }
 
 CBaseObject* CObject::getChild(const QString& label)
@@ -230,7 +236,7 @@ CBaseObject* CObject::getChild(const QString& label)
 
 	for (const auto& c : m_data)
 	{
-		if (c.second->getLabel() == label) return c.second;
+		if (c.second->getLabel() == label) return c.second.get();
 	}
 	
 	return nullptr;
@@ -263,7 +269,7 @@ void CObject::removeAllChilds()
 
 	for (auto cc : c) {
 		this->removeChild(cc.first);
-		delete cc.second;
+		//delete cc.second;
 	}
 	for (auto aa : a) {
 		CAnnotation* an = this->removeAnnotation(aa.first);
@@ -287,7 +293,7 @@ CBaseObject *CObject::findId( int id )
 	Children::iterator it = m_data.find(id);
 	
 	if (it != m_data.end())
-		return it->second;
+		return it->second.get();
 	else
 	{
 		for ( Children::iterator it = m_data.begin(); it != m_data.end(); it++ )
@@ -385,7 +391,7 @@ std::vector<CBaseObject*> CObject::getChildren()
 	for (auto child : m_data)
 	{
 		if (child.second != nullptr)
-			children.push_back(child.second);
+			children.push_back(child.second.get());
 	}
 	return children;
 }
@@ -396,7 +402,7 @@ std::vector<CBaseObject*> CObject::getChildren(CBaseObject::Type type)
 	for (auto child : m_data)
 	{
 		if ((child.second != nullptr) && child.second->hasType(type))
-			children.push_back(child.second);
+			children.push_back(child.second.get());
 	}
 	return children;
 }

@@ -87,7 +87,8 @@ public:
 
 
 	// konstruktor ze wskazaniem rodzica
-	CBaseObject(CBaseObject *p = nullptr);
+	//CBaseObject(std::shared_ptr<CBaseObject> p = nullptr);
+	CBaseObject(CBaseObject* p = nullptr);
 
 	// konstruktor ze wskazaniem rodzica
 	CBaseObject(int objId);
@@ -95,7 +96,7 @@ public:
 	// konstruktor kopiuj�cy
 	CBaseObject(const CBaseObject &b);
 
-	virtual ~CBaseObject(void) {};
+	//virtual ~CBaseObject(void) {};
 
 	virtual inline CBaseObject::Category category() { return CBaseObject::Category::UNKNOWN; };
 	virtual inline int type() { return CBaseObject::Type::GENERIC; };
@@ -150,8 +151,10 @@ public:
 	}
 
 
-	CBaseObject * getParent() { return m_parent; };
-	void setParent(CBaseObject *p) { m_parent = p; };
+	std::shared_ptr<CBaseObject> getParentPtr() { return m_parent; };
+	CBaseObject* getParent() { return m_parent.get(); };
+	void setParent(std::shared_ptr<CBaseObject> p) { m_parent = p; };
+	void setParent(CBaseObject *p) { m_parent = std::shared_ptr<CBaseObject>(p); };
 	void setParent(int objId);
 
 
@@ -217,7 +220,7 @@ protected:
 	QSet<QString> m_keywords;
 	QString m_path;
 
-	CBaseObject *m_parent;
+	std::shared_ptr<CBaseObject> m_parent;
 
 	bool m_selected;
 

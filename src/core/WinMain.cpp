@@ -132,7 +132,8 @@ int main(int argc, char* argv[])
     int result = CMainApplication::theApp->exec();
 
     CMainApplication::theApp->UnloadAllPlugins();
-    CWorkspace::instance()->clear();
+    //CWorkspace::instance()->clear();
+    //CWorkspace::instance()->deleteLater();
 
     CMainApplication::theApp->deleteLater();
 

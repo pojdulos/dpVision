@@ -262,7 +262,7 @@ void CMainWindow::addPluginToListView( int id, QString txt )
 
 void CMainWindow::changeMenuAfterSelect()
 {
-	CModel3D *obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 
 	if ( NULL == obj )
 	{
@@ -275,7 +275,7 @@ void CMainWindow::changeMenuAfterSelect()
 		ui.menuModel->menuAction()->setVisible(false);
 
 		ui.menuImage->menuAction()->setVisible(true);
-		ui.action_ImageFit->setChecked(((CImage*)obj)->fitToWindow);
+		ui.action_ImageFit->setChecked(((CImage*)obj.get())->fitToWindow);
 
 		ui.action_File_SaveAs->setEnabled(true);
 	}
@@ -400,7 +400,7 @@ void CMainWindow::activatePicViewerInstance(int id)
 	}
 	else
 	{
-		ui.mdiArea->setActiveSubWindow(MdiChild::create((CImage*)AP::WORKSPACE::getModel(id), ui.mdiArea));
+		ui.mdiArea->setActiveSubWindow(MdiChild::create((CImage*)AP::WORKSPACE::getModel(id).get(), ui.mdiArea));
 	}
 }
 

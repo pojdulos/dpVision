@@ -124,7 +124,7 @@ namespace AP
 		}
 
 
-		int addChild(CModel3D* obj, CBaseObject* child)
+		int addChild(std::shared_ptr<CModel3D> obj, std::shared_ptr<CBaseObject> child)
 		{
 			if (child == nullptr) return NO_CURRENT_MODEL;
 			if (obj == nullptr) return NO_CURRENT_MODEL;
@@ -132,11 +132,11 @@ namespace AP
 			int id = -1;
 			if (child->hasCategory(CBaseObject::Category::ANNOTATION))
 			{
-				id = obj->addAnnotation((CAnnotation*)child);
+				id = obj->addAnnotation((CAnnotation*)child.get());
 			}
 			else if (child->hasCategory(CBaseObject::Category::OBJECT))
 			{
-				id = obj->addChild(child);
+				id = obj->addChild(child.get());
 			}
 
 			UI::DOCK::WORKSPACE::addItem(id, obj->id());
@@ -144,9 +144,16 @@ namespace AP
 			return id;
 		}
 
-		int addChild(int parentId, CBaseObject* child)
+		int addChild(CModel3D* obj, CBaseObject* child) { return addChild(std::shared_ptr<CModel3D>(obj), std::shared_ptr<CBaseObject>(child)); }
+
+		int addChild(int parentId, std::shared_ptr<CBaseObject> child)
 		{
 			return addChild(AP::WORKSPACE::getModel(parentId), child);
+		}
+
+		int addChild(int parentId, CBaseObject* child)
+		{
+			return addChild(AP::WORKSPACE::getModel(parentId), std::shared_ptr<CBaseObject>(child));
 		}
 
 		int addAnnotation(CModel3D* obj, CAnnotation *an)
@@ -163,14 +170,14 @@ namespace AP
 
 		int addAnnotation(int parentId, CAnnotation* an)
 		{
-			return addAnnotation(AP::WORKSPACE::getModel(parentId), an);
+			return addAnnotation(AP::WORKSPACE::getModel(parentId).get(), an);
 		}
 
 		void removeChild(CBaseObject *obj, CBaseObject *child)
 		{
 			if (child == nullptr) return;
 			if (obj == nullptr) return;
-			if (child->getParent() != obj) return;
+			if (child->getParentPtr() != std::shared_ptr<CBaseObject>(obj)) return;
 
 			if (obj->hasCategory(CBaseObject::Category::OBJECT))
 			{
@@ -216,17 +223,17 @@ namespace AP
 
 			if (an == nullptr) return;
 
-			CBaseObject* parent = an->getParent();
+			std::shared_ptr<CBaseObject> parent = an->getParentPtr();
 			
 			if (parent != nullptr)
 			{
 				if (parent->hasType(CBaseObject::MODEL))
 				{
-					((CModel3D*)parent)->removeAnnotation(id);
+					((CModel3D*)parent.get())->removeAnnotation(id);
 				}
 				else if (parent->hasCategory(CBaseObject::ANNOTATION))
 				{
-					((CAnnotation*)parent)->removeAnnotation(id);
+					((CAnnotation*)parent.get())->removeAnnotation(id);
 				}
 			}
 			delete an;
@@ -298,7 +305,7 @@ namespace AP
 
 		void setAllModelsVisible(bool visibility)
 		{
-			for (std::map<int, CModel3D*>::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
+			for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
 			{
 				it->second->setSelfVisibility(visibility);
 				it->second->setKidsVisibility(visibility);
@@ -311,12 +318,12 @@ namespace AP
 			UI::updateAllViews();
 		}
 
-		bool addModel( CModel3D *obj, bool setItCurrent )
+		bool addModel(std::shared_ptr<CModel3D> obj, bool setItCurrent)
 		{
-			if ( AP::getWorkspace()->_addModel(obj) )
+			if (AP::getWorkspace()->_addModel(obj))
 			{
-				UI::DOCK::WORKSPACE::addItem(obj);
-				
+				UI::DOCK::WORKSPACE::addItem(obj.get());
+
 				int id = (setItCurrent) ? obj->id() : -1;
 
 				if (id != AP::WORKSPACE::getCurrentModelId())
@@ -325,7 +332,7 @@ namespace AP
 
 					UI::DOCK::WORKSPACE::selectItem(id);
 					UI::DOCK::PROPERTIES::selectionChanged(id);
-					
+
 					UI::changeMenuAfterSelect();
 				}
 				UI::updateAllViews();
@@ -333,6 +340,8 @@ namespace AP
 			}
 			return false;
 		}
+
+		bool addModel(CModel3D* obj, bool setItCurrent) { return addModel(std::shared_ptr<CModel3D>(obj), setItCurrent); }
 
 		bool addObject(CBaseObject* obj, bool setItCurrent)
 		{
@@ -391,7 +400,7 @@ namespace AP
 		{
 			if (getWorkspace()->_removeModel(id, deleteIt))
 			{
-				CModel3D *obj = AP::WORKSPACE::getCurrentModel();
+				std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 				if (nullptr != obj)
 				{
 					UI::DOCK::WORKSPACE::selectItem(obj->id());
@@ -407,6 +416,8 @@ namespace AP
 
 				UI::changeMenuAfterSelect();
 				UI::updateAllViews();
+
+				return true;
 			}
 
 			return false;
@@ -458,11 +469,11 @@ namespace AP
 			return newId;
 		}
 
-		CModel3D * duplicateModel(CModel3D * orginal)
+		std::shared_ptr<CModel3D> AP::WORKSPACE::duplicateModel(std::shared_ptr<CModel3D> orginal)
 		{
 			if (nullptr != orginal)
 			{
-				CModel3D *kopia = orginal->getCopy();
+				std::shared_ptr<CModel3D> kopia = std::shared_ptr<CModel3D>(orginal->getCopy());
 
 				if (nullptr != kopia)
 				{
@@ -470,31 +481,31 @@ namespace AP
 					{
 						return kopia;
 					}
-					else
-					{
-						delete kopia;
-					}
+					//else
+					//{
+					//	delete kopia;
+					//}
 				}
 			}
 			return nullptr;
 		}
 
-		CModel3D * duplicateModel(int id)
+		std::shared_ptr<CModel3D> AP::WORKSPACE::duplicateModel(int id)
 		{
-			return AP::WORKSPACE::duplicateModel( AP::WORKSPACE::getModel(id) );
+			return AP::WORKSPACE::duplicateModel(AP::WORKSPACE::getModel(id));
 		}
 
-		CModel3D * duplicateCurrentModel()
+		std::shared_ptr<CModel3D> AP::WORKSPACE::duplicateCurrentModel()
 		{
-			return AP::WORKSPACE::duplicateModel( AP::WORKSPACE::getCurrentModel() );
+			return AP::WORKSPACE::duplicateModel(AP::WORKSPACE::getCurrentModel());
 		}
 
-		CModel3D * getModel( int id )
+		std::shared_ptr<CModel3D> AP::WORKSPACE::getModel(int id)
 		{
-			return getWorkspace()->_getModel( id );
+			return getWorkspace()->_getModel(id);
 		}
 
-		CModel3D * getCurrentModel()
+		std::shared_ptr<CModel3D> AP::WORKSPACE::getCurrentModel()
 		{
 			return getWorkspace()->_getModel( getWorkspace()->_getCurrentModelId() );
 		}
@@ -585,7 +596,7 @@ namespace AP
 				std::list<int> sel = AP::getWorkspace()->getSelection();
 				for (std::list<int>::iterator it = sel.begin(); it != sel.end(); it++)
 				{
-					CModel3D* m = AP::WORKSPACE::getModel(*it);
+					std::shared_ptr<CModel3D> m = AP::WORKSPACE::getModel(*it);
 					if (m != nullptr)
 					{
 						m->setSelfVisibility(visibility);
@@ -651,10 +662,10 @@ bool AP::OBJECT::remove(CBaseObject* obj, bool deleteIt)
 
 	bool isRemoved = false;
 
-	CBaseObject* parent = obj->getParent();
+	std::shared_ptr<CBaseObject> parent = obj->getParentPtr();
 	if (parent == nullptr)
 	{
-		if (obj == AP::WORKSPACE::getModel(obj->id()))
+		if (obj == AP::WORKSPACE::getModel(obj->id()).get())
 		{
 			if (obj->hasType(CObject::Type::MODEL))
 				return AP::WORKSPACE::removeModel(obj->id(), deleteIt);
@@ -676,7 +687,7 @@ bool AP::OBJECT::remove(CBaseObject* obj, bool deleteIt)
 			}
 		}
 
-		return AP::OBJECT::removeChild(parent, obj, deleteIt);
+		return AP::OBJECT::removeChild(parent.get(), obj, deleteIt);
 	}
 
 	return false;
@@ -721,7 +732,7 @@ bool AP::OBJECT::removeChild(CBaseObject* obj, CBaseObject* child, bool deleteIt
 {
 	if (child == nullptr) return false;
 	if (obj == nullptr) return false;
-	if (child->getParent() != obj) return false;
+	if (child->getParentPtr() != std::shared_ptr<CBaseObject>(obj)) return false;
 
 	bool isRemoved = false;
 
@@ -769,18 +780,18 @@ void AP::OBJECT::moveTo(CBaseObject *obj, CBaseObject* newParent, bool keep_pos)
 			return;
 		}
 
-		CBaseObject* oldParent = obj->getParent();
+		std::shared_ptr<CBaseObject> oldParent = obj->getParentPtr();
 
 		CTransform t0;
 
 		if (oldParent != nullptr)
 		{
 			t0 = CTransform(oldParent->getGlobalTransformationMatrix());
-			AP::OBJECT::removeChild(oldParent, obj, false); // false => usun ale nie kasuj
+			AP::OBJECT::removeChild(oldParent.get(), obj, false); // false => usun ale nie kasuj
 		}
 		else
 		{
-			if (obj == AP::WORKSPACE::getModel(obj->id()))
+			if (obj == AP::WORKSPACE::getModel(obj->id()).get())
 			{
 				AP::WORKSPACE::removeModel(obj->id(), false);  // false => usun ale nie kasuj
 			}

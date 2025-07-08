@@ -846,8 +846,10 @@ size_t CParserOBJ::Run()
 {
     if (this->bIsNotSet) return 0;
 
-    m_model->addChild(pMeshData = new CMesh(m_model));
+	pMeshData = new CMesh();
     if (pMeshData == NULL) return 0;
+
+	m_model->addChild(pMeshData);
 
     meshinfo.clear();
 
@@ -877,7 +879,7 @@ size_t CParserOBJ::Run()
     {
         UI::STATUSBAR::setText("Can't open file.");
         m_model->removeChild(pMeshData->id());
-        delete pMeshData;
+        //delete pMeshData;
         return 0;
     }
 
@@ -922,7 +924,7 @@ size_t CParserOBJ::Run()
 
                 for (auto& child : currentModel->children())
                 {
-                    tmpModel->addChild(child.second);
+                    tmpModel->addChild(child.second.get());
                 }
                 currentModel->removeChild(0);
                 currentModel->addChild(tmpModel);
@@ -1065,7 +1067,7 @@ size_t CParserOBJ::Run()
         for (const CObject::Children::value_type& c : m_model->children())
         {
             m_model->removeChild(c.second->id());
-            delete c.second;
+            //delete c.second;
         }
         UI::STATUSBAR::setText("File loading cancelled!");
         return 0;
@@ -1089,7 +1091,7 @@ void CParserOBJ::setChildrenVertices(CObject* obj, CPointCloud::Vertices& tmpV, 
 	{
 		if (c.second->hasType(CObject::Type::MESH))
 		{
-			CMesh* m = (CMesh*)c.second;
+			CMesh* m = (CMesh*)c.second.get();
 
 			m->vertices() = tmpV;
 			if (meshinfo[m->id()].hasVC) m->vcolors() = tmpC;
@@ -1112,7 +1114,7 @@ void CParserOBJ::setChildrenVertices(CObject* obj, CPointCloud::Vertices& tmpV, 
 			m->rebuildBoundingBox();
 		}
 
-		setChildrenVertices((CObject*)c.second, tmpV, tmpC, tmpN, tmpTC);
+		setChildrenVertices((CObject*)c.second.get(), tmpV, tmpC, tmpN, tmpTC);
 	}
 }
 
@@ -1335,12 +1337,12 @@ void CParserOBJ::saveChildren(QTextStream& objStream, QTextStream& mtlStream, CO
 
 		if (src.second->hasType(CBaseObject::Type::MODEL))
 		{
-			CModel3D* obj = (CModel3D*)src.second;
+			CModel3D* obj = (CModel3D*)src.second.get();
 			objStream << "#@trans " << obj->getLabel() << " " << obj->transform().toString("", "", ",") << Qt::endl;
 		}
 		else if (src.second->hasType(CBaseObject::Type::MESH))
 		{
-			CMesh* mesh = (CMesh*)src.second;
+			CMesh* mesh = (CMesh*)src.second.get();
 
 			objStream
 			//	<< "\n#@part=" << label
@@ -1373,7 +1375,7 @@ void CParserOBJ::saveChildren(QTextStream& objStream, QTextStream& mtlStream, CO
 		}
 		else if (src.second->hasType(CBaseObject::Type::CLOUD) || src.second->hasType(CBaseObject::Type::ORDEREDCLOUD))
 		{
-			CPointCloud* cloud = (CPointCloud*)src.second;
+			CPointCloud* cloud = (CPointCloud*)src.second.get();
 
 			objStream
 			//	<< "\n#@part=" << label
@@ -1404,7 +1406,7 @@ void CParserOBJ::saveChildren(QTextStream& objStream, QTextStream& mtlStream, CO
 			objStream << Qt::flush;
 		}
 
-		saveChildren(objStream, mtlStream, (CObject*)src.second, label + ":", vStart);
+		saveChildren(objStream, mtlStream, (CObject*)src.second.get(), label + ":", vStart);
 	}
 
 	labels.clear();

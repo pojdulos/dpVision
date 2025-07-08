@@ -12,7 +12,7 @@ typedef std::set<INDEX_TYPE> SetOfFIndices;
 class DPVISION_EXPORT CAnnotationSetOfFaces : public CAnnotation, public SetOfFIndices
 {
 	friend class PropAnnotationSetOfFaces;
-	CMesh* m_mesh;
+	std::shared_ptr<CMesh> m_mesh;
 
 public:
 	CAnnotationSetOfFaces( CModel3D *m = nullptr) :CAnnotation( m )
@@ -57,10 +57,10 @@ public:
 		return *this;
 	};
 
-	void setDest(CMesh* m) { m_mesh = m; };
+	void setDest(std::shared_ptr<CMesh> m) { m_mesh = m; };
 	CMesh* getDest();
 
-	inline CMesh*& dstMesh() { return m_mesh; }
+	inline std::shared_ptr<CMesh>& dstMesh() { return m_mesh; }
 
 	virtual inline void clear() override
 	{

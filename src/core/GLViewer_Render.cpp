@@ -590,7 +590,7 @@ void GLViewer::toolBar(void)
 void GLViewer::objectTriad(void)
 {
 
-	CModel3D *obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 
 	if (obj != NULL)
 	{

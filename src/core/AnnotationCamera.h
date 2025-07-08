@@ -76,7 +76,7 @@ public:
 private:
 	Sensor m_sensor;
 
-	// OpenGL style matrix (translation components occupy the 13th, 14th, and 15th elements of the 16-element matrix)
+	// OpenGL style matrix (translation components occupy the 13th, 14th, and 15th elements (indices: 12-14) of the 16-element matrix)
 	double m_matrix[16] = { 1.0, 0.0, 0.0, 0.0,
 		                    0.0, 1.0, 0.0, 0.0,
 		                    0.0, 0.0, 1.0, 0.0,

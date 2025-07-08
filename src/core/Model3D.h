@@ -56,7 +56,7 @@ protected:
 public:
 	CModel3D(CBaseObject* p = nullptr);
 	CModel3D( const CModel3D &m );
-	virtual ~CModel3D();
+	//virtual ~CModel3D();
 
 	//------------------------------------------------------------------------------------
 	// metody dziedziczone:

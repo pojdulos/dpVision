@@ -182,6 +182,7 @@ namespace AP
          * @param child Child object to add
          * @return Child object ID
          */
+        DPVISION_EXPORT int addChild(std::shared_ptr<CModel3D> obj, std::shared_ptr<CBaseObject> child);
         DPVISION_EXPORT int addChild(CModel3D* obj, CBaseObject* child);
 
         /**
@@ -260,6 +261,7 @@ namespace AP
          * @param setItCurrent If true, sets the model as current
          * @return True if addition was successful
          */
+        DPVISION_EXPORT bool addModel(std::shared_ptr<CModel3D> obj, bool setItCurrent = false);
         DPVISION_EXPORT bool addModel(CModel3D* obj, bool setItCurrent = false);
 
         /**
@@ -318,33 +320,33 @@ namespace AP
          * @param obj Model to duplicate
          * @return Pointer to duplicated CModel3D
          */
-        DPVISION_EXPORT CModel3D* duplicateModel(CModel3D* obj);
+        DPVISION_EXPORT std::shared_ptr<CModel3D> duplicateModel(std::shared_ptr<CModel3D> orginal);
 
         /**
          * @brief Creates a copy of a model by ID
          * @param id Model identifier
          * @return Pointer to duplicated CModel3D
          */
-        DPVISION_EXPORT CModel3D* duplicateModel(int id);
+        DPVISION_EXPORT std::shared_ptr<CModel3D> duplicateModel(int id);
 
         /**
          * @brief Creates a copy of the current model
          * @return Pointer to duplicated CModel3D
          */
-        DPVISION_EXPORT CModel3D* duplicateCurrentModel();
+        DPVISION_EXPORT std::shared_ptr<CModel3D> duplicateCurrentModel();
 
         /**
          * @brief Gets a model by ID
          * @param id Model identifier
          * @return Pointer to CModel3D or nullptr if not found
          */
-        DPVISION_EXPORT CModel3D* getModel(int id);
+        DPVISION_EXPORT std::shared_ptr<CModel3D> getModel(int id);
 
         /**
          * @brief Gets the current model
          * @return Pointer to current CModel3D or nullptr if none selected
          */
-        DPVISION_EXPORT CModel3D* getCurrentModel();
+        DPVISION_EXPORT std::shared_ptr<CModel3D> getCurrentModel();
 
         /**
          * @brief Gets the current model ID

@@ -32,7 +32,7 @@ void GraphViewer::sceneAddKid(QGraphicsScene* scene, GraphNode* parentnode, CObj
 
 	for (auto k : kid->children()) {
 		if (k.second->hasCategory(CBaseObject::Category::OBJECT))
-			sceneAddKid(scene, n, (CObject*)k.second);
+			sceneAddKid(scene, n, (CObject*)k.second.get());
 	}
 }
 
@@ -45,14 +45,14 @@ int GraphViewer::layoutTree(GraphNode* node, CObject* obj, int level, int x, QGr
 	std::vector<GraphNode*> kidNodes;
 	for (auto& k : kids) {
 		if (k.second->hasCategory(CBaseObject::Category::OBJECT)) {
-			GraphNode* kidNode = new GraphNode(0, 0, k.second);
+			GraphNode* kidNode = new GraphNode(0, 0, k.second.get());
 
 			scene->addItem(kidNode);
 			scene->addItem(new GraphEdge(node, kidNode));
 			kidNodes.push_back(kidNode);
 
 			// Rekurencyjnie ustaw pozycjê dla dziecka (nextX przesuwa siê po ka¿dym poddrzewie)
-			nextX = layoutTree(kidNode, (CObject*)k.second, level + 1, nextX, scene, deltaX, deltaY);
+			nextX = layoutTree(kidNode, (CObject*)k.second.get(), level + 1, nextX, scene, deltaX, deltaY);
 		}
 	}
 

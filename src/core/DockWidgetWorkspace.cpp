@@ -126,7 +126,7 @@ void DockWidgetWorkspace::rebuildTree()
 
 	for (CWorkspace::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
 	{
-		model->addModelWithChildren((*it).second);
+		model->addModelWithChildren((*it).second.get());
 	}
 
 	ui.treeView->blockSignals(false);
@@ -434,10 +434,10 @@ void DockWidgetWorkspace::addItem(int id, int parentId)
 	if (parentId == -1)
 	{
 		// najwy�szy poziom
-		CModel3D *obj = AP::WORKSPACE::getModel(id);
-		if (NULL != obj)
+		std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getModel(id);
+		if (nullptr != obj)
 		{
-			model->addModelWithChildren(obj);
+			model->addModelWithChildren(obj.get());
 		}
 	}
 	else

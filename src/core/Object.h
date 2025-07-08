@@ -19,8 +19,8 @@ class QString;
 class DPVISION_EXPORT CObject	: public CBaseObject, public CBoundingBox
 {
 public:
-	typedef std::map<int, CBaseObject*> Children;
-	typedef std::map<int, CAnnotation*> Annotations;
+	typedef std::map<int, std::shared_ptr<CBaseObject>> Children;
+	typedef std::map<int, std::shared_ptr<CAnnotation>> Annotations;
 
 	bool bDrawBB;
 
@@ -39,7 +39,7 @@ public:
 	CObject(const CObject &b);
 
 
-	virtual ~CObject(void);
+	//virtual ~CObject(void);
 
 	//virtual unsigned int getNewId();
 	virtual void applyTransformation(CTransform &from, CTransform &to) override;
