@@ -97,8 +97,8 @@ public:
 
 	virtual int type() { return CAnnotation::CAMERA; }
 
-	static CAnnotationCamera* create(Sensor s, double matrix[16], std::string label);
-	static CAnnotationCamera* create( Sensor s, std::string matrixSTR, std::string label);
+	static std::shared_ptr<CAnnotationCamera> create(Sensor s, double matrix[16], std::string label);
+	static std::shared_ptr<CAnnotationCamera> create( Sensor s, std::string matrixSTR, std::string label);
 
 	
 	Sensor& sensor() { return m_sensor; }

@@ -224,7 +224,7 @@ public:
 
 	bool attachTexture(CFileInfo	plikSiatki);
 
-	static CMesh* createPrimitivePlane(double sizeX, double sizeY, int divX=0, int divY=0 );
+	static std::shared_ptr<CMesh> createPrimitivePlane(double sizeX, double sizeY, int divX=0, int divY=0 );
 
 	// experimental...
 	void merge(CMesh*);

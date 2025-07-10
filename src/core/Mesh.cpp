@@ -823,9 +823,9 @@ bool CMesh::attachTexture(CFileInfo plikSiatki)
 
 
 
-CMesh* CMesh::createPrimitivePlane(double sizeX, double sizeY, int divX, int divY)
+std::shared_ptr<CMesh> CMesh::createPrimitivePlane(double sizeX, double sizeY, int divX, int divY)
 {
-	CMesh* plane = new CMesh();
+	auto plane = std::make_shared<CMesh>();
 
 	double X2 = (sizeX + 1) / 2;
 	double Y2 = (sizeY + 1) / 2;
@@ -1603,7 +1603,7 @@ void CMesh::cutPlane(CPlane &m_cutPlane, std::shared_ptr<CMesh> reszta, std::sha
 
 		CMesh::Faces tmpf[3];
 
-		CModel3D* obj3 = new CModel3D();
+		auto obj3 = std::make_shared<CModel3D>();
 
 		for (int iF = 0; iF < faces().size(); iF++)
 		{

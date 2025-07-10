@@ -107,8 +107,8 @@ public:
 
 	void colorizeParentVertices(bool b=true);
 
-	static std::pair<double,double> unifyLimits(std::vector<CHistogram*>);
-	static std::pair<double, double> unifyLimits(std::vector<CHistogram*>, std::pair<double, double> );
+	static std::pair<double,double> unifyLimits(std::vector<std::shared_ptr<CHistogram>>);
+	static std::pair<double, double> unifyLimits(std::vector<std::shared_ptr<CHistogram>>, std::pair<double, double> );
 
 	CHistogram::ColorMode m_colormode;
 
@@ -121,11 +121,11 @@ public:
 	virtual int type() override { return CAnnotation::HISTOGRAM; }
 	virtual std::wstring getTypeWSTR() { return L"histogram"; };
 
-	static void savePLT(std::wstring fdir, std::wstring fname, std::vector<CHistogram*> v, bool eqLevels );
+	static void savePLT(std::wstring fdir, std::wstring fname, std::vector<std::shared_ptr<CHistogram>> v, bool eqLevels );
 	
 	void save(QString fdir, QString fname);
 	void save(std::wstring fdir, std::wstring fname);
-	static void save(std::vector<CHistogram*>, std::wstring fdir, std::wstring fname, bool showOutOfRangeData=false);
+	static void save(std::vector<std::shared_ptr<CHistogram>>, std::wstring fdir, std::wstring fname, bool showOutOfRangeData=false);
 
 	double getNormalDistributionVal(double x);
 

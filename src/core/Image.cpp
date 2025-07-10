@@ -146,7 +146,7 @@ void CImage::save(const QString path) { QImage::save(path); }
 void CImage::save(const std::string path) { QImage::save(QString::fromStdString(path)); }
 void CImage::save(const std::wstring path) { QImage::save(QString::fromStdWString(path)); }
 
-CImage* CImage::copy(int x, int y, int w, int h) const { return new CImage(QImage::copy(x, y, w, h)); }
+CImage* CImage::copy(int x, int y, int w, int h) const { return std::make_shared<CImage>(QImage::copy(x, y, w, h)).get(); }
 
 uint64_t CImage::sizeInBytes() const { return QImage::sizeInBytes(); }
 

@@ -441,7 +441,7 @@ void CHistogram::repaint()
 }
 
 
-std::pair<double, double> CHistogram::unifyLimits(std::vector<CHistogram*> v)
+std::pair<double, double> CHistogram::unifyLimits(std::vector < std::shared_ptr<CHistogram>> v)
 {
 	std::pair<double, double> limits(v[0]->getDataMin(), v[0]->getDataMax());
 
@@ -454,7 +454,7 @@ std::pair<double, double> CHistogram::unifyLimits(std::vector<CHistogram*> v)
 	return unifyLimits(v, limits);
 }
 
-std::pair<double, double> CHistogram::unifyLimits(std::vector<CHistogram*> v, std::pair<double, double> limits)
+std::pair<double, double> CHistogram::unifyLimits(std::vector<std::shared_ptr<CHistogram>> v, std::pair<double, double> limits)
 {
 	for (int i = 0; i < v.size(); i++)
 	{
@@ -468,7 +468,7 @@ std::pair<double, double> CHistogram::unifyLimits(std::vector<CHistogram*> v, st
 #include <fstream>
 
 
-void CHistogram::savePLT(std::wstring fdir, std::wstring fname, std::vector<CHistogram*> v, bool eqLevels)
+void CHistogram::savePLT(std::wstring fdir, std::wstring fname, std::vector<std::shared_ptr<CHistogram>> v, bool eqLevels)
 {
 	std::wstring wideStr = fdir + L"/" + fname + L".plt";
 	std::ofstream plik(std::string(wideStr.begin(), wideStr.end()), std::ios::out);
@@ -575,14 +575,14 @@ void CHistogram::save(std::wstring fdir, std::wstring fname)
 
 		plik.close();
 
-		CHistogram::savePLT(fdir, fname, std::vector<CHistogram*>{this}, true);
+		CHistogram::savePLT(fdir, fname, std::vector<std::shared_ptr<CHistogram>>{std::dynamic_pointer_cast<CHistogram>(this->shared_from_this())}, true);
 
 		UI::STATUSBAR::setText(L"DONE !");
 	}
 }
 
 
-void CHistogram::save(std::vector<CHistogram*> v, std::wstring fdir, std::wstring fname, bool showOutOfRangeData)
+void CHistogram::save(std::vector<std::shared_ptr<CHistogram>> v, std::wstring fdir, std::wstring fname, bool showOutOfRangeData)
 {
 	if (fname == L"") return;
 

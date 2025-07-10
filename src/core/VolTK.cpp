@@ -219,9 +219,9 @@ void CVolTK::clear()
 	m_dataIntensityRange.lower = 0xFFFF;
 }
 
-CVolTK* CVolTK::create(int cols, int rows, int layers, int value, int depth)
+std::shared_ptr<CVolTK> CVolTK::create(int cols, int rows, int layers, int value, int depth)
 {
-	CVolTK* volTK = new CVolTK(nullptr, cols, rows, layers, depth);
+	auto volTK = std::make_shared<CVolTK>(nullptr, cols, rows, layers, depth);
 
 	for (int layer = 0; layer < layers; layer++)
 		for (int row = 0; row < rows; row++)

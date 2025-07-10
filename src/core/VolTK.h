@@ -99,7 +99,7 @@ public:
 	size_t size() { return m_displayData.size(); };
 	void clear();
 
-	static CVolTK* create(int w, int h, int l, int v = 0, int d = 16);
+	static std::shared_ptr<CVolTK> create(int w, int h, int l, int v = 0, int d = 16);
 
 	//inline int& cols() { return m_imW; }
 	//inline int& rows() { return m_imH; }

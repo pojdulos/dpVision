@@ -28,10 +28,10 @@ void generateSquarePoints(const CPoint3d& point, const CVector3d& normal, double
 
 
 // dzieli kwadratowe oczka na dwa trójk¹ty
-CMesh* generateTriangleMesh(const CPoint3d& topLeft, const CPoint3d& topRight,
+std::shared_ptr<CMesh> generateTriangleMesh(const CPoint3d& topLeft, const CPoint3d& topRight,
 	const CPoint3d& bottomLeft, const CPoint3d& bottomRight, int divisions)
 {
-	CMesh* mesh = new CMesh();
+	auto mesh = std::make_shared<CMesh>();
 
 	double step = 1.0 / divisions;
 	// Generowanie wierzcho³ków
@@ -62,10 +62,10 @@ CMesh* generateTriangleMesh(const CPoint3d& topLeft, const CPoint3d& topRight,
 }
 
 // dieli kwadratowe oczka na cztery trójk¹ty dodajêc wierzcho³ek w œrodku
-CMesh* generateTriangleMesh2(const CPoint3d& topLeft, const CPoint3d& topRight,
+std::shared_ptr<CMesh> generateTriangleMesh2(const CPoint3d& topLeft, const CPoint3d& topRight,
 	const CPoint3d& bottomLeft, const CPoint3d& bottomRight, int divisions )
 {
-	CMesh* mesh = new CMesh();
+	auto mesh = std::make_shared<CMesh>();
 
 	double step = 1.0 / divisions;
 

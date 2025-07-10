@@ -12,9 +12,9 @@
 
 #include <regex>
 
-CAnnotationCamera* CAnnotationCamera::create(Sensor s, double matrix[16], std::string label)
+std::shared_ptr<CAnnotationCamera> CAnnotationCamera::create(Sensor s, double matrix[16], std::string label)
 {
-	CAnnotationCamera* ad = new CAnnotationCamera();
+	auto ad = std::make_shared<CAnnotationCamera>();
 
 	ad->m_sensor = s;
 	
@@ -27,9 +27,9 @@ CAnnotationCamera* CAnnotationCamera::create(Sensor s, double matrix[16], std::s
 	return ad;
 }
 
-CAnnotationCamera* CAnnotationCamera::create(Sensor s, std::string matrixSTR, std::string label)
+std::shared_ptr<CAnnotationCamera> CAnnotationCamera::create(Sensor s, std::string matrixSTR, std::string label)
 {
-	CAnnotationCamera* ad = new CAnnotationCamera();
+	auto ad = std::make_shared<CAnnotationCamera>();
 
 	ad->m_sensor = s;
 
