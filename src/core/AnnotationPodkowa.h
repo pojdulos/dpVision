@@ -15,7 +15,7 @@ class DPVISION_EXPORT CAnnotationPodkowa : public CAnnotationCylinder
 public:
 	double m_arm_length;
 
-	CAnnotationPodkowa( CBaseObject *m = nullptr) :CAnnotationCylinder( m )
+	CAnnotationPodkowa(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotationCylinder( m )
 	{
 		setLabel("podkowa");
 		m_arm_length = 50.0;

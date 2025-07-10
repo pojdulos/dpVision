@@ -59,7 +59,7 @@ public:
 
 	void rebuildTree();
 
-	void addItem(CBaseObject* obj);
+	void addItem(std::shared_ptr<CBaseObject> obj);
 	void addItem(int id, int parentId);
 	void removeItem(int id);
 
@@ -70,11 +70,11 @@ public:
 	
 	void selectItem( int id );
 
-	CBaseObject* getCurrentItemObj();
+	std::shared_ptr<CBaseObject> getCurrentItemObj();
 
 	int getCurrentItemId();
 
-	QVector<CBaseObject*> getSelectedObjects();
+	QVector<std::shared_ptr<CBaseObject>> getSelectedObjects();
 
 	void processSelection(const QItemSelection& selected, const QItemSelection& deselected);
 
@@ -92,17 +92,17 @@ public:
 
 private:
 	void colLockClicked(CModel3D* obj, WorkspaceTreeItem* clickedItem);
-	void colSelfVisibilityClicked(CBaseObject* obj, WorkspaceTreeItem* clickedItem);
-	void colKidsVisibilityClicked(CBaseObject* obj, WorkspaceTreeItem* clickedItem);
-	void colNameClicked(CBaseObject* obj, WorkspaceTreeItem* clickedItem);
+	void colSelfVisibilityClicked(std::shared_ptr<CBaseObject> obj, WorkspaceTreeItem* clickedItem);
+	void colKidsVisibilityClicked(std::shared_ptr<CBaseObject> obj, WorkspaceTreeItem* clickedItem);
+	void colNameClicked(std::shared_ptr<CBaseObject> obj, WorkspaceTreeItem* clickedItem);
 
 signals:
-	void currentObjectChanged(CBaseObject*);
+	void currentObjectChanged(std::shared_ptr<CBaseObject>);
 	void currentObjectChanged(int);
 
 public slots:
 	void onCurrentObjectChanged(int);
-	void onCurrentObjectChanged(CBaseObject*);
+	void onCurrentObjectChanged(std::shared_ptr<CBaseObject>);
 
 	void onTreeViewItemClicked(QModelIndex);
 

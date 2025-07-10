@@ -13,7 +13,7 @@ class DPVISION_EXPORT CAnnotationPyramid : public CAnnotation
 	CPoint3d m_top[4];
 
 public:
-	CAnnotationPyramid( CBaseObject *m = nullptr) :CAnnotation(m)
+	CAnnotationPyramid(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation(m)
 	{
 		setLabel("Pyramid");
 	};

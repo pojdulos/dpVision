@@ -83,7 +83,7 @@ private:
 		                    0.0, 0.0, 0.0, 1.0 };
 
 public:
-	CAnnotationCamera( CBaseObject *m = nullptr) :CAnnotation(m)
+	CAnnotationCamera(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation(m)
 	{
 		setLabel("Camera");
 	};

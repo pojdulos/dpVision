@@ -9,10 +9,10 @@ class CParserATMDL :public CParser
 
 	QFile atmdlFile;
 
-	CObject* clean_model(CModel3D* obj);
-	CObject* loadShellFile(const QString path, QFile& mainFile, bool cleanIt = true);
+	std::shared_ptr<CObject> clean_model(std::shared_ptr<CModel3D> obj);
+	std::shared_ptr<CObject> loadShellFile(const QString path, QFile& mainFile, bool cleanIt = true);
 
-	void add_kid(CObject* obj, CBaseObject* kid);
+	void add_kid(std::shared_ptr<CObject> obj, std::shared_ptr<CBaseObject> kid);
 
 	void replaceKeysWithValues(QString& txt);
 
@@ -33,21 +33,21 @@ class CParserATMDL :public CParser
 	QSet<QString> parseProperty_keywords_v1(QString keywords);
 
 
-	CBaseObject* parseObject_shell(QTextStream& in);
-	CBaseObject* parseObject_transformation(QTextStream& in);
-	CBaseObject* parseObject_point(QTextStream& in);
-	CBaseObject* parseObject_sphere(QTextStream& in);
-	CBaseObject* parseObject_plane(QTextStream& in);
-	CBaseObject* parseObject_triangle(QTextStream& in);
-	CBaseObject* parseObject_animation(QTextStream& in);
-	CBaseObject* parseObject(QTextStream& in, QString slowo);
+	std::shared_ptr<CBaseObject> parseObject_shell(QTextStream& in);
+	std::shared_ptr<CBaseObject> parseObject_transformation(QTextStream& in);
+	std::shared_ptr<CBaseObject> parseObject_point(QTextStream& in);
+	std::shared_ptr<CBaseObject> parseObject_sphere(QTextStream& in);
+	std::shared_ptr<CBaseObject> parseObject_plane(QTextStream& in);
+	std::shared_ptr<CBaseObject> parseObject_triangle(QTextStream& in);
+	std::shared_ptr<CBaseObject> parseObject_animation(QTextStream& in);
+	std::shared_ptr<CBaseObject> parseObject(QTextStream& in, QString slowo);
 
 public:
 	CParserATMDL(void);
 	~CParserATMDL(void) {}
 
-	virtual CModel3D* load(const QString path, bool wait) override;
-	QString obj2atmdl(CBaseObject* obj, const QString &wciecie="");
-	virtual bool save(QVector<CBaseObject*> objects, const QString path) override;
-	virtual bool save(CModel3D* obj, const QString path) override;
+	virtual std::shared_ptr<CModel3D> load(const QString path, bool wait) override;
+	QString obj2atmdl(std::shared_ptr<CBaseObject> obj, const QString &wciecie="");
+	virtual bool save(QVector<std::shared_ptr<CBaseObject>> objects, const QString path) override;
+	virtual bool save(std::shared_ptr<CModel3D> obj, const QString path) override;
 };

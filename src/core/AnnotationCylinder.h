@@ -12,7 +12,7 @@ public:
 	float m_radius, m_halfLength;
 	double m_start_angle, m_end_angle;
 
-	CAnnotationCylinder( CBaseObject *m = nullptr) :CAnnotation( m )
+	CAnnotationCylinder(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation( m )
 	{
 		setLabel("cylinder");
 		m_point = CPoint3f(0,0,0);

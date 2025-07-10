@@ -165,7 +165,7 @@ size_t CParserDICOM::parse_dicom_file(std::string dicomPath, uint16_t slide, Vol
 	return 1;
 }
 
-long CParserDICOM::read_files(Volumetric* volum, int nbOfFiles, std::string dirPath, std::string shortName, std::string firstNumber, std::string suffix)
+long CParserDICOM::read_files(std::shared_ptr<Volumetric> volum, int nbOfFiles, std::string dirPath, std::string shortName, std::string firstNumber, std::string suffix)
 {
 	UI::STATUSBAR::setText("Please wait. I'm reading .dcm...");
 
@@ -204,7 +204,7 @@ long CParserDICOM::read_files(Volumetric* volum, int nbOfFiles, std::string dirP
 }
 
 
-long CParserDICOM::read_frames(Volumetric* volum, imebra::DataSet& dataSet, int nbOfFrames)
+long CParserDICOM::read_frames(std::shared_ptr<Volumetric> volum, imebra::DataSet& dataSet, int nbOfFrames)
 {
 	UI::STATUSBAR::setText("Please wait. I'm reading .dcm...");
 
@@ -461,7 +461,7 @@ size_t CParserDICOM::Run()
 	}
 
 
-	Volumetric* volum = new Volumetric(m_csp);
+	std::shared_ptr<Volumetric> volum = std::make_shared<Volumetric>(m_csp);
 	volum->setLabel("dicom file");
 
 	if (singleFile)
@@ -545,7 +545,7 @@ imebra::Image CParserDICOM::createImebraImageFromVoxels(const std::vector<Volume
 }
 
 
-bool CParserDICOM::_export(Volumetric* volum, QString dir_name, QString fname_base)
+bool CParserDICOM::_export(std::shared_ptr<Volumetric> volum, QString dir_name, QString fname_base)
 {
 	QDir dir(dir_name);
 	if (!dir.exists()) dir.mkdir(".");
@@ -622,14 +622,14 @@ bool CParserDICOM::_export(Volumetric* volum, QString dir_name, QString fname_ba
 	return true;
 }
 
-bool CParserDICOM::save(CModel3D* obj, const QString path)
+bool CParserDICOM::save(std::shared_ptr<CModel3D> obj, const QString path)
 {
 	QFileInfo finfo(path);
-	return _export((Volumetric*)obj->getChild(), finfo.absolutePath(), finfo.baseName());
+	return _export(std::dynamic_pointer_cast<Volumetric>(obj->getChild()), finfo.absolutePath(), finfo.baseName());
 }
 
-bool CParserDICOM::save(QVector<CBaseObject*> objects, const QString path)
+bool CParserDICOM::save(QVector<std::shared_ptr<CBaseObject>> objects, const QString path)
 {
 	QFileInfo finfo(path);
-	return _export((Volumetric*)objects[0], finfo.absolutePath(), finfo.baseName());
+	return _export(std::dynamic_pointer_cast<Volumetric>(objects[0]), finfo.absolutePath(), finfo.baseName());
 }

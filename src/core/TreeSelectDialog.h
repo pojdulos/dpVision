@@ -18,14 +18,14 @@ class TreeSelectDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit TreeSelectDialog(CBaseObject* obj, QWidget* parent = nullptr);
+    explicit TreeSelectDialog(std::shared_ptr<CBaseObject> obj, QWidget* parent = nullptr);
 
     // Dodawanie elementu: tekst i uchwyt do obiektu (np. wskaŸnik)
-    void addItem(const QString& label, CBaseObject* objectHandle, QTreeWidgetItem* parent = nullptr);
+    void addItem(const QString& label, std::shared_ptr<CBaseObject> objectHandle, QTreeWidgetItem* parent = nullptr);
 
     // Pobierz uchwyt do wybranego obiektu (po zamkniêciu dialogu)
     
-    inline CBaseObject* selectedHandle() const { return selectedObjectHandle; }
+    inline std::shared_ptr<CBaseObject> selectedHandle() const { return selectedObjectHandle; }
     inline QString getAction() const { return action; };
     inline bool keepPosition() const { return keep_pos; };
     
@@ -40,14 +40,14 @@ private slots:
     void onActionClicked();
 
 private:
-    CBaseObject* m_obj;
+    std::shared_ptr<CBaseObject> m_obj;
     QTreeWidget* treeWidget;
     QPushButton* moveButton;
     QPushButton* copyButton;
     QPushButton* rearrangeButton;
     QPushButton* cancelButton;
     QCheckBox* keepPositionCheckBox;
-    CBaseObject* selectedObjectHandle;
+    std::shared_ptr<CBaseObject> selectedObjectHandle;
     QString action;
     bool keep_pos;
 };

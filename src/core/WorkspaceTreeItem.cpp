@@ -2,7 +2,7 @@
 #include "AP.h"
 #include "Model3D.h"
 
-WorkspaceTreeItem::WorkspaceTreeItem(CBaseObject* obj) : QStandardItem()
+WorkspaceTreeItem::WorkspaceTreeItem(std::shared_ptr<CBaseObject> obj) : QStandardItem()
 {
 	if (obj != nullptr)
 	{
@@ -27,8 +27,8 @@ WorkspaceTreeItem::WorkspaceTreeItem(CBaseObject* obj) : QStandardItem()
 				m_Fields[Column::colKidsVisibility] = createKidsVisibleColumn(obj);
 				m_Fields[Column::colKidsVisibility]->setIcon(WorkspaceTreeItem::getNewIcon((CBaseObject::Type)obj->type(), Column::colKidsVisibility, obj->getKidsVisibility()));
 
-				m_Fields[Column::colLock] = createLockColumn((CModel3D*)obj);
-				m_Fields[Column::colLock]->setIcon(WorkspaceTreeItem::getNewIcon((CBaseObject::Type)obj->type(), Column::colLock, ((CModel3D*)obj)->isLocked()));
+				m_Fields[Column::colLock] = createLockColumn(obj);
+				m_Fields[Column::colLock]->setIcon(WorkspaceTreeItem::getNewIcon((CBaseObject::Type)obj->type(), Column::colLock, std::static_pointer_cast<CModel3D>(obj)->isLocked()));
 			}
 			else
 			{
@@ -53,7 +53,7 @@ WorkspaceTreeItem::WorkspaceTreeItem(CBaseObject* obj) : QStandardItem()
 void WorkspaceTreeItem::changeIcon(Column c, bool b)
 {
 	WorkspaceTreeItem* field = this->getField(c);
-	CBaseObject* obj = this->getObject();
+	std::shared_ptr<CBaseObject> obj = this->getObject();
 
 	if (field != nullptr)
 	{
@@ -83,15 +83,15 @@ QIcon WorkspaceTreeItem::getNewIcon(CBaseObject::Type t, Column c, bool b)
 }
 
 
-void WorkspaceTreeItem::setObject(CBaseObject* obj)
+void WorkspaceTreeItem::setObject(std::shared_ptr<CBaseObject> obj)
 {
-	this->setData(QVariant::fromValue(obj), Qt::UserRole);
+	this->setData(QVariant::fromValue<std::shared_ptr<CBaseObject>>(obj), Qt::UserRole);
 	this->setData(QVariant::fromValue(obj->id()), Qt::UserRole+1);
 }
 
-CBaseObject* WorkspaceTreeItem::getObject()
+std::shared_ptr<CBaseObject> WorkspaceTreeItem::getObject()
 {
-	return this->data(Qt::UserRole).value<CBaseObject*>();
+	return this->data(Qt::UserRole).value<std::shared_ptr<CBaseObject>>();
 }
 
 int WorkspaceTreeItem::getObjectId()
@@ -117,7 +117,7 @@ WorkspaceTreeItem* WorkspaceTreeItem::getField(Column c)
 		return nullptr;
 }
 
-WorkspaceTreeItem* WorkspaceTreeItem::createVisibleColumn(CBaseObject* obj)
+WorkspaceTreeItem* WorkspaceTreeItem::createVisibleColumn(std::shared_ptr<CBaseObject> obj)
 {
 	WorkspaceTreeItem* m_V = new WorkspaceTreeItem();
 	m_V->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
@@ -126,7 +126,7 @@ WorkspaceTreeItem* WorkspaceTreeItem::createVisibleColumn(CBaseObject* obj)
 	return m_V;
 }
 
-WorkspaceTreeItem* WorkspaceTreeItem::createKidsVisibleColumn(CBaseObject* obj)
+WorkspaceTreeItem* WorkspaceTreeItem::createKidsVisibleColumn(std::shared_ptr<CBaseObject> obj)
 {
 	WorkspaceTreeItem* m_V = new WorkspaceTreeItem();
 	m_V->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
@@ -135,7 +135,7 @@ WorkspaceTreeItem* WorkspaceTreeItem::createKidsVisibleColumn(CBaseObject* obj)
 	return m_V;
 }
 
-WorkspaceTreeItem* WorkspaceTreeItem::createLockColumn(CModel3D* obj)
+WorkspaceTreeItem* WorkspaceTreeItem::createLockColumn(std::shared_ptr<CBaseObject> obj)
 {
 	WorkspaceTreeItem* m_L = new WorkspaceTreeItem();
 	m_L->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);

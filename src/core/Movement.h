@@ -55,7 +55,7 @@ public:
 
 
 	inline int type() override { return CObject::Type::MOVEMENT; };
-	CMovement *getCopy() override { return new CMovement(*this); };
+	virtual std::shared_ptr<CBaseObject> getCopy() override { return std::make_shared<CMovement>(*this); };
 
 	void info(std::wstring i[4]) override;
 	std::wstring infoRow() override;

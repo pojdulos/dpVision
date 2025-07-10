@@ -8,7 +8,7 @@
 #include "Object.h"
 
 
-CContextMenu::CContextMenu(CBaseObject *obj, QWidget *parent) : QMenu(parent), m_obj(obj)
+CContextMenu::CContextMenu(std::shared_ptr<CBaseObject> obj, QWidget *parent) : QMenu(parent), m_obj(obj)
 {
 	addAction("expand all", this, SLOT(slotExpandAll()));
 	addAction("collapse all", this, SLOT(slotCollapseAll()));
@@ -166,21 +166,21 @@ QMenu* CContextMenu::createDeleteMenu()
 	return menu;
 }
 
-QMenu* CContextMenu::createCopySubMenu(QString label, CObject* obj)
+QMenu* CContextMenu::createCopySubMenu(QString label, std::shared_ptr<CObject> obj)
 {
 	QMenu* menu2 = new QMenu(label);
-	menu2->addAction(".. here ..", this, SLOT(copyTo()))->setData(QVariant::fromValue((void*)obj));
+	menu2->addAction(".. here ..", this, SLOT(copyTo()))->setData(QVariant::fromValue<std::shared_ptr<CBaseObject>>(obj));
 	menu2->addSeparator();
 
 	for (const auto& m : obj->children())
 	{
 		if (((CObject*)m.second.get())->children().empty())
 		{
-			menu2->addAction(m.second->getLabel(), this, SLOT(copyTo()))->setData(QVariant::fromValue((void*)m.second.get()));
+			menu2->addAction(m.second->getLabel(), this, SLOT(copyTo()))->setData(QVariant::fromValue<std::shared_ptr<CBaseObject>>(m.second));
 		}
 		else
 		{
-			menu2->addMenu(createCopySubMenu(m.second->getLabel(), (CObject*)m.second.get()));
+			menu2->addMenu(createCopySubMenu(m.second->getLabel(), std::static_pointer_cast<CObject>(m.second)));
 		}
 	}
 	return menu2;
@@ -190,39 +190,39 @@ QMenu* CContextMenu::createCopyMenu()
 {
 	QMenu* menu = new QMenu("copy to...");
 	menu->setIcon(QIcon(":/icons/CopyTo.ico"));
-	menu->addAction("...new model", this, SLOT(copyTo()))->setData(QVariant::fromValue(nullptr));
+	menu->addAction("...new model", this, SLOT(copyTo()))->setData(QVariant::fromValue<std::shared_ptr<CBaseObject>>(nullptr));
 	menu->addSeparator();
 
 	for (const auto& m : *AP::getWorkspace())
 	{
 		if (m.second->children().empty())
 		{
-			menu->addAction(m.second->getLabel(), this, SLOT(copyTo()))->setData(QVariant::fromValue((void*)m.second.get()));
+			menu->addAction(m.second->getLabel(), this, SLOT(copyTo()))->setData(QVariant::fromValue<std::shared_ptr<CBaseObject>>(m.second));
 		}
 		else
 		{
-			menu->addMenu(createCopySubMenu(m.second->getLabel(), m.second.get()));
+			menu->addMenu(createCopySubMenu(m.second->getLabel(), m.second));
 		}
 	}
 	return menu;
 }
 
 
-QMenu* CContextMenu::createMoveSubMenu(QString label, CObject* obj)
+QMenu* CContextMenu::createMoveSubMenu(QString label, std::shared_ptr<CObject> obj)
 {
 	QMenu* menu2 = new QMenu(label);
-	menu2->addAction(".. here ..", this, SLOT(moveTo()))->setData(QVariant::fromValue((void*)obj));
+	menu2->addAction(".. here ..", this, SLOT(moveTo()))->setData(QVariant::fromValue<std::shared_ptr<CBaseObject>>(obj));
 	menu2->addSeparator();
 
 	for (const auto& m : obj->children())
 	{
 		if (((CObject*)m.second.get())->children().empty())
 		{
-			menu2->addAction(m.second->getLabel(), this, SLOT(moveTo()))->setData(QVariant::fromValue((void*)m.second.get()));
+			menu2->addAction(m.second->getLabel(), this, SLOT(moveTo()))->setData(QVariant::fromValue<std::shared_ptr<CBaseObject>>(m.second));
 		}
 		else
 		{
-			menu2->addMenu(createMoveSubMenu(m.second->getLabel(), (CObject*)m.second.get()));
+			menu2->addMenu(createMoveSubMenu(m.second->getLabel(), std::static_pointer_cast<CObject>(m.second)));
 		}
 	}
 	return menu2;
@@ -232,18 +232,18 @@ QMenu* CContextMenu::createMoveMenu()
 {
 	QMenu* menu = new QMenu("move to...");
 	menu->setIcon(QIcon(":/icons/MoveTo.ico"));
-	menu->addAction("...new model", this, SLOT(moveTo()))->setData(QVariant::fromValue(nullptr));
+	menu->addAction("...new model", this, SLOT(moveTo()))->setData(QVariant::fromValue<std::shared_ptr<CBaseObject>>(nullptr));
 	menu->addSeparator();
 
 	for (const auto& m : *AP::getWorkspace())
 	{
 		if (m.second->children().empty())
 		{
-			menu->addAction(m.second->getLabel(), this, SLOT(moveTo()))->setData(QVariant::fromValue((void*)m.second.get()));
+			menu->addAction(m.second->getLabel(), this, SLOT(moveTo()))->setData(QVariant::fromValue<std::shared_ptr<CBaseObject>>(m.second));
 		}
 		else
 		{
-			menu->addMenu(createMoveSubMenu(m.second->getLabel(), (CObject*)m.second.get()));
+			menu->addMenu(createMoveSubMenu(m.second->getLabel(), m.second));
 		}
 	}
 	return menu;
@@ -262,7 +262,7 @@ void CContextMenu::meshAction()
 	switch (whatToDo)
 	{
 	case 0:
-		((CMesh*)m_obj)->invertNormals();
+		std::static_pointer_cast<CMesh>(m_obj)->invertNormals();
 		break;
 	default:
 		break;
@@ -273,7 +273,7 @@ void CContextMenu::moveTo()
 {
 	QAction* action = (QAction*)QObject::sender();
 
-	CBaseObject* newParent = (CBaseObject*)action->data().value<void*>();
+	std::shared_ptr<CBaseObject> newParent = action->data().value<std::shared_ptr<CBaseObject>>();
 
 	AP::OBJECT::moveTo(m_obj, newParent);
 }
@@ -283,7 +283,7 @@ void CContextMenu::copyTo()
 {
 	QAction* action = (QAction*)QObject::sender();
 
-	CBaseObject* newParent = (CBaseObject*)action->data().value<void*>();
+	std::shared_ptr<CBaseObject> newParent = action->data().value<std::shared_ptr<CBaseObject>>();
 
 	AP::OBJECT::copyTo(m_obj, newParent);
 }
@@ -298,17 +298,17 @@ void CContextMenu::saveObjAs()
 
 	if (!fileName.isEmpty())
 	{
-		CModel3D* tmpObj;
+		std::shared_ptr<CModel3D> tmpObj;
 		if (m_obj->hasType(CBaseObject::Type::MODEL))
 		{
-			if (((CModel3D*)m_obj)->save(fileName))
+			if (std::dynamic_pointer_cast<CModel3D>(m_obj)->save(fileName))
 			{
 				UI::STATUSBAR::setText(L"Saved: " + fileName.toStdWString());
 			}
 		}
 		else
 		{
-			tmpObj = new CModel3D;
+			tmpObj = std::make_shared<CModel3D>();
 			tmpObj->addChild(m_obj);
 			if (tmpObj->save(fileName))
 			{
@@ -316,7 +316,7 @@ void CContextMenu::saveObjAs()
 			}
 			tmpObj->removeChild(m_obj->id());
 			m_obj->setParent(nullptr);
-			delete tmpObj;
+			//delete tmpObj;
 		}
 	}
 }
@@ -332,35 +332,35 @@ void CContextMenu::saveObjAs()
 //}
 
 // Odwróć ścieżkę do korzenia
-void reversePath_BAK(std::vector<CBaseObject*>& path, CObject* start) {
-	CObject* new_parent = start;
-	Eigen::Matrix4d new_m = (new_parent->hasType(CObject::Type::MODEL)) ? ((CModel3D*)new_parent)->transform().toEigenMatrix4d() : Eigen::Matrix4d::Identity();
+//void reversePath_BAK(std::vector<CBaseObject*>& path, CObject* start) {
+//	CObject* new_parent = start;
+//	Eigen::Matrix4d new_m = (new_parent->hasType(CObject::Type::MODEL)) ? ((CModel3D*)new_parent)->transform().toEigenMatrix4d() : Eigen::Matrix4d::Identity();
+//	
+//	for (CBaseObject* cur_obj : path)
+//	{
+//		CObject* cur_parent = (CObject*)cur_obj;
+//		CObject* cur_grandpa = (CObject*)cur_parent->getParent();
+//
+//		if (cur_grandpa)
+//			cur_grandpa->removeChild(cur_parent->id());
+//
+//		Eigen::Matrix4d cur_m = (cur_parent->hasType(CObject::Type::MODEL)) ? ((CModel3D*)cur_parent)->transform().toEigenMatrix4d() : Eigen::Matrix4d::Identity();
+//		Eigen::Matrix4d inv_m = (new_parent->hasType(CObject::Type::MODEL)) ? (Eigen::Matrix4d)new_m.inverse() : Eigen::Matrix4d::Identity();
+//
+//		if (cur_parent->hasType(CObject::Type::MODEL)) 
+//			((CModel3D*)cur_parent)->setTransform(inv_m);
+//
+//		new_parent->addChild(cur_parent);
+//
+//		new_parent = cur_parent;
+//		new_m = cur_m;
+//	}
+//}
+
+
+void reversePath(std::vector<std::shared_ptr<CBaseObject>>& path, std::shared_ptr<CObject> start) {
 	
-	for (CBaseObject* cur_obj : path)
-	{
-		CObject* cur_parent = (CObject*)cur_obj;
-		CObject* cur_grandpa = (CObject*)cur_parent->getParent();
-
-		if (cur_grandpa)
-			cur_grandpa->removeChild(cur_parent->id());
-
-		Eigen::Matrix4d cur_m = (cur_parent->hasType(CObject::Type::MODEL)) ? ((CModel3D*)cur_parent)->transform().toEigenMatrix4d() : Eigen::Matrix4d::Identity();
-		Eigen::Matrix4d inv_m = (new_parent->hasType(CObject::Type::MODEL)) ? (Eigen::Matrix4d)new_m.inverse() : Eigen::Matrix4d::Identity();
-
-		if (cur_parent->hasType(CObject::Type::MODEL)) 
-			((CModel3D*)cur_parent)->setTransform(inv_m);
-
-		new_parent->addChild(cur_parent);
-
-		new_parent = cur_parent;
-		new_m = cur_m;
-	}
-}
-
-
-void reversePath(std::vector<CBaseObject*>& path, CObject* start) {
-	
-	std::vector<CBaseObject*> revpath(path);
+	std::vector<std::shared_ptr<CBaseObject>> revpath(path);
 	
 	std::reverse(revpath.begin(), revpath.end());
 	revpath.push_back(start);
@@ -368,8 +368,8 @@ void reversePath(std::vector<CBaseObject*>& path, CObject* start) {
 
 
 	for (int i = 0; i < revpath.size()-1; i++) {
-		CObject* objD = (CObject*)revpath[i];		// dotychczasowy rodzic
-		CObject* objA = (CObject*)revpath[i + 1];	// dotychczasowy potomek
+		std::shared_ptr<CObject> objD = std::dynamic_pointer_cast<CObject>(revpath[i]);		// dotychczasowy rodzic
+		std::shared_ptr<CObject> objA = std::dynamic_pointer_cast<CObject>(revpath[i + 1]);	// dotychczasowy potomek
 
 		// w najgorszym przypadku trzeba będzie skompensować aż dwie macierze transformacji:
 		// macierz dotychczasowego rodzica - bo dotychczasowy potomek wyjdzie poza jej wpływ więc jego położenie wzgledem rodzica sie zmieni
@@ -379,12 +379,12 @@ void reversePath(std::vector<CBaseObject*>& path, CObject* start) {
 		if (objA) {
 			Eigen::Matrix4d mD_inv = Eigen::Matrix4d::Identity();
 			if (objD->hasType(CObject::Type::MODEL))
-				mD_inv = ((CModel3D*)objD)->transform().toEigenMatrix4d().inverse();
+				mD_inv = std::static_pointer_cast<CModel3D>(objD)->transform().toEigenMatrix4d().inverse();
 
 
 			Eigen::Matrix4d mA_inv = Eigen::Matrix4d::Identity();
 			if (objA->hasType(CObject::Type::MODEL))
-				mA_inv = ((CModel3D*)objA)->transform().toEigenMatrix4d().inverse();
+				mA_inv = std::static_pointer_cast<CModel3D>(objA)->transform().toEigenMatrix4d().inverse();
 
 			Eigen::Matrix4d mDop = mA_inv * mD_inv;
 
@@ -395,7 +395,7 @@ void reversePath(std::vector<CBaseObject*>& path, CObject* start) {
 				objA->addChild(objD);
 			}
 			else {
-				CModel3D* objDop = new CModel3D();
+				std::shared_ptr<CModel3D> objDop = std::make_shared<CModel3D>();
 				objDop->setTransform(mDop);
 				objDop->setLabel("DOPASOWANIE");
 				objA->addChild(objDop);
@@ -423,12 +423,12 @@ void reversePath(std::vector<CBaseObject*>& path, CObject* start) {
 
 
 // 4. Główna funkcja
-bool makeObjectRoot(CObject* m_obj)
+bool makeObjectRoot(std::shared_ptr<CObject> m_obj)
 {
 	if (m_obj == nullptr)
 		return false;
 
-	CObject* parent = (CObject*)m_obj->getParent();
+	std::shared_ptr<CObject> parent = std::dynamic_pointer_cast<CObject>(m_obj->getParentPtr());
 	if (parent == nullptr)
 		return false;
 
@@ -462,7 +462,7 @@ void CContextMenu::slot_make_me_root()
 		return;
 	}
 
-	CBaseObject* top = m_obj->getRoot();
+	std::shared_ptr<CBaseObject> top = m_obj->getRoot();
 
 	if (top == m_obj) {
 		UI::MESSAGEBOX::information("An object is already root,\nso you are not changing anything");
@@ -471,16 +471,16 @@ void CContextMenu::slot_make_me_root()
 
 	Eigen::Matrix4d globalM = m_obj->getGlobalTransformationMatrix();
 
-	AP::WORKSPACE::removeModel((CModel3D*)top, false);
+	AP::WORKSPACE::removeModel(std::static_pointer_cast<CModel3D>(top), false);
 
-	if (makeObjectRoot((CObject*)m_obj))
+	if (makeObjectRoot(std::static_pointer_cast<CObject>(m_obj)))
 	{
 		AP::WORKSPACE::addObject(m_obj);
 
 		if (m_obj->hasType(CObject::Type::MODEL))
-			((CModel3D*)m_obj)->transform().fromEigenMatrix4d(globalM);
+			std::static_pointer_cast<CModel3D>(m_obj)->transform().fromEigenMatrix4d(globalM);
 		else
-			((CModel3D*)m_obj->getParent())->transform().fromEigenMatrix4d(globalM);
+			std::static_pointer_cast<CModel3D>(m_obj->getParentPtr())->transform().fromEigenMatrix4d(globalM);
 	}
 }
 
@@ -493,7 +493,7 @@ void CContextMenu::slot_test_graph()
 
 	if (gv) delete gv;
 	
-	gv = new GraphViewer(m_obj);
+	gv = new GraphViewer(m_obj.get());
 	gv->show();
 }
 
@@ -502,46 +502,48 @@ void CContextMenu::slot_make_me_root2()
 	if (m_obj == nullptr)
 		return; 	// object not exists
 
-	CBaseObject* parent = m_obj->getParent();
+	std::shared_ptr<CBaseObject> parent = m_obj->getParentPtr();
 
 	if (parent == nullptr)
 		return; 	// object is already root
 
 	// searching for the most top object in tree
-	CObject* top = (CObject*)m_obj;
+	std::shared_ptr<CObject> top = std::dynamic_pointer_cast<CObject>(m_obj);
 	while (top->getParent() != nullptr)
-		top = (CObject*)top->getParent();
+		top = std::static_pointer_cast<CObject>(top->getParentPtr());
 
 	Eigen::Matrix4d globalM = m_obj->getGlobalTransformationMatrix();
 
 	AP::OBJECT::removeChild(parent, m_obj);
 
-	AP::WORKSPACE::removeModel((CModel3D*)top, false);
+	AP::WORKSPACE::removeModel(std::static_pointer_cast<CModel3D>(top), false);
 
-	CObject* new_parent = (CObject*)m_obj;
+	std::shared_ptr<CObject> new_parent = std::dynamic_pointer_cast<CObject>(m_obj);
 
 	while (parent != nullptr) {
-		CObject* grandpa = (CObject*)parent->getParent();
+		std::shared_ptr<CObject> grandpa = std::dynamic_pointer_cast<CObject>(parent->getParentPtr());
 		if (grandpa != nullptr) grandpa->removeChild(parent->id());
 
 		if (parent->hasType(CObject::Type::MODEL)) {
+			auto p = std::dynamic_pointer_cast<CModel3D>(parent);
+
 			// tu odwrócenie transformacji
-			Eigen::Matrix4Xd m = ((CModel3D*)parent)->transform().toEigenMatrix4d();
+			Eigen::Matrix4Xd m = p->transform().toEigenMatrix4d();
 
-			((CModel3D*)parent)->transform().reset();
+			p->transform().reset();
 
-			CModel3D* tmp = new CModel3D();
+			std::shared_ptr<CModel3D> tmp = std::make_shared<CModel3D>();
 			tmp->transform().fromEigenMatrix4d(m.inverse());
 			tmp->setLabel("DOPASOWANIE");
 
-			((CModel3D*)parent)->addChild(tmp);
+			p->addChild(tmp);
 
 			new_parent->addChild(parent);
-			new_parent = (CObject*)tmp;
+			new_parent = tmp;
 		}
 		else {
 			new_parent->addChild(parent);
-			new_parent = (CObject*)parent;
+			new_parent = std::dynamic_pointer_cast<CObject>(parent);
 		}
 		parent = grandpa;
 	}
@@ -549,9 +551,9 @@ void CContextMenu::slot_make_me_root2()
 	AP::WORKSPACE::addObject(m_obj);
 
 	if (m_obj->hasType(CObject::Type::MODEL))
-		((CModel3D*)m_obj)->transform().fromEigenMatrix4d(globalM);
+		std::static_pointer_cast<CModel3D>(m_obj)->transform().fromEigenMatrix4d(globalM);
 	else
-		((CModel3D*)m_obj->getParent())->transform().fromEigenMatrix4d(globalM);
+		std::static_pointer_cast<CModel3D>(m_obj->getParentPtr())->transform().fromEigenMatrix4d(globalM);
 }
 
 
@@ -570,7 +572,7 @@ void CContextMenu::slot_repositioning()
 	dlg.cloneModelToWidget(model);
 
 	if (dlg.exec() == QDialog::Accepted) {
-		CBaseObject* wybranyObiekt = dlg.selectedHandle();
+		std::shared_ptr<CBaseObject> wybranyObiekt = dlg.selectedHandle();
 		QString action = dlg.getAction();
 		bool keep_pos = dlg.keepPosition();
 
@@ -589,8 +591,8 @@ void CContextMenu::slot_repositioning()
 				return;
 			}
 
-			CBaseObject* tgt_top = (wybranyObiekt)?wybranyObiekt->getRoot():nullptr;
-			CBaseObject* top = m_obj->getRoot();
+			std::shared_ptr<CBaseObject> tgt_top = (wybranyObiekt)?wybranyObiekt->getRoot():nullptr;
+			std::shared_ptr<CBaseObject> top = m_obj->getRoot();
 
 			if (top == tgt_top) {
 				UI::MESSAGEBOX::information("An object cannot be a descendant of its own descendant");
@@ -606,15 +608,15 @@ void CContextMenu::slot_repositioning()
 
 			Eigen::Matrix4d globalM = m_obj->getGlobalTransformationMatrix();
 
-			AP::WORKSPACE::removeModel((CModel3D*)top, false);
+			AP::WORKSPACE::removeModel(std::static_pointer_cast<CModel3D>(top), false);
 
-			if (already_root || makeObjectRoot((CObject*)m_obj))
+			if (already_root || makeObjectRoot(std::static_pointer_cast<CObject>(m_obj)))
 			{
 				if (wybranyObiekt != nullptr)
 				{
 					if (keep_pos && ! m_obj->hasType(CObject::Type::MODEL)) // musze dodać macierz dopasowujacą
 					{
-						CModel3D* mdl = new CModel3D();
+						std::shared_ptr<CModel3D> mdl = std::make_shared<CModel3D>();
 						mdl->addChild(m_obj);
 						mdl->setLabel("<**>");
 						mdl->importChildrenGeometry();
@@ -633,9 +635,9 @@ void CContextMenu::slot_repositioning()
 				if (keep_pos)
 				{
 					if (m_obj->hasType(CObject::Type::MODEL))
-						((CModel3D*)m_obj)->transform().fromEigenMatrix4d(globalM);
+						std::static_pointer_cast<CModel3D>(m_obj)->transform().fromEigenMatrix4d(globalM);
 					else
-						((CModel3D*)m_obj->getParent())->transform().fromEigenMatrix4d(globalM);
+						std::static_pointer_cast<CModel3D>(m_obj->getParentPtr())->transform().fromEigenMatrix4d(globalM);
 				}
 			}
 		}
@@ -651,14 +653,14 @@ void CContextMenu::slot_apply_last_transform()
 	if (m_obj == nullptr)
 		return; 	// obiekt nie istnieje
 
-	CBaseObject* parent = m_obj->getParent();
+	std::shared_ptr<CBaseObject> parent = m_obj->getParentPtr();
 	
 	if ( (parent == nullptr) || (!parent->hasType(CBaseObject::Type::MODEL)) )
 		return;	// rodzicem obiektu nie jest przekształcenie
 
-	CTransform parent_transform = ((CModel3D*)parent)->transform();
+	CTransform parent_transform = std::static_pointer_cast<CModel3D>(parent)->transform();
 
-	CBaseObject* grandpa = parent->getParent();
+	std::shared_ptr<CBaseObject> grandpa = parent->getParentPtr();
 	
 	//CTransform grandpa_transform; // zerowe przekształcenie 
 	CTransform null_transform; // zerowe przekształcenie 
@@ -668,7 +670,7 @@ void CContextMenu::slot_apply_last_transform()
 
 	if (m_obj->hasType(CBaseObject::Type::MODEL))
 	{
-		CModel3D* mdl = (CModel3D*)m_obj;
+		std::shared_ptr<CModel3D> mdl = std::static_pointer_cast<CModel3D>(m_obj);
 		Eigen::Matrix4d T = mdl->transform().toEigenMatrix4d();
 		Eigen::Matrix4d Tp = parent_transform.toEigenMatrix4d();
 
@@ -688,13 +690,13 @@ void CContextMenu::slot_apply_last_transform()
 	}
 	else if (m_obj->hasType(CBaseObject::Type::MESH) || m_obj->hasType(CBaseObject::Type::CLOUD) || m_obj->hasType(CBaseObject::Type::ORDEREDCLOUD))
 	{
-		((CPointCloud*)m_obj)->applyTransformation(parent_transform, null_transform);
+		std::static_pointer_cast<CPointCloud>(m_obj)->applyTransformation(parent_transform, null_transform);
 
 		if (grandpa == nullptr) // workspace root
 		{
 			// na razie jeszcze na najwyższym poziomie drzewa musi byc Model3D
-			grandpa = new CModel3D();
-			AP::WORKSPACE::addModel((CModel3D*)grandpa);
+			grandpa = std::make_shared<CModel3D>();
+			AP::WORKSPACE::addModel(std::static_pointer_cast<CModel3D>(grandpa));
 		}
 
 		AP::OBJECT::removeChild(parent, m_obj);
@@ -706,23 +708,23 @@ void CContextMenu::slot_delete_and_keep_children()
 {
 	if (m_obj->hasCategory(CBaseObject::Category::OBJECT))
 	{
-		CObject* p = (CObject*)m_obj->getParent();
+		std::shared_ptr<CObject> p = std::dynamic_pointer_cast<CObject>(m_obj->getParentPtr());
 		if (p != nullptr)
 		{
-			auto kids = ((CObject*)m_obj)->children();
+			auto kids = std::static_pointer_cast<CObject>(m_obj)->children();
 			for (auto d : kids)
 			{
 				std::shared_ptr<CBaseObject> c = d.second;
-				AP::OBJECT::removeChild(m_obj, c.get());
-				AP::OBJECT::addChild(p, c.get());
+				AP::OBJECT::removeChild(m_obj, c);
+				AP::OBJECT::addChild(p, c);
 			}
 //			((CObject*)m_obj)->children().clear();
 
-			auto anno = ((CObject*)m_obj)->annotations();
+			auto anno = std::static_pointer_cast<CObject>(m_obj)->annotations();
 			for (auto d : anno)
 			{
-				AP::OBJECT::removeChild(m_obj, (CBaseObject*)d.second.get());
-				AP::OBJECT::addChild(p, (CBaseObject*)d.second.get());
+				AP::OBJECT::removeChild(m_obj, std::static_pointer_cast<CBaseObject>(d.second));
+				AP::OBJECT::addChild(p, std::static_pointer_cast<CBaseObject>(d.second));
 			}
 //			((CObject*)m_obj)->annotations().clear();
 			
@@ -739,12 +741,12 @@ void CContextMenu::slot_create_inversed_transform()
 {
 	if (m_obj->hasType(CBaseObject::Type::MODEL))
 	{
-		CModel3D* obj = new CModel3D();
-		obj->transform().fromEigenMatrix4d( ((CModel3D*)m_obj)->transform().toEigenMatrix4d().inverse() );
+		std::shared_ptr<CModel3D> obj = std::make_shared<CModel3D>();
+		obj->transform().fromEigenMatrix4d( std::static_pointer_cast<CModel3D>(m_obj)->transform().toEigenMatrix4d().inverse() );
 		obj->setLabel(m_obj->getLabel() + ".inv");
 		obj->resetBoundingBox(CBoundingBox::NullBB);
 
-		CBaseObject *p = m_obj->getParent();
+		std::shared_ptr<CBaseObject> p = m_obj->getParentPtr();
 		if (p == nullptr)
 		{
 			AP::WORKSPACE::addModel(obj);
@@ -772,7 +774,7 @@ void CContextMenu::histogramSave()
 	QString fdir = QFileInfo(path).absolutePath();
 	QString fname = QFileInfo(path).completeBaseName();
 
-	((CHistogram *)m_obj)->save(fdir.toStdWString(), fname.toStdWString());
+	std::static_pointer_cast<CHistogram>(m_obj)->save(fdir.toStdWString(), fname.toStdWString());
 }
 
 
@@ -782,9 +784,9 @@ void CContextMenu::setOfFacesToMesh()
 {
 	if (m_obj->hasType(CBaseObject::SETOFFACES))
 	{
-		CMesh* mesh = ((CAnnotationSetOfFaces*)m_obj)->toMesh();
+		std::shared_ptr<CMesh> mesh = std::static_pointer_cast<CAnnotationSetOfFaces>(m_obj)->toMesh();
 
-		CModel3D* obj = new CModel3D();
+		std::shared_ptr<CModel3D> obj = std::make_shared<CModel3D>();
 		obj->addChild(mesh);
 		obj->importChildrenGeometry();
 		AP::WORKSPACE::addModel(obj);
@@ -798,7 +800,7 @@ void CContextMenu::slot_delete_object_with_subtree()
 
 void CContextMenu::slotCreateEmptyModel()
 {
-	CModel3D *m = new CModel3D();
+	std::shared_ptr<CModel3D> m = std::make_shared<CModel3D>();
 	if (m == nullptr) return;
 	m->reset(CBoundingBox::InitialValues::NullBB);
 
@@ -813,7 +815,7 @@ void CContextMenu::slotCreateEmptyModel()
 
 void CContextMenu::slot_mesh_create()
 {
-	CMesh* m = new CMesh();
+	std::shared_ptr<CMesh> m = std::make_shared<CMesh>();
 	if (m != nullptr) AP::OBJECT::addChild(m_obj, m);
 }
 
@@ -823,7 +825,7 @@ void CContextMenu::slot_mesh_create()
 
 void CContextMenu::slot_volum_create()
 {
-	Volumetric *m = Volumetric::create();
+	std::shared_ptr<Volumetric> m = Volumetric::create();
 	if (m != nullptr) AP::OBJECT::addChild(m_obj, m);
 }
 
@@ -854,7 +856,7 @@ void CContextMenu::slot_vol_show_images()
 {
 	if (m_obj->hasType(CBaseObject::VOLUMETRIC_NEW))
 	{
-		VolumetricImageDialog* dialog = new VolumetricImageDialog((Volumetric*)m_obj);
+		std::shared_ptr<VolumetricImageDialog> dialog = std::make_shared<VolumetricImageDialog>((Volumetric*)m_obj.get());
 
 		dialog->show();
 	}
@@ -871,7 +873,7 @@ void CContextMenu::slot_volumetric_export()
 		//qInfo() << fname << Qt::endl;
 		
 		CParser *parser = CFileConnector::getSaveParser(".dcm");
-		parser->save({ (Volumetric*)m_obj }, file_path);
+		parser->save({ std::static_pointer_cast<Volumetric>(m_obj) }, file_path);
 	}
 }
 
@@ -881,11 +883,11 @@ void CContextMenu::slot_copy_frames_as_models()
 {
 	if (m_obj->hasType(CBaseObject::Type::MOVEMENT))
 	{
-		CMovement* r = (CMovement*)m_obj;
+		std::shared_ptr<CMovement> r = std::static_pointer_cast<CMovement>(m_obj);
 
 		for (CMovement::FrameVal& fv : r->m_seqlist)
 		{
-			CModel3D* mdl = new CModel3D();
+			std::shared_ptr<CModel3D> mdl = std::make_shared<CModel3D>();
 			mdl->setTransform(fv.t);
 			mdl->setLabel(fv.getLabel());
 
@@ -894,10 +896,10 @@ void CContextMenu::slot_copy_frames_as_models()
 			}
 
 			for (auto k : r->annotations()) {
-				mdl->addAnnotation(k.second->getCopy());
+				mdl->addAnnotation(std::static_pointer_cast<CAnnotation>(k.second->getCopy()));
 			}
 
-			CObject* p = (CObject*)r->getParent();
+			std::shared_ptr<CObject> p = std::dynamic_pointer_cast<CObject>(r->getParentPtr());
 			if (p)
 				AP::OBJECT::addChild(p, mdl);
 			else
@@ -908,140 +910,144 @@ void CContextMenu::slot_copy_frames_as_models()
 
 void CContextMenu::slot_volumetric_set_metadata()
 {
-	float* origin = ((Volumetric*)m_obj)->metadata[0].image_position_patient;
+	if (auto v = std::dynamic_pointer_cast<Volumetric>(m_obj))
+	{
+		float* origin = v->metadata[0].image_position_patient;
 
-	float vsizeX = ((Volumetric*)m_obj)->metadata[1].pixel_spacing[0];
-	float vsizeY = ((Volumetric*)m_obj)->metadata[1].pixel_spacing[1];
-	float vsizeZ = ((Volumetric*)m_obj)->metadata[1].slice_distance;
+		float vsizeX = v->metadata[1].pixel_spacing[0];
+		float vsizeY = v->metadata[1].pixel_spacing[1];
+		float vsizeZ = v->metadata[1].slice_distance;
 
-	int shape[] = {
-	((Volumetric*)m_obj)->layers(),
-	((Volumetric*)m_obj)->rows(),
-	((Volumetric*)m_obj)->columns()
-	};
+		int shape[] = {
+			v->layers(),
+			v->rows(),
+			v->columns()
+		};
 
 
-	QDialog* dlg = new QDialog();
+		QDialog* dlg = new QDialog();
 
-	dlg->setWindowTitle("Volumetric Metadata");
+		dlg->setWindowTitle("Volumetric Metadata");
 
-	QDoubleValidator* validator = new QDoubleValidator(-10000.0, 10000.0, 3);
-	//validator->setLocale(QLocale::C);
+		QDoubleValidator* validator = new QDoubleValidator(-10000.0, 10000.0, 3);
+		//validator->setLocale(QLocale::C);
 
-	QLineEdit* input1 = new QLineEdit(dlg);
-	QLineEdit* input2 = new QLineEdit(dlg);
-	QLineEdit* input3 = new QLineEdit(dlg);
-	input1->setValidator(validator);
-	input2->setValidator(validator);
-	input3->setValidator(validator);
-
-	input1->setText(QString::number(origin[0]));
-	input2->setText(QString::number(origin[1]));
-	input3->setText(QString::number(origin[2]));
-
-	QPushButton* ctrButton = new QPushButton("Center", dlg);
-
-	QObject::connect(ctrButton, &QPushButton::clicked, [&]() {
-		origin[0] = -(vsizeX * shape[2]) / 2;
-		origin[1] = -(vsizeY * shape[1]) / 2;
-		origin[2] = -(vsizeZ * shape[0]) / 2;
+		QLineEdit* input1 = new QLineEdit(dlg);
+		QLineEdit* input2 = new QLineEdit(dlg);
+		QLineEdit* input3 = new QLineEdit(dlg);
+		input1->setValidator(validator);
+		input2->setValidator(validator);
+		input3->setValidator(validator);
 
 		input1->setText(QString::number(origin[0]));
 		input2->setText(QString::number(origin[1]));
 		input3->setText(QString::number(origin[2]));
-		});
 
-	QGroupBox* group1 = new QGroupBox(dlg);
-	group1->setTitle("Origin:");
-	group1->setToolTip("ImagePositionPatient and SliceLocation of first image");
+		QPushButton* ctrButton = new QPushButton("Center", dlg);
 
-	QFormLayout* formLayout1 = new QFormLayout();
-	formLayout1->addRow("x:", input1);
-	formLayout1->addRow("y:", input2);
-	formLayout1->addRow("z:", input3);
-	formLayout1->addRow(ctrButton);
+		QObject::connect(ctrButton, &QPushButton::clicked, [&]() {
+			origin[0] = -(vsizeX * shape[2]) / 2;
+			origin[1] = -(vsizeY * shape[1]) / 2;
+			origin[2] = -(vsizeZ * shape[0]) / 2;
 
-	group1->setLayout(formLayout1);
+			input1->setText(QString::number(origin[0]));
+			input2->setText(QString::number(origin[1]));
+			input3->setText(QString::number(origin[2]));
+			});
 
-	QLineEdit* input4 = new QLineEdit(dlg);
-	QLineEdit* input5 = new QLineEdit(dlg);
-	QLineEdit* input6 = new QLineEdit(dlg);
-	input4->setValidator(validator);
-	input5->setValidator(validator);
-	input6->setValidator(validator);
+		QGroupBox* group1 = new QGroupBox(dlg);
+		group1->setTitle("Origin:");
+		group1->setToolTip("ImagePositionPatient and SliceLocation of first image");
 
-	input4->setText(QString::number(vsizeX));
-	input5->setText(QString::number(vsizeY));
-	input6->setText(QString::number(vsizeZ));
+		QFormLayout* formLayout1 = new QFormLayout();
+		formLayout1->addRow("x:", input1);
+		formLayout1->addRow("y:", input2);
+		formLayout1->addRow("z:", input3);
+		formLayout1->addRow(ctrButton);
+
+		group1->setLayout(formLayout1);
+
+		QLineEdit* input4 = new QLineEdit(dlg);
+		QLineEdit* input5 = new QLineEdit(dlg);
+		QLineEdit* input6 = new QLineEdit(dlg);
+		input4->setValidator(validator);
+		input5->setValidator(validator);
+		input6->setValidator(validator);
+
+		input4->setText(QString::number(vsizeX));
+		input5->setText(QString::number(vsizeY));
+		input6->setText(QString::number(vsizeZ));
 
 
-	QGroupBox* group2 = new QGroupBox(dlg);
-	group2->setTitle("Voxel spacing:");
-	QFormLayout* formLayout2 = new QFormLayout();
-	formLayout2->addRow("x:", input4);
-	formLayout2->addRow("y:", input5);
-	formLayout2->addRow("z:", input6);
-	group2->setLayout(formLayout2);
-	group2->setToolTip("PixelSpacing and SliceThickness of all images");
+		QGroupBox* group2 = new QGroupBox(dlg);
+		group2->setTitle("Voxel spacing:");
+		QFormLayout* formLayout2 = new QFormLayout();
+		formLayout2->addRow("x:", input4);
+		formLayout2->addRow("y:", input5);
+		formLayout2->addRow("z:", input6);
+		group2->setLayout(formLayout2);
+		group2->setToolTip("PixelSpacing and SliceThickness of all images");
 
-	QHBoxLayout* hboxlayout = new QHBoxLayout();
+		QHBoxLayout* hboxlayout = new QHBoxLayout();
 
-	hboxlayout->addWidget(group1);
-	hboxlayout->addWidget(group2);
+		hboxlayout->addWidget(group1);
+		hboxlayout->addWidget(group2);
 
-	QPushButton* okButton = new QPushButton("OK", dlg);
-	QPushButton* cancelButton = new QPushButton("Cancel", dlg);
+		QPushButton* okButton = new QPushButton("OK", dlg);
+		QPushButton* cancelButton = new QPushButton("Cancel", dlg);
 
-	QObject::connect(okButton, SIGNAL(clicked()), dlg, SLOT(accept()));
-	QObject::connect(cancelButton, SIGNAL(clicked()), dlg, SLOT(reject()));
+		QObject::connect(okButton, SIGNAL(clicked()), dlg, SLOT(accept()));
+		QObject::connect(cancelButton, SIGNAL(clicked()), dlg, SLOT(reject()));
 
-	QVBoxLayout* layout = new QVBoxLayout();
+		QVBoxLayout* layout = new QVBoxLayout();
 
-	QString crl = "Volume size: " + QString::number(shape[2]) + " x " + QString::number(shape[1]) + " x " + QString::number(shape[0]);
-	crl += " (" + QString::number(vsizeX * shape[2]) + "mm x " + QString::number(vsizeY * shape[1]) + "mm x " + QString::number(vsizeZ * shape[0]) + "mm)";
+		QString crl = "Volume size: " + QString::number(shape[2]) + " x " + QString::number(shape[1]) + " x " + QString::number(shape[0]);
+		crl += " (" + QString::number(vsizeX * shape[2]) + "mm x " + QString::number(vsizeY * shape[1]) + "mm x " + QString::number(vsizeZ * shape[0]) + "mm)";
 
-	layout->addWidget(new QLabel(crl));
-	layout->addLayout(hboxlayout);
-	//layout->addWidget(group1);
-	layout->addWidget(okButton);
-	layout->addWidget(cancelButton);
+		layout->addWidget(new QLabel(crl));
+		layout->addLayout(hboxlayout);
+		//layout->addWidget(group1);
+		layout->addWidget(okButton);
+		layout->addWidget(cancelButton);
 
-	dlg->setLayout(layout);
+		dlg->setLayout(layout);
 
-	if (dlg->exec())
-	{
-		float posX = input1->text().replace(',', '.').toFloat();
-		float posY = input2->text().replace(',', '.').toFloat();
-		float posZ = input3->text().replace(',', '.').toFloat();
-
-		float vsizeX = input4->text().replace(',', '.').toFloat();
-		float vsizeY = input5->text().replace(',', '.').toFloat();
-		float vsizeZ = input6->text().replace(',', '.').toFloat();
-
-		float delta[] = { posX - origin[0], posY - origin[1], posZ - origin[2] };
-
-		//origin[0] = posX;
-		//origin[1] = posY;
-		//origin[2] = posZ;
-
-		for (int i=0; i<((Volumetric*)m_obj)->metadata.size(); i++)
+		if (dlg->exec())
 		{
-			auto& md = ((Volumetric*)m_obj)->metadata[i];
+			float posX = input1->text().replace(',', '.').toFloat();
+			float posY = input2->text().replace(',', '.').toFloat();
+			float posZ = input3->text().replace(',', '.').toFloat();
 
-			md.image_position_patient[0] = posX; // += delta[0];
-			md.image_position_patient[1] = posY; // += delta[1];
-			md.image_position_patient[2] = posZ + vsizeZ * i;
-			
-			md.slice_location = md.image_position_patient[2];
+			float vsizeX = input4->text().replace(',', '.').toFloat();
+			float vsizeY = input5->text().replace(',', '.').toFloat();
+			float vsizeZ = input6->text().replace(',', '.').toFloat();
 
-			md.pixel_spacing[0] = vsizeX;
-			md.pixel_spacing[1] = vsizeY;
-			md.slice_distance = vsizeZ;
-			md.slice_thickness = vsizeZ;
+			float delta[] = { posX - origin[0], posY - origin[1], posZ - origin[2] };
+
+			//origin[0] = posX;
+			//origin[1] = posY;
+			//origin[2] = posZ;
+
+			for (int i = 0; i < v->metadata.size(); i++)
+			{
+				auto& md = v->metadata[i];
+
+				md.image_position_patient[0] = posX; // += delta[0];
+				md.image_position_patient[1] = posY; // += delta[1];
+				md.image_position_patient[2] = posZ + vsizeZ * i;
+
+				md.slice_location = md.image_position_patient[2];
+
+				md.pixel_spacing[0] = vsizeX;
+				md.pixel_spacing[1] = vsizeY;
+				md.slice_distance = vsizeZ;
+				md.slice_thickness = vsizeZ;
+			}
 		}
-	}
 
-	delete dlg;
+		delete dlg;
+
+	}
 }
 
 
@@ -1124,9 +1130,9 @@ void CContextMenu::slot_volumetric_sift_cloud()
 		sigma = input5->text().replace(',', '.').toDouble();
 		factor = input6->text().toInt();
 
-		CPointCloud *cloud = ((Volumetric*)m_obj)->sift_cloud(nfeatures, nOctaveLayers, contrastThreshold, edgeThreshold, sigma, factor);
+		std::shared_ptr<CPointCloud> cloud = std::static_pointer_cast<Volumetric>(m_obj)->sift_cloud(nfeatures, nOctaveLayers, contrastThreshold, edgeThreshold, sigma, factor);
 
-		AP::OBJECT::addChild((Volumetric*)m_obj, cloud);
+		AP::OBJECT::addChild(m_obj, cloud);
 
 		UI::updateAllViews();
 	}
@@ -1165,9 +1171,9 @@ void CContextMenu::slot_volumetric_marching_cube()
 
 		int f = input1->text().toInt();
 
-		CMesh* mesh = ((Volumetric*)m_obj)->marching_cube(f);
+		std::shared_ptr<CMesh> mesh = std::static_pointer_cast<Volumetric>(m_obj)->marching_cube(f);
 		
-		AP::OBJECT::addChild((Volumetric*)m_obj, mesh);
+		AP::OBJECT::addChild(m_obj, mesh);
 		UI::updateAllViews();
 	}
 
@@ -1205,9 +1211,9 @@ void CContextMenu::slot_volumetric_marching_tetra()
 
 		int f = input1->text().toInt();
 
-		CMesh *mesh = ((Volumetric*)m_obj)->marching_tetrahedron(f);
+		std::shared_ptr<CMesh> mesh = std::static_pointer_cast<Volumetric>(m_obj)->marching_tetrahedron(f);
 
-		AP::OBJECT::addChild((Volumetric*)m_obj, mesh);
+		AP::OBJECT::addChild(m_obj, mesh);
 
 		UI::updateAllViews();
 	}
@@ -1229,7 +1235,7 @@ void CContextMenu::pointHide()
 
 void CContextMenu::newPicWindow()
 {
-	AP::mainWin().createPicViewer((CImage*)m_obj);
+	AP::mainWin().createPicViewer((CImage*)m_obj.get());
 }
 
 #include "DockWidgetWorkspace.h"
@@ -1275,15 +1281,15 @@ void CContextMenu::slotAddAnnotation()
 	switch (type)
 	{
 	case CBaseObject::Type::POINT:
-		AP::OBJECT::addChild(m_obj, new CAnnotationPoint());
+		AP::OBJECT::addChild(m_obj, std::make_shared<CAnnotationPoint>());
 		break;
 
 	case CBaseObject::Type::PLANE:
-		AP::OBJECT::addChild(m_obj, new CAnnotationPlane());
+		AP::OBJECT::addChild(m_obj, std::make_shared<CAnnotationPlane>());
 		break;
 
 	case CBaseObject::Type::SPHERE:
-		AP::OBJECT::addChild(m_obj, new CAnnotationSphere());
+		AP::OBJECT::addChild(m_obj, std::make_shared<CAnnotationSphere>());
 		break;
 	}
 }
@@ -1291,8 +1297,8 @@ void CContextMenu::slotAddAnnotation()
 
 void CContextMenu::slotPlaneToMesh()
 {
-	CMesh* plane = ((CAnnotationPlane*)m_obj)->getMesh(100.0, 100, 100);
-	AP::OBJECT::addChild(m_obj->getParent(), plane);
+	std::shared_ptr<CMesh> plane = std::static_pointer_cast<CAnnotationPlane>(m_obj)->getMesh(100.0, 100, 100);
+	AP::OBJECT::addChild(m_obj->getParentPtr(), plane);
 }
 
 //CTransform globalTransformation(CBaseObject* obj)
@@ -1304,9 +1310,9 @@ void CContextMenu::slotPlaneToMesh()
 
 void CContextMenu::slotTriangleToPlane()
 {
-	CAnnotationTriangle* tri = (CAnnotationTriangle*)m_obj;
-	CAnnotationPlane* plane = new CAnnotationPlane(CPlane(tri->A(), tri->B(), tri->C()));
-	CBaseObject* p = m_obj->getParent();
+	std::shared_ptr<CAnnotationTriangle> tri = std::static_pointer_cast<CAnnotationTriangle>(m_obj);
+	std::shared_ptr<CAnnotationPlane> plane = std::make_shared<CAnnotationPlane>(CPlane(tri->A(), tri->B(), tri->C()));
+	std::shared_ptr<CBaseObject> p = m_obj->getParentPtr();
 	if (p != nullptr)
 		AP::OBJECT::addChild(p, plane);
 }

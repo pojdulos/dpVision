@@ -9,7 +9,7 @@
 //#include "Model3D.h"
 #include "MainApplication.h"
 
-CVolTK::CVolTK(CBaseObject *p, int imageWidth, int imageHeight, int numberOfImages, int depth):CObject(p)
+CVolTK::CVolTK(std::shared_ptr<CBaseObject> p, int imageWidth, int imageHeight, int numberOfImages, int depth):CObject(p)
 {
 	m_dataIntensityRange = { 0xFFFF, 0x0000 };
 	m_currentIntensityRange = { 0xFFFF, 0x0000 };
@@ -193,9 +193,9 @@ CVolTK::~CVolTK(void)
 
 
 
-CVolTK* CVolTK::getCopy()
+std::shared_ptr<CBaseObject> CVolTK::getCopy()
 {
-	return new CVolTK(*this, m_b, m_e, m_currentIntensityRange.lower, m_currentIntensityRange.upper+1);
+	return std::make_shared<CVolTK>(*this, m_b, m_e, m_currentIntensityRange.lower, m_currentIntensityRange.upper+1);
 }
 
 CVolTK* CVolTK::getPart(CPoint3s min, CPoint3s max)
@@ -1280,7 +1280,7 @@ void dodajKostkeX(CMesh* mesh, CPoint3s voxel, CRGBA color, int16_t div, std::se
 }
 
 
-CMesh* CVolTK::createMesh(int winMin, int winMax, CRGBA col)
+std::shared_ptr<CMesh> CVolTK::createMesh(int winMin, int winMax, CRGBA col)
 {
 	if (winMin >= winMax) return nullptr;
 
@@ -1308,7 +1308,7 @@ CMesh* CVolTK::createMesh(int winMin, int winMax, CRGBA col)
 		}
 	}
 
-	CMesh* mesh = new CMesh();
+	std::shared_ptr<CMesh> mesh = std::make_shared<CMesh>();
 
 	short div = m_div;
 
@@ -1326,7 +1326,7 @@ CMesh* CVolTK::createMesh(int winMin, int winMax, CRGBA col)
 		{
 			if ((voxel.X() >= m_b.x) && (voxel.X() < m_e.x) && (voxel.Y() >= m_b.y) && (voxel.Y() < m_e.y) && (voxel.Z() >= m_b.z) && (voxel.Z() < m_e.z))
 			{
-				dodajKostkeX(mesh, voxel, col, div, sasiedztwo);
+				dodajKostkeX(mesh.get(), voxel, col, div, sasiedztwo);
 			}
 		}
 	}
@@ -1335,7 +1335,7 @@ CMesh* CVolTK::createMesh(int winMin, int winMax, CRGBA col)
 
 	mesh->removeDuplicateVertices();
 
-	tesst(mesh);
+	tesst(mesh.get());
 
 	mesh->resetBoundingBox();
 	for (CVertex& v : mesh->vertices())
@@ -1346,9 +1346,9 @@ CMesh* CVolTK::createMesh(int winMin, int winMax, CRGBA col)
 	return mesh;
 }
 
-CModel3D * CVolTK::toMesh()
+std::shared_ptr<CModel3D> CVolTK::toMesh()
 {
-	CModel3D* newModel = new CModel3D;
+	std::shared_ptr<CModel3D> newModel = std::make_shared<CModel3D>();
 
 	uint16_t wB = m_currentIntensityRange.lower;
 	uint16_t wE;
@@ -1385,7 +1385,7 @@ CModel3D * CVolTK::toMesh()
 }
 
 
-CPointCloud* CVolTK::createCloud(uint16_t winMin, uint16_t winMax, CRGBA col)
+std::shared_ptr<CPointCloud> CVolTK::createCloud(uint16_t winMin, uint16_t winMax, CRGBA col)
 {
 	if (winMin >= winMax) return nullptr;
 
@@ -1397,7 +1397,7 @@ CPointCloud* CVolTK::createCloud(uint16_t winMin, uint16_t winMax, CRGBA col)
 
 //	CVolTK::DisplayData::iterator itz;
 
-	CPointCloud* cloud = new CPointCloud;
+	std::shared_ptr<CPointCloud> cloud = std::make_shared<CPointCloud>();
 
 	int i = 0;
 	for (auto itz = winMin; itz < winMax; itz++)
@@ -1413,16 +1413,16 @@ CPointCloud* CVolTK::createCloud(uint16_t winMin, uint16_t winMax, CRGBA col)
 	
 	if (cloud->size() == 0)
 	{
-		delete cloud;
+		//delete cloud;
 		return nullptr;
 	}
 
 	return cloud;
 }
 
-CModel3D* CVolTK::toCloud()
+std::shared_ptr<CModel3D> CVolTK::toCloud()
 {
-		CModel3D* newModel = new CModel3D;
+		std::shared_ptr<CModel3D> newModel = std::make_shared<CModel3D>();
 		
 		uint16_t wB = m_currentIntensityRange.lower;
 		uint16_t wE;

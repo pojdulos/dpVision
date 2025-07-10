@@ -199,7 +199,7 @@ std::list<int> CWorkspace::getSelection(std::set<CBaseObject::Type> types, CObje
 	std::list<int> result;
 	for (auto id : m_selection)
 	{
-		CBaseObject* kid = (dad==nullptr)?getSomethingWithId(id):dad->getSomethingWithId(id); // szukam w�r�d wszystkich obiekt�w w scenie lub w obiekcie (jest to wolniejsze)
+		std::shared_ptr<CBaseObject> kid = (dad==nullptr)?getSomethingWithId(id):dad->getSomethingWithId(id); // szukam w�r�d wszystkich obiekt�w w scenie lub w obiekcie (jest to wolniejsze)
 		if ((kid != nullptr) && (types.empty() || types.find((CBaseObject::Type)kid->type()) != types.end())) // i sprawdzam czy typ jest na li�cie
 		{
 			result.push_back(id);
@@ -209,12 +209,12 @@ std::list<int> CWorkspace::getSelection(std::set<CBaseObject::Type> types, CObje
 	return result;
 }
 
-std::list<CBaseObject*> CWorkspace::getSelected(std::set<CBaseObject::Type> types, CObject* dad)
+std::list<std::shared_ptr<CBaseObject>> CWorkspace::getSelected(std::set<CBaseObject::Type> types, std::shared_ptr<CObject> dad)
 {
-	std::list<CBaseObject*> result;
+	std::list<std::shared_ptr<CBaseObject>> result;
 	for (auto id : m_selection)
 	{
-		CBaseObject* kid = (dad == nullptr) ? getSomethingWithId(id) : dad->getSomethingWithId(id); // szukam w�r�d wszystkich obiekt�w w scenie lub w obiekcie (jest to wolniejsze)
+		std::shared_ptr<CBaseObject> kid = (dad == nullptr) ? getSomethingWithId(id) : dad->getSomethingWithId(id); // szukam w�r�d wszystkich obiekt�w w scenie lub w obiekcie (jest to wolniejsze)
 		if ((kid != nullptr) && (types.empty() || types.find((CBaseObject::Type)kid->type()) != types.end())) // i sprawdzam czy typ jest na li�cie
 		{
 			result.push_back(kid);
@@ -308,54 +308,21 @@ int CWorkspace::_setPreviousModelCurrent()
 	return _setCurrentModel( i );
 }
 
-/*
-void TestVolum()
+
+std::shared_ptr<CBaseObject> CWorkspace::getSomethingWithId(int id)
 {
-	glEnable(GL_POINT_SPRITE_ARB);
-
-	//glBindTexture(GL_TEXTURE_2D, obiekt_tekstury);
-	//glTexEnvf(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE);
-	
-	glEnable( GL_COLOR_MATERIAL );
-	glColorMaterial( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE );	
-	glColor4f(0.8f, 1.0f, 0.6f, 0.3f);
-	glPointSize(10.0);
-	glBegin(GL_POINTS);
-	//glBegin(GL_QUADS);
-	glVertex3f(5,5,5);
-	glVertex3f(5,5,6);
-	glVertex3f(5,5,7);
-	glVertex3f(5,5,8);
-	//glVertex3f(5,10,5);
-	//glVertex3f(10,10,5);
-	//glVertex3f(10,5,5);
-	glEnd();
-	glPointSize(1.0);
-	glDisable( GL_COLOR_MATERIAL );
-
-	glDisable(GL_POINT_SPRITE_ARB);
-
-	static float fog_color[4] = { 1.0 , 1.0 , 0.0 , 0.0 };
-	glEnable(GL_FOG) ;
-	glFogf(GL_FOG_DENSITY, 0.005 ) ;
-	glFogfv(GL_FOG_COLOR, fog_color); 
-}
-*/
-
-
-CBaseObject* CWorkspace::getSomethingWithId(int id)
-{
-	for (auto &model : this->m_data )
+	for (auto& model : this->m_data)
 	{
-		if (model.second->id() == id) return model.second.get();
+		if (model.second->id() == id) return model.second;
 		else
 		{
-			CBaseObject* obj = model.second->getSomethingWithId(id);
+			std::shared_ptr<CBaseObject> obj = model.second->getSomethingWithId(id);
 			if (obj != nullptr) return obj;
 		}
 	}
 	return nullptr;
 }
+
 
 void CWorkspace::render()
 {
@@ -530,7 +497,7 @@ std::vector<CRGBA> CWorkspace::getXRayImage( CPoint3f pkt0, int size )
 			//pkt0 = PointTransform( pkt0, obj->getRotation(), obj->getTranslation(), obj->getScale(), obj->getCtr(), obj->relocateCtr() );
 			pkt0 = obj->getTransform().world2local( pkt0 );
 
-			CMesh *mesh = (CMesh*)obj->getChild();
+			std::shared_ptr<CMesh> mesh = std::dynamic_pointer_cast<CMesh>(obj->getChild());
 			
 			std::vector<CVector3f> x = mesh->getVectors( pkt0 );
 

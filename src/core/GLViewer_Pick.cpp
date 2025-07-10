@@ -256,7 +256,7 @@ bool GLViewer::getEntryAndExit(CPoint3d pMin, CPoint3d pMax, CPoint3d origin, CV
 }
 
 
-CAnnotationPyramid* GLViewer::getPyramid(double xx, double yy, CPoint3d entry, CPoint3d exit, CModel3D* obj, double& r)
+std::shared_ptr<CAnnotationPyramid> GLViewer::getPyramid(double xx, double yy, CPoint3d entry, CPoint3d exit, CModel3D* obj, double& r)
 {
 	double xMin = xx - 1.0;
 	double yMin = yy - 1.0;
@@ -288,7 +288,7 @@ CAnnotationPyramid* GLViewer::getPyramid(double xx, double yy, CPoint3d entry, C
 		getEntryAndExit(obj->getMin(), obj->getMax(), win11, dir11, /*ref*/ in11, /*ref*/ out11);
 	}
 
-	CAnnotationPyramid* apy = new CAnnotationPyramid();
+	std::shared_ptr<CAnnotationPyramid> apy = std::make_shared<CAnnotationPyramid>();
 	apy->setTop(in00, in01, in11, in10);
 	apy->setBottom(out00, out01, out11, out10);
 	apy->setColor(CRGBA((unsigned char)0, 255, 255, 64));
@@ -310,13 +310,13 @@ bool GLViewer::isInPixelShadow(double pxlX, double pxlY, double ptX, double ptY)
 
 #include <chrono>
 
-void GLViewer::PickMeshPoint(double xx, double yy, CModel3D* obj)
+void GLViewer::PickMeshPoint(double xx, double yy, std::shared_ptr<CModel3D> obj)
 {
 	CPoint3d pkt0, pkt1;
 	CVector3d vRay;
-	if (screen2obj(xx, yy, obj, /*ref*/pkt0, /*ref*/pkt1, /*ref*/vRay))
+	if (screen2obj(xx, yy, obj.get(), /*ref*/pkt0, /*ref*/pkt1, /*ref*/vRay))
 	{
-		CMesh* mesh = (CMesh*)obj->getChild();
+		std::shared_ptr<CMesh> mesh = std::dynamic_pointer_cast<CMesh>(obj->getChild());
 
 		CPoint3f IntersectionPoint;
 		INDEX_TYPE faceIdx;
@@ -381,9 +381,9 @@ void GLViewer::PickMeshPoint(double xx, double yy, CModel3D* obj)
 
 			if (!usedInPlugin && AP::mainApp().bGlobalPicking)
 			{
-				CAnnotationPoint* pt = new CAnnotationPoint(IntersectionPoint);
+				std::shared_ptr<CAnnotationPoint> pt = std::make_shared<CAnnotationPoint>(IntersectionPoint);
 
-				pt->setParent(obj);
+				pt->setParent(obj->shared_from_this());
 
 				if (AP::mainApp().bPickSnap)
 				{
@@ -419,24 +419,24 @@ void GLViewer::PickMeshPoint(double xx, double yy, CModel3D* obj)
 	}
 }
 
-void GLViewer::PickCloudPoint(double xx, double yy, CModel3D * obj)
+void GLViewer::PickCloudPoint(double xx, double yy, std::shared_ptr<CModel3D> obj)
 {
 	CPoint3d pkt0, pkt1;
 	CVector3d vRay;
-	if (screen2obj(xx, yy, obj, /*ref*/pkt0, /*ref*/pkt1, /*ref*/vRay))
+	if (screen2obj(xx, yy, obj.get(), /*ref*/pkt0, /*ref*/pkt1, /*ref*/vRay))
 	{
-		CPointCloud* cloud = (CPointCloud*)obj->getChild();
+		std::shared_ptr<CPointCloud> cloud = std::dynamic_pointer_cast<CPointCloud>(obj->getChild());
 
 		//ULONGLONG t0 = GetTickCount64();
 		auto t0 = std::chrono::steady_clock::now();
 
 		double r;
-		CAnnotationPyramid* apy = getPyramid(xx, yy, pkt0, pkt1, obj, r);
+		std::shared_ptr<CAnnotationPyramid> apy = getPyramid(xx, yy, pkt0, pkt1, obj.get(), r);
 
 		std::vector<INDEX_TYPE> idxs = cloud->getKDtree(CMesh::KDtree::PRESERVE).find_all_in_distance_to_ray(r, pkt0, vRay);
 
-		CAnnotationPoints* hits = new CAnnotationPoints();
-		CAnnotationPoints* pointsInPixelShadow = new CAnnotationPoints();
+		std::shared_ptr<CAnnotationPoints> hits = std::make_shared<CAnnotationPoints>();
+		std::shared_ptr<CAnnotationPoints> pointsInPixelShadow = std::make_shared<CAnnotationPoints>();
 
 		std::set<INDEX_TYPE> points;
 
@@ -516,12 +516,12 @@ void GLViewer::PickCloudPoint(double xx, double yy, CModel3D * obj)
 			pointsInPixelShadow->setColor(CRGBA(1.0f, 1.0f, 0.0f));
 			AP::MODEL::addAnnotation(obj, pointsInPixelShadow);
 		}
-		else
-		{
-			delete apy;
-			delete hits;
-			delete pointsInPixelShadow;
-		}
+		//else
+		//{
+		//	delete apy;
+		//	delete hits;
+		//	delete pointsInPixelShadow;
+		//}
 
 		//ULONGLONG t1 = GetTickCount64();
 		auto t1 = std::chrono::steady_clock::now();
@@ -550,16 +550,16 @@ void GLViewer::PickPoint(int x, int y)
 			obj = std::shared_ptr<CModel3D>((CModel3D*) ((CGroupObject *)obj.get())->getSelectedChild());
 		}
 
-		CMesh* mesh = (CMesh*)obj->getChild();
+		std::shared_ptr<CMesh> mesh = std::dynamic_pointer_cast<CMesh>(obj->getChild());
 		int typ = mesh->type();
 
 		if (obj->getChild()->hasType(CObject::MESH))
 		{
-			PickMeshPoint(xx, yy, obj.get());
+			PickMeshPoint(xx, yy, obj);
 		}
 		else if ((mesh->hasType(CObject::CLOUD)) || (mesh->hasType(CObject::ORDEREDCLOUD)))
 		{
-			PickCloudPoint(xx, yy, obj.get());
+			PickCloudPoint(xx, yy, obj);
 		}
 		else
 		{

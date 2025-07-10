@@ -110,7 +110,7 @@ CMesh* generateTriangleMesh2(const CPoint3d& topLeft, const CPoint3d& topRight,
 }
 
 
-CMesh* CPlane::getMesh(double size, int divX, int divY)
+std::shared_ptr<CMesh> CPlane::getMesh(double size, int divX, int divY)
 {
 	double sideLength = 50.0;
 	CPoint3d point = m_center;
@@ -129,7 +129,7 @@ CMesh* CPlane::getMesh(double size, int divX, int divY)
 	CPoint3d v3 = point - vec1 - vec2;
 	CPoint3d v4 = point - vec1 + vec2;
 
-	CMesh* plane = generateTriangleMesh2(v3, v4, v2, v1, 1000);
+	std::shared_ptr<CMesh> plane = std::shared_ptr<CMesh>( generateTriangleMesh2(v3, v4, v2, v1, 1000) );
 
 	plane->getMaterial().FrontColor.ambient.SetFloat(0.0f, 1.0f, 1.0f, 0.8f);
 	plane->getMaterial().FrontColor.diffuse.SetFloat(0.0f, 1.0f, 1.0f, 0.8f);

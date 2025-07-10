@@ -12,7 +12,7 @@ public:
 	int m_lats;
 	int m_longs;
 
-	CAnnotationSphere( CBaseObject *m = nullptr) :Kula(0.0, 0.0, 0.0, 1.0),CAnnotation( m )
+	CAnnotationSphere(std::shared_ptr<CBaseObject> m = nullptr) :Kula(0.0, 0.0, 0.0, 1.0),CAnnotation( m )
 	{
 		m_lats = m_longs = 128;
 		setLabel("sphere");
@@ -32,9 +32,9 @@ public:
 
 	~CAnnotationSphere(void){};
 
-	virtual CAnnotationSphere* getCopy() override
+	virtual std::shared_ptr<CBaseObject> getCopy() override
 	{
-		return new CAnnotationSphere(*this);
+		return std::make_shared<CAnnotationSphere>(*this);
 	}
 
 	virtual int type() { return CAnnotation::SPHERE; }

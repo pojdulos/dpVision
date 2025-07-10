@@ -17,8 +17,8 @@ class DPVISION_EXPORT2 ThreadParser : public QObject, public CParser
 public:
 	explicit ThreadParser(void);
 
-	virtual CModel3D* load(QString path, bool wait = false) override;
-	virtual bool save(CModel3D* obj, QString path) override;
+	virtual std::shared_ptr<CModel3D> load(QString path, bool wait = false) override;
+	virtual bool save(std::shared_ptr<CModel3D> obj, const QString path) override;
 
 protected:
 	ThreadParserLoader* loader;

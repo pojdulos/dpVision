@@ -85,56 +85,56 @@ CImage::CImage(int ww, int hh, CImage::Format f) : CModel3D(), QImage(ww, hh, f)
 
 CImage::~CImage() {}
 
-CImage* CImage::load(const char* path)
+std::shared_ptr<CImage> CImage::load(const char* path)
 {
 	QImage qimage(path);
 
 	if (qimage.isNull())
 		return nullptr;
 
-	CImage* cimage = new CImage(qimage);
+	std::shared_ptr<CImage> cimage = std::make_shared<CImage>(qimage);
 	cimage->setLabel(QFileInfo(path).fileName());
 	cimage->setPath(QFileInfo(path).absoluteFilePath());
 
 	return cimage;
 }
 
-CImage* CImage::load(const QString path)
+std::shared_ptr<CImage> CImage::load(const QString path)
 {
 	QImage qimage(path);
 
 	if (qimage.isNull())
 		return nullptr;
 
-	CImage* cimage = new CImage(qimage);
+	std::shared_ptr<CImage> cimage = std::make_shared<CImage>(qimage);
 	cimage->setLabel(QFileInfo(path).fileName());
 	cimage->setPath(QFileInfo(path).absoluteFilePath());
 
 	return cimage;
 }
 
-CImage* CImage::load(const std::string path)
+std::shared_ptr<CImage> CImage::load(const std::string path)
 {
 	QImage qimage(QString::fromStdString(path));
 
 	if (qimage.isNull())
 		return nullptr;
 
-	CImage* cimage = new CImage(qimage);
+	std::shared_ptr<CImage> cimage = std::make_shared<CImage>(qimage);
 	cimage->setLabel(QFileInfo(QString::fromStdString(path)).fileName());
 	cimage->setPath(QFileInfo(QString::fromStdString(path)).absoluteFilePath());
 
 	return cimage;
 }
 
-CImage* CImage::load(const std::wstring path)
+std::shared_ptr<CImage> CImage::load(const std::wstring path)
 {
 	QImage qimage(QString::fromStdWString(path));
 
 	if (qimage.isNull())
 		return nullptr;
 
-	CImage* cimage = new CImage(qimage);
+	std::shared_ptr<CImage> cimage = std::make_shared<CImage>(qimage);
 	cimage->setLabel(QFileInfo(QString::fromStdWString(path)).fileName());
 	cimage->setPath(QFileInfo(QString::fromStdWString(path)).absoluteFilePath());
 

@@ -177,7 +177,7 @@ void CMainWindow::importImage()
 
 	if (!fileName.isEmpty())
 	{
-		CImage* im = CImage::load( fileName );
+		std::shared_ptr<CImage> im = CImage::load( fileName );
 		if (nullptr != im)
 		{
 			AP::WORKSPACE::addImage(im, false);
@@ -391,16 +391,13 @@ void CMainWindow::modelVisibility( bool vis )
 
 void CMainWindow::modelInvertNormals()
 {
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
-	if ( NULL != obj )
+	if (std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel())
 	{
-		if ( ( CBaseObject::Category::OBJECT == obj->getChild()->category() ) && ( CObject::MESH == ((CObject*)obj->getChild())->type() ) )
+		if (auto m = std::dynamic_pointer_cast<CMesh>(obj->getChild()))
 		{
-			((CMesh*)obj->getChild())->invertNormals();
-
-			UI::STATUSBAR::printf(L"Normalne ścian zostały odwrócone");
-
+			m->invertNormals();
 			updateAllViews();
+			UI::STATUSBAR::printf(L"Normalne ścian zostały odwrócone");
 		}
 		else
 		{
@@ -414,9 +411,9 @@ void CMainWindow::meshApplyTransformations()
 	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 	if (NULL != obj)
 	{
-		if ( obj->getChild()->category() == CBaseObject::Category::OBJECT )
+		if ( auto o = std::dynamic_pointer_cast<CObject>(obj->getChild()) )
 		{
-			if ((((CObject*)obj->getChild())->type() == CObject::MESH) || (((CObject*)obj->getChild())->type() == CObject::CLOUD ) || (((CObject*)obj->getChild())->type() == CObject::ORDEREDCLOUD) )
+			if ((o->type() == CObject::MESH) || (o->type() == CObject::CLOUD ) || (o->type() == CObject::ORDEREDCLOUD) )
 			{
 				AP::WORKSPACE::getCurrentModel()->applyTransform(CTransform());
 
@@ -826,7 +823,7 @@ void CMainWindow::imageFit(bool fit)
 
 void CMainWindow::bbShowHide(bool show)
 {
-	QVector<CBaseObject*> objts = this->dockWorkspace->getSelectedObjects();
+	QVector<std::shared_ptr<CBaseObject>> objts = this->dockWorkspace->getSelectedObjects();
 
 	if (objts.isEmpty()) {
 		GLViewer* view = this->currentViewer();
@@ -841,7 +838,7 @@ void CMainWindow::bbShowHide(bool show)
 		for (auto obj : objts) {
 			if (obj->hasCategory(CBaseObject::OBJECT)) {
 				if (!obj->hasType(CObject::MODEL) && !obj->hasType(CObject::MOVEMENT)) {
-					CObject* m = (CObject*)obj; 
+					std::shared_ptr<CObject> m = std::static_pointer_cast<CObject>(obj); 
 					
 					m->toggleDrawBB();
 										
@@ -903,11 +900,11 @@ void CMainWindow::saveWorkspace()
 
 	if (parser == nullptr) return;
 
-	QVector<CBaseObject*> objects;
+	QVector<std::shared_ptr<CBaseObject>> objects;
 
 	for (const auto& o : AP::WORKSPACE::instance()->children())
 	{
-		objects << (CBaseObject*)o.second.get();
+		objects << o.second;
 	}
 
 	bool result = parser->save(objects, path);
@@ -1184,7 +1181,7 @@ void CMainWindow::pmEcol()
 		Ui_pmDialog pmUi;
 		pmUi.setupUi(pmD);
 
-		pmUi.spinBox->setValue(((CMesh*)AP::WORKSPACE::getCurrentModel()->getChild())->vertices().size());
+		pmUi.spinBox->setValue(std::dynamic_pointer_cast<CMesh>(AP::WORKSPACE::getCurrentModel()->getChild())->vertices().size());
 
 		if ( pmD->exec() )
 		{	
@@ -1196,7 +1193,7 @@ void CMainWindow::pmEcol()
 
 					if ( pmUi.checkBox->isChecked() )
 					{
-						obj = std::shared_ptr<CModel3D>(obj->getCopy());
+						obj = std::dynamic_pointer_cast<CModel3D>(obj->getCopy());
 						
 						QString fname( f.baseName() + "_" + QString::number( pmUi.spinBox->value() ) );
 		
@@ -1236,7 +1233,7 @@ void CMainWindow::pmVsplit()
 		Ui_pmDialog pmUi;
 		pmUi.setupUi(pmD);
 
-		pmUi.spinBox->setValue(((CMesh*)AP::WORKSPACE::getCurrentModel()->getChild())->vertices().size());
+		pmUi.spinBox->setValue(std::dynamic_pointer_cast<CMesh>(AP::WORKSPACE::getCurrentModel()->getChild())->vertices().size());
 
 		if ( pmD->exec() )
 		{	

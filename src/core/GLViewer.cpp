@@ -349,7 +349,7 @@ static void qNormalizeAngle( int &angle )
  */
 void GLViewer::mousePressEvent( QMouseEvent* event )
 {
-	CBaseObject* obj = UI::DOCK::WORKSPACE::getCurrentItemObj();
+	std::shared_ptr<CBaseObject> obj = UI::DOCK::WORKSPACE::getCurrentItemObj();
 	if (obj != nullptr) {
 		if (obj->mousePressEvent(event)) return;
 	}
@@ -818,7 +818,7 @@ void GLViewer::drawMaskCircle(QPoint pos)
  */
 void GLViewer::mouseReleaseEvent( QMouseEvent* event )
 {
-	CBaseObject* obj = UI::DOCK::WORKSPACE::getCurrentItemObj();
+	std::shared_ptr<CBaseObject> obj = UI::DOCK::WORKSPACE::getCurrentItemObj();
 	if (obj != nullptr) {
 		if (obj->mouseReleaseEvent(event)) return;
 	}
@@ -935,7 +935,7 @@ void GLViewer::translate(double dx, double dy, double dz) {
  */
 void GLViewer::mouseMoveEvent( QMouseEvent* event )
 {
-	CBaseObject *obj = UI::DOCK::WORKSPACE::getCurrentItemObj();
+	std::shared_ptr<CBaseObject> obj = UI::DOCK::WORKSPACE::getCurrentItemObj();
 	if ( obj != nullptr) {
 		if (obj->mouseMoveEvent(event)) return;
 	}
@@ -1025,7 +1025,7 @@ void GLViewer::mouseMoveEvent( QMouseEvent* event )
 
 void GLViewer::wheelEvent(QWheelEvent * event)
 {
-	CBaseObject* obj = UI::DOCK::WORKSPACE::getCurrentItemObj();
+	std::shared_ptr<CBaseObject> obj = UI::DOCK::WORKSPACE::getCurrentItemObj();
 	if (obj != nullptr) {
 		if (obj->wheelEvent(event)) return;
 	}

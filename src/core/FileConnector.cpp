@@ -32,7 +32,7 @@ void CFileConnector::SavePMT( CModel3D *m, const char* nazwa )
 {
 	UI::STATUSBAR::printf( "PMFactory::SaveNewFormSMF() is writing to file (ver.5) now, please wait..." );
 
-	CMesh *src = (CMesh*)m->getChild();
+	CMesh *src = (CMesh*)m->getChild().get();
 
 	FILE *plik = fopen( nazwa, "w" );
 	
@@ -103,7 +103,7 @@ void CFileConnector::SaveXML( CModel3D *m, const char* nazwa )
 {
 	UI::STATUSBAR::printf( "PMFactory::SaveXML() is writing to file now, please wait..." );
 	
-	CMesh *src = (CMesh*)m->getChild();
+	CMesh *src = (CMesh*)m->getChild().get();
 
 	size_t matIdx = 0;
 

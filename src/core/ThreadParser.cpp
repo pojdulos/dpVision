@@ -14,7 +14,7 @@ ThreadParser::ThreadParser() : QObject(), CParser()
 }
 
 
-CModel3D* ThreadParser::load(QString path, bool wait)
+std::shared_ptr<CModel3D> ThreadParser::load(QString path, bool wait)
 {
 	synchronous = wait;
 
@@ -31,7 +31,7 @@ CModel3D* ThreadParser::load(QString path, bool wait)
 	return nullptr;
 }
 
-bool ThreadParser::save(CModel3D* obj, QString path)
+bool ThreadParser::save(std::shared_ptr<CModel3D> obj, const QString path)
 {
 	return false;
 }

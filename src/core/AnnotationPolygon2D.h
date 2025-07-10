@@ -12,7 +12,7 @@ class DPVISION_EXPORT CAnnotationPolygon2D : public CAnnotation
 	std::list<std::pair<double,double>> m_data;
 
 public:
-	CAnnotationPolygon2D( CBaseObject *m = nullptr) :CAnnotation(m)
+	CAnnotationPolygon2D(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation(m)
 	{
 		setLabel("polygon2d");
 	};

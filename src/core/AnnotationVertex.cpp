@@ -20,7 +20,7 @@ CVertex *CAnnotationVertex::getVertex()
 
 	if (m_parent->category() != CBaseObject::Category::OBJECT) return nullptr;
 
-	CMesh *mesh = (CMesh*)((CObject*)m_parent.get())->getChild();
+	std::shared_ptr<CMesh> mesh = std::dynamic_pointer_cast<CMesh>(((CObject*)m_parent)->getChild());
 
 	if (mesh->vertices().size() <= m_index) return nullptr;
 
@@ -36,14 +36,14 @@ void CAnnotationVertex::renderSelf()
 		if (m_parent->category() != CBaseObject::Category::OBJECT) return;
 
 		if (m_parent->hasType(CBaseObject::Type::CLOUD) || m_parent->hasType(CBaseObject::Type::ORDEREDCLOUD) || m_parent->hasType(CBaseObject::Type::MESH))
-			m_cloud = (CPointCloud*)m_parent.get();
+			m_cloud = std::dynamic_pointer_cast<CPointCloud>(this->getParentPtr());
 		else
 		{
-			CBaseObject* child = ((CObject*)m_parent.get())->getChild();
+			std::shared_ptr<CBaseObject> child = ((CObject*)m_parent)->getChild();
 			if (child == nullptr) return;
 			else if (child->hasType(CBaseObject::Type::CLOUD) || child->hasType(CBaseObject::Type::ORDEREDCLOUD) || child->hasType(CBaseObject::Type::MESH))
 			{
-				m_cloud = (CPointCloud*)child;
+				m_cloud = std::dynamic_pointer_cast<CPointCloud>(child);
 			}
 			else
 			{

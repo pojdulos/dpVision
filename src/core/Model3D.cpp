@@ -1,4 +1,6 @@
 #include "Model3D.h"
+#include "Model3D.h"
+#include "Model3D.h"
 #define FREEGLUT_STATIC
 
 #include "Model3D.h"
@@ -17,7 +19,7 @@
 #include "Parser.h"
 
 
-CModel3D::CModel3D(CBaseObject* p) : CObject(p)
+CModel3D::CModel3D(std::shared_ptr<CBaseObject> p) : CObject(p)
 {
 	setLabel("model3d");
 
@@ -74,7 +76,7 @@ void CModel3D::PMeshEcoll( GLuint rzm, bool checkPoints )
 {
 	if ( getChild()->type() != CObject::MESH ) return;
 
-	CMesh &d = *((CMesh *)getChild());
+	CMesh &d = *(std::dynamic_pointer_cast<CMesh>(this->getChild()));
 
 	if ( ( rzm < 0 ) || ( rzm >= d.faces().size() ) ) return;
 
@@ -98,8 +100,8 @@ void CModel3D::PMeshEcoll( GLuint rzm, bool checkPoints )
 
 	pmf.eColl( d, rzm );
 
-	m_min = ((CMesh*)getChild())->getMin();
-	m_max = ((CMesh*)getChild())->getMax();
+	m_min = std::dynamic_pointer_cast<CMesh>(this->getChild())->getMin();
+	m_max = std::dynamic_pointer_cast<CMesh>(this->getChild())->getMax();
 
 	CPoint3f delta = m_max - m_min;
 
@@ -123,7 +125,7 @@ void CModel3D::PMeshVsplit( GLuint rzm )
 {
 	if ( getChild()->type() != CObject::MESH ) return;
 
-	CMesh &d = *((CMesh *)getChild());
+	CMesh &d = *(std::dynamic_pointer_cast<CMesh>(this->getChild()));
 
 	PMFactory pmf;
 
@@ -225,7 +227,7 @@ void CModel3D::setOrigin(CTransform::Origin t)
 	case CTransform::Origin::WEIGHT_CTR:
 		if ((getChild()->type() == CObject::MESH) || (getChild()->type() == CObject::CLOUD) || (getChild()->type() == CObject::ORDEREDCLOUD))
 		{
-			m_transform.setOrigin(((CPointCloud*)getChild())->getCenterOfWeight());
+			m_transform.setOrigin((std::dynamic_pointer_cast<CPointCloud>(this->getChild())->getCenterOfWeight()));
 		}
 		break;
 	case CTransform::Origin::ZERO:
@@ -300,7 +302,7 @@ bool CModel3D::switchOption( CModel3D::Opt iOpt, CModel3D::Switch iSet )
 {
 	bool result = false;
 
-	CMesh *d = (CMesh*)getChild();
+	std::shared_ptr<CMesh> d = std::dynamic_pointer_cast<CMesh>(this->getChild());
 
 	switch ( iOpt )
 	{
@@ -369,7 +371,7 @@ bool CModel3D::testOption( CModel3D::Opt iOption )
 {
 	bool result = false;
 
-	CMesh *d = (CMesh*)getChild();
+	std::shared_ptr<CMesh> d = std::dynamic_pointer_cast<CMesh>(this->getChild());
 
 	if (d == nullptr) return false;
 
@@ -453,6 +455,11 @@ std::wstring CModel3D::infoRow()
 //}
 
 
+std::shared_ptr<CBaseObject> CModel3D::getCopy()
+{
+	return std::make_shared<CModel3D>(*this);
+}
+
 void CModel3D::info(std::wstring i[4])
 {
 	i[0] = m_label.toStdWString();
@@ -467,7 +474,7 @@ void CModel3D::calcVN()
 {
 	if ( getChild()->type() != CObject::MESH ) return;
 
-	((CMesh *)getChild())->calcVN();
+	if (auto m = std::dynamic_pointer_cast<CMesh>(this->getChild())) m->calcVN();
 }
 
 //unsigned int CModel3D::getNewId()
@@ -525,7 +532,7 @@ void CModel3D::calcVN()
 
 #include "FileConnector.h"
 
-CModel3D* CModel3D::load(const QString fext, const QString path, bool synchronous)
+std::shared_ptr<CModel3D> CModel3D::load(const QString fext, const QString path, bool synchronous)
 {
 	CParser* parser = CFileConnector::getLoadParser(fext);
 
@@ -536,7 +543,7 @@ CModel3D* CModel3D::load(const QString fext, const QString path, bool synchronou
 		// t1 = GetTickCount();
 		auto t0 = std::chrono::steady_clock::now();
 
-		CModel3D* obj = parser->load(path, synchronous);
+		std::shared_ptr<CModel3D> obj = parser->load(path, synchronous);
 
 		// t2 = GetTickCount();
 		auto t1 = std::chrono::steady_clock::now();
@@ -552,7 +559,7 @@ CModel3D* CModel3D::load(const QString fext, const QString path, bool synchronou
 	return nullptr;
 }
 
-CModel3D* CModel3D::load(const QString path, bool synchronous)
+std::shared_ptr<CModel3D> CModel3D::load(const QString path, bool synchronous)
 {
 	CParser* parser = CFileConnector::getLoadParser( path );
 
@@ -563,7 +570,7 @@ CModel3D* CModel3D::load(const QString path, bool synchronous)
 		// t1 = GetTickCount();
 		auto t0 = std::chrono::steady_clock::now();
 
-		CModel3D* obj = parser->load( path, synchronous );
+		std::shared_ptr<CModel3D> obj = parser->load( path, synchronous );
 
 		// t2 = GetTickCount();
 		auto t1 = std::chrono::steady_clock::now();
@@ -593,7 +600,7 @@ bool CModel3D::save(const QString path)
 		//parser->set( UI::getNativePath(path), this );
 		//bool result = parser->save();
 
-		bool result = parser->save(this, path );
+		bool result = parser->save(std::dynamic_pointer_cast<CModel3D>(this->shared_from_this()), path);
 
 		if (!parser->inPlugin()) delete parser;
 

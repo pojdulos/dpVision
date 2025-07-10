@@ -39,6 +39,9 @@ private:
 class DPVISION_EXPORT dpLogStream
 {
 public:
+    dpLogStream(const dpLogStream&) = delete;
+    dpLogStream& operator=(const dpLogStream&) = delete;
+
     dpLogStream(dpLogger::Level lvl);
     ~dpLogStream();
 
@@ -58,9 +61,9 @@ private:
     dpLogger::Level level;
 };
 
-inline dpLogStream dpInfo() { return dpLogger::info(); }
-inline dpLogStream dpWarn() { return dpLogger::warn(); }
-inline dpLogStream dpError() { return dpLogger::error(); }
-inline dpLogStream dpDebug() { return dpLogger::debug(); }
+inline DPVISION_EXPORT dpLogStream dpInfo() { return dpLogger::info(); }
+inline DPVISION_EXPORT dpLogStream dpWarn() { return dpLogger::warn(); }
+inline DPVISION_EXPORT dpLogStream dpError() { return dpLogger::error(); }
+inline DPVISION_EXPORT dpLogStream dpDebug() { return dpLogger::debug(); }
 
 #endif

@@ -135,12 +135,12 @@ public:
 		{1.0f, 1.0f, 1.0f} };
 
 
-	Volumetric(ColorSpace csp=MONOCHROME2, CBaseObject* p = nullptr):CObject(p),m_csp(csp) {};
+	Volumetric(ColorSpace csp=MONOCHROME2, std::shared_ptr<CBaseObject> p = nullptr):CObject(p),m_csp(csp) {};
 	~Volumetric() {};
 
 	virtual inline int type() override { return CObject::Type::VOLUMETRIC_NEW; };
 	virtual std::wstring infoRow() override;
-	virtual Volumetric* getCopy() override;
+	virtual std::shared_ptr<CBaseObject> getCopy() override;
 
 	//GLuint compile_shader(QOpenGLFunctions* functions, QString source, GLenum shader_type);
 
@@ -150,13 +150,13 @@ public:
 
 	virtual void renderSelf() override;
 
-	CPointCloud* sift_cloud( int nfeatures = 0, int nOctaveLayers = 3, double contrastThreshold = 0.04, double edgeThreshold = 10, double sigma = 1.6, int factor = 1 );
-	CMesh* marching_cube(int factor = 1);
-	CMesh* marching_tetrahedron(int factor = 1);
+	std::shared_ptr<CPointCloud> sift_cloud( int nfeatures = 0, int nOctaveLayers = 3, double contrastThreshold = 0.04, double edgeThreshold = 10, double sigma = 1.6, int factor = 1 );
+	std::shared_ptr<CMesh> marching_cube(int factor = 1);
+	std::shared_ptr<CMesh> marching_tetrahedron(int factor = 1);
 
 	bool getSlice(int nr, Volumetric::LayerPlane layer, Volumetric::SliceType* slice);
 
-	Volumetric* getRotatedVol(Volumetric::LayerPlane dir);
+	std::shared_ptr<Volumetric> getRotatedVol(Volumetric::LayerPlane dir);
 
 	QImage getLayerAsImage(int nr, Volumetric::LayerPlane layer, bool tresh=false);
 	QImage getLayerAsArgbImage(int nr, Volumetric::LayerPlane layer, bool tresh=false);
@@ -171,7 +171,7 @@ public:
 
 	CPoint3d getOrigin();
 
-	static Volumetric* create(int layers = 256, int rows = 256, int columns = 256);
+	static std::shared_ptr<Volumetric> create(int layers = 256, int rows = 256, int columns = 256);
 	void adjustMinMax(bool calc_color = true);
 	void adjustMinMaxColor(VoxelType color);
 	void drawBox(CPoint3i origin, CPoint3i size, VoxelType color);

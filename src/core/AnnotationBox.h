@@ -15,7 +15,7 @@ public:
 	//CPoint3f m_min;
 	//CPoint3f m_max;
 
-	CAnnotationBox( CBaseObject *m = nullptr) :CAnnotation(m)
+	CAnnotationBox(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation(m)
 	{
 		setLabel("box");
 	};

@@ -27,7 +27,9 @@ CParserDPVISION::~CParserDPVISION(void)
 {
 }
 
-CModel3D* CParserDPVISION::load(const QString path, bool wait)
+#include "Annotation.h"
+
+std::shared_ptr<CModel3D> CParserDPVISION::load(const QString path, bool wait)
 {
 	QuaZip zip(path);
 	
@@ -76,7 +78,7 @@ CModel3D* CParserDPVISION::load(const QString path, bool wait)
 	}
 	
 
-	QList<CModel3D*> modele;
+	QList<std::shared_ptr<CModel3D>> modele;
 	for (const auto& o : mapaObiektow)
 	{
 		UI::PROGRESSBAR::setValue(progress+=step);
@@ -89,29 +91,31 @@ CModel3D* CParserDPVISION::load(const QString path, bool wait)
 			{
 				if (o.ptr->hasType(CBaseObject::Type::MODEL))
 				{
-					modele.push_back((CModel3D*)o.ptr);
+					modele.push_back(std::dynamic_pointer_cast<CModel3D>(o.ptr));
 				}
 				else
 				{
 					/* ZMODYFIKOWAĆ GDY BEDZIE MOŻLIWOŚĆ DODAWANIA INNYCH OBIEKTOW DO WORKSPACE */
 
-					CModel3D* tmp = new CModel3D;
+					std::shared_ptr<CModel3D> tmp = std::make_shared<CModel3D>();
 					tmp->addChild(o.ptr);
 					modele.push_back(tmp);
 				} 
 			}
 			else
 			{
-				((CObject*)it->ptr)->addChild(o.ptr);
+				std::dynamic_pointer_cast<CObject>(it->ptr)->addChild(o.ptr);
 			}
 		}
 		else if (o.ptr->hasCategory(CBaseObject::Category::ANNOTATION))
 		{
 			AddressMap::iterator it = mapaObiektow.find(o.parentID);
 
+			auto an = std::dynamic_pointer_cast<CAnnotation>(o.ptr);
 			if (it != mapaObiektow.end())
 			{
-				((CObject*)it->ptr)->addAnnotation((CAnnotation*)o.ptr);
+				auto ob = std::dynamic_pointer_cast<CObject>(it->ptr);
+				ob->addAnnotation(an);
 			}
 		}
 	}
@@ -126,7 +130,7 @@ CModel3D* CParserDPVISION::load(const QString path, bool wait)
 
 
 
-	for (CModel3D* m : modele)
+	for (auto m : modele)
 	{
 		m->importChildrenGeometry();
 		AP::WORKSPACE::addModel(m);
@@ -167,7 +171,7 @@ CModel3D* CParserDPVISION::load(const QString path, bool wait)
 
 #include "DockWidgetWorkspace.h"
 
-bool CParserDPVISION::save(CModel3D* obj, const QString path)
+bool CParserDPVISION::save(std::shared_ptr<CModel3D> obj, const QString path)
 {
 	//DockWidgetWorkspace *wnd = UI::DOCK::WORKSPACE::instance();
 
@@ -201,7 +205,7 @@ bool CParserDPVISION::save(CModel3D* obj, const QString path)
 
 #include "Workspace.h"
 
-bool CParserDPVISION::save(QVector<CBaseObject*> objects, const QString path)
+bool CParserDPVISION::save(QVector<std::shared_ptr<CBaseObject>> objects, const QString path)
 {
 	if (objects.empty()) return false;
 

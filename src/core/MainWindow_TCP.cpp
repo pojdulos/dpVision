@@ -45,7 +45,7 @@ void CMainWindow::proceessData()
 	{
 		const QString filename(cmdline.at(1));
 
-		CModel3D* obj = AP::WORKSPACE::loadModel("*.dcm", filename);
+		std::shared_ptr<CModel3D> obj = AP::WORKSPACE::loadModel("*.dcm", filename);
 		if (obj != nullptr)
 		{
 			response = QString::number(obj->id()) + "\n\r";
@@ -59,7 +59,7 @@ void CMainWindow::proceessData()
 	else if (cmd.startsWith("load")) {
 		const QString filename(cmdline.at(1));
 
-		CModel3D* obj = AP::WORKSPACE::loadModel(filename);
+		std::shared_ptr<CModel3D> obj = AP::WORKSPACE::loadModel(filename);
 		if (obj != nullptr) {
 			response = QString::number(obj->id()) + "\n\r";
 		}
@@ -83,7 +83,7 @@ void CMainWindow::proceessData()
 		int id = QString(cmdline.at(1)).toInt();
 		double rX = QString(cmdline.at(2)).toDouble();
 
-		CModel3D* obj = (CModel3D*)AP::WORKSPACE::findId(id);
+		std::shared_ptr<CModel3D> obj = std::dynamic_pointer_cast<CModel3D>( AP::WORKSPACE::findId(id) );
 		if (obj != nullptr) {
 			obj->getTransform().rotateAroundAxisDeg(CVector3d::XAxis(), rX);
 			UI::updateAllViews();
@@ -96,7 +96,7 @@ void CMainWindow::proceessData()
 	else if (cmd.startsWith("remove")) {
 		int id = QString(cmdline.at(1)).toInt();
 
-		CModel3D* obj = (CModel3D*)AP::WORKSPACE::findId(id);
+		std::shared_ptr<CModel3D> obj = std::dynamic_pointer_cast<CModel3D>(AP::WORKSPACE::findId(id));
 		if (obj != nullptr) {
 			AP::WORKSPACE::removeModel(id);
 			UI::updateAllViews();

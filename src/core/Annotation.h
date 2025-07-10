@@ -25,7 +25,7 @@ public:
 
 	CTransform m_transform;
 
-	CAnnotation( CBaseObject *parent = nullptr) : CBaseObject(parent)
+	CAnnotation( std::shared_ptr<CBaseObject> parent = nullptr) : CBaseObject(parent)
 	{
 		m_annotations.clear();
 		setLabel("annotation");
@@ -44,9 +44,10 @@ public:
 	// konstruktor kopiuj¹cy
 	CAnnotation(const CAnnotation& a);
 
-	virtual CAnnotation* getCopy() override
+	virtual std::shared_ptr<CBaseObject> getCopy() override
 	{
-		return new CAnnotation(*this);
+		auto an = std::make_shared<CAnnotation>(*this);
+		return an;
 	}
 
 	virtual ~CAnnotation()
@@ -69,23 +70,22 @@ public:
 
 	inline Annotations& annotations() { return m_annotations; };
 
-	int addAnnotation(CAnnotation* ad)
+	int addAnnotation(std::shared_ptr<CAnnotation> ad)
 	{
 		if (ad == nullptr) return NO_CURRENT_MODEL;
 
-		m_annotations[ad->id()] = std::shared_ptr<CAnnotation>(ad);
-		ad->setParent(this);
+		m_annotations[ad->id()] = ad;
+		ad->setParent(this->shared_from_this());
 
 		return ad->id();
 	}
 
-	CAnnotation* removeAnnotation(int id)
+	std::shared_ptr<CAnnotation> removeAnnotation(int id)
 	{
-		CAnnotation* an = nullptr;
 		Annotations::iterator it = m_annotations.find(id);
 		if (it != m_annotations.end())
 		{
-			an = it->second.get();
+			std::shared_ptr<CAnnotation> an = it->second;
 			m_annotations.erase(id);
 			return an;
 		}
@@ -104,7 +104,7 @@ public:
 		return nullptr;
 	}
 
-	CBaseObject* getSomethingWithId(int id);
+	virtual std::shared_ptr<CBaseObject> getSomethingWithId(int id);
 
 	virtual void toDomElement(QDomElement& /*child*/) {};
 

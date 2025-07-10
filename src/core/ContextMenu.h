@@ -17,7 +17,7 @@ class DPVISION_EXPORT CContextMenu : public QMenu
     Q_OBJECT
 
 public:
-    CContextMenu(CBaseObject *obj, QWidget *parent = nullptr);
+    CContextMenu(std::shared_ptr<CBaseObject> obj, QWidget *parent = nullptr);
     ~CContextMenu();
 
 	QMenu* createAddObjectMenu();
@@ -29,18 +29,18 @@ public:
 	QMenu* createVolumetricMenu();
 
 
-	QMenu* createCopySubMenu(QString label, CObject* obj);
+	QMenu* createCopySubMenu(QString label, std::shared_ptr<CObject> obj);
 
 	QMenu* createCopyMenu();
 
-	QMenu* createMoveSubMenu(QString label, CObject* obj);
+	QMenu* createMoveSubMenu(QString label, std::shared_ptr<CObject> obj);
 
 	QMenu* createMoveMenu();
 
 	QMenu* createAddAnnoMenu();
 
 private:
-	CBaseObject *m_obj;
+	std::shared_ptr<CBaseObject> m_obj;
 
 	//QGraphicsView* m_graphView = nullptr; // lub std::unique_ptr, jeœli C++11+
 

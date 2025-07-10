@@ -21,7 +21,7 @@ class DPVISION_EXPORT CAnnotationEdges : public CAnnotation
 public:
 	std::list<CAnnotationEdge> m_list;
 
-	CAnnotationEdges( CModel3D *m = nullptr) :CAnnotation( m )
+	CAnnotationEdges(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation( m )
 	{
 		setLabel("edge_set");
 	};
@@ -32,7 +32,7 @@ public:
 		m_list = p.m_list;
 	};
 
-	CAnnotationEdges( std::list<CAnnotationEdge> &list, CModel3D *m = nullptr) :CAnnotation(m)
+	CAnnotationEdges( std::list<CAnnotationEdge> &list, std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation(m)
 	{
 		setLabel("edge_set");
 		m_list = list;

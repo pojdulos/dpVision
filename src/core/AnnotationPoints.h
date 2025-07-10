@@ -14,7 +14,7 @@ class DPVISION_EXPORT CAnnotationPoints : public CAnnotation
 public:
 	SetOfPoints m_list;
 
-	CAnnotationPoints( CModel3D *m = nullptr) :CAnnotation( m )
+	CAnnotationPoints(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation( m )
 	{
 		setLabel("points");
 		m_list.clear();

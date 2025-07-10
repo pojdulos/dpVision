@@ -143,7 +143,7 @@ void CAnnotationCamera::renderSelf()
 	glPolygonMode(GL_BACK, GL_FILL);
 
 	double scale = 1.0;
-	std::shared_ptr<CBaseObject> parent = m_parent;
+	std::shared_ptr<CBaseObject> parent = this->getParentPtr();
 	if (parent != nullptr)
 	{
 		while (parent->getParent() != nullptr)

@@ -19,15 +19,15 @@ public:
 
 	explicit WorkspaceTreeItem() : QStandardItem() {};
 	explicit WorkspaceTreeItem(QString name) : QStandardItem( name ) {};
-	explicit WorkspaceTreeItem(CBaseObject *obj);
+	explicit WorkspaceTreeItem(std::shared_ptr<CBaseObject> obj);
 
 	void changeIcon(Column c, bool b);
 
 	static QIcon getNewIcon(CBaseObject::Type t, Column c, bool b);
 
-	void setObject(CBaseObject* obj);
+	void setObject(std::shared_ptr<CBaseObject> obj);
 	
-	CBaseObject* getObject();
+	std::shared_ptr<CBaseObject> getObject();
 
 	int getObjectId();
 
@@ -41,8 +41,8 @@ private:
 	QMap<int, WorkspaceTreeItem*> m_Fields;
 
 protected:
-	WorkspaceTreeItem* createVisibleColumn(CBaseObject* obj);
-	WorkspaceTreeItem* createKidsVisibleColumn(CBaseObject* obj);
-	WorkspaceTreeItem* createLockColumn(CModel3D* obj);
+	WorkspaceTreeItem* createVisibleColumn(std::shared_ptr<CBaseObject> obj);
+	WorkspaceTreeItem* createKidsVisibleColumn(std::shared_ptr<CBaseObject> obj);
+	WorkspaceTreeItem* createLockColumn(std::shared_ptr<CBaseObject> obj);
 };
 

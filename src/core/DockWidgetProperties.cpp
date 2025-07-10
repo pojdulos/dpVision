@@ -77,7 +77,9 @@ void DockWidgetProperties::selectionChanged( int id )
 	}
 	else
 	{
-		CBaseObject* currentObject = AP::WORKSPACE::findId(id);
+		std::shared_ptr<CBaseObject> currentObjectPtr = AP::WORKSPACE::findId(id);
+		
+		CBaseObject* currentObject = currentObjectPtr.get(); //TYMCZASOWO
 		
 		if (currentObject == nullptr)
 		{

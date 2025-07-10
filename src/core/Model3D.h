@@ -54,7 +54,7 @@ protected:
 	//void renderBoundingBox();
 
 public:
-	CModel3D(CBaseObject* p = nullptr);
+	CModel3D(std::shared_ptr<CBaseObject> p = nullptr);
 	CModel3D( const CModel3D &m );
 	//virtual ~CModel3D();
 
@@ -63,19 +63,19 @@ public:
 	//
 
 	inline int type() override { return CObject::Type::MODEL; };
-	CModel3D *getCopy() override { return new CModel3D(*this); };
+	virtual std::shared_ptr<CBaseObject> getCopy() override;;
 
 	void info(std::wstring i[4]) override;
 	std::wstring infoRow() override;
 
 	//------------------------------------------------------------------------------------
 
-	static CModel3D* load(const QString fext, const QString path, bool synchronous = true);
+	static std::shared_ptr<CModel3D> load(const QString fext, const QString path, bool synchronous = true);
 
-	static CModel3D* load(const QString path, bool synchronous = true);
-	static CModel3D* load(const char* path, bool synchronous = true) { return load(QString(path), synchronous); }
-	static CModel3D* load(const std::wstring path, bool synchronous = true) { return load(QString::fromStdWString(path), synchronous); }
-	static CModel3D* load(const std::string path, bool synchronous = true) { return load(QString::fromStdString(path), synchronous); }
+	static std::shared_ptr<CModel3D> load(const QString path, bool synchronous = true);
+	static std::shared_ptr<CModel3D> load(const char* path, bool synchronous = true) { return load(QString(path), synchronous); }
+	static std::shared_ptr<CModel3D> load(const std::wstring path, bool synchronous = true) { return load(QString::fromStdWString(path), synchronous); }
+	static std::shared_ptr<CModel3D> load(const std::string path, bool synchronous = true) { return load(QString::fromStdString(path), synchronous); }
 
 	bool save(const char* path);
 	bool save(const QString path);
@@ -95,7 +95,7 @@ public:
 	//CBaseObject * getSomethingWithId(int id);
 
 	//deprecated, use getChild()
-	inline CBaseObject * getData(int id = 0) { return this->getChild(id); };
+	inline std::shared_ptr<CBaseObject> getData(int id = 0) { return this->getChild(id); };
 
 	bool setLocked(bool b) { return m_transform.lock(b); };
 	bool isLocked() { return m_transform.isLocked(); };

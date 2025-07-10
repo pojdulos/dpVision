@@ -60,13 +60,13 @@ void CParserDPVISION::writeByteArrayToZip(QuaZip& zip, QString pathInZip, const 
 
 
 
-void CParserDPVISION::saveMesh(QTextStream& objStream, CObject* src, size_t& vStart)
+void CParserDPVISION::saveMesh(QTextStream& objStream, std::shared_ptr<CObject> src, size_t& vStart)
 {
 	int vCnt = 0;
 
 	if (src->hasType(CObject::Type::MESH) || src->hasType(CObject::Type::CLOUD) || src->hasType(CObject::Type::ORDEREDCLOUD))
 	{
-		CPointCloud* cloud = (CPointCloud*)src;
+		auto cloud = std::static_pointer_cast<CPointCloud>(src);
 
 		if (cloud->hasVertexColors())
 		{
@@ -113,7 +113,7 @@ void CParserDPVISION::saveMesh(QTextStream& objStream, CObject* src, size_t& vSt
 
 		if (src->hasType(CObject::Type::MESH))
 		{
-			CMesh* mesh = (CMesh*)src;
+			auto mesh = std::static_pointer_cast<CMesh>(src);
 
 			for (CMesh::Materials::iterator im = mesh->materials().begin(); im != mesh->materials().end(); im++)
 			{
@@ -244,7 +244,7 @@ void CVolTKtoZIP(CVolTK* volTK, QuaZip& zip, QString pathInZip)
 	}
 }
 
-void CParserDPVISION::saveObject(QuaZip& zip, CBaseObject* obj, QString path)
+void CParserDPVISION::saveObject(QuaZip& zip, std::shared_ptr<CBaseObject> obj, QString path)
 {
 	if (obj == nullptr) return;
 
@@ -269,26 +269,26 @@ void CParserDPVISION::saveObject(QuaZip& zip, CBaseObject* obj, QString path)
 
 			size_t vStart = 1;
 
-			saveMesh(objStream, (CObject*)obj, vStart);
+			saveMesh(objStream, std::static_pointer_cast<CObject>(obj), vStart);
 
 			writeByteArrayToZip(zip, path + objBaseName + ".obj", objBA);
 
-			saveMTL(zip, ((CPointCloud*)obj)->getMaterial(), path, objBaseName);
+			saveMTL(zip, std::static_pointer_cast<CPointCloud>(obj)->getMaterial(), path, objBaseName);
 		}
 		else if (obj->hasType(CObject::VOLTK))
 		{
-			CVolTKtoZIP((CVolTK*)obj, zip, path + objBaseName + ".raw");
+			CVolTKtoZIP((CVolTK*)obj.get(), zip, path + objBaseName + ".raw");
 		}
 
 
-		for (const auto& c : ((CObject*)obj)->children())
+		for (const auto& c : std::static_pointer_cast<CObject>(obj)->children())
 		{
-			saveObject(zip, c.second.get(), path + objBaseName + "/");
+			saveObject(zip, c.second, path + objBaseName + "/");
 		}
 	}
 }
 
-void CParserDPVISION::createXmlNodeObject(CObject* obj, QDomElement& root, QDomDocument& docu, QString path)
+void CParserDPVISION::createXmlNodeObject(std::shared_ptr<CObject> obj, QDomElement& root, QDomDocument& docu, QString path)
 {
 	QDomElement child = docu.createElement("object");
 
@@ -316,7 +316,7 @@ void CParserDPVISION::createXmlNodeObject(CObject* obj, QDomElement& root, QDomD
 		child.setAttribute("type", "transformation");
 
 		QDomNode transform = docu.createElement("matrix");
-		transform.appendChild(docu.createTextNode(((CModel3D*)obj)->transform().toString()));
+		transform.appendChild(docu.createTextNode(std::static_pointer_cast<CModel3D>(obj)->transform().toString()));
 		child.appendChild(transform);
 	}
 	else if ((obj->hasType(CObject::Type::MESH)) || (obj->hasType(CObject::Type::CLOUD)))
@@ -329,7 +329,7 @@ void CParserDPVISION::createXmlNodeObject(CObject* obj, QDomElement& root, QDomD
 		file.setAttribute("format", "obj");
 		file.setAttribute("data", IdToString(obj->id()) + ".obj");
 
-		CMaterial& mat = ((CMesh*)obj)->getMaterial();
+		CMaterial& mat = std::static_pointer_cast<CMesh>(obj)->getMaterial();
 		file.setAttribute("material", IdToString(obj->id()) + ".mtl");
 
 		if (mat.hasTexture())
@@ -340,7 +340,7 @@ void CParserDPVISION::createXmlNodeObject(CObject* obj, QDomElement& root, QDomD
 	}
 	else if (obj->hasType(CObject::Type::VOLTK))
 	{
-		CVolTK* volTK = (CVolTK*)obj;
+		std::shared_ptr<CVolTK> volTK = std::static_pointer_cast<CVolTK>(obj);
 
 		child.setAttribute("type", "volumetric");
 		child.setAttribute("layers", (qulonglong) volTK->kostka.m_lays);
@@ -364,13 +364,13 @@ void CParserDPVISION::createXmlNodeObject(CObject* obj, QDomElement& root, QDomD
 	{
 		if (c.second->hasCategory(CBaseObject::Category::OBJECT))
 		{
-			createXmlNodeObject((CObject*)c.second.get(), root, docu, path + IdToString(obj->id()) + "/");
+			createXmlNodeObject(std::static_pointer_cast<CObject>(c.second), root, docu, path + IdToString(obj->id()) + "/");
 		}
 	}
 }
 
 
-void CParserDPVISION::createXmlNodeAnnotation(CAnnotation* obj, QDomElement& root, QDomDocument& docu)
+void CParserDPVISION::createXmlNodeAnnotation(std::shared_ptr<CAnnotation> obj, QDomElement& root, QDomDocument& docu)
 {
 	QDomElement child = docu.createElement("object");
 
@@ -383,24 +383,28 @@ void CParserDPVISION::createXmlNodeAnnotation(CAnnotation* obj, QDomElement& roo
 	{
 		child.setAttribute("type", "setOfVertices");
 
+		auto an = std::dynamic_pointer_cast<CAnnotationSetOfVertices>(obj);
+
 		QDomElement dataset = docu.createElement("dataset");
 		child.appendChild(dataset);
 
-		dataset.setAttribute("destination", IdToString(((CAnnotationSetOfVertices*)obj)->m_cloud->id()));
-		dataset.setAttribute("pointSize", ((CAnnotationSetOfVertices*)obj)->m_pointSize);
+		dataset.setAttribute("destination", IdToString(an->m_cloud->id()));
+		dataset.setAttribute("pointSize", an->m_pointSize);
 
-		dataset.appendChild(docu.createTextNode(((CAnnotationSetOfVertices*)obj)->toString()));
+		dataset.appendChild(docu.createTextNode(an->toString()));
 	}
 	else if (obj->hasType(CAnnotation::Type::SETOFFACES))
 	{
 		child.setAttribute("type", "setOfFaces");
 
+		auto an = std::dynamic_pointer_cast<CAnnotationSetOfFaces>(obj);
+
 		QDomElement dataset = docu.createElement("dataset");
 		child.appendChild(dataset);
 
-		dataset.setAttribute("destination", IdToString(((CAnnotationSetOfFaces*)obj)->dstMesh()->id()));
+		dataset.setAttribute("destination", IdToString(an->dstMesh()->id()));
 
-		dataset.appendChild(docu.createTextNode(((CAnnotationSetOfFaces*)obj)->toString()));
+		dataset.appendChild(docu.createTextNode(an->toString()));
 	}
 
 	QDomElement properties = docu.createElement("properties");
@@ -412,28 +416,28 @@ void CParserDPVISION::createXmlNodeAnnotation(CAnnotation* obj, QDomElement& roo
 
 	for (const auto& a : obj->annotations())
 	{
-		createXmlNodeAnnotation(a.second.get(), root, docu);
+		createXmlNodeAnnotation(a.second, root, docu);
 	}
 }
 
 
-void CParserDPVISION::createAnnotationsXml(CObject* obj, QDomElement& root, QDomDocument& docu)
+void CParserDPVISION::createAnnotationsXml(std::shared_ptr<CObject> obj, QDomElement& root, QDomDocument& docu)
 {
 	for (const auto& a : obj->annotations())
 	{
-		createXmlNodeAnnotation(a.second.get(), root, docu);
+		createXmlNodeAnnotation(a.second, root, docu);
 	}
 
 	for (const auto& c : obj->children())
 	{
 		if (c.second->hasCategory(CBaseObject::Category::OBJECT))
 		{
-			createAnnotationsXml((CObject*)c.second.get(), root, docu);
+			createAnnotationsXml(std::static_pointer_cast<CObject>(c.second), root, docu);
 		}
 	}
 }
 
-void CParserDPVISION::createStructureXml(QByteArray& ba, QVector<CBaseObject*> vobj)
+void CParserDPVISION::createStructureXml(QByteArray& ba, QVector<std::shared_ptr<CBaseObject>> vobj)
 {
 	QDomDocument doc;
 
@@ -444,12 +448,12 @@ void CParserDPVISION::createStructureXml(QByteArray& ba, QVector<CBaseObject*> v
 
 	for (const auto& obj : vobj)
 	{
-		createXmlNodeObject((CObject*)obj, wksp, doc, "");
+		createXmlNodeObject(std::static_pointer_cast<CObject>(obj), wksp, doc, "");
 	}
 
 	for (const auto& obj : vobj)
 	{
-		createAnnotationsXml((CObject*)obj, wksp, doc);
+		createAnnotationsXml(std::static_pointer_cast<CObject>(obj), wksp, doc);
 	}
 
 	wksp.setAttribute("count", wksp.childNodes().size());

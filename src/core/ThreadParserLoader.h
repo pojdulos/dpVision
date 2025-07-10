@@ -14,11 +14,11 @@ public:
 	ThreadParserLoader(QString filename, QObject* parent = 0);
 	~ThreadParserLoader();
 
-	virtual CBaseObject* getChild();
+	virtual std::shared_ptr<CBaseObject> getChild();
 
 protected:
 	bool cancelled;
-	CBaseObject* m_child;
+	std::shared_ptr<CBaseObject> m_child;
 
 public slots:
 	virtual void createChild();

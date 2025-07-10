@@ -77,13 +77,13 @@ namespace AP
      * @brief Adds annotation to a parent object (OBSOLETE)
      * @deprecated Use AP::MODEL::addAnnotation(int parentid, CAnnotation *an) instead
      */
-    DPVISION_EXPORT int addAnnotation(int parentid, CAnnotation* an);
+    DPVISION_EXPORT int addAnnotation(int parentid, std::shared_ptr<CAnnotation> an);
 
     /**
      * @brief Adds annotation to a 3D model (OBSOLETE)
      * @deprecated Use AP::MODEL::addAnnotation(CModel3D* obj, CAnnotation *an) instead
      */
-    DPVISION_EXPORT int addAnnotation(CModel3D* obj, CAnnotation* an);
+    DPVISION_EXPORT int addAnnotation(std::shared_ptr<CModel3D> obj, std::shared_ptr<CAnnotation> an);
 
     /**
      * @namespace PLUGIN
@@ -129,7 +129,7 @@ namespace AP
          * @param deleteIt If true, deletes the object from memory
          * @return True if removal was successful
          */
-        DPVISION_EXPORT bool remove(CBaseObject* obj, bool deleteIt = false);
+        DPVISION_EXPORT bool remove(std::shared_ptr<CBaseObject> obj, bool deleteIt = false);
 
         /**
          * @brief Adds a child object to a parent object
@@ -137,7 +137,7 @@ namespace AP
          * @param child Child object to add
          * @return Child object ID
          */
-        DPVISION_EXPORT int addChild(CBaseObject* obj, CBaseObject* child);
+        DPVISION_EXPORT int addChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child);
 
         /**
          * @brief Removes a child object from a parent object
@@ -146,21 +146,21 @@ namespace AP
          * @param deleteIt If true, deletes the child object from memory
          * @return True if removal was successful
          */
-        DPVISION_EXPORT bool removeChild(CBaseObject* obj, CBaseObject* child, bool deleteIt = false);
+        DPVISION_EXPORT bool removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child, bool deleteIt = false);
 
         /**
          * @brief Moves an object to a new parent
          * @param obj Object to move
          * @param newParent New parent object
          */
-        DPVISION_EXPORT void moveTo(CBaseObject* obj, CBaseObject* newParent, bool keep_pos = true);
+        DPVISION_EXPORT void moveTo(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> newParent, bool keep_pos = true);
 
         /**
          * @brief Copies an object to a new parent
          * @param obj Object to copy
          * @param newParent New parent object
          */
-        DPVISION_EXPORT void copyTo(CBaseObject* obj, CBaseObject* newParent, bool keep_pos = true);
+        DPVISION_EXPORT void copyTo(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> newParent, bool keep_pos = true);
     };
 
     /**
@@ -174,7 +174,7 @@ namespace AP
          * @param synchronous If true, loads synchronously
          * @return Pointer to loaded CModel3D
          */
-        DPVISION_EXPORT CModel3D* load(std::wstring path, bool synchronous = true);
+        DPVISION_EXPORT std::shared_ptr<CModel3D> load(std::wstring path, bool synchronous = true);
 
         /**
          * @brief Adds a child object to a 3D model
@@ -198,7 +198,8 @@ namespace AP
          * @param obj Parent object
          * @param child Child object to remove
          */
-        DPVISION_EXPORT void removeChild(CBaseObject* obj, CBaseObject* child);
+        DPVISION_EXPORT void removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child);
+        //DPVISION_EXPORT void removeChild(CBaseObject* obj, CBaseObject* child);
 
         /**
          * @brief Removes a child object from a parent object using IDs
@@ -213,7 +214,7 @@ namespace AP
          * @param an Annotation to add
          * @return Annotation ID
          */
-        DPVISION_EXPORT int addAnnotation(CModel3D* obj, CAnnotation* an);
+        DPVISION_EXPORT int addAnnotation(std::shared_ptr<CModel3D> obj, std::shared_ptr<CAnnotation> an);
 
         /**
          * @brief Adds an annotation to a parent object identified by ID
@@ -221,7 +222,7 @@ namespace AP
          * @param an Annotation to add
          * @return Annotation ID
          */
-        DPVISION_EXPORT int addAnnotation(int parentid, CAnnotation* an);
+        DPVISION_EXPORT int addAnnotation(int parentid, std::shared_ptr<CAnnotation> an);
 
         /**
          * @brief Removes an annotation from a parent object
@@ -253,7 +254,7 @@ namespace AP
          * @param id Object identifier
          * @return Pointer to CBaseObject or nullptr if not found
          */
-        DPVISION_EXPORT CBaseObject* findId(int id);
+        DPVISION_EXPORT std::shared_ptr<CBaseObject> findId(int id);
 
         /**
          * @brief Adds a 3D model to workspace
@@ -271,7 +272,7 @@ namespace AP
          * @param show3d If true, shows 3D view
          * @return True if addition was successful
          */
-        DPVISION_EXPORT bool addImage(CImage* im, bool showViewer = true, bool show3d = false);
+        DPVISION_EXPORT bool addImage(std::shared_ptr<CImage> im, bool showViewer = true, bool show3d = false);
 
         /**
          * @brief Adds a generic object to workspace
@@ -279,7 +280,7 @@ namespace AP
          * @param setItCurrent If true, sets the object as current
          * @return True if addition was successful
          */
-        DPVISION_EXPORT bool addObject(CBaseObject* obj, bool setItCurrent = false);
+        DPVISION_EXPORT bool addObject(std::shared_ptr<CBaseObject> obj, bool setItCurrent = false);
 
         /**
          * @brief Loads a model from file with extension
@@ -289,7 +290,7 @@ namespace AP
          * @param setItCurrent If true, sets the model as current
          * @return Pointer to loaded CModel3D
          */
-        DPVISION_EXPORT CModel3D* loadModel(const QString fext, const QString& path, bool synchronous = true, bool setItCurrent = false);
+        DPVISION_EXPORT std::shared_ptr<CModel3D> loadModel(const QString fext, const QString& path, bool synchronous = true, bool setItCurrent = false);
 
         /**
          * @brief Loads a model from file
@@ -298,7 +299,7 @@ namespace AP
          * @param setItCurrent If true, sets the model as current
          * @return Pointer to loaded CModel3D
          */
-        DPVISION_EXPORT CModel3D* loadModel(const QString& path, bool synchronous = true, bool setItCurrent = false);
+        DPVISION_EXPORT std::shared_ptr<CModel3D> loadModel(const QString& path, bool synchronous = true, bool setItCurrent = false);
 
         /**
          * @brief Loads a model from file (wide string path)
@@ -307,7 +308,7 @@ namespace AP
          * @param setItCurrent If true, sets the model as current
          * @return Pointer to loaded CModel3D
          */
-        DPVISION_EXPORT CModel3D* loadModel(const std::wstring& path, bool synchronous = true, bool setItCurrent = false);
+        DPVISION_EXPORT std::shared_ptr<CModel3D> loadModel(const std::wstring& path, bool synchronous = true, bool setItCurrent = false);
 
         /**
          * @brief Sets visibility for all models in workspace
@@ -368,6 +369,7 @@ namespace AP
          * @param deleteIt If true, deletes the model from memory
          * @return True if removal was successful
          */
+        DPVISION_EXPORT bool removeModel(std::shared_ptr<CModel3D> obj, bool deleteIt = true);
         DPVISION_EXPORT bool removeModel(CModel3D* obj, bool deleteIt = true);
 
         /**
@@ -460,7 +462,7 @@ namespace AP
              * @param obj Optional parent object to filter within
              * @return List of pointers to selected objects
              */
-            DPVISION_EXPORT std::list<CBaseObject*> getObjList(std::set<CBaseObject::Type> types, CObject* obj = nullptr);
+            DPVISION_EXPORT std::list<std::shared_ptr<CBaseObject>> getObjList(std::set<CBaseObject::Type> types, std::shared_ptr<CObject> obj = nullptr);
 
             /**
              * @brief Sets visibility for selected models

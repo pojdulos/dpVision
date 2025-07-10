@@ -53,7 +53,7 @@ public:
 	typedef std::map<int, std::pair<bool, CRGBA>> ColorFilterMap;
 	typedef enum { XY, YZ, ZX } Layer;
 
-	CVolTK(CBaseObject *p, int imageWidth, int imageHeight, int numberOfImages, int depth );
+	CVolTK(std::shared_ptr<CBaseObject> p, int imageWidth, int imageHeight, int numberOfImages, int depth );
 
 	// konstruktory kopiuj¹ce
 //	CVolTK(const CVolTK& src);
@@ -63,7 +63,7 @@ public:
 
 	~CVolTK(void);
 
-	virtual CVolTK* getCopy() override;
+	virtual std::shared_ptr<CBaseObject> getCopy() override;
 
 	CVolTK* getPart(CPoint3s min, CPoint3s max);
 	CVolTK* getPart(uint16_t wMin, uint16_t wMax);
@@ -78,11 +78,11 @@ public:
 
 	size_t addLayerB(int layerId, std::vector<BYTE>* layer, BYTE lowTreshold = 0, BYTE upTreshold = 0xff);
 
-	CMesh* createMesh(int winMin, int winMax, CRGBA col);
-	CModel3D* toMesh();
+	std::shared_ptr<CMesh> createMesh(int winMin, int winMax, CRGBA col);
+	std::shared_ptr<CModel3D> toMesh();
 
-	CPointCloud* createCloud(uint16_t winMin, uint16_t winMax, CRGBA col);
-	CModel3D* toCloud();
+	std::shared_ptr<CPointCloud> createCloud(uint16_t winMin, uint16_t winMax, CRGBA col);
+	std::shared_ptr<CModel3D> toCloud();
 
 	//void copyOneKostkaLayer(int16_t layer, int pixelRepresentation);
 

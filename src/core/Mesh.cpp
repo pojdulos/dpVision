@@ -2,7 +2,7 @@
 #include "Model3D.h"
 #include "UI.h"
 
-CMesh::CMesh(CModel3D *p) :CPointCloud(p)
+CMesh::CMesh(std::shared_ptr<CBaseObject> p) :CPointCloud(p)
 {
 	setLabel("mesh");
 
@@ -48,9 +48,9 @@ CMesh::~CMesh(void)
 {
 }
 
-CMesh * CMesh::fromPointCloud(CPointCloud &cloud)
+std::shared_ptr<CMesh> CMesh::fromPointCloud(CPointCloud &cloud)
 {
-	return new CMesh( cloud );
+	return std::make_shared<CMesh>( cloud );
 }
 
 
@@ -1567,7 +1567,7 @@ void CMesh::pushNewVertex(INDEX_TYPE idx1, INDEX_TYPE idx2, CVertex v, CPointClo
 #include "Plane.h"
 #include "AnnotationPoints.h"
 
-void CMesh::cutPlane(CPlane m_cutPlane, CMesh* reszta, CMesh* krawedz, CAnnotationPoints* pts)
+void CMesh::cutPlane(CPlane &m_cutPlane, std::shared_ptr<CMesh> reszta, std::shared_ptr<CMesh> krawedz, std::shared_ptr<CAnnotationPoints> pts)
 {
 	//CMesh* mesh = (CMesh*)obj->getChild();
 	if ( hasFaces() )

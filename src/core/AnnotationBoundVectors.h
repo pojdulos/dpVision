@@ -14,7 +14,7 @@ public:
 	
 	std::list<_BoundVector> m_data;
 
-	CAnnotationBoundVectors( CModel3D *m = nullptr) :CAnnotation( m )
+	CAnnotationBoundVectors(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation( m )
 	{
 		setLabel("bound_vectors");
 		m_data.clear();

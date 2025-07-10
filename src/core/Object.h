@@ -32,7 +32,7 @@ public:
 	Annotations m_annotations;
 
 	// konstruktor ze wskazaniem rodzica
-	CObject(CBaseObject *p = nullptr);
+	CObject(std::shared_ptr<CBaseObject> p = nullptr);
 	CObject(int parentId);
 
 	// konstruktor kopiuj¹cy
@@ -47,21 +47,21 @@ public:
 	virtual inline CBaseObject::Category category() override { return CBaseObject::Category::OBJECT; };
 	virtual inline int type() override { return CObject::Type::GENERIC; };
 
-	virtual CObject* getCopy() override;
+	virtual std::shared_ptr<CBaseObject> getCopy() override;
 
 	std::wstring infoRow() override { return L". Object type: Generic CObject()"; };
 
 	void info( std::wstring i[4] ) override;
 	
-	virtual CBaseObject* getSomethingWithId(int id);
+	virtual std::shared_ptr<CBaseObject> getSomethingWithId(int id);
 
 	Annotations& annotations() { return m_annotations; };
 	CAnnotation* annotation(int id);
 
-	int addAnnotation(CAnnotation* ad);
-	CAnnotation* removeAnnotation(int);
+	int addAnnotation(std::shared_ptr<CAnnotation> ad);
+	std::shared_ptr<CAnnotation> removeAnnotation(int);
 
-	bool removeAnnotation(CAnnotation* an);
+	bool removeAnnotation(std::shared_ptr<CAnnotation> an);
 
 
 	inline bool hasChildren() override { return ! m_data.empty(); };
@@ -76,7 +76,7 @@ public:
 	//deprecated, use: expandBoundingBox( point )
 	inline void calcMinMax(const CPoint3d &v) { expandBoundingBox(v); };
 
-	int addChild( CBaseObject *d );
+	int addChild( std::shared_ptr<CBaseObject> d );
 	bool removeChild( int id = 0 );
 	
 	/*
@@ -87,8 +87,8 @@ public:
 	
 	//void removeChild( CBaseObject *d );
 
-	CBaseObject* getChild(int id = 0);
-	CBaseObject* getChild(const QString& label);
+	std::shared_ptr<CBaseObject> getChild(int id = 0);
+	std::shared_ptr<CBaseObject> getChild(const QString& label);
 	//int getChildId( CBaseObject *d );
 
 	Children & children() { return m_data; };
@@ -98,7 +98,7 @@ public:
 	std::vector<CBaseObject*> getChildren();
 	std::vector<CBaseObject*> getChildren(CBaseObject::Type type);
 
-	CBaseObject *findId( int id ) override;
+	virtual std::shared_ptr<CBaseObject> findId( int id ) override;
 
 	void renderBoundingBox();
 

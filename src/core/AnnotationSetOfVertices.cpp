@@ -44,16 +44,16 @@ void CAnnotationSetOfVertices::getDest()
 		if (m_parent->category() != CBaseObject::Category::OBJECT) return;
 
 		if (m_parent->hasType(CBaseObject::Type::CLOUD) || m_parent->hasType(CBaseObject::Type::ORDEREDCLOUD) || m_parent->hasType(CBaseObject::Type::MESH))
-			m_cloud = (CPointCloud*)m_parent.get();
+			m_cloud = std::static_pointer_cast<CPointCloud>(this->getParentPtr());
 		else
 		{
-			for (const CObject::Children::value_type &c : ((CObject*)m_parent.get())->children())
+			for (const CObject::Children::value_type &c : ((CObject*)m_parent)->children())
 			{
 				std::shared_ptr<CBaseObject> child = c.second;
 				if ((child != nullptr) &&
 					 child->hasType(CBaseObject::Type::CLOUD) || child->hasType(CBaseObject::Type::ORDEREDCLOUD) || child->hasType(CBaseObject::Type::MESH))
 				{
-					m_cloud = (CPointCloud*)child.get();
+					m_cloud = std::static_pointer_cast<CPointCloud>(child);
 					return;
 				}
 			}

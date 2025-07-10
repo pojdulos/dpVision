@@ -10,7 +10,7 @@ ThreadParserLoader::~ThreadParserLoader()
 {
 }
 
-CBaseObject* ThreadParserLoader::getChild()
+std::shared_ptr<CBaseObject> ThreadParserLoader::getChild()
 {
 	return m_child;
 }

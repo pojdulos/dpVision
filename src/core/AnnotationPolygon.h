@@ -12,7 +12,7 @@ class DPVISION_EXPORT CAnnotationPolygon : public CAnnotation
 	std::list<CPoint3d> m_data;
 
 public:
-	CAnnotationPolygon( CBaseObject *m = nullptr) :CAnnotation(m)
+	CAnnotationPolygon(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation(m)
 	{
 		setLabel("polygon");
 	};

@@ -8,37 +8,22 @@
 static int _registerCBaseObjectPtrMetaType()
 {
 	qRegisterMetaType<CBaseObject*>("CBaseObject*");
+	qRegisterMetaType<std::shared_ptr<CBaseObject>>("std::shared_ptr<CBaseObject>");
 	return 0;
 }
 
 // Wykonuje się przy załadowaniu modułu
 static const int _dummy = _registerCBaseObjectPtrMetaType();
 
-// konstruktor ze wskazaniem rodzica
-//CBaseObject::CBaseObject(std::shared_ptr<CBaseObject> p)
-//{
-//	m_Id = AP::getUniqueId();
-//	
-//	m_label = "baseObject";
-//	m_descr = "";
-//	m_path = "";
-//	m_parent = p;
-//
-//	m_selected = false;
-//
-//	m_showSelf = true;
-//	m_showKids = true;
-//	m_modified = true;
-//};
 
-CBaseObject::CBaseObject(CBaseObject* p)
+CBaseObject::CBaseObject(std::shared_ptr<CBaseObject> p)
 {
 	m_Id = AP::getUniqueId();
 
 	m_label = "baseObject";
 	m_descr = "";
 	m_path = "";
-	m_parent = std::shared_ptr<CBaseObject>(p);
+	m_parent = p.get();
 
 	m_selected = false;
 
@@ -55,7 +40,7 @@ CBaseObject::CBaseObject(int objId)
 	m_label = "baseObject";
 	m_descr = "";
 	m_path = "";
-	m_parent = AP::WORKSPACE::getModel(objId);
+	m_parent = AP::WORKSPACE::getModel(objId).get();
 
 	m_selected = false;
 
@@ -97,24 +82,24 @@ void CBaseObject::render()
 
 void CBaseObject::setParent(int objId)
 {
-	m_parent = AP::WORKSPACE::getModel(objId);
+	m_parent = AP::WORKSPACE::getModel(objId).get();
 }
 
-std::vector<CBaseObject*> CBaseObject::getPathToRoot() {
-	std::vector<CBaseObject*> path;
+std::vector<std::shared_ptr<CBaseObject>> CBaseObject::getPathToRoot() {
+	std::vector<std::shared_ptr<CBaseObject>> path;
 	std::shared_ptr<CBaseObject> curr = std::shared_ptr<CBaseObject>(this);
 	while (curr->getParent() != nullptr) {
 		curr = curr->getParentPtr();
-		path.push_back(curr.get());
+		path.push_back(curr);
 	}
 	return path;
 }
 
-CBaseObject* CBaseObject::getRoot() {
-	std::vector<CBaseObject*> path = getPathToRoot();
+std::shared_ptr<CBaseObject> CBaseObject::getRoot() {
+	std::vector<std::shared_ptr<CBaseObject>> path = getPathToRoot();
 	
 	if (path.empty()) // this object is root
-		return this;
+		return this->shared_from_this();
 	
 	return path.back();
 }
@@ -156,7 +141,7 @@ Eigen::Matrix4d CBaseObject::getGlobalTransformationMatrix()
 
 	std::vector<std::shared_ptr<CBaseObject>> fifo;
 
-	fifo.push_back(std::shared_ptr<CBaseObject>(this));
+	fifo.push_back(this->shared_from_this());
 
 	std::shared_ptr<CBaseObject> parent = this->getParentPtr();
 	while (parent != nullptr)

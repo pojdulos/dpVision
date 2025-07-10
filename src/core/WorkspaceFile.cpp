@@ -112,7 +112,7 @@ void CWorkspaceFile::loadFaro(std::wstring p, CWorkspace & wksp)
 		}
 		else
 		{
-			CModel3D *obj = AP::WORKSPACE::loadModel(fwsname.absoluteFilePath().toStdWString());
+			std::shared_ptr<CModel3D> obj = AP::WORKSPACE::loadModel(fwsname.absoluteFilePath().toStdWString());
 			if (NULL != obj)
 			{
 				id = obj->id();

@@ -44,13 +44,13 @@ std::wstring Volumetric::infoRow()
 }
 
 
-Volumetric* Volumetric::getCopy()
+std::shared_ptr<CBaseObject> Volumetric::getCopy()
 {	
 	int new_Layers = 1 + this->m_maxSlice - this->m_minSlice;
 	int new_Rows = 1 + this->m_maxRow - this->m_minRow;
 	int new_Columns = 1 + this->m_maxColumn - this->m_minColumn;
 	
-	Volumetric* volum = create(new_Layers, new_Rows, new_Columns );
+	std::shared_ptr<Volumetric> volum = create(new_Layers, new_Rows, new_Columns );
 
 	if (volum) {
 #pragma omp parallel for
@@ -571,9 +571,9 @@ CPoint3d Volumetric::getOrigin() {
 }
 
 
-Volumetric* Volumetric::create(int layers, int rows, int columns)
+std::shared_ptr<Volumetric> Volumetric::create(int layers, int rows, int columns)
 {
-	Volumetric* volum = new Volumetric();
+	std::shared_ptr<Volumetric> volum = std::make_shared<Volumetric>();
 
 	if (volum) {
 		try {
@@ -944,11 +944,11 @@ void Volumetric::drawCylinder(CPoint3i origin, CVector3i vector, int radius = 1,
 #include <opencv2/imgproc.hpp>
 #include <opencv2/features2d.hpp>
 
-CPointCloud* Volumetric::sift_cloud(int nfeatures, int nOctaveLayers, double contrastThreshold, double edgeThreshold, double sigma, int factor) {
+std::shared_ptr<CPointCloud> Volumetric::sift_cloud(int nfeatures, int nOctaveLayers, double contrastThreshold, double edgeThreshold, double sigma, int factor) {
 	//UI::MESSAGEBOX::information("NOT IMPLEMENTED YET");
 	//return;
 
-	CPointCloud* cloud = new CPointCloud();
+	std::shared_ptr<CPointCloud> cloud = std::make_shared<CPointCloud>();
 
 	UI::PROGRESSBAR::init(this->m_minSlice, this->m_maxSlice, this->m_minSlice);
 	UI::PROGRESSBAR::setText("Sift Cloud:");
@@ -1036,7 +1036,7 @@ CPointCloud* Volumetric::sift_cloud(int nfeatures, int nOctaveLayers, double con
 	return cloud;
 }
 
-CMesh* Volumetric::marching_cube(int factor) {
+std::shared_ptr<CMesh> Volumetric::marching_cube(int factor) {
 	Volumetric* volTK = this;
 
 	int pMin = volTK->m_minDisplWin;
@@ -1044,10 +1044,10 @@ CMesh* Volumetric::marching_cube(int factor) {
 
 	double div = factor;
 
-	CMesh* mesh = new CMesh;
+	std::shared_ptr<CMesh> mesh = std::make_shared<CMesh>();
 
 	//MeshMaker m(volTK, mesh, pMin + ((progi) ? 32768 : 0), pMax + ((progi) ? 32768 : 0));
-	MeshMaker m(volTK, mesh, pMin, pMax);
+	MeshMaker m(volTK, mesh.get(), pMin, pMax);
 	m.MarchingCube(div);
 
 	std::map<CVertex, INDEX_TYPE> indexMap;
@@ -1100,7 +1100,7 @@ CMesh* Volumetric::marching_cube(int factor) {
 	return mesh;
 }
 
-CMesh* Volumetric::marching_tetrahedron(int factor) {
+std::shared_ptr<CMesh> Volumetric::marching_tetrahedron(int factor) {
 	Volumetric* volTK = this;
 
 	int pMin = volTK->m_minDisplWin;
@@ -1108,10 +1108,10 @@ CMesh* Volumetric::marching_tetrahedron(int factor) {
 
 	double div = factor;
 
-	CMesh* mesh = new CMesh;
+	std::shared_ptr<CMesh> mesh = std::make_shared<CMesh>();
 
 	//MeshMaker m(volTK, mesh, pMin + ((progi) ? 32768 : 0), pMax + ((progi) ? 32768 : 0));
-	MeshMaker m(volTK, mesh, pMin, pMax);
+	MeshMaker m(volTK, mesh.get(), pMin, pMax);
 	m.MarchingTetrahedron(div);
 
 	std::map<CVertex, INDEX_TYPE> indexMap;
@@ -1197,7 +1197,7 @@ bool Volumetric::getSlice(int nr, Volumetric::LayerPlane layer, Volumetric::Slic
 }
 
 
-Volumetric* Volumetric::getRotatedVol(Volumetric::LayerPlane dir)
+std::shared_ptr<Volumetric> Volumetric::getRotatedVol(Volumetric::LayerPlane dir)
 {
 	int old_L = m_layers;
 	int old_R = m_rows;
@@ -1205,7 +1205,7 @@ Volumetric* Volumetric::getRotatedVol(Volumetric::LayerPlane dir)
 
 	if (dir == XY)
 	{
-		Volumetric* new_volume = Volumetric::create(old_L, old_R, old_C );
+		std::shared_ptr<Volumetric> new_volume = Volumetric::create(old_L, old_R, old_C );
 		for (int l = 0; l < old_L; l++)
 			std::copy(m_data[l].begin(), m_data[l].end(), (*new_volume)[l].begin());
 		return new_volume;
@@ -1216,7 +1216,7 @@ Volumetric* Volumetric::getRotatedVol(Volumetric::LayerPlane dir)
 		int new_R = old_C;
 		int new_C = old_L;
 
-		Volumetric* new_volume = Volumetric::create(new_L, new_R, new_C);
+		std::shared_ptr<Volumetric> new_volume = Volumetric::create(new_L, new_R, new_C);
 
 		for (int l = 0; l < old_L; l++)
 			for (int r = 0; r < old_R; r++)

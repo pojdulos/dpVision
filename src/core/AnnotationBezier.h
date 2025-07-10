@@ -14,7 +14,7 @@ public:
 
 	int m_type;
 
-	CAnnotationBezier( CModel3D *m = nullptr) :CAnnotation( m )
+	CAnnotationBezier(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation( m )
 	{
 		setLabel("bezier");
 		m_type = 0;

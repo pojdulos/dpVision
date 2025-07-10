@@ -83,7 +83,7 @@ void SamplePlugin::loadObject(const QString &path)
  */
 void SamplePlugin::createBox()
 {
-	CMesh* mesh = new CMesh;
+	std::shared_ptr<CMesh> mesh = std::make_shared<CMesh>();
 	
 	// addvertex and addFace methods have several
 	// alternative sets of parameters.
@@ -115,7 +115,7 @@ void SamplePlugin::createBox()
 	// creating CModel3D will add a transformation
 	// matrix to your object,
 	// so you can rotate and move it
-	CModel3D* obj = new CModel3D();
+	std::shared_ptr<CModel3D> obj = std::make_shared<CModel3D>();
 	obj->addChild(mesh);
 	obj->importChildrenGeometry();
 
@@ -148,7 +148,7 @@ static double PlaneDistance(const CPoint3d& point, const CPoint3d& centroid, con
  * @param aboveTriangles Output vector for faces (as vertex indices) above the plane.
  * @param belowTriangles Output vector for faces (as vertex indices) below the plane.
  */
-static void DivideMesh(CMesh* mesh, const CPoint3d& centroid, const CVector3d& normal,
+static void DivideMesh(std::shared_ptr<CMesh> mesh, const CPoint3d& centroid, const CVector3d& normal,
 	CMesh::Faces& aboveTriangles, CMesh::Faces& belowTriangles) {
 	
 	for (auto& face : mesh->faces()) {
@@ -178,7 +178,7 @@ void SamplePlugin::cutMesh() {
 		AppSettings::mainSettings()->value("recentFile").toString(),
 		CFileConnector::getLoadExts());
 
-	CModel3D* obj = nullptr;
+	std::shared_ptr<CModel3D> obj = nullptr;
 	if (!fileName.isEmpty()) // if empty: you pressed Cancel 
 	{
 		if (QFileInfo(fileName).exists())
@@ -202,13 +202,13 @@ void SamplePlugin::cutMesh() {
 	
 		// object can heave more than one child, but if you don't specify id of child
 		// you always get first child in list or nullptr if none
-		CBaseObject* child = obj->getChild();
+		std::shared_ptr<CBaseObject> child = obj->getChild();
 
 		CPoint3d centroid(0, 0, 0);
 		CVector3d normal(0, 1, 0);
 
 
-		CAnnotationPlane* plane = new CAnnotationPlane(centroid, normal);
+		std::shared_ptr<CAnnotationPlane> plane = std::make_shared<CAnnotationPlane>(centroid, normal);
 		plane->setSize(50);
 
 		// add plane to workspace
@@ -217,14 +217,14 @@ void SamplePlugin::cutMesh() {
 
 		if (child->hasType(CObject::MESH))
 		{
-			CMesh* mesh = (CMesh*)child;
+			std::shared_ptr<CMesh> mesh = std::dynamic_pointer_cast<CMesh>(child);
 
 			CMesh::Faces aboveTriangles, belowTriangles;
 
 			DivideMesh(mesh, centroid, normal, aboveTriangles, belowTriangles);
 
 			// create deep copy of original mesh
-			CMesh* mesh1 = mesh->getCopy();
+			std::shared_ptr<CMesh> mesh1 = std::dynamic_pointer_cast<CMesh>(mesh->getCopy());
 			
 			// replace vector of faces with result of divide
 			mesh1->faces() = aboveTriangles;
@@ -235,7 +235,7 @@ void SamplePlugin::cutMesh() {
 			// currently you must set CModel3D as a parent of any other objects
 			// it is good because CModel3D is the "transformation object",
 			// so it let you to rotate, translate and scale
-			CModel3D* obj1 = new CModel3D();
+			std::shared_ptr<CModel3D> obj1 = std::make_shared<CModel3D>();
 
 			// set obj1 as parent of your mesh
 			obj1->addChild(mesh1);
@@ -250,7 +250,7 @@ void SamplePlugin::cutMesh() {
 			AP::WORKSPACE::addObject(obj1);
 
 			// create deep copy of original mesh
-			CMesh* mesh2 = mesh->getCopy();
+			std::shared_ptr<CMesh> mesh2 = std::dynamic_pointer_cast<CMesh>(mesh->getCopy());
 
 			// replace vector of faces with result of divide
 			mesh2->faces() = belowTriangles;
@@ -258,7 +258,7 @@ void SamplePlugin::cutMesh() {
 			// Removes vertices not assigned to any face and corects indices
 			mesh2->removeUnusedVertices();
 
-			CModel3D* obj2 = new CModel3D();
+			std::shared_ptr<CModel3D> obj2 = std::make_shared<CModel3D>();
 
 			obj2->addChild(mesh2);
 			obj2->importChildrenGeometry();

@@ -71,8 +71,6 @@ private:
 	explicit CWorkspace();
 
 public:
-	//~CWorkspace();
-
 	static CWorkspace* instance();
 
 	Children& children() { return m_data; }
@@ -83,16 +81,13 @@ public:
 	//	return m_data[i].get();
 	//}
 
-	//ChildType* first() { if (m_data.empty()) return nullptr; return m_data.begin()->second.get(); };
-	//ChildType* last() { if (m_data.empty()) return nullptr; return m_data.rbegin()->second.get(); };
-
 	std::shared_ptr<ChildType> first() { if (m_data.empty()) return nullptr; return m_data.begin()->second; };
 	std::shared_ptr<ChildType> last() { if (m_data.empty()) return nullptr; return m_data.rbegin()->second; };
 
 	CWorkspace::iterator begin() { return m_data.begin(); }
 	CWorkspace::iterator end() { return m_data.end(); }
 
-	virtual CBaseObject* getSomethingWithId(int id);
+	std::shared_ptr<CBaseObject> getSomethingWithId(int id);
 
 	bool isOK() const { return m_bOK; }
 	const std::string &lastError() const { return m_sError; }
@@ -142,7 +137,7 @@ public:
 
 	std::list<int> getSelection();
 	std::list<int> getSelection(std::set<CBaseObject::Type> type, CObject* obj = nullptr);
-	std::list<CBaseObject*> getSelected(std::set<CBaseObject::Type> types, CObject* dad);
+	std::list<std::shared_ptr<CBaseObject>> getSelected(std::set<CBaseObject::Type> types, std::shared_ptr<CObject> dad);
 	void clearSelection() { m_selection.clear(); };
 
 	CBoundingBox topBB();

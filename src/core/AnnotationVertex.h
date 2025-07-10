@@ -14,7 +14,7 @@ class DPVISION_EXPORT CAnnotationVertex : public CAnnotation
 	size_t m_index;
 
 public:
-	CPointCloud* m_cloud;
+	std::shared_ptr<CPointCloud> m_cloud;
 
 	CAnnotationVertex() : CAnnotation()	{
 		setLabel("vertex");
@@ -27,7 +27,7 @@ public:
 		m_cloud = nullptr;
 	};
 
-	CAnnotationVertex(CBaseObject *p, const size_t idx) : CAnnotation(p) {
+	CAnnotationVertex(std::shared_ptr<CBaseObject> p, const size_t idx) : CAnnotation(p) {
 		m_index = idx;
 		setLabel("vertex");
 		m_cloud = nullptr;
@@ -42,7 +42,7 @@ public:
 
 	~CAnnotationVertex(void){};
 
-	void setDest(CPointCloud* m) { m_cloud = m; };
+	void setDest(std::shared_ptr<CPointCloud> m) { m_cloud = m; };
 
 	virtual int type() { return CAnnotation::VERTEX; }
 

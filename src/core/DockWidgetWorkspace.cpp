@@ -64,7 +64,7 @@ void DockWidgetWorkspace::onCustomContextMenu(const QPoint &point)
 	{
 		WorkspaceTreeModel *model = (WorkspaceTreeModel*)ui.treeView->model();
 
-		CBaseObject* clickedObject = ((WorkspaceTreeItem*) model->itemFromIndex(index))->getObject();
+		std::shared_ptr<CBaseObject> clickedObject = ((WorkspaceTreeItem*) model->itemFromIndex(index))->getObject();
 
 		if (clickedObject == nullptr) return;
 
@@ -91,7 +91,7 @@ void DockWidgetWorkspace::updateVisibilityAll(QStandardItem* parent)
 	for (int i = 0; i < parent->rowCount(); ++i) {
 		WorkspaceTreeItem* childItem = (WorkspaceTreeItem*) parent->child(i);
 
-		CBaseObject* currentObject = childItem->getObject();
+		std::shared_ptr<CBaseObject> currentObject = childItem->getObject();
 
 		childItem->changeIcon(WorkspaceTreeItem::Column::colSelfVisibility, currentObject->getSelfVisibility());
 		
@@ -126,7 +126,7 @@ void DockWidgetWorkspace::rebuildTree()
 
 	for (CWorkspace::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
 	{
-		model->addModelWithChildren((*it).second.get());
+		model->addModelWithChildren((*it).second);
 	}
 
 	ui.treeView->blockSignals(false);
@@ -160,7 +160,7 @@ void DockWidgetWorkspace::selectItem( int id )
 	ui.treeView->blockSignals(false);
 }
 
-CBaseObject* DockWidgetWorkspace::getCurrentItemObj()
+std::shared_ptr<CBaseObject> DockWidgetWorkspace::getCurrentItemObj()
 {
 	QModelIndex current = ui.treeView->currentIndex();
 	if (current.isValid()) {
@@ -169,7 +169,7 @@ CBaseObject* DockWidgetWorkspace::getCurrentItemObj()
 		if (!qItem) return nullptr;
 
 		WorkspaceTreeItem* item = static_cast<WorkspaceTreeItem*>(qItem);
-		CBaseObject* currentObject = item->getObject();
+		std::shared_ptr<CBaseObject> currentObject = item->getObject();
 
 		return currentObject;
 	}
@@ -182,7 +182,7 @@ int DockWidgetWorkspace::getCurrentItemId()
 	if (current.isValid()) {
 		WorkspaceTreeModel *model = (WorkspaceTreeModel*)ui.treeView->model();
 
-		CBaseObject* currentObject = ((WorkspaceTreeItem*)model->item(current.row(), 0))->getObject();
+		std::shared_ptr<CBaseObject> currentObject = ((WorkspaceTreeItem*)model->item(current.row(), 0))->getObject();
 
 		if (currentObject == nullptr) return NO_CURRENT_MODEL;
 		
@@ -191,9 +191,9 @@ int DockWidgetWorkspace::getCurrentItemId()
 	return NO_CURRENT_MODEL;
 }
 
-QVector<CBaseObject*> DockWidgetWorkspace::getSelectedObjects()
+QVector<std::shared_ptr<CBaseObject>> DockWidgetWorkspace::getSelectedObjects()
 {
-	QSet<CBaseObject*> result;
+	QSet<std::shared_ptr<CBaseObject>> result;
 
 	QModelIndexList indexes = ui.treeView->selectionModel()->selectedIndexes();
 	for (const auto& idx : indexes)
@@ -202,11 +202,11 @@ QVector<CBaseObject*> DockWidgetWorkspace::getSelectedObjects()
 
 		WorkspaceTreeItem* item = (WorkspaceTreeItem *) model->itemFromIndex(idx);
 
-		CBaseObject* obj = item->getObject();
+		std::shared_ptr<CBaseObject> obj = item->getObject();
 
 		if (obj != nullptr)
 		{
-			CBaseObject* parent = obj->getParent();
+			std::shared_ptr<CBaseObject> parent = obj->getParentPtr();
 
 			if (parent == nullptr)
 			{
@@ -221,7 +221,7 @@ QVector<CBaseObject*> DockWidgetWorkspace::getSelectedObjects()
 						break;
 					}
 
-					parent = parent->getParent();
+					parent = parent->getParentPtr();
 
 					if (parent == nullptr)
 					{
@@ -331,7 +331,7 @@ void DockWidgetWorkspace::setItemCheckedById(int id, bool b)
 void DockWidgetWorkspace::setItemVisibleById(int id, bool b)
 {
 	QModelIndex current = findWorkspaceTreeModelIndex(id);
-	CBaseObject* obj = AP::WORKSPACE::findId(id);
+	std::shared_ptr<CBaseObject> obj = AP::WORKSPACE::findId(id);
 
 	if (current.isValid()) {
 		WorkspaceTreeModel *model = (WorkspaceTreeModel*)ui.treeView->model();
@@ -390,7 +390,7 @@ void DockWidgetWorkspace::collapseAll()
 	ui.treeView->collapseAll();
 }
 
-void DockWidgetWorkspace::addItem(CBaseObject *obj)
+void DockWidgetWorkspace::addItem(std::shared_ptr<CBaseObject> obj)
 {
 	if (obj == nullptr) return;
 
@@ -401,7 +401,7 @@ void DockWidgetWorkspace::addItem(CBaseObject *obj)
 	{
 		if (obj->hasType(CBaseObject::MODEL))
 		{
-			model->addModelWithChildren((CModel3D*)obj);
+			model->addModelWithChildren(std::static_pointer_cast<CModel3D>(obj));
 		}
 	}
 	else
@@ -437,7 +437,7 @@ void DockWidgetWorkspace::addItem(int id, int parentId)
 		std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getModel(id);
 		if (nullptr != obj)
 		{
-			model->addModelWithChildren(obj.get());
+			model->addModelWithChildren(obj);
 		}
 	}
 	else
@@ -447,7 +447,9 @@ void DockWidgetWorkspace::addItem(int id, int parentId)
 		if (parentIndex.isValid())
 		{
 			QStandardItem *i1 = model->itemFromIndex(parentIndex);
-			CObject* parent = (CObject*)AP::WORKSPACE::findId(parentId);
+
+			std::shared_ptr<CObject> parent = std::dynamic_pointer_cast<CObject>(AP::WORKSPACE::findId(parentId));
+
 			int grandparentId = parent->parentId();
 
 			if ( -1 != grandparentId ) {
@@ -457,14 +459,14 @@ void DockWidgetWorkspace::addItem(int id, int parentId)
 			else {
 				// dodaj� childa do modelu
 
-				CBaseObject *child = parent->getSomethingWithId(id);
+				std::shared_ptr<CBaseObject> child = parent->getSomethingWithId(id);
 
 				switch (child->category()) {
 					case CBaseObject::Category::OBJECT:
 						model->append(i1, child);
 						break;
 					case CBaseObject::Category::ANNOTATION:
-						CAnnotation *an = (CAnnotation *) child;
+						std::shared_ptr<CAnnotation> an = std::static_pointer_cast<CAnnotation>(child);
 						//if (child->type() == CAnnotation::HISTOGRAM)
 						//{
 						//	model->appendPassiveChild( i1, an->getLabel(), an->id(), an->parentId(), an->infoRow());
@@ -510,19 +512,19 @@ void DockWidgetWorkspace::colLockClicked(CModel3D* obj, WorkspaceTreeItem* click
 	clickedItem->setIcon(WorkspaceTreeItem::getNewIcon((CBaseObject::Type)obj->type(), WorkspaceTreeItem::Column::colLock, obj->isLocked()));
 }
 
-void DockWidgetWorkspace::colSelfVisibilityClicked(CBaseObject* obj, WorkspaceTreeItem* clickedItem)
+void DockWidgetWorkspace::colSelfVisibilityClicked(std::shared_ptr<CBaseObject> obj, WorkspaceTreeItem* clickedItem)
 {
 	bool vis = obj->switchSelfVisibility();
 	clickedItem->setIcon(WorkspaceTreeItem::getNewIcon((CBaseObject::Type)obj->type(), WorkspaceTreeItem::Column::colSelfVisibility, vis));
 }
 
-void DockWidgetWorkspace::colKidsVisibilityClicked(CBaseObject* obj, WorkspaceTreeItem* clickedItem)
+void DockWidgetWorkspace::colKidsVisibilityClicked(std::shared_ptr<CBaseObject> obj, WorkspaceTreeItem* clickedItem)
 {
 	bool vis = obj->switchKidsVisibility();
 	clickedItem->setIcon(WorkspaceTreeItem::getNewIcon((CBaseObject::Type)obj->type(), WorkspaceTreeItem::Column::colKidsVisibility, vis));
 }
 
-void DockWidgetWorkspace::colNameClicked(CBaseObject* obj, WorkspaceTreeItem* clickedItem)
+void DockWidgetWorkspace::colNameClicked(std::shared_ptr<CBaseObject> obj, WorkspaceTreeItem* clickedItem)
 {
 	if (obj->hasType(CBaseObject::MODEL) || obj->hasType(CBaseObject::IMAGE))
 	{
@@ -568,7 +570,7 @@ void DockWidgetWorkspace::onCurrentObjectChanged(int i)
 	selectItem(i);
 }
 
-void DockWidgetWorkspace::onCurrentObjectChanged(CBaseObject* obj)
+void DockWidgetWorkspace::onCurrentObjectChanged(std::shared_ptr<CBaseObject> obj)
 {
 	if (obj != nullptr)
 		selectItem(obj->id());
@@ -585,7 +587,7 @@ void DockWidgetWorkspace::onTreeViewItemClicked(QModelIndex current)
 
 		WorkspaceTreeItem* clickedItem = (WorkspaceTreeItem*) model->itemFromIndex(current);
 
-		CBaseObject* clickedObject = clickedItem->getObject();
+		std::shared_ptr<CBaseObject> clickedObject = clickedItem->getObject();
 
 		if (clickedObject == nullptr) return;
 
@@ -601,7 +603,7 @@ void DockWidgetWorkspace::onTreeViewItemClicked(QModelIndex current)
 				colKidsVisibilityClicked(clickedObject, clickedItem);
 				break;
 			case WorkspaceTreeItem::Column::colLock:
-				colLockClicked((CModel3D*)clickedObject, clickedItem);
+				colLockClicked((CModel3D*)clickedObject.get(), clickedItem);
 				break;
 			default:
 				break;

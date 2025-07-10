@@ -14,11 +14,11 @@ public:
 	COrderedPointCloud::Distances m_dist;
 	COrderedPointCloud::Reflections m_refl;
 
-	COrderedPointCloud(CBaseObject *p= nullptr);
+	COrderedPointCloud(std::shared_ptr<CBaseObject> p= nullptr);
 	COrderedPointCloud(COrderedPointCloud&);
 	~COrderedPointCloud();
 
-	virtual COrderedPointCloud* getCopy() override { return new COrderedPointCloud(*this); };
+	virtual std::shared_ptr<CBaseObject> getCopy() override { return std::make_shared<COrderedPointCloud>(*this); };
 
 	inline int type() override { return CObject::Type::ORDEREDCLOUD; };
 	std::wstring infoRow() override;

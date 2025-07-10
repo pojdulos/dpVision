@@ -12,10 +12,10 @@ typedef std::set<INDEX_TYPE> SetOfVIndices;
 class DPVISION_EXPORT CAnnotationSetOfVertices : public CAnnotation, public SetOfVIndices
 {
 public:
-	CPointCloud* m_cloud;
+	std::shared_ptr<CPointCloud> m_cloud;
 	int m_pointSize;
 
-	CAnnotationSetOfVertices(CModel3D* m = nullptr) :CAnnotation(m)
+	CAnnotationSetOfVertices(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation(m)
 	{
 		setLabel("set of vertices");
 		m_cloud = nullptr;
@@ -32,7 +32,7 @@ public:
 
 	~CAnnotationSetOfVertices() override { SetOfVIndices::clear(); };
 
-	void setDest(CPointCloud* m) { m_cloud = m; };
+	void setDest(std::shared_ptr<CPointCloud> m) { m_cloud = m; };
 	void getDest();
 
 	virtual inline void clear() override

@@ -13,7 +13,7 @@ class DPVISION_EXPORT CAnnotationPlane : public CAnnotation, public CPlane
 	double m_size;
 
 public:
-	CAnnotationPlane( CBaseObject *m = nullptr) :CAnnotation( m ),CPlane()
+	CAnnotationPlane(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation( m ),CPlane()
 	{
 		setLabel("plane");
 		m_color.SetFloat(0.0f, 1.0f, 1.0f, 0.5f);
@@ -61,9 +61,9 @@ public:
 
 	virtual int type() { return CAnnotation::PLANE; }
 
-	virtual CAnnotationPlane* getCopy() override
+	virtual std::shared_ptr<CBaseObject> getCopy() override
 	{
-		return new CAnnotationPlane(*this);
+		return std::make_shared<CAnnotationPlane>(*this);
 	}
 
 	void setSize(double s) { m_size = s; };

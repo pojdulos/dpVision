@@ -15,7 +15,7 @@ class DPVISION_EXPORT CAnnotationSetOfFaces : public CAnnotation, public SetOfFI
 	std::shared_ptr<CMesh> m_mesh;
 
 public:
-	CAnnotationSetOfFaces( CModel3D *m = nullptr) :CAnnotation( m )
+	CAnnotationSetOfFaces(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation( m )
 	{
 		setLabel("f-indices set");
 		m_mesh = nullptr;
@@ -34,9 +34,9 @@ public:
 
 	~CAnnotationSetOfFaces() override { SetOfFIndices::clear(); } // m_data.clear(); };
 
-	virtual CAnnotationSetOfFaces* getCopy() override
+	virtual std::shared_ptr<CBaseObject> getCopy() override
 	{
-		return new CAnnotationSetOfFaces(*this);
+		return std::make_shared<CAnnotationSetOfFaces>(*this);
 	}
 
 	CAnnotationSetOfFaces& operator=(const CAnnotationSetOfFaces& p)
@@ -58,7 +58,7 @@ public:
 	};
 
 	void setDest(std::shared_ptr<CMesh> m) { m_mesh = m; };
-	CMesh* getDest();
+	std::shared_ptr<CMesh> getDest();
 
 	inline std::shared_ptr<CMesh>& dstMesh() { return m_mesh; }
 
@@ -69,7 +69,7 @@ public:
 	};
 
 
-	CMesh* toMesh();
+	std::shared_ptr<CMesh> toMesh();
 
 	virtual int type() { return CAnnotation::Type::SETOFFACES; }
 

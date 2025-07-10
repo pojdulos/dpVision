@@ -52,18 +52,18 @@ public:
 
 	//typedef CPointCloud::KDtree KDtree;
 
-	CMesh(CModel3D *p = nullptr);
+	CMesh(std::shared_ptr<CBaseObject> p = nullptr);
+	CMesh(CPointCloud& cloud);
 	CMesh(CMesh &m);
 	~CMesh(void);
 
-	static CMesh * fromPointCloud(CPointCloud &cloud);
+	static std::shared_ptr<CMesh> fromPointCloud(CPointCloud &cloud);
 
 protected:
 	CPolygonGroup m_poly;
 
 private:
 	unsigned int iOptions;
-	CMesh(CPointCloud &cloud);
 
 
 
@@ -80,7 +80,7 @@ public:
 
 	inline int type() override { return CObject::Type::MESH; };
 
-	virtual CMesh* getCopy() override { return new CMesh(*this); };
+	virtual std::shared_ptr<CBaseObject> getCopy() override { return std::make_shared<CMesh>(*this); };
 	std::wstring infoRow() override;
 	void info(std::wstring i[4]) override;
 
@@ -164,7 +164,7 @@ public:
 	void transformByMatrixF(float matrix[16]);
 	void transformByMatrixD(double matrix[16]);
 
-	void cutPlane(CPlane m_cutPlane, CMesh* reszta = nullptr, CMesh* krawedz = nullptr, CAnnotationPoints* pts = nullptr);
+	void cutPlane(CPlane &m_cutPlane, std::shared_ptr<CMesh> reszta = nullptr, std::shared_ptr<CMesh> krawedz = nullptr, std::shared_ptr<CAnnotationPoints> pts = nullptr);
 
 	void correctNormals();
 	CVector3d getMainNormalVector();

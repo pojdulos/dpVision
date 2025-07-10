@@ -15,13 +15,13 @@ CParser::~CParser(void)
 {
 }
 
-CModel3D* CParser::load(const QString path, bool wait)
+std::shared_ptr<CModel3D> CParser::load(const QString path, bool wait)
 {
-	CModel3D* obj;
+	std::shared_ptr<CModel3D> obj;
 
 	// allocate
 	try {
-		obj = new CModel3D();
+		obj = std::make_shared<CModel3D>();
 	}
 	catch (std::bad_alloc & e) {
 		return nullptr;
@@ -52,7 +52,7 @@ CModel3D* CParser::load(const QString path, bool wait)
 
 		if (nullptr != obj->getChild())
 		{
-			obj->getChild()->afterLoad(obj);
+			obj->getChild()->afterLoad(obj.get());
 			obj->importChildrenGeometry();
 
 			return obj;
@@ -63,18 +63,18 @@ CModel3D* CParser::load(const QString path, bool wait)
 		}
 	}
 
-	delete obj;
+	//delete obj;
 	return nullptr;
 }
 
-bool CParser::save(CModel3D* obj, const QString path)
+bool CParser::save(std::shared_ptr<CModel3D> obj, const QString path)
 {
 	//------------------------------------------------------
 	// set
 	// this is needed for old save() function
 	this->m_model = obj;
 	this->plikSiatki.setPath( path );
-	this->pMeshData = NULL;
+	this->pMeshData = nullptr;
 	this->bIsNotSet = false;
 	//------------------------------------------------------
 

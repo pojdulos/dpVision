@@ -846,8 +846,8 @@ size_t CParserOBJ::Run()
 {
     if (this->bIsNotSet) return 0;
 
-	pMeshData = new CMesh();
-    if (pMeshData == NULL) return 0;
+	pMeshData = std::make_shared<CMesh>();
+    if (pMeshData == nullptr) return 0;
 
 	m_model->addChild(pMeshData);
 
@@ -898,7 +898,7 @@ size_t CParserOBJ::Run()
 
     bool hasGroups = false;
     bool hasMoreTrans = false;
-    CModel3D* currentModel = m_model;
+    std::shared_ptr<CModel3D> currentModel = m_model;
 
     meshinfo[pMeshData->id()] = { true,true,true };
 
@@ -918,13 +918,13 @@ size_t CParserOBJ::Run()
 
             if (hasMoreTrans)
             {
-                CModel3D* tmpModel = new CModel3D;
+                std::shared_ptr<CModel3D> tmpModel = std::make_shared<CModel3D>();
                 tmpModel->setLabel(qlist[1]);
                 tmpModel->transform().fromRowMatrix(qlist[2], ",");
 
                 for (auto& child : currentModel->children())
                 {
-                    tmpModel->addChild(child.second.get());
+                    tmpModel->addChild(child.second);
                 }
                 currentModel->removeChild(0);
                 currentModel->addChild(tmpModel);
@@ -1007,7 +1007,7 @@ size_t CParserOBJ::Run()
         else if (qline.startsWith("g", Qt::CaseInsensitive))
         {
             QStringList qlist = qline.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
-            CObject* parent = currentModel;
+            std::shared_ptr<CObject> parent = currentModel;
             QString name = "mesh";
 
             if (qlist.size() > 1)
@@ -1017,10 +1017,10 @@ size_t CParserOBJ::Run()
 
                 while (qlist2.length() > 1)
                 {
-                    CBaseObject* hit = parent->getChild(qlist2.first());
+                    std::shared_ptr<CBaseObject> hit = parent->getChild(qlist2.first());
                     if (hit != nullptr)
                     {
-                        parent = (CObject*)hit;
+                        parent = std::dynamic_pointer_cast<CObject>(hit);
                         qlist2.pop_front();
                     }
                     else
@@ -1032,7 +1032,7 @@ size_t CParserOBJ::Run()
 
             if (hasGroups)
             {
-                parent->addChild(pMeshData = new CMesh);
+                parent->addChild(pMeshData = std::make_shared<CMesh>());
             }
             hasGroups = true;
             pMeshData->setLabel(name);
@@ -1074,7 +1074,7 @@ size_t CParserOBJ::Run()
     }
     else
     {
-        setChildrenVertices(m_model, tmpV, tmpC, tmpN, tmpTC);
+        setChildrenVertices(m_model.get(), tmpV, tmpC, tmpN, tmpTC);
         m_model->importChildrenGeometry();
 
         UI::STATUSBAR::setText("File loading done!");
@@ -1457,7 +1457,7 @@ bool CParserOBJ::save()
 
 	size_t vStart = 1;
 
-	saveChildren(objStream, mtlStream, m_model, "", vStart);
+	saveChildren(objStream, mtlStream, m_model.get(), "", vStart);
 
 	mtlFile.close();
 	objFile.close();

@@ -2,7 +2,7 @@
 #include "OrderedPointCloud.h"
 #include "GLViewer.h"
 
-COrderedPointCloud::COrderedPointCloud(CBaseObject *p) : CPointCloud(p)
+COrderedPointCloud::COrderedPointCloud(std::shared_ptr<CBaseObject> p) : CPointCloud(p)
 {
 	setLabel("o.cloud");
 	m_cols = 0;

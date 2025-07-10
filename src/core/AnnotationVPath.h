@@ -14,7 +14,7 @@ public:
 	//ListOfVIndices m_list;
 	double m_length;
 
-	CAnnotationVPath(CModel3D* m = nullptr) :CAnnotation(m), ListOfVIndices()
+	CAnnotationVPath(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation(m), ListOfVIndices()
 	{
 		setLabel("v_path");
 	};
@@ -26,14 +26,14 @@ public:
 		m_length = p.m_length;
 	};
 
-	CAnnotationVPath(ListOfVIndices& list, double d, CModel3D* m = nullptr) :CAnnotation(m), ListOfVIndices(list)
+	CAnnotationVPath(ListOfVIndices& list, double d, std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation(m), ListOfVIndices(list)
 	{
 		setLabel("v_path");
 		//m_list = list;
 		m_length = d;
 	};
 
-	CAnnotationVPath(ListOfVIndices& list, CModel3D* m);
+	CAnnotationVPath(ListOfVIndices& list, std::shared_ptr<CBaseObject> m);
 	
 	~CAnnotationVPath() { this->clear(); };
 	

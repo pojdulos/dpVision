@@ -4,11 +4,8 @@
 
 #include "Model3D.h"
 
-class  DPVISION_EXPORT CImage : protected CModel3D, protected QImage
+class  DPVISION_EXPORT CImage : public CModel3D, protected QImage
 {
-protected:
-	CImage(const QImage& i);
-
 public:
 	typedef enum QImage::Format Format;
 	typedef enum Qt::GlobalColor Color;
@@ -32,6 +29,7 @@ public:
 
 	//copying constructor
 	CImage(const CImage& i);
+	CImage(const QImage& i);
 
 	CImage(const uchar* data, int w, int h, CImage::Format f);
 	
@@ -39,10 +37,10 @@ public:
 	
 	virtual ~CImage();
 
-	static CImage* load(const char* path);
-	static CImage* load(const QString path);
-	static CImage* load(const std::string path);
-	static CImage* load(const std::wstring path);
+	static std::shared_ptr<CImage> load(const char* path);
+	static std::shared_ptr<CImage> load(const QString path);
+	static std::shared_ptr<CImage> load(const std::string path);
+	static std::shared_ptr<CImage> load(const std::wstring path);
 
 	void save(const char* path);
 	void save(const QString path);
@@ -59,7 +57,7 @@ public:
 	using CModel3D::transform;
 	using CModel3D::render;
 
-	virtual CImage* getCopy() override { return new CImage(*this); }
+	virtual std::shared_ptr<CBaseObject> getCopy() override { return std::static_pointer_cast<CBaseObject>( std::make_shared<CImage>(*this) ); }
 
 	CImage* copy(int x, int y, int w, int h) const;
 

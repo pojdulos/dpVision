@@ -32,13 +32,13 @@ QString CParserATMDL::skip_comments(QTextStream& in)
 	return slowo;
 }
 
-CObject* CParserATMDL::clean_model(CModel3D *obj)
+std::shared_ptr<CObject> CParserATMDL::clean_model(std::shared_ptr<CModel3D> obj)
 {
 	CTransform& t = obj->transform();
 
 	if (t.toQMatrix4x4().isIdentity() && (obj->children().size() == 1) )
 	{
-		CObject* c = (CObject*)obj->getChild();
+		std::shared_ptr<CObject> c = std::dynamic_pointer_cast<CObject>(obj->getChild());
 
 		obj->removeChild(c->id());
 
@@ -54,11 +54,11 @@ CObject* CParserATMDL::clean_model(CModel3D *obj)
 				std::shared_ptr<CAnnotation> an = (*it).second;
 				it = obj->annotations().erase(it);
 
-				c->addAnnotation(an.get());
+				c->addAnnotation(an);
 			}
 		}
 
-		delete obj;
+		//delete obj;
 
 		return c;
 	}
@@ -66,7 +66,7 @@ CObject* CParserATMDL::clean_model(CModel3D *obj)
 	return obj;
 }
 
-CObject* CParserATMDL::loadShellFile(const QString filepath, QFile &mainFile, bool cleanIt)
+std::shared_ptr<CObject> CParserATMDL::loadShellFile(const QString filepath, QFile &mainFile, bool cleanIt)
 {
 	QString myPath(filepath);
 
@@ -86,18 +86,18 @@ CObject* CParserATMDL::loadShellFile(const QString filepath, QFile &mainFile, bo
 	}
 
 	CParser* parser = CFileConnector::getLoadParser(myPath);
-	CModel3D * result = parser->load(myPath);
+	std::shared_ptr<CModel3D> result = parser->load(myPath);
 
 	if (!parser->inPlugin()) delete parser;
 	return cleanIt?clean_model(result):result;
 }
 
-void CParserATMDL::add_kid(CObject* obj, CBaseObject* kid)
+void CParserATMDL::add_kid(std::shared_ptr<CObject> obj, std::shared_ptr<CBaseObject> kid)
 {
 	if (kid->hasCategory(CBaseObject::OBJECT))
 		obj->addChild(kid);
 	else if (kid->hasCategory(CBaseObject::ANNOTATION))
-		obj->addAnnotation((CAnnotation*)kid);
+		obj->addAnnotation(std::dynamic_pointer_cast<CAnnotation>(kid));
 }
 
 void CParserATMDL::replaceKeysWithValues(QString& txt) {
@@ -576,7 +576,7 @@ QSet<QString> CParserATMDL::parseProperty_keywords_v1(QString keywords)
 	return out;
 }
 
-CBaseObject* CParserATMDL::parseObject_shell(QTextStream& in)
+std::shared_ptr<CBaseObject> CParserATMDL::parseObject_shell(QTextStream& in)
 {
 	QString slowo;
 
@@ -592,7 +592,7 @@ CBaseObject* CParserATMDL::parseObject_shell(QTextStream& in)
 	}
 
 	QMap<QString, QString> opis;
-	QList<CBaseObject*> kids;
+	QList<std::shared_ptr<CBaseObject>> kids;
 
 	while (slowo != "}")
 	{
@@ -614,7 +614,7 @@ CBaseObject* CParserATMDL::parseObject_shell(QTextStream& in)
 		{
 			opis["file"] = parseType_string(in);
 		}
-		else if (CBaseObject* tmp = parseObject(in, slowo))
+		else if (auto tmp = parseObject(in, slowo))
 		{
 			kids.append(tmp);
 		}
@@ -630,14 +630,14 @@ CBaseObject* CParserATMDL::parseObject_shell(QTextStream& in)
 
 	}
 
-	CObject* obj = nullptr;
+	std::shared_ptr<CObject> obj = nullptr;
 
 	if (opis.contains("file"))
 	{
 		obj = loadShellFile(opis["file"], atmdlFile);
 		if (obj==nullptr)
 		{
-			obj = new CObject();
+			obj = std::make_shared<CObject>();
 		}
 
 		if (opis.contains("label")) obj->setLabel(opis["label"]);
@@ -645,7 +645,7 @@ CBaseObject* CParserATMDL::parseObject_shell(QTextStream& in)
 
 		if (opis.contains("keywords")) obj->keywords() = parseProperty_keywords_v1(opis["keywords"]);
 
-		for (CBaseObject* kid : kids) add_kid(obj, kid);
+		for (auto kid : kids) add_kid(obj, kid);
 	}
 
 	qInfo() << "Zakonczono interpretacje obiektu shell" << Qt::endl;
@@ -653,7 +653,7 @@ CBaseObject* CParserATMDL::parseObject_shell(QTextStream& in)
 	return obj;
 }
 
-CBaseObject* CParserATMDL::parseObject_transformation(QTextStream& in)
+std::shared_ptr<CBaseObject> CParserATMDL::parseObject_transformation(QTextStream& in)
 {
 	QString slowo = skip_comments(in);
 
@@ -665,7 +665,7 @@ CBaseObject* CParserATMDL::parseObject_transformation(QTextStream& in)
 	}
 
 	QMap<QString, QString> opis;
-	QList<CBaseObject*> kids;
+	QList<std::shared_ptr<CBaseObject>> kids;
 	//QStringList matrix;
 
 	CTransform frameTransformation;
@@ -703,7 +703,7 @@ CBaseObject* CParserATMDL::parseObject_transformation(QTextStream& in)
 			frameTransformation.fromEigenMatrix4d(tT.toEigenMatrix4d() * frameTransformation.toEigenMatrix4d());
 			isTransformDefined = true;
 		}
-		else if (CBaseObject* tmp = parseObject(in, slowo))
+		else if (auto tmp = parseObject(in, slowo))
 		{
 			kids.append(tmp);
 		}
@@ -719,7 +719,7 @@ CBaseObject* CParserATMDL::parseObject_transformation(QTextStream& in)
 
 	}
 
-	CModel3D* obj = new CModel3D;
+	std::shared_ptr<CModel3D> obj = std::make_shared<CModel3D>();
 
 	if (obj)
 	{
@@ -743,7 +743,7 @@ CBaseObject* CParserATMDL::parseObject_transformation(QTextStream& in)
 			obj->setTransform(CTransform());
 		}
 
-		for (CBaseObject* kid : kids) add_kid(obj, kid);
+		for (auto kid : kids) add_kid(obj, kid);
 	}
 
 	obj->importChildrenGeometry();
@@ -751,7 +751,7 @@ CBaseObject* CParserATMDL::parseObject_transformation(QTextStream& in)
 	return obj;
 }
 
-CBaseObject* CParserATMDL::parseObject_point(QTextStream& in)
+std::shared_ptr<CBaseObject> CParserATMDL::parseObject_point(QTextStream& in)
 {
 	QString slowo;
 
@@ -765,7 +765,7 @@ CBaseObject* CParserATMDL::parseObject_point(QTextStream& in)
 	}
 
 	QMap<QString, QString> opis;
-	QList<CBaseObject*> kids;
+	QList<std::shared_ptr<CBaseObject>> kids;
 
 	while (slowo != "}")
 	{
@@ -808,7 +808,7 @@ CBaseObject* CParserATMDL::parseObject_point(QTextStream& in)
 	{
 		QStringList qCoords = opis["coords"].split(",", QString::SkipEmptyParts);
 
-		CAnnotationPoint* obj = new CAnnotationPoint();
+		std::shared_ptr<CAnnotationPoint> obj = std::make_shared<CAnnotationPoint>();
 
 		if (obj)
 		{
@@ -833,7 +833,7 @@ CBaseObject* CParserATMDL::parseObject_point(QTextStream& in)
 }
 
 
-CBaseObject* CParserATMDL::parseObject_plane(QTextStream& in)
+std::shared_ptr<CBaseObject> CParserATMDL::parseObject_plane(QTextStream& in)
 {
 	QString slowo;
 
@@ -847,7 +847,7 @@ CBaseObject* CParserATMDL::parseObject_plane(QTextStream& in)
 	}
 
 	QMap<QString, QString> opis;
-	QList<CBaseObject*> kids;
+	QList<std::shared_ptr<CBaseObject>> kids;
 
 	while (slowo != "}")
 	{
@@ -898,7 +898,7 @@ CBaseObject* CParserATMDL::parseObject_plane(QTextStream& in)
 	{
 		QStringList qCoords = opis["center"].split(",", QString::SkipEmptyParts);
 
-		CAnnotationPlane* obj = new CAnnotationPlane();
+		std::shared_ptr<CAnnotationPlane> obj = std::make_shared<CAnnotationPlane>();
 
 		if (obj)
 		{
@@ -934,7 +934,7 @@ CBaseObject* CParserATMDL::parseObject_plane(QTextStream& in)
 }
 
 
-CBaseObject* CParserATMDL::parseObject_sphere(QTextStream& in)
+std::shared_ptr<CBaseObject> CParserATMDL::parseObject_sphere(QTextStream& in)
 {
 	QString slowo;
 
@@ -948,7 +948,7 @@ CBaseObject* CParserATMDL::parseObject_sphere(QTextStream& in)
 	}
 
 	QMap<QString, QString> opis;
-	QList<CBaseObject*> kids;
+	QList<std::shared_ptr<CBaseObject>> kids;
 
 	while (slowo != "}")
 	{
@@ -1005,7 +1005,7 @@ CBaseObject* CParserATMDL::parseObject_sphere(QTextStream& in)
 
 	Kula k(coords, radius);
 
-	CAnnotationSphere* obj = new CAnnotationSphere(k);
+	std::shared_ptr<CAnnotationSphere> obj = std::make_shared<CAnnotationSphere>(k);
 
 	if (obj)
 	{
@@ -1023,7 +1023,7 @@ CBaseObject* CParserATMDL::parseObject_sphere(QTextStream& in)
 	return nullptr;
 }
 
-CBaseObject* CParserATMDL::parseObject_triangle(QTextStream& in)
+std::shared_ptr<CBaseObject> CParserATMDL::parseObject_triangle(QTextStream& in)
 {
 	QString slowo;
 
@@ -1037,7 +1037,7 @@ CBaseObject* CParserATMDL::parseObject_triangle(QTextStream& in)
 	}
 
 	QMap<QString, QString> opis;
-	QList<CBaseObject*> kids;
+	QList<std::shared_ptr<CBaseObject>> kids;
 
 	QList<double> cA, cB, cC;
 
@@ -1095,7 +1095,7 @@ CBaseObject* CParserATMDL::parseObject_triangle(QTextStream& in)
 		CPoint3d vB(qCoordsB[0].toDouble(), qCoordsB[1].toDouble(), qCoordsB[2].toDouble());
 		CPoint3d vC(qCoordsC[0].toDouble(), qCoordsC[1].toDouble(), qCoordsC[2].toDouble());
 
-		CAnnotationTriangle* obj = new CAnnotationTriangle(vA,vB,vC);
+		std::shared_ptr<CAnnotationTriangle> obj = std::make_shared<CAnnotationTriangle>(vA,vB,vC);
 
 		if (obj)
 		{
@@ -1110,7 +1110,7 @@ CBaseObject* CParserATMDL::parseObject_triangle(QTextStream& in)
 	return nullptr;
 }
 
-CBaseObject* CParserATMDL::parseObject_animation(QTextStream& in)
+std::shared_ptr<CBaseObject> CParserATMDL::parseObject_animation(QTextStream& in)
 {
 	QString slowo;
 
@@ -1124,7 +1124,7 @@ CBaseObject* CParserATMDL::parseObject_animation(QTextStream& in)
 	}
 
 	QMap<QString, QString> opis;
-	QList<CBaseObject*> kids;
+	QList<std::shared_ptr<CBaseObject>> kids;
 	//QStringList matrix;
 	CMovement::SeqList seq;
 
@@ -1144,7 +1144,7 @@ CBaseObject* CParserATMDL::parseObject_animation(QTextStream& in)
 		{
 			seq = parseProperty_sequence(in);
 		}
-		else if (CBaseObject* tmp = parseObject(in, slowo))
+		else if (auto tmp = parseObject(in, slowo))
 		{
 			kids.append(tmp);
 		}
@@ -1160,7 +1160,7 @@ CBaseObject* CParserATMDL::parseObject_animation(QTextStream& in)
 
 	}
 
-	CMovement* obj = new CMovement(seq);
+	std::shared_ptr<CMovement> obj = std::make_shared<CMovement>(seq);
 
 	if (obj)
 	{
@@ -1169,13 +1169,13 @@ CBaseObject* CParserATMDL::parseObject_animation(QTextStream& in)
 
 		if (opis.contains("descr")) obj->setDescr(opis["descr"]);
 
-		for (CBaseObject* kid : kids) add_kid(obj, kid);
+		for (auto kid : kids) add_kid(obj, kid);
 	}
 
 	return obj;
 }
 
-CBaseObject* CParserATMDL::parseObject(QTextStream& in, QString slowo)
+std::shared_ptr<CBaseObject> CParserATMDL::parseObject(QTextStream& in, QString slowo)
 {
 	//QMap<QString, std::function<CBaseObject* (QTextStream&)>> mapa;
 
@@ -1220,7 +1220,7 @@ void dpTest(const char* msg)
 
 }
 
-CModel3D* CParserATMDL::load(const QString path, bool wait)
+std::shared_ptr<CModel3D> CParserATMDL::load(const QString path, bool wait)
 {
 	atmdlFile.setFileName(path);
 
@@ -1233,11 +1233,11 @@ CModel3D* CParserATMDL::load(const QString path, bool wait)
 	QTextStream in(&atmdlFile);
 	in.setCodec("UTF-8");
 
-	QStack<CBaseObject*> stos;
+	QStack<std::shared_ptr<CBaseObject>> stos;
 
-	CModel3D* root = new CModel3D;
+	std::shared_ptr<CModel3D> root = std::make_shared<CModel3D>();
 
-	CObject* currentObject = root;
+	std::shared_ptr<CObject> currentObject = root;
 
 	QString slowo;
 
@@ -1257,7 +1257,7 @@ CModel3D* CParserATMDL::load(const QString path, bool wait)
 			defs[slowo] = parseType_string(in);
 			qInfo() << "\033[33m" << "DEFINICJA: " << slowo << " : " << defs[slowo] << "\033[0m" << Qt::endl;
 		}
-		else if (CBaseObject* tmp = parseObject(in, slowo))
+		else if (auto tmp = parseObject(in, slowo))
 		{
 			add_kid(currentObject, tmp);
 		}
@@ -1278,20 +1278,20 @@ CModel3D* CParserATMDL::load(const QString path, bool wait)
 
 	if (root->children().size() == 1)
 	{
-		CBaseObject* tmp = (*root->children().begin()).second.get();
+		std::shared_ptr<CBaseObject> tmp = (*root->children().begin()).second;
 
 		if (tmp->hasType(CBaseObject::Type::MODEL))
 		{
 			root->children().clear();
-			delete root;
-			return (CModel3D*)tmp;
+			//delete root;
+			return std::dynamic_pointer_cast<CModel3D>(tmp);
 		}
 	}
 
 	return root;
 }
 
-QString CParserATMDL::obj2atmdl(CBaseObject* obj, const QString& wciecie)
+QString CParserATMDL::obj2atmdl(std::shared_ptr<CBaseObject> obj, const QString& wciecie)
 {
 	QString text("");
 
@@ -1311,7 +1311,7 @@ QString CParserATMDL::obj2atmdl(CBaseObject* obj, const QString& wciecie)
 				text += wciecie2 + "keywords \"" + keywords + "\"\n";
 			}
 
-			text += wciecie2 + "matrix " + ((CModel3D*)obj)->transform().toString("[", "]", ",") + "\n";
+			text += wciecie2 + "matrix " + std::dynamic_pointer_cast<CModel3D>(obj)->transform().toString("[", "]", ",") + "\n";
 			break;
 		case CObject::MESH:
 		case CObject::CLOUD:
@@ -1330,7 +1330,7 @@ QString CParserATMDL::obj2atmdl(CBaseObject* obj, const QString& wciecie)
 			text += wciecie + "animation {\n";
 			text += wciecie2 + "label \"" + obj->getLabel() + "\"\n";
 			text += wciecie2 + "sequence {\n";
-			for (CMovement::FrameVal& fv : ((CMovement*)obj)->m_seqlist)
+			for (CMovement::FrameVal& fv : std::dynamic_pointer_cast<CMovement>(obj)->m_seqlist)
 			{
 				text += wciecie3 + "frame { label \"" + fv.getLabel() + "\" delay " + QString::number(double(fv.msec) / 1000) + " matrix " + fv.t.toString("[", "]", ",") + " }\n";
 			}
@@ -1348,7 +1348,7 @@ QString CParserATMDL::obj2atmdl(CBaseObject* obj, const QString& wciecie)
 			}
 
 			{
-				CAnnotationPoint pt = *(CAnnotationPoint*)obj;
+				CAnnotationPoint pt = *std::dynamic_pointer_cast<CAnnotationPoint>(obj);
 
 				text += QString(wciecie2 + "coords [ %1, %2, %3 ]\n").arg(pt.x).arg(pt.y).arg(pt.z);
 				text += QString(wciecie2 + "normal [ %1, %2, %3 ]\n").arg(pt.getRay().x).arg(pt.getRay().y).arg(pt.getRay().z);
@@ -1366,7 +1366,7 @@ QString CParserATMDL::obj2atmdl(CBaseObject* obj, const QString& wciecie)
 			}
 
 			{
-				CAnnotationPlane plane = *(CAnnotationPlane*)obj;
+				CAnnotationPlane plane = *std::dynamic_pointer_cast<CAnnotationPlane>(obj);
 
 				text += QString(wciecie2 + "center [ %1, %2, %3 ]\n").arg(plane.getCenter().x).arg(plane.getCenter().y).arg(plane.getCenter().z);
 				text += QString(wciecie2 + "normal [ %1, %2, %3 ]\n").arg(plane.getNormal().x).arg(plane.getNormal().y).arg(plane.getNormal().z);
@@ -1379,19 +1379,21 @@ QString CParserATMDL::obj2atmdl(CBaseObject* obj, const QString& wciecie)
 
 	if (obj->hasCategory(CBaseObject::OBJECT)) {
 		if (obj->hasChildren()) {
-			for (const auto& k : ((CObject*)obj)->children())
+			for (const auto& k : std::dynamic_pointer_cast<CObject>(obj)->children())
 			{
-				text += obj2atmdl(k.second.get(), wciecie2);
+				text += obj2atmdl(k.second, wciecie2);
 			}
 		}
 
-		for (const auto& k : ((CObject*)obj)->annotations()) {
-			text += obj2atmdl(k.second.get(), wciecie2);
+		for (const auto& k : std::dynamic_pointer_cast<CObject>(obj)->annotations())
+		{
+			text += obj2atmdl(k.second, wciecie2);
 		}
 	}
 	else if (obj->hasCategory(CBaseObject::ANNOTATION)) {
-		for (const auto& k : ((CAnnotation*)obj)->annotations()) {
-			text += obj2atmdl(k.second.get(), wciecie2);
+		for (const auto& k : std::dynamic_pointer_cast<CAnnotation>(obj)->annotations())
+		{
+			text += obj2atmdl(k.second, wciecie2);
 		}
 	}
 
@@ -1400,7 +1402,7 @@ QString CParserATMDL::obj2atmdl(CBaseObject* obj, const QString& wciecie)
 	return text;
 }
 
-bool CParserATMDL::save(QVector<CBaseObject*> objects, const QString path)
+bool CParserATMDL::save(QVector<std::shared_ptr<CBaseObject>> objects, const QString path)
 {
 	QFile objFile(path);
 	if (!objFile.open(QIODevice::WriteOnly | QFile::Text))
@@ -1415,7 +1417,7 @@ bool CParserATMDL::save(QVector<CBaseObject*> objects, const QString path)
 
 	QString text("# Digital patient workspace file generated by dpVision\n\n");
 
-	for (CBaseObject* obj : objects)
+	for (auto obj : objects)
 	{
 		text += obj2atmdl(obj, "");
 	}
@@ -1429,7 +1431,7 @@ bool CParserATMDL::save(QVector<CBaseObject*> objects, const QString path)
 	return true;
 }
 
-bool CParserATMDL::save(CModel3D* obj, const QString path)
+bool CParserATMDL::save(std::shared_ptr<CModel3D> obj, const QString path)
 {
 	QFile objFile(path);
 	if (!objFile.open(QIODevice::WriteOnly | QFile::Text))

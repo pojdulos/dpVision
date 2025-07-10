@@ -13,7 +13,7 @@
 #include "quazipfile.h"
 #include "quazipdir.h"
 
-CObject* CParserDPVISION::readZippedFileObj(QuaZip& zip, QString pathInZip)
+std::shared_ptr<CObject> CParserDPVISION::readZippedFileObj(QuaZip& zip, QString pathInZip)
 {
 	QString objPath = pathInZip + ".obj";
 	
@@ -42,12 +42,12 @@ CObject* CParserDPVISION::readZippedFileObj(QuaZip& zip, QString pathInZip)
 
 
 
-CBaseObject* CParserDPVISION::parseObject(const QDomElement& currentElement, QuaZip& zip)
+std::shared_ptr<CBaseObject> CParserDPVISION::parseObject(const QDomElement& currentElement, QuaZip& zip)
 {
 	QString currentId = currentElement.attribute("id");
 	QString path = currentElement.attribute("path");
 
-	CBaseObject* obj = nullptr;
+	std::shared_ptr<CBaseObject> obj = nullptr;
 
 	QString typ = currentElement.attribute("type");
 	QString cls = currentElement.attribute("class");
@@ -56,11 +56,11 @@ CBaseObject* CParserDPVISION::parseObject(const QDomElement& currentElement, Qua
 	{
 		if (typ == "transformation")
 		{
-			obj = new CModel3D;
+			obj = std::make_shared<CModel3D>();
 			QString matrix = currentElement.firstChildElement("matrix").text();
 			qDebug() << matrix << Qt::endl;
 
-			((CModel3D*)obj)->transform().fromRowMatrix(matrix);
+			std::static_pointer_cast<CModel3D>(obj)->transform().fromRowMatrix(matrix);
 		}
 		else if (typ == "mesh")
 		{
@@ -95,7 +95,7 @@ CBaseObject* CParserDPVISION::parseObject(const QDomElement& currentElement, Qua
 
 				QDataStream rawStream(&ba, QIODevice::ReadOnly);
 
-				CVolTK* volTK = new CVolTK(nullptr, cols, rows, lays, 16);
+				std::shared_ptr<CVolTK> volTK = std::make_shared<CVolTK>(nullptr, cols, rows, lays, 16);
 				
 				int dataSize = volTK->kostka.size() * sizeof(NowaKostka1::Type);
 				int read = rawStream.readRawData((char*)volTK->kostka.layer(0), dataSize);
@@ -117,48 +117,53 @@ CBaseObject* CParserDPVISION::parseObject(const QDomElement& currentElement, Qua
 	{
 		if (typ == "setOfVertices")
 		{
-			obj = new CAnnotationSetOfVertices;
+			auto v = std::make_shared<CAnnotationSetOfVertices>();
+
+			obj = v;
 
 			QDomElement dataset = currentElement.firstChildElement("dataset");
 
 			QString destination = dataset.attribute("destination");
 
 			AddressMap::iterator it = mapaObiektow.find(destination);
-			if (it != mapaObiektow.end()) ((CAnnotationSetOfVertices*)obj)->setDest((CPointCloud*)it->ptr);
+			if (it != mapaObiektow.end()) v->setDest(std::dynamic_pointer_cast<CPointCloud>(it->ptr));
 
-			((CAnnotationSetOfVertices*)obj)->m_pointSize = dataset.attribute("pointSize","5").toInt();
+			v->m_pointSize = dataset.attribute("pointSize","5").toInt();
 
 			QStringList sl = dataset.text().split(" ");
 			for (const auto s : sl)
 			{
-				((CAnnotationSetOfVertices*)obj)->insert(s.toInt());
+				v->insert(s.toInt());
 			}
 		}
 		else if (typ == "setOfFaces")
 		{
-			obj = new CAnnotationSetOfFaces;
+			auto v = std::make_shared<CAnnotationSetOfFaces>();
+			
+			obj = v;
 
 			QDomElement dataset = currentElement.firstChildElement("dataset");
 
 			QString destination = dataset.attribute("destination");
 
 			AddressMap::iterator it = mapaObiektow.find(destination);
-			if (it != mapaObiektow.end()) ((CAnnotationSetOfFaces*)obj)->setDest(std::shared_ptr<CMesh>((CMesh*)it->ptr));
+			if (it != mapaObiektow.end()) v->setDest(std::dynamic_pointer_cast<CMesh>(it->ptr));
 
 			QStringList sl = dataset.text().split(" ");
 			for (const auto s : sl)
 			{
-				((CAnnotationSetOfFaces*)obj)->insert(s.toInt());
+				v->insert(s.toInt());
 			}
 		}
 
 		QDomElement properties = currentElement.firstChildElement("properties");
 
-		QString colorTXT = properties.attribute("color", ((CAnnotation*)obj)->m_color.asHexRGBA().c_str());
-		QString selcolorTXT = properties.attribute("selcolor", ((CAnnotation*)obj)->m_selcolor.asHexRGBA().c_str());
+		auto an = std::static_pointer_cast<CAnnotation>(obj);
+		QString colorTXT = properties.attribute("color", an->m_color.asHexRGBA().c_str());
+		QString selcolorTXT = properties.attribute("selcolor", an->m_selcolor.asHexRGBA().c_str());
 
-		((CAnnotation*)obj)->setColor(CRGBA::fromHexRGBA(colorTXT.toStdString()));
-		((CAnnotation*)obj)->setSelColor(CRGBA::fromHexRGBA(selcolorTXT.toStdString()));
+		an->setColor(CRGBA::fromHexRGBA(colorTXT.toStdString()));
+		an->setSelColor(CRGBA::fromHexRGBA(selcolorTXT.toStdString()));
 	}
 
 	if (obj != nullptr)
@@ -510,14 +515,14 @@ void CParserDPVISION::ParseObjMTLFile(QTextStream& in, std::map<QString, CMateri
 }
 
 
-CObject* CParserDPVISION::parseOBJ(QTextStream& in, QuaZip& zip, QString pathInZip)
+std::shared_ptr<CObject> CParserDPVISION::parseOBJ(QTextStream& in, QuaZip& zip, QString pathInZip)
 {
 	in.setCodec("UTF-8");
 
-	CMesh* mesh = new CMesh;
+	std::shared_ptr<CMesh> mesh = std::make_shared<CMesh>();
 	//CObject* parentObj = new CObject;
 	
-	QVector<CObject*> vec;
+	QVector<std::shared_ptr<CObject>> vec;
 
 	if (mesh == NULL) return nullptr;
 
@@ -648,7 +653,7 @@ CObject* CParserDPVISION::parseOBJ(QTextStream& in, QuaZip& zip, QString pathInZ
 		}
 		else if (qline.startsWith("g", Qt::CaseInsensitive))
 		{
-			if (hasGroups) vec.push_back(mesh = new CMesh);
+			if (hasGroups) vec.push_back(mesh = std::make_shared<CMesh>());
 			
 			hasGroups = true;
 
@@ -676,7 +681,7 @@ CObject* CParserDPVISION::parseOBJ(QTextStream& in, QuaZip& zip, QString pathInZ
 
 	if (vec.size() > 1)
 	{
-		CModel3D* parentObj = new CModel3D;
+		std::shared_ptr<CModel3D> parentObj = std::make_shared<CModel3D>();
 		for (const auto& c : vec)
 		{
 			parentObj->addChild(c);
@@ -693,14 +698,12 @@ CObject* CParserDPVISION::parseOBJ(QTextStream& in, QuaZip& zip, QString pathInZ
 	}
 }
 
-void CParserDPVISION::setChildrenVertices(QVector<CObject*> vec, CPointCloud::Vertices& tmpV, CPointCloud::Colors& tmpC, CPointCloud::Normals& tmpN, CMaterial::TextureCoordinates& tmpTC)
+void CParserDPVISION::setChildrenVertices(QVector<std::shared_ptr<CObject>> vec, CPointCloud::Vertices& tmpV, CPointCloud::Colors& tmpC, CPointCloud::Normals& tmpN, CMaterial::TextureCoordinates& tmpTC)
 {
 	for (const auto& c : vec)
 	{
-		if (c->hasType(CObject::Type::MESH))
+		if (auto m = std::dynamic_pointer_cast<CMesh>(c))
 		{
-			CMesh* m = (CMesh*)c;
-
 			m->vertices() = tmpV;
 			m->vcolors() = tmpC;
 			m->vnormals() = tmpN;

@@ -29,7 +29,7 @@ CHistogram::CHistogram(CModel3D* parent, std::vector<double> data, int levels) :
 
 	m_showOutOfRangeData = true;// false;
 
-	m_parent = std::shared_ptr<CBaseObject>((CBaseObject*)parent);
+	m_parent = (CBaseObject*)parent;
 	m_destination = nullptr;
 	setData(data);
 }
@@ -45,7 +45,7 @@ CHistogram::CHistogram(CPointCloud* cloud, std::vector<double> data, int levels)
 
 	m_showOutOfRangeData = true;// false;
 
-	m_parent = std::shared_ptr<CBaseObject>(cloud->getParent());
+	m_parent = cloud->getParent();
 	m_destination = nullptr;
 	setData(data);
 }
@@ -722,7 +722,7 @@ void CHistogram::calcGlobalError(double lowerLimit, double upperLimit)
 
 	if (obj->getChild()->type() != CBaseObject::MESH) return;
 
-	CMesh* m = (CMesh*)obj->getChild();
+	CMesh* m = (CMesh*)obj->getChild().get();
 
 
 	std::vector<double> odleglosci = getData();

@@ -19,30 +19,30 @@ class DPVISION_EXPORT CParserDPVISION :public QObject, public CParser
 	void copyFileToZip(QuaZip& zip, QString pathInZip, QString inFileName);
 	void writeByteArrayToZip(QuaZip& zip, QString pathInZip, const QByteArray& ba);
 	void saveMTL(QuaZip& zip, CMaterial& material, QString pathInZip, QString matName);
-	void saveMesh(QTextStream& objFile, CObject* src, size_t& vStart);
+	void saveMesh(QTextStream& objFile, std::shared_ptr<CObject> src, size_t& vStart);
 
-	void saveObject(QuaZip& zip, CBaseObject* obj, QString path);
+	void saveObject(QuaZip& zip, std::shared_ptr<CBaseObject> obj, QString path);
 
-	void createXmlNodeObject(CObject* obj, QDomElement& root, QDomDocument& docu, QString path);
+	void createXmlNodeObject(std::shared_ptr<CObject> obj, QDomElement& root, QDomDocument& docu, QString path);
 
-	void createXmlNodeAnnotation(CAnnotation* obj, QDomElement& root, QDomDocument& docu);
-	void createAnnotationsXml(CObject* obj, QDomElement& root, QDomDocument& docu);
+	void createXmlNodeAnnotation(std::shared_ptr<CAnnotation> obj, QDomElement& root, QDomDocument& docu);
+	void createAnnotationsXml(std::shared_ptr<CObject> obj, QDomElement& root, QDomDocument& docu);
 
-	void createStructureXml(QByteArray& ba, QVector<CBaseObject*> vobj);
+	void createStructureXml(QByteArray& ba, QVector<std::shared_ptr<CBaseObject>> vobj);
 
 
 
 	void parseF(QString& line, CMesh::Faces& faces, CMaterial& material, size_t& lbf, size_t& lbti);
 	void ParseObjMTLFile(QTextStream& in, std::map<QString, CMaterial*>& mats, QuaZip& zip, QString pathInZip);
-	CObject* parseOBJ(QTextStream& in, QuaZip& zip, QString pathInZip);
-	void setChildrenVertices(QVector<CObject*> vec, CPointCloud::Vertices& tmpV, CPointCloud::Colors& tmpC, CPointCloud::Normals& tmpN, CMaterial::TextureCoordinates& tmpTC);
+	std::shared_ptr<CObject> parseOBJ(QTextStream& in, QuaZip& zip, QString pathInZip);
+	void setChildrenVertices(QVector<std::shared_ptr<CObject>> vec, CPointCloud::Vertices& tmpV, CPointCloud::Colors& tmpC, CPointCloud::Normals& tmpN, CMaterial::TextureCoordinates& tmpTC);
 
-	CObject* readZippedFileObj(QuaZip& zip, QString pathInZip);
-	CBaseObject* parseObject(const QDomElement& currentElement, QuaZip& zip);
+	std::shared_ptr<CObject> readZippedFileObj(QuaZip& zip, QString pathInZip);
+	std::shared_ptr<CBaseObject> parseObject(const QDomElement& currentElement, QuaZip& zip);
 
 
 	typedef struct {
-		CBaseObject* ptr;
+		std::shared_ptr<CBaseObject> ptr;
 		QString parentID;
 		QString path;
 	} Address;
@@ -53,7 +53,7 @@ public:
 	CParserDPVISION(void);
 	~CParserDPVISION(void);
 
-	virtual CModel3D* load(const QString path, bool wait) override;
-	virtual bool save(CModel3D* obj, const QString path) override;
-	virtual bool save(QVector<CBaseObject*> objects, const QString path) override;
+	virtual std::shared_ptr<CModel3D> load(const QString path, bool wait) override;
+	virtual bool save(std::shared_ptr<CModel3D> obj, const QString path) override;
+	virtual bool save(QVector<std::shared_ptr<CBaseObject>> objects, const QString path) override;
 };

@@ -3,7 +3,7 @@
 
 #include "AP.h"
 
-CMesh* CAnnotationSetOfFaces::getDest()
+std::shared_ptr<CMesh> CAnnotationSetOfFaces::getDest()
 {
 	if (m_mesh == nullptr)
 	{
@@ -11,10 +11,10 @@ CMesh* CAnnotationSetOfFaces::getDest()
 		if (m_parent->category() != CBaseObject::Category::OBJECT) return nullptr;
 
 		if (m_parent->hasType(CBaseObject::Type::MESH))
-			m_mesh = std::dynamic_pointer_cast<CMesh>(m_parent);
+			m_mesh = std::dynamic_pointer_cast<CMesh>(this->getParentPtr());
 		else
 		{
-			for (auto c : ((CObject*)m_parent.get())->children())
+			for (auto c : ((CObject*)m_parent)->children())
 			{
 				std::shared_ptr<CBaseObject> child = c.second;
 				if ((child != nullptr) &&
@@ -26,14 +26,14 @@ CMesh* CAnnotationSetOfFaces::getDest()
 		}
 
 	}
-	return m_mesh.get();
+	return m_mesh;
 }
 
-CMesh* CAnnotationSetOfFaces::toMesh()
+std::shared_ptr<CMesh> CAnnotationSetOfFaces::toMesh()
 {
 	if (m_mesh != nullptr)
 	{
-		CMesh* mesh = new CMesh();
+		std::shared_ptr<CMesh> mesh = std::make_shared<CMesh>();
 
 		mesh->vertices() = m_mesh->vertices();
 
@@ -48,7 +48,7 @@ CMesh* CAnnotationSetOfFaces::toMesh()
 	}
 	else
 	{
-		return new CMesh();
+		return std::make_shared<CMesh>();
 	}
 }
 
@@ -89,10 +89,10 @@ void CAnnotationSetOfFaces::renderSelf()
 		if (m_parent->category() != CBaseObject::Category::OBJECT) return;
 
 		if ( m_parent->hasType(CBaseObject::Type::MESH) )
-			m_mesh = std::dynamic_pointer_cast<CMesh>(m_parent);
+			m_mesh = std::dynamic_pointer_cast<CMesh>(this->getParentPtr());
 		else
 		{
-			std::shared_ptr<CBaseObject> child = std::shared_ptr<CBaseObject>(std::dynamic_pointer_cast<CObject>(m_parent)->getChild());
+			std::shared_ptr<CBaseObject> child = std::shared_ptr<CBaseObject>(((CObject*)m_parent)->getChild());
 			if (child == nullptr) return;
 			else if (child->hasType(CBaseObject::Type::MESH))
 			{

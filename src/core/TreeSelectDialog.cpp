@@ -3,7 +3,7 @@
 
 #include "BaseObject.h"
 
-TreeSelectDialog::TreeSelectDialog(CBaseObject* obj, QWidget* parent)
+TreeSelectDialog::TreeSelectDialog(std::shared_ptr<CBaseObject> obj, QWidget* parent)
     : QDialog(parent), m_obj(obj), selectedObjectHandle(nullptr)
 {
     setWindowTitle(QString::fromUtf8("Object repositioning"));
@@ -48,12 +48,12 @@ TreeSelectDialog::TreeSelectDialog(CBaseObject* obj, QWidget* parent)
 
 }
 
-void TreeSelectDialog::addItem(const QString& label, CBaseObject* objectHandle, QTreeWidgetItem* parent)
+void TreeSelectDialog::addItem(const QString& label, std::shared_ptr<CBaseObject> objectHandle, QTreeWidgetItem* parent)
 {
     QTreeWidgetItem* item = new QTreeWidgetItem();
     item->setText(0, label);
     // Przechowuj uchwyt jako QVariant (konwersja do/quintptr)
-    item->setData(0, Qt::UserRole, QVariant::fromValue(reinterpret_cast<quintptr>(objectHandle)));
+    item->setData(0, Qt::UserRole, QVariant::fromValue<std::shared_ptr<CBaseObject>>(objectHandle));
 
     if (parent)
         parent->addChild(item);
@@ -66,7 +66,7 @@ void TreeSelectDialog::onActionClicked()
     QTreeWidgetItem* current = treeWidget->currentItem();
     if (!current) return; // brak wyboru
 
-    selectedObjectHandle = current->data(0, Qt::UserRole).value<CBaseObject*>();
+    selectedObjectHandle = current->data(0, Qt::UserRole).value<std::shared_ptr<CBaseObject>>();
     action = sender()->objectName();
     keep_pos = keepPositionCheckBox->isChecked();
 
@@ -85,7 +85,7 @@ void TreeSelectDialog::copyItemToWidget(QStandardItem* srcItem, QTreeWidgetItem*
     QVariant userData = srcItem->data(Qt::UserRole);
     newItem->setData(0, Qt::UserRole, userData);
 
-    CBaseObject* obj = userData.value<CBaseObject*>();
+    std::shared_ptr<CBaseObject> obj = userData.value<std::shared_ptr<CBaseObject>>();
 
     if ((obj==nullptr) || (obj == m_obj)||(obj->hasCategory(CBaseObject::Category::ANNOTATION) && m_obj->hasCategory(CBaseObject::Category::OBJECT))) {
         //newItem->setFlags(newItem->flags() & ~(Qt::ItemIsSelectable | Qt::ItemIsEditable));
@@ -133,7 +133,7 @@ void TreeSelectDialog::onItemSelectionChanged()
     if (!selected.isEmpty()) {
         QTreeWidgetItem* item = selected.first();
 
-        selectedObjectHandle = item->data(0, Qt::UserRole).value<CBaseObject*>();
+        selectedObjectHandle = item->data(0, Qt::UserRole).value<std::shared_ptr<CBaseObject>>();
 
         bool disable = selectedObjectHandle && (selectedObjectHandle->getRoot() == m_obj->getRoot());
 

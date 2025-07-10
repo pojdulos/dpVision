@@ -64,4 +64,13 @@
 //	};
 //} _MyOpt;
 
+
+#include <QtCore/qhash.h>
+#include <memory>
+
+template <typename T>
+uint qHash(const std::shared_ptr<T>& ptr, uint seed = 0) noexcept {
+    return qHash(reinterpret_cast<quintptr>(ptr.get()), seed);
+}
+
 #endif //DPVISION_GLOBAL_DEFINITIONS_H

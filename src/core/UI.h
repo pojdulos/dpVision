@@ -238,7 +238,7 @@ namespace UI
              * @brief Item management functions
              */
 			DPVISION_EXPORT void addItem(int id, int parentId = -1);
-			DPVISION_EXPORT void addItem(CBaseObject* obj);
+			DPVISION_EXPORT void addItem(std::shared_ptr<CBaseObject> obj);
 			DPVISION_EXPORT void removeItem(int id);
 			DPVISION_EXPORT void selectItem( int id);
 
@@ -246,10 +246,10 @@ namespace UI
              * @brief Gets list of selected objects
              * @return Vector of selected object pointers
              */
-			DPVISION_EXPORT QVector<CBaseObject*> getSelectedObjects();
+			DPVISION_EXPORT QVector<std::shared_ptr<CBaseObject>> getSelectedObjects();
 			
 			
-			DPVISION_EXPORT CBaseObject* getCurrentItemObj();
+			DPVISION_EXPORT std::shared_ptr<CBaseObject> getCurrentItemObj();
 
             /**
              * @brief Item property management functions

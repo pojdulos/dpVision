@@ -16,7 +16,7 @@ class DPVISION_EXPORT CAnnotationPoint : public CAnnotation, public CPoint3d
 
 public:
 	bool m_showNorm;
-	CAnnotationPoint( CBaseObject *m = nullptr) :CAnnotation( m ), CPoint3d()
+	CAnnotationPoint( std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation( m ), CPoint3d()
 	{
 		setLabel("point");
 		m_direction.Set( 0, 0, 0 );
@@ -84,9 +84,9 @@ public:
 
 	~CAnnotationPoint(void){};
 
-	virtual CAnnotationPoint* getCopy() override
+	virtual std::shared_ptr<CBaseObject> getCopy() override
 	{
-		return new CAnnotationPoint(*this);
+		return std::make_shared<CAnnotationPoint>(*this);
 	}
 
 	virtual int type() { return CAnnotation::POINT; }

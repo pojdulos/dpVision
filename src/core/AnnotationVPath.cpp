@@ -6,25 +6,24 @@
 //#include <Windows.h>
 #include <GL/gl.h>
 
-CAnnotationVPath::CAnnotationVPath(ListOfVIndices& list, CModel3D* m) :CAnnotation(m), ListOfVIndices(list)
+CAnnotationVPath::CAnnotationVPath(ListOfVIndices& list, std::shared_ptr<CBaseObject> m) :CAnnotation(m), ListOfVIndices(list)
 {
 	setLabel("v_path");
-
-	if ( ((CObject*)m->getChild(0))->type() == CModel3D::MESH )
+	if (auto o = std::dynamic_pointer_cast<CObject>(m))
 	{
-		CMesh *mesh = (CMesh*)m->getChild();
-
-		//m_list = list;
-
-		m_length = 0.0;
-		ListOfVIndices::iterator it = begin();
-		size_t v1 = *(it++);
-
-		while (it != end())
+		if (auto mesh = std::dynamic_pointer_cast<CMesh>(o->getChild()))
 		{
-			INDEX_TYPE v2 = *(it++);
-			m_length += CVector3<double>(mesh->vertices()[v1], mesh->vertices()[v2]).length();
-			v1 = v2;
+			m_length = 0.0;
+			ListOfVIndices::iterator it = begin();
+			size_t v1 = *(it++);
+
+			while (it != end())
+			{
+				INDEX_TYPE v2 = *(it++);
+				m_length += CVector3<double>(mesh->vertices()[v1], mesh->vertices()[v2]).length();
+				v1 = v2;
+
+			}
 		}
 	}
 };
@@ -47,7 +46,7 @@ void CAnnotationVPath::renderSelf()
 
 	if (this->size() > 1)
 	{
-		CMesh *mesh = (CMesh*)((CObject*)m_parent.get())->getChild();
+		auto mesh = std::dynamic_pointer_cast<CMesh>(((CObject*)m_parent)->getChild());
 
 		glPushMatrix();
 		glPushAttrib(GL_ALL_ATTRIB_BITS);

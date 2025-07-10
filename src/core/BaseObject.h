@@ -22,7 +22,9 @@ class CTransform;
 class QMouseEvent;
 class QWheelEvent;
 
-class DPVISION_EXPORT CBaseObject
+#include <memory>
+
+class DPVISION_EXPORT CBaseObject : public std::enable_shared_from_this<CBaseObject>
 {
 
 public:
@@ -88,7 +90,7 @@ public:
 
 	// konstruktor ze wskazaniem rodzica
 	//CBaseObject(std::shared_ptr<CBaseObject> p = nullptr);
-	CBaseObject(CBaseObject* p = nullptr);
+	CBaseObject(std::shared_ptr<CBaseObject> p = nullptr);
 
 	// konstruktor ze wskazaniem rodzica
 	CBaseObject(int objId);
@@ -115,7 +117,17 @@ public:
 
 	virtual void applyTransformation(CTransform& /*from*/, CTransform& /*to*/) {};
 
-	virtual CBaseObject *getCopy() { return new CBaseObject( *this ); }
+	//virtual CBaseObject *getCopy() { return new CBaseObject( *this ); }
+
+	virtual std::shared_ptr<CBaseObject> getCopy() { return std::make_shared<CBaseObject>(*this); }
+
+	virtual std::shared_ptr<CBaseObject> getSomethingWithId(int id)
+	{
+		if (m_Id == id)
+			return shared_from_this();
+		else
+			return nullptr; 
+	}
 
 	virtual void switchOpt(int /*key*/, int /*val*/) {};
 
@@ -151,16 +163,29 @@ public:
 	}
 
 
-	std::shared_ptr<CBaseObject> getParentPtr() { return m_parent; };
-	CBaseObject* getParent() { return m_parent.get(); };
-	void setParent(std::shared_ptr<CBaseObject> p) { m_parent = p; };
-	void setParent(CBaseObject *p) { m_parent = std::shared_ptr<CBaseObject>(p); };
+	std::shared_ptr<CBaseObject> getParentPtr()
+	{
+		if (m_parent) {
+			try {
+				return m_parent->shared_from_this();
+			}
+			catch (...) {
+				return nullptr;
+			}
+		}
+		return nullptr; 
+	};
+
+	CBaseObject* getParent() { return m_parent; };
+	
+	void setParent(std::shared_ptr<CBaseObject> p) { m_parent = p.get(); };
+	void setParent(CBaseObject *p) { m_parent = p; };
 	void setParent(int objId);
 
 
-	std::vector<CBaseObject*> getPathToRoot();
+	std::vector<std::shared_ptr<CBaseObject>> getPathToRoot();
 
-	CBaseObject* getRoot();
+	std::shared_ptr<CBaseObject> getRoot();
 
 	virtual void setVisible(bool v) { m_showSelf = v; };
 
@@ -174,13 +199,13 @@ public:
 	virtual void showChildren(bool show, QSet<CBaseObject::Type> inc = {}, QSet<CBaseObject::Type> exc = {}) {};
 
 	int id() { return m_Id; };
-	int parentId() { return (m_parent != nullptr) ? m_parent->id() : NO_CURRENT_MODEL; };
+	int parentId() { return m_parent ? m_parent->id() : NO_CURRENT_MODEL; };
 
 	virtual inline bool setSelected(bool sel) { return m_selected = sel; };
 	virtual inline bool isSelected() { return m_selected; };
 
 	// dla zachowania zgodno�ci przy wyszukiwaniu potomk�w
-	virtual CBaseObject *findId(int /*id*/) { return NULL; };
+	virtual std::shared_ptr<CBaseObject> findId(int /*id*/) { return nullptr; };
 	virtual inline bool hasChildren() { return false; };
 
 	virtual bool hasTransformation() { return false; };
@@ -220,7 +245,7 @@ protected:
 	QSet<QString> m_keywords;
 	QString m_path;
 
-	std::shared_ptr<CBaseObject> m_parent;
+	CBaseObject* m_parent;
 
 	bool m_selected;
 
@@ -233,5 +258,6 @@ typedef CBaseObject* PtrBaseObject;
 typedef CBaseObject& RefBaseObject;
 
 Q_DECLARE_METATYPE(CBaseObject*)
+Q_DECLARE_METATYPE(std::shared_ptr<CBaseObject>)
 
 #endif /* _BaseObject_H_BY_DP_INCLUDED_ */

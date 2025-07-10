@@ -11,7 +11,7 @@ class DPVISION_EXPORT CAnnotationTriangle : public CAnnotation
 public:
 	CPoint3d m_pA, m_pB, m_pC;
 
-	CAnnotationTriangle( CBaseObject *m = nullptr) :CAnnotation( m )
+	CAnnotationTriangle(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation( m )
 	{
 		setLabel("triple");
 	};
@@ -49,9 +49,9 @@ public:
 
 	~CAnnotationTriangle(void){};
 
-	virtual CAnnotationTriangle* getCopy() override
+	virtual std::shared_ptr<CBaseObject> getCopy() override
 	{
-		return new CAnnotationTriangle(*this);
+		return std::make_shared<CAnnotationTriangle>(*this);
 	}
 
 	CPoint3d &C() { return m_pC; }

@@ -10,21 +10,21 @@ CAnnotation::CAnnotation(const CAnnotation& a) : CBaseObject(a)
 	m_annotations.clear();
 	for (Annotations::const_iterator it = a.m_annotations.begin(); it != a.m_annotations.end(); it++)
 	{
-		CAnnotation* child = it->second->getCopy();
-		child->setParent(this);
+		std::shared_ptr<CAnnotation> child = std::dynamic_pointer_cast<CAnnotation>(it->second->getCopy());
+		child->setParent(this->shared_from_this());
 		//child->setId(getNewId());
 		addAnnotation(child);
 	}
 }
 
-CBaseObject* CAnnotation::getSomethingWithId(int id)
+std::shared_ptr<CBaseObject> CAnnotation::getSomethingWithId(int id)
 {
-	if (m_Id == id) return this;
+	if (m_Id == id) return shared_from_this();
 	else
 	{
 		for (const auto& a : m_annotations)
 		{
-			CBaseObject* result = a.second->getSomethingWithId(id);
+			std::shared_ptr<CBaseObject> result = a.second->getSomethingWithId(id);
 			if (result != nullptr) return result;
 		}
 	}

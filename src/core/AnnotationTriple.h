@@ -15,7 +15,7 @@ public:
 	CPoint3d m_left;
 	CPoint3d m_right;
 
-	CAnnotationTriple( CBaseObject *m = nullptr) :CAnnotation( m )
+	CAnnotationTriple(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation( m )
 	{
 		m_origin = CPoint3d(0.0,0.0,0.0);
 		m_rot = CVector3d(0.0,0.0,0.0);

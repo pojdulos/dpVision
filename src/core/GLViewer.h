@@ -165,8 +165,8 @@ protected:
 
 	void PickObject(int x, int y);
 	
-	void PickMeshPoint(double xx, double yy, CModel3D* obj);
-	void PickCloudPoint(double xx, double yy, CModel3D* obj);
+	void PickMeshPoint(double xx, double yy, std::shared_ptr<CModel3D> obj);
+	void PickCloudPoint(double xx, double yy, std::shared_ptr<CModel3D> obj);
 	void PickPoint(int x, int y);
 	int readSelectBuffer(int x, int y);
 
@@ -212,7 +212,7 @@ public:
 	bool inRectangle(CPoint3d pt, CPoint3d A, CPoint3d B, CPoint3d C, CPoint3d D);
 	void findIntersection(CPoint3d origin, CVector3d direction, CPoint3d A, CPoint3d B, CPoint3d C, CPoint3d D, std::vector<std::pair<double, CPoint3d>>& intersections);
 	bool getEntryAndExit(CPoint3d pMin, CPoint3d pMax, CPoint3d origin, CVector3d direction, CPoint3d& entry, CPoint3d& exit);
-	CAnnotationPyramid* getPyramid(double xx, double yy, CPoint3d entry, CPoint3d exit, CModel3D* obj, double& r);
+	std::shared_ptr<CAnnotationPyramid> getPyramid(double xx, double yy, CPoint3d entry, CPoint3d exit, CModel3D* obj, double& r);
 	bool isInPixelShadow(double pxlX, double pxlY, double ptX, double ptY);
 	bool convertWorldToWin(CPoint3d, CPoint3d &);
 	

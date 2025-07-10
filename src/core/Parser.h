@@ -13,13 +13,13 @@ protected:
 	bool bIsNotSet;
 
 	// old style -- deprecated
-	CModel3D *m_model;
+	std::shared_ptr<CModel3D> m_model;
 
 	// old style -- deprecated
 	CFileInfo plikSiatki;
 
 	// old style -- deprecated
-	CMesh *pMeshData;
+	std::shared_ptr<CMesh> pMeshData;
 
 
 	bool m_bOK;
@@ -41,9 +41,9 @@ public:
 	CParser(void);
 	virtual ~CParser(void);
 
-	virtual CModel3D* load( const QString path, bool wait = true);
-	virtual bool save( CModel3D *obj, const QString path );
-	virtual bool save(QVector<CBaseObject*> objects, const QString path) { return false; };
+	virtual std::shared_ptr<CModel3D> load( const QString path, bool wait = true);
+	virtual bool save( std::shared_ptr<CModel3D> obj, const QString path );
+	virtual bool save(QVector<std::shared_ptr<CBaseObject>> objects, const QString path) { return false; };
 
 	virtual bool canLoadExt(const QString ext);
 	virtual bool canSaveExt(const QString ext);

@@ -237,7 +237,7 @@ void UI::DOCK::WORKSPACE::addItem(int id, int parentId)
 	}
 }
 
-void UI::DOCK::WORKSPACE::addItem(CBaseObject* obj)
+void UI::DOCK::WORKSPACE::addItem(std::shared_ptr<CBaseObject> obj)
 {
 	CMainWindow* win = AP::mainWinPtr();
 
@@ -267,16 +267,16 @@ void UI::DOCK::WORKSPACE::selectItem( int id)
 	}
 }
 
-QVector<CBaseObject*> UI::DOCK::WORKSPACE::getSelectedObjects()
+QVector<std::shared_ptr<CBaseObject>> UI::DOCK::WORKSPACE::getSelectedObjects()
 {
 	CMainWindow* win = AP::mainWinPtr();
 
 	if (win && win->dockWorkspace) return win->dockWorkspace->getSelectedObjects();
 
-	return QVector<CBaseObject*>();
+	return QVector<std::shared_ptr<CBaseObject>>();
 }
 
-CBaseObject* UI::DOCK::WORKSPACE::getCurrentItemObj()
+std::shared_ptr<CBaseObject> UI::DOCK::WORKSPACE::getCurrentItemObj()
 {
 	CMainWindow* win = AP::mainWinPtr();
 

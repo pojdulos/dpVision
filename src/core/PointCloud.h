@@ -71,14 +71,14 @@ protected:
 public:
 	static int m_pointSize;
 
-	CPointCloud(CBaseObject *p= nullptr);
+	CPointCloud(std::shared_ptr<CBaseObject> p= nullptr);
 	CPointCloud(CPointCloud&);
 	~CPointCloud();
 
 	inline int type() override { return CObject::Type::CLOUD; };
 	std::wstring infoRow() override;
 
-	virtual CPointCloud* getCopy() override { return new CPointCloud(*this); };
+	virtual std::shared_ptr<CBaseObject> getCopy() override { return std::make_shared<CPointCloud>(*this); };
 
 	//inline CVertex &vertex(size_t i) { return m_vertices.at(i); };
 	//inline CRGBA &vertexColor(size_t i) { return m_vcolors.at(i); };
@@ -177,8 +177,8 @@ public:
 
 	void transformByMatrixF(float matrix[16]);
 	void transformByMatrixD(double matrix[16]);
-	void cutPlane(CPlane* m_cutPlane, CPointCloud* &rest);
-	static CPointCloud* findNClosest(CPointCloud* ruchoma, CPointCloud* nieruchoma, int limit);
+	void cutPlane(CPlane &m_cutPlane, std::shared_ptr<CPointCloud> &rest);
+	static std::shared_ptr<CPointCloud> findNClosest(std::shared_ptr<CPointCloud> ruchoma, std::shared_ptr<CPointCloud> nieruchoma, int limit);
 };
 
 typedef CPointCloud* PtrPointCloud;

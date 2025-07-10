@@ -19,7 +19,7 @@ void WorkspaceTreeModel::initialize()
 	//	horizontalHeaderItem(column)->setTextAlignment(	Qt::AlignVCenter | Qt::AlignLeft );
 }
 
-WorkspaceTreeItem* WorkspaceTreeModel::append(QStandardItem* root, CBaseObject* obj)
+WorkspaceTreeItem* WorkspaceTreeModel::append(QStandardItem* root, std::shared_ptr<CBaseObject> obj)
 {
 	WorkspaceTreeItem* i1 = new WorkspaceTreeItem(obj);
 
@@ -27,34 +27,34 @@ WorkspaceTreeItem* WorkspaceTreeModel::append(QStandardItem* root, CBaseObject* 
 
 	if (obj->hasCategory(CBaseObject::Category::OBJECT))
 	{
-		auto& kids = ((CObject*)obj)->children();
+		auto& kids = std::static_pointer_cast<CObject>(obj)->children();
 		if (!kids.empty())
 		{
 			for (const auto& iter : kids)
 			{
-				this->append(i1, (CObject*)iter.second.get());
+				this->append(i1, iter.second);
 			}
 		}
 
-		auto& anns = ((CObject*)obj)->annotations();
+		auto& anns = std::static_pointer_cast<CObject>(obj)->annotations();
 
 		if (!anns.empty())
 		{
 			for (const auto& iter : anns)
 			{
-				this->append(i1, iter.second.get());
+				this->append(i1, iter.second);
 			}
 		}
 	}
 	else if (obj->hasCategory(CBaseObject::Category::ANNOTATION))
 	{
-		auto& anns = ((CAnnotation*)obj)->annotations();
+		auto& anns = std::static_pointer_cast<CAnnotation>(obj)->annotations();
 
 		if (!anns.empty())
 		{
 			for (const auto& iter : anns)
 			{
-				this->append(i1, iter.second.get());
+				this->append(i1, iter.second);
 			}
 		}
 	}
@@ -119,7 +119,7 @@ WorkspaceTreeItem* WorkspaceTreeModel::append(QStandardItem* root, CBaseObject* 
 //	return i1;
 //}
 
-void WorkspaceTreeModel::addModelWithChildren(CModel3D* obj)
+void WorkspaceTreeModel::addModelWithChildren(std::shared_ptr<CModel3D> obj)
 {
 	this->append(this->invisibleRootItem(), obj);
 }

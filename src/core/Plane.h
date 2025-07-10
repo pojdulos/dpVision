@@ -606,7 +606,7 @@ public:
 	}
 
 
-	CMesh* getMesh( double size, int divX=1, int divY=1 );
+	std::shared_ptr<CMesh> getMesh( double size, int divX=1, int divY=1 );
 	void toMatrix(double* m);
 	CTransform toTransform1();
 	Eigen::Matrix4d toEigenMatrix4d();

@@ -4,7 +4,7 @@
 
 int CPointCloud::m_pointSize = 1;
 
-CPointCloud::CPointCloud(CBaseObject *p) : CObject(p)
+CPointCloud::CPointCloud(std::shared_ptr<CBaseObject> p) : CObject(p)
 {
 	setLabel("cloud");
 	m_kdtree = nullptr;
@@ -389,9 +389,9 @@ void CPointCloud::transformByMatrixD(double matrix[16])
 
 #include "Plane.h"
 
-void CPointCloud::cutPlane(CPlane* m_cutPlane, CPointCloud* &rest)
+void CPointCloud::cutPlane(CPlane &m_cutPlane, std::shared_ptr<CPointCloud> &rest)
 {
-	rest = this->getCopy();
+	rest = std::dynamic_pointer_cast<CPointCloud>(this->getCopy());
 
 	if (rest == nullptr) return;
 
@@ -404,7 +404,7 @@ void CPointCloud::cutPlane(CPlane* m_cutPlane, CPointCloud* &rest)
 	for (int i = 0; i < m_vertices.size(); i++)
 	{
 		CVertex& v = m_vertices[i];
-		if (0 >= m_cutPlane->testPointPosition(v))
+		if (0 >= m_cutPlane.testPointPosition(v))
 		{
 			tmpv2.push_back(v);
 			if ( hasVertexColors() )
@@ -427,7 +427,7 @@ void CPointCloud::cutPlane(CPlane* m_cutPlane, CPointCloud* &rest)
 
 
 
-CPointCloud* CPointCloud::findNClosest(CPointCloud* ruchoma, CPointCloud* nieruchoma, int limit)
+std::shared_ptr<CPointCloud> CPointCloud::findNClosest(std::shared_ptr<CPointCloud> ruchoma, std::shared_ptr<CPointCloud> nieruchoma, int limit)
 {
 	nieruchoma->createKDtree();
 
@@ -443,7 +443,7 @@ CPointCloud* CPointCloud::findNClosest(CPointCloud* ruchoma, CPointCloud* nieruc
 		dobre.insert({ dist,i });
 	}
 
-	CPointCloud* result = new CPointCloud;
+	std::shared_ptr<CPointCloud> result = std::make_shared<CPointCloud>();
 	int size = (limit > dobre.size()) ? dobre.size() : limit;
 	for (int i = 0; i < size; i++)
 	{

@@ -13,12 +13,12 @@ public:
 
 	void initialize();
 
-	WorkspaceTreeItem* append(QStandardItem* root, CBaseObject* obj);
+	WorkspaceTreeItem* append(QStandardItem* root, std::shared_ptr<CBaseObject> obj);
 
 	//WorkspaceTreeItem* append(QStandardItem* root, CModel3D* obj, bool hideable, bool lockable, bool checkable, bool checked);
 	//WorkspaceTreeItem* appendDataChild(QStandardItem* root, CObject* obj);
 	//WorkspaceTreeItem* appendAnnotationChild(QStandardItem* root, CAnnotation* an);
 
-	void addModelWithChildren(CModel3D *obj);
+	void addModelWithChildren(std::shared_ptr<CModel3D> obj);
 };
 
