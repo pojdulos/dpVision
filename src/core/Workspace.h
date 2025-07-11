@@ -40,12 +40,19 @@ struct _light
 	void setSpot( float f3 ) { spot_cut_off=f3; };
 };
 
+class IWorkspaceEvents;
 
 class CWorkspace : public QObject
 {
 	Q_OBJECT
 
+private:
+	IWorkspaceEvents* events_ = nullptr;
+
 public:
+	void setEventsDispatcher(IWorkspaceEvents* events) { events_ = events; }
+	IWorkspaceEvents* eventsDispatcher() const { return events_; }
+
 	typedef CModel3D ChildType;
 	//typedef std::map<int, ChildType*> Children;
 	typedef std::map<int, std::shared_ptr<ChildType>> Children;
