@@ -1149,18 +1149,18 @@ void CMainWindow::modelClose()
 		}
 	}
 
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	auto obj = AP::WORKSPACE::getCurrentModel();
 
 	if (obj != nullptr)
 	{
-		if (obj->hasType(CObject::Type::IMAGE))
+		if (auto im = std::dynamic_pointer_cast<CImage>(obj))
 		{
-			if (AP::WORKSPACE::removeImage((CImage*)obj.get()))
+			if (AP::WORKSPACE::removeImage(im))
 				UI::STATUSBAR::printf("Current image has been removed...");
 		}
 		else
 		{
-			if (AP::WORKSPACE::removeModel(obj.get()))
+			if (AP::WORKSPACE::removeModel(obj))
 				UI::STATUSBAR::printf("Current model has been removed...");
 		}
 	}

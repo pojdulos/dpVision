@@ -94,7 +94,7 @@ public:
 	~CMainWindow();
 
 	Ui::MainWindow ui;
-	ProgressIndicator* progressIndicator;
+	QPointer<ProgressIndicator> progressIndicator;
 	
 	static CMainWindow* instance();
 
@@ -104,18 +104,18 @@ public:
 
 	QToolBar* toolbar;
 
-	DockWidgetWorkspace *dockWorkspace;
-	DockWidgetLights *dockLights;
+	QPointer<DockWidgetWorkspace> dockWorkspace;
+	QPointer<DockWidgetLights> dockLights;
 	
-	DockWidgetProperties *dockProperties;
+	QPointer<DockWidgetProperties> dockProperties;
 
-	DockWidgetPluginList *dockPluginList;
-	DockWidgetPluginPanel *dockPluginPanel;
+	QPointer<DockWidgetPluginList> dockPluginList;
+	QPointer<DockWidgetPluginPanel> dockPluginPanel;
 
-	DockWidgetHistogram *dockHisto;
-	DockWidgetImageViewer* dockImage;
+	QPointer<DockWidgetHistogram> dockHisto;
+	QPointer<DockWidgetImageViewer> dockImage;
 
-	GLViewer * currentViewer();
+	GLViewer* currentViewer();
 	MdiChild* currentMdiChild();
 
 	void updateView(bool repaintAll = true, bool buffered = true);
@@ -163,11 +163,11 @@ private:
 	//QAction *selectVertices, *selectFaces, *selectNone;
 	void createSelectMenu();
 
-	QMenu* recentFilesMenu;
+	QPointer<QMenu> recentFilesMenu;
 
 	QPointer<QMdiSubWindow> lastActiveWindow;
 
-	QAction* openAction;
+	QPointer<QAction> openAction;
 	QList<QAction*> recentFileActionList;
 
 	const int maxRecentFiles = 10;
@@ -188,7 +188,7 @@ public:
 	void adjustForCurrentFile(const QString& filePath);
 
 private:
-	SettingsDialog* settingsDialog;
+	QPointer<SettingsDialog> settingsDialog;
 
 private slots:
 	void openRecent();

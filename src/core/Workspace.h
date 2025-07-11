@@ -107,7 +107,7 @@ public:
 
 	std::shared_ptr<CWorkspace::ChildType> _getModel( int i );
 
-	bool		_removeModel( int i, bool deleteIt = true);
+	bool		_removeModel( int i);
 
 	bool		_removeAllModels();
 
@@ -136,7 +136,7 @@ public:
 	bool changeSelection(int id, bool b);
 
 	std::list<int> getSelection();
-	std::list<int> getSelection(std::set<CBaseObject::Type> type, CObject* obj = nullptr);
+	std::list<int> getSelection(std::set<CBaseObject::Type> type, std::shared_ptr<CObject> obj = nullptr);
 	std::list<std::shared_ptr<CBaseObject>> getSelected(std::set<CBaseObject::Type> types, std::shared_ptr<CObject> dad);
 	void clearSelection() { m_selection.clear(); };
 

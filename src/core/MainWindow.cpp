@@ -74,7 +74,7 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 	ui.action_File_SaveAs->setEnabled( false );
 
 
-	settingsDialog = nullptr;
+	settingsDialog.clear();
 
 	//this->toolbar = new QToolBar("toolbar",this);
 	//this->addToolBar(toolbar);
@@ -147,7 +147,9 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 		});
 }
 
-CMainWindow::~CMainWindow() {}
+CMainWindow::~CMainWindow() 
+{
+}
 
 
 CMainWindow* CMainWindow::instance()

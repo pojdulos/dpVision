@@ -60,7 +60,7 @@ bool CWorkspace::_addModel( std::shared_ptr<CModel3D> pMdlR )
 	return true;
 }
 
-bool CWorkspace::_removeModel( int i, bool deleteIt)
+bool CWorkspace::_removeModel( int i)
 {
 	if (NO_CURRENT_MODEL == i) return false;
 
@@ -194,7 +194,7 @@ std::list<int> CWorkspace::getSelection()
 	return result;
 }
 
-std::list<int> CWorkspace::getSelection(std::set<CBaseObject::Type> types, CObject* dad)
+std::list<int> CWorkspace::getSelection(std::set<CBaseObject::Type> types, std::shared_ptr<CObject> dad)
 {
 	std::list<int> result;
 	for (auto id : m_selection)

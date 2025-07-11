@@ -1,4 +1,4 @@
-#include "AP.h"
+#include "old_api_AP.h"
 
 #include "MainApplication.h"
 #include "MainWindow.h"
@@ -413,21 +413,21 @@ namespace AP
 			return AP::WORKSPACE::addModel(std::dynamic_pointer_cast<CModel3D>(im));
 		}
 
-		bool removeImage(int id, bool deleteIt)
+		bool removeImage(int id)
 		{
 			AP::mainWin().closePicViewers(id);
-			return removeModel(id, deleteIt);
+			return removeModel(id);
 		}
 
-		bool removeImage(CImage* im, bool deleteIt)
+		bool removeImage(std::shared_ptr<CImage> im)
 		{
 			AP::mainWin().closePicViewers(im->id());
-			return removeModel(im->id(), deleteIt);
+			return removeModel(im->id());
 		}
 
-		bool removeModel( int id, bool deleteIt)
+		bool removeModel( int id)
 		{
-			if (getWorkspace()->_removeModel(id, deleteIt))
+			if (getWorkspace()->_removeModel(id))
 			{
 				std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 				if (nullptr != obj)
@@ -452,15 +452,15 @@ namespace AP
 			return false;
 		}
 
-		bool removeModel(std::shared_ptr<CModel3D> obj, bool deleteIt)
+		bool removeModel(std::shared_ptr<CModel3D> obj)
 		{
-			return removeModel(obj->id(), deleteIt);
+			return removeModel(obj->id());
 		}
 
-		bool removeModel(CModel3D* obj, bool deleteIt)
-		{
-			return removeModel(obj->id(), deleteIt);
-		}
+		//bool removeModel(CModel3D* obj)
+		//{
+		//	return removeModel(obj->id());
+		//}
 
 		bool removeCurrentModel()
 		{
@@ -615,7 +615,7 @@ namespace AP
 				return AP::getWorkspace()->getSelection();
 			}
 
-			std::list<int> getList(std::set<CBaseObject::Type> types, CObject* obj)
+			std::list<int> getList(std::set<CBaseObject::Type> types, std::shared_ptr<CObject> obj)
 			{
 				return AP::getWorkspace()->getSelection(types, obj);
 			}
@@ -690,7 +690,7 @@ namespace AP
 
 #include "Histogram.h"
 
-bool AP::OBJECT::remove(std::shared_ptr<CBaseObject> obj, bool deleteIt)
+bool AP::OBJECT::remove(std::shared_ptr<CBaseObject> obj)
 {
 	if (obj == nullptr) return false;
 
@@ -702,9 +702,9 @@ bool AP::OBJECT::remove(std::shared_ptr<CBaseObject> obj, bool deleteIt)
 		if (obj == AP::WORKSPACE::getModel(obj->id()))
 		{
 			if (obj->hasType(CObject::Type::MODEL))
-				return AP::WORKSPACE::removeModel(obj->id(), deleteIt);
+				return AP::WORKSPACE::removeModel(obj->id());
 			else if (obj->hasType(CObject::Type::IMAGE))
-				return AP::WORKSPACE::removeImage(obj->id(), deleteIt);
+				return AP::WORKSPACE::removeImage(obj->id());
 		}
 	}
 	else
@@ -721,7 +721,7 @@ bool AP::OBJECT::remove(std::shared_ptr<CBaseObject> obj, bool deleteIt)
 			}
 		}
 
-		return AP::OBJECT::removeChild(parent, obj, deleteIt);
+		return AP::OBJECT::removeChild(parent, obj);
 	}
 
 	return false;
@@ -762,7 +762,7 @@ int AP::OBJECT::addChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBase
 	return id;
 }
 
-bool AP::OBJECT::removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child, bool deleteIt)
+bool AP::OBJECT::removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child)
 {
 	if (child == nullptr) return false;
 	if (obj == nullptr) return false;
@@ -796,11 +796,6 @@ bool AP::OBJECT::removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<C
 		UI::DOCK::WORKSPACE::removeItem(child->id());
 		UI::DOCK::PROPERTIES::selectionChanged(obj->id());
 
-		//if (deleteIt)
-		//{
-		//	delete child;
-		//}
-
 		UI::updateAllViews();
 
 		return true;
@@ -826,13 +821,13 @@ void AP::OBJECT::moveTo(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseO
 		if (oldParent != nullptr)
 		{
 			t0 = CTransform(oldParent->getGlobalTransformationMatrix());
-			AP::OBJECT::removeChild(oldParent, obj, false); // false => usun ale nie kasuj
+			AP::OBJECT::removeChild(oldParent, obj);
 		}
 		else
 		{
 			if (obj == AP::WORKSPACE::getModel(obj->id()))
 			{
-				AP::WORKSPACE::removeModel(obj->id(), false);  // false => usun ale nie kasuj
+				AP::WORKSPACE::removeModel(obj->id());
 			}
 		}
 
