@@ -3,6 +3,7 @@
 #include "dll_global.h"
 
 #include <QtCore/QObject>
+#include <memory>
 
 class CBaseObject;
 

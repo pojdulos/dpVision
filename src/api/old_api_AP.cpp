@@ -503,7 +503,7 @@ namespace AP
 			return newId;
 		}
 
-		std::shared_ptr<CModel3D> AP::WORKSPACE::duplicateModel(std::shared_ptr<CModel3D> orginal)
+		std::shared_ptr<CModel3D> duplicateModel(std::shared_ptr<CModel3D> orginal)
 		{
 			if (nullptr != orginal)
 			{
@@ -524,22 +524,22 @@ namespace AP
 			return nullptr;
 		}
 
-		std::shared_ptr<CModel3D> AP::WORKSPACE::duplicateModel(int id)
+		std::shared_ptr<CModel3D> duplicateModel(int id)
 		{
 			return AP::WORKSPACE::duplicateModel(AP::WORKSPACE::getModel(id));
 		}
 
-		std::shared_ptr<CModel3D> AP::WORKSPACE::duplicateCurrentModel()
+		std::shared_ptr<CModel3D> duplicateCurrentModel()
 		{
 			return AP::WORKSPACE::duplicateModel(AP::WORKSPACE::getCurrentModel());
 		}
 
-		std::shared_ptr<CModel3D> AP::WORKSPACE::getModel(int id)
+		std::shared_ptr<CModel3D> getModel(int id)
 		{
 			return getWorkspace()->_getModel(id);
 		}
 
-		std::shared_ptr<CModel3D> AP::WORKSPACE::getCurrentModel()
+		std::shared_ptr<CModel3D> getCurrentModel()
 		{
 			return getWorkspace()->_getModel( getWorkspace()->_getCurrentModelId() );
 		}

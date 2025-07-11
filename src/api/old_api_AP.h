@@ -6,6 +6,7 @@
 #include <string>
 #include <list>
 #include <set>
+#include <memory>
 #include "BaseObject.h"
 #include "Image.h"
 

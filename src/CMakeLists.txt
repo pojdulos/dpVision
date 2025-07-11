@@ -132,6 +132,7 @@ if (NOT GLU_LIBRARY)
     message(FATAL_ERROR "GLU library not found. Please install libglu1-mesa-dev (Ubuntu)")
 endif()
 
+
 target_link_libraries(${EXE_NAME}
     OpenGL::GL
     ${GLU_LIBRARY}
@@ -179,7 +180,11 @@ set_target_properties(dpVision::PluginManager PROPERTIES
     INTERFACE_LINK_LIBRARIES PluginManager
 )
 
+
+add_subdirectory(api)
+
 target_link_libraries(${EXE_NAME}
+    dpVision::Api
     PluginManager
     PMFactory
 )

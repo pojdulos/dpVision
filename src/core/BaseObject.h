@@ -101,8 +101,8 @@ public:
 	//virtual ~CBaseObject(void) {};
 
 
-	void* operator new(std::size_t) = delete;
-	void operator delete(void*) = delete;
+	//void* operator new(std::size_t) = delete;
+	//void operator delete(void*) = delete;
 
 	virtual inline CBaseObject::Category category() { return CBaseObject::Category::UNKNOWN; };
 	virtual inline int type() { return CBaseObject::Type::GENERIC; };

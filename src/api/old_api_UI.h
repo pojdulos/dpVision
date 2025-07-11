@@ -5,6 +5,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 #include "Point3.h"
 #include <QtCore/QString>
 
