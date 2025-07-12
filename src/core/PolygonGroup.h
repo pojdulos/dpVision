@@ -4,7 +4,6 @@
 #include "Face.h"
 #include "Material.h"
 #include "Texture.h"
-#include <QOpenGLShaderProgram>
 
 class  DPVISION_EXPORT CPolygonGroup//	 : public CBaseObject
 {
@@ -19,14 +18,8 @@ public:
 	Colors m_colors;
 	Normals m_normals; //faces normals array is obligatory
 	size_t m_matIdx;
-	std::map<const QOpenGLContext*, QOpenGLShaderProgram*> programs;
-	GLint inPositionLoc;
-	GLint inVColorsLoc;
-	GLint inTexCoordLoc;
-	GLint textureUniform;
-	GLint useVNormalsLoc;
-	GLint inNormalsLoc;
-	GLuint EBO;
+
+
 
 public:
 	CPolygonGroup( CBaseObject *p = nullptr);
@@ -55,14 +48,5 @@ public:
 	void removeFace(INDEX_TYPE idx);
 	void removeFace(CPolygonGroup::Faces::iterator itf);
 	void removeFace(CPolygonGroup::Faces::reverse_iterator itfr);
-
-	//void renderSelf();
-	//void renderSelf_OLD();
-	//void renderSelf_NEW();
-
-private:
-	//void initQGLShaderProgram();
-	//void releaseQGLShaderProgram();
-	//void renderWithShaders();
 };
 

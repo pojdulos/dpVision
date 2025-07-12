@@ -1,8 +1,6 @@
 #include "Global.h"
 #include "PolygonGroup.h"
 #include "GLViewer.h"
-#include <QtOpenGL/QGLFunctions>
-#include <QtOpenGLExtensions/QtOpenGLExtensions>
 
 CPolygonGroup::CPolygonGroup( CBaseObject* p ) //: CBaseObject( p )
 {

@@ -1,6 +1,13 @@
 #include "IMeshRenderer.h"
 #include "Mesh.h"
 
+#include <QtOpenGL>
+
+//#include <QtOpenGL/QGLFunctions>
+//#include <QtOpenGLExtensions/QtOpenGLExtensions>
+//#include <QOpenGLShaderProgram>
+
+
 void IMeshRenderer::renderSelf(const CBaseObject* _obj)
 {
 	CMesh* obj = (CMesh*)_obj;
@@ -18,6 +25,143 @@ void IMeshRenderer::renderSelf(const CBaseObject* _obj)
 		glPopAttrib();
 	}
 }
+
+void IMeshRenderer::renderPoly(CPolygonGroup &poly)
+{
+	float buf[5];
+	CMesh* mesh = (CMesh*)poly.m_parent;
+	CMaterial& material = mesh->getMaterial(poly.m_matIdx);
+
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_DST_COLOR);
+
+	if ((mesh->hasVertexColors() || poly.hasColors()) && !material.m_force)
+	{
+		glEnable(GL_COLOR_MATERIAL);
+		glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+	}
+
+	if ((!mesh->hasVertexColors() && !poly.hasColors() && !mesh->renderWithTexture()) || material.m_force)
+	{
+		glMaterialfv(GL_FRONT, GL_AMBIENT, material.FrontColor.ambient.fV(buf));
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, material.FrontColor.diffuse.fV(buf));
+		glMaterialfv(GL_FRONT, GL_SPECULAR, material.FrontColor.specular.fV(buf));
+		glMaterialfv(GL_FRONT, GL_EMISSION, material.FrontColor.emission.fV(buf));
+		glMaterialf(GL_FRONT, GL_SHININESS, material.FrontColor.shininess);
+
+		glMaterialfv(GL_BACK, GL_AMBIENT, material.BackColor.ambient.fV(buf));
+		glMaterialfv(GL_BACK, GL_DIFFUSE, material.BackColor.diffuse.fV(buf));
+		glMaterialfv(GL_BACK, GL_SPECULAR, material.BackColor.specular.fV(buf));
+		glMaterialfv(GL_BACK, GL_EMISSION, material.BackColor.emission.fV(buf));
+		glMaterialf(GL_BACK, GL_SHININESS, material.BackColor.shininess);
+
+		//glEnable(GL_COLOR_MATERIAL);
+
+	}
+
+	if (mesh->renderWithTexture())
+	{
+		glBindTexture(GL_TEXTURE_2D, material.tekstura->textureId());
+		glEnable(GL_TEXTURE_2D);
+	}
+
+	if (mesh->renderFacesAsPoints())
+	{
+		glPolygonMode(GL_FRONT, GL_POINT);
+		glPolygonMode(GL_BACK, GL_POINT);
+		glEnable(GL_POINT_SMOOTH);
+		glPointSize(CPointCloud::m_pointSize);
+	}
+	else if (mesh->renderFacesAsEdges())
+	{
+		glPolygonMode(GL_FRONT, GL_LINE);
+		glPolygonMode(GL_BACK, GL_LINE);
+	}
+	else
+	{
+		glPolygonMode(GL_FRONT, GL_FILL);
+		glPolygonMode(GL_BACK, GL_FILL);
+	}
+
+
+	CMaterial::TextureIndexes::iterator texIdx;
+	if (mesh->renderWithTexture()) texIdx = material.texindex.begin();
+
+	CPolygonGroup::Colors::iterator color;
+	if ((mesh->hasVertexColors() || mesh->hasFaceColors()) && !material.m_force)
+		color = mesh->fcolors().begin();
+
+	glBegin(GL_TRIANGLES);
+
+	CPolygonGroup::Faces::iterator face = poly.m_faces.begin();
+	CPolygonGroup::Normals::iterator vnface = poly.m_normals.begin();
+
+	bool hasVn = poly.m_normals.size() >= poly.m_faces.size();
+
+	for (; face != poly.m_faces.end(); face++)
+	{
+		if (mesh->hasVertexColors() && !material.m_force)
+			glColor4ubv(mesh->vcolors()[face->A()].V());
+		else if (poly.hasColors() && !material.m_force)
+		{
+			glColor4ubv(color->V());
+			color++;
+		}
+
+		if (mesh->renderSmoothVertex())
+			glNormal3fv(mesh->vnormals()[face->A()].toVector());
+		else
+		{
+			if (hasVn)
+			{
+				glNormal3fv(vnface->toVector());
+				vnface++;
+			}
+			else
+			{
+				glNormal3dv(face->getNormal(mesh->vertices()).toVector());
+			}
+
+		}
+
+		if (mesh->renderWithTexture())
+			glTexCoord2f(material.texcoord[texIdx->a].s, material.texcoord[texIdx->a].t);
+
+		glVertex3fv(mesh->vertices()[face->A()].toVector());
+
+		if (mesh->hasVertexColors() && !material.m_force)
+			glColor4ubv(mesh->vcolors()[face->B()].V());
+
+		if (mesh->renderSmoothVertex())
+			glNormal3fv(mesh->vnormals()[face->B()].toVector());
+
+		if (mesh->renderWithTexture())
+			glTexCoord2f(material.texcoord[texIdx->b].s, material.texcoord[texIdx->b].t);
+
+		glVertex3fv(mesh->vertices()[face->B()].toVector());
+
+		if (mesh->hasVertexColors() && !material.m_force)
+			glColor4ubv(mesh->vcolors()[face->C()].V());
+
+		if (mesh->renderSmoothVertex())
+			glNormal3fv(mesh->vnormals()[face->C()].toVector());
+
+		if (mesh->renderWithTexture())
+			glTexCoord2f(material.texcoord[texIdx->c].s, material.texcoord[texIdx->c].t);
+
+		glVertex3fv(mesh->vertices()[face->C()].toVector());
+
+		if (mesh->renderWithTexture())
+			texIdx++;
+	}
+
+	glEnd();
+
+	//glDisable(GL_BLEND);
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_COLOR_MATERIAL);
+};
+
 
 
 
@@ -144,7 +288,7 @@ void IMeshRenderer::renderSelf(const CBaseObject* _obj)
 //
 //
 //
-//	//wierzcho³ki
+//	//wierzchoï¿½ki
 //	inPositionLoc = program->attributeLocation("inPosition");
 //	program->enableAttributeArray(inPositionLoc);
 //	program->setAttributeArray(inPositionLoc, (GLfloat*)vertexDataPtr, 3);
@@ -197,7 +341,7 @@ void IMeshRenderer::renderSelf(const CBaseObject* _obj)
 //		program->setUniformValue("useTexture", false);
 //	}
 //
-//	// Zmienna steruj¹ca wektorami normalnymi
+//	// Zmienna sterujï¿½ca wektorami normalnymi
 //	useVNormalsLoc = program->uniformLocation("useVNormals");
 //	inNormalsLoc = program->attributeLocation("inNormals");
 //	if (rSV) {
@@ -210,7 +354,7 @@ void IMeshRenderer::renderSelf(const CBaseObject* _obj)
 //	}
 //
 //
-//	// trójk¹ty
+//	// trï¿½jkï¿½ty
 //	context->functions()->glGenBuffers(1, &EBO);
 //	context->functions()->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 //
@@ -379,144 +523,4 @@ void IMeshRenderer::renderSelf(const CBaseObject* _obj)
 //	}
 //};
 
-void renderPoly_OLD(CPolygonGroup &poly)
-{
-	float buf[5];
-	CMesh* mesh = (CMesh*)poly.m_parent;
-	CMaterial& material = mesh->getMaterial(poly.m_matIdx);
 
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_DST_COLOR);
-
-	if ((mesh->hasVertexColors() || poly.hasColors()) && !material.m_force)
-	{
-		glEnable(GL_COLOR_MATERIAL);
-		glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-	}
-
-	if ((!mesh->hasVertexColors() && !poly.hasColors() && !mesh->renderWithTexture()) || material.m_force)
-	{
-		glMaterialfv(GL_FRONT, GL_AMBIENT, material.FrontColor.ambient.fV(buf));
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, material.FrontColor.diffuse.fV(buf));
-		glMaterialfv(GL_FRONT, GL_SPECULAR, material.FrontColor.specular.fV(buf));
-		glMaterialfv(GL_FRONT, GL_EMISSION, material.FrontColor.emission.fV(buf));
-		glMaterialf(GL_FRONT, GL_SHININESS, material.FrontColor.shininess);
-
-		glMaterialfv(GL_BACK, GL_AMBIENT, material.BackColor.ambient.fV(buf));
-		glMaterialfv(GL_BACK, GL_DIFFUSE, material.BackColor.diffuse.fV(buf));
-		glMaterialfv(GL_BACK, GL_SPECULAR, material.BackColor.specular.fV(buf));
-		glMaterialfv(GL_BACK, GL_EMISSION, material.BackColor.emission.fV(buf));
-		glMaterialf(GL_BACK, GL_SHININESS, material.BackColor.shininess);
-
-		//glEnable(GL_COLOR_MATERIAL);
-
-	}
-
-	if (mesh->renderWithTexture())
-	{
-		glBindTexture(GL_TEXTURE_2D, material.tekstura->textureId());
-		glEnable(GL_TEXTURE_2D);
-	}
-
-	if (mesh->renderFacesAsPoints())
-	{
-		glPolygonMode(GL_FRONT, GL_POINT);
-		glPolygonMode(GL_BACK, GL_POINT);
-		glEnable(GL_POINT_SMOOTH);
-		glPointSize(CPointCloud::m_pointSize);
-	}
-	else if (mesh->renderFacesAsEdges())
-	{
-		glPolygonMode(GL_FRONT, GL_LINE);
-		glPolygonMode(GL_BACK, GL_LINE);
-	}
-	else
-	{
-		glPolygonMode(GL_FRONT, GL_FILL);
-		glPolygonMode(GL_BACK, GL_FILL);
-	}
-
-
-	CMaterial::TextureIndexes::iterator texIdx;
-	if (mesh->renderWithTexture()) texIdx = material.texindex.begin();
-
-	CPolygonGroup::Colors::iterator color;
-	if ((mesh->hasVertexColors() || mesh->hasFaceColors()) && !material.m_force)
-		color = mesh->fcolors().begin();
-
-	glBegin(GL_TRIANGLES);
-
-	CPolygonGroup::Faces::iterator face = poly.m_faces.begin();
-	CPolygonGroup::Normals::iterator vnface = poly.m_normals.begin();
-
-	bool hasVn = poly.m_normals.size() >= poly.m_faces.size();
-
-	for (; face != poly.m_faces.end(); face++)
-	{
-		if (mesh->hasVertexColors() && !material.m_force)
-			glColor4ubv(mesh->vcolors()[face->A()].V());
-		else if (poly.hasColors() && !material.m_force)
-		{
-			glColor4ubv(color->V());
-			color++;
-		}
-
-		if (mesh->renderSmoothVertex())
-			glNormal3fv(mesh->vnormals()[face->A()].toVector());
-		else
-		{
-			if (hasVn)
-			{
-				glNormal3fv(vnface->toVector());
-				vnface++;
-			}
-			else
-			{
-				glNormal3dv(face->getNormal(mesh->vertices()).toVector());
-			}
-
-		}
-
-		if (mesh->renderWithTexture())
-			glTexCoord2f(material.texcoord[texIdx->a].s, material.texcoord[texIdx->a].t);
-
-		glVertex3fv(mesh->vertices()[face->A()].toVector());
-
-		if (mesh->hasVertexColors() && !material.m_force)
-			glColor4ubv(mesh->vcolors()[face->B()].V());
-
-		if (mesh->renderSmoothVertex())
-			glNormal3fv(mesh->vnormals()[face->B()].toVector());
-
-		if (mesh->renderWithTexture())
-			glTexCoord2f(material.texcoord[texIdx->b].s, material.texcoord[texIdx->b].t);
-
-		glVertex3fv(mesh->vertices()[face->B()].toVector());
-
-		if (mesh->hasVertexColors() && !material.m_force)
-			glColor4ubv(mesh->vcolors()[face->C()].V());
-
-		if (mesh->renderSmoothVertex())
-			glNormal3fv(mesh->vnormals()[face->C()].toVector());
-
-		if (mesh->renderWithTexture())
-			glTexCoord2f(material.texcoord[texIdx->c].s, material.texcoord[texIdx->c].t);
-
-		glVertex3fv(mesh->vertices()[face->C()].toVector());
-
-		if (mesh->renderWithTexture())
-			texIdx++;
-	}
-
-	glEnd();
-
-	//glDisable(GL_BLEND);
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_COLOR_MATERIAL);
-};
-
-
-void IMeshRenderer::renderPoly(CPolygonGroup &poly)
-{
-	renderPoly_OLD(poly);
-}
