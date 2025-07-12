@@ -2,12 +2,15 @@
 #include "OrderedPointCloud.h"
 #include "GLViewer.h"
 
+#include "../renderers/IPointCloudRenderer.h"
+
 COrderedPointCloud::COrderedPointCloud(std::shared_ptr<CBaseObject> p) : CPointCloud(p)
 {
 	setLabel("o.cloud");
 	m_cols = 0;
 	m_rows = 0;
 
+	renderer_ = std::make_shared<IPointCloudRenderer>();
 }
 
 COrderedPointCloud::COrderedPointCloud(COrderedPointCloud& m) : CPointCloud(m)
@@ -16,6 +19,8 @@ COrderedPointCloud::COrderedPointCloud(COrderedPointCloud& m) : CPointCloud(m)
 	m_dist = m.m_dist;
 	m_cols = m.m_cols;
 	m_rows = m.m_rows;
+
+	renderer_ = std::make_shared<IPointCloudRenderer>();
 }
 
 COrderedPointCloud::~COrderedPointCloud() 
@@ -34,17 +39,17 @@ std::wstring COrderedPointCloud::infoRow()
 	return napis;
 }
 
-void COrderedPointCloud::renderSelf()
-{
+//void COrderedPointCloud::renderSelf()
+//{
 	//if (m_height > 1)
 	//{
 	//	renderAsMesh();
 	//}
 	//else
 	//{
-		CPointCloud::renderSelf();
+//		CPointCloud::renderSelf();
 	//}
-}
+//}
 
 #include "Face.h"
 

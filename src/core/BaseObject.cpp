@@ -4,6 +4,8 @@
 
 #include <QMetaType>
 
+#include "../renderers/IBaseObjectRenderer.h"
+
 // Zarejestruj typ globalnie przy starcie aplikacji
 static int _registerCBaseObjectPtrMetaType()
 {
@@ -14,7 +16,6 @@ static int _registerCBaseObjectPtrMetaType()
 
 // Wykonuje się przy załadowaniu modułu
 static const int _dummy = _registerCBaseObjectPtrMetaType();
-
 
 CBaseObject::CBaseObject(std::shared_ptr<CBaseObject> p)
 {
@@ -30,6 +31,9 @@ CBaseObject::CBaseObject(std::shared_ptr<CBaseObject> p)
 	m_showSelf = true;
 	m_showKids = true;
 	m_modified = true;
+
+	renderer_ = std::make_shared<IBaseObjectRenderer>();
+
 };
 
 // konstruktor ze wskazaniem rodzica
@@ -47,6 +51,8 @@ CBaseObject::CBaseObject(int objId)
 	m_showSelf = true;
 	m_showKids = true;
 	m_modified = true;
+
+	renderer_ = std::make_shared<IBaseObjectRenderer>();
 };
 
 
@@ -68,16 +74,13 @@ CBaseObject::CBaseObject(const CBaseObject &b)
 	m_showSelf = true;
 	m_showKids = true;
 	m_modified = true;
+
+	renderer_ = std::make_shared<IBaseObjectRenderer>();
 };
 
 
-void CBaseObject::render()
-{
-	glPushMatrix();
-	renderTransform();
-	if (m_showSelf) renderSelf();
-	if (m_showKids) renderKids();
-	glPopMatrix();
+void CBaseObject::render() {
+	if (renderer_) renderer_->render(this);
 }
 
 void CBaseObject::setParent(int objId)

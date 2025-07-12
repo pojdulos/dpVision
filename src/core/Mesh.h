@@ -97,7 +97,7 @@ public:
 	bool calcVN( bool weighted = true );
 	bool calcFN();
 
-	virtual void renderSelf() override;
+	//virtual void renderSelf111() override;
 	//virtual void render() override;
 	virtual void prepare() override {};
 
@@ -228,6 +228,9 @@ public:
 
 	// experimental...
 	void merge(CMesh*);
+
+protected:
+	//static IRenderer* renderer_;
 };
 
 typedef CMesh* PtrMesh;

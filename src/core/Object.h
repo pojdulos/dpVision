@@ -102,8 +102,8 @@ public:
 
 	void renderBoundingBox();
 
-	virtual void renderTransform() override;
-	virtual void renderKids() override;
+	//virtual void renderTransform() override;
+	//virtual void renderKids() override;
 	//virtual void render() override;
 };
 

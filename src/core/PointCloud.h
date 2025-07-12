@@ -68,6 +68,9 @@ protected:
 
 	CPointCloud::KDtree *m_kdtree;
 
+	//static IRenderer* renderer_;
+
+
 public:
 	static int m_pointSize;
 
@@ -158,7 +161,7 @@ public:
 
 	void renderBACKUP();
 
-	virtual void renderSelf() override;
+	//virtual void renderSelf() override;
 	//virtual void render() override;
 
 

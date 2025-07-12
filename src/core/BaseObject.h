@@ -24,6 +24,8 @@ class QWheelEvent;
 
 #include <memory>
 
+class IRenderer;
+
 class DPVISION_EXPORT CBaseObject : public std::enable_shared_from_this<CBaseObject>
 {
 
@@ -195,8 +197,8 @@ public:
 
 	virtual void setSelfVisibility(bool v) { m_showSelf = v; }
 	virtual void setKidsVisibility(bool v) { m_showKids = v; };
-	virtual bool getSelfVisibility() { return m_showSelf; };
-	virtual bool getKidsVisibility() { return m_showKids; };
+	virtual bool getSelfVisibility() const { return m_showSelf; };
+	virtual bool getKidsVisibility() const { return m_showKids; };
 	virtual bool switchSelfVisibility();
 	virtual bool switchKidsVisibility();
 
@@ -243,6 +245,8 @@ public:
 	inline virtual void prop_widget_update() {};
 
 protected:
+	std::shared_ptr<IRenderer> renderer_;
+
 	int m_Id;
 	QString m_label;
 	QString m_descr;

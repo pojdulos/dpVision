@@ -2,6 +2,8 @@
 #include "PointCloud.h"
 #include "GLViewer.h"
 
+#include "../renderers/IPointCloudRenderer.h"
+
 int CPointCloud::m_pointSize = 1;
 
 CPointCloud::CPointCloud(std::shared_ptr<CBaseObject> p) : CObject(p)
@@ -10,6 +12,7 @@ CPointCloud::CPointCloud(std::shared_ptr<CBaseObject> p) : CObject(p)
 	m_kdtree = nullptr;
 
 	m_materials.push_back(new CMaterial);
+	renderer_ = std::make_shared<IPointCloudRenderer>();
 }
 
 CPointCloud::CPointCloud(CPointCloud& m) : CObject(m)
@@ -24,6 +27,7 @@ CPointCloud::CPointCloud(CPointCloud& m) : CObject(m)
 	}
 
 	m_kdtree = nullptr;
+	renderer_ = std::make_shared<IPointCloudRenderer>();
 }
 
 CPointCloud::~CPointCloud()
@@ -53,77 +57,77 @@ std::wstring CPointCloud::infoRow()
 	return napis;
 }
 
-#define PACKET_SIZE (size_t)1000000
-
-void CPointCloud::renderSelf()
-{
-	glPushMatrix();
-	glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-	if ( hasVertexColors() && ! m_materials[0]->m_force )
-	{
-		//glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mesh.getMaterial().FrontColor.emission.fV(buf));
-
-		glEnable(GL_COLOR_MATERIAL);
-		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	}
-	else
-	{
-		GLfloat kol[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-		
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, m_materials[0]->FrontColor.ambient.fV(kol) );
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, m_materials[0]->FrontColor.diffuse.fV(kol) );
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, m_materials[0]->FrontColor.specular.fV(kol) );
-		glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, m_materials[0]->FrontColor.emission.fV(kol) );
-		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, m_materials[0]->FrontColor.shininess);
-	}
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-
-	glEnable(GL_POINT_SMOOTH);
-	glPointSize( m_pointSize );
-
-	size_t idx = 0;
-
-	while (idx < m_vertices.size()) {
-		glVertexPointer(3, GL_FLOAT, 0, &(m_vertices[idx]));
-
-
-		if (hasVertexColors())
-		{
-			glEnableClientState(GL_COLOR_ARRAY);
-			glColorPointer(4, GL_UNSIGNED_BYTE, 0, &(m_vcolors[idx]));
-		}
-
-		if (hasVertexNormals())
-		{
-			glEnableClientState(GL_NORMAL_ARRAY);
-			glNormalPointer(GL_FLOAT, 0, &(m_vnormals[idx]));
-		}
-
-		glDrawArrays(GL_POINTS, 0, std::min(PACKET_SIZE, m_vertices.size() - idx));
-
-		if (hasVertexNormals())
-		{
-			glDisableClientState(GL_NORMAL_ARRAY);
-		}
-
-		if (hasVertexColors())
-		{
-			glDisableClientState(GL_COLOR_ARRAY);
-		}
-
-		idx += PACKET_SIZE;
-	}
-
-	glDisableClientState(GL_VERTEX_ARRAY);
-
-	glDisable(GL_COLOR_MATERIAL);
-
-	glPopAttrib();
-	glPopMatrix();
-
-}
+//#define PACKET_SIZE (size_t)1000000
+//
+//void CPointCloud::renderSelf()
+//{
+//	glPushMatrix();
+//	glPushAttrib(GL_ALL_ATTRIB_BITS);
+//
+//	if ( hasVertexColors() && ! m_materials[0]->m_force )
+//	{
+//		//glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mesh.getMaterial().FrontColor.emission.fV(buf));
+//
+//		glEnable(GL_COLOR_MATERIAL);
+//		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+//	}
+//	else
+//	{
+//		GLfloat kol[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+//		
+//		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, m_materials[0]->FrontColor.ambient.fV(kol) );
+//		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, m_materials[0]->FrontColor.diffuse.fV(kol) );
+//		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, m_materials[0]->FrontColor.specular.fV(kol) );
+//		glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, m_materials[0]->FrontColor.emission.fV(kol) );
+//		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, m_materials[0]->FrontColor.shininess);
+//	}
+//
+//	glEnableClientState(GL_VERTEX_ARRAY);
+//
+//	glEnable(GL_POINT_SMOOTH);
+//	glPointSize( m_pointSize );
+//
+//	size_t idx = 0;
+//
+//	while (idx < m_vertices.size()) {
+//		glVertexPointer(3, GL_FLOAT, 0, &(m_vertices[idx]));
+//
+//
+//		if (hasVertexColors())
+//		{
+//			glEnableClientState(GL_COLOR_ARRAY);
+//			glColorPointer(4, GL_UNSIGNED_BYTE, 0, &(m_vcolors[idx]));
+//		}
+//
+//		if (hasVertexNormals())
+//		{
+//			glEnableClientState(GL_NORMAL_ARRAY);
+//			glNormalPointer(GL_FLOAT, 0, &(m_vnormals[idx]));
+//		}
+//
+//		glDrawArrays(GL_POINTS, 0, std::min(PACKET_SIZE, m_vertices.size() - idx));
+//
+//		if (hasVertexNormals())
+//		{
+//			glDisableClientState(GL_NORMAL_ARRAY);
+//		}
+//
+//		if (hasVertexColors())
+//		{
+//			glDisableClientState(GL_COLOR_ARRAY);
+//		}
+//
+//		idx += PACKET_SIZE;
+//	}
+//
+//	glDisableClientState(GL_VERTEX_ARRAY);
+//
+//	glDisable(GL_COLOR_MATERIAL);
+//
+//	glPopAttrib();
+//	glPopMatrix();
+//
+//}
 
 #include "AP.h"
 #include "MainWindow.h"
@@ -563,5 +567,4 @@ void CPointCloud::KDtree::rebuild()
 	clear();
 	trimesh::KDtree::build((const float *)&m_vertices[0], m_vertices.size());
 }
-
 

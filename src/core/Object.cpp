@@ -3,6 +3,8 @@
 #include "Object.h"
 #include "Annotation.h"
 
+#include "../renderers/IObjectRenderer.h"
+
 // konstruktor ze wskazaniem rodzica
 CObject::CObject(std::shared_ptr<CBaseObject> p) : CBaseObject(p), CBoundingBox()//, CMinMax()
 {
@@ -10,6 +12,7 @@ CObject::CObject(std::shared_ptr<CBaseObject> p) : CBaseObject(p), CBoundingBox(
 	bDrawBB = true;
 	m_data.clear();
 	m_annotations.clear();
+	renderer_ = std::make_shared<IObjectRenderer>();
 };
 
 // konstruktor ze wskazaniem rodzica
@@ -19,6 +22,7 @@ CObject::CObject(int parentId) : CBaseObject(parentId), CBoundingBox()
 	bDrawBB = true;
 	m_data.clear();
 	m_annotations.clear();
+	renderer_ = std::make_shared<IObjectRenderer>();
 };
 
 // konstruktor kopiuj¹cy
@@ -48,6 +52,7 @@ CObject::CObject(const CObject &b) : CBaseObject(b), CBoundingBox(b) //CMinMax(b
 	}
 	
 	bDrawBB = true;
+	renderer_ = std::make_shared<IObjectRenderer>();
 };
 
 
@@ -333,44 +338,44 @@ void CObject::renderBoundingBox()
 	CBoundingBox::draw(style, this->isSelected());
 }
 
-void CObject::renderTransform()
-{
-	if (bDrawBB) renderBoundingBox();
-}
-
-void CObject::renderKids()
-{
-	//std::cout << "CObject::renderKids(): " << m_label.toStdString() << std::endl;
-	for (const auto &itd : m_data )
-	{
-		//if (itd.second->getVisibility() != Visibility::HIDE_ALL)
-		{
-			switch (itd.second->type())
-			{
-			case CObject::MODEL:
-				itd.second->render();
-				break;
-			default:
-				glLoadName(m_Id);
-				glPushName(m_Id);
-
-				itd.second->render();
-
-				glPopName();
-				glLoadName(0);
-				break;
-			}
-		}
-	}
-
-	for (const auto &it : m_annotations )
-	{
-		//if (it.second->getVisibility() != Visibility::HIDE_ALL)
-		{
-			it.second->render();
-		}
-	}
-}
+//void CObject::renderTransform()
+//{
+//	if (bDrawBB) renderBoundingBox();
+//}
+//
+//void CObject::renderKids()
+//{
+//	//std::cout << "CObject::renderKids(): " << m_label.toStdString() << std::endl;
+//	for (const auto &itd : m_data )
+//	{
+//		//if (itd.second->getVisibility() != Visibility::HIDE_ALL)
+//		{
+//			switch (itd.second->type())
+//			{
+//			case CObject::MODEL:
+//				itd.second->render();
+//				break;
+//			default:
+//				glLoadName(m_Id);
+//				glPushName(m_Id);
+//
+//				itd.second->render();
+//
+//				glPopName();
+//				glLoadName(0);
+//				break;
+//			}
+//		}
+//	}
+//
+//	for (const auto &it : m_annotations )
+//	{
+//		//if (it.second->getVisibility() != Visibility::HIDE_ALL)
+//		{
+//			it.second->render();
+//		}
+//	}
+//}
 
 std::vector<unsigned int> CObject::getChildrenIds()
 {

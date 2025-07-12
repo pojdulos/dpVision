@@ -13,7 +13,7 @@ public:
 	typedef std::vector<CRGBA> Colors;
 	typedef std::vector<CVector3f> Normals;
 
-private:
+//private:
 	CBaseObject *m_parent;
 	Faces m_faces;
 	Colors m_colors;
@@ -56,13 +56,13 @@ public:
 	void removeFace(CPolygonGroup::Faces::iterator itf);
 	void removeFace(CPolygonGroup::Faces::reverse_iterator itfr);
 
-	void renderSelf();
-	void renderSelf_OLD();
-	void renderSelf_NEW();
+	//void renderSelf();
+	//void renderSelf_OLD();
+	//void renderSelf_NEW();
 
 private:
-	void initQGLShaderProgram();
-	void releaseQGLShaderProgram();
-	void renderWithShaders();
+	//void initQGLShaderProgram();
+	//void releaseQGLShaderProgram();
+	//void renderWithShaders();
 };
 

@@ -14,6 +14,33 @@
 #include "GLViewer.h"
 #include "Parser.h"
 
+#include "../renderers/IMovementRenderer.h"
+
+CMovement::CMovement() : CObject(nullptr), m_isPlaying(false), m_currentKey(0)
+{
+	setLabel("animation");
+	bDrawBB = false;
+	setTimer();
+
+	renderer_ = std::make_shared<IMovementRenderer>();
+}
+
+CMovement::CMovement(const CMovement& m) : CObject(m), m_seqlist(m.m_seqlist), m_isPlaying(false), m_currentKey(0)
+{
+	bDrawBB = false;
+	setTimer();
+
+	renderer_ = std::make_shared<IMovementRenderer>();
+}
+
+CMovement::CMovement(const SeqList& s) : CObject(nullptr), m_seqlist(s), m_isPlaying(false), m_currentKey(0)
+{
+	setLabel("animation");
+	bDrawBB = false;
+	setTimer();
+
+	renderer_ = std::make_shared<IMovementRenderer>();
+}
 
 
 CMovement::FrameVal& CMovement::frame(int k)
@@ -173,14 +200,6 @@ int CMovement::increaseKey(bool _loop)
 	return m_currentKey;
 }
 
-
-void CMovement::renderKids()
-{
-	renderFrame();
-}
-
-
-
 std::wstring CMovement::infoRow()
 {
 	//size_t n = m_data.size();
@@ -202,6 +221,7 @@ std::wstring CMovement::infoRow()
 	
 	return ret;
 }
+
 
 
 

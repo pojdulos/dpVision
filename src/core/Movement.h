@@ -47,12 +47,11 @@ protected:
 public:
 	SeqList m_seqlist;
 
-	CMovement() : CObject(nullptr), m_isPlaying(false), m_currentKey(0)	{ setLabel("animation"); bDrawBB = false; setTimer(); }
-	CMovement(const CMovement& m) : CObject(m), m_seqlist(m.m_seqlist), m_isPlaying(false), m_currentKey(0) { bDrawBB = false; setTimer(); }
-	CMovement(const SeqList& s) : CObject(nullptr), m_seqlist(s), m_isPlaying(false), m_currentKey(0) { setLabel("animation"); bDrawBB = false; setTimer(); }
+	CMovement();
+	CMovement(const CMovement& m);
+	CMovement(const SeqList& s);
 
 	virtual ~CMovement() { m_seqlist.clear(); m_animationTimer.stop(); }
-
 
 	inline int type() override { return CObject::Type::MOVEMENT; };
 	virtual std::shared_ptr<CBaseObject> getCopy() override { return std::make_shared<CMovement>(*this); };
@@ -62,9 +61,6 @@ public:
 
 	virtual bool hasTransformation() override { return true; };
 	virtual Eigen::Matrix4d getTransformationMatrix() override { return this->currentFrame().t.toEigenMatrix4d(); };
-
-
-	virtual void renderKids() override;
 
 	void startPlaying();
 	void stopPlaying();
@@ -77,13 +73,14 @@ public:
 	inline int size() const { return m_seqlist.size(); } // liczba klatek
 	inline FrameVal& currentFrame() { return m_seqlist[m_currentKey]; } // bie¿¹ca klatka
 	FrameVal& frame(int k); // klatka o wskazanym numerze
-
 private:
 	void setTimer(); // wo³aæ tylko w konstruktorze
 	void onTimeout();
-	void renderRotationAxe(CTransform t, CTransform prev = CTransform());
+
+public:
 	// tu inkrenentacja licznika klatek;
 	void renderFrame(); // rysowanie bie¿¹cej klatki
+	void renderRotationAxe(CTransform t, CTransform prev = CTransform());
 };
 
 

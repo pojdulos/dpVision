@@ -50,7 +50,7 @@ protected:
 
 	//CFileInfo plikSiatki;
 
-	void renderAxes();
+	//void renderAxes();
 	//void renderBoundingBox();
 
 public:
@@ -113,8 +113,8 @@ public:
 	std::string lastError() { return m_sError; }
 
 	//using CBaseObject::render;
-	virtual void renderTransform() override;
-	virtual void renderSelf() override;
+	//virtual void renderTransform() override;
+	//virtual void renderSelf() override;
 
 	//inline CFileInfo &fileInfo(void) { return CFileInfo(m_path); }
 

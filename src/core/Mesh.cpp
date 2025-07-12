@@ -2,6 +2,8 @@
 #include "Model3D.h"
 #include "UI.h"
 
+#include "../renderers/IMeshRenderer.h"
+
 CMesh::CMesh(std::shared_ptr<CBaseObject> p) :CPointCloud(p)
 {
 	setLabel("mesh");
@@ -12,6 +14,7 @@ CMesh::CMesh(std::shared_ptr<CBaseObject> p) :CPointCloud(p)
 	renderSmoothVertex(false);
 
 	m_poly.setParent(this);
+	renderer_ = std::make_shared<IMeshRenderer>();
 }
 
 
@@ -32,6 +35,8 @@ CMesh::CMesh( CMesh &m ) : CPointCloud(m)
 	renderSmoothVertex( hasVertexNormals() );
 
 	renderWithTexture( hasTexture() && getMaterial().hasTextureCoords() && getMaterial().hasTextureIndexes());
+
+	renderer_ = std::make_shared<IMeshRenderer>();
 }
 
 CMesh::CMesh(CPointCloud & cloud) : CPointCloud(cloud)
@@ -42,6 +47,8 @@ CMesh::CMesh(CPointCloud & cloud) : CPointCloud(cloud)
 	renderSmoothVertex(false);
 
 	m_poly.setParent(this);
+
+	renderer_ = std::make_shared<IMeshRenderer>();
 }
 
 CMesh::~CMesh(void)
@@ -53,22 +60,6 @@ std::shared_ptr<CMesh> CMesh::fromPointCloud(CPointCloud &cloud)
 	return std::make_shared<CMesh>( cloud );
 }
 
-
-void CMesh::renderSelf()
-{
-	if ((m_poly.size() == 0) )//|| renderFacesAsPoints())
-	{
-		glPushAttrib(GL_ALL_ATTRIB_BITS);
-		CPointCloud::renderSelf();
-		glPopAttrib();
-	}
-	else
-	{
-		glPushAttrib(GL_ALL_ATTRIB_BITS);
-		m_poly.renderSelf();
-		glPopAttrib();
-	}
-}
 
 
 int CMesh::rayTriangleIntersect3D(CPoint3f pA, CPoint3f pB, CPoint3f pC, CVector3f vN, CVector3f vRay, CPoint3f pP0, CPoint3f &pIntersectionPoint, double &pDistance)
