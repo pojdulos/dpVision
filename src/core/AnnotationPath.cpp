@@ -3,9 +3,20 @@
 
 #include "AP.h"
 
-//#include <Windows.h>
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #include <GL/gl.h>
 
+
+#include "../renderers/IAnnotationPathRenderer.h"
+
+CAnnotationPath::CAnnotationPath(std::shared_ptr<CBaseObject> m) :CAnnotation(m)
+{
+	setLabel("path");
+
+	renderer_ = std::make_shared<IAnnotationPathRenderer>();
+}
 
 CAnnotationPath::iterator CAnnotationPath::cyclicNext(CAnnotationPath::iterator current)
 {

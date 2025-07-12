@@ -15,20 +15,9 @@ public:
 	std::shared_ptr<CPointCloud> m_cloud;
 	int m_pointSize;
 
-	CAnnotationSetOfVertices(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation(m)
-	{
-		setLabel("set of vertices");
-		m_cloud = nullptr;
-		m_pointSize = 5;
-	};
+	CAnnotationSetOfVertices(std::shared_ptr<CBaseObject> m = nullptr);;
 
-	CAnnotationSetOfVertices(const CAnnotationSetOfVertices& a) :CAnnotation((CAnnotation&)a), SetOfVIndices(a)
-	{
-		setLabel("copy_of_"+a.m_label);
-		//m_list.clear();
-		m_cloud = a.m_cloud;
-		m_pointSize = 5;
-	};
+	CAnnotationSetOfVertices(const CAnnotationSetOfVertices& a);;
 
 	~CAnnotationSetOfVertices() override { SetOfVIndices::clear(); };
 

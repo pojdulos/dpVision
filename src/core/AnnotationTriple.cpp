@@ -8,6 +8,29 @@
 #endif
 #include <GL/gl.h>
 
+#include "../renderers/IAnnotationTripleRenderer.h"
+
+CAnnotationTriple::CAnnotationTriple(std::shared_ptr<CBaseObject> m) :CAnnotation(m)
+{
+	m_origin = CPoint3d(0.0, 0.0, 0.0);
+	m_rot = CVector3d(0.0, 0.0, 0.0);
+
+	setLabel("triple");
+	renderer_ = std::make_shared<IAnnotationTripleRenderer>();
+}
+
+CAnnotationTriple::CAnnotationTriple(CAnnotationTriple& t) :CAnnotation(t)
+{
+	m_origin = t.m_origin;
+	m_rot = t.m_rot;
+
+	setLabel("triple");
+	m_front = t.m_front;
+	m_left = t.m_left;
+	m_right = t.m_right;
+	renderer_ = std::make_shared<IAnnotationTripleRenderer>();
+}
+
 CPoint3d CAnnotationTriple::realPos(CPoint3d p)
 {
 	CTransform t;

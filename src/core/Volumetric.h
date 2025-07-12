@@ -135,7 +135,7 @@ public:
 		{1.0f, 1.0f, 1.0f} };
 
 
-	Volumetric(ColorSpace csp=MONOCHROME2, std::shared_ptr<CBaseObject> p = nullptr):CObject(p),m_csp(csp) {};
+	Volumetric(ColorSpace csp=MONOCHROME2, std::shared_ptr<CBaseObject> p = nullptr);;
 	~Volumetric() {};
 
 	virtual inline int type() override { return CObject::Type::VOLUMETRIC_NEW; };

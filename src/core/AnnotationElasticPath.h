@@ -11,9 +11,9 @@ class DPVISION_EXPORT CAnnotationElasticPath : public CAnnotationPath
 public:
 	std::list<CPoint3f> m_data;
 
-	CAnnotationElasticPath() { setLabel("path"); setParent(nullptr); setColor(CRGBA(1.0f, 0.0f, 0.0f, 1.0f)); m_selected = false; };
+	CAnnotationElasticPath();;
 	
-	CAnnotationElasticPath( CModel3D *m ) { setLabel("path"); m_parent = m; m_color = CRGBA(1.0f, 0.0f, 0.0f, 1.0f); m_selected = false; };
+	CAnnotationElasticPath( CModel3D *m );;
 
 	~CAnnotationElasticPath(void) { m_data.clear(); };
 

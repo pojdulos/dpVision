@@ -3,8 +3,18 @@
 
 //#include "AP.h"
 
-//#include <Windows.h>
-//#include <GL/GL.h>
+#ifdef _WIN32
+#include <windows.h>
+#endif
+//#include <GL/gl.h>
+
+#include "../renderers/IAnnotationCurvatureMapRenderer.h"
+
+CAnnotationCurvatureMap::CAnnotationCurvatureMap(std::shared_ptr<CBaseObject> parent) :CAnnotation(parent), CCurvatureMap()
+{
+	setLabel("curvature map");
+	renderer_ = std::make_shared<IAnnotationCurvatureMapRenderer>();
+}
 
 std::set<INDEX_TYPE> CAnnotationCurvatureMap::dajSiodlo()
 {

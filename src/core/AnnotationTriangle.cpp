@@ -8,6 +8,49 @@
 #endif
 #include <GL/gl.h>
 
+#include "../renderers/IAnnotationTriangleRenderer.h"
+
+CAnnotationTriangle::CAnnotationTriangle(std::shared_ptr<CBaseObject> m) :CAnnotation(m)
+{
+	setLabel("triple");
+	renderer_ = std::make_shared<IAnnotationTriangleRenderer>();
+}
+
+CAnnotationTriangle::CAnnotationTriangle(CAnnotationTriangle& t) : CAnnotation(t)
+{
+	m_pC = t.m_pC;
+	m_pA = t.m_pA;
+	m_pB = t.m_pB;
+	renderer_ = std::make_shared<IAnnotationTriangleRenderer>();
+}
+
+CAnnotationTriangle::CAnnotationTriangle(CTriangle& t) :CAnnotation(nullptr)
+{
+	setLabel("triple");
+	m_pC = t[2];
+	m_pA = t[0];
+	m_pB = t[1];
+	renderer_ = std::make_shared<IAnnotationTriangleRenderer>();
+}
+
+CAnnotationTriangle::CAnnotationTriangle(CPoint3d A, CPoint3d B, CPoint3d C) :CAnnotation(nullptr)
+{
+	setLabel("triple");
+	m_pA = A;
+	m_pB = B;
+	m_pC = C;
+	renderer_ = std::make_shared<IAnnotationTriangleRenderer>();
+}
+
+CAnnotationTriangle::CAnnotationTriangle(CPoint3d v[3]) :CAnnotation(nullptr)
+{
+	setLabel("triple");
+	m_pA = v[0];
+	m_pB = v[1];
+	m_pC = v[2];
+	renderer_ = std::make_shared<IAnnotationTriangleRenderer>();
+}
+
 void CAnnotationTriangle::applyTransform(CTransform prevT, CTransform newT)
 {
 	m_pC = newT.w2l(prevT.l2w(m_pC));

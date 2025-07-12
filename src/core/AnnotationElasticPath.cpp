@@ -3,8 +3,28 @@
 
 #include "AP.h"
 
-//#include <Windows.h>
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #include <GL/gl.h>
+
+#include "../renderers/IAnnotationElasticPathRenderer.h"
+
+CAnnotationElasticPath::CAnnotationElasticPath() {
+	setLabel("path");
+	setParent(nullptr);
+	setColor(CRGBA(1.0f, 0.0f, 0.0f, 1.0f));
+	m_selected = false; 
+	renderer_ = std::make_shared<IAnnotationElasticPathRenderer>();
+}
+
+CAnnotationElasticPath::CAnnotationElasticPath(CModel3D* m) {
+	setLabel("path");
+	m_parent = m;
+	m_color = CRGBA(1.0f, 0.0f, 0.0f, 1.0f);
+	m_selected = false; 
+	renderer_ = std::make_shared<IAnnotationElasticPathRenderer>();
+}
 
 std::wstring CAnnotationElasticPath::getInfoRow()
 {

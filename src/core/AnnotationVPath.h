@@ -14,24 +14,11 @@ public:
 	//ListOfVIndices m_list;
 	double m_length;
 
-	CAnnotationVPath(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation(m), ListOfVIndices()
-	{
-		setLabel("v_path");
-	};
+	CAnnotationVPath(std::shared_ptr<CBaseObject> m = nullptr);;
 
-	CAnnotationVPath(const CAnnotationVPath& p) :CAnnotation(p), ListOfVIndices(p)
-	{
-		setLabel("v_path");
-		//m_list = p.m_list;
-		m_length = p.m_length;
-	};
+	CAnnotationVPath(const CAnnotationVPath& p);;
 
-	CAnnotationVPath(ListOfVIndices& list, double d, std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation(m), ListOfVIndices(list)
-	{
-		setLabel("v_path");
-		//m_list = list;
-		m_length = d;
-	};
+	CAnnotationVPath(ListOfVIndices& list, double d, std::shared_ptr<CBaseObject> m = nullptr);;
 
 	CAnnotationVPath(ListOfVIndices& list, std::shared_ptr<CBaseObject> m);
 	

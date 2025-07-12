@@ -12,23 +12,11 @@ public:
 	int m_lats;
 	int m_longs;
 
-	CAnnotationSphere(std::shared_ptr<CBaseObject> m = nullptr) :Kula(0.0, 0.0, 0.0, 1.0),CAnnotation( m )
-	{
-		m_lats = m_longs = 128;
-		setLabel("sphere");
-	};
+	CAnnotationSphere(std::shared_ptr<CBaseObject> m = nullptr);;
 
-	CAnnotationSphere( CAnnotationSphere&t ) :Kula(t.center(),t.radius()), CAnnotation( t )
-	{
-		m_lats = t.m_lats;
-		m_longs = t.m_longs;
-	};
+	CAnnotationSphere( CAnnotationSphere&t );;
 
-	CAnnotationSphere( Kula &k ) :Kula(k.center(), k.radius()), CAnnotation(nullptr)
-	{
-		m_lats = m_longs = 128;
-		setLabel("sphere");
-	};
+	CAnnotationSphere( Kula &k );;
 
 	~CAnnotationSphere(void){};
 

@@ -9,6 +9,8 @@
 //#include "Model3D.h"
 #include "MainApplication.h"
 
+#include "../renderers/IVolTKRenderer.h"
+
 CVolTK::CVolTK(std::shared_ptr<CBaseObject> p, int imageWidth, int imageHeight, int numberOfImages, int depth):CObject(p)
 {
 	m_dataIntensityRange = { 0xFFFF, 0x0000 };
@@ -33,6 +35,8 @@ CVolTK::CVolTK(std::shared_ptr<CBaseObject> p, int imageWidth, int imageHeight, 
 	m_div = 1;
 
 	//m_voxelSize = CPoint3d(1.0, 1.0, 1.0);
+
+	renderer_ = std::make_shared<IVolTKRenderer>();
 }
 
 /*
@@ -184,6 +188,8 @@ CVolTK::CVolTK(const CVolTK& src, CPoint3s mB, CPoint3s mE, uint16_t lowerC, uin
 	setLabel("copy_of_" + src.m_label);
 
 	setGeometry();
+
+	renderer_ = std::make_shared<IVolTKRenderer>();
 }
 
 CVolTK::~CVolTK(void)

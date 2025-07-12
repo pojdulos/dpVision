@@ -23,6 +23,7 @@ public:
 	You can also use static CImage* load(path) method. It returns NULL on load error and don't create invalid CImage instance.
 	*/
 	CImage(const QString& path, const char* format = nullptr);
+	
 	CImage(const char* path) { CImage(QString(path)); }
 	CImage(const std::string path) { CImage(QString::fromStdString(path)); }
 	CImage(const std::wstring path) { CImage(QString::fromStdWString(path)); }

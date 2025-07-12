@@ -3,29 +3,17 @@
 #include "MainWindow.h"
 #include "MdiChild.h"
 
+#include "../renderers/IImageRenderer.h"
+
 CImage::CImage() : CModel3D(), QImage()
 {
 	setLabel("image");
 	fitToWindow = false;
 
 	CModel3D::bDrawBB = false;
+
+	renderer_ = std::make_shared<IImageRenderer>();
 }
-
-CImage::CImage(const QString& path, const char* format) : CModel3D(), QImage(path, format)
-{
-	m_label = QFileInfo(path).fileName();
-	m_path = path;
-	fitToWindow = false;
-
-	img3d_half_width = (float)this->width() / 100.0f;
-	img3d_half_height = (float)this->height() / 100.0f;
-
-	setMin(CPoint3d(-img3d_half_width, -img3d_half_height, 0));
-	setMax(CPoint3d(img3d_half_width, img3d_half_height, 0));
-
-	CModel3D::bDrawBB = false;
-}
-
 
 CImage::CImage(const QImage& i) : CModel3D(), QImage(i)
 {
@@ -39,6 +27,29 @@ CImage::CImage(const QImage& i) : CModel3D(), QImage(i)
 	setMax(CPoint3d(img3d_half_width, img3d_half_height, 0));
 
 	CModel3D::bDrawBB = false;
+	renderer_ = std::make_shared<IImageRenderer>();
+}
+
+
+/*
+This constructor always (!!!) returns valid CImage instance, but it is a null-size image if load error.
+So never check if NULL is returned by 'new' command, but check if newImage->isNull() returns true.
+You can also use static CImage* load(path) method. It returns NULL on load error and don't create invalid CImage instance.
+*/
+CImage::CImage(const QString& path, const char* format) : CModel3D(), QImage(path, format)
+{
+	m_label = QFileInfo(path).fileName();
+	m_path = path;
+	fitToWindow = false;
+
+	img3d_half_width = (float)this->width() / 100.0f;
+	img3d_half_height = (float)this->height() / 100.0f;
+
+	setMin(CPoint3d(-img3d_half_width, -img3d_half_height, 0));
+	setMax(CPoint3d(img3d_half_width, img3d_half_height, 0));
+
+	CModel3D::bDrawBB = false;
+	renderer_ = std::make_shared<IImageRenderer>();
 }
 
 CImage::CImage(const CImage& i) : CModel3D( i ), QImage( i )
@@ -53,6 +64,7 @@ CImage::CImage(const CImage& i) : CModel3D( i ), QImage( i )
 	setMax(CPoint3d(img3d_half_width, img3d_half_height, 0));
 
 	CModel3D::bDrawBB = false;
+	renderer_ = std::make_shared<IImageRenderer>();
 }
 
 CImage::CImage(const uchar* b, int ww, int hh, CImage::Format f) : CModel3D(), QImage(b, ww, hh, f)
@@ -67,6 +79,7 @@ CImage::CImage(const uchar* b, int ww, int hh, CImage::Format f) : CModel3D(), Q
 	setMax(CPoint3d(img3d_half_width, img3d_half_height, 0));
 
 	CModel3D::bDrawBB = false;
+	renderer_ = std::make_shared<IImageRenderer>();
 }
 
 CImage::CImage(int ww, int hh, CImage::Format f) : CModel3D(), QImage(ww, hh, f)
@@ -81,6 +94,7 @@ CImage::CImage(int ww, int hh, CImage::Format f) : CModel3D(), QImage(ww, hh, f)
 	setMax(CPoint3d(img3d_half_width, img3d_half_height, 0));
 
 	CModel3D::bDrawBB = false;
+	renderer_ = std::make_shared<IImageRenderer>();
 }
 
 CImage::~CImage() {}

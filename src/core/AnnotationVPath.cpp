@@ -3,8 +3,35 @@
 
 #include "AP.h"
 
-//#include <Windows.h>
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #include <GL/gl.h>
+
+
+#include "../renderers/IAnnotationVPathRenderer.h"
+
+CAnnotationVPath::CAnnotationVPath(std::shared_ptr<CBaseObject> m) :CAnnotation(m), ListOfVIndices()
+{
+	setLabel("v_path");
+	renderer_ = std::make_shared<IAnnotationVPathRenderer>();
+}
+
+CAnnotationVPath::CAnnotationVPath(const CAnnotationVPath& p) : CAnnotation(p), ListOfVIndices(p)
+{
+	setLabel("v_path");
+	//m_list = p.m_list;
+	m_length = p.m_length;
+	renderer_ = std::make_shared<IAnnotationVPathRenderer>();
+}
+
+CAnnotationVPath::CAnnotationVPath(ListOfVIndices& list, double d, std::shared_ptr<CBaseObject> m) :CAnnotation(m), ListOfVIndices(list)
+{
+	setLabel("v_path");
+	//m_list = list;
+	m_length = d;
+	renderer_ = std::make_shared<IAnnotationVPathRenderer>();
+}
 
 CAnnotationVPath::CAnnotationVPath(ListOfVIndices& list, std::shared_ptr<CBaseObject> m) :CAnnotation(m), ListOfVIndices(list)
 {
@@ -26,7 +53,8 @@ CAnnotationVPath::CAnnotationVPath(ListOfVIndices& list, std::shared_ptr<CBaseOb
 			}
 		}
 	}
-};
+	renderer_ = std::make_shared<IAnnotationVPathRenderer>();
+}
 
 
 

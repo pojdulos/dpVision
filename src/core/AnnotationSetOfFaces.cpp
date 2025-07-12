@@ -3,6 +3,28 @@
 
 #include "AP.h"
 
+#include "../renderers/IAnnotationSetOfFacesRenderer.h"
+
+CAnnotationSetOfFaces::CAnnotationSetOfFaces(std::shared_ptr<CBaseObject> m) :CAnnotation(m)
+{
+	setLabel("f-indices set");
+	m_mesh = nullptr;
+	renderer_ = std::make_shared<IAnnotationSetOfFacesRenderer>();
+}
+
+CAnnotationSetOfFaces::CAnnotationSetOfFaces(const CAnnotationSetOfFaces& p) :CAnnotation(p), SetOfFIndices(p)
+{
+	m_mesh = p.m_mesh;
+	renderer_ = std::make_shared<IAnnotationSetOfFacesRenderer>();
+}
+
+CAnnotationSetOfFaces::CAnnotationSetOfFaces(const SetOfFIndices& list) : CAnnotation(), SetOfFIndices(list)
+{
+	setLabel("f-indices set");
+	m_mesh = nullptr;
+	renderer_ = std::make_shared<IAnnotationSetOfFacesRenderer>();
+}
+
 std::shared_ptr<CMesh> CAnnotationSetOfFaces::getDest()
 {
 	if (m_mesh == nullptr)

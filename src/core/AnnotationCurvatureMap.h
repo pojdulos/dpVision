@@ -44,10 +44,7 @@ typedef std::map<INDEX_TYPE, CCurvature> CCurvatureMap;
 class DPVISION_EXPORT CAnnotationCurvatureMap : public CAnnotation, public CCurvatureMap
 {
 public:
-	CAnnotationCurvatureMap(std::shared_ptr<CBaseObject> parent = nullptr) :CAnnotation(parent),CCurvatureMap()
-	{
-		setLabel("curvature map");
-	};
+	CAnnotationCurvatureMap(std::shared_ptr<CBaseObject> parent = nullptr);;
 
 	std::set<INDEX_TYPE> dajSiodlo();
 

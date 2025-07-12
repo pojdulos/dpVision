@@ -11,41 +11,15 @@ class DPVISION_EXPORT CAnnotationTriangle : public CAnnotation
 public:
 	CPoint3d m_pA, m_pB, m_pC;
 
-	CAnnotationTriangle(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation( m )
-	{
-		setLabel("triple");
-	};
+	CAnnotationTriangle(std::shared_ptr<CBaseObject> m = nullptr);;
 
-	CAnnotationTriangle( CAnnotationTriangle &t ) :CAnnotation( t )
-	{
-		m_pC = t.m_pC;
-		m_pA = t.m_pA;
-		m_pB = t.m_pB;
-	};
+	CAnnotationTriangle( CAnnotationTriangle &t );;
 
-	CAnnotationTriangle(CTriangle& t) :CAnnotation(nullptr)
-	{
-		setLabel("triple");
-		m_pC = t[2];
-		m_pA = t[0];
-		m_pB = t[1];
-	};
+	CAnnotationTriangle(CTriangle& t);;
 
-	CAnnotationTriangle(CPoint3d A, CPoint3d B, CPoint3d C) :CAnnotation(nullptr)
-	{
-		setLabel("triple");
-		m_pA = A;
-		m_pB = B;
-		m_pC = C;
-	};
+	CAnnotationTriangle(CPoint3d A, CPoint3d B, CPoint3d C);;
 
-	CAnnotationTriangle(CPoint3d v[3]) :CAnnotation(nullptr)
-	{
-		setLabel("triple");
-		m_pA = v[0];
-		m_pB = v[1];
-		m_pC = v[2];
-	};
+	CAnnotationTriangle(CPoint3d v[3]);;
 
 	~CAnnotationTriangle(void){};
 

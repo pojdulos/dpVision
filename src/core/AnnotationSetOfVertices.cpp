@@ -6,6 +6,27 @@
 //#include <Windows.h>
 #include <GL/gl.h>
 
+
+#include "../renderers/IAnnotationSetOfVerticesRenderer.h"
+
+CAnnotationSetOfVertices::CAnnotationSetOfVertices(std::shared_ptr<CBaseObject> m) :CAnnotation(m)
+{
+	setLabel("set of vertices");
+	m_cloud = nullptr;
+	m_pointSize = 5;
+	renderer_ = std::make_shared<IAnnotationSetOfVerticesRenderer>();
+}
+
+CAnnotationSetOfVertices::CAnnotationSetOfVertices(const CAnnotationSetOfVertices& a) :CAnnotation((CAnnotation&)a), SetOfVIndices(a)
+{
+	setLabel("copy_of_" + a.m_label);
+	//m_list.clear();
+	m_cloud = a.m_cloud;
+	m_pointSize = 5;
+	renderer_ = std::make_shared<IAnnotationSetOfVerticesRenderer>();
+}
+
+
 std::wstring CAnnotationSetOfVertices::getInfoRow()
 {
 	std::wstring info = L"Size: " + std::to_wstring((long long)SetOfVIndices::size()) + L" points.";

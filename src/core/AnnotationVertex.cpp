@@ -4,8 +4,40 @@
 
 #include "AP.h"
 
-//#include <Windows.h>
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #include <GL/gl.h>
+
+#include "../renderers/IAnnotationVertexRenderer.h"
+
+CAnnotationVertex::CAnnotationVertex() : CAnnotation() {
+	setLabel("vertex");
+	m_cloud = nullptr;
+	renderer_ = std::make_shared<IAnnotationVertexRenderer>();
+}
+
+CAnnotationVertex::CAnnotationVertex(CAnnotationVertex& p) : CAnnotation(p) {
+	m_index = p.m_index;
+	m_label = p.m_label;
+	m_cloud = nullptr;
+	renderer_ = std::make_shared<IAnnotationVertexRenderer>();
+}
+
+CAnnotationVertex::CAnnotationVertex(std::shared_ptr<CBaseObject> p, const size_t idx) : CAnnotation(p) {
+	m_index = idx;
+	setLabel("vertex");
+	m_cloud = nullptr;
+	renderer_ = std::make_shared<IAnnotationVertexRenderer>();
+}
+
+CAnnotationVertex::CAnnotationVertex(int objId, const size_t idx) : CAnnotation(objId) {
+	m_index = idx;
+	setLabel("vertex");
+	m_cloud = nullptr;
+	renderer_ = std::make_shared<IAnnotationVertexRenderer>();
+}
+
 
 std::wstring CAnnotationVertex::getInfoRow()
 {
@@ -13,6 +45,7 @@ std::wstring CAnnotationVertex::getInfoRow()
 
 	return info;
 }
+
 
 CVertex *CAnnotationVertex::getVertex()
 {

@@ -6,6 +6,15 @@
 //#include <Windows.h>
 #include <GL/gl.h>
 
+#include "../renderers/IAnnotationPointsRenderer.h"
+
+CAnnotationPoints::CAnnotationPoints(std::shared_ptr<CBaseObject> m) :CAnnotation(m)
+{
+	setLabel("points");
+	m_list.clear();
+	renderer_ = std::make_shared<IAnnotationPointsRenderer>();
+}
+
 void CAnnotationPoints::applyTransformation(CTransform &prevT, CTransform &newT)
 {
 	for (SetOfPoints::iterator ip = this->m_list.begin(); ip != this->m_list.end(); ip++)
