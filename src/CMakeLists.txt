@@ -182,9 +182,11 @@ set_target_properties(dpVision::PluginManager PROPERTIES
 
 
 add_subdirectory(api)
+add_subdirectory(renderers)
 
 target_link_libraries(${EXE_NAME}
     dpVision::Api
+    dpVision::Renderers
     PluginManager
     PMFactory
 )
