@@ -12,6 +12,22 @@
 
 #include <regex>
 
+#include "../renderers/IAnnotationCameraRenderer.h"
+
+CAnnotationCamera::CAnnotationCamera(std::shared_ptr<CBaseObject> m) :CAnnotation(m)
+{
+	setLabel("Camera");
+
+	renderer_ = std::make_shared<IAnnotationCameraRenderer>();
+}
+
+CAnnotationCamera::CAnnotationCamera(CAnnotationCamera& p) : CAnnotation(p)
+{
+	setLabel("Camera");
+
+	renderer_ = std::make_shared<IAnnotationCameraRenderer>();
+}
+
 std::shared_ptr<CAnnotationCamera> CAnnotationCamera::create(Sensor s, double matrix[16], std::string label)
 {
 	auto ad = std::make_shared<CAnnotationCamera>();

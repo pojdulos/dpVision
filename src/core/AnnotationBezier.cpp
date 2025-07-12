@@ -15,6 +15,15 @@ std::wstring CAnnotationBezier::getInfoRow()
 	return info;
 }
 
+#include "../renderers/IAnnotationBezierRenderer.h"
+
+inline CAnnotationBezier::CAnnotationBezier(std::shared_ptr<CBaseObject> m) :CAnnotation(m)
+{
+	setLabel("bezier");
+	m_type = 0;
+
+	renderer_ = std::make_shared<IAnnotationBezierRenderer>();
+}
 
 CPoint3d CAnnotationBezier::deCastelJau(double u, int count, int startIndex)
 {

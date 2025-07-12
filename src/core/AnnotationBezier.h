@@ -14,11 +14,7 @@ public:
 
 	int m_type;
 
-	CAnnotationBezier(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation( m )
-	{
-		setLabel("bezier");
-		m_type = 0;
-	};
+	CAnnotationBezier(std::shared_ptr<CBaseObject> m = nullptr);;
 
 	~CAnnotationBezier() override { m_list.clear();  m_spline.clear(); };
 

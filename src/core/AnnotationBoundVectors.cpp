@@ -8,6 +8,16 @@
 #endif
 #include <GL/gl.h>
 
+#include "../renderers/IAnnotationBoundVectorsRenderer.h"
+
+CAnnotationBoundVectors::CAnnotationBoundVectors(std::shared_ptr<CBaseObject> m) :CAnnotation(m)
+{
+	setLabel("bound_vectors");
+	m_data.clear();
+
+	renderer_ = std::make_shared<IAnnotationBoundVectorsRenderer>();
+}
+
 void CAnnotationBoundVectors::applyTransformation(CTransform &prevT, CTransform &newT)
 {
 	for ( std::list<_BoundVector>::iterator ip = this->m_data.begin(); ip != this->m_data.end(); ip++ )

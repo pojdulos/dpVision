@@ -4,7 +4,8 @@
 #include "Utilities.h"
 
 #include "Objects"
-#include "Annotations"
+#include "AnnotationSetOfVertices.h"
+#include "AnnotationSetOfFaces.h"
 
 #include <fstream>
 
