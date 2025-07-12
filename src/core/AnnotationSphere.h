@@ -31,9 +31,5 @@ public:
 
 	virtual std::wstring getInfoRow();
 	virtual std::wstring getTypeWSTR() { return L"sphere"; };
-
-	void drawSphere(int lats, int longs);
-
-	virtual void renderSelf() override;
 };
 

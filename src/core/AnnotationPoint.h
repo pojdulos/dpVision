@@ -52,8 +52,6 @@ public:
 	virtual std::wstring getInfoRow();
 	virtual std::wstring getTypeWSTR() { return L"point"; };
 
-	virtual void renderSelf() override; 
-
 	// OBSOLETE FUNCTIONS FOR BACK COMPATIBILITY
 
 	// obsolete, use Set()
