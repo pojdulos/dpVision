@@ -10,7 +10,7 @@
 
 struct _light
 {
-	GLenum light;
+	unsigned int light;
 	bool active;
 	bool fixed;
 	float ambient[4];
@@ -41,6 +41,7 @@ struct _light
 };
 
 class IWorkspaceEvents;
+class IWorkspaceRenderer;
 
 class CWorkspace : public QObject
 {
@@ -48,6 +49,7 @@ class CWorkspace : public QObject
 
 private:
 	IWorkspaceEvents* events_ = nullptr;
+	std::shared_ptr<IWorkspaceRenderer> renderer_= nullptr;
 
 public:
 	void setEventsDispatcher(IWorkspaceEvents* events) { events_ = events; }

@@ -180,17 +180,20 @@ void GLViewer::RenderScene()
 
 	gluLookAt(cam.m_pos.X(), cam.m_pos.Y(), cam.m_pos.Z(), cam.m_dir.X(), cam.m_dir.Y(), cam.m_dir.Z(), cam.m_up.X(), cam.m_up.Y(), cam.m_up.Z());
 
-	AP::getWorkspace()->renderLights( true );
+	auto wsp = CWorkspace::instance();
+
+	wsp->renderLights( true );
 
 	// OPCJONALNIE TU MOZNA WYSWIETLAC OBRAZEK TLA
 	// NP. AP::mainApp().GetBGplaneRef().Render( SINGLE_IMAGE ); 
 
 	cameraTransformations();
 
-	AP::getWorkspace()->renderLights( false ); // false == workspace (mobile) lights
+	wsp->renderLights( false ); // false == workspace (mobile) lights
+
 	if (m_drawAxes) rysujOsie();
-	
-	AP::getWorkspace()->render();
+
+	wsp->render();
 
 	//rysujGimbal();
 

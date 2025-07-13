@@ -11,7 +11,7 @@ template <typename T> T Volumetric::clamp(T value, T min, T max) {
 	return value;
 }
 
-#include "../renderers/IVolumetricRenderer.h"
+#include "renderers/IVolumetricRenderer.h"
 
 
 Volumetric::Volumetric(ColorSpace csp, std::shared_ptr<CBaseObject> p) :CObject(p), m_csp(csp)
