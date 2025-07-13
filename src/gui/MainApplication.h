@@ -11,7 +11,7 @@
 #include "Workspace.h"
 
 #include "PluginInterface.h"
-#include "PluginManager.h"
+//#include "PluginManager.h"
 
 #include <QtWidgets/QApplication>
 #include <QtCore/QSettings>

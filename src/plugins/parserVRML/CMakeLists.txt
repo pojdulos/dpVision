@@ -13,8 +13,9 @@ add_library (${PLUGIN_NAME} SHARED
 target_compile_definitions(${PLUGIN_NAME} PRIVATE DPVISION_PLUGIN_DLL)
 
 target_link_libraries (${PLUGIN_NAME}
+	dpVision::Exe
 	dpVision::Core
-	dpVision::Api
+	#dpVision::Api
 	dpVision::PluginManager
 	Eigen3::Eigen
 	#opencv_world

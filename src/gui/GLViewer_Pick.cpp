@@ -309,6 +309,7 @@ bool GLViewer::isInPixelShadow(double pxlX, double pxlY, double ptX, double ptY)
 }
 
 #include <chrono>
+#include "Plugin.h"
 
 void GLViewer::PickMeshPoint(double xx, double yy, std::shared_ptr<CModel3D> obj)
 {

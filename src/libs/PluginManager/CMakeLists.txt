@@ -17,9 +17,10 @@ target_link_libraries (${_NAME}
 
 target_include_directories (${_NAME} PUBLIC
     ${dpVision_INCLUDE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}
-	$<BUILD_INTERFACE:${AUTOGEN_INCLUDE_DIR}>
-	$<INSTALL_INTERFACE:include>
+	# ${CMAKE_CURRENT_SOURCE_DIR}
+    # $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/dpVisionCore_autogen/include>
+	# $<BUILD_INTERFACE:${AUTOGEN_INCLUDE_DIR}>
+	# $<INSTALL_INTERFACE:include>
 ) 
 
 target_compile_definitions(${_NAME} PRIVATE

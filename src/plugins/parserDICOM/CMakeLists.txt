@@ -31,8 +31,9 @@ target_compile_definitions(${PLUGIN_NAME} PRIVATE
 )
 
 target_link_libraries (${PLUGIN_NAME}
+	dpVision::Exe
 	dpVision::Core
-	dpVision::Api
+	#dpVision::Api
 	dpVision::PluginManager
 	Qt5::Core
 	Eigen3::Eigen

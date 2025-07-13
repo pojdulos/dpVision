@@ -113,6 +113,9 @@ bool CMainApplication::loadQtPlugin(const QString &pluginPath)
 	return false;
 }
 
+#include "PluginManager.h"
+#include "MainWindow.h"
+
 bool CMainApplication::loadWinPlugin( const QString &pluginPath )
 {
 	qInfo() << pluginPath;
@@ -130,7 +133,7 @@ bool CMainApplication::loadWinPlugin( const QString &pluginPath )
 		
 		if ( ! plugin->isHidden() )
 		{
-			CMainWindow* win = AP::mainWinPtr();
+			CMainWindow* win = CMainWindow::instance(); //AP::mainWinPtr();
 
 			if (win != nullptr)
 			{

@@ -4,6 +4,7 @@
 
 #include "DockWidgetPluginPanel.h"
 #include "MainApplication.h"
+
 #include "Plugin.h"
 
 #include <QListWidgetItem>

@@ -73,8 +73,11 @@ add_library(dpVisionCore STATIC
 
 target_include_directories(dpVisionCore PUBLIC
     ${dpVision_INCLUDE_DIR}
-    $<BUILD_INTERFACE:${AUTOGEN_INCLUDE_DIR}>
+#    $<BUILD_INTERFACE:${AUTOGEN_INCLUDE_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/dpVisionCore_autogen/include>
     $<INSTALL_INTERFACE:include>
+#    ${PluginManager_INCLUDE_DIR}
+#    ${PMFactory_INCLUDE_DIR}
 )
 
 target_link_libraries(dpVisionCore
@@ -118,17 +121,17 @@ include_directories(/usr/include/quazip5)
 
 
 add_subdirectory(libs/PluginManager)
-add_library(dpVision::PluginManager ALIAS PluginManager)
+#add_library(dpVision::PluginManager ALIAS PluginManager)
 
-# add_library(dpVision::PluginManager INTERFACE IMPORTED)
-# set_target_properties(dpVision::PluginManager PROPERTIES
-#     INTERFACE_INCLUDE_DIRECTORIES ${PluginManager_INCLUDE_DIR}
-#     INTERFACE_LINK_LIBRARIES PluginManager
-# )
+add_library(dpVision::PluginManager INTERFACE IMPORTED)
+set_target_properties(dpVision::PluginManager PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES ${PluginManager_INCLUDE_DIR}
+    INTERFACE_LINK_LIBRARIES PluginManager
+)
 
 add_subdirectory(libs/libICP)
 
-add_subdirectory(api)
+# add_subdirectory(api)
 add_subdirectory(renderers)
 
 
@@ -138,6 +141,7 @@ add_subdirectory(libs/PMFactory)
 
 target_link_libraries(${EXE_NAME}
     dpVision::Core
+    dpVision::Renderers
     #PMFactory
     dpVision::PluginManager
     # poniżej jak dotąd (Api, Renderers, PMFactory, PluginManager, ...)
@@ -159,6 +163,14 @@ target_include_directories(${EXE_NAME} PUBLIC
     ${PluginManager_INCLUDE_DIR}
     ${PMFactory_INCLUDE_DIR}
 )
+
+add_library(dpVision::Exe INTERFACE IMPORTED)
+
+set_target_properties(dpVision::Exe PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES ${PROJECT_SOURCE_DIR}/gui
+    INTERFACE_LINK_LIBRARIES dpVisionCore
+)
+
 
 add_library(dpVision::libICP INTERFACE IMPORTED)
 set_target_properties(dpVision::libICP PROPERTIES
