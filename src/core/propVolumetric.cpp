@@ -371,8 +371,7 @@ void PropVolumetric::on_fast_draw_checkbox(bool b)
 
 void PropVolumetric::on_render_boxes_checkbox(bool b)
 {
-	this->obj->m_renderBoxes = b;
-	this->obj->remove_shader_program();
+	this->obj->switch_renderBoxes(b);
 	UI::updateAllViews();
 }
 
