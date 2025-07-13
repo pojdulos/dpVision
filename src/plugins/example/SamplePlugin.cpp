@@ -1,7 +1,7 @@
 #include "SamplePlugin.h"
 
 #include "Workspace.h"
-#include "MainApplication.h"
+//#include "MainApplication.h"
 
 #include "AnnotationPoint.h"
 #include "AnnotationPlane.h"

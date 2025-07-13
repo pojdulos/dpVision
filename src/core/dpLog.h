@@ -2,7 +2,7 @@
 #ifndef _LOG_H_BY_DP_INCLUDED_
 #define _LOG_H_BY_DP_INCLUDED_
 
-#include "MainApplication.h"
+//#include "../gui/MainApplication.h"
 #include "AP.h"
 
 #include <QString>
