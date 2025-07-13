@@ -16,6 +16,7 @@ target_compile_definitions(${_NAME} PRIVATE
 
 target_link_libraries (${_NAME} 
 	dpVision::Core
+	dpVision::Api
 	dpVision::PluginManager
 	Qt5::Core
 	#opencv_world

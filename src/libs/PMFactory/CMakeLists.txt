@@ -18,6 +18,7 @@ target_link_libraries (${_NAME}
 	Qt5::Core
 	Qt5::OpenGL
 	Eigen3::Eigen
+	dpVision::Api
 )
 
 target_include_directories (${_NAME} PUBLIC

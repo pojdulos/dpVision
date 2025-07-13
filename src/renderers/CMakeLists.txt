@@ -15,6 +15,7 @@ target_include_directories(dpVisionRenderers
 )
 
 target_link_libraries(dpVisionRenderers
+    dpVision::Core
     # Qt5::Core
     # Qt5::Gui
     # Qt5::Widgets
@@ -25,5 +26,5 @@ target_link_libraries(dpVisionRenderers
     # ${GLU_LIBRARY}
     # OpenMP::OpenMP_CXX
     Eigen3::Eigen
-    dpVision::PluginManager # (jeśli PluginManager to alias do realnej biblioteki)
+    #dpVision::PluginManager # (jeśli PluginManager to alias do realnej biblioteki)
 )
