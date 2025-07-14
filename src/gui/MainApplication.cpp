@@ -4,6 +4,7 @@
 #include "AppSettings.h"
 
 #include "MainWindow.h"
+#include "PluginManager.h"
 
 DPVISION_EXPORT CMainApplication * CMainApplication::theApp = nullptr;
 
@@ -97,9 +98,7 @@ bool CMainApplication::loadQtPlugin(const QString &pluginPath)
 
 			if (!plugin->isHidden())
 			{
-				CMainWindow* win = AP::mainWinPtr();
-
-				if (win != nullptr)
+				if (auto win = CMainWindow::instance())
 				{
 					win->addPluginToListView(newID, plugin->name() + " (" + plugin->path() + ")");
 				}
@@ -113,8 +112,6 @@ bool CMainApplication::loadQtPlugin(const QString &pluginPath)
 	return false;
 }
 
-#include "PluginManager.h"
-#include "MainWindow.h"
 
 bool CMainApplication::loadWinPlugin( const QString &pluginPath )
 {
@@ -133,9 +130,7 @@ bool CMainApplication::loadWinPlugin( const QString &pluginPath )
 		
 		if ( ! plugin->isHidden() )
 		{
-			CMainWindow* win = CMainWindow::instance(); //AP::mainWinPtr();
-
-			if (win != nullptr)
+			if (auto win = CMainWindow::instance())
 			{
 				win->addPluginToListView( newID, plugin->name() + " (" + plugin->path() + ")" );
 			}

@@ -21,8 +21,6 @@ target_include_directories(dpVisionApi PUBLIC
 )
 
 target_link_libraries(dpVisionApi
-#    dpVision::Core
     Qt5::OpenGL
     Eigen3::Eigen
-    #dpVision::PluginManager # (jeśli PluginManager to alias do realnej biblioteki)
 )

@@ -68,7 +68,7 @@ void GraphNode::focusOutEvent(QFocusEvent* event)
         m_obj->setLabel(this->toPlainText());
         UI::DOCK::WORKSPACE::setItemLabelById(m_obj->id(), m_obj->getLabel().toStdWString());
         UI::DOCK::PROPERTIES::updateProperties();
-        //UI::updateAllViews();
+        //updateAllViews();
     }
 
     QGraphicsTextItem::focusOutEvent(event);

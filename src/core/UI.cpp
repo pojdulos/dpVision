@@ -84,9 +84,7 @@ bool UI::timeElapsed(int mst)
 
 void UI::show()
 {
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr)
+	if (auto win = CMainWindow::instance())
 	{
 		win->show();
 	}
@@ -94,9 +92,7 @@ void UI::show()
 
 void UI::updateView(bool repaintAll, bool buffered)
 {
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr)
+	if (auto win = CMainWindow::instance())
 	{
 		win->updateView(repaintAll, buffered);
 	}
@@ -104,9 +100,7 @@ void UI::updateView(bool repaintAll, bool buffered)
 
 void UI::updateAllViews(bool buffered)
 {
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr)
+	if (auto win = CMainWindow::instance())
 	{
 		win->updateView(true, buffered);
 	}
@@ -114,9 +108,7 @@ void UI::updateAllViews(bool buffered)
 
 void UI::updateCurrentView(bool buffered)
 {
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr)
+	if (auto win = CMainWindow::instance())
 	{
 		win->updateView(false, buffered);
 	}
@@ -124,9 +116,7 @@ void UI::updateCurrentView(bool buffered)
 
 void UI::changeMenuAfterSelect()
 {
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr)
+	if (auto win = CMainWindow::instance())
 	{
 		win->changeMenuAfterSelect();
 	}
@@ -163,14 +153,13 @@ void UI::DOCK::PROPERTIES::show(bool b)
 
 void UI::DOCK::PROPERTIES::selectionChanged( int id )
 {
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr && win->dockProperties != nullptr)
-	{
-		win->dockProperties->raise();
-		win->dockProperties->selectionChanged(id);
-		win->dockProperties->update();
-	}
+	if (auto win = CMainWindow::instance())
+		if (win->dockProperties)
+		{
+			win->dockProperties->raise();
+			win->dockProperties->selectionChanged(id);
+			win->dockProperties->update();
+		}
 }
 
 void UI::DOCK::PROPERTIES::updateProperties()
@@ -187,9 +176,8 @@ void UI::DOCK::PROPERTIES::updateProperties()
 
 DockWidgetWorkspace* UI::DOCK::WORKSPACE::instance()
 {
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr) return win->dockWorkspace;
+	if (auto win = CMainWindow::instance())
+		return win->dockWorkspace;
 	return nullptr;
 }
 
@@ -1054,16 +1042,11 @@ void UI::STATUSBAR::printfTimed(int mst, const wchar_t* format, ...)
 
 void UI::STATUSBAR::setText(const QString msg)
 {
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr)
-	{
-		QStatusBar* sb = win->statusBar();
-		if (sb != nullptr)
+	if (auto win = CMainWindow::instance())
+		if (auto sb = win->statusBar())
 		{
 			sb->showMessage( msg );
 		}
-	}
 
 	AP::processEvents(true);
 }

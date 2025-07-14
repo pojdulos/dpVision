@@ -86,7 +86,7 @@ void CMainWindow::proceessData()
 		std::shared_ptr<CModel3D> obj = std::dynamic_pointer_cast<CModel3D>( AP::WORKSPACE::findId(id) );
 		if (obj != nullptr) {
 			obj->getTransform().rotateAroundAxisDeg(CVector3d::XAxis(), rX);
-			UI::updateAllViews();
+			updateAllViews();
 			UI::DOCK::PROPERTIES::updateProperties();
 			clientSocket->write(QString("Gotowe.\n\r").toLocal8Bit());
 		}
@@ -99,7 +99,7 @@ void CMainWindow::proceessData()
 		std::shared_ptr<CModel3D> obj = std::dynamic_pointer_cast<CModel3D>(AP::WORKSPACE::findId(id));
 		if (obj != nullptr) {
 			AP::WORKSPACE::removeModel(id);
-			UI::updateAllViews();
+			updateAllViews();
 			UI::DOCK::PROPERTIES::updateProperties();
 			clientSocket->write(QString("Gotowe.\n\r").toLocal8Bit());
 		}
@@ -108,12 +108,12 @@ void CMainWindow::proceessData()
 	}
 	else if (cmd.startsWith("plugin") && (cmdline.size() > 2))
 	{
-		response = "Niepoprawna sk³adnia polecenia, napisales: %1 \n\r" + recievedData + "\n\r";
+		response = "Niepoprawna skï¿½adnia polecenia, napisales: %1 \n\r" + recievedData + "\n\r";
 		if (cmdline.at(1).startsWith("run"))
 		{
 			if (AP::PLUGIN::runPlugin(cmdline.at(2)))
 			{
-				response = "Wtyczka zosta³a uruchomiona.\n\r";
+				response = "Wtyczka zostaï¿½a uruchomiona.\n\r";
 			}
 			else
 			{

@@ -156,7 +156,10 @@ void CMainWindow::fileSave()
 			{
 				if ( obj->save(fileName) )
 				{
-					UI::STATUSBAR::setText(L"Saved: " + fileName.toStdWString());
+					if (auto sb = this->statusBar())
+					{
+						sb->showMessage( "Saved: " + fileName );
+					}
 					adjustForCurrentFile(fileName);
 					AppSettings::mainSettings()->setValue("recentFile", fileName);
 				}
@@ -521,7 +524,7 @@ void CMainWindow::cameraResetPosition()
 		{
 			view->resetGeometry();
 			UI::DOCK::PROPERTIES::updateProperties();
-			UI::updateAllViews();
+			updateAllViews();
 		}
 }
 
@@ -701,7 +704,7 @@ void CMainWindow::actionLookDir(int direction, CModel3D* obj)
 	}
 
 	UI::DOCK::PROPERTIES::updateProperties();
-	UI::updateAllViews();
+	updateAllViews();
 }
 
 
@@ -752,7 +755,7 @@ void CMainWindow::actionSelectVertex()
 	currentViewer()->setSelectionMode( 1 );
 	ui.action_select_selection_delete->setEnabled(true);
 	ui.action_select_noselection_delete->setEnabled(true);
-	UI::updateCurrentView();
+	updateActiveView();
 }
 
 void CMainWindow::actionSelectFace()
@@ -761,7 +764,7 @@ void CMainWindow::actionSelectFace()
 	currentViewer()->setSelectionMode( 2 );
 	ui.action_select_selection_delete->setEnabled(true);
 	ui.action_select_noselection_delete->setEnabled(true);
-	UI::updateCurrentView();
+	updateActiveView();
 }
 
 void CMainWindow::actionSelectNone()
@@ -770,7 +773,7 @@ void CMainWindow::actionSelectNone()
 	currentViewer()->setSelectionMode( 0 );
 	ui.action_select_selection_delete->setEnabled(false);
 	ui.action_select_noselection_delete->setEnabled(false);
-	UI::updateCurrentView();
+	updateActiveView();
 }
 
 #include "PicViewer.h"
@@ -939,7 +942,7 @@ void CMainWindow::resetAllTransformations()
 		it->second->transform().reset();
 	}
 	UI::DOCK::PROPERTIES::updateProperties();
-	UI::updateAllViews();
+	updateAllViews();
 }
 
 void CMainWindow::resetSelectedTransformations()
@@ -950,7 +953,7 @@ void CMainWindow::resetSelectedTransformations()
 		AP::WORKSPACE::getModel(*it)->transform().reset();
 	}
 	UI::DOCK::PROPERTIES::updateProperties();
-	UI::updateAllViews();
+	updateAllViews();
 }
 
 void CMainWindow::lockAllModels()
@@ -963,7 +966,7 @@ void CMainWindow::lockAllModels()
 	}
 	UI::changeMenuAfterSelect();
 	UI::DOCK::PROPERTIES::updateProperties();
-	UI::updateAllViews();
+	updateAllViews();
 }
 
 void CMainWindow::lockSelectedModels()
@@ -977,7 +980,7 @@ void CMainWindow::lockSelectedModels()
 	}
 	UI::changeMenuAfterSelect();
 	UI::DOCK::PROPERTIES::updateProperties();
-	UI::updateAllViews();
+	updateAllViews();
 }
 
 void CMainWindow::unlockAllModels()
@@ -990,7 +993,7 @@ void CMainWindow::unlockAllModels()
 	}
 	UI::changeMenuAfterSelect();
 	UI::DOCK::PROPERTIES::updateProperties();
-	UI::updateAllViews();
+	updateAllViews();
 }
 
 void CMainWindow::unlockSelectedModels()
@@ -1004,7 +1007,7 @@ void CMainWindow::unlockSelectedModels()
 	}
 	UI::changeMenuAfterSelect();
 	UI::DOCK::PROPERTIES::updateProperties();
-	UI::updateAllViews();
+	updateAllViews();
 }
 
 void CMainWindow::selectAll()
@@ -1035,7 +1038,7 @@ void CMainWindow::hideAllModels()
 	//}
 	//UI::changeMenuAfterSelect();
 	//UI::DOCK::PROPERTIES::updateProperties();
-	//UI::updateAllViews();
+	//updateAllViews();
 }
 
 void CMainWindow::hideSelectedModels()
@@ -1050,7 +1053,7 @@ void CMainWindow::hideSelectedModels()
 	//}
 	//UI::changeMenuAfterSelect();
 	//UI::DOCK::PROPERTIES::updateProperties();
-	//UI::updateAllViews();
+	//updateAllViews();
 }
 
 void CMainWindow::showAllModels()
@@ -1063,7 +1066,7 @@ void CMainWindow::showAllModels()
 	//}
 	//UI::changeMenuAfterSelect();
 	//UI::DOCK::PROPERTIES::updateProperties();
-	//UI::updateAllViews();
+	//updateAllViews();
 }
 
 void CMainWindow::showSelectedModels()
@@ -1078,7 +1081,7 @@ void CMainWindow::showSelectedModels()
 	//}
 	//UI::changeMenuAfterSelect();
 	//UI::DOCK::PROPERTIES::updateProperties();
-	//UI::updateAllViews();
+	//updateAllViews();
 }
 
 void CMainWindow::modelInSelection(bool b)

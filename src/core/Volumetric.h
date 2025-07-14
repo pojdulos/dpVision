@@ -83,7 +83,7 @@ public:
 	};
 	
 	typedef std::vector<SliceType> VolumeType;
-	typedef SliceMetadata SliceMetadata;
+	typedef struct SliceMetadata SliceMetadata;
 	
 	typedef enum { XY, YZ, ZX, TEST } LayerPlane;
 

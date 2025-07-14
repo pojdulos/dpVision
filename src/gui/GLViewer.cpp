@@ -9,7 +9,7 @@
 #include "Model3D.h"
 
 //#include <assert.h>
-//#include "MainWindow.h"
+#include "MainWindow.h"
 
 #include "GLViewer.h"
 
@@ -448,11 +448,15 @@ void GLViewer::setSelectionMode(int mode)
 }
 
 #include "VolTK.h"
+#include "ProgressIndicator.h"
 
 void GLViewer::deleteSelectedVoxelsVolTK(CVolTK& vol, CTransform& transform, bool deleteSelected)
 {
 	int i = 0;
-	UI::PROGRESSBAR::init(0, vol.m_displayData.size(), 0);
+	auto progress = CMainWindow::instance()->progressIndicator;
+
+	progress->init(0, vol.m_displayData.size(), 0);
+	//UI::PROGRESSBAR::init(0, vol.m_displayData.size(), 0);
 
 	CVolTK::DisplayDataPart selected, unselected;
 
@@ -495,10 +499,12 @@ void GLViewer::deleteSelectedVoxelsVolTK(CVolTK& vol, CTransform& transform, boo
 		selected.clear();
 		unselected.clear();
 
-		UI::PROGRESSBAR::setValue(++i);
+		//UI::PROGRESSBAR::setValue(++i);
+		progress->setValue(++i);
 	}
 
-	UI::PROGRESSBAR::hide();
+	//UI::PROGRESSBAR::hide();
+	progress->hide();
 }
 
 // the glhProjectf (works only from perspective projection.
@@ -541,6 +547,7 @@ int glhProjectf(double objx, double objy, double objz, double* modelview, double
 
 void GLViewer::deleteSelectedVoxels(Volumetric* vol, bool deleteSelected)
 {
+	auto progress = CMainWindow::instance()->progressIndicator;
 
 	Eigen::Matrix4d m1 = vol->getGlobalTransformationMatrix(); // point to workspace
 	Eigen::Matrix4d m2 = m_transform.toEigenMatrix4d(); // workspace to viewer
@@ -581,11 +588,13 @@ void GLViewer::deleteSelectedVoxels(Volumetric* vol, bool deleteSelected)
 		viewportD[i] = double(viewport[i]);
 	}
 
-	UI::PROGRESSBAR::init(0, vol->layers(), 0);
+	//UI::PROGRESSBAR::init(0, vol->layers(), 0);
+	progress->init(0, vol->layers(), 0);
 
 	for (int z = 0; z < vol->layers(); z++)
 	{
-		UI::PROGRESSBAR::setValue(z);
+		//UI::PROGRESSBAR::setValue(z);
+		progress->setValue(z);
 
 #pragma omp parallel for
 		for (int y = 0; y < vol->rows(); y++)
@@ -615,9 +624,10 @@ void GLViewer::deleteSelectedVoxels(Volumetric* vol, bool deleteSelected)
 			}
 	}
 
-	UI::updateAllViews();
+	CMainWindow::instance()->updateAllViews();
 
-	UI::PROGRESSBAR::hide();
+	//UI::PROGRESSBAR::hide();
+	progress->hide();
 }
 
 #include <omp.h>
@@ -827,7 +837,7 @@ void GLViewer::mouseReleaseEvent( QMouseEvent* event )
 
 	if (m_selectionMode == 0)
 	{
-		if (event->button() == Qt::MouseButton::MidButton)
+		if (event->button() == Qt::MouseButton::MiddleButton)
 		{
 			double dx = event->pos().x();
 			double dy = event->pos().y();
@@ -987,7 +997,7 @@ void GLViewer::mouseMoveEvent( QMouseEvent* event )
 					this->rotate(dx, dy);
 				}
 			}
-			else if (event->buttons() & Qt::MouseButton::MidButton)
+			else if (event->buttons() & Qt::MouseButton::MiddleButton)
 			{
 				double factor = (NULL != AP::WORKSPACE::getCurrentModel()) ? AP::WORKSPACE::getCurrentModel()->transform().scale().x : 5.0;
 
@@ -1019,7 +1029,7 @@ void GLViewer::mouseMoveEvent( QMouseEvent* event )
 
 	 //If the mouse is moving we want to keep a note of this, will be useful for other interactions and events in future.
     moving = true;
-	UI::updateAllViews();
+	CMainWindow::instance()->updateAllViews();
     moving = false;
 }
 
@@ -1075,7 +1085,7 @@ void GLViewer::wheelEvent(QWheelEvent * event)
 	}
 
 	moving = true;
-	UI::updateAllViews();
+	CMainWindow::instance()->updateAllViews();
 	moving = false;
 }
 
