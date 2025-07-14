@@ -36,7 +36,7 @@ protected:
 	virtual bool save() { return false; };
 
 	inline void setDescr(const QString descr) { m_descr = descr; }
-
+	
 public:
 	CParser(void);
 	virtual ~CParser(void);

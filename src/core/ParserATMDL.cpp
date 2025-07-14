@@ -213,7 +213,7 @@ QList<double> CParserATMDL::parseType_MatrixOfDouble(QTextStream& in, int size)
 {
 	QString tekst = parseType_matrix(in);
 
-	QStringList qCoords = tekst.split(",", QString::SkipEmptyParts);
+	QStringList qCoords = tekst.split(",", Qt::SkipEmptyParts);
 
 	if (qCoords.size() != size)
 	{ 	//qInfo() << "\033[31m" << "To jest komunikat b��du" << "\033[0m" << Qt::endl;
@@ -289,7 +289,7 @@ CTransform CParserATMDL::parseProperty_rotation(QTextStream& in)
 
 	if (opis.contains("axis"))
 	{
-		QStringList axisList = opis["axis"].split(",", QString::SkipEmptyParts);
+		QStringList axisList = opis["axis"].split(",", Qt::SkipEmptyParts);
 
 		CVector3d axis(axisList[0].toDouble(), axisList[1].toDouble(), axisList[2].toDouble());
 
@@ -297,7 +297,7 @@ CTransform CParserATMDL::parseProperty_rotation(QTextStream& in)
 
 		if (opis.contains("origin"))
 		{
-			QStringList originList = opis["origin"].split(",", QString::SkipEmptyParts);
+			QStringList originList = opis["origin"].split(",", Qt::SkipEmptyParts);
 			origin.Set(originList[0].toDouble(), originList[1].toDouble(), originList[2].toDouble());
 		}
 
@@ -323,7 +323,7 @@ CTransform CParserATMDL::parseProperty_translation(QTextStream& in)
 {
 	QString slowo =	parseType_matrix(in);
 	
-	QStringList axisList = slowo.split(",", QString::SkipEmptyParts);
+	QStringList axisList = slowo.split(",", Qt::SkipEmptyParts);
 
 	CVector3d axis(axisList[0].toDouble(), axisList[1].toDouble(), axisList[2].toDouble());
 
@@ -572,7 +572,8 @@ CMovement::SeqList CParserATMDL::parseProperty_sequence(QTextStream& in)
 
 QSet<QString> CParserATMDL::parseProperty_keywords_v1(QString keywords)
 {
-	QSet<QString> out = keywords.split(";", QString::SkipEmptyParts).toSet();
+	QStringList parts = keywords.split(";", Qt::SkipEmptyParts);
+	QSet<QString> out(parts.begin(), parts.end());
 	return out;
 }
 
@@ -806,7 +807,7 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_point(QTextStream& in)
 
 	if (opis.contains("coords"))
 	{
-		QStringList qCoords = opis["coords"].split(",", QString::SkipEmptyParts);
+		QStringList qCoords = opis["coords"].split(",", Qt::SkipEmptyParts);
 
 		std::shared_ptr<CAnnotationPoint> obj = std::make_shared<CAnnotationPoint>();
 
@@ -816,7 +817,7 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_point(QTextStream& in)
 
 			if (opis.contains("normal"))
 			{
-				QStringList qNormal = opis["normal"].split(",", QString::SkipEmptyParts);
+				QStringList qNormal = opis["normal"].split(",", Qt::SkipEmptyParts);
 				qInfo() << qNormal;
 				obj->setDirection(qNormal[0].toDouble(), qNormal[1].toDouble(), qNormal[2].toDouble());
 			}
@@ -896,7 +897,7 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_plane(QTextStream& in)
 
 	if (opis.contains("center"))
 	{
-		QStringList qCoords = opis["center"].split(",", QString::SkipEmptyParts);
+		QStringList qCoords = opis["center"].split(",", Qt::SkipEmptyParts);
 
 		std::shared_ptr<CAnnotationPlane> obj = std::make_shared<CAnnotationPlane>();
 
@@ -906,7 +907,7 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_plane(QTextStream& in)
 
 			if (opis.contains("normal"))
 			{
-				QStringList qNormal = opis["normal"].split(",", QString::SkipEmptyParts);
+				QStringList qNormal = opis["normal"].split(",", Qt::SkipEmptyParts);
 				qInfo() << qNormal;
 				obj->setNormal(CVector3d(qNormal[0].toDouble(), qNormal[1].toDouble(), qNormal[2].toDouble()));
 			}
@@ -992,7 +993,7 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_sphere(QTextStream& in)
 
 	if (opis.contains("coords"))
 	{
-		QStringList qCoords = opis["coords"].split(",", QString::SkipEmptyParts);
+		QStringList qCoords = opis["coords"].split(",", Qt::SkipEmptyParts);
 		coords.Set(qCoords[0].toDouble(), qCoords[1].toDouble(), qCoords[2].toDouble());
 	}
 
@@ -1086,9 +1087,9 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_triangle(QTextStream& in)
 	if (opis.contains("coordsA")&& opis.contains("coordsB")&& opis.contains("coordsC"))
 //	if (opis.contains("coordsB") && opis.contains("coordsC"))
 	{
-		QStringList qCoordsA = opis["coordsA"].split(",", QString::SkipEmptyParts);
-		QStringList qCoordsB = opis["coordsB"].split(",", QString::SkipEmptyParts);
-		QStringList qCoordsC = opis["coordsC"].split(",", QString::SkipEmptyParts);
+		QStringList qCoordsA = opis["coordsA"].split(",", Qt::SkipEmptyParts);
+		QStringList qCoordsB = opis["coordsB"].split(",", Qt::SkipEmptyParts);
+		QStringList qCoordsC = opis["coordsC"].split(",", Qt::SkipEmptyParts);
 
 		//CPoint3d vA(cA[0], cA[1], cA[2]);
 		CPoint3d vA(qCoordsA[0].toDouble(), qCoordsA[1].toDouble(), qCoordsA[2].toDouble());

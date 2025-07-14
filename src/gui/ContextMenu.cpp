@@ -924,7 +924,7 @@ void CContextMenu::slot_volumetric_set_metadata()
 		float vsizeY = v->metadata[1].pixel_spacing[1];
 		float vsizeZ = v->metadata[1].slice_distance;
 
-		int shape[] = {
+		unsigned int shape[] = {
 			v->layers(),
 			v->rows(),
 			v->columns()

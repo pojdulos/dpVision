@@ -15,6 +15,7 @@ CParser::~CParser(void)
 {
 }
 
+
 std::shared_ptr<CModel3D> CParser::load(const QString path, bool wait)
 {
 	std::shared_ptr<CModel3D> obj;
