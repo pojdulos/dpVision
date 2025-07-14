@@ -4,7 +4,7 @@
 #define GL_VIEWERx_H
 
 //#include "Global.h"
-#include "UI.h"
+//#include "UI.h"
 #include "AP.h"
 
 //#include <QTGui/QMatrix4x4>

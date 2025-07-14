@@ -310,6 +310,7 @@ bool GLViewer::isInPixelShadow(double pxlX, double pxlY, double ptX, double ptY)
 
 #include <chrono>
 #include "Plugin.h"
+#include "MainWindow.h"
 
 void GLViewer::PickMeshPoint(double xx, double yy, std::shared_ptr<CModel3D> obj)
 {
@@ -414,7 +415,10 @@ void GLViewer::PickMeshPoint(double xx, double yy, std::shared_ptr<CModel3D> obj
 			auto t1 = std::chrono::steady_clock::now();
 			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
 
-			UI::STATUSBAR::printf("Selected point [%lf,%lf,%lf] on object %d (time:%ld)", IntersectionPoint.X(), IntersectionPoint.Y(), IntersectionPoint.Z(), obj->id(), duration);
+			CMainWindow::instance()->statusBar()->showMessage(
+				QString("Selected point [%1,%2,%3] on object %4 (time:%5)")
+					.arg(IntersectionPoint.x).arg(IntersectionPoint.y).arg(IntersectionPoint.z)
+					.arg(obj->id()).arg(duration));
 			
 		}
 	}
@@ -528,7 +532,8 @@ void GLViewer::PickCloudPoint(double xx, double yy, std::shared_ptr<CModel3D> ob
 		auto t1 = std::chrono::steady_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
 
-		UI::STATUSBAR::printf("Object clicked (%d) (time:%ld)", obj->id(), duration);
+		CMainWindow::instance()->statusBar()->showMessage(
+			QString("Object clicked (%1) (time:%2)").arg(obj->id()).arg(duration));
 	}
 }
 
@@ -569,7 +574,7 @@ void GLViewer::PickPoint(int x, int y)
 	}
 	else
 	{
-		UI::STATUSBAR::printf( "No objects selected" );
+		CMainWindow::instance()->statusBar()->showMessage("No objects selected");
 	}
 
 //	UI::getMainWindow().updateListViewSelection( sel );

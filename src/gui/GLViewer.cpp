@@ -347,9 +347,15 @@ static void qNormalizeAngle( int &angle )
   A QMouseEvent is a Qt class that describe moouse events. Events
   occur when a mouse button is pressed and/or released.
  */
+
+#include "DockWidgetWorkspace.h"
+#include "DockWidgetProperties.h"
+
 void GLViewer::mousePressEvent( QMouseEvent* event )
 {
-	std::shared_ptr<CBaseObject> obj = UI::DOCK::WORKSPACE::getCurrentItemObj();
+	auto win = CMainWindow::instance();
+
+	std::shared_ptr<CBaseObject> obj = win->dockWorkspace->getCurrentItemObj();
 	if (obj != nullptr) {
 		if (obj->mousePressEvent(event)) return;
 	}
@@ -372,7 +378,7 @@ void GLViewer::mousePressEvent( QMouseEvent* event )
 				{
 					PickPoint(event->pos().x(), event->pos().y());
 				}
-				UI::DOCK::PROPERTIES::updateProperties();
+				win->dockProperties->updateProperties();
 			}
 		}
 		//if the middle mouse button is pressed ...
@@ -456,7 +462,6 @@ void GLViewer::deleteSelectedVoxelsVolTK(CVolTK& vol, CTransform& transform, boo
 	auto progress = CMainWindow::instance()->progressIndicator;
 
 	progress->init(0, vol.m_displayData.size(), 0);
-	//UI::PROGRESSBAR::init(0, vol.m_displayData.size(), 0);
 
 	CVolTK::DisplayDataPart selected, unselected;
 
@@ -499,11 +504,9 @@ void GLViewer::deleteSelectedVoxelsVolTK(CVolTK& vol, CTransform& transform, boo
 		selected.clear();
 		unselected.clear();
 
-		//UI::PROGRESSBAR::setValue(++i);
 		progress->setValue(++i);
 	}
 
-	//UI::PROGRESSBAR::hide();
 	progress->hide();
 }
 
@@ -547,7 +550,8 @@ int glhProjectf(double objx, double objy, double objz, double* modelview, double
 
 void GLViewer::deleteSelectedVoxels(Volumetric* vol, bool deleteSelected)
 {
-	auto progress = CMainWindow::instance()->progressIndicator;
+	auto win = CMainWindow::instance();
+	auto progress = win->progressIndicator;
 
 	Eigen::Matrix4d m1 = vol->getGlobalTransformationMatrix(); // point to workspace
 	Eigen::Matrix4d m2 = m_transform.toEigenMatrix4d(); // workspace to viewer
@@ -588,12 +592,10 @@ void GLViewer::deleteSelectedVoxels(Volumetric* vol, bool deleteSelected)
 		viewportD[i] = double(viewport[i]);
 	}
 
-	//UI::PROGRESSBAR::init(0, vol->layers(), 0);
 	progress->init(0, vol->layers(), 0);
 
 	for (int z = 0; z < vol->layers(); z++)
 	{
-		//UI::PROGRESSBAR::setValue(z);
 		progress->setValue(z);
 
 #pragma omp parallel for
@@ -624,9 +626,7 @@ void GLViewer::deleteSelectedVoxels(Volumetric* vol, bool deleteSelected)
 			}
 	}
 
-	CMainWindow::instance()->updateAllViews();
-
-	//UI::PROGRESSBAR::hide();
+	win->updateAllViews();
 	progress->hide();
 }
 
@@ -651,6 +651,9 @@ CPoint3d world2win_parallel(const CPoint3d& world, GLdouble* modelview, GLdouble
 
 void GLViewer::deleteSelectedVertices(bool deleteSelected)
 {
+	auto win = CMainWindow::instance();
+	auto progress = win->progressIndicator;
+
 	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 	if (NULL != obj)
 	{
@@ -677,7 +680,7 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 					int step = size / 100;
 					//int i = size - 1;
 
-					UI::PROGRESSBAR::init(0, size, 0);
+					progress->init(0, size, 0);
 
 					//std::string fname(obj->fileInfo().absolutePathA() + "/test.txt");
 				//FILE *plik = fopen(fname.c_str(), "w");
@@ -738,7 +741,7 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 						//#pragma omp atomic
 						//std::cout << i << endl;
 						//UI::STATUSBAR::setText(QString::number(i));
-						if ((i % step) == 0) UI::PROGRESSBAR::setValue(i);
+						if ((i % step) == 0) progress->setValue(i);
 						//printf("Koniec iteracji %d przez wątek %d\n", i, omp_get_thread_num());
 					}
 					
@@ -754,11 +757,11 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 							obj->switchOption(CModel3D::Opt::optRenderAsEdges, CModel3D::Switch::switchOff);
 							obj->switchOption(CModel3D::Opt::optRenderAsPoints, CModel3D::Switch::switchOn);
 
-							UI::PROGRESSBAR::init(0, mesh->faces().size(), 0);
+							progress->init(0, mesh->faces().size(), 0);
 							for (int j = 0; j < mesh->faces().size(); j++)
 							{
 								if ((j%1000)==0) //UI::STATUSBAR::setText(QString("Reindexing faces: %1").arg(j));
-									UI::PROGRESSBAR::setValue(j);
+									progress->setValue(j);
 								CFace f = mesh->faces()[j];
 								
 								if ((idxMap.find(f.A()) != idxMap.end()) &&
@@ -784,7 +787,7 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 					}
 					idxMap.clear();
 
-					UI::PROGRESSBAR::hide();
+					progress->hide();
 					//fclose(plik);
 
 					//cloud->vertices().clear();
@@ -798,7 +801,7 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 				}
 				else
 				{
-					UI::STATUSBAR::setText("Currently, this function only supports cloud-like objects !!!");
+					win->statusBar()->showMessage("Currently, this function only supports cloud-like objects !!!");
 				}
 			}
 		}
@@ -807,10 +810,10 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 	else
 	{
 		AP::leaveSelectionMode();
-		UI::STATUSBAR::setText("You need first select an object!!!");
+		win->statusBar()->showMessage("You need first select an object!!!");
 	}
 	this->repaint();
-	UI::STATUSBAR::setText("DONE!");
+	win->statusBar()->showMessage("DONE!");
 }
 
 void GLViewer::drawMaskCircle(QPoint pos)
@@ -828,7 +831,7 @@ void GLViewer::drawMaskCircle(QPoint pos)
  */
 void GLViewer::mouseReleaseEvent( QMouseEvent* event )
 {
-	std::shared_ptr<CBaseObject> obj = UI::DOCK::WORKSPACE::getCurrentItemObj();
+	std::shared_ptr<CBaseObject> obj = CMainWindow::instance()->dockWorkspace->getCurrentItemObj();
 	if (obj != nullptr) {
 		if (obj->mouseReleaseEvent(event)) return;
 	}
@@ -894,6 +897,8 @@ void GLViewer::rotate(double dx, double dy) {
 
 	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
 
+	auto win = CMainWindow::instance();
+
 	if (NULL != obj)
 	{
 		//środek obrotu konwertuję do współrzędnych Workspace'a
@@ -903,20 +908,22 @@ void GLViewer::rotate(double dx, double dy) {
 		obj->transform().rotate(p1, { {xAxis, xAngle}, {yAxis, yAngle} }, false);
 		//obj->transform().rotate(p1, { {xAxis, xAngle}, {yAxis, yAngle}, {zAxis, zAngle} }, false);
 
-		UI::STATUSBAR::printf(L"rotacja obiektu"); // : [%f, %f, %f]", wX.X(), wX.Y(), wX.Z());
+		win->statusBar()->showMessage("rotacja obiektu");
 	}
 	else
 	{
 		m_transform.rotate({ {xAxis, xAngle}, {yAxis, yAngle} });
 		//m_transform.rotate({ {xAxis, xAngle}, {yAxis, yAngle}, {zAxis, zAngle} });
 
-		UI::STATUSBAR::printf(L"rotacja układu współrzędnych"); // : [%f, %f, %f]", wX.X(), wX.Y(), wX.Z());
+		win->statusBar()->showMessage("rotacja układu współrzędnych");
 	}
-	UI::DOCK::PROPERTIES::updateProperties();
+	win->dockProperties->updateProperties();
 }
 
 
 void GLViewer::translate(double dx, double dy, double dz) {
+	auto win = CMainWindow::instance();
+
 	if (NULL != AP::WORKSPACE::getCurrentModel())
 	{
 		CQuaternion invR = m_transform.rotation().inverse();
@@ -927,7 +934,7 @@ void GLViewer::translate(double dx, double dy, double dz) {
 
 		emit translationChanged(t.X(), t.Y(), t.Z());
 
-		UI::STATUSBAR::printf(L"translacja obiektu: [%f,%f,%f]", t.X(), t.Y(), t.Z());
+		win->statusBar()->showMessage(QString("translacja obiektu: [%1,%2,%3]").arg(t.x).arg(t.y).arg(t.z));
 	}
 	else
 	{
@@ -935,9 +942,9 @@ void GLViewer::translate(double dx, double dy, double dz) {
 
 		m_transform.translate(t);
 
-		UI::STATUSBAR::printf(L"translacja środka układu współrzędnych: [%f,%f,%f]", t.X(), t.Y(), t.Z());
+		win->statusBar()->showMessage(QString("translacja środka układu współrzędnych: [%1,%2,%3]").arg(t.x).arg(t.y).arg(t.z));
 	}
-	UI::DOCK::PROPERTIES::updateProperties();
+	win->dockProperties->updateProperties();
 }
 
 /************************************************************************
@@ -945,6 +952,8 @@ void GLViewer::translate(double dx, double dy, double dz) {
  */
 void GLViewer::mouseMoveEvent( QMouseEvent* event )
 {
+	auto win = CMainWindow::instance();
+
 	std::shared_ptr<CBaseObject> obj = UI::DOCK::WORKSPACE::getCurrentItemObj();
 	if ( obj != nullptr) {
 		if (obj->mouseMoveEvent(event)) return;
@@ -990,7 +999,7 @@ void GLViewer::mouseMoveEvent( QMouseEvent* event )
 			{
 				if (Qt::ShiftModifier == QApplication::keyboardModifiers())
 				{
-					UI::STATUSBAR::setText("SHIFT pressed: nothing to do...");
+					win->statusBar()->showMessage("SHIFT pressed: nothing to do...");
 				}
 				else if (Qt::ControlModifier != QApplication::keyboardModifiers())
 				{
@@ -1015,7 +1024,7 @@ void GLViewer::mouseMoveEvent( QMouseEvent* event )
 	else if ( m_selectionMode == 1 )
 	{
 		m_mousePos = event->pos();
-		UI::STATUSBAR::printf("%d, %d", event->pos().x(), event->pos().y());
+		win->statusBar()->showMessage(QString("%1, %2").arg(event->pos().x()).arg(event->pos().y()));
 
 		if (event->buttons() & Qt::MouseButton::LeftButton)
 		{
@@ -1035,6 +1044,8 @@ void GLViewer::mouseMoveEvent( QMouseEvent* event )
 
 void GLViewer::wheelEvent(QWheelEvent * event)
 {
+	auto win = CMainWindow::instance();
+
 	std::shared_ptr<CBaseObject> obj = UI::DOCK::WORKSPACE::getCurrentItemObj();
 	if (obj != nullptr) {
 		if (obj->wheelEvent(event)) return;
@@ -1055,7 +1066,7 @@ void GLViewer::wheelEvent(QWheelEvent * event)
 
 			AP::WORKSPACE::getCurrentModel()->getTransform().translate(t);
 
-			UI::STATUSBAR::printf(L"translacja obiektu: [%f,%f,%f]", t.X(), t.Y(), t.Z());
+			win->statusBar()->showMessage(QString("translacja obiektu: [%1,%2,%3]").arg(t.x).arg(t.y).arg(t.z));
 		}
 		else
 		{
@@ -1064,10 +1075,10 @@ void GLViewer::wheelEvent(QWheelEvent * event)
 
 			m_transform.translate(t);
 
-			UI::STATUSBAR::printf(L"translacja środka układu współrzędnych: [%f,%f,%f]", t.X(), t.Y(), t.Z());
+			win->statusBar()->showMessage(QString("translacja środka układu współrzędnych: [%1,%2,%3]").arg(t.x).arg(t.y).arg(t.z));
 		}
 
-		UI::DOCK::PROPERTIES::updateProperties();
+		win->dockProperties->updateProperties();
 	}
 	else if (m_selectionMode == 1)
 	{
@@ -1081,7 +1092,7 @@ void GLViewer::wheelEvent(QWheelEvent * event)
 			m_selSize += (event->angleDelta().y() < 0) ? -10 : (event->angleDelta().y() > 0) ? 10 : 0;
 			if (m_selSize < 10) m_selSize = 10;
 		}
-		UI::STATUSBAR::setText(QString("Selection size: %1").arg(m_selSize));
+		win->statusBar()->showMessage(QString("Selection size: %1").arg(m_selSize));
 	}
 
 	moving = true;

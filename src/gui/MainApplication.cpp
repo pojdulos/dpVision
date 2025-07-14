@@ -252,7 +252,8 @@ bool CMainApplication::runPlugin(const char * strUUID)
 			p->onRun();
 			return true;
 		}
-		UI::STATUSBAR::setText(p->uuid());
+		if (auto win = CMainWindow::instance())
+			win->statusBar()->showMessage(p->uuid());
 	}
 	return false;
 }
