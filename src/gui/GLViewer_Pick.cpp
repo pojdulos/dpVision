@@ -1,3 +1,4 @@
+#include "GLViewer.h"
 
 #include "MainApplication.h"
 #include "AnnotationPoint.h"
@@ -7,7 +8,6 @@
 //#include "Plugin.h"
 
 
-#include "GLViewer.h"
 #include <QtOpenGL>
 #include <GL/glu.h>
 

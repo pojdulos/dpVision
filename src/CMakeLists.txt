@@ -6,6 +6,8 @@ endif()
 
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Możliwe konfiguracje" FORCE)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 set(EXE_NAME dpVision)
 project(${EXE_NAME})
 

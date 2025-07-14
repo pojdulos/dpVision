@@ -1,3 +1,4 @@
+#include "GLViewer.h"
 
 //#include "AP.h"
 
@@ -11,7 +12,6 @@
 //#include <assert.h>
 #include "MainWindow.h"
 
-#include "GLViewer.h"
 
 bool mouse_key_pressed;
 

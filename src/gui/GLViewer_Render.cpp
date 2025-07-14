@@ -1,8 +1,9 @@
+#include "GLViewer.h"
+
 #include "Workspace.h"
 #include "BoundVector.h"
 
 
-#include "GLViewer.h"
 #include <GL/glu.h>
 
 
