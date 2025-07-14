@@ -16,8 +16,9 @@ add_library(dpVisionCore SHARED
 
 target_include_directories(dpVisionCore PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../gui
     ${dpVision_INCLUDE_DIR}
-    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/dpVisionGui_autogen/include>
+    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/gui/dpVisionGui_autogen/include>
     $<INSTALL_INTERFACE:include>
 )
 

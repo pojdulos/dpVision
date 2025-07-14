@@ -50,14 +50,14 @@ class QTcpSocket;
 //	explicit TitleBar(QWidget* parent = nullptr) : QWidget(parent) {
 //		setStyleSheet("background-color: #2E2E2E; height: 30px;");
 //
-//		// Przyk³adowy przycisk zamykania
+//		// Przykï¿½adowy przycisk zamykania
 //		QPushButton* closeButton = new QPushButton("X", this);
 //		closeButton->setStyleSheet("background-color: #FF0000; color: white; border: none;");
 //		connect(closeButton, &QPushButton::clicked, parent, &QWidget::close);
 //
-//		// Uk³ad dla przycisków
+//		// Ukï¿½ad dla przyciskï¿½w
 //		QHBoxLayout* layout = new QHBoxLayout(this);
-//		layout->addStretch(); // Przestrzeñ miêdzy przyciskami a krawêdzi¹
+//		layout->addStretch(); // Przestrzeï¿½ miï¿½dzy przyciskami a krawï¿½dziï¿½
 //		layout->addWidget(closeButton);
 //		layout->setContentsMargins(0, 0, 0, 0);
 //		setLayout(layout);
@@ -66,7 +66,7 @@ class QTcpSocket;
 //protected:
 //	void mousePressEvent(QMouseEvent* event) {
 //		if (event->button() == Qt::LeftButton) {
-//			// Zapisz pozycjê kursora wzglêdem okna g³ównego
+//			// Zapisz pozycjï¿½ kursora wzglï¿½dem okna gï¿½ï¿½wnego
 //			dragPosition = event->globalPos() - parentWidget()->parentWidget()->frameGeometry().topLeft();
 //			event->accept();
 //		}
@@ -74,7 +74,7 @@ class QTcpSocket;
 //
 //	void mouseMoveEvent(QMouseEvent* event) {
 //		if (event->buttons() & Qt::LeftButton) {
-//			// Przesuwaj ca³e okno g³ówne (QMainWindow)
+//			// Przesuwaj caï¿½e okno gï¿½ï¿½wne (QMainWindow)
 //			parentWidget()->parentWidget()->move(event->globalPos() - dragPosition);
 //			event->accept();
 //		}

@@ -159,7 +159,7 @@ public:
 	inline bool hasVertexColors() { return !m_vcolors.empty() && (m_vcolors.size() >= m_vertices.size()); };
 	inline bool hasVertexNormals() { return !m_vnormals.empty() && (m_vnormals.size() >= m_vertices.size()); };
 
-	void renderBACKUP();
+	//void renderBACKUP();
 
 	//virtual void renderSelf() override;
 	//virtual void render() override;

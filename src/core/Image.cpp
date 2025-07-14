@@ -1,6 +1,6 @@
 #include "Image.h"
 #include "AP.h"
-#include "MainWindow.h"
+//#include "MainWindow.h"
 #include "MdiChild.h"
 
 #include "../renderers/IImageRenderer.h"

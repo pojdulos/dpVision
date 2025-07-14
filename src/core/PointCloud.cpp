@@ -130,67 +130,67 @@ std::wstring CPointCloud::infoRow()
 //}
 
 #include "AP.h"
-#include "MainWindow.h"
-#include "GLViewer.h"
+// #include "MainWindow.h"
+// #include "GLViewer.h"
 
-#include "QtOpenGL/QGLShaderProgram"
+// #include "QtOpenGL/QGLShaderProgram"
 
-#define highp
-#define mediump
-#define lowp
+// #define highp
+// #define mediump
+// #define lowp
 
 
-void CPointCloud::renderBACKUP()
-{
-	if (m_vertices.empty()) return;
+// void CPointCloud::renderBACKUP()
+// {
+// 	if (m_vertices.empty()) return;
 
-	const QGLContext* context = QGLContext::currentContext();
+// 	const QGLContext* context = QGLContext::currentContext();
 
-	QGLShaderProgram program(context);
+// 	QGLShaderProgram program(context);
 
-	program.addShaderFromSourceCode(QGLShader::Vertex,
-		"attribute highp vec4 vertex;\n"
-		"attribute vec4 color;\n"
-		"varying lowp vec4 vertexColor;\n"
-		"void main(void)\n"
-		"{\n"
-		"   gl_Position = gl_ModelViewProjectionMatrix * vertex;\n"
-		"   vertexColor = color;\n"
-		"}");
+// 	program.addShaderFromSourceCode(QGLShader::Vertex,
+// 		"attribute highp vec4 vertex;\n"
+// 		"attribute vec4 color;\n"
+// 		"varying lowp vec4 vertexColor;\n"
+// 		"void main(void)\n"
+// 		"{\n"
+// 		"   gl_Position = gl_ModelViewProjectionMatrix * vertex;\n"
+// 		"   vertexColor = color;\n"
+// 		"}");
 	
-	program.addShaderFromSourceCode(QGLShader::Fragment,
-		"varying lowp vec4 vertexColor;\n"
-		"void main(void)\n"
-		"{\n"
-		"   gl_FragColor = vertexColor;\n"
-		"}");
+// 	program.addShaderFromSourceCode(QGLShader::Fragment,
+// 		"varying lowp vec4 vertexColor;\n"
+// 		"void main(void)\n"
+// 		"{\n"
+// 		"   gl_FragColor = vertexColor;\n"
+// 		"}");
 	
-	program.link();
-	program.bind();
+// 	program.link();
+// 	program.bind();
 
 
-	int vertexLocation = program.attributeLocation("vertex");
-	program.enableAttributeArray(vertexLocation);
-	program.setAttributeArray(vertexLocation, (GLfloat*) &(m_vertices[0]), 3);
+// 	int vertexLocation = program.attributeLocation("vertex");
+// 	program.enableAttributeArray(vertexLocation);
+// 	program.setAttributeArray(vertexLocation, (GLfloat*) &(m_vertices[0]), 3);
 
-	int colorLocation = program.attributeLocation("color");
-	if (hasVertexColors())
-	{
-		program.enableAttributeArray(colorLocation);
-		program.setAttributeArray(colorLocation, GL_UNSIGNED_BYTE, &(m_vcolors[0]), 4);
-	}
+// 	int colorLocation = program.attributeLocation("color");
+// 	if (hasVertexColors())
+// 	{
+// 		program.enableAttributeArray(colorLocation);
+// 		program.setAttributeArray(colorLocation, GL_UNSIGNED_BYTE, &(m_vcolors[0]), 4);
+// 	}
 
-	glDrawArrays(GL_POINTS, 0, m_vertices.size());
+// 	glDrawArrays(GL_POINTS, 0, m_vertices.size());
 
-	if (hasVertexColors())
-	{
-		program.disableAttributeArray(colorLocation);
-	}
+// 	if (hasVertexColors())
+// 	{
+// 		program.disableAttributeArray(colorLocation);
+// 	}
 
-	program.disableAttributeArray(vertexLocation);
+// 	program.disableAttributeArray(vertexLocation);
 
-	program.release();
-}
+// 	program.release();
+// }
 
 
 size_t CPointCloud::addVertex(CVertex v, CRGBA c)

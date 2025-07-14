@@ -1,5 +1,5 @@
 #include "WorkspaceFile.h"
-#include "MainWindow.h"
+//#include "MainWindow.h"
 #include "GLViewer.h"
 //#include "ChildWindow.h"
 

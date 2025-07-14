@@ -91,8 +91,8 @@ add_subdirectory(libs/PMFactory)
 ################################################################
 
 target_link_libraries(${EXE_NAME} #PRIVATE
-    dpVision::Core
     dpVision::Gui
+    dpVision::Core
     #dpVision::Renderers
     dpVision::PluginManager
     dpVision::Api

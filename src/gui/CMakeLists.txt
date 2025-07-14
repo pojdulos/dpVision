@@ -19,23 +19,25 @@ add_library(dpVisionGui SHARED
 )
 
 
-set(AUTOGEN_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/dpVisionGui_autogen/include")
+set(AUTOGEN_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/gui/dpVisionGui_autogen/include")
 
 target_include_directories(dpVisionGui PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../core
+    ${CMAKE_CURRENT_SOURCE_DIR}/../libs/PluginManager
     ${AUTOGEN_INCLUDE_DIR}
-    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/dpVisionGui_autogen/include>
+    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/gui/dpVisionGui_autogen/include>
     $<INSTALL_INTERFACE:include>
 )
 
 target_link_libraries(dpVisionGui
-    dpVision::Core
     OpenGL::GL
     ${GLU_LIBRARY}
     Qt5::Core
     Qt5::Gui
     Qt5::Widgets
     Qt5::OpenGL
+    Eigen3::Eigen
 )
 
 add_library(dpVision::Gui ALIAS dpVisionGui)

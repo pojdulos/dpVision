@@ -139,6 +139,7 @@ std::shared_ptr<CModel3D> CParserDPVISION::load(const QString path, bool wait)
 	UI::PROGRESSBAR::hide();
 
 	AP::mainWin().adjustForCurrentFile(path);
+
 	AppSettings::mainSettings()->setValue("recentFile", path);
 
 	UI::STATUSBAR::setText((QString("GOTOWE, liczba wczytanych modeli: ")+QString::number(modele.size())).toStdWString());

@@ -256,176 +256,165 @@ std::wstring CVolTK::infoRow()
 	return info;
 }
 
-#ifdef _WIN32
-#define PACKET_SIZE 100000ULL
-#else
-#define PACKET_SIZE 100000UL
-#endif
+// #ifdef _WIN32
+// #define PACKET_SIZE 100000ULL
+// #else
+// #define PACKET_SIZE 100000UL
+// #endif
 
-#include <qglshaderprogram.h>
+//#include <qglshaderprogram.h>
 #include "AP.h"
-#include "MainWindow.h"
-#include "GLViewer.h"
+//#include "MainWindow.h"
+//#include "GLViewer.h"
 
 
-bool CVolTK::addShadersBAK(QOpenGLShaderProgram& program)
-{
-	const char* defaultVertexShader = R"(
-#version 330 compatibility
-in vec3 vertex;
-uniform mediump vec4 color;
-uniform mediump vec3 b;
-uniform mediump vec3 e;
-uniform mediump vec3 vScale;
-uniform mediump float sinA;
-uniform mediump float cosA;
+// bool CVolTK::addShadersBAK(QOpenGLShaderProgram& program)
+// {
+// 	const char* defaultVertexShader = R"(
+// #version 330 compatibility
+// in vec3 vertex;
+// uniform mediump vec4 color;
+// uniform mediump vec3 b;
+// uniform mediump vec3 e;
+// uniform mediump vec3 vScale;
+// uniform mediump float sinA;
+// uniform mediump float cosA;
 
-out VS_OUT{
-	vec4 c;
-	bool b;
-} vout;
+// out VS_OUT{
+// 	vec4 c;
+// 	bool b;
+// } vout;
 
-void main(void)
-{
-  gl_Position = gl_ModelViewProjectionMatrix * vec4(vertex.x, vertex.y, vertex.z, 1.0);
-  vout.c = color;
-  vout.b = ((vertex.x >= b.x)&&(vertex.x < e.x)&&(vertex.y >= b.y)&&(vertex.y < e.y)&&(vertex.z >= b.z)&&(vertex.z < e.z));
-}
-)";
+// void main(void)
+// {
+//   gl_Position = gl_ModelViewProjectionMatrix * vec4(vertex.x, vertex.y, vertex.z, 1.0);
+//   vout.c = color;
+//   vout.b = ((vertex.x >= b.x)&&(vertex.x < e.x)&&(vertex.y >= b.y)&&(vertex.y < e.y)&&(vertex.z >= b.z)&&(vertex.z < e.z));
+// }
+// )";
 
-	const char* defaultGeometryShader = R"(
-#version 330 core
-layout(points) in;
-layout(points, max_vertices = 1) out;
+// 	const char* defaultGeometryShader = R"(
+// #version 330 core
+// layout(points) in;
+// layout(points, max_vertices = 1) out;
 
-in VS_OUT{
-	vec4 c;
-	bool b;
-} gs_in[];
+// in VS_OUT{
+// 	vec4 c;
+// 	bool b;
+// } gs_in[];
 
-out vec4 fColor;
+// out vec4 fColor;
 
-void main(void)
-{
-  if (gs_in[0].b)
-  {
-    fColor = gs_in[0].c;
-    gl_Position = gl_in[0].gl_Position;
-    EmitVertex();
-    EndPrimitive();
-  }
-}
-)";
+// void main(void)
+// {
+//   if (gs_in[0].b)
+//   {
+//     fColor = gs_in[0].c;
+//     gl_Position = gl_in[0].gl_Position;
+//     EmitVertex();
+//     EndPrimitive();
+//   }
+// }
+// )";
 
-	const char* defaultFragmentShader = R"(
-#version 330
-in vec4 fColor;
-void main(void)
-{
-   gl_FragColor = fColor;
-}
-)";
-
-
-
-
-//	if (!program.addShaderFromSourceFile(QOpenGLShader::Vertex, AP::mainApp().appExecDir() + "/shaders/VolTK.vert"))
-//	{
-		program.addShaderFromSourceCode(QOpenGLShader::Vertex, defaultVertexShader);
-//	}
-
-//	if (!program.addShaderFromSourceFile(QOpenGLShader::Geometry, AP::mainApp().appExecDir() + "/shaders/VolTK.gs"))
-//	{
-		program.addShaderFromSourceCode(QOpenGLShader::Geometry, defaultGeometryShader);
-//	}
-
-//	if (!program.addShaderFromSourceFile(QOpenGLShader::Fragment, AP::mainApp().appExecDir() + "/shaders/VolTK.frag"))
-//	{
-		program.addShaderFromSourceCode(QOpenGLShader::Fragment, defaultFragmentShader);
-//	}
-
-	return true;
-}
-
-
-bool CVolTK::addShaders(QOpenGLShaderProgram& program)
-{
-	const char* defaultVertexShader = R"(
-#version 330 compatibility
-in vec3 vertex;
-uniform mediump vec4 color;
-uniform mediump vec3 b;
-uniform mediump vec3 e;
-uniform mediump vec3 vScale;
-uniform mediump float sinA;
-uniform mediump float cosA;
-
-out VS_OUT{
-	vec4 c;
-	bool b;
-} vout;
-
-void main(void)
-{
-  gl_Position = gl_ModelViewProjectionMatrix * vec4(vertex.x*vScale.x, vertex.y*vScale.y - vertex.z*vScale.z*sinA/cosA, vertex.z*vScale.z, 1.0);
-  vout.c = color;
-  vout.b = ((vertex.x >= b.x)&&(vertex.x < e.x)&&(vertex.y >= b.y)&&(vertex.y < e.y)&&(vertex.z >= b.z)&&(vertex.z < e.z));
-}
-)";
-
-	const char* defaultGeometryShader = R"(
-#version 330 core
-layout(points) in;
-layout(points, max_vertices = 1) out;
-
-in VS_OUT{
-	vec4 c;
-	bool b;
-} gs_in[];
-
-out vec4 fColor;
-
-void main(void)
-{
-  if (gs_in[0].b)
-  {
-    fColor = gs_in[0].c;
-    gl_Position = gl_in[0].gl_Position;
-    EmitVertex();
-    EndPrimitive();
-  }
-}
-)";
-
-	const char* defaultFragmentShader = R"(
-#version 330
-in vec4 fColor;
-void main(void)
-{
-   gl_FragColor = fColor;
-}
-)";
+// 	const char* defaultFragmentShader = R"(
+// #version 330
+// in vec4 fColor;
+// void main(void)
+// {
+//    gl_FragColor = fColor;
+// }
+// )";
 
 
 
 
-	//	if (!program.addShaderFromSourceFile(QOpenGLShader::Vertex, AP::mainApp().appExecDir() + "/shaders/VolTK.vert"))
-	//	{
-	program.addShaderFromSourceCode(QOpenGLShader::Vertex, defaultVertexShader);
-	//	}
+// 		program.addShaderFromSourceCode(QOpenGLShader::Vertex, defaultVertexShader);
+// 		program.addShaderFromSourceCode(QOpenGLShader::Geometry, defaultGeometryShader);
+// 		program.addShaderFromSourceCode(QOpenGLShader::Fragment, defaultFragmentShader);
 
-	//	if (!program.addShaderFromSourceFile(QOpenGLShader::Geometry, AP::mainApp().appExecDir() + "/shaders/VolTK.gs"))
-	//	{
-	program.addShaderFromSourceCode(QOpenGLShader::Geometry, defaultGeometryShader);
-	//	}
+// 	return true;
+// }
 
-	//	if (!program.addShaderFromSourceFile(QOpenGLShader::Fragment, AP::mainApp().appExecDir() + "/shaders/VolTK.frag"))
-	//	{
-	program.addShaderFromSourceCode(QOpenGLShader::Fragment, defaultFragmentShader);
-	//	}
 
-	return true;
-}
+// bool CVolTK::addShaders(QOpenGLShaderProgram& program)
+// {
+// 	const char* defaultVertexShader = R"(
+// #version 330 compatibility
+// in vec3 vertex;
+// uniform mediump vec4 color;
+// uniform mediump vec3 b;
+// uniform mediump vec3 e;
+// uniform mediump vec3 vScale;
+// uniform mediump float sinA;
+// uniform mediump float cosA;
+
+// out VS_OUT{
+// 	vec4 c;
+// 	bool b;
+// } vout;
+
+// void main(void)
+// {
+//   gl_Position = gl_ModelViewProjectionMatrix * vec4(vertex.x*vScale.x, vertex.y*vScale.y - vertex.z*vScale.z*sinA/cosA, vertex.z*vScale.z, 1.0);
+//   vout.c = color;
+//   vout.b = ((vertex.x >= b.x)&&(vertex.x < e.x)&&(vertex.y >= b.y)&&(vertex.y < e.y)&&(vertex.z >= b.z)&&(vertex.z < e.z));
+// }
+// )";
+
+// 	const char* defaultGeometryShader = R"(
+// #version 330 core
+// layout(points) in;
+// layout(points, max_vertices = 1) out;
+
+// in VS_OUT{
+// 	vec4 c;
+// 	bool b;
+// } gs_in[];
+
+// out vec4 fColor;
+
+// void main(void)
+// {
+//   if (gs_in[0].b)
+//   {
+//     fColor = gs_in[0].c;
+//     gl_Position = gl_in[0].gl_Position;
+//     EmitVertex();
+//     EndPrimitive();
+//   }
+// }
+// )";
+
+// 	const char* defaultFragmentShader = R"(
+// #version 330
+// in vec4 fColor;
+// void main(void)
+// {
+//    gl_FragColor = fColor;
+// }
+// )";
+
+
+
+
+// 	//	if (!program.addShaderFromSourceFile(QOpenGLShader::Vertex, AP::mainApp().appExecDir() + "/shaders/VolTK.vert"))
+// 	//	{
+// 	program.addShaderFromSourceCode(QOpenGLShader::Vertex, defaultVertexShader);
+// 	//	}
+
+// 	//	if (!program.addShaderFromSourceFile(QOpenGLShader::Geometry, AP::mainApp().appExecDir() + "/shaders/VolTK.gs"))
+// 	//	{
+// 	program.addShaderFromSourceCode(QOpenGLShader::Geometry, defaultGeometryShader);
+// 	//	}
+
+// 	//	if (!program.addShaderFromSourceFile(QOpenGLShader::Fragment, AP::mainApp().appExecDir() + "/shaders/VolTK.frag"))
+// 	//	{
+// 	program.addShaderFromSourceCode(QOpenGLShader::Fragment, defaultFragmentShader);
+// 	//	}
+
+// 	return true;
+// }
 
 
 float fixVal(float val)
@@ -438,162 +427,162 @@ float fixVal(float val)
 	return c;
 }
 
-void CVolTK::renderPart(QOpenGLShaderProgram& program, uint16_t min, uint16_t max, int fR, int fG, int fB)
-{
-	for (int it = min; it < max; it++)
-	{
-		float c = float(it - min) / float(max - min);
+// void CVolTK::renderPart(QOpenGLShaderProgram& program, uint16_t min, uint16_t max, int fR, int fG, int fB)
+// {
+// 	for (int it = min; it < max; it++)
+// 	{
+// 		float c = float(it - min) / float(max - min);
 
-		//float c = fixVal( ic );
+// 		//float c = fixVal( ic );
 
-		int r = c * fR;
-		int g = c * fG;
-		int b = c * fB;
+// 		int r = c * fR;
+// 		int g = c * fG;
+// 		int b = c * fB;
 
-		program.setUniformValue(colorLocation, QColor(r, g, b));
+// 		program.setUniformValue(colorLocation, QColor(r, g, b));
 
-		DisplayDataPart& vertices = *m_displayData[it];
+// 		DisplayDataPart& vertices = *m_displayData[it];
 
-		if (!vertices.empty())
-		{
-			size_t idx = 0;
+// 		if (!vertices.empty())
+// 		{
+// 			size_t idx = 0;
 
-			functions->glVertexAttribPointer(vertexLocation, 3, GL_SHORT, GL_FALSE, 0, vertices.data());
+// 			functions->glVertexAttribPointer(vertexLocation, 3, GL_SHORT, GL_FALSE, 0, vertices.data());
 
-			while (idx < vertices.size())
-			{
-				functions->glDrawArrays(GL_POINTS, idx, std::min(PACKET_SIZE, vertices.size() - idx));
+// 			while (idx < vertices.size())
+// 			{
+// 				functions->glDrawArrays(GL_POINTS, idx, std::min(PACKET_SIZE, vertices.size() - idx));
 
-				idx += PACKET_SIZE;
-			}
-		}
-	}
-}
+// 				idx += PACKET_SIZE;
+// 			}
+// 		}
+// 	}
+// }
 
-void CVolTK::renderPart(QOpenGLShaderProgram &program, uint16_t min, uint16_t max, QColor col)
-{
-	for (int it = min; it < max; it++)
-	{
-		float c = float(it - min) / float(max - min);
+// void CVolTK::renderPart(QOpenGLShaderProgram &program, uint16_t min, uint16_t max, QColor col)
+// {
+// 	for (int it = min; it < max; it++)
+// 	{
+// 		float c = float(it - min) / float(max - min);
 
-		int r = col.red() * c;
-		int g = col.green() * c;
-		int b = col.blue() * c;
+// 		int r = col.red() * c;
+// 		int g = col.green() * c;
+// 		int b = col.blue() * c;
 
-		program.setUniformValue(colorLocation, QColor(r, g, b));
+// 		program.setUniformValue(colorLocation, QColor(r, g, b));
 
-		DisplayDataPart& vertices = *m_displayData[it];
+// 		DisplayDataPart& vertices = *m_displayData[it];
 
-		if (!vertices.empty())
-		{
-			size_t idx = 0;
+// 		if (!vertices.empty())
+// 		{
+// 			size_t idx = 0;
 
-			functions->glVertexAttribPointer(vertexLocation, 3, GL_SHORT, GL_FALSE, 0, vertices.data());
+// 			functions->glVertexAttribPointer(vertexLocation, 3, GL_SHORT, GL_FALSE, 0, vertices.data());
 
-			while (idx < vertices.size())
-			{
-				functions->glDrawArrays(GL_POINTS, idx, std::min(PACKET_SIZE, vertices.size() - idx));
+// 			while (idx < vertices.size())
+// 			{
+// 				functions->glDrawArrays(GL_POINTS, idx, std::min(PACKET_SIZE, vertices.size() - idx));
 
-				idx += PACKET_SIZE;
-			}
-		}
-	}
+// 				idx += PACKET_SIZE;
+// 			}
+// 		}
+// 	}
 
-}
+// }
 
-void CVolTK::renderPart2(QOpenGLShaderProgram& program, uint16_t min, uint16_t max)
-{
-	for (int cc = min; cc <= max; cc++)
-	{
-		float c = 1.0f;
+// void CVolTK::renderPart2(QOpenGLShaderProgram& program, uint16_t min, uint16_t max)
+// {
+// 	for (int cc = min; cc <= max; cc++)
+// 	{
+// 		float c = 1.0f;
 
-		if (max>min)
-			c = float(cc - min) / float(max - min);
+// 		if (max>min)
+// 			c = float(cc - min) / float(max - min);
 
-		//c = fixVal(c);
+// 		//c = fixVal(c);
 
-		program.setUniformValue(colorLocation, QColor(c*255, c * 255, c * 255));
+// 		program.setUniformValue(colorLocation, QColor(c*255, c * 255, c * 255));
 
-		DisplayDataPart& vertices = *m_displayData[cc];
+// 		DisplayDataPart& vertices = *m_displayData[cc];
 
-		if (!vertices.empty())
-		{
-			size_t idx = 0;
+// 		if (!vertices.empty())
+// 		{
+// 			size_t idx = 0;
 
-			functions->glVertexAttribPointer(vertexLocation, 3, GL_SHORT, GL_FALSE, 0, vertices.data());
+// 			functions->glVertexAttribPointer(vertexLocation, 3, GL_SHORT, GL_FALSE, 0, vertices.data());
 
-			while (idx < vertices.size())
-			{
-				functions->glDrawArrays(GL_POINTS, idx, std::min(PACKET_SIZE, vertices.size() - idx));
+// 			while (idx < vertices.size())
+// 			{
+// 				functions->glDrawArrays(GL_POINTS, idx, std::min(PACKET_SIZE, vertices.size() - idx));
 
-				idx += PACKET_SIZE;
-			}
-		}
-	}
-}
+// 				idx += PACKET_SIZE;
+// 			}
+// 		}
+// 	}
+// }
 
 void CVolTK::renderSelf()
 {
-	context = QOpenGLContext::currentContext();
-	functions = context->functions();
+// 	context = QOpenGLContext::currentContext();
+// 	functions = context->functions();
 	
-	functions->glEnable(GL_PROGRAM_POINT_SIZE);
+// 	functions->glEnable(GL_PROGRAM_POINT_SIZE);
 
-	//glPointSize(3);
+// 	//glPointSize(3);
 
-	QOpenGLShaderProgram program;
+// 	QOpenGLShaderProgram program;
 
-	addShaders(program);
+// 	addShaders(program);
 
-	program.link();
-	program.bind();
+// 	program.link();
+// 	program.bind();
 
-	vertexLocation = program.attributeLocation("vertex");
-	colorLocation = program.uniformLocation("color");
+// 	vertexLocation = program.attributeLocation("vertex");
+// 	colorLocation = program.uniformLocation("color");
 
-	int bLocation = program.uniformLocation("b");
-	int eLocation = program.uniformLocation("e");
-	int vScaleLocation = program.uniformLocation("vScale");
-	int sinAlfaLocation = program.uniformLocation("sinA");
-	int cosAlfaLocation = program.uniformLocation("cosA");
+// 	int bLocation = program.uniformLocation("b");
+// 	int eLocation = program.uniformLocation("e");
+// 	int vScaleLocation = program.uniformLocation("vScale");
+// 	int sinAlfaLocation = program.uniformLocation("sinA");
+// 	int cosAlfaLocation = program.uniformLocation("cosA");
 
-	program.enableAttributeArray(vertexLocation);
+// 	program.enableAttributeArray(vertexLocation);
 
-	uint16_t wB = m_currentIntensityRange.lower;
-	uint16_t wE;
+// 	uint16_t wB = m_currentIntensityRange.lower;
+// 	uint16_t wE;
 
-	program.setUniformValue(bLocation, m_b.x, m_b.y, m_b.z);
-	program.setUniformValue(eLocation, m_e.x, m_e.y, m_e.z);
-	program.setUniformValue(vScaleLocation, kostka.m_voxelSize.x, kostka.m_voxelSize.y, kostka.m_voxelSize.z);
-	program.setUniformValue(sinAlfaLocation, sin((float)deg2rad(m_alpha)));
-	program.setUniformValue(cosAlfaLocation, cos((float)deg2rad(m_alpha)));
+// 	program.setUniformValue(bLocation, m_b.x, m_b.y, m_b.z);
+// 	program.setUniformValue(eLocation, m_e.x, m_e.y, m_e.z);
+// 	program.setUniformValue(vScaleLocation, kostka.m_voxelSize.x, kostka.m_voxelSize.y, kostka.m_voxelSize.z);
+// 	program.setUniformValue(sinAlfaLocation, sin((float)deg2rad(m_alpha)));
+// 	program.setUniformValue(cosAlfaLocation, cos((float)deg2rad(m_alpha)));
 
-	for (ColorFilter f : colorFilters)
-	{
-		wE = f.first;
-		if (wE > wB)
-		{
-			if (f.second.first)
-			{
-				CRGBA c = f.second.second;
-				renderPart(program, wB, wE, c.red(), c.green(), c.blue());
-			}
-			wB = wE;
-		}
-	}
+// 	for (ColorFilter f : colorFilters)
+// 	{
+// 		wE = f.first;
+// 		if (wE > wB)
+// 		{
+// 			if (f.second.first)
+// 			{
+// 				CRGBA c = f.second.second;
+// 				renderPart(program, wB, wE, c.red(), c.green(), c.blue());
+// 			}
+// 			wB = wE;
+// 		}
+// 	}
 
-	wE = m_currentIntensityRange.upper;
-	if (wE >= wB)
-	{
-		renderPart2(program, wB, wE);
-		//renderPart(program, wB, wE, QColor(255,255,255,128));
-	}
+// 	wE = m_currentIntensityRange.upper;
+// 	if (wE >= wB)
+// 	{
+// 		renderPart2(program, wB, wE);
+// 		//renderPart(program, wB, wE, QColor(255,255,255,128));
+// 	}
 
-	program.disableAttributeArray(vertexLocation);
+// 	program.disableAttributeArray(vertexLocation);
 
-	program.release();
+// 	program.release();
 
-	functions->glDisable(GL_PROGRAM_POINT_SIZE);
+// 	functions->glDisable(GL_PROGRAM_POINT_SIZE);
 }
 
 
