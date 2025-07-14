@@ -118,6 +118,7 @@ void CMainWindow::openRecent() {
 		}
 }
 
+#include "interfaces/QtProgressAdapter.h"
 
 void CMainWindow::fileOpen()
 {
@@ -125,7 +126,7 @@ void CMainWindow::fileOpen()
 	
 	if (!fileName.isEmpty())
 	{
-		if ( nullptr != AP::WORKSPACE::loadModel(fileName, false, false ))
+		if ( nullptr != AP::WORKSPACE::loadModel(fileName, false, false, std::make_shared<QtProgressAdapter>(this->progressIndicator) ))
 		{
 			adjustForCurrentFile(fileName);
 			AppSettings::mainSettings()->setValue("recentFile", fileName);

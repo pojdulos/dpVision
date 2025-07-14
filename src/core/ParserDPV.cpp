@@ -29,8 +29,10 @@ CParserDPVISION::~CParserDPVISION(void)
 
 #include "Annotation.h"
 
-std::shared_ptr<CModel3D> CParserDPVISION::load(const QString path, bool wait)
+std::shared_ptr<CModel3D> CParserDPVISION::load(const QString path, bool wait, std::shared_ptr<IProgressListener> prg)
 {
+	progress_ = prg;
+
 	QuaZip zip(path);
 	
 	mapaObiektow.clear();

@@ -3,6 +3,8 @@
 class IProgressListener {
 public:
     virtual ~IProgressListener() = default;
-    virtual void onProgress(float value) = 0; // value np. od 0.0 do 1.0
-    virtual void onMessage(const std::string& msg) {} // opcjonalnie
+    virtual void init(int min, int max, int val, std::string text = "") = 0;
+    virtual void setValue(int value) = 0;
+    virtual void setText(std::string text) = 0;
+    virtual void hide() = 0;
 };

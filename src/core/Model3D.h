@@ -18,6 +18,7 @@
 #include <set>
 
 class CAnnotation;
+class IProgressListener;
 
 //enum _animDir {
 //	_ANIM_LEFT = 0,
@@ -72,7 +73,7 @@ public:
 
 	static std::shared_ptr<CModel3D> load(const QString fext, const QString path, bool synchronous = true);
 
-	static std::shared_ptr<CModel3D> load(const QString path, bool synchronous = true);
+	static std::shared_ptr<CModel3D> load(const QString path, bool synchronous = true, std::shared_ptr<IProgressListener> prg = nullptr);
 	static std::shared_ptr<CModel3D> load(const char* path, bool synchronous = true) { return load(QString(path), synchronous); }
 	static std::shared_ptr<CModel3D> load(const std::wstring path, bool synchronous = true) { return load(QString::fromStdWString(path), synchronous); }
 	static std::shared_ptr<CModel3D> load(const std::string path, bool synchronous = true) { return load(QString::fromStdString(path), synchronous); }

@@ -23,6 +23,7 @@ struct Meshinfo {
 	bool hasVT;
 };
 
+class IProgressListener;
 
 class CParserOBJ :public QObject, public CParser
 {
@@ -42,7 +43,7 @@ class CParserOBJ :public QObject, public CParser
 	std::map<int, Meshinfo> meshinfo;
 
 public:
-	CParserOBJ(void);
+	CParserOBJ(std::shared_ptr<IProgressListener> prg = nullptr);
 	~CParserOBJ(void);
 
 	virtual bool inPlugin() override { return false; };

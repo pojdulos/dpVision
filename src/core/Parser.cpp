@@ -1,7 +1,8 @@
-
 #include "Parser.h"
 
-CParser::CParser()
+#include "interfaces/IProgressListener.h"
+
+CParser::CParser(std::shared_ptr<IProgressListener> prg):progress_(prg)
 {
 	setDescr("Sample description");
 	m_exts.clear(); 
@@ -16,8 +17,10 @@ CParser::~CParser(void)
 }
 
 
-std::shared_ptr<CModel3D> CParser::load(const QString path, bool wait)
+std::shared_ptr<CModel3D> CParser::load(const QString path, bool wait, std::shared_ptr<IProgressListener> prg)
 {
+	progress_ = prg;
+
 	std::shared_ptr<CModel3D> obj;
 
 	// allocate

@@ -1221,8 +1221,10 @@ void dpTest(const char* msg)
 
 }
 
-std::shared_ptr<CModel3D> CParserATMDL::load(const QString path, bool wait)
+std::shared_ptr<CModel3D> CParserATMDL::load(const QString path, bool wait, std::shared_ptr<IProgressListener> prg)
 {
+	progress_ = prg;
+
 	atmdlFile.setFileName(path);
 
 	if (!atmdlFile.open(QIODevice::ReadOnly | QFile::Text))

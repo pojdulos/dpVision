@@ -46,7 +46,7 @@ public:
 	CParserATMDL(void);
 	~CParserATMDL(void) {}
 
-	virtual std::shared_ptr<CModel3D> load(const QString path, bool wait) override;
+	virtual std::shared_ptr<CModel3D> load(const QString path, bool wait, std::shared_ptr<IProgressListener> prg = nullptr) override;
 	QString obj2atmdl(std::shared_ptr<CBaseObject> obj, const QString &wciecie="");
 	virtual bool save(QVector<std::shared_ptr<CBaseObject>> objects, const QString path) override;
 	virtual bool save(std::shared_ptr<CModel3D> obj, const QString path) override;

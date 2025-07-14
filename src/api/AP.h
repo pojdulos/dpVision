@@ -300,7 +300,7 @@ namespace AP
          * @param setItCurrent If true, sets the model as current
          * @return Pointer to loaded CModel3D
          */
-        DPVISION_EXPORT std::shared_ptr<CModel3D> loadModel(const QString& path, bool synchronous = true, bool setItCurrent = false);
+        DPVISION_EXPORT std::shared_ptr<CModel3D> loadModel(const QString& path, bool synchronous = true, bool setItCurrent = false, std::shared_ptr<IProgressListener> prg = nullptr);
 
         /**
          * @brief Loads a model from file (wide string path)

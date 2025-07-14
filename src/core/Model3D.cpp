@@ -550,7 +550,7 @@ std::shared_ptr<CModel3D> CModel3D::load(const QString fext, const QString path,
 	return nullptr;
 }
 
-std::shared_ptr<CModel3D> CModel3D::load(const QString path, bool synchronous)
+std::shared_ptr<CModel3D> CModel3D::load(const QString path, bool synchronous, std::shared_ptr<IProgressListener> prg)
 {
 	CParser* parser = CFileConnector::getLoadParser( path );
 
@@ -561,7 +561,7 @@ std::shared_ptr<CModel3D> CModel3D::load(const QString path, bool synchronous)
 		// t1 = GetTickCount();
 		auto t0 = std::chrono::steady_clock::now();
 
-		std::shared_ptr<CModel3D> obj = parser->load( path, synchronous );
+		std::shared_ptr<CModel3D> obj = parser->load( path, synchronous, prg );
 
 		// t2 = GetTickCount();
 		auto t1 = std::chrono::steady_clock::now();

@@ -3,7 +3,9 @@
 
 #include <fstream>
 
-CParserOBJ::CParserOBJ()
+#include "interfaces/IProgressListener.h"
+
+CParserOBJ::CParserOBJ(std::shared_ptr<IProgressListener> prg) : CParser(prg)
 {
 	setDescr("OBJ File");
 	m_exts.insert("obj");
@@ -864,12 +866,14 @@ size_t CParserOBJ::Run()
     CTIndex tidx;
     CTCoord tcoord;
 
-    ProgressIndicator* progressIndicator = UI::PROGRESSBAR::instance();
-    progressIndicator->init(0, 100, 0, "Reading " + plikSiatki.fileName() + "...");
-
-    connect(this, SIGNAL(sendProgress(int)), progressIndicator, SLOT(setValue(int)));
-    connect(progressIndicator->cancelButton(), SIGNAL(clicked()), this, SLOT(onLoadCancelled()));
-    progressIndicator->cancelButton()->show();
+    //ProgressIndicator* progressIndicator = UI::PROGRESSBAR::instance();
+    //progressIndicator->init(0, 100, 0, "Reading " + plikSiatki.fileName() + "...");
+	
+	if (progress_) progress_->init(0,100,0, "Reading " + plikSiatki.fileName().toStdString() + "...");
+    
+	//connect(this, SIGNAL(sendProgress(int)), progressIndicator, SLOT(setValue(int)));
+ //   connect(progressIndicator->cancelButton(), SIGNAL(clicked()), this, SLOT(onLoadCancelled()));
+ //   progressIndicator->cancelButton()->show();
 
     cancelled = false;
     auto t1 = std::chrono::steady_clock::now();
@@ -1052,15 +1056,20 @@ size_t CParserOBJ::Run()
         auto t2 = std::chrono::steady_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
 
-        if (duration > 1000)
+        if (duration > 500)
         {
             int progress = round((100.0f * (inputFile.size() - inputFile.bytesAvailable())) / inputFile.size());
-            emit(sendProgress(progress));
-            t1 = std::chrono::steady_clock::now();
+            
+			//emit(sendProgress(progress));
+			if (progress_) progress_->setValue(progress);
+
+			t1 = std::chrono::steady_clock::now();
+			QCoreApplication::processEvents();
         }
     }
 
-    progressIndicator->hide();
+    //progressIndicator->hide();
+	if (progress_) progress_->hide();
 
     if (cancelled)
     {

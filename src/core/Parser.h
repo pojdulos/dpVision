@@ -6,9 +6,13 @@
 
 #include "Model3D.h"
 
+class IProgressListener;
+
 class DPVISION_EXPORT2 CParser
 {
 protected:
+	std::shared_ptr<IProgressListener> progress_ = nullptr;
+
 	// old style -- deprecated
 	bool bIsNotSet;
 
@@ -38,10 +42,12 @@ protected:
 	inline void setDescr(const QString descr) { m_descr = descr; }
 	
 public:
-	CParser(void);
+	CParser(std::shared_ptr<IProgressListener> prg = nullptr);
 	virtual ~CParser(void);
 
-	virtual std::shared_ptr<CModel3D> load( const QString path, bool wait = true);
+	void setProgressListener(std::shared_ptr<IProgressListener> prg = nullptr) { progress_ = prg; }
+
+	virtual std::shared_ptr<CModel3D> load( const QString path, bool wait = true, std::shared_ptr<IProgressListener> prg = nullptr);
 	virtual bool save( std::shared_ptr<CModel3D> obj, const QString path );
 	virtual bool save(QVector<std::shared_ptr<CBaseObject>> objects, const QString path) { return false; };
 

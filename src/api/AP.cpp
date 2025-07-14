@@ -296,9 +296,9 @@ namespace AP
 			return nullptr;
 		}
 
-		std::shared_ptr<CModel3D> loadModel(const QString& path, bool synchronous, bool setItCurrent)
+		std::shared_ptr<CModel3D> loadModel(const QString& path, bool synchronous, bool setItCurrent, std::shared_ptr<IProgressListener> prg)
 		{
-			std::shared_ptr<CModel3D> obj = CModel3D::load(path, synchronous);
+			std::shared_ptr<CModel3D> obj = CModel3D::load(path, synchronous, prg);
 
 			if (nullptr != obj)
 			{
