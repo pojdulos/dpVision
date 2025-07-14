@@ -4,7 +4,7 @@
 
 #include "AP.h"
 
-#include "renderers/IWorkspaceRenderer.h"
+#include "../renderers/IWorkspaceRenderer.h"
 
 CWorkspace::CWorkspace() : QObject()
 {

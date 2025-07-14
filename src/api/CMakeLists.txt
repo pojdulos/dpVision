@@ -5,7 +5,7 @@ file(GLOB API_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/adapters/*.cpp
 )
-add_library(dpVisionApi STATIC ${API_SRC})
+add_library(dpVisionApi SHARED ${API_SRC})
 
 add_library(dpVision::Api ALIAS dpVisionApi)
 
@@ -21,16 +21,8 @@ target_include_directories(dpVisionApi PUBLIC
 )
 
 target_link_libraries(dpVisionApi
-    dpVision::Core
-    # Qt5::Core
-    # Qt5::Gui
-    # Qt5::Widgets
+#    dpVision::Core
     Qt5::OpenGL
-    # Qt5::Xml
-    # Qt5::Network
-    # OpenGL::GL
-    # ${GLU_LIBRARY}
-    # OpenMP::OpenMP_CXX
     Eigen3::Eigen
     #dpVision::PluginManager # (jeśli PluginManager to alias do realnej biblioteki)
 )

@@ -16,7 +16,6 @@ target_compile_definitions(${_NAME} PRIVATE
 
 target_link_libraries (${_NAME} 
 	dpVision::Core
-	dpVision::PluginManager
 	Qt5::Core
 )
 
