@@ -11,6 +11,8 @@
 
 #include "MainWindow.h"
 
+#include <QMessageBox>
+
 DockWidgetPluginList::DockWidgetPluginList(QWidget *parent)	: QDockWidget(parent)
 {
 	ui.setupUi(this);
@@ -35,7 +37,7 @@ void DockWidgetPluginList::runSelectedPlugin( QListWidgetItem *item )
 
 void DockWidgetPluginList::removeSelectedPlugin()
 {
-	UI::MESSAGEBOX::warning(L"Function temporarily unavailable...", L"Unload Plugin");
+	QMessageBox::warning(0, "Unload Plugin", "Function temporarily unavailable..." );
 	/*
 	QList<QListWidgetItem*> lista = ui.listPlugins->selectedItems();
 

@@ -1,6 +1,7 @@
 #include "ParserSMF.h"
 
 #include "StatusBarManager.h"
+#include "MessageBoxManager.h"
 
 CParserSMF::CParserSMF()
 {
@@ -42,7 +43,7 @@ void CParserSMF::ReadPartFromV4( FILE *plik, SVsplit & vsplit )
 			}
 			catch ( std::bad_alloc &e )
 			{
-				UI::MESSAGEBOX::error( e.what() );
+				MessageBoxManager::error( e.what() );
 			}
 		}
 	}
@@ -57,7 +58,7 @@ void CParserSMF::ReadPartFromV4( FILE *plik, SVsplit & vsplit )
 			}
 			catch ( std::bad_alloc &e )
 			{
-				UI::MESSAGEBOX::error( e.what() );
+				MessageBoxManager::error( e.what() );
 			}
 		}
 	}
@@ -79,7 +80,7 @@ void CParserSMF::ReadPartFromV5( FILE *plik, SVsplit & vsplit )
 			}
 			catch ( std::bad_alloc &e )
 			{
-				UI::MESSAGEBOX::error( e.what() );
+				MessageBoxManager::error( e.what() );
 			}
 		}
 	}
@@ -285,7 +286,7 @@ size_t CParserSMF::ReadSMF_V3()
 				}
 				catch ( std::bad_alloc &e )
 				{
-					UI::MESSAGEBOX::error( e.what() );
+					MessageBoxManager::error( e.what() );
 				}
 
 				lbvsp++;

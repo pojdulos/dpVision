@@ -1,6 +1,7 @@
 #include "Parser.h"
 
 #include "interfaces/IProgressListener.h"
+#include "MessageBoxManager.h"
 
 CParser::CParser(std::shared_ptr<IProgressListener> prg):progress_(prg)
 {
@@ -63,7 +64,7 @@ std::shared_ptr<CModel3D> CParser::load(const QString path, bool wait, std::shar
 		}
 		else
 		{
-			UI::MESSAGEBOX::error(L"Nie udało sie wczytać pliku");
+			MessageBoxManager::error("Nie udało sie wczytać pliku");
 		}
 	}
 

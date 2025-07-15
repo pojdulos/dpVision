@@ -329,6 +329,7 @@ QString CFileConnector::getExtByFileContent(QString path)
 #include "ParserDPV.h"
 #include "ParserATMDL.h"
 
+#include "MessageBoxManager.h"
 
 CParser * CFileConnector::getLoadParser( QString path )
 {
@@ -373,7 +374,7 @@ CParser * CFileConnector::getLoadParser( QString path )
 			}
 		}
 
-		UI::MESSAGEBOX::error( L"Unknown file extension.\n" + path.toStdWString() );
+		MessageBoxManager::error( std::string("Unknown file extension.\n") + path.toStdString() );
 	}
 
 	return parser;

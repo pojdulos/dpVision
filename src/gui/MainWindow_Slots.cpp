@@ -20,6 +20,8 @@
 #include "adapters/QtProgressAdapter.h"
 #include "StatusBarManager.h"
 
+#include <QMessageBox>
+
 void CMainWindow::actionScreenshot() {
 	GLViewer* view = this->currentViewer();
 
@@ -870,7 +872,7 @@ void CMainWindow::openWorkspace()
 
 	if (parser == nullptr) return;
 
-	int reply = UI::MESSAGEBOX::question(L"You are about to removing all models in your workspace.\nRealy you want to do it?", L"Caution!");
+	int reply = QMessageBox::question(0,"You are about to removing all models in your workspace.\nRealy you want to do it?", "Caution!");
 	
 	if (0 == reply)
 	{
@@ -928,13 +930,13 @@ void CMainWindow::saveWorkspace()
 
 void CMainWindow::removeAllModels()
 {
-	int reply = UI::MESSAGEBOX::question(L"You are about to removing all models in your workspace.\nRealy you want to do it?", L"Caution!");
+	int reply = QMessageBox::question(0, "You are about to removing all models in your workspace.\nRealy you want to do it?", "Caution!");
 	if ( 0 == reply ) AP::WORKSPACE::removeAllModels();
 }
 
 void CMainWindow::removeSelectedModels()
 {
-	int reply = UI::MESSAGEBOX::question(L"You are about to removing all selected (checked) models.\nRealy you want to do it?", L"Caution!");
+	int reply = QMessageBox::question(0, "You are about to removing all selected (checked) models.\nRealy you want to do it?", "Caution!");
 	if (0 == reply) AP::WORKSPACE::removeSelectedModels();
 }
 
@@ -1217,7 +1219,7 @@ void CMainWindow::pmEcol()
 			}
 			catch ( std::bad_alloc &e ) {
 				StatusBarManager::setText( QString("PMeshEcollSelf(): %1").arg(e.what()));
-				UI::MESSAGEBOX::error( "CModel3D::PMeshEcoll() failed with Bad Alloc error." );
+				QMessageBox::critical( 0, "CModel3D::PMeshEcoll() failed with Bad Alloc error." , "");
 			}
 			catch ( ... ) {
 				StatusBarManager::setText( "Something wrong in CModel3D::PMeshEcoll()" );
@@ -1254,7 +1256,7 @@ void CMainWindow::pmVsplit()
 			}
 			catch ( std::bad_alloc &e ) {
 				StatusBarManager::setText( QString("PMeshVsplitSelf(): %1").arg(e.what()));
-				UI::MESSAGEBOX::error( "CModel3D::PMeshVsplit() failed with Bad Alloc error." );
+				QMessageBox::critical( 0, "CModel3D::PMeshVsplit() failed with Bad Alloc error.", "" );
 			}
 			catch ( ... ) {
 				StatusBarManager::setText( "Something wrong in CModel3D::PMeshVSplit()" );

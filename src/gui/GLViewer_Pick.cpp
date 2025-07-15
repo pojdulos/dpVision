@@ -15,6 +15,8 @@
 #include "AnnotationPath.h"
 #include "AnnotationPoints.h"
 
+#include <QMessageBox>
+
 bool GLViewer::screen2obj(double xx, double yy, CModel3D *obj, CPoint3d &in, CPoint3d &out, CVector3d &dir)
 {
 	if (convertCoords(xx, yy, /*ref*/in, /*ref*/out))
@@ -569,7 +571,7 @@ void GLViewer::PickPoint(int x, int y)
 		}
 		else
 		{
-			UI::MESSAGEBOX::information(L"Operation not supported", L"I'm sorry. In the current version of the software, this feature is only available for point clouds and meshes.");
+			QMessageBox::information(0, "Operation not supported", "I'm sorry. In the current version of the software, this feature is only available for point clouds and meshes.");
 		}
 	}
 	else

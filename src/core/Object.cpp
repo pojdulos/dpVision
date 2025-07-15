@@ -25,7 +25,7 @@ CObject::CObject(int parentId) : CBaseObject(parentId), CBoundingBox()
 	renderer_ = std::make_shared<IObjectRenderer>();
 };
 
-// konstruktor kopiuj¹cy
+// konstruktor kopiujï¿½cy
 CObject::CObject(const CObject &b) : CBaseObject(b), CBoundingBox(b) //CMinMax(b)
 {
 	m_data.clear();
@@ -65,7 +65,7 @@ CObject::CObject(const CObject &b) : CBaseObject(b), CBoundingBox(b) //CMinMax(b
 		//try {
 		//	delete m_data.begin()->second;
 		//} catch (...) {
-		//	std::cout << "B³¹d podczas kasowania obiektu potomnego\n";
+		//	std::cout << "Bï¿½ï¿½d podczas kasowania obiektu potomnego\n";
 		//}
 //		m_data.erase(m_data.begin());
 //	}
@@ -89,12 +89,12 @@ void CObject::applyTransformation(CTransform& from, CTransform& to)
 
 
 
-#include "UI.h"
+#include "MessageBoxManager.h"
 
 std::shared_ptr<CBaseObject> CObject::getCopy()
 {
 	if (!this->hasType(Type::GENERIC))
-		UI::MESSAGEBOX::warning("WARNING: you are calling getCopy() function from CObject!!!\nTo avoid unpleasant surprises override this function in inherited class, please.");
+		MessageBoxManager::warning("WARNING: you are calling getCopy() function from CObject!!!\nTo avoid unpleasant surprises override this function in inherited class, please.");
 	return std::make_shared<CObject>(*this);
 }
 

@@ -1,12 +1,13 @@
 #include "ContextMenu.h"
 
 #include "AP.h"
-#include "UI.h"
+//#include "UI.h"
 #include "MainWindow.h"
 #include "Workspace.h"
 #include "BaseObject.h"
 #include "Object.h"
 
+#include <QMessageBox>
 
 CContextMenu::CContextMenu(std::shared_ptr<CBaseObject> obj, QWidget *parent) : QMenu(parent), m_obj(obj)
 {
@@ -466,14 +467,14 @@ void CContextMenu::slot_make_me_root()
 		return; 	// object not exists or is not regular object
 
 	if (!m_obj->hasCategory(CBaseObject::Category::OBJECT)) {
-		UI::MESSAGEBOX::information("The object you have choosen probably is an annotation.\nCurrently only regular (data) object can be set as root.");
+		QMessageBox::information(0,"","The object you have choosen probably is an annotation.\nCurrently only regular (data) object can be set as root.");
 		return;
 	}
 
 	std::shared_ptr<CBaseObject> top = m_obj->getRoot();
 
 	if (top == m_obj) {
-		UI::MESSAGEBOX::information("An object is already root,\nso you are not changing anything");
+		QMessageBox::information(0,"","An object is already root,\nso you are not changing anything");
 		return;
 	}
 
@@ -595,7 +596,7 @@ void CContextMenu::slot_repositioning()
 		else if (action == "rearrange")
 		{
 			if (!m_obj->hasCategory(CBaseObject::Category::OBJECT)) {
-				UI::MESSAGEBOX::information("The object you have choosen probably is an annotation.\nCurrently only regular (data) object can be set as root.");
+				QMessageBox::information(0,"","The object you have choosen probably is an annotation.\nCurrently only regular (data) object can be set as root.");
 				return;
 			}
 
@@ -603,14 +604,14 @@ void CContextMenu::slot_repositioning()
 			std::shared_ptr<CBaseObject> top = m_obj->getRoot();
 
 			if (top == tgt_top) {
-				UI::MESSAGEBOX::information("An object cannot be a descendant of its own descendant");
+				QMessageBox::information(0,"","An object cannot be a descendant of its own descendant");
 				return;
 			}
 
 			bool already_root = (top == m_obj);
 
 			if (already_root && (wybranyObiekt == nullptr)) {
-				UI::MESSAGEBOX::information("You are trying to move the root object to the workspace,\nso you are not changing anything");
+				QMessageBox::information(0,"","You are trying to move the root object to the workspace,\nso you are not changing anything");
 				return;
 			}
 

@@ -10,6 +10,8 @@
 
 #include <omp.h>
 
+#include <QMessageBox>
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 // ImageDialog
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -290,7 +292,7 @@ void VolumetricImageDialog::on_del_in_select_mode(Qt::KeyboardModifiers modifier
 		}
 		break;
 		default:
-			UI::MESSAGEBOX::information("Function is implemented for XY view only");
+			QMessageBox::information(0, "", "Function is implemented for XY view only");
 			break;
 		}
 		changeDisplayedPixmap(slice);

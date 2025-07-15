@@ -4,6 +4,10 @@ file(GLOB CORE_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/tinyspline.c
     ${CMAKE_CURRENT_SOURCE_DIR}/*.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/*.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/events/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/events/*.h
 )
 
 set(DPVISION_CORE_SRC

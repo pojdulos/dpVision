@@ -11,6 +11,8 @@
 
 #include "CSpinBoxDelegate.h"
 
+#include <QMessageBox>
+
 PropMovement::PropMovement(CMovement* m, QWidget* parent, bool isCameraTransform) : PropWidget(parent)
 {
 	treeItemLabel = "Animation properties";
@@ -533,7 +535,7 @@ void PropMovement::pasteFromClipboard()
 
 void PropMovement::onItemChanged(QStandardItem*)
 {
-	UI::MESSAGEBOX::information(L"Item changed");
+	QMessageBox::information(0, "", "Item changed");
 }
 
 void PropMovement::onCurrentChanged(const QModelIndex& current, const QModelIndex& previous)

@@ -10,6 +10,7 @@
 #include <qclipboard.h>
 
 #include "CSpinBoxDelegate.h"
+#include <QMessageBox>
 
 bool PropTransform::group_visible = true;
 
@@ -631,7 +632,7 @@ void PropTransform::pasteFromClipboard()
 
 void PropTransform::onItemChanged(QStandardItem*)
 {
-	UI::MESSAGEBOX::information(L"Item changed");
+	QMessageBox::information(0, "", "Item changed");
 }
 
 void PropTransform::onShowScrewCheckBox(bool b)

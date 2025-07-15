@@ -1,5 +1,6 @@
 #include <string>
 #include <functional>
+#include <memory>
 
 class IProgressListener {
 public:
