@@ -79,6 +79,10 @@ bool UI::timeElapsed(int mst)
     return false;
 }
 
+#ifndef DISABLE_OLD
+//for later use
+#endif
+
 
 #include "MainWindow.h"
 
@@ -1011,7 +1015,6 @@ void UI::STATUSBAR::setText(const QString msg)
 }
 
 
-#ifndef DISABLE_OLD
 
 // MESSAGEBOX
 
@@ -1037,7 +1040,6 @@ int UI::MESSAGEBOX::question(const char* msg, const char* tittle, const char* b0
 int UI::MESSAGEBOX::question(const std::string &msg, const std::string &tittle, const std::string &b0, const std::string &b1, const std::string &b2) { return QMessageBox::question(0, QString::fromUtf8(tittle.c_str()), QString::fromUtf8(msg.c_str()), QString::fromUtf8(b0.c_str()), QString::fromUtf8(b1.c_str()), QString::fromUtf8(b2.c_str())); }
 int UI::MESSAGEBOX::question(const std::wstring &msg, const std::wstring &tittle, const std::wstring &b0, const std::wstring &b1, const std::wstring &b2 ) { return QMessageBox::question(0, QString::fromWCharArray(tittle.c_str()), QString::fromWCharArray(msg.c_str()), QString::fromWCharArray(b0.c_str()), QString::fromWCharArray(b1.c_str()), QString::fromWCharArray(b2.c_str())); }
 
-#endif
 
 // FILECHOOSER
 
