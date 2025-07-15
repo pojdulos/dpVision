@@ -6,7 +6,7 @@ void PMFactory::vSplit( CMesh &dst, unsigned int iNewSize )
 	// - vsplity s¹ w strukturze dst->vsplits
 	// - zakladam brak mapowania indeksów !!!
 
-	UI::STATUSBAR::printf( "PMFactory::vSplit(): Begin of method." );
+	StatusBarManager::setText( "PMFactory::vSplit(): Begin of method." );
 
 	dst.fnormals().clear();
 	dst.fnormals().swap(dst.fnormals());
@@ -40,7 +40,7 @@ void PMFactory::vSplit( CMesh &dst, unsigned int iNewSize )
 
 	while ( ( its != dst.vsplits.end() ) && ( dst.vertices().size() < iNewSize ) )
 	{
-		UI::STATUSBAR::printf( "\r    PMFactory::vSplit(): reconstruction to %d -> current: %d              ", iNewSize, dst.vertices().size() );
+		StatusBarManager::setText( QString("\r    PMFactory::vSplit(): reconstruction to %1 -> current: %2              ").arg(iNewSize).arg(dst.vertices().size()));
 		
 		UI::PROGRESSBAR::setValue( dst.vertices().size() );
 
@@ -212,5 +212,5 @@ void PMFactory::vSplit( CMesh &dst, unsigned int iNewSize )
 	tmpFCSset.clear();
 	tmpFCSset.swap(tmpFCSset);
 
-	UI::STATUSBAR::printf( "PMFactory::vSplit(): End of method." );
+	StatusBarManager::setText( "PMFactory::vSplit(): End of method." );
 }

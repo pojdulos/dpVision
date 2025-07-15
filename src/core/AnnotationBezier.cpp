@@ -8,6 +8,8 @@
 #endif
 #include <GL/gl.h>
 
+#include "StatusBarManager.h"
+
 std::wstring CAnnotationBezier::getInfoRow()
 {
 	std::wstring info = L"bezier (id:" + std::to_wstring((long long)m_Id ) + L"), size: " + std::to_wstring((long long) m_list.size()) + L" points.";
@@ -144,7 +146,7 @@ void CAnnotationBezier::createTinySpline(int deg, int den)
 
 	}
 	catch (std::exception e) {
-		UI::STATUSBAR::printf(e.what());
+		StatusBarManager::setText(QString(e.what()));
 	}
 }
 

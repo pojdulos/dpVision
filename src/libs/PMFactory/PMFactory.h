@@ -19,6 +19,7 @@
 #include <set>
 #include <deque> 
 
+#include "StatusBarManager.h"
 
 struct _sof {
 	CFace f;

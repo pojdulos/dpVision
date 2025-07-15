@@ -6,6 +6,7 @@
 
 #include "MainWindow.h"
 
+#include "StatusBarManager.h"
 
 MdiChild::MdiChild(Type t) : QWidget(), m_type( t )
 {
@@ -42,7 +43,7 @@ MdiChild::MdiChild(CImage* im) : QWidget(), m_type(Type::Pic)
 
 void MdiChild::mouseMoveEvent(QMouseEvent* event)
 {
-	UI::STATUSBAR::setText(QString("(MdiChild) pozycja kursora: " + QString::number(event->pos().x()) + " " + QString::number(event->pos().y())).toStdString());
+	StatusBarManager::setText(QString("(MdiChild) pozycja kursora: " + QString::number(event->pos().x()) + " " + QString::number(event->pos().y())));
 }
 
 //void MdiChild::closeAllPic(int id)
@@ -95,7 +96,7 @@ void MdiChild::keyPressEvent(QKeyEvent* e)
 {
 	// To dzia³a tylko w trybie pe³nego ekranu
 
-	UI::STATUSBAR::setText(std::to_wstring(e->key()));
+	StatusBarManager::setText(QString::number(e->key()));
 	if (e->key() == Qt::Key_F11)
 	{
 		fullScreen();

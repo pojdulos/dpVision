@@ -21,7 +21,6 @@
 #include "DockWidgetHistogram.h"
 #include "DockWidgetImageViewer.h"
 
-#include "ProgressIndicator.h"
 
 #include "GLViewer.h"
 #include "PicViewer.h"
@@ -29,6 +28,9 @@
 #include "Image.h"
 #include "AppSettings.h"
 
+#include "ProgressIndicator.h"
+#include "StatusBarManager.h"
+#include "adapters/QtStatusBarAdapter.h"
 
 void restoreDockGeometry(QDockWidget* dock)
 {
@@ -113,6 +115,8 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 
 	//this->setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
 	//this->setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
+
+	StatusBarManager::setListener(new QtStatusBarAdapter(statusBar()));
 
 	this->progressIndicator = new ProgressIndicator(this->statusBar());
 	//this->progressIndicator->setMaximumHeight(16);

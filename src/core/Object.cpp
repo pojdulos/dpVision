@@ -280,16 +280,6 @@ void CObject::removeAllChilds()
 {
 	m_data.clear();
 	m_annotations.clear();
-
-	//CObject::Children c = this->children();
-	//CObject::Annotations a = this->annotations();
-
-	//for (auto cc : this->m_data) {
-	//	this->removeChild(cc.first);
-	//}
-	//for (auto aa : this->m_annotations) {
-	//	this->removeAnnotation(aa.first);
-	//}
 }
 
 

@@ -4,6 +4,8 @@
 #include <algorithm>
 #include "UI.h"
 
+#include "StatusBarManager.h"
+
 CHistogram::CHistogram(std::vector<double> data, int levels) :CAnnotation()
 {
 	setLabel("histogram");
@@ -98,7 +100,7 @@ void CHistogram::colorizeParentVertices(bool b)
 
 		for (int i = 0; i < m_destination->vertices().size(); i++)
 		{
-			UI::STATUSBAR::printfTimed(1000, L"colorizing (%d)...", i);
+			StatusBarManager::printfTimed(1000, QString("colorizing (%1)...").arg(i));
 
 			int idx = getHistogramIndex(m_data[i]);
 			m_destination->vcolors()[i] = getColor(idx);
@@ -577,7 +579,7 @@ void CHistogram::save(std::wstring fdir, std::wstring fname)
 
 		CHistogram::savePLT(fdir, fname, std::vector<std::shared_ptr<CHistogram>>{std::dynamic_pointer_cast<CHistogram>(this->shared_from_this())}, true);
 
-		UI::STATUSBAR::setText(L"DONE !");
+		StatusBarManager::setText("DONE !");
 	}
 }
 
@@ -697,7 +699,7 @@ void CHistogram::save(std::vector<std::shared_ptr<CHistogram>> v, std::wstring f
 
 	CHistogram::savePLT(fdir, fname, v, eqLevels);
 
-	UI::STATUSBAR::setText(L"DONE !");
+	StatusBarManager::setText("DONE !");
 }
 
 

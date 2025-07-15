@@ -10,6 +10,8 @@
 #include "Image.h"
 
 #include <QtCore/QString>
+#include "StatusBarManager.h"
+
 
 namespace AP
 {
@@ -288,10 +290,6 @@ namespace AP
 				{
 					return obj;
 				}
-				//else
-				//{
-				//	delete obj;
-				//}
 			}
 			return nullptr;
 		}
@@ -306,10 +304,6 @@ namespace AP
 				{
 					return obj;
 				}
-				//else
-				//{
-				//	delete obj;
-				//}
 			}
 			return nullptr;
 		}
@@ -659,11 +653,11 @@ namespace AP
 
 				if (NO_CURRENT_MODEL != objId)
 				{
-					UI::STATUSBAR::printf(L"Selected (%d) %s", objId, AP::WORKSPACE::getCurrentModel()->getLabelW().c_str());
+					StatusBarManager::setText(QString("Selected (%1) %2").arg(objId).arg(AP::WORKSPACE::getCurrentModel()->getLabel()));
 				}
 				else
 				{
-					UI::STATUSBAR::printf(L"None selected (%d)", objId);
+					StatusBarManager::setText(QString("None selected (%1)").arg(objId));
 				}
 
 				//UI::DOCK::WORKSPACE::selectItem(objId);

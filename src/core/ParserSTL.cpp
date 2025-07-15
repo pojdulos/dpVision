@@ -2,6 +2,8 @@
 #include "ParserSTL.h"
 #include "Utilities.h"
 
+#include "StatusBarManager.h"
+
 CParserSTL::CParserSTL(void)
 {
 	this->m_bOK = true;
@@ -49,7 +51,7 @@ size_t CParserSTL::ReadBinarySTL()
 	char napis[255];
 
 	int p=0;
-	UI::STATUSBAR::printf( "Reading faces: %d%%", p );
+	StatusBarManager::setText( QString("Reading faces: %1%%").arg(p));
 	long g = 1 + lb/100;
 
 	GLuint numV = 0;
@@ -57,7 +59,7 @@ size_t CParserSTL::ReadBinarySTL()
 	{
 		if ( l%g == 0 )
 		{
-			UI::STATUSBAR::printf( "Reading faces: %d%% ( %d / %d )", p, l, lb );
+			StatusBarManager::setText( QString("Reading faces: %1%% ( %2 / %3 )").arg(p).arg(l).arg(lb));
 			p++;
 		}
 
@@ -141,11 +143,11 @@ size_t CParserSTL::ReadBinarySTL()
 
 	fclose( plik);
 
-	UI::STATUSBAR::printf( "Clearing mMap..." );
+	StatusBarManager::setText( "Clearing mMap..." );
 
 	mMapa.clear();
 
-	UI::STATUSBAR::printf( "Creating ViewLists..." );
+	StatusBarManager::setText( "Creating ViewLists..." );
 	return lb;
 }
 
@@ -195,7 +197,7 @@ size_t CParserSTL::ReadTextSTL()
 	{
 		if ( l%1000 == 0 )
 		{
-			UI::STATUSBAR::printf( "Reading faces: %d", l );
+			StatusBarManager::setText( QString("Reading faces: %1").arg(l));
 		}
 
 		fgets( bufor, 255, plik );
@@ -283,11 +285,11 @@ size_t CParserSTL::ReadTextSTL()
 
 	fclose( plik);
 
-	UI::STATUSBAR::printf( "Clearing mMap..." );
+	StatusBarManager::setText( "Clearing mMap..." );
 
 	mMapa.clear();
 
-	UI::STATUSBAR::printf( "Creating ViewLists..." );
+	StatusBarManager::setText( "Creating ViewLists..." );
 	return l;
 }
 

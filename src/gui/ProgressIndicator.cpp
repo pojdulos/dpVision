@@ -5,9 +5,6 @@ ProgressIndicator::ProgressIndicator(QWidget* parent) : QWidget(parent)
 	ui.setupUi(this);
 
 	ui.cancelButton->hide();
-	actionCancelled = false;
-
-	//connect(this->ui.cancelButton, SIGNAL(clicked()), this, SLOT(onCancelButton()));
 }
 
 void ProgressIndicator::setValue(int value)
@@ -19,6 +16,7 @@ void ProgressIndicator::setValue(int value)
 void ProgressIndicator::setText(QString text)
 {
 	ui.workInfo->setText(text);
+	ui.workInfo->update();
 }
 
 void ProgressIndicator::init(int min, int max, int val, QString text)
@@ -29,9 +27,6 @@ void ProgressIndicator::init(int min, int max, int val, QString text)
 
 	ui.workInfo->setText(text);
 	
-	ui.cancelButton->hide();
-	actionCancelled = false;
-
 	this->show();
 }
 
@@ -40,8 +35,3 @@ QPushButton* ProgressIndicator::cancelButton()
 	return ui.cancelButton;
 }
 
-void ProgressIndicator::onCancelButton()
-{
-	ui.workInfo->setText("Cancelled ! Please wait...");
-	actionCancelled = true;
-}

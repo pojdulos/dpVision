@@ -2,6 +2,8 @@
 
 #include "Mesh.h"
 
+#include "StatusBarManager.h"
+
 bool CFaceSplitter::splitOneFace(size_t i1, EDGE &edge)
 {
 	CVertex newVertex = (m->vertices()[edge.first] + m->vertices()[edge.second]) / 2;
@@ -127,9 +129,9 @@ void CFaceSplitter::splitFaces(double EPS)
 			}
 		}
 
-		UI::STATUSBAR::printfTimed(500, "loop: %d, maxLL: %lf, bigFaces: %d", k++, maxD, bigFaces2.size());
+		StatusBarManager::printfTimed(500, QString("loop: %1, maxLL: %2, bigFaces: %3").arg(k++).arg(maxD).arg(bigFaces2.size()));
 
 	} while ((bigFaces2.size() > 0) && (maxD > EPS));
 
-	UI::STATUSBAR::setText("DONE !");
+	StatusBarManager::setText("DONE !");
 }

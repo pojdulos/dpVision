@@ -5,6 +5,8 @@
 
 #include "../renderers/IImageRenderer.h"
 
+#include "StatusBarManager.h"
+
 CImage::CImage() : CModel3D(), QImage()
 {
 	setLabel("image");
@@ -294,7 +296,8 @@ std::pair<int, int> CImage::loadToRGBAvector(std::wstring fname, std::vector<CRG
 
 	int depth = image.depth();
 
-	UI::STATUSBAR::printf(L"depth: %d", depth);
+	StatusBarManager::setText(QString("depth: %1").arg(depth));
+
 	uchar* bits = image.bits(); // pozyskuj� wska�nik na pocz�tek tablicy bit�w
 
 	uchar* bitsEnd = bits + image.sizeInBytes(); // obliczam wska�nik na koniec tablicy

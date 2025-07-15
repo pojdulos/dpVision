@@ -5,6 +5,7 @@
 #include "AP.h"
 
 #include "../renderers/IWorkspaceRenderer.h"
+#include "StatusBarManager.h"
 
 CWorkspace::CWorkspace() : QObject()
 {
@@ -125,7 +126,7 @@ void CWorkspace::addToSelection(int id)
 	if (!inSelection(id))
 	{
 		m_selection.push_back(id);
-		UI::STATUSBAR::setText(QString("Object selected (pos.: ") + QString::number(getNumberInSelection(id)) + ")");
+		StatusBarManager::setText( QString("Object selected (pos.: %1)").arg(getNumberInSelection(id)));
 	}
 	//m_data[id]->setSelected(true);
 }
@@ -134,7 +135,7 @@ void CWorkspace::removeFromSelection(int id)
 {
 	if (inSelection(id))
 	{
-		UI::STATUSBAR::setText(QString("Object at pos. ") + QString::number(getNumberInSelection(id)) + " unselected");
+		StatusBarManager::setText(QString("Object at pos.: %1 unselected").arg(getNumberInSelection(id)));
 		m_selection.remove(id);
 	}
 	//m_data[id]->setSelected(false);
@@ -415,7 +416,7 @@ std::vector<CRGBA> CWorkspace::getXRayImage( CPoint3f pkt0, int size )
 					auto t1 = std::chrono::steady_clock::now();
 					auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
 
-					UI::STATUSBAR::printf( "Tested point [%d,%d] iL=%f, maxLen=%f (time:%ld)", x, y, iL, maxLen, duration );
+					StatusBarManager::setText( QString("Tested point [%1,%2] iL=%3, maxLen=%4 (time:%5)").arg(x).arg(y).arg(iL).arg(maxLen).arg(duration));
 				}
 			}
 

@@ -19,7 +19,7 @@
 #include "Parser.h"
 
 #include "../renderers/IModel3DRenderer.h"
-
+#include "StatusBarManager.h"
 
 CModel3D::CModel3D(std::shared_ptr<CBaseObject> p) : CObject(p)
 {
@@ -153,7 +153,7 @@ void CModel3D::PMeshVsplit( GLuint rzm )
 	//d.iMeshType &= 0xFFF0;
 	//d.iMeshType |= CMesh::MESHTYPE_PROGRESSIVEMESH3V;
 
-	UI::STATUSBAR::printf( "I'm returning from CModel3D::PMeshVsplitSelf()..." );
+	StatusBarManager::setText( "I'm returning from CModel3D::PMeshVsplitSelf()..." );
 }
 
 //void CModel3D::deleteFastMesh()

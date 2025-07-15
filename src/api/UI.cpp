@@ -921,6 +921,8 @@ void UI::PROGRESSBAR::hide()
 }
 
 
+#ifndef DISABLE_OLD
+
 // STATUSBAR
 
 void UI::STATUSBAR::printf(const char *format, ...)
@@ -951,27 +953,6 @@ void UI::STATUSBAR::printf(const wchar_t *format, ...)
 	va_end(paramList);
 }
 
-// void UI::STATUSBAR::printfTimed( int mst, const char *format, ...)
-// {
-// 	static unsigned long t=0;
-// 	unsigned long t1;
-
-// 	t1=GetTickCount();
-// 	if ( (int)( t1-t ) > mst )
-// 	{
-// 		va_list paramList;
-// 		va_start(paramList, format);
-
-// 		char formatBuf[1024];
-// 		vsprintf_s(formatBuf, _countof(formatBuf), format, paramList);
-		
-// 		va_end(paramList);
-
-// 		setText(formatBuf);
-
-// 		t=t1;
-// 	}
-// }
 
 #include <QElapsedTimer>
 
@@ -997,27 +978,6 @@ void UI::STATUSBAR::printfTimed(int mst, const char* format, ...)
 }
 
 
-// void UI::STATUSBAR::printfTimed( int mst, const wchar_t *format, ...)
-// {
-// 	static unsigned long t=0;
-// 	unsigned long t1;
-
-// 	t1=GetTickCount();
-// 	if ( (int)( t1-t ) > mst )
-// 	{
-// 		va_list paramList;
-// 		va_start(paramList, format);
-
-// 		wchar_t formatBuf[1024];
-// 		vswprintf_s(formatBuf, _countof(formatBuf), format, paramList);
-
-// 		va_end(paramList);
-
-// 		setText(formatBuf);
-
-// 		t=t1;
-// 	}
-// }
 
 void UI::STATUSBAR::printfTimed(int mst, const wchar_t* format, ...)
 {
@@ -1050,6 +1010,7 @@ void UI::STATUSBAR::setText(const QString msg)
 
 	AP::processEvents(true);
 }
+#endif
 
 // MESSAGEBOX
 

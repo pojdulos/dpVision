@@ -15,6 +15,7 @@
 #include "MainApplication.h"
 #include "MainWindow.h"
 
+#include "StatusBarManager.h"
 
 CParserDPVISION::CParserDPVISION()
 {
@@ -126,7 +127,7 @@ std::shared_ptr<CModel3D> CParserDPVISION::load(const QString path, bool wait, s
 
 	if (modele.empty())
 	{
-		UI::STATUSBAR::setText(L"Nie udało sie wczytać pliku");
+		StatusBarManager::setText("Nie udało sie wczytać pliku");
 		return nullptr;
 	}
 
@@ -144,7 +145,7 @@ std::shared_ptr<CModel3D> CParserDPVISION::load(const QString path, bool wait, s
 
 	AppSettings::mainSettings()->setValue("recentFile", path);
 
-	UI::STATUSBAR::setText((QString("GOTOWE, liczba wczytanych modeli: ")+QString::number(modele.size())).toStdWString());
+	StatusBarManager::setText( QString("GOTOWE, liczba wczytanych modeli: %1").arg(modele.size()));
 	return nullptr;
 }
 
@@ -193,12 +194,12 @@ bool CParserDPVISION::save(std::shared_ptr<CModel3D> obj, const QString path)
 
 		//for (auto obj : objects)
 		//{
-			UI::STATUSBAR::setText("saving " + obj->getLabelA());
+			StatusBarManager::setText("saving " + obj->getLabel());
 			saveObject(zip, obj, "");
 		//}
 
 		zip.close();
-		UI::STATUSBAR::setText("Done!");
+		StatusBarManager::setText("Done!");
 		return true;
 	}
 
@@ -227,13 +228,13 @@ bool CParserDPVISION::save(QVector<std::shared_ptr<CBaseObject>> objects, const 
 		{
 			UI::PROGRESSBAR::setValue(progress++);
 
-			UI::STATUSBAR::setText("saving " + obj->getLabelA());
+			StatusBarManager::setText("saving " + obj->getLabel());
 			saveObject(zip, obj, "");
 		}
 		UI::PROGRESSBAR::hide();
 
 		zip.close();
-		UI::STATUSBAR::setText("Done!");
+		StatusBarManager::setText("Done!");
 		return true;
 	}
 

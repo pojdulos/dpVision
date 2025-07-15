@@ -298,6 +298,8 @@ void CContextMenu::copyTo()
 #include <QFileDialog>
 #include "FileConnector.h"
 
+#include "StatusBarManager.h"
+
 void CContextMenu::saveObjAs()
 {
 	QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "", CFileConnector::getSaveExts());
@@ -309,7 +311,7 @@ void CContextMenu::saveObjAs()
 		{
 			if (std::dynamic_pointer_cast<CModel3D>(m_obj)->save(fileName))
 			{
-				UI::STATUSBAR::setText(L"Saved: " + fileName.toStdWString());
+				StatusBarManager::setText("Saved: " + fileName);
 			}
 		}
 		else
@@ -318,7 +320,7 @@ void CContextMenu::saveObjAs()
 			tmpObj->addChild(m_obj);
 			if (tmpObj->save(fileName))
 			{
-				UI::STATUSBAR::setText(L"Saved: " + fileName.toStdWString());
+				StatusBarManager::setText("Saved: " + fileName);
 			}
 			tmpObj->removeChild(m_obj->id());
 			m_obj->setParent(nullptr);

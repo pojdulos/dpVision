@@ -403,7 +403,7 @@ namespace UI
 		inline DPVISION_EXPORT void setText(const std::wstring text) { setText(QString::fromWCharArray(text.c_str())); };
 	};
 
-
+#ifndef DISABLE_OLD
     /**
      * @namespace STATUSBAR
      * @brief Status bar functionality namespace
@@ -421,7 +421,7 @@ namespace UI
 		inline DPVISION_EXPORT void setText(const std::wstring msg) { setText(QString::fromWCharArray(msg.c_str())); }
 		
 	};
-
+#endif
 
     /**
      * @namespace MESSAGEBOX

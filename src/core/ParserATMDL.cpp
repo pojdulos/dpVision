@@ -6,6 +6,7 @@
 #include "AnnotationTriangle.h"
 
 #include "FileConnector.h"
+#include "StatusBarManager.h"
 
 QMap<QString, QString> CParserATMDL::defs;
 
@@ -1229,7 +1230,7 @@ std::shared_ptr<CModel3D> CParserATMDL::load(const QString path, bool wait, std:
 
 	if (!atmdlFile.open(QIODevice::ReadOnly | QFile::Text))
 	{
-		UI::STATUSBAR::setText("Can't open ATML file.");
+		StatusBarManager::setText("Can't open ATML file.");
 		return nullptr;
 	}
 
@@ -1410,7 +1411,7 @@ bool CParserATMDL::save(QVector<std::shared_ptr<CBaseObject>> objects, const QSt
 	QFile objFile(path);
 	if (!objFile.open(QIODevice::WriteOnly | QFile::Text))
 	{
-		UI::STATUSBAR::setText("Can't create file.");
+		StatusBarManager::setText("Can't create file.");
 		return false;
 	}
 	QTextStream objStream(&objFile);
@@ -1439,7 +1440,7 @@ bool CParserATMDL::save(std::shared_ptr<CModel3D> obj, const QString path)
 	QFile objFile(path);
 	if (!objFile.open(QIODevice::WriteOnly | QFile::Text))
 	{
-		UI::STATUSBAR::setText("Can't create file.");
+		StatusBarManager::setText("Can't create file.");
 		return false;
 	}
 

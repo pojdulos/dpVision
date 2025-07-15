@@ -16,6 +16,10 @@
 #include "Image.h"
 #include <chrono>
 
+#include "FileConnector.h"
+#include "adapters/QtProgressAdapter.h"
+#include "StatusBarManager.h"
+
 void CMainWindow::actionScreenshot() {
 	GLViewer* view = this->currentViewer();
 
@@ -106,7 +110,6 @@ void CMainWindow::viewChildFS()
 	}
 }
 
-#include "FileConnector.h"
 
 void CMainWindow::openRecent() {
 	QAction *action = qobject_cast<QAction *>(sender());
@@ -118,7 +121,6 @@ void CMainWindow::openRecent() {
 		}
 }
 
-#include "interfaces/QtProgressAdapter.h"
 
 void CMainWindow::fileOpen()
 {
@@ -169,7 +171,7 @@ void CMainWindow::fileSave()
 	}
 	else
 	{
-		UI::STATUSBAR::setText( "You need to select any object to save..." );
+		StatusBarManager::setText( "You need to select any object to save..." );
 	}
 }
 
@@ -199,7 +201,7 @@ void CMainWindow::stereoscopyOff()
 	if (NULL != view)
 	{
 		view->switchStereo(GLViewer::Switch::switchOff);
-		UI::STATUSBAR::printf("Stereoscopy: Off");
+		StatusBarManager::setText("Stereoscopy: Off");
 		updateActiveView();
 	}
 }
@@ -210,7 +212,7 @@ void CMainWindow::stereoscopyQuadbuff()
 	if (NULL != view)
 	{
 		view->setStereoMode(GLViewer::StereoType::STEREO_QUADBUFF);
-		UI::STATUSBAR::printf("Stereoscopy: Quad buffering");
+		StatusBarManager::setText("Stereoscopy: Quad buffering");
 		updateActiveView();
 	}
 }
@@ -221,7 +223,7 @@ void CMainWindow::stereoscopyRowInterlaced()
 	if (NULL != view)
 	{
 		view->setStereoMode(GLViewer::StereoType::STEREO_INTERLACED);
-		UI::STATUSBAR::printf("Stereoscopy: Row interlaced");
+		StatusBarManager::setText("Stereoscopy: Row interlaced");
 		updateActiveView();
 	}
 }
@@ -232,7 +234,7 @@ void CMainWindow::stereoscopyColInterlaced()
 	if (NULL != view)
 	{
 		view->setStereoMode(GLViewer::StereoType::STEREO_COLUMNINTERLACED);
-		UI::STATUSBAR::printf("Stereoscopy: Column interlaced");
+		StatusBarManager::setText("Stereoscopy: Column interlaced");
 		updateActiveView();
 	}
 }
@@ -243,7 +245,7 @@ void CMainWindow::stereoscopyAboveBelow()
 	if (NULL != view)
 	{
 		view->setStereoMode(GLViewer::StereoType::STEREO_ABOVEBELOW);
-		UI::STATUSBAR::printf("Stereoscopy: Above/Below");
+		StatusBarManager::setText("Stereoscopy: Above/Below");
 		updateActiveView();
 	}
 }
@@ -254,7 +256,7 @@ void CMainWindow::stereoscopySideBySide()
 	if (NULL != view)
 	{
 		view->setStereoMode(GLViewer::StereoType::STEREO_SIDEBYSIDE);
-		UI::STATUSBAR::printf("Stereoscopy: Side by side");
+		StatusBarManager::setText("Stereoscopy: Side by side");
 		updateActiveView();
 	}
 }
@@ -265,7 +267,7 @@ void CMainWindow::stereoscopyRedCyan()
 	if (NULL != view)
 	{
 		view->setStereoMode(GLViewer::StereoType::STEREO_REDCYAN);
-		UI::STATUSBAR::printf("Stereoscopy: Anaglyph Red-Cyan");
+		StatusBarManager::setText("Stereoscopy: Anaglyph Red-Cyan");
 		updateActiveView();
 	}
 }
@@ -276,7 +278,7 @@ void CMainWindow::stereoscopyRedBlue()
 	if (NULL != view)
 	{
 		view->setStereoMode(GLViewer::StereoType::STEREO_REDBLUE);
-		UI::STATUSBAR::printf("Stereoscopy: Anaglyph Red-Blue");
+		StatusBarManager::setText("Stereoscopy: Anaglyph Red-Blue");
 		updateActiveView();
 	}
 }
@@ -287,7 +289,7 @@ void CMainWindow::stereoscopyRedGreen()
 	if (NULL != view)
 	{
 		view->setStereoMode(GLViewer::StereoType::STEREO_REDGREEN);
-		UI::STATUSBAR::printf("Stereoscopy: Anaglyph Red-Green");
+		StatusBarManager::setText("Stereoscopy: Anaglyph Red-Green");
 		updateActiveView();
 	}
 }
@@ -298,7 +300,7 @@ void CMainWindow::stereoscopyCyanRed()
 	if (NULL != view)
 	{
 		view->setStereoMode(GLViewer::StereoType::STEREO_CYANRED);
-		UI::STATUSBAR::printf("Stereoscopy: Anaglyph Red-Cyan");
+		StatusBarManager::setText("Stereoscopy: Anaglyph Red-Cyan");
 		updateActiveView();
 	}
 }
@@ -309,7 +311,7 @@ void CMainWindow::stereoscopyBlueRed()
 	if (NULL != view)
 	{
 		view->setStereoMode(GLViewer::StereoType::STEREO_BLUERED);
-		UI::STATUSBAR::printf("Stereoscopy: Anaglyph Red-Blue");
+		StatusBarManager::setText("Stereoscopy: Anaglyph Red-Blue");
 		updateActiveView();
 	}
 }
@@ -320,7 +322,7 @@ void CMainWindow::stereoscopyGreenRed()
 	if (NULL != view)
 	{
 		view->setStereoMode(GLViewer::StereoType::STEREO_GREENRED);
-		UI::STATUSBAR::printf("Stereoscopy: Anaglyph Red-Green");
+		StatusBarManager::setText("Stereoscopy: Anaglyph Red-Green");
 		updateActiveView();
 	}
 }
@@ -334,13 +336,13 @@ void CMainWindow::useShaders( bool on )
 		{
 			view->useShaders(true);
 
-			UI::STATUSBAR::printf("Shaders On");
+			StatusBarManager::setText("Shaders On");
 		}
 		else
 		{
 			view->useShaders(false);
 
-			UI::STATUSBAR::printf("Shaders Off");
+			StatusBarManager::setText("Shaders Off");
 		}
 		updateActiveView();
 	}
@@ -352,7 +354,7 @@ void CMainWindow::projectionOrthogonal()
 	if (NULL != view)
 	{
 		view->setProjection(GLViewer::Projection::ORTHOGONAL);
-		UI::STATUSBAR::printf("Orthogonal projection");
+		StatusBarManager::setText("Orthogonal projection");
 		updateActiveView();
 	}
 	UI::DOCK::PROPERTIES::updateProperties();
@@ -364,7 +366,7 @@ void CMainWindow::projectionPerspective()
 	if (NULL != view)
 	{
 		view->setProjection(GLViewer::Projection::PERSPECTIVE);
-		UI::STATUSBAR::printf("Perspective projection");
+		StatusBarManager::setText("Perspective projection");
 		updateActiveView();
 	}
 	UI::DOCK::PROPERTIES::updateProperties();
@@ -379,12 +381,12 @@ void CMainWindow::modelVisibility( bool vis )
 		if ( vis )
 		{
 			obj->setSelfVisibility( true );
-			UI::STATUSBAR::printf(  "Model visibility: Show" );
+			StatusBarManager::setText(  "Model visibility: Show" );
 		}
 		else
 		{
 			obj->setSelfVisibility( false );
-			UI::STATUSBAR::printf(  "Model visibility: Hide" );
+			StatusBarManager::setText(  "Model visibility: Hide" );
 		}
 		
 		UI::DOCK::WORKSPACE::setItemVisibleById(obj->id(), vis);
@@ -401,11 +403,11 @@ void CMainWindow::modelInvertNormals()
 		{
 			m->invertNormals();
 			updateAllViews();
-			UI::STATUSBAR::printf(L"Normalne ścian zostały odwrócone");
+			StatusBarManager::setText("Normalne ścian zostały odwrócone");
 		}
 		else
 		{
-			UI::STATUSBAR::printf(L"Obiekt nie jest siatką...");
+			StatusBarManager::setText("Obiekt nie jest siatką...");
 		}
 	}
 }
@@ -425,18 +427,18 @@ void CMainWindow::meshApplyTransformations()
 				//((CMesh*)AP::WORKSPACE::getCurrentModel()->getChild())->applyTransformation( trans, CTransform() );
 				//AP::WORKSPACE::getCurrentModel()->setTransform(CTransform());
 
-				UI::STATUSBAR::printf(L"Współrzędne obiektu zostały przekształcone");
+				StatusBarManager::setText("Współrzędne obiektu zostały przekształcone");
 
 				updateAllViews();
 			}
 			else
 			{
-				UI::STATUSBAR::printf(L"Obiekt nie jest chmurą punktów lub siatką...");
+				StatusBarManager::setText("Obiekt nie jest chmurą punktów lub siatką...");
 			}
 		}
 		else
 		{
-			UI::STATUSBAR::printf(L"Obiekt nie jest chmurą punktów lub siatką...");
+			StatusBarManager::setText("Obiekt nie jest chmurą punktów lub siatką...");
 		}
 
 		UI::DOCK::PROPERTIES::updateProperties();
@@ -449,7 +451,7 @@ void CMainWindow::renderAsFaces()
 	{
 		AP::WORKSPACE::getCurrentModel()->switchOption( CModel3D::Opt::optRenderAsPoints, CModel3D::Switch::switchOff );
 		AP::WORKSPACE::getCurrentModel()->switchOption( CModel3D::Opt::optRenderAsEdges, CModel3D::Switch::switchOff );
-		UI::STATUSBAR::printf(  "Rendering: Faces" );
+		StatusBarManager::setText(  "Rendering: Faces" );
 		
 		updateAllViews();
 	}
@@ -461,7 +463,7 @@ void CMainWindow::renderAsEdges()
 	{
 		AP::WORKSPACE::getCurrentModel()->switchOption( CModel3D::Opt::optRenderAsPoints, CModel3D::Switch::switchOff );
 		AP::WORKSPACE::getCurrentModel()->switchOption( CModel3D::Opt::optRenderAsEdges, CModel3D::Switch::switchOn );
-		UI::STATUSBAR::printf(  "Rendering: Edges" );
+		StatusBarManager::setText(  "Rendering: Edges" );
 
 		updateAllViews();
 	}
@@ -473,7 +475,7 @@ void CMainWindow::renderAsVertices()
 	{
 		AP::WORKSPACE::getCurrentModel()->switchOption( CModel3D::Opt::optRenderAsEdges, CModel3D::Switch::switchOff );
 		AP::WORKSPACE::getCurrentModel()->switchOption( CModel3D::Opt::optRenderAsPoints, CModel3D::Switch::switchOn );
-		UI::STATUSBAR::printf( "Rendering: Vertices" );
+		StatusBarManager::setText( "Rendering: Vertices" );
 		
 		updateAllViews();
 	}
@@ -486,12 +488,12 @@ void CMainWindow::textureOnOff()
 		if ( AP::WORKSPACE::getCurrentModel()->switchOption( CModel3D::Opt::optRenderWithTexture, CModel3D::Switch::switchToggle ) )
 		{
 			//ModifyMenu(GetMenu( hWnd ), IDM_MODEL_TEXTUREONOFF, MF_BYCOMMAND|MF_STRING, IDM_MODEL_TEXTUREONOFF, GetResourceString( IDS_MODEL_TEXTUREOFF ).c_str() ); 
-			UI::STATUSBAR::printf(  "Texture: on" );
+			StatusBarManager::setText(  "Texture: on" );
 		}
 		else
 		{
 			//ModifyMenu(GetMenu( hWnd ), IDM_MODEL_TEXTUREONOFF, MF_BYCOMMAND|MF_STRING, IDM_MODEL_TEXTUREONOFF, GetResourceString( IDS_MODEL_TEXTUREON ).c_str() ); 
-			UI::STATUSBAR::printf(  "Texture: off" );
+			StatusBarManager::setText(  "Texture: off" );
 		}
 
 		updateAllViews();
@@ -503,12 +505,12 @@ void CMainWindow::smoothingOnOff()
 	if ( NULL != AP::WORKSPACE::getCurrentModel() )
 	{
 		AP::WORKSPACE::getCurrentModel()->calcVN();
-		//UI::STATUSBAR::printf( AP::WORKSPACE::getCurrentModel()->GetMeshInfoText().c_str() );
+		//StatusBarManager::setText( AP::WORKSPACE::getCurrentModel()->GetMeshInfoText().c_str() );
 
-		UI::STATUSBAR::printf( AP::WORKSPACE::getCurrentModel()->switchOption( CModel3D::Opt::optSmoothVertices, CModel3D::Switch::switchToggle ) ? "Wygladzanie wierzcholkow: wlaczone" : "Wygladzanie wierzcholkow: wylaczone" );
+		StatusBarManager::setText( AP::WORKSPACE::getCurrentModel()->switchOption( CModel3D::Opt::optSmoothVertices, CModel3D::Switch::switchToggle ) ? "Wygladzanie wierzcholkow: wlaczone" : "Wygladzanie wierzcholkow: wylaczone" );
 	}
 	else
-		UI::STATUSBAR::printf( "None objects selected" );
+		StatusBarManager::setText( "None objects selected" );
 
 	updateAllViews();
 }
@@ -752,7 +754,7 @@ void CMainWindow::actionSelectNoSelectionDelete()
 
 void CMainWindow::actionSelectVertex()
 {
-	UI::STATUSBAR::setText("Select Vertex");
+	StatusBarManager::setText("Select Vertex");
 	currentViewer()->setSelectionMode( 1 );
 	ui.action_select_selection_delete->setEnabled(true);
 	ui.action_select_noselection_delete->setEnabled(true);
@@ -761,7 +763,7 @@ void CMainWindow::actionSelectVertex()
 
 void CMainWindow::actionSelectFace()
 {
-	UI::STATUSBAR::setText("Select Face");
+	StatusBarManager::setText("Select Face");
 	currentViewer()->setSelectionMode( 2 );
 	ui.action_select_selection_delete->setEnabled(true);
 	ui.action_select_noselection_delete->setEnabled(true);
@@ -770,7 +772,7 @@ void CMainWindow::actionSelectFace()
 
 void CMainWindow::actionSelectNone()
 {
-	UI::STATUSBAR::setText("Select None");
+	StatusBarManager::setText("Select None");
 	currentViewer()->setSelectionMode( 0 );
 	ui.action_select_selection_delete->setEnabled(false);
 	ui.action_select_noselection_delete->setEnabled(false);
@@ -802,11 +804,11 @@ void CMainWindow::imageFit(bool fit)
 //
 //		if ( show )
 //		{
-//			UI::STATUSBAR::printf(  "Bounding box: on" );
+//			StatusBarManager::setText(  "Bounding box: on" );
 //		}
 //		else
 //		{
-//			UI::STATUSBAR::printf(  "Bounding box: off" );
+//			StatusBarManager::setText(  "Bounding box: off" );
 //		}
 //
 //		updateAllViews();
@@ -1122,11 +1124,11 @@ void CMainWindow::modelLock( bool b )
 	{
 		if ( obj->setLocked( b ) )
 		{
-			UI::STATUSBAR::printf(  "Model locked" );
+			StatusBarManager::setText(  "Model locked" );
 		}
 		else
 		{
-			UI::STATUSBAR::printf(  "Model unlocked" );
+			StatusBarManager::setText(  "Model unlocked" );
 		}
 
 		UI::DOCK::WORKSPACE::setItemLockedById(obj->id(), b);
@@ -1160,16 +1162,16 @@ void CMainWindow::modelClose()
 		if (auto im = std::dynamic_pointer_cast<CImage>(obj))
 		{
 			if (AP::WORKSPACE::removeImage(im))
-				UI::STATUSBAR::printf("Current image has been removed...");
+				StatusBarManager::setText("Current image has been removed...");
 		}
 		else
 		{
 			if (AP::WORKSPACE::removeModel(obj))
-				UI::STATUSBAR::printf("Current model has been removed...");
+				StatusBarManager::setText("Current model has been removed...");
 		}
 	}
 	else
-		UI::STATUSBAR::printf("Nothing to remove...");
+		StatusBarManager::setText("Nothing to remove...");
 }
 
 #include "ui_pmDialog.h"
@@ -1214,11 +1216,11 @@ void CMainWindow::pmEcol()
 				}
 			}
 			catch ( std::bad_alloc &e ) {
-				UI::STATUSBAR::printf( "PMeshEcollSelf(): %s", e.what() );
+				StatusBarManager::setText( QString("PMeshEcollSelf(): %1").arg(e.what()));
 				UI::MESSAGEBOX::error( "CModel3D::PMeshEcoll() failed with Bad Alloc error." );
 			}
 			catch ( ... ) {
-				UI::STATUSBAR::printf( "Something wrong in CModel3D::PMeshEcoll()" );
+				StatusBarManager::setText( "Something wrong in CModel3D::PMeshEcoll()" );
 			}
 								
 			updateAllViews();
@@ -1251,11 +1253,11 @@ void CMainWindow::pmVsplit()
 				obj->PMeshVsplit( pmUi.spinBox->value() );
 			}
 			catch ( std::bad_alloc &e ) {
-				UI::STATUSBAR::printf( "PMeshVsplitSelf(): %s", e.what() );
+				StatusBarManager::setText( QString("PMeshVsplitSelf(): %1").arg(e.what()));
 				UI::MESSAGEBOX::error( "CModel3D::PMeshVsplit() failed with Bad Alloc error." );
 			}
 			catch ( ... ) {
-				UI::STATUSBAR::printf( "Something wrong in CModel3D::PMeshVSplit()" );
+				StatusBarManager::setText( "Something wrong in CModel3D::PMeshVSplit()" );
 			}
 								
 			updateAllViews();

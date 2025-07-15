@@ -2,7 +2,7 @@
 //#include "MainWindow.h"
 #include "GLViewer.h"
 //#include "ChildWindow.h"
-
+#include "StatusBarManager.h"
 
 //void CWorkspaceFile::saveDPW(CWorkspace & wksp, std::wstring p)
 //{
@@ -153,7 +153,7 @@ void CWorkspaceFile::loadFaro(std::wstring p, CWorkspace & wksp)
 				else
 					obj->setLocked(false);
 
-				UI::STATUSBAR::printf(obj->getLabelW().c_str());
+				StatusBarManager::setText(obj->getLabel());
 			}
 		}
 	}

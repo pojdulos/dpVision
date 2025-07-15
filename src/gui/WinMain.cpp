@@ -17,6 +17,8 @@
 
 #include "AP.h"
 
+#include "StatusBarManager.h"
+
 int main(int argc, char* argv[])
 {
 #ifdef _WIN32
@@ -86,7 +88,7 @@ int main(int argc, char* argv[])
     //CMainWindow::instance()->restoreState(AppSettings::mainSettings()->value("gui/mainwindow/dockState").toByteArray());
 
 
-    UI::STATUSBAR::printf("loading plugins...");
+    StatusBarManager::setText("loading plugins...");
 
     CMainApplication::theApp->LoadAllPlugins();
 
@@ -95,7 +97,7 @@ int main(int argc, char* argv[])
     {
         if (QFile(plik).exists())
         {
-            UI::STATUSBAR::setText("loading model: " + plik);
+            StatusBarManager::setText("loading model: " + plik);
             AP::WORKSPACE::loadModel(plik);
         }
     }
@@ -104,7 +106,7 @@ int main(int argc, char* argv[])
 
     CMainApplication::theApp->isInitialised = true;
 
-    UI::STATUSBAR::printf("starting tcp server...");
+    StatusBarManager::setText("starting tcp server...");
 
     CMainWindow::instance()->startServer();
 
@@ -115,7 +117,7 @@ int main(int argc, char* argv[])
     //freopen("CON", "w", stderr);
     //freopen("CON", "r", stdin);
 
-    UI::STATUSBAR::printf("ready...");
+    StatusBarManager::setText("ready...");
 
 
 

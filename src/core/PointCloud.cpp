@@ -3,6 +3,7 @@
 #include "GLViewer.h"
 
 #include "../renderers/IPointCloudRenderer.h"
+#include "StatusBarManager.h"
 
 int CPointCloud::m_pointSize = 1;
 
@@ -289,7 +290,7 @@ void CPointCloud::rebuildBoundingBox()
 void CPointCloud::createKDtree()
 {
 	removeKDtree();
-	UI::STATUSBAR::setText("I'm creating KDtree. Please wait...");
+	StatusBarManager::setText("I'm creating KDtree. Please wait...");
 	m_kdtree = new CPointCloud::KDtree(m_vertices);
 }
 

@@ -1,5 +1,7 @@
 #include "ParserSMF.h"
 
+#include "StatusBarManager.h"
+
 CParserSMF::CParserSMF()
 {
 }
@@ -162,13 +164,13 @@ size_t CParserSMF::ReadSMF_V3()
 
 	size_t vnb=0, fnb=0, snb=0, inb=0, cnb=0;
 
-	UI::STATUSBAR::printf( L"I'm reading Progressive Mesh Text file: %s. Please wait...", plikSiatki.fileNameW().c_str() );
+	StatusBarManager::setText( QString("I'm reading Progressive Mesh Text file: %1. Please wait...").arg(plikSiatki.fileName()));
 
 	char c1, c2;
 
 	while ( ! feof( plik ) )
 	{
-		UI::STATUSBAR::printfTimed( 500, L"Reading %s: v=%d, f=%d, s=%d", plikSiatki.fileNameW().c_str(), pMeshData->vertices().size(), pMeshData->faces().size(), pMeshData->vsplits.size() );
+		StatusBarManager::printfTimed( 500, QString("Reading %1: v=%2, f=%3, s=%4").arg(plikSiatki.fileName()).arg(pMeshData->vertices().size()).arg(pMeshData->faces().size()).arg(pMeshData->vsplits.size()));
 
 		c1 = fgetc( plik );
 		switch( c1 )
@@ -300,7 +302,7 @@ size_t CParserSMF::ReadSMF_V3()
 
 	pMeshData->version = 2;
 
-	UI::STATUSBAR::printf( "Done." );
+	StatusBarManager::setText( "Done." );
 
 	return lbv;
 }
@@ -339,7 +341,7 @@ size_t CParserSMF::ReadSMF_V3b()
 
 	size_t vnb=0, fnb=0, snb=0;
 
-	UI::STATUSBAR::printf( "I'm reading Progressive Mesh Text file. Please wait..." );
+	StatusBarManager::setText( "I'm reading Progressive Mesh Text file. Please wait..." );
 
 	char c1, c2;
 
@@ -467,7 +469,7 @@ size_t CParserSMF::ReadSMF_V3b()
 	pMeshData->version = 2;
 	pMeshData->setPath(plikSiatki.absoluteFilePath());
 
-	UI::STATUSBAR::printf( "Done." );
+	StatusBarManager::setText( "Done." );
 
 	return lbf;
 }

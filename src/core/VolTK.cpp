@@ -10,6 +10,7 @@
 #include "MainApplication.h"
 
 #include "../renderers/IVolTKRenderer.h"
+#include "StatusBarManager.h"
 
 CVolTK::CVolTK(std::shared_ptr<CBaseObject> p, int imageWidth, int imageHeight, int numberOfImages, int depth):CObject(p)
 {
@@ -1292,7 +1293,7 @@ std::shared_ptr<CMesh> CVolTK::createMesh(int winMin, int winMax, CRGBA col)
 	{
 		//WORD kol = (*itz).first;
 		WORD kol = itz;
-		UI::STATUSBAR::printfTimed(500, "preparing data... (%d)", kol);
+		StatusBarManager::printfTimed(500, QString("preparing data... (%1)").arg(kol));
 
 		for (const CPoint3s voxel : *m_displayData[itz])
 		{
@@ -1310,12 +1311,12 @@ std::shared_ptr<CMesh> CVolTK::createMesh(int winMin, int winMax, CRGBA col)
 	mesh->vertices().reserve(sasiedztwo.size() * 8);
 	mesh->faces().reserve(sasiedztwo.size() * 12);
 
-	UI::STATUSBAR::setText("Creating mesh...");
+	StatusBarManager::setText("Creating mesh...");
 
 	for (auto itz = winMin; itz < winMax; itz++)
 	{
 		WORD kol = itz;
-		UI::STATUSBAR::printfTimed(500, "Creating mesh... (%d)", kol);
+		StatusBarManager::printfTimed(500, QString("Creating mesh... (%1)").arg(kol));
 
 		for (CPoint3s voxel : *m_displayData[itz])
 		{

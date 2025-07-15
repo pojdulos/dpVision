@@ -8,6 +8,8 @@
 #include "AnnotationSetOfFaces.h"
 #include "AP.h"
 
+#include "StatusBarManager.h"
+
 #include <fstream>
 
 #include "quazip.h"
@@ -689,12 +691,12 @@ std::shared_ptr<CObject> CParserDPVISION::parseOBJ(QTextStream& in, QuaZip& zip,
 		}
 		parentObj->importChildrenGeometry();
 
-		UI::STATUSBAR::setText("File loading done!");
+		StatusBarManager::setText("File loading done!");
 		return parentObj;
 	}
 	else
 	{
-		UI::STATUSBAR::setText("File loading done!");
+		StatusBarManager::setText("File loading done!");
 		return vec.first();
 	}
 }

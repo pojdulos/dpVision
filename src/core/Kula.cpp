@@ -66,7 +66,8 @@ Kula* Kula::fromTriangle(CPoint3d A, CPoint3d B, CPoint3d C)
 	return new Kula(S, R);
 }
 
-#include "UI.h"
+//#include "UI.h"
+#include "StatusBarManager.h"
 
 Kula* Kula::fromPoints(std::vector<CVertex> pts)
 {
@@ -78,7 +79,7 @@ Kula* Kula::fromPoints(std::vector<CVertex> pts)
 
 	for (int i = 0; i < pts.size(); i++)
 	{
-		UI::STATUSBAR::printfTimed(500,"%d", i);
+		StatusBarManager::printfTimed(500, QString::number(i));
 
 		bool isA = false;
 		bool isB = false;
@@ -243,7 +244,7 @@ Kula* Kula::fromPoints2(std::vector<CVertex>& pts)
 	{
 		for (int i = 1; i < 3; i++)
 		{
-			UI::STATUSBAR::printfTimed(500, "%d", i);
+			StatusBarManager::printfTimed(500, QString::number(i));
 
 			Kula* kula2 = Kula::fromTriangle(pts[i], pts[i + 1], pts[i + 2]);
 
@@ -315,7 +316,7 @@ Kula* Kula::fromMesh(std::vector<CFace> &fcs, std::vector<CVertex> &pts)
 
 	for (int i = 1; i < fcs.size(); i++)
 	{
-		UI::STATUSBAR::printfTimed(500, "%d", i);
+		StatusBarManager::printfTimed(500, QString::number(i));
 
 		Kula* kula2 = Kula::fromTriangle(pts[fcs[i].A()], pts[fcs[i].B()], pts[fcs[i].C()]);
 

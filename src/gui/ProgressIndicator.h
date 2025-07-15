@@ -17,20 +17,12 @@ public:
 
 	QPushButton* cancelButton();
 
-	bool actionCancelled;
-
 private:
 	Ui::ProgressIndicator ui;
 
-private slots:
-	void onCancelButton();
-
 public slots:
 	void onInit(int min, int max, int val, QString text = "") { init(min, max, val, text); }
-	void onSetValue(int value) {
-		//qInfo() << "-- onSETVALUE " << value;
-		setValue(value);
-	}
+	void onSetValue(int value) { setValue(value); }
 	void onSetText(QString text) { setText(text); };
 	void onHide() { hide(); }
 

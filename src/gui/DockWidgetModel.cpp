@@ -9,6 +9,8 @@
 #include "MainWindow.h"
 #include "GLViewer.h"
 
+#include "StatusBarManager.h"
+
 DockWidgetModel::DockWidgetModel(QWidget *parent)
 	: QDockWidget(parent)
 {
@@ -92,7 +94,7 @@ void DockWidgetModel::updateTranslations(double x, double y, double z)
 		;
 	}
 
-	UI::STATUSBAR::printfTimed(500, "!! updateTranslations !!");
+	StatusBarManager::printfTimed(500, "!! updateTranslations !!");
 }
 
 

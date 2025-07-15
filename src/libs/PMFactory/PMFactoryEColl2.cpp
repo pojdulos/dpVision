@@ -69,7 +69,7 @@ void PMFactory::select_pair()
 	int progress = 0;
 	for (CPMFfaces::iterator fit=faces.begin(); fit!=faces.end(); fit++)
 	{
-		UI::STATUSBAR::printfTimed( 500, "Quadrics::select_pair(): f=%d ", cnter++ );
+		StatusBarManager::printfTimed( 500, QString("Quadrics::select_pair(): f=%1 ").arg(cnter++));
 		UI::PROGRESSBAR::setValue( progress++ );
 
 		// sciana ma 3 krawedzie - dla kazdej krawedzi sprawdzam czy juz jest w bazie bledow
@@ -139,7 +139,7 @@ error_type PMFactory::calculate_error(int id_v1, int id_v2, double* vx, double* 
 	if (q_bar[1] != q_bar[4] || q_bar[2] != q_bar[8] || q_bar[6] != q_bar[9] || 
 		q_bar[3] != q_bar[12] || q_bar[7] != q_bar[13] || q_bar[11] != q_bar[14])
 	{
-		UI::STATUSBAR::printf("ERROR: Matrix q_bar is not symmetric! id_v1 = %d, id_v2 = %d", id_v1, id_v2);
+		StatusBarManager::setText(QString("ERROR: Matrix q_bar is not symmetric! id_v1 = %1, id_v2 = %2").arg(id_v1).arg(id_v2));
 		system("PAUSE");
 		exit(-3);
 	}
