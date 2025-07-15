@@ -2,7 +2,11 @@
 
 file(GLOB GUI_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/adapters/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/events/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/*.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/adapters/*.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/events/*.h
     ${CMAKE_CURRENT_SOURCE_DIR}/*.ui
 )
 

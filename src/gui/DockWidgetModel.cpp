@@ -94,7 +94,7 @@ void DockWidgetModel::updateTranslations(double x, double y, double z)
 		;
 	}
 
-	StatusBarManager::printfTimed(500, "!! updateTranslations !!");
+	StatusBarManager::setText("!! updateTranslations !!");
 }
 
 

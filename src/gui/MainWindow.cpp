@@ -30,7 +30,9 @@
 
 #include "ProgressIndicator.h"
 #include "StatusBarManager.h"
+#include "MessageBoxManager.h"
 #include "adapters/QtStatusBarAdapter.h"
+#include "adapters/QtMessageBoxAdapter.h"
 
 void restoreDockGeometry(QDockWidget* dock)
 {
@@ -43,7 +45,7 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
 
-	//// Usuniêcie domyœlnego paska tytu³owego
+	//// Usuniï¿½cie domyï¿½lnego paska tytuï¿½owego
 	//setWindowFlags(Qt::FramelessWindowHint);
 
 	//// Tworzenie niestandardowego TitleBar
@@ -52,21 +54,21 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 	//titleBar->raise();
 	//titleBar->show();
 
-	//// Widget kontenerowy dla ca³ego uk³adu
+	//// Widget kontenerowy dla caï¿½ego ukï¿½adu
 	//QWidget* container = new QWidget();
 
-	//// Nowy uk³ad g³ówny okna
+	//// Nowy ukï¿½ad gï¿½ï¿½wny okna
 	//QVBoxLayout* mainLayout = new QVBoxLayout();
 	//mainLayout->setMargin(0);
 	//mainLayout->setSpacing(0);
 
-	//// Dodanie TitleBar na samej górze
+	//// Dodanie TitleBar na samej gï¿½rze
 	//mainLayout->addWidget(titleBar);
 
 	//// Dodanie centralnego widgetu z Qt Designer
 	//mainLayout->addWidget(ui.centralWidget);
 
-	//// Ustawienie nowego uk³adu jako uk³ad g³ówny
+	//// Ustawienie nowego ukï¿½adu jako ukï¿½ad gï¿½ï¿½wny
 	//container->setLayout(mainLayout);
 	//setCentralWidget(container);
 
@@ -117,6 +119,7 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 	//this->setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
 	StatusBarManager::setListener(new QtStatusBarAdapter(statusBar()));
+	MessageBoxManager::setListener(new QtMessageBoxAdapter());
 
 	this->progressIndicator = new ProgressIndicator(this->statusBar());
 	//this->progressIndicator->setMaximumHeight(16);
@@ -126,7 +129,7 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 	this->statusBar()->addPermanentWidget(progressIndicator, 0);
 
 	this->dockWorkspace->rebuildTree();
-	this->dockWorkspace->selectItem(NO_CURRENT_MODEL); // -1 = ¿aden nie zaznaczony
+	this->dockWorkspace->selectItem(NO_CURRENT_MODEL); // -1 = ï¿½aden nie zaznaczony
 
 	createRecentActions();
 	createRecentMenus();
@@ -146,7 +149,7 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 
 	connect(ui.mdiArea, &QMdiArea::subWindowActivated, this, [this](QMdiSubWindow* window) {
 		if (window != nullptr) {
-			lastActiveWindow = window;  // Przechowuj wskaŸnik jako QPointer
+			lastActiveWindow = window;  // Przechowuj wskaï¿½nik jako QPointer
 		}
 		});
 }

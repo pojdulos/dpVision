@@ -20,7 +20,7 @@ public:
 
     static void printfTimed(int mst, const QString& txt);
 
-    //static void printfTimed(int mst, const std::string& format, ...);
+    static void printfTimed(int mst, const std::string& format, ...);
 
     static void clear() {
         if (listener_) listener_->clear();
