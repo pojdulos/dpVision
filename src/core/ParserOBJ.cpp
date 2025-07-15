@@ -555,11 +555,9 @@ size_t CParserOBJ::Run()
         {
             int progress = round((100.0f * (inputFile.size() - inputFile.bytesAvailable())) / inputFile.size());
             
-			//emit(sendProgress(progress));
 			if (progress_) progress_->setValue(progress);
 
 			t1 = std::chrono::steady_clock::now();
-			QCoreApplication::processEvents();
         }
     }
 
@@ -663,7 +661,7 @@ void  CParserOBJ::saveMesh(QTextStream& objFile, CMesh* src, size_t& vStart)
 		CMesh::Colors::iterator itcol = src->vcolors().begin();
 		for (CMesh::Vertices::iterator itv = src->vertices().begin(); itv != src->vertices().end(); itv++)
 		{
-			StatusBarManager::printfTimed(500, QString("Saving vertices: %1").arg(vCnt++));
+			StatusBarManager::setTextTimed(500, QString("Saving vertices: %1").arg(vCnt++));
 			
 			objFile << "v " << itv->X() << " "
 				            << itv->Y() << " "
@@ -679,7 +677,7 @@ void  CParserOBJ::saveMesh(QTextStream& objFile, CMesh* src, size_t& vStart)
 	{
 		for (CMesh::Vertices::iterator itv = src->vertices().begin(); itv != src->vertices().end(); itv++)
 		{
-			StatusBarManager::printfTimed(500, QString("Saving vertices: %1").arg(vCnt++));
+			StatusBarManager::setTextTimed(500, QString("Saving vertices: %1").arg(vCnt++));
 			
 			//objFile << "v " << itv->X() << " "
 			//	            << itv->Y()	<< " "
@@ -697,7 +695,7 @@ void  CParserOBJ::saveMesh(QTextStream& objFile, CMesh* src, size_t& vStart)
 		int vnCnt = 0;
 		for (CMesh::Normals::iterator itv = src->vnormals().begin(); itv != src->vnormals().end(); itv++)
 		{
-			StatusBarManager::printfTimed(500, QString("Saving normals: %1").arg(vnCnt++));
+			StatusBarManager::setTextTimed(500, QString("Saving normals: %1").arg(vnCnt++));
 
 			objFile << "vn " << itv->X() << " "
 				             << itv->Y() << " "
@@ -773,7 +771,7 @@ void  CParserOBJ::saveCloud(QTextStream& objFile, CPointCloud* src, size_t& vSta
 		CPointCloud::Colors::iterator itcol = src->vcolors().begin();
 		for (CPointCloud::Vertices::iterator itv = src->vertices().begin(); itv != src->vertices().end(); itv++)
 		{
-			StatusBarManager::printfTimed(500, QString("Saving vertices: %1").arg(vCnt++));
+			StatusBarManager::setTextTimed(500, QString("Saving vertices: %1").arg(vCnt++));
 			
 			objFile << "v " << itv->X() << " "
 				            << itv->Y() << " "
@@ -789,7 +787,7 @@ void  CParserOBJ::saveCloud(QTextStream& objFile, CPointCloud* src, size_t& vSta
 	{
 		for (CPointCloud::Vertices::iterator itv = src->vertices().begin(); itv != src->vertices().end(); itv++)
 		{
-			StatusBarManager::printfTimed(500, QString("Saving vertices: %1").arg(vCnt++));
+			StatusBarManager::setTextTimed(500, QString("Saving vertices: %1").arg(vCnt++));
 			
 			objFile << "v " << itv->X() << " "
 				            << itv->Y() << " "
@@ -803,7 +801,7 @@ void  CParserOBJ::saveCloud(QTextStream& objFile, CPointCloud* src, size_t& vSta
 		int vnCnt = 0;
 		for (CPointCloud::Normals::iterator itv = src->vnormals().begin(); itv != src->vnormals().end(); itv++)
 		{
-			StatusBarManager::printfTimed(500, QString("Saving normals: %1").arg(vnCnt++));
+			StatusBarManager::setTextTimed(500, QString("Saving normals: %1").arg(vnCnt++));
 			
 			objFile << "vn " << itv->X() << " "
 				             << itv->Y() << " "

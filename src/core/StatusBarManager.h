@@ -18,9 +18,10 @@ public:
     //    if (listener_) listener_->setText(text);
     //}
 
-    static void printfTimed(int mst, const QString& txt);
+    static void setTextTimed(int mst, const QString& txt);
 
-    static void printfTimed(int mst, const std::string& format, ...);
+    static void printf(const char* format, ...);
+    static void printfTimed(int mst, const char* format, ...);
 
     static void clear() {
         if (listener_) listener_->clear();

@@ -1,4 +1,5 @@
 #include <string>
+#include <functional>
 
 class IProgressListener {
 public:
@@ -9,4 +10,10 @@ public:
     virtual void hide() = 0;
 
     virtual void useCancelButton(std::function<void()> onCancel) {}
+
+    static void setDefault(std::shared_ptr<IProgressListener> l) { defaultListener_ = l; }
+    static IProgressListener* getDefault() { return defaultListener_.get(); }
+
+private:
+    static std::shared_ptr<IProgressListener> defaultListener_;
 };

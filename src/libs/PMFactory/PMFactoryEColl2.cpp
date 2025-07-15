@@ -3,6 +3,8 @@
 //#include <cstdlib>
 #include "PMFactory.h"
 
+#include "interfaces/IProgressListener.h"
+
 void PMFactory::initial_quadrics()
 {
 	for (int i = 1; i <= static_cast<int>(vertices.size()); i++)
@@ -65,12 +67,14 @@ void PMFactory::select_pair()
 	/* id_v1 < id_v2*/
 	size_t cnter = 0;
 
-	UI::PROGRESSBAR::init( 0, faces.size(), 0 );
+	auto progress_ = IProgressListener::getDefault();
+	if (progress_) progress_->init( 0, faces.size(), 0 );
+
 	int progress = 0;
 	for (CPMFfaces::iterator fit=faces.begin(); fit!=faces.end(); fit++)
 	{
-		StatusBarManager::printfTimed( 500, QString("Quadrics::select_pair(): f=%1 ").arg(cnter++));
-		UI::PROGRESSBAR::setValue( progress++ );
+		StatusBarManager::setTextTimed( 500, QString("Quadrics::select_pair(): f=%1 ").arg(cnter++));
+		if (progress_) progress_->setValue( progress++ );
 
 		// sciana ma 3 krawedzie - dla kazdej krawedzi sprawdzam czy juz jest w bazie bledow
 		// jesli nie, to wyliczam blad dla tej krawedzi i dopisuje do errors
@@ -96,7 +100,7 @@ void PMFactory::select_pair()
 			errors.insert(CPMFerrors::value_type(Pair(min_vid, max_vid), calculate_error(min_vid, max_vid)));
 		}
 	}
-	UI::PROGRESSBAR::hide();
+	if (progress_) progress_->hide();
 
 	// to dotyczy sytuacji gdy pozwalamy na redukowanie niepolaczonych wierzcholkow
 	// pod warunkiem, ze spelniaja zaleznosc |v1 - v2| < t

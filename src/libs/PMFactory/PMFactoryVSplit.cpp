@@ -1,5 +1,7 @@
 #include "PMFactory.h"
 
+#include "interfaces/IProgressListener.h"
+
 void PMFactory::vSplit( CMesh &dst, unsigned int iNewSize )
 {
 	// - dane siatki podstawowej s¹ ju¿ w modelu docelowym
@@ -25,7 +27,7 @@ void PMFactory::vSplit( CMesh &dst, unsigned int iNewSize )
 			tmpFCSset[ s.f ] = s.t; 
 		}
 		catch ( std::bad_alloc &e ) {
-			UI::MESSAGEBOX::error( L"vSplit: tmpFCSset.insert()" );
+			MessageBoxManager::error( "vSplit: tmpFCSset.insert()" );
 			throw e;
 		}
 	}
@@ -36,20 +38,21 @@ void PMFactory::vSplit( CMesh &dst, unsigned int iNewSize )
 
 	if ( iNewSize > (dst.vertices().size()+dst.vsplits.size()) ) iNewSize = dst.vertices().size()+dst.vsplits.size();
 
-	UI::PROGRESSBAR::init( dst.vertices().size(), iNewSize, dst.vertices().size() );
+	auto progress_ = IProgressListener::getDefault();
+	if (progress_) progress_->init( dst.vertices().size(), iNewSize, dst.vertices().size() );
 
 	while ( ( its != dst.vsplits.end() ) && ( dst.vertices().size() < iNewSize ) )
 	{
 		StatusBarManager::setText( QString("\r    PMFactory::vSplit(): reconstruction to %1 -> current: %2              ").arg(iNewSize).arg(dst.vertices().size()));
 		
-		UI::PROGRESSBAR::setValue( dst.vertices().size() );
+		if (progress_) progress_->setValue( dst.vertices().size() );
 
 		//modyfikuje wierzcholek v1
 		try {
 			dst.vertices()[ its->i1 ] = its->v1;
 		}
 		catch ( std::bad_alloc &e ) {
-			UI::MESSAGEBOX::error( L"vSplit (0): dst->vertices()[]=" );
+			MessageBoxManager::error( "vSplit (0): dst->vertices()[]=" );
 			throw e;
 		}
 
@@ -58,7 +61,7 @@ void PMFactory::vSplit( CMesh &dst, unsigned int iNewSize )
 			dst.vertices().push_back( its->v2 );
 		}
 		catch ( std::bad_alloc &e ) {
-			UI::MESSAGEBOX::error( L"vSplit (1): vertices.push_back()" );
+			MessageBoxManager::error( "vSplit (1): vertices.push_back()" );
 			throw e;
 		}
 
@@ -102,7 +105,7 @@ void PMFactory::vSplit( CMesh &dst, unsigned int iNewSize )
 						tmpFCSset[ s.f ] = s.t;
 					}
 					catch ( std::bad_alloc &e ) {
-						UI::MESSAGEBOX::error( L"vSplit (3): tmpFCSset.insert()" );
+						MessageBoxManager::error( "vSplit (3): tmpFCSset.insert()" );
 						throw e;
 					}
 				}
@@ -122,7 +125,7 @@ void PMFactory::vSplit( CMesh &dst, unsigned int iNewSize )
 						tmpFCSset[ s.f ] = s.t;
 					}
 					catch ( std::bad_alloc &e ) {
-						UI::MESSAGEBOX::error( L"vSplit (4): tmpFCSset.insert()" );
+						MessageBoxManager::error( "vSplit (4): tmpFCSset.insert()" );
 						throw e;
 					}
 				}
@@ -142,7 +145,7 @@ void PMFactory::vSplit( CMesh &dst, unsigned int iNewSize )
 						tmpFCSset[s.f] = s.t;
 					}
 					catch ( std::bad_alloc &e ) {
-						UI::MESSAGEBOX::error( L"vSplit (5): tmpFCSset.insert()" );
+						MessageBoxManager::error( "vSplit (5): tmpFCSset.insert()" );
 						throw e;
 					}
 				}
@@ -162,7 +165,7 @@ void PMFactory::vSplit( CMesh &dst, unsigned int iNewSize )
 				tmpFCSset[ s.f ] = s.t;
 			}
 			catch ( std::bad_alloc &e ) {
-				UI::MESSAGEBOX::error( L"vSplit (6): tmpFCSset.insert()" );
+				MessageBoxManager::error( "vSplit (6): tmpFCSset.insert()" );
 				throw e;
 			}
 		}
@@ -171,7 +174,7 @@ void PMFactory::vSplit( CMesh &dst, unsigned int iNewSize )
 		its++;
 	}
 
-	UI::PROGRESSBAR::hide();
+	if (progress_) progress_->hide();
 	
 	// kasuje wykorzystane vsplity:
 	if ( its == dst.vsplits.end() )
@@ -190,7 +193,7 @@ void PMFactory::vSplit( CMesh &dst, unsigned int iNewSize )
 		dst.fnormals().reserve( tmpFCSset.size() );
 	}
 	catch ( std::bad_alloc &e ) {
-		UI::MESSAGEBOX::error( L"vSplit (7): reserve()" );
+		MessageBoxManager::error( "vSplit (7): reserve()" );
 		throw e;
 	}
 
@@ -204,7 +207,7 @@ void PMFactory::vSplit( CMesh &dst, unsigned int iNewSize )
 			dst.getMaterial(matIdx).texindex.push_back( itfs->second );
 		}
 		catch ( std::bad_alloc &e ) {
-			UI::MESSAGEBOX::error( L"vSplit (8): faces.push_back()" );
+			MessageBoxManager::error( "vSplit (8): faces.push_back()" );
 			throw e;
 		}
 	}

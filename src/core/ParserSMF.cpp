@@ -170,7 +170,7 @@ size_t CParserSMF::ReadSMF_V3()
 
 	while ( ! feof( plik ) )
 	{
-		StatusBarManager::printfTimed( 500, QString("Reading %1: v=%2, f=%3, s=%4").arg(plikSiatki.fileName()).arg(pMeshData->vertices().size()).arg(pMeshData->faces().size()).arg(pMeshData->vsplits.size()));
+		StatusBarManager::setTextTimed( 500, QString("Reading %1: v=%2, f=%3, s=%4").arg(plikSiatki.fileName()).arg(pMeshData->vertices().size()).arg(pMeshData->faces().size()).arg(pMeshData->vsplits.size()));
 
 		c1 = fgetc( plik );
 		switch( c1 )

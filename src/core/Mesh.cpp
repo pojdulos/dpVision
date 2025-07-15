@@ -532,7 +532,7 @@ void CMesh::correctNormals()
 	{
 		for (int i = m_poly.size() - 1; i >= 0; i--)
 		{
-			StatusBarManager::printfTimed(1000, QString("(CMesh) Recomputing normal vectors of faces. %1 more to be done").arg(i));
+			StatusBarManager::setTextTimed(1000, QString("(CMesh) Recomputing normal vectors of faces. %1 more to be done").arg(i));
 			m_poly.normals()[i] = m_poly[i].getNormal(m_vertices);
 		}
 	}
@@ -545,7 +545,7 @@ CVector3d CMesh::getMainNormalVector()
 
 	for (int i = m_poly.size() - 1; i >= 0; i--)
 	{
-		StatusBarManager::printfTimed(1000, QString("(CMesh) Computing main normal vector. %1 more to be done").arg(i));
+		StatusBarManager::setTextTimed(1000, QString("(CMesh) Computing main normal vector. %1 more to be done").arg(i));
 		vnormals[i] = m_poly[i].getNormal(m_vertices);
 	}
 
@@ -610,7 +610,7 @@ void CMesh::invertNormals()
 	{
 		for (int i = m_vnormals.size() - 1; i >= 0; i--)
 		{
-			StatusBarManager::printfTimed(1000, QString("(CMesh) Reversing normal vectors of vertices. %1 more to be done").arg(i));
+			StatusBarManager::setTextTimed(1000, QString("(CMesh) Reversing normal vectors of vertices. %1 more to be done").arg(i));
 			m_vnormals[i].invert();
 		}
 	}
@@ -619,14 +619,14 @@ void CMesh::invertNormals()
 	{
 		for (int i = m_poly.normals().size() - 1; i >= 0; i--)
 		{
-			StatusBarManager::printfTimed(1000, QString("(CMesh) Reversing normal vectors of faces. %1 more to be done").arg(i));
+			StatusBarManager::setTextTimed(1000, QString("(CMesh) Reversing normal vectors of faces. %1 more to be done").arg(i));
 			m_poly.normals()[i].invert();
 		}
 	}
 
 	for (int i = m_poly.faces().size() - 1; i >= 0; i--)
 	{
-		StatusBarManager::printfTimed(1000, QString("(CMesh) Reversing normal vectors of faces. %1 more to be done").arg(i));
+		StatusBarManager::setTextTimed(1000, QString("(CMesh) Reversing normal vectors of faces. %1 more to be done").arg(i));
 		m_poly.faces()[i].invert();
 	}
 }
@@ -654,7 +654,7 @@ void CMesh::removeUnusedVertices()
 
 	for (INDEX_TYPE face_id = 0; face_id < faceCount; face_id++)
 	{
-		StatusBarManager::printfTimed(1000, QString("(CMesh) Removing unused vertices. %1 more to be done").arg(faceCount - face_id));
+		StatusBarManager::setTextTimed(1000, QString("(CMesh) Removing unused vertices. %1 more to be done").arg(faceCount - face_id));
 
 		CFace& face = this->faces()[face_id];
 
@@ -1020,7 +1020,7 @@ void CMesh::findBoundaryFaces(std::set<INDEX_TYPE>& brzegowe, CMesh::V2Fmap & ma
 {
 	for (int faceIndex = 0; faceIndex < m_poly.size(); faceIndex++)
 	{
-		StatusBarManager::printfTimed(500, QString("szukam ścianek brzegowych, zostało:%1").arg(m_poly.size() - faceIndex));
+		StatusBarManager::setTextTimed(500, QString("szukam ścianek brzegowych, zostało:%1").arg(m_poly.size() - faceIndex));
 
 		CMesh::Neighbors neighbors;
 		findNeighborsOfFace(faceIndex, map, &neighbors, 1); // sasiadki "krawedziowe"	- może ich być max. 3
@@ -1039,7 +1039,7 @@ void CMesh::findBoundaryFaces( CMesh::Neighborhood &brzegowe, CMesh::V2Fmap &map
 {
 	for (std::set< INDEX_TYPE >::iterator i = scianki.begin(); i != scianki.end(); i++)
 	{
-		StatusBarManager::printfTimed(500, QString("szukam ścianek brzegowych, znaleziono:%1").arg(brzegowe.size()));
+		StatusBarManager::setTextTimed(500, QString("szukam ścianek brzegowych, znaleziono:%1").arg(brzegowe.size()));
 
 		CMesh::Neighbors sasiadki;
 		findNeighborsOfFace( (*i), map, &sasiadki, 1 ); // sasiadki "krawedziowe"	- może ich być max. 3
@@ -1057,7 +1057,7 @@ void CMesh::findBoundaryFaces( CMesh::Neighborhood &brzegowe, CMesh::V2Fmap &map
 {
 	for ( int faceIndex = 0; faceIndex < m_poly.size(); faceIndex++ )
 	{
-		StatusBarManager::printfTimed(500, QString("szukam ścianek brzegowych, zostało:%1").arg(m_poly.size() - faceIndex));
+		StatusBarManager::setTextTimed(500, QString("szukam ścianek brzegowych, zostało:%1").arg(m_poly.size() - faceIndex));
 
 		CMesh::Neighbors neighbors;
 		findNeighborsOfFace( faceIndex, map, &neighbors, 1 ); // sasiadki "krawedziowe"	- może ich być max. 3
@@ -1075,7 +1075,7 @@ void CMesh::findBoundaryFaces(std::set<INDEX_TYPE>& brzegowe, CMesh::V2Fmap & ma
 {
 	for (std::set< INDEX_TYPE >::iterator i = scianki.begin(); i != scianki.end(); i++)
 	{
-		StatusBarManager::printfTimed(500, QString("szukam ścianek brzegowych, znaleziono:%1").arg(brzegowe.size()));
+		StatusBarManager::setTextTimed(500, QString("szukam ścianek brzegowych, znaleziono:%1").arg(brzegowe.size()));
 
 		CMesh::Neighbors sasiadki;
 		findNeighborsOfFace((*i), map, &sasiadki, 1); // sasiadki "krawedziowe"	- może ich być max. 3
@@ -1408,7 +1408,7 @@ void CMesh::createNeighborhoodMapOfVertices(CMesh::Neighborhood &map, bool bidir
 	map.clear();
 	for (int myIndex = 0; myIndex < m_poly.size(); myIndex++)
 	{
-		StatusBarManager::printfTimed(500, QString("generating neghborhood map for all vertices, %1 remaining").arg(m_poly.size() - myIndex));
+		StatusBarManager::setTextTimed(500, QString("generating neghborhood map for all vertices, %1 remaining").arg(m_poly.size() - myIndex));
 		CFace f = m_poly[myIndex];
 
 		map[f.A()].insert(f.B());
@@ -1432,7 +1432,7 @@ void CMesh::createNeighborhoodMapOfVertices(CMesh::Neighborhood &map, std::set< 
 	{
 		INDEX_TYPE myIndex = (*i);
 
-		StatusBarManager::printfTimed(500, QString("generating neghborhood map for all vertices, %1 remaining").arg(n--));
+		StatusBarManager::setTextTimed(500, QString("generating neghborhood map for all vertices, %1 remaining").arg(n--));
 		CFace f = m_poly[myIndex];
 
 		map[f.A()].insert(f.B());

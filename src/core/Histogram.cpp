@@ -100,7 +100,7 @@ void CHistogram::colorizeParentVertices(bool b)
 
 		for (int i = 0; i < m_destination->vertices().size(); i++)
 		{
-			StatusBarManager::printfTimed(1000, QString("colorizing (%1)...").arg(i));
+			StatusBarManager::setTextTimed(1000, QString("colorizing (%1)...").arg(i));
 
 			int idx = getHistogramIndex(m_data[i]);
 			m_destination->vcolors()[i] = getColor(idx);

@@ -1293,7 +1293,7 @@ std::shared_ptr<CMesh> CVolTK::createMesh(int winMin, int winMax, CRGBA col)
 	{
 		//WORD kol = (*itz).first;
 		WORD kol = itz;
-		StatusBarManager::printfTimed(500, QString("preparing data... (%1)").arg(kol));
+		StatusBarManager::setTextTimed(500, QString("preparing data... (%1)").arg(kol));
 
 		for (const CPoint3s voxel : *m_displayData[itz])
 		{
@@ -1316,7 +1316,7 @@ std::shared_ptr<CMesh> CVolTK::createMesh(int winMin, int winMax, CRGBA col)
 	for (auto itz = winMin; itz < winMax; itz++)
 	{
 		WORD kol = itz;
-		StatusBarManager::printfTimed(500, QString("Creating mesh... (%1)").arg(kol));
+		StatusBarManager::setTextTimed(500, QString("Creating mesh... (%1)").arg(kol));
 
 		for (CPoint3s voxel : *m_displayData[itz])
 		{

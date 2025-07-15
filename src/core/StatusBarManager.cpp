@@ -3,7 +3,7 @@
 
 IStatusListener* StatusBarManager::listener_ = nullptr;
 
-void StatusBarManager::printfTimed(int mst, const QString& txt) {
+void StatusBarManager::setTextTimed(int mst, const QString& txt) {
     if (listener_) {
         static QElapsedTimer timer;
         if (!timer.isValid())
@@ -16,7 +16,7 @@ void StatusBarManager::printfTimed(int mst, const QString& txt) {
     }
 }
 
-void StatusBarManager::printfTimed(int mst, const std::string& format, ...) {
+void StatusBarManager::printfTimed(int mst, const char* format, ...) {
    static QElapsedTimer timer;
    if (!timer.isValid())
        timer.start();
@@ -27,10 +27,22 @@ void StatusBarManager::printfTimed(int mst, const std::string& format, ...) {
        va_list paramList;
        va_start(paramList, format);
 
-       vsnprintf(formatBuf, sizeof(formatBuf), format.c_str(), paramList);
+       vsnprintf(formatBuf, sizeof(formatBuf), format, paramList);
        va_end(paramList);
 
        setText(formatBuf);
        timer.restart();
    }
+}
+
+void StatusBarManager::printf(const char* format, ...) {
+    char formatBuf[1024];
+
+    va_list paramList;
+    va_start(paramList, format);
+
+    vsnprintf(formatBuf, sizeof(formatBuf), format, paramList);
+    va_end(paramList);
+
+    setText(formatBuf);
 }

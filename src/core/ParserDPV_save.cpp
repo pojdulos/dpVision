@@ -74,7 +74,7 @@ void CParserDPVISION::saveMesh(QTextStream& objStream, std::shared_ptr<CObject> 
 			CMesh::Colors::iterator itcol = cloud->vcolors().begin();
 			for (CMesh::Vertices::iterator itv = cloud->vertices().begin(); itv != cloud->vertices().end(); itv++)
 			{
-				StatusBarManager::printfTimed(500, QString("Saving vertices: %1").arg(vCnt++));
+				StatusBarManager::setTextTimed(500, QString("Saving vertices: %1").arg(vCnt++));
 
 				objStream << "v " << itv->X() << " "
 					<< itv->Y() << " "
@@ -90,7 +90,7 @@ void CParserDPVISION::saveMesh(QTextStream& objStream, std::shared_ptr<CObject> 
 		{
 			for (CMesh::Vertices::iterator itv = cloud->vertices().begin(); itv != cloud->vertices().end(); itv++)
 			{
-				StatusBarManager::printfTimed(500, QString("Saving vertices: %1").arg(vCnt++));
+				StatusBarManager::setTextTimed(500, QString("Saving vertices: %1").arg(vCnt++));
 
 				objStream << "v " << itv->X() << " "
 					<< itv->Y() << " "
@@ -103,7 +103,7 @@ void CParserDPVISION::saveMesh(QTextStream& objStream, std::shared_ptr<CObject> 
 			int vnCnt = 0;
 			for (CMesh::Normals::iterator itv = cloud->vnormals().begin(); itv != cloud->vnormals().end(); itv++)
 			{
-				StatusBarManager::printfTimed(500, QString("Saving normals : %1").arg(vnCnt++));
+				StatusBarManager::setTextTimed(500, QString("Saving normals : %1").arg(vnCnt++));
 
 				objStream << "vn " << itv->X() << " "
 					<< itv->Y() << " "

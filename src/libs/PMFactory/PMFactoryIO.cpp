@@ -17,7 +17,7 @@ void PMFactory::CMeshToQuadrics( CMesh &src )
 
 	for ( CMesh::Vertices::iterator it=src.vertices().begin(); it!=src.vertices().end(); it++ )
 	{
-		StatusBarManager::printfTimed( 500, QString("PMFactory: Importing vertices... %1").arg(local_num_vertices));
+		StatusBarManager::setTextTimed( 500, QString("PMFactory: Importing vertices... %1").arg(local_num_vertices));
 
 		v.X( it->X() );
 		v.Y( it->Y() );
@@ -122,7 +122,7 @@ void PMFactory::QuadricsToCMesh( CMesh &dst )
 		dst.vertices().resize( vertices.size() );
 	}
 	catch ( std::bad_alloc &e ) {
-		UI::MESSAGEBOX::error( L"vertices.resize()" );
+		MessageBoxManager::error( "vertices.resize()" );
 		throw e;
 	}
 
@@ -140,7 +140,7 @@ void PMFactory::QuadricsToCMesh( CMesh &dst )
 			mVerticesMap.insert(_mapOfVertices::value_type(key, idx));
 		}
 		catch ( std::bad_alloc &e ) {
-			UI::MESSAGEBOX::error( L"mVerticesMap.insert()" );
+			MessageBoxManager::error( "mVerticesMap.insert()" );
 			throw e;
 		}
 		idx++;
@@ -160,7 +160,7 @@ void PMFactory::QuadricsToCMesh( CMesh &dst )
 			dst.getMaterial(matIdx).texcoord.resize( texcoords.size() );
 		}
 		catch ( std::bad_alloc &e ) {
-			UI::MESSAGEBOX::error( L"texcoord.resize()" );
+			MessageBoxManager::error( "texcoord.resize()" );
 			throw e;
 		}
 
@@ -179,7 +179,7 @@ void PMFactory::QuadricsToCMesh( CMesh &dst )
 				mTindexesMap.insert(_mapOfVertices::value_type(key, idx));
 			}
 			catch ( std::bad_alloc &e ) {
-				UI::MESSAGEBOX::error( L"mTindexesMap.insert()" );
+				MessageBoxManager::error( "mTindexesMap.insert()" );
 				throw e;
 			}
 			idx++;
@@ -194,7 +194,7 @@ void PMFactory::QuadricsToCMesh( CMesh &dst )
 		dst.faces().resize( faces.size() );
 	}
 	catch ( std::bad_alloc &e ) {
-		UI::MESSAGEBOX::error( L"faces.resize()" );
+		MessageBoxManager::error( "faces.resize()" );
 		throw e;
 	}
 
@@ -202,7 +202,7 @@ void PMFactory::QuadricsToCMesh( CMesh &dst )
 		dst.fnormals().resize( faces.size() );
 	}
 	catch ( std::bad_alloc &e ) {
-		UI::MESSAGEBOX::error( L"fnormals().resize()" );
+		MessageBoxManager::error( "fnormals().resize()" );
 		throw e;
 	}
 
@@ -258,7 +258,7 @@ void PMFactory::QuadricsToCMesh( CMesh &dst )
 			dst.vsplits.push_back( vsplits[i] );
 		}
 		catch ( std::bad_alloc &e ) {
-			UI::MESSAGEBOX::error( L"vsplits.push_back()" );
+			MessageBoxManager::error( "vsplits.push_back()" );
 			throw std::runtime_error( e.what() );
 		} 
 	}

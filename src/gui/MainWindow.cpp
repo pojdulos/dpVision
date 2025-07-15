@@ -33,6 +33,7 @@
 #include "MessageBoxManager.h"
 #include "adapters/QtStatusBarAdapter.h"
 #include "adapters/QtMessageBoxAdapter.h"
+#include "adapters/QtProgressAdapter.h"
 
 void restoreDockGeometry(QDockWidget* dock)
 {
@@ -127,6 +128,8 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 	//this->progressIndicator->setTextVisible(true);
 	this->progressIndicator->hide();
 	this->statusBar()->addPermanentWidget(progressIndicator, 0);
+
+	IProgressListener::setDefault(std::make_shared<QtProgressAdapter>(this->progressIndicator));
 
 	this->dockWorkspace->rebuildTree();
 	this->dockWorkspace->selectItem(NO_CURRENT_MODEL); // -1 = �aden nie zaznaczony

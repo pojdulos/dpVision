@@ -19,11 +19,17 @@ public:
     }
 
     virtual void init(int min, int max, int val, std::string text = "") override {
-        if (indicator_) emit sig_init(min, max, val, QString::fromStdString(text));
+        if (indicator_) {
+            emit sig_init(min, max, val, QString::fromStdString(text));
+            QCoreApplication::processEvents();
+        }
     }
 
     virtual void setValue(int value) override {
-        if (indicator_) emit sig_setValue(value);
+        if (indicator_) {
+            emit sig_setValue(value);
+            QCoreApplication::processEvents();
+        }
     }
 
     virtual void setText(std::string text) override {

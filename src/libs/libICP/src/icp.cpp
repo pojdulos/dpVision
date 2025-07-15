@@ -108,7 +108,7 @@ void Icp::fitIterate( double *T,const int32_t T_num,Matrix &R,Matrix &t, double 
 #ifdef _DEBUG
 //		std::cout << "Fitting -> iteration (" << m_max_iter << ") = " << iter << ", delta (" << m_min_delta << ") = " << delta << "\n";
 #endif
-		StatusBarManager::printfTimed(500, QString("Fitting -> iteration (%1) = %2, delta (%3) = %4").arg(m_max_iter).arg(iter).arg(m_min_delta).arg(delta));
+		StatusBarManager::setTextTimed(500, QString("Fitting -> iteration (%1) = %2, delta (%3) = %4").arg(m_max_iter).arg(iter).arg(m_min_delta).arg(delta));
 	}
 
 	m_last_delta = delta;
@@ -187,7 +187,7 @@ void Icp::fitIterateTest(double* T, const int32_t T_num, Matrix& R, Matrix& t, d
 			std::cout << "         fitting -> iteration (" << m_max_iter << ") = " << iter << ", delta (" << m_min_delta << ") = " << delta << "\n";
 #endif
 		}
-		StatusBarManager::printfTimed(500, QString("Fitting -> iteration (%1) = %2, delta (%3) = %4").arg(m_max_iter).arg(iter).arg(m_min_delta).arg(delta));
+		StatusBarManager::setTextTimed(500, QString("Fitting -> iteration (%1) = %2, delta (%3) = %4").arg(m_max_iter).arg(iter).arg(m_min_delta).arg(delta));
 	}
 
 	if (iter >= m_max_iter)

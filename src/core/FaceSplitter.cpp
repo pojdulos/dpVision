@@ -129,7 +129,7 @@ void CFaceSplitter::splitFaces(double EPS)
 			}
 		}
 
-		StatusBarManager::printfTimed(500, QString("loop: %1, maxLL: %2, bigFaces: %3").arg(k++).arg(maxD).arg(bigFaces2.size()));
+		StatusBarManager::setTextTimed(500, QString("loop: %1, maxLL: %2, bigFaces: %3").arg(k++).arg(maxD).arg(bigFaces2.size()));
 
 	} while ((bigFaces2.size() > 0) && (maxD > EPS));
 

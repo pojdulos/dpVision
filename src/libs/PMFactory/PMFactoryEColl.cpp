@@ -1,5 +1,7 @@
 #include "PMFactory.h"
 
+#include "interfaces/IProgressListener.h"
+
 void PMFactory::eColl( CMesh &dst, unsigned int iNewSize )
 {
 	StatusBarManager::setText( "PMFactory::eColl(): Begin of method." );
@@ -24,7 +26,7 @@ void PMFactory::eColl( CMesh &dst, unsigned int iNewSize )
 		texidxs.clear();
 		texcoords.clear();
 		StatusBarManager::setText( QString("Allocation error in Reduction(): %1").arg(e.what()));
-		UI::MESSAGEBOX::error( L"Allocation error in Reduction()" );
+		MessageBoxManager::error( "Allocation error in Reduction()" );
 		return;
 	}
 	StatusBarManager::setText( "PMFactory::eColl(): After call Reduction()." );
@@ -49,7 +51,7 @@ void PMFactory::Renumerate( CMesh &dst )
 			mVerticesMap[ dst.vsplits[i].i2 ] = value++;
 		}
 		catch ( std::bad_alloc &e ) {
-			UI::MESSAGEBOX::error( L"PMFactory::Renumerate(): mVerticesMap[]=" );
+			MessageBoxManager::error( "PMFactory::Renumerate(): mVerticesMap[]=" );
 			throw e;
 		}
 
@@ -132,12 +134,13 @@ void PMFactory::Reduction(size_t target_num_vertices)
 			itm++;
 	}
 
-	UI::PROGRESSBAR::init( 0, vertices.size() - target_num_vertices, 0 );
+	auto progress_ = IProgressListener::getDefault();
+	if (progress_) progress_->init( 0, vertices.size() - target_num_vertices, 0 );
 
 	while (vertices.size() > target_num_vertices)
 	{
-		StatusBarManager::printfTimed( 500, QString("\r    PMFactory::Reduction(): reduction from %1 to %2 -> current: %3              ").arg(orgsize).arg(target_num_vertices).arg(vertices.size()));
-		UI::PROGRESSBAR::setValue( orgsize - vertices.size() );
+		StatusBarManager::setTextTimed( 500, QString("\r    PMFactory::Reduction(): reduction from %1 to %2 -> current: %3              ").arg(orgsize).arg(target_num_vertices).arg(vertices.size()));
+		if (progress_) progress_->setValue( orgsize - vertices.size() );
 
 		CPMFerrors::iterator iter_min_error = errors.GetMinError();
 		
@@ -281,7 +284,7 @@ void PMFactory::Reduction(size_t target_num_vertices)
 
 	}
 
-	UI::PROGRESSBAR::hide();
+	if (progress_) progress_->hide();
 
 	quadrics.clear();
 	quadrics.swap(quadrics);
