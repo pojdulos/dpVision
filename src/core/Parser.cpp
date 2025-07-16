@@ -3,7 +3,7 @@
 #include "interfaces/IProgressListener.h"
 #include "MessageBoxManager.h"
 
-CParser::CParser(std::shared_ptr<IProgressListener> prg):progress_(prg)
+CParser::CParser(void):progress_(nullptr)
 {
 	setDescr("Sample description");
 	m_exts.clear(); 
@@ -20,7 +20,7 @@ CParser::~CParser(void)
 
 std::shared_ptr<CModel3D> CParser::load(const QString path, bool wait, std::shared_ptr<IProgressListener> prg)
 {
-	progress_ = prg;
+	progress_ = prg ? prg : IProgressListener::getDefault();
 
 	std::shared_ptr<CModel3D> obj;
 

@@ -7,6 +7,7 @@
 
 #include "FileConnector.h"
 #include "StatusBarManager.h"
+#include "interfaces/IProgressListener.h"
 
 QMap<QString, QString> CParserATMDL::defs;
 
@@ -1224,7 +1225,7 @@ void dpTest(const char* msg)
 
 std::shared_ptr<CModel3D> CParserATMDL::load(const QString path, bool wait, std::shared_ptr<IProgressListener> prg)
 {
-	progress_ = prg;
+	progress_ = prg ? prg : IProgressListener::getDefault();
 
 	atmdlFile.setFileName(path);
 

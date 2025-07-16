@@ -2,6 +2,8 @@
 
 #include "ParserWRL.h"
 
+#include "UI.h"
+
 void CParserWRL::VRML_ParseNode_Color( FILE *plik )
 {
 	char bufor[80];

@@ -13,7 +13,7 @@ public:
     virtual void useCancelButton(std::function<void()> onCancel) {}
 
     static void setDefault(std::shared_ptr<IProgressListener> l) { defaultListener_ = l; }
-    static IProgressListener* getDefault() { return defaultListener_.get(); }
+    static std::shared_ptr<IProgressListener> getDefault() { return defaultListener_; }
 
 private:
     static std::shared_ptr<IProgressListener> defaultListener_;

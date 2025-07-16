@@ -2,8 +2,6 @@
 #include "dll_global.h"
 
 #include "Parser.h"
-//#include <QtCore>
-
 
 struct _predata {
 	int f;
@@ -41,7 +39,7 @@ class CParserOBJ : public CParser
 	std::map<int, Meshinfo> meshinfo;
 
 public:
-	CParserOBJ(std::shared_ptr<IProgressListener> prg = nullptr);
+	CParserOBJ(void);
 	~CParserOBJ(void);
 
 	virtual bool inPlugin() override { return false; };

@@ -42,7 +42,7 @@ protected:
 	inline void setDescr(const QString descr) { m_descr = descr; }
 	
 public:
-	CParser(std::shared_ptr<IProgressListener> prg = nullptr);
+	CParser(void);
 	virtual ~CParser(void);
 
 	void setProgressListener(std::shared_ptr<IProgressListener> prg = nullptr) { progress_ = prg; }

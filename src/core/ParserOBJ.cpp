@@ -6,16 +6,13 @@
 #include "interfaces/IProgressListener.h"
 #include "StatusBarManager.h"
 
-CParserOBJ::CParserOBJ(std::shared_ptr<IProgressListener> prg) : CParser(prg)
-{
+CParserOBJ::CParserOBJ(void) {
 	setDescr("OBJ File");
 	m_exts.insert("obj");
 	m_save_exts.insert("obj");
 }
 
-CParserOBJ::~CParserOBJ(void)
-{
-}
+CParserOBJ::~CParserOBJ(void) {}
 
 void CParserOBJ::ParseObjMTLFile(const wchar_t* npl)
 {
