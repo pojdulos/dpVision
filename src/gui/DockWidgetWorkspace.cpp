@@ -74,6 +74,7 @@ void DockWidgetWorkspace::onCustomContextMenu(const QPoint &point)
 	{
 		ui.treeView->clearSelection();
 
+		CWorkspace::instance()->onCurrentObjectChanged(NO_CURRENT_MODEL);
 		emit currentObjectChanged(NO_CURRENT_MODEL);
 
 		CContextMenu(nullptr, ui.treeView).exec(ui.treeView->mapToGlobal(point));
@@ -526,6 +527,8 @@ void DockWidgetWorkspace::colKidsVisibilityClicked(std::shared_ptr<CBaseObject> 
 
 void DockWidgetWorkspace::colNameClicked(std::shared_ptr<CBaseObject> obj, WorkspaceTreeItem* clickedItem)
 {
+	auto wksp = CWorkspace::instance();
+
 	if (obj->hasType(CBaseObject::MODEL) || obj->hasType(CBaseObject::IMAGE))
 	{
 		if (obj->hasType(CBaseObject::IMAGE))
@@ -546,8 +549,9 @@ void DockWidgetWorkspace::colNameClicked(std::shared_ptr<CBaseObject> obj, Works
 		bool b = clickedItem->checkState() == Qt::Checked;
 
 		obj->setSelected(b);
-		if (!AP::getWorkspace()->changeSelection(obj->id(), b))
+		if (!wksp->changeSelection(obj->id(), b))
 		{
+			wksp->onCurrentObjectChanged(obj->id());
 			emit currentObjectChanged(obj->id());
 		}
 	}
@@ -555,7 +559,7 @@ void DockWidgetWorkspace::colNameClicked(std::shared_ptr<CBaseObject> obj, Works
 	{
 		bool b = clickedItem->checkState() == Qt::Checked;
 		obj->setSelected(b);
-		AP::getWorkspace()->changeSelection(obj->id(), b);
+		wksp->changeSelection(obj->id(), b);
 
 		//Qt::CheckState state = clickedItem->checkState();
 		//if (state == Qt::Checked || state == Qt::Unchecked)
@@ -570,17 +574,19 @@ void DockWidgetWorkspace::onCurrentObjectChanged(int i)
 	selectItem(i);
 }
 
-void DockWidgetWorkspace::onCurrentObjectChanged(std::shared_ptr<CBaseObject> obj)
-{
-	if (obj != nullptr)
-		selectItem(obj->id());
-	else
-		selectItem(NO_CURRENT_MODEL);
-}
+//void DockWidgetWorkspace::onCurrentObjectChanged(std::shared_ptr<CBaseObject> obj)
+//{
+//	if (obj != nullptr)
+//		selectItem(obj->id());
+//	else
+//		selectItem(NO_CURRENT_MODEL);
+//}
 
 
 void DockWidgetWorkspace::onTreeViewItemClicked(QModelIndex current)
 {
+	auto wksp = CWorkspace::instance();
+
 	if (current.isValid())
 	{
 		WorkspaceTreeModel* model = (WorkspaceTreeModel*)ui.treeView->model();
@@ -609,11 +615,13 @@ void DockWidgetWorkspace::onTreeViewItemClicked(QModelIndex current)
 				break;
 		}
 
+		wksp->onCurrentObjectChanged(clickedObject->id());
 		emit(currentObjectChanged(clickedObject->id()));
 		AP::EVENTS::workspaceTreeClicked(clickedObject->id());
 	}
 	else
 	{
+		wksp->onCurrentObjectChanged(NO_CURRENT_MODEL);
 		emit(currentObjectChanged(NO_CURRENT_MODEL));
 		AP::EVENTS::workspaceTreeClicked(NO_CURRENT_MODEL);
 	}

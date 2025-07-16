@@ -2,6 +2,8 @@
 
 #include "ParserWRL.h"
 
+#include "UI.h"
+
 size_t CParserWRL::VRML_ParseField_texpoint( FILE *plik )
 {
 	float s, t;

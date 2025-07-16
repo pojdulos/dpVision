@@ -12,7 +12,7 @@ template <typename T> T Volumetric::clamp(T value, T min, T max) {
 }
 
 #include "../renderers/IVolumetricRenderer.h"
-
+#include "interfaces/IProgressListener.h"
 
 Volumetric::Volumetric(ColorSpace csp, std::shared_ptr<CBaseObject> p) :CObject(p), m_csp(csp)
 {
@@ -527,20 +527,17 @@ void Volumetric::drawCylinder(CPoint3i origin, CVector3i vector, int radius = 1,
 #include <opencv2/features2d.hpp>
 
 std::shared_ptr<CPointCloud> Volumetric::sift_cloud(int nfeatures, int nOctaveLayers, double contrastThreshold, double edgeThreshold, double sigma, int factor) {
-	//UI::MESSAGEBOX::information("NOT IMPLEMENTED YET");
-	//return;
-
 	std::shared_ptr<CPointCloud> cloud = std::make_shared<CPointCloud>();
 
-	UI::PROGRESSBAR::init(this->m_minSlice, this->m_maxSlice, this->m_minSlice);
-	UI::PROGRESSBAR::setText("Sift Cloud:");
+	auto prg_ = IProgressListener::getDefault();
+	if (prg_) prg_->init(this->m_minSlice, this->m_maxSlice, this->m_minSlice, "Sift Cloud:");
 
 	// Tworzenie obiektu SIFT z ustawionymi parametrami
 	cv::Ptr<cv::SIFT> sift = cv::SIFT::create(nfeatures, nOctaveLayers, contrastThreshold, edgeThreshold, sigma);
 
 	for (int idx_of_slice = this->m_minSlice; idx_of_slice <= this->m_maxSlice; idx_of_slice++)
 	{
-		UI::PROGRESSBAR::setValue(idx_of_slice);
+		if (prg_) prg_->setValue(idx_of_slice);
 
 		auto image = clip2D(m_data[idx_of_slice], m_rows, m_columns, this->m_minRow, this->m_maxRow, this->m_minColumn, this->m_maxColumn);
 
@@ -613,7 +610,7 @@ std::shared_ptr<CPointCloud> Volumetric::sift_cloud(int nfeatures, int nOctaveLa
 		}
 	}
 	
-	UI::PROGRESSBAR::hide();
+	if (prg_) prg_->hide();
 
 	return cloud;
 }

@@ -34,6 +34,7 @@
 #include "adapters/QtStatusBarAdapter.h"
 #include "adapters/QtMessageBoxAdapter.h"
 #include "adapters/QtProgressAdapter.h"
+#include "events/QtWorkspaceEvents.h"
 
 void restoreDockGeometry(QDockWidget* dock)
 {
@@ -141,13 +142,17 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 
 	MdiChild::create(MdiChild::Type::GL, ui.mdiArea, MdiChild::Show::Maximized);
 
-	connect(CWorkspace::instance(), SIGNAL(currentObjectChanged(int)), this, SLOT(onCurrentObjectChanged(int)));
-	connect(CWorkspace::instance(), SIGNAL(currentObjectChanged(int)), dockWorkspace, SLOT(onCurrentObjectChanged(int)));
-	connect(CWorkspace::instance(), SIGNAL(currentObjectChanged(int)), dockProperties, SLOT(onCurrentObjectChanged(int)));
+	auto wkspEvents = std::make_shared<QtWorkspaceEvents>();
+	CWorkspace::instance()->addListener(wkspEvents);
 
-	connect(dockWorkspace, SIGNAL(currentObjectChanged(int)), CWorkspace::instance(), SLOT(onCurrentObjectChanged(int)));
+	connect(wkspEvents.get(), SIGNAL(modelChangedSignal(int)), this, SLOT(onCurrentObjectChanged(int)));
+	connect(wkspEvents.get(), SIGNAL(modelChangedSignal(int)), dockWorkspace, SLOT(onCurrentObjectChanged(int)));
+	connect(wkspEvents.get(), SIGNAL(modelChangedSignal(int)), dockProperties, SLOT(onCurrentObjectChanged(int)));
+
+
+	//connect(dockWorkspace, SIGNAL(currentObjectChanged(int)), CWorkspace::instance(), SLOT(onCurrentObjectChanged(int)));
+
 	connect(dockWorkspace, SIGNAL(currentObjectChanged(int)), this, SLOT(onCurrentObjectChanged(int)));
-
 	connect(dockWorkspace, SIGNAL(currentObjectChanged(int)), dockProperties, SLOT(onCurrentObjectChanged(int)));
 
 	connect(ui.mdiArea, &QMdiArea::subWindowActivated, this, [this](QMdiSubWindow* window) {

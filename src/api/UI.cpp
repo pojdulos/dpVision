@@ -1184,10 +1184,7 @@ std::wstring UI::str2wstr( std::string s )
 	return QString::fromStdString(s).toStdWString();
 }
 
-std::string UI::wstr2str( std::wstring ws )
-{
-	return QString::fromWCharArray( ws.c_str() ).toUtf8().toStdString();
-}
+std::string UI::wstr2str( std::wstring ws ) { return QString::fromWCharArray( ws.c_str() ).toUtf8().toStdString(); }
 
 
 //#include <sstream>

@@ -319,6 +319,8 @@ std::shared_ptr<CBaseObject> CObject::findId( int id )
 //		renderKids();
 //}
 
+#include "UI.h"
+
 void CObject::renderBoundingBox()
 {
 	QVector<std::shared_ptr<CBaseObject>> objts = UI::DOCK::WORKSPACE::getSelectedObjects();

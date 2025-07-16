@@ -9,10 +9,12 @@ class QtWorkspaceEvents : public QObject, public IWorkspaceEvents {
 public:
     explicit QtWorkspaceEvents(QObject* parent = nullptr) : QObject(parent) {}
 
+    void modelChanged(int modelId) override { emit modelChangedSignal(modelId); }
     void modelAdded(int modelId) override { emit modelAddedSignal(modelId); }
     void modelRemoved(int modelId) override { emit modelRemovedSignal(modelId); }
 
 signals:
+    void modelChangedSignal(int modelId);
     void modelAddedSignal(int modelId);
     void modelRemovedSignal(int modelId);
 };

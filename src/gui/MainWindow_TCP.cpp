@@ -3,6 +3,8 @@
 #include "AP.h"
 #include "MainApplication.h"
 
+#include "UI.h"
+
 #include <QtNetwork/QLocalServer>
 #include <QtNetwork/QTcpServer>
 

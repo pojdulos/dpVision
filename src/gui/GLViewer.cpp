@@ -2,6 +2,8 @@
 
 //#include "AP.h"
 
+#include "UI.h"
+
 //#include <QMdiSubWindow>
 //#include <QCloseEvent>
 #include <QMouseEvent>

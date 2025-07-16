@@ -7,7 +7,7 @@
 
 #include "Vertex.h"
 #include "KDTree.h"
-#include "UI.h"
+//#include "UI.h"
 
 class CPlane;
 

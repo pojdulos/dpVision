@@ -97,12 +97,12 @@ private:
 	void colNameClicked(std::shared_ptr<CBaseObject> obj, WorkspaceTreeItem* clickedItem);
 
 signals:
-	void currentObjectChanged(std::shared_ptr<CBaseObject>);
+	//void currentObjectChanged(std::shared_ptr<CBaseObject>);
 	void currentObjectChanged(int);
 
 public slots:
 	void onCurrentObjectChanged(int);
-	void onCurrentObjectChanged(std::shared_ptr<CBaseObject>);
+	//void onCurrentObjectChanged(std::shared_ptr<CBaseObject>);
 
 	void onTreeViewItemClicked(QModelIndex);
 

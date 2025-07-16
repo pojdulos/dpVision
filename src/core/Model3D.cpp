@@ -588,9 +588,6 @@ bool CModel3D::save(const QString path)
 
 	if (NULL != parser)
 	{
-		//parser->set( UI::getNativePath(path), this );
-		//bool result = parser->save();
-
 		bool result = parser->save(std::dynamic_pointer_cast<CModel3D>(this->shared_from_this()), path);
 
 		if (!parser->inPlugin()) delete parser;

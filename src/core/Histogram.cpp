@@ -2,9 +2,11 @@
 
 #include "Stat.h"
 #include <algorithm>
-#include "UI.h"
 
+#include "utils/StringUtils.h"
 #include "StatusBarManager.h"
+
+#include "UI.h"
 
 CHistogram::CHistogram(std::vector<double> data, int levels) :CAnnotation()
 {
@@ -53,13 +55,7 @@ CHistogram::CHistogram(CPointCloud* cloud, std::vector<double> data, int levels)
 }
 
 
-CHistogram::~CHistogram()
-{
-	//if (UI::DOCK::HISTOGRAM::getHistogram() == this) {
-	//	UI::DOCK::HISTOGRAM::show(false);
-	//	UI::DOCK::HISTOGRAM::setHistogram(NULL);
-	//}
-}
+CHistogram::~CHistogram() {}
 
 
 void CHistogram::setSelfVisibility(bool sel) {
@@ -484,13 +480,13 @@ void CHistogram::savePLT(std::wstring fdir, std::wstring fname, std::vector<std:
 
 		if (eqLevels)
 		{
-			plik << "dane = \"" << UI::wstr2str(fname) << ".csv\"\n";
+			plik << "dane = \"" << dpVisionCore::utils::wstr2str(fname) << ".csv\"\n";
 		}
 		else
 		{
 			for (int i = 0; i < v.size(); i++)
 			{
-				plik << "dane" << i << " = \"" << UI::wstr2str(fname) << i << ".csv\"\n";
+				plik << "dane" << i << " = \"" << dpVisionCore::utils::wstr2str(fname) << i << ".csv\"\n";
 			}
 		}
 

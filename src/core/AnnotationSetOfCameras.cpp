@@ -4,7 +4,7 @@
 #include "Model3D.h"
 
 #include "AP.h"
-#include "UI.h"
+//#include "UI.h"
 
 //#include <Windows.h>
 #include <GL/gl.h>

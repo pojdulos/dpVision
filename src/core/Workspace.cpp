@@ -7,7 +7,7 @@
 #include "../renderers/IWorkspaceRenderer.h"
 #include "StatusBarManager.h"
 
-CWorkspace::CWorkspace() : QObject()
+CWorkspace::CWorkspace() //: QObject()
 {
 	m_bOK = true;
 	m_idOfCurrentModel = NO_CURRENT_MODEL;
@@ -113,7 +113,8 @@ int CWorkspace::_setCurrentModel( int i )
 	if (i != m_idOfCurrentModel)
 	{
 		onCurrentObjectChanged(i);
-		emit currentObjectChanged(m_idOfCurrentModel);
+
+		this->notifyModelChanged(m_idOfCurrentModel);
 	}
 
 	return m_idOfCurrentModel;
@@ -428,13 +429,11 @@ std::vector<CRGBA> CWorkspace::getXRayImage( CPoint3f pkt0, int size )
 
 
 
-// SLOTS
-
-void CWorkspace::onCurrentObjectChanged(CBaseObject* obj)
-{
-	if (obj != nullptr)
-		onCurrentObjectChanged(obj->id());
-}
+//void CWorkspace::onCurrentObjectChanged(CBaseObject* obj)
+//{
+//	if (obj != nullptr)
+//		onCurrentObjectChanged(obj->id());
+//}
 
 void CWorkspace::onCurrentObjectChanged(int i)
 {

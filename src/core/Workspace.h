@@ -7,6 +7,8 @@
 #include "Model3D.h"
 #include "Utilities.h"
 
+#include <vector>
+#include <memory>
 
 struct _light
 {
@@ -40,20 +42,30 @@ struct _light
 	void setSpot( float f3 ) { spot_cut_off=f3; };
 };
 
-class IWorkspaceEvents;
+#include "events/IWorkspaceEvents.h"
+
 class IWorkspaceRenderer;
 
-class CWorkspace : public QObject
+class CWorkspace
 {
-	Q_OBJECT
-
-private:
-	IWorkspaceEvents* events_ = nullptr;
-	std::shared_ptr<IWorkspaceRenderer> renderer_= nullptr;
+	std::shared_ptr<IWorkspaceRenderer> renderer_ = nullptr;
+	std::vector<std::shared_ptr<IWorkspaceEvents>> listeners_;
 
 public:
-	void setEventsDispatcher(IWorkspaceEvents* events) { events_ = events; }
-	IWorkspaceEvents* eventsDispatcher() const { return events_; }
+	void addListener(std::shared_ptr<IWorkspaceEvents> l) {
+		if (std::find(listeners_.begin(), listeners_.end(), l) == listeners_.end())
+			listeners_.push_back(l);
+	}
+
+	void removeListener(std::shared_ptr<IWorkspaceEvents> l) {
+		auto it = std::find(listeners_.begin(), listeners_.end(), l);
+		if (it != listeners_.end())
+			listeners_.erase(it);
+	}
+
+	void notifyModelChanged(int modelId) {
+		for (auto l : listeners_) l->modelChanged(modelId);
+	}
 
 	typedef CModel3D ChildType;
 	//typedef std::map<int, ChildType*> Children;
@@ -151,13 +163,8 @@ public:
 
 	CBoundingBox topBB();
 
-signals:
-	void currentObjectChanged(int);
-	void currentObjectChanged(CBaseObject*);
-
-public slots:
 	void onCurrentObjectChanged(int);
-	void onCurrentObjectChanged(CBaseObject*);
+//	void onCurrentObjectChanged(CBaseObject*);
 	
 private:
 	void InitLights();

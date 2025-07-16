@@ -2,7 +2,7 @@
 #ifndef _DPFILEINFO_H_BY_DP_INCLUDED_
 #define _DPFILEINFO_H_BY_DP_INCLUDED_
 
-#include "UI.h"
+#include "dll_global.h"
 
 #include <string>
 #include <QtCore/QString>

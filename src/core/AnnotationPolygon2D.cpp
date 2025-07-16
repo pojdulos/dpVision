@@ -30,6 +30,7 @@ std::wstring CAnnotationPolygon2D::getInfoRow()
 	return info;
 }
 
+#include "UI.h"
 
 void CAnnotationPolygon2D::renderSelf()
 {

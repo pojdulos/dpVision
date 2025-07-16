@@ -13,6 +13,7 @@
 #include "quazipfile.h"
 #include "quazipdir.h"
 #include "StatusBarManager.h"
+#include "interfaces/IProgressListener.h"
 
 void CParserDPVISION::copyFileToZip(QuaZip& zip, QString pathInZip, QString inFileName)
 {
@@ -221,14 +222,14 @@ void CVolTKtoZIP(CVolTK* volTK, QuaZip& zip, QString pathInZip)
 
 	if (file.open(QIODevice::OpenModeFlag::WriteOnly, QuaZipNewInfo(pathInZip)))
 	{
-		UI::PROGRESSBAR::init(0, volTK->kostka.m_lays, 0);
-		UI::PROGRESSBAR::setText("saving volumetric data to zip file");
+		auto prg_ = IProgressListener::getDefault();
+		if (prg_) prg_->init(0, volTK->kostka.m_lays, 0, "saving volumetric data to zip file");
 		for (int l = 0; l < volTK->kostka.m_lays; l++)
 		{
 			file.write(QByteArray::fromRawData((const char*)volTK->kostka.layer(l), layerSize));
-			UI::PROGRESSBAR::setValue(l);
+			if (prg_) prg_->setValue(l);
 		}
-		UI::PROGRESSBAR::hide();
+		if (prg_) prg_->hide();
 
 		file.close();
 

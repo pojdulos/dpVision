@@ -11,6 +11,7 @@
 
 #include "../renderers/IVolTKRenderer.h"
 #include "StatusBarManager.h"
+#include "interfaces/IProgressListener.h"
 
 CVolTK::CVolTK(std::shared_ptr<CBaseObject> p, int imageWidth, int imageHeight, int numberOfImages, int depth):CObject(p)
 {
@@ -619,11 +620,11 @@ void CVolTK::createDisplayData()
 	m_dataIntensityRange = { 0xFFFF, 0x0000 };
 	m_currentIntensityRange = { 0xFFFF, 0x0000 };
 
-	UI::PROGRESSBAR::init(0, kostka.m_lays, 0);
-	UI::PROGRESSBAR::setText("Kopiuje dane: ");
+	auto prg_ = IProgressListener::getDefault();
+	if (prg_) prg_->init(0, kostka.m_lays, 0, "Kopiuje dane: ");
 	for (int z = 0; z < kostka.m_lays; z++)
 	{
-		UI::PROGRESSBAR::setValue(z);
+		if (prg_) prg_->setValue(z);
 		int zz = z;//  + kostka.m_minL;
 		for (int y = 0; y < kostka.m_rows; y++)
 		{
@@ -647,7 +648,7 @@ void CVolTK::createDisplayData()
 			}
 		}
 	}
-	UI::PROGRESSBAR::hide();
+	if (prg_) prg_->hide();
 
 	m_currentIntensityRange = m_dataIntensityRange;
 }
@@ -1349,7 +1350,8 @@ std::shared_ptr<CModel3D> CVolTK::toMesh()
 	uint16_t wB = m_currentIntensityRange.lower;
 	uint16_t wE;
 
-	UI::PROGRESSBAR::init(0, colorFilters.size(), 0);
+	auto prg_ = IProgressListener::getDefault();
+	if (prg_) prg_->init(0, colorFilters.size(), 0);
 	int i = 0;
 
 	for (auto f : colorFilters)
@@ -1363,7 +1365,7 @@ std::shared_ptr<CModel3D> CVolTK::toMesh()
 			}
 			wB = wE;
 		}
-		UI::PROGRESSBAR::setValue(i++);
+		if (prg_) prg_->setValue(i++);
 	}
 
 
@@ -1373,7 +1375,7 @@ std::shared_ptr<CModel3D> CVolTK::toMesh()
 		newModel->addChild(createMesh(wB, wE, CRGBA(1.0f, 1.0f, 1.0f, 0.5f)));
 	}
 
-	UI::PROGRESSBAR::hide();
+	if (prg_) prg_->hide();
 
 	newModel->importChildrenGeometry();
 
@@ -1423,7 +1425,8 @@ std::shared_ptr<CModel3D> CVolTK::toCloud()
 		uint16_t wB = m_currentIntensityRange.lower;
 		uint16_t wE;
 
-		UI::PROGRESSBAR::init(0, colorFilters.size(), 0);
+		auto prg_ = IProgressListener::getDefault();
+		if (prg_) prg_->init(0, colorFilters.size(), 0);
 		int i = 0;
 
 		for (auto f : colorFilters)
@@ -1437,7 +1440,7 @@ std::shared_ptr<CModel3D> CVolTK::toCloud()
 				}
 				wB = wE;
 			}
-			UI::PROGRESSBAR::setValue(i++);
+			if (prg_) prg_->setValue(i++);
 		}
 
 
@@ -1447,7 +1450,7 @@ std::shared_ptr<CModel3D> CVolTK::toCloud()
 			newModel->addChild(createCloud(wB, wE, CRGBA(1.0f, 1.0f, 1.0f, 0.5f)));
 		}
 
-		UI::PROGRESSBAR::hide();
+		if (prg_) prg_->hide();
 
 		newModel->importChildrenGeometry();
 		return newModel;

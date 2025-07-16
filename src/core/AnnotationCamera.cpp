@@ -3,7 +3,7 @@
 #include "Model3D.h"
 
 #include "AP.h"
-#include "UI.h"
+//#include "UI.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -13,6 +13,7 @@
 #include <regex>
 
 #include "../renderers/IAnnotationCameraRenderer.h"
+#include "utils/StringUtils.h"
 
 CAnnotationCamera::CAnnotationCamera(std::shared_ptr<CBaseObject> m) :CAnnotation(m)
 {
@@ -36,7 +37,7 @@ std::shared_ptr<CAnnotationCamera> CAnnotationCamera::create(Sensor s, double ma
 	
 	ad->setMatrix(matrix);
 
-	ad->setLabel(UI::str2wstr(label));
+	ad->setLabel(dpVisionCore::utils::str2wstr(label));
 
 	//ad->setColor(CRGBA::fromHexRGBA("#007bff66"));
 
@@ -51,7 +52,7 @@ std::shared_ptr<CAnnotationCamera> CAnnotationCamera::create(Sensor s, std::stri
 
 	ad->setMatrix(matrixSTR);
 
-	ad->setLabel(UI::str2wstr(label));
+	ad->setLabel(dpVisionCore::utils::str2wstr(label));
 
 	ad->setColor(CRGBA::fromHexRGBA("#007bff66"));
 	ad->setSelColor(CRGBA::fromHexRGBA("#ff000066"));

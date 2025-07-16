@@ -16,6 +16,7 @@
 #include "MainWindow.h"
 
 #include "StatusBarManager.h"
+#include "interfaces/IProgressListener.h"
 
 CParserDPVISION::CParserDPVISION()
 {
@@ -38,7 +39,8 @@ std::shared_ptr<CModel3D> CParserDPVISION::load(const QString path, bool wait, s
 	
 	mapaObiektow.clear();
 
-	UI::PROGRESSBAR::init(0, 100, 0);
+	auto prg_ = IProgressListener::getDefault();
+	if (prg_) prg_->init(0, 100, 0);
 	int progress = 0;
 
 	if (zip.open(QuaZip::mdUnzip))
@@ -64,7 +66,7 @@ std::shared_ptr<CModel3D> CParserDPVISION::load(const QString path, bool wait, s
 
 				while (!child.isNull())
 				{
-					UI::PROGRESSBAR::setValue(progress++);
+					if (prg_) prg_->setValue(progress++);
 
 					parseObject(child, zip);
 					child = child.nextSiblingElement("object");
@@ -84,7 +86,7 @@ std::shared_ptr<CModel3D> CParserDPVISION::load(const QString path, bool wait, s
 	QList<std::shared_ptr<CModel3D>> modele;
 	for (const auto& o : mapaObiektow)
 	{
-		UI::PROGRESSBAR::setValue(progress+=step);
+		if (prg_) prg_->setValue(progress+=step);
 
 		if (o.ptr->hasCategory(CBaseObject::Category::OBJECT))
 		{
@@ -123,7 +125,7 @@ std::shared_ptr<CModel3D> CParserDPVISION::load(const QString path, bool wait, s
 		}
 	}
 
-	UI::PROGRESSBAR::setValue(90);
+	if (prg_) prg_->setValue(90);
 
 	if (modele.empty())
 	{
@@ -139,7 +141,7 @@ std::shared_ptr<CModel3D> CParserDPVISION::load(const QString path, bool wait, s
 		AP::WORKSPACE::addModel(m);
 	}
 
-	UI::PROGRESSBAR::hide();
+	if (prg_) prg_->hide();
 
 	AP::mainWin().adjustForCurrentFile(path);
 
@@ -177,12 +179,6 @@ std::shared_ptr<CModel3D> CParserDPVISION::load(const QString path, bool wait, s
 
 bool CParserDPVISION::save(std::shared_ptr<CModel3D> obj, const QString path)
 {
-	//DockWidgetWorkspace *wnd = UI::DOCK::WORKSPACE::instance();
-
-	//QVector<CBaseObject*> objects = wnd->getSelectedObjects();
-
-	//if (objects.empty()) return false;
-
 	QuaZip zip(path);
 
 	if (zip.open(QuaZip::mdCreate))
@@ -221,17 +217,18 @@ bool CParserDPVISION::save(QVector<std::shared_ptr<CBaseObject>> objects, const 
 		createStructureXml(ba, objects);
 		writeByteArrayToZip(zip, "structure.xml", ba);
 
-		UI::PROGRESSBAR::init(0, objects.size(), 0);
+		auto prg_ = IProgressListener::getDefault();
+		if (prg_) prg_->init(0, objects.size(), 0);
 		int progress = 0;
 
 		for (auto obj : objects)
 		{
-			UI::PROGRESSBAR::setValue(progress++);
+			if (prg_) prg_->setValue(progress++);
 
 			StatusBarManager::setText("saving " + obj->getLabel());
 			saveObject(zip, obj, "");
 		}
-		UI::PROGRESSBAR::hide();
+		if (prg_) prg_->hide();
 
 		zip.close();
 		StatusBarManager::setText("Done!");

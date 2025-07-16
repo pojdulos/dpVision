@@ -1890,8 +1890,8 @@ void VolumetricImageDialog::onImageMouseMoved(QMouseEvent* e)
 //
 //void VolTKimageDialog::do3dMedianFilter(NowaKostka1& src, NowaKostka1&dst, int size)
 //{
-//	UI::PROGRESSBAR::init(0, src.m_lays, 0);
-//	UI::PROGRESSBAR::setText("3d data filtering: ");
+// auto prg_ = IProgressListener::getDefault();
+//	if (prg_) prg_->init(0, src.m_lays, 0, "3d data filtering: ");
 //
 //	size_t destOffset2 = src.m_cols * (size / 2) + (size / 2);
 //	
@@ -1901,7 +1901,7 @@ void VolumetricImageDialog::onImageMouseMoved(QMouseEvent* e)
 //
 //	for (size_t layer = 0; layer < src.m_lays; layer++)
 //	{
-//		if (!(layer%10)) UI::PROGRESSBAR::setValue(layer);
+//		if (!(layer%10)) if (prg_) prg_->setValue(layer);
 //		size_t layOffset = src.m_rows * src.m_cols * layer;
 ////		#pragma loop(hint_parallel(0))
 //		for (size_t row = 0; row < (src.m_rows - (size - 1)); row++)
@@ -1931,7 +1931,7 @@ void VolumetricImageDialog::onImageMouseMoved(QMouseEvent* e)
 //			}
 //		}
 //	}
-//	UI::PROGRESSBAR::hide();
+//	if (prg_) prg_->hide();
 //}
 //
 

@@ -6,6 +6,7 @@
 
 #include "Image.h"
 #include "AP.h"
+#include "UI.h"
 
 //#include "dpLog.h"
 //#include <QMessageLogger>

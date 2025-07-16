@@ -158,6 +158,8 @@ void CMovement::setTimer()
 	QObject::connect(&m_animationTimer, &QTimer::timeout, [&]() { onTimeout(); });
 }
 
+#include "UI.h"
+
 void CMovement::onTimeout()
 {
 	if (m_isPlaying) {

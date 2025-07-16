@@ -1,7 +1,9 @@
 #include "ContextMenu.h"
 
 #include "AP.h"
-//#include "UI.h"
+
+#include "UI.h"
+
 #include "MainWindow.h"
 #include "Workspace.h"
 #include "BaseObject.h"

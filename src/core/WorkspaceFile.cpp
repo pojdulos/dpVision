@@ -3,6 +3,7 @@
 #include "GLViewer.h"
 //#include "ChildWindow.h"
 #include "StatusBarManager.h"
+#include "utils/StringUtils.h"
 
 //void CWorkspaceFile::saveDPW(CWorkspace & wksp, std::wstring p)
 //{
@@ -72,7 +73,7 @@ void CWorkspaceFile::loadFaro(std::wstring p, CWorkspace & wksp)
 
 	float x, y, z;
 	
-	const char * path = UI::wstr2str(p).c_str();
+	const char * path = dpVisionCore::utils::wstr2str(p).c_str();
 
 	wksp.clear();
 

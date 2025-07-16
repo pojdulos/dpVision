@@ -2,6 +2,8 @@
 
 #include "ParserWRL.h"
 
+#include "UI.h"
+
 size_t CParserWRL::VRML_ParseField_coordIndex( FILE *plik )
 {
 	size_t a, b, c;

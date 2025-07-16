@@ -5,6 +5,8 @@
 
 #include "AP.h"
 
+#include "UI.h"
+
 #include "AppSettings.h"
 #include "MainApplication.h"
 #include "MainWindow.h"
