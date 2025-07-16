@@ -186,21 +186,19 @@ std::shared_ptr<CBaseObject> CParserDPVISION::parseObject(const QDomElement& cur
 //#include "ProgressIndicator.h"
 
 
-void CParserDPVISION::parseF(QString& qline, CMesh::Faces& faces, CMaterial& material, size_t& lbf, size_t& lbti)
+void CParserDPVISION::parseF(std::string &line, CMesh::Faces& faces, CMaterial& material, size_t& lbf, size_t& lbti)
 {
 	int v1, v2, v3;
 	int n1, n2, n3;
 	int t1, t2, t3;
 
-	QByteArray ba = qline.toUtf8();
-	char* ptr = &ba.data()[2];
-
+	char* ptr = &line[2];
 	char* tst;
 
-	static bool m_bN, m_bT;
+ 	static bool m_bN, m_bT;
 
 	if (lbf==0)
-	{
+ 	{
 		m_bN = false;
 		m_bT = false;
 
@@ -259,12 +257,14 @@ void CParserDPVISION::parseF(QString& qline, CMesh::Faces& faces, CMaterial& mat
 			ptr++; // skip slash
 			n3 = std::strtol(ptr, NULL, 10);
 		}
+
+		//m_firstFace = false;
 	}
 	else
 	{
 		if (!m_bN && !m_bT)
 		{
-			v1 = std::strtol(ptr, &ptr, 10);
+			v1 = std::strtol(ptr, &ptr, 10); 
 			v2 = std::strtol(ptr, &ptr, 10);
 			v3 = std::strtol(ptr, NULL, 10);
 		}
@@ -320,21 +320,172 @@ void CParserDPVISION::parseF(QString& qline, CMesh::Faces& faces, CMaterial& mat
 			n3 = std::strtol(ptr, NULL, 10);
 		}
 	}
-	
-	faces.emplace_back(v1 - 1, v2 - 1, v3 - 1);
+ 	faces.emplace_back(v1 - 1, v2 - 1, v3 - 1);
 	lbf++;
 
 	//if (bIsFN)
 	//{
-		//mesh->fnormals().push_back(CFace(f1v - 1, f2v - 1, f3v - 1).getNormal(mesh->vertices()));
+		//pMeshData->fnormals().push_back(CFace(f1v - 1, f2v - 1, f3v - 1).getNormal(pMeshData->vertices()));
 	//}
 
 	if (m_bT)
 	{
-		material.texindex.emplace_back(t1 - 1, t2 - 1, t3 - 1);
+		material.texindex.emplace_back( t1 - 1, t2 - 1, t3 - 1 );
 		lbti++;
 	}
 }
+
+
+
+// void CParserDPVISION::parseF(QString& qline, CMesh::Faces& faces, CMaterial& material, size_t& lbf, size_t& lbti)
+// {
+// 	int v1, v2, v3;
+// 	int n1, n2, n3;
+// 	int t1, t2, t3;
+
+// 	QByteArray ba = qline.toUtf8();
+// 	char* ptr = &ba.data()[2];
+
+// 	char* tst;
+
+// 	static bool m_bN, m_bT;
+
+// 	if (lbf==0)
+// 	{
+// 		m_bN = false;
+// 		m_bT = false;
+
+// 		v1 = std::strtol(ptr, &ptr, 10);
+// 		if (*ptr == '/')
+// 		{
+// 			tst = ++ptr; // skip slash
+// 			t1 = std::strtol(tst, &ptr, 10);
+// 			if (tst < ptr) m_bT = true;
+// 			if (*ptr == '/')
+// 			{
+// 				tst = ++ptr;  // skip slash
+// 				n1 = std::strtol(tst, &ptr, 10);
+// 				if (tst < ptr) m_bN = true;
+// 			}
+// 		}
+
+// 		if (!m_bN && !m_bT)
+// 		{
+// 			v2 = std::strtol(ptr, &ptr, 10);
+// 			v3 = std::strtol(ptr, NULL, 10);
+// 		}
+// 		else if (m_bN && m_bT)
+// 		{
+// 			v2 = std::strtol(ptr, &ptr, 10);
+// 			ptr++; // skip slash
+// 			t2 = std::strtol(ptr, &ptr, 10);
+// 			ptr++; // skip slash
+// 			n2 = std::strtol(ptr, &ptr, 10);
+
+// 			v3 = std::strtol(ptr, &ptr, 10);
+// 			ptr++; // skip slash
+// 			t3 = std::strtol(ptr, &ptr, 10);
+// 			ptr++; // skip slash
+// 			n3 = std::strtol(ptr, NULL, 10);
+// 		}
+// 		else if (m_bT)
+// 		{
+// 			v2 = std::strtol(ptr, &ptr, 10);
+// 			ptr++; // skip slash
+// 			t2 = std::strtol(ptr, &ptr, 10);
+
+// 			v3 = std::strtol(ptr, &ptr, 10);
+// 			ptr++; // skip slash
+// 			t3 = std::strtol(ptr, NULL, 10);
+// 		}
+// 		else if (m_bN)
+// 		{
+// 			v2 = std::strtol(ptr, &ptr, 10);
+// 			ptr++; // skip slash
+// 			ptr++; // skip slash
+// 			n2 = std::strtol(ptr, &ptr, 10);
+
+// 			v3 = std::strtol(ptr, &ptr, 10);
+// 			ptr++; // skip slash
+// 			ptr++; // skip slash
+// 			n3 = std::strtol(ptr, NULL, 10);
+// 		}
+// 	}
+// 	else
+// 	{
+// 		if (!m_bN && !m_bT)
+// 		{
+// 			v1 = std::strtol(ptr, &ptr, 10);
+// 			v2 = std::strtol(ptr, &ptr, 10);
+// 			v3 = std::strtol(ptr, NULL, 10);
+// 		}
+// 		else if (m_bN && m_bT)
+// 		{
+// 			v1 = std::strtol(ptr, &ptr, 10);
+// 			ptr++; // skip slash
+// 			t1 = std::strtol(ptr, &ptr, 10);
+// 			ptr++; // skip slash
+// 			n1 = std::strtol(ptr, &ptr, 10);
+
+// 			v2 = std::strtol(ptr, &ptr, 10);
+// 			ptr++; // skip slash
+// 			t2 = std::strtol(ptr, &ptr, 10);
+// 			ptr++; // skip slash
+// 			n2 = std::strtol(ptr, &ptr, 10);
+
+// 			v3 = std::strtol(ptr, &ptr, 10);
+// 			ptr++; // skip slash
+// 			t3 = std::strtol(ptr, &ptr, 10);
+// 			ptr++; // skip slash
+// 			n3 = std::strtol(ptr, NULL, 10);
+// 		}
+// 		else if (m_bT)
+// 		{
+// 			v1 = std::strtol(ptr, &ptr, 10);
+// 			ptr++; // skip slash
+// 			t1 = std::strtol(ptr, &ptr, 10);
+
+// 			v2 = std::strtol(ptr, &ptr, 10);
+// 			ptr++; // skip slash
+// 			t2 = std::strtol(ptr, &ptr, 10);
+
+// 			v3 = std::strtol(ptr, &ptr, 10);
+// 			ptr++; // skip slash
+// 			t3 = std::strtol(ptr, NULL, 10);
+// 		}
+// 		else if (m_bN)
+// 		{
+// 			v1 = std::strtol(ptr, &ptr, 10);
+// 			ptr++; // skip slash
+// 			ptr++; // skip slash
+// 			n1 = std::strtol(ptr, &ptr, 10);
+
+// 			v2 = std::strtol(ptr, &ptr, 10);
+// 			ptr++; // skip slash
+// 			ptr++; // skip slash
+// 			n2 = std::strtol(ptr, &ptr, 10);
+
+// 			v3 = std::strtol(ptr, &ptr, 10);
+// 			ptr++; // skip slash
+// 			ptr++; // skip slash
+// 			n3 = std::strtol(ptr, NULL, 10);
+// 		}
+// 	}
+	
+// 	faces.emplace_back(v1 - 1, v2 - 1, v3 - 1);
+// 	lbf++;
+
+// 	//if (bIsFN)
+// 	//{
+// 		//mesh->fnormals().push_back(CFace(f1v - 1, f2v - 1, f3v - 1).getNormal(mesh->vertices()));
+// 	//}
+
+// 	if (m_bT)
+// 	{
+// 		material.texindex.emplace_back(t1 - 1, t2 - 1, t3 - 1);
+// 		lbti++;
+// 	}
+// }
 
 
 void CParserDPVISION::ParseObjMTLFile(QTextStream& in, std::map<QString, CMaterial*>& mats, QuaZip& zip, QString pathInZip)
@@ -555,71 +706,43 @@ std::shared_ptr<CObject> CParserDPVISION::parseOBJ(QTextStream& in, QuaZip& zip,
 	while (!in.atEnd())
 	{
 		QString qline = in.readLine();
+        std::string line = qline.toStdString();
 
 		if (qline.startsWith("vn", Qt::CaseInsensitive))
 		{
-			// Normals in (x,y,z) form; normals might not be unit.
-			// vn 0.707 0.000 0.707
-
-			QByteArray ba = qline.toUtf8();
-			char* ptr = &ba.data()[2];
-
-			nx = std::strtof(ptr, &ptr);
-			ny = std::strtof(ptr, &ptr);
-			nz = std::strtof(ptr, &ptr);
-
-			//mesh->vnormals().push_back(CVector3f(nx, ny, nz));
-			tmpN.push_back(CVector3f(nx, ny, nz));
+            std::istringstream iss(line.substr(2));
+            iss >> nx >> ny >> nz;
+            tmpN.push_back(CVector3f(nx, ny, nz));
 		}
 		else if (qline.startsWith("vt", Qt::CaseInsensitive))
 		{
-			// Texture coordinates, in (u,v[,w]) coordinates, w is optional.
-			// vt 0.500 -1.352 [0.234]
-
-			QByteArray ba = qline.toUtf8();
-			char* ptr = &ba.data()[2];
-
-			tcs = std::strtof(ptr, &ptr);
-			tct = std::strtof(ptr, &ptr);
-
-			//mesh->getMaterial(0).texcoord.push_back(CTCoord(tcs, tct));
-			tmpTC.push_back(CTCoord(tcs, tct));
+            std::istringstream iss(line.substr(2));
+            iss >> tcs >> tct;
+            tmpTC.push_back(CTCoord(tcs, tct));
 		}
 		else if (qline.startsWith("v", Qt::CaseInsensitive))
 		{
-			float cr, cg, cb;
+            std::istringstream iss(line.substr(2));
+            float cr, cg, cb;
+            if (!(iss >> ax >> ay >> az)) continue;
 
-			QByteArray ba = qline.toUtf8();
-			char* ptr = &ba.data()[2];
+            if (iss >> cr >> cg >> cb)
+            {
+                tmpV.push_back(CVertex(ax, ay, az));
+                tmpC.push_back(CRGBA(cr, cg, cb));
+            }
+            else
+            {
+                tmpV.push_back(CVertex(ax, ay, az));
+            }
 
-			ax = std::strtof(ptr, &ptr);
-			ay = std::strtof(ptr, &ptr);
-			az = std::strtof(ptr, &ptr);
-
-			char* tst = ptr;
-			cr = std::strtof(ptr, &ptr);
-
-			if (ptr > tst)
-			{
-				cg = std::strtof(ptr, &ptr);
-				cb = std::strtof(ptr, NULL);
-
-				//mesh->addVertex(CVertex(ax, ay, az), CRGBA(cr, cg, cb));
-				tmpV.push_back(CVertex(ax, ay, az));
-				tmpC.push_back(CRGBA(cr, cg, cb));
-				lbv++;
-			}
-			else
-			{
-				//mesh->addVertex(CVertex(ax, ay, az));
-				tmpV.push_back(CVertex(ax, ay, az));
-				lbv++;
-			}
-			tmpBB.expand(CVertex(ax, ay, az));
+            lbv++;
+            tmpBB.expand(CVertex(ax, ay, az));
 		}
 		else if (qline.startsWith("f", Qt::CaseInsensitive))
 		{
-			parseF(qline, mesh->faces(), mesh->getMaterial(), lbf, lbti);
+			// parseF(qline, mesh->faces(), mesh->getMaterial(), lbf, lbti);
+            parseF(line, mesh->faces(), mesh->getMaterial(), lbf, lbti);
 		}
 		else if (qline.startsWith("mtllib", Qt::CaseInsensitive))
 		{
