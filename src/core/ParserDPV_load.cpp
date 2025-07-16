@@ -38,7 +38,7 @@ std::shared_ptr<CObject> CParserDPVISION::readZippedFileObj(QuaZip& zip, QString
 	}
 
 
-	qDebug() << "B£¥D! nie otwarto pliku" << Qt::endl;
+	qDebug() << "Bï¿½ï¿½D! nie otwarto pliku" << Qt::endl;
 	return nullptr;
 }
 
@@ -111,7 +111,7 @@ std::shared_ptr<CBaseObject> CParserDPVISION::parseObject(const QDomElement& cur
 			else
 			{
 
-				qDebug() << "B£¥D! nie otwarto pliku" << Qt::endl;
+				qDebug() << "BÅÄ„D! nie otwarto pliku" << Qt::endl;
 				//return nullptr;
 			}
 		}
