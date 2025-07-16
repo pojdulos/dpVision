@@ -11,10 +11,10 @@ public:
     ~dpLogStream() {
         QString color, prefix;
         switch (level) {
-        case Info:    color = "\033[1;32m"; prefix = "[INFO] "; break;
-        case Warning: color = "\033[1;33m"; prefix = "[WARN] "; break;
-        case Error:   color = "\033[1;31m"; prefix = "[ERROR] "; break;
-        case Debug:   color = "\033[1;34m"; prefix = "[DEBUG] "; break;
+        case Info:    color = "\033[0m"; prefix = "[INFO] "; break;
+        case Warning: color = "\033[0;33m"; prefix = "[WARN] "; break;
+        case Error:   color = "\033[0;31m"; prefix = "[ERROR] "; break;
+        case Debug:   color = "\033[0;32m"; prefix = "[DEBUG] "; break;
         }
         // Finalny wpis do stdout z kolorami
         fprintf(stdout, "%s%s%s\033[0m\n", color.toUtf8().constData(), prefix.toUtf8().constData(), str.toUtf8().constData());

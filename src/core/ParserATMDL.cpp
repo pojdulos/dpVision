@@ -82,7 +82,7 @@ std::shared_ptr<CObject> CParserATMDL::loadShellFile(const QString filepath, QFi
 
 		if (!fi.exists())
 		{
-			qWarning() << "\033[31m --- File not exists: " << myPath << " --- \033[0m"; // << Qt::endl;
+			dpError() << "File not exists: " << myPath;
 			return nullptr;
 		}
 
@@ -242,9 +242,7 @@ QList<double> CParserATMDL::parseType_MatrixOfDouble(QTextStream& in, int size)
 		qlist.append(0.0);
 	}
 
-	//dpInfo() << "DOUBLE MATRIX: " << qlist << Qt::endl;
-	dpInfo() << "DOUBLE MATRIX: ";
-	dpInfo() << qlist; // << Qt::endl;
+	dpInfo() << "DOUBLE MATRIX: " << qlist;
 	return qlist;
 }
 
@@ -1250,8 +1248,7 @@ std::shared_ptr<CModel3D> CParserATMDL::load(const QString path, bool wait, std:
 
 	QString slowo;
 
-	//dpError() << "\033[31m" << "To jest testowy komunikat błędu" << "\033[0m" ; //<< Qt::endl;
-	dpError() << "To jest testowy komunikat błędu";
+	//dpError() << "To jest testowy komunikat błędu";
 
 	while (!in.atEnd())
 	{
@@ -1266,7 +1263,7 @@ std::shared_ptr<CModel3D> CParserATMDL::load(const QString path, bool wait, std:
 			
 			defs[slowo] = parseType_string(in);
 			//dpInfo() << "\033[33m" << "DEFINICJA: " << slowo << " : " << defs[slowo] << "\033[0m" ; //<< Qt::endl;
-			dpInfo() << "DEFINICJA: " + slowo + " : " + defs[slowo]; // +Qt::endl;
+			dpDebug() << "DEFINICJA: " + slowo + " : " + defs[slowo]; // +Qt::endl;
 		}
 		else if (auto tmp = parseObject(in, slowo))
 		{
@@ -1278,7 +1275,7 @@ std::shared_ptr<CModel3D> CParserATMDL::load(const QString path, bool wait, std:
 		}
 		else
 		{
-			qCritical() << "\033[33m" << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo << "\033[0m" ; //<< Qt::endl;
+			dpError() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo;
 			break;
 		}
 	}
