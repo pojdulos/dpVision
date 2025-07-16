@@ -14,6 +14,8 @@
 #include "GLViewer.h"
 #include "Parser.h"
 
+#include "dpLog.h"
+
 #include "../renderers/IMovementRenderer.h"
 
 CMovement::CMovement() : CObject(nullptr), m_isPlaying(false), m_currentKey(0)
@@ -74,9 +76,9 @@ void CMovement::renderRotationAxe(CTransform curr, CTransform prev)
 	double relAngle = relAA.angle(); // K�t w radianach
 	double relLen = 200.0;// 10000.0 * relAngle;
 
-	qInfo() << "-------------------------------------------------------------" << Qt::endl;
-	qInfo() << "ABS angle: " << rad2deg(absAngle) << "� translation: " << currT.length() << "mm" << Qt::endl;
-	qInfo() << "REL angle: " << rad2deg(relAngle) << "� translation: " << relT.length() << "mm" << Qt::endl;
+	dpInfo() << "-------------------------------------------------------------" << Qt::endl;
+	dpInfo() << "ABS angle: " << rad2deg(absAngle) << "� translation: " << currT.length() << "mm" << Qt::endl;
+	dpInfo() << "REL angle: " << rad2deg(relAngle) << "� translation: " << relT.length() << "mm" << Qt::endl;
 
 	glPushMatrix();
 	glPushAttrib(GL_ALL_ATTRIB_BITS);

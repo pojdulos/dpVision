@@ -1,69 +1,43 @@
 #pragma once
-#ifndef _LOG_H_BY_DP_INCLUDED_
-#define _LOG_H_BY_DP_INCLUDED_
-
-//#include "../gui/MainApplication.h"
-#include "AP.h"
-
+#include <QDebug>
 #include <QString>
-#include <QFile>
-#include <QTextStream>
-#include <QMutex>
 
-class dpLogStream;
-
-class DPVISION_EXPORT dpLogger
-{
+class dpLogStream {
 public:
     enum Level { Info, Warning, Error, Debug };
 
-    static dpLogStream info();
-    static dpLogStream warn();
-    static dpLogStream error();
-    static dpLogStream debug();
+    dpLogStream(Level lvl) : level(lvl), str(), dbg(&str) {}
 
-    static void setLogFile(const QString& filePath);
-    static void setLoggingEnabled(bool enabled);
+    ~dpLogStream() {
+        QString color, prefix;
+        switch (level) {
+        case Info:    color = "\033[1;32m"; prefix = "[INFO] "; break;
+        case Warning: color = "\033[1;33m"; prefix = "[WARN] "; break;
+        case Error:   color = "\033[1;31m"; prefix = "[ERROR] "; break;
+        case Debug:   color = "\033[1;34m"; prefix = "[DEBUG] "; break;
+        }
+        // Finalny wpis do stdout z kolorami
+        fprintf(stdout, "%s%s%s\033[0m\n", color.toUtf8().constData(), prefix.toUtf8().constData(), str.toUtf8().constData());
+        fflush(stdout);
+    }
 
-private:
-    friend class dpLogStream;
-    static void output(Level level, const QString& msg);
-
-    static QFile* logFile();
-    static QTextStream* logStream();
-    static QMutex& mutex();
-    static bool& loggingEnabled();
-};
-
-
-class DPVISION_EXPORT dpLogStream
-{
-public:
-    dpLogStream(const dpLogStream&) = delete;
-    dpLogStream& operator=(const dpLogStream&) = delete;
-
-    dpLogStream(dpLogger::Level lvl);
-    ~dpLogStream();
-
-    template<typename T>
+    template <typename T>
     dpLogStream& operator<<(const T& value) {
-        stream << value;
+        dbg << value;
         return *this;
     }
 
-    // Obs³uga np. std::endl
+    // manipulanty
     typedef dpLogStream& (*MyLogStreamManipulator)(dpLogStream&);
     dpLogStream& operator<<(MyLogStreamManipulator manip) { return manip(*this); }
 
 private:
-    QString buffer;
-    QTextStream stream;
-    dpLogger::Level level;
+    Level level;
+    QString str;
+    QDebug dbg;
 };
 
-inline DPVISION_EXPORT dpLogStream dpInfo() { return dpLogger::info(); }
-inline DPVISION_EXPORT dpLogStream dpWarn() { return dpLogger::warn(); }
-inline DPVISION_EXPORT dpLogStream dpError() { return dpLogger::error(); }
-inline DPVISION_EXPORT dpLogStream dpDebug() { return dpLogger::debug(); }
-
-#endif
+inline dpLogStream dpInfo() { return dpLogStream(dpLogStream::Info); }
+inline dpLogStream dpWarn() { return dpLogStream(dpLogStream::Warning); }
+inline dpLogStream dpError() { return dpLogStream(dpLogStream::Error); }
+inline dpLogStream dpDebug() { return dpLogStream(dpLogStream::Debug); }

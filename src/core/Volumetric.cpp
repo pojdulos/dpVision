@@ -3,6 +3,8 @@
 #include "Volumetric.h"
 #include <omp.h>
 
+#include "dpLog.h"
+
 //extern bool mouse_key_pressed;
 
 template <typename T> T Volumetric::clamp(T value, T min, T max) {
@@ -167,7 +169,7 @@ std::shared_ptr<Volumetric> Volumetric::create(int layers, int rows, int columns
 
 		}
 		catch (...) {
-			qInfo() << "\nBRAK PAMIĘCI !!!" << Qt::endl;
+			dpError() << "\nBRAK PAMIĘCI !!!" << Qt::endl;
 
 			//CZYSZCZENIE 
 
@@ -590,7 +592,7 @@ std::shared_ptr<CPointCloud> Volumetric::sift_cloud(int nfeatures, int nOctaveLa
 			sift->detectAndCompute(obraz, cv::noArray(), keypoints, descriptors);
 		}
 		catch (cv::Exception ex) {
-			qInfo() << ex.msg.c_str() << Qt::endl;
+			dpError() << ex.msg.c_str() << Qt::endl;
 		}
 		// Wy�wietlanie kluczowych punkt�w na obrazie
 		//cv::Mat outputImg;

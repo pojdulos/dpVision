@@ -18,6 +18,7 @@
 #include "GLViewer.h"
 #include "Parser.h"
 
+#include "dpLog.h"
 #include "../renderers/IModel3DRenderer.h"
 #include "StatusBarManager.h"
 
@@ -540,7 +541,7 @@ std::shared_ptr<CModel3D> CModel3D::load(const QString fext, const QString path,
 		auto t1 = std::chrono::steady_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
 
-		qInfo() << "Load time: " << duration;
+		dpInfo() << "Load time: " << duration;
 
 		if (!parser->inPlugin()) delete parser;
 
@@ -567,7 +568,7 @@ std::shared_ptr<CModel3D> CModel3D::load(const QString path, bool synchronous, s
 		auto t1 = std::chrono::steady_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
 
-		qInfo() << "Load time: " << duration;
+		dpInfo() << "Load time: " << duration;
 
 		if (!parser->inPlugin()) delete parser;
 

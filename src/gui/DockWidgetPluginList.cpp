@@ -57,13 +57,21 @@ void DockWidgetPluginList::removeSelectedPlugin()
 
 void DockWidgetPluginList::loadPlugin()
 {
+#ifdef _WIN32
 	QString fileName = QDir::toNativeSeparators(
 		QFileDialog::getOpenFileName(
 			this,
 			tr("Load plugin"),
 			QString( AP::getExeFilePath() + "/plugins" ),
 			tr("Plugin DLL (*.dll)")) );
-
+#else
+	QString fileName = QDir::toNativeSeparators(
+		QFileDialog::getOpenFileName(
+			this,
+			tr("Load plugin"),
+			QString(AP::getExeFilePath() + "/plugins"),
+			tr("Plugin DLL (*.so)")) );
+#endif
 	AP::PLUGIN::loadPlugin( fileName );
 }
 
