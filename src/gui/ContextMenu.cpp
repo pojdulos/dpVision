@@ -482,7 +482,9 @@ void CContextMenu::slot_make_me_root()
 
 	Eigen::Matrix4d globalM = m_obj->getGlobalTransformationMatrix();
 
-	AP::WORKSPACE::removeModel(std::static_pointer_cast<CModel3D>(top));
+	auto wksp = CWorkspace::instance();
+
+	wksp->_objectRemove(top);
 
 	if (makeObjectRoot(std::static_pointer_cast<CObject>(m_obj)))
 	{
@@ -525,9 +527,11 @@ void CContextMenu::slot_make_me_root2()
 
 	Eigen::Matrix4d globalM = m_obj->getGlobalTransformationMatrix();
 
-	AP::OBJECT::removeChild(parent, m_obj);
+	auto wksp = CWorkspace::instance();
 
-	AP::WORKSPACE::removeModel(std::static_pointer_cast<CModel3D>(top));
+	wksp->_objectRemove(m_obj);
+
+	CWorkspace::instance()->_objectRemove(top);
 
 	std::shared_ptr<CObject> new_parent = std::dynamic_pointer_cast<CObject>(m_obj);
 
@@ -619,7 +623,7 @@ void CContextMenu::slot_repositioning()
 
 			Eigen::Matrix4d globalM = m_obj->getGlobalTransformationMatrix();
 
-			AP::WORKSPACE::removeModel(std::static_pointer_cast<CModel3D>(top));
+			CWorkspace::instance()->_objectRemove(std::static_pointer_cast<CModel3D>(top));
 
 			if (already_root || makeObjectRoot(std::static_pointer_cast<CObject>(m_obj)))
 			{
@@ -664,6 +668,8 @@ void CContextMenu::slot_apply_last_transform()
 	if (m_obj == nullptr)
 		return; 	// obiekt nie istnieje
 
+	auto wksp = CWorkspace::instance();
+
 	std::shared_ptr<CBaseObject> parent = m_obj->getParentPtr();
 	
 	if ( (parent == nullptr) || (!parent->hasType(CBaseObject::Type::MODEL)) )
@@ -689,7 +695,8 @@ void CContextMenu::slot_apply_last_transform()
 
 		mdl->transform().fromEigenMatrix4d(T);
 
-		AP::OBJECT::removeChild(parent, mdl);
+		wksp->_objectRemove(mdl);
+
 		if (grandpa == nullptr)
 		{
 			AP::WORKSPACE::addModel(mdl);
@@ -710,13 +717,14 @@ void CContextMenu::slot_apply_last_transform()
 			AP::WORKSPACE::addModel(std::static_pointer_cast<CModel3D>(grandpa));
 		}
 
-		AP::OBJECT::removeChild(parent, m_obj);
+		wksp->_objectRemove(m_obj);
 		AP::OBJECT::addChild(grandpa, m_obj);
 	}
 }
 
 void CContextMenu::slot_delete_and_keep_children()
 {
+	auto wksp = CWorkspace::instance();
 	if (m_obj->hasCategory(CBaseObject::Category::OBJECT))
 	{
 		std::shared_ptr<CObject> p = std::dynamic_pointer_cast<CObject>(m_obj->getParentPtr());
@@ -726,7 +734,7 @@ void CContextMenu::slot_delete_and_keep_children()
 			for (auto d : kids)
 			{
 				std::shared_ptr<CBaseObject> c = d.second;
-				AP::OBJECT::removeChild(m_obj, c);
+				wksp->_objectRemove(c);
 				AP::OBJECT::addChild(p, c);
 			}
 //			((CObject*)m_obj)->children().clear();
@@ -734,12 +742,12 @@ void CContextMenu::slot_delete_and_keep_children()
 			auto anno = std::static_pointer_cast<CObject>(m_obj)->annotations();
 			for (auto d : anno)
 			{
-				AP::OBJECT::removeChild(m_obj, std::static_pointer_cast<CBaseObject>(d.second));
+				wksp->_objectRemove(d.second);
 				AP::OBJECT::addChild(p, std::static_pointer_cast<CBaseObject>(d.second));
 			}
 //			((CObject*)m_obj)->annotations().clear();
 			
-			AP::OBJECT::remove(m_obj);
+			wksp->_objectRemove(m_obj);
 		}
 		else
 		{
@@ -806,7 +814,7 @@ void CContextMenu::setOfFacesToMesh()
 
 void CContextMenu::slot_delete_object_with_subtree()
 {
-	AP::OBJECT::remove(m_obj);
+	CWorkspace::instance()->_objectRemove(m_obj);
 }
 
 void CContextMenu::slotCreateEmptyModel()

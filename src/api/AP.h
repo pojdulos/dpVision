@@ -124,13 +124,8 @@ namespace AP
      * @brief Namespace containing object management functionality
      */
     namespace OBJECT {
-        /**
-         * @brief Removes an object from the hierarchy
-         * @param obj Object to remove
-         * @param deleteIt If true, deletes the object from memory
-         * @return True if removal was successful
-         */
         DPVISION_EXPORT bool remove(std::shared_ptr<CBaseObject> obj);
+        DPVISION_EXPORT bool removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child);
 
         /**
          * @brief Adds a child object to a parent object
@@ -140,14 +135,6 @@ namespace AP
          */
         DPVISION_EXPORT int addChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child);
 
-        /**
-         * @brief Removes a child object from a parent object
-         * @param obj Parent object
-         * @param child Child object to remove
-         * @param deleteIt If true, deletes the child object from memory
-         * @return True if removal was successful
-         */
-        DPVISION_EXPORT bool removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child);
 
         /**
          * @brief Moves an object to a new parent
@@ -194,20 +181,6 @@ namespace AP
          */
         //DPVISION_EXPORT int addChild(int parentId, CBaseObject* child);
 
-        /**
-         * @brief Removes a child object from a parent object
-         * @param obj Parent object
-         * @param child Child object to remove
-         */
-        DPVISION_EXPORT void removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child);
-        //DPVISION_EXPORT void removeChild(CBaseObject* obj, CBaseObject* child);
-
-        /**
-         * @brief Removes a child object from a parent object using IDs
-         * @param parentid Parent object ID
-         * @param childid Child object ID
-         */
-        DPVISION_EXPORT void removeChild(int parentid, int childid);
 
         /**
          * @brief Adds an annotation to a 3D model
@@ -225,11 +198,8 @@ namespace AP
          */
         DPVISION_EXPORT int addAnnotation(int parentid, std::shared_ptr<CAnnotation> an);
 
-        /**
-         * @brief Removes an annotation from a parent object
-         * @param parentid Parent object ID
-         * @param id Annotation ID
-         */
+        DPVISION_EXPORT void removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child);
+        DPVISION_EXPORT void removeChild(int parentid, int childid);
         DPVISION_EXPORT void removeAnnotation(int parentid, int id);
     };
 
@@ -356,20 +326,7 @@ namespace AP
          */
         DPVISION_EXPORT int getCurrentModelId();
 
-        /**
-         * @brief Removes a model by ID
-         * @param id Model identifier
-         * @param deleteIt If true, deletes the model from memory
-         * @return True if removal was successful
-         */
         DPVISION_EXPORT bool removeModel(int id);
-
-        /**
-         * @brief Removes a model by pointer
-         * @param obj Model to remove
-         * @param deleteIt If true, deletes the model from memory
-         * @return True if removal was successful
-         */
         DPVISION_EXPORT bool removeModel(std::shared_ptr<CModel3D> obj);
 
         /**

@@ -10,9 +10,12 @@
 #include "Annotation.h"
 #include "MdiChild.h"
 #include "Image.h"
+#include "Workspace.h"
 
 #include <QtCore/QString>
 #include "StatusBarManager.h"
+
+#include <QElapsedTimer>
 
 
 namespace AP
@@ -40,22 +43,7 @@ namespace AP
 		return i;
 	}
 
-	// void processEvents( bool immediate )
-	// {
-	// 	static unsigned long t475634 = 0;
-	// 	unsigned long t1;
 
-	// 	t1 = GetTickCount();
-		
-	// 	//processEvents calls slows down the program, so no more than once per second
-	// 	if ( immediate || ((int)(t1 - t475634) > 1000) )
-	// 	{
-	// 		QCoreApplication::processEvents();
-	// 		t475634 = t1;
-	// 	}
-	// }
-
-	#include <QElapsedTimer>
 
 	void processEvents(bool immediate)
 	{
@@ -93,6 +81,7 @@ namespace AP
 		return AP::MODEL::addAnnotation(obj, an);
 	}
 
+
 	namespace PLUGIN {
 		bool loadPlugin(const QString &pluginPath)
 		{
@@ -126,6 +115,10 @@ namespace AP
 		{
 			return CModel3D::load(path, synchronous);
 		}
+
+		void removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child) { CWorkspace::instance()->_objectRemove(child); }
+		void removeChild(int parentid, int childid) { CWorkspace::instance()->_objectRemove(childid); }
+		void removeAnnotation(int parentid, int id) { CWorkspace::instance()->_objectRemove(id); }
 
 
 		int addChild(std::shared_ptr<CModel3D> obj, std::shared_ptr<CBaseObject> child)
@@ -176,104 +169,8 @@ namespace AP
 		{
 			return addAnnotation(AP::WORKSPACE::getModel(parentId), an);
 		}
-
-		void removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child)
-		{
-			if ( !(child && obj) && (child->getParentPtr() != obj) ) return;
-
-			if (obj->hasCategory(CBaseObject::Category::OBJECT))
-			{
-				if (child->hasCategory(CBaseObject::Category::OBJECT))
-				{
-					std::dynamic_pointer_cast<CObject>(obj)->removeChild(child->id());
-				}
-				else if (child->hasCategory(CBaseObject::Category::ANNOTATION))
-				{
-					std::dynamic_pointer_cast<CObject>(obj)->removeAnnotation(child->id());
-				}
-			}
-			else if (obj->hasCategory(CBaseObject::Category::ANNOTATION))
-			{
-				std::dynamic_pointer_cast<CAnnotation>(obj)->removeAnnotation(child->id());
-			}
-			else
-			{
-				return;
-			}
-
-			UI::DOCK::WORKSPACE::removeItem(child->id());
-			UI::DOCK::PROPERTIES::selectionChanged(obj->id());
-
-			UI::updateAllViews();
-		}
-
-		//void removeChild(CBaseObject* obj, CBaseObject* child)
-		//{
-		//	if (child == nullptr) return;
-		//	if (obj == nullptr) return;
-		//	if (child->getParentPtr() != std::shared_ptr<CBaseObject>(obj)) return;
-
-		//	if (obj->hasCategory(CBaseObject::Category::OBJECT))
-		//	{
-		//		if (child->hasCategory(CBaseObject::Category::OBJECT))
-		//		{
-		//			((CObject*)obj)->removeChild(child->id());
-		//		}
-		//		else if (child->hasCategory(CBaseObject::Category::ANNOTATION))
-		//		{
-		//			((CObject*)obj)->removeAnnotation(child->id());
-		//		}
-		//	}
-		//	else if (obj->hasCategory(CBaseObject::Category::ANNOTATION))
-		//	{
-		//		((CAnnotation*)obj)->removeAnnotation(child->id());
-		//	}
-		//	else
-		//	{
-		//		return;
-		//	}
-
-		//	UI::DOCK::WORKSPACE::removeItem(child->id());
-		//	UI::DOCK::PROPERTIES::selectionChanged(obj->id());
-		//	delete child;
-
-		//	UI::updateAllViews();
-		//}
-
-		void removeChild(int parentid, int childid)
-		{
-			std::shared_ptr<CBaseObject> obj = AP::WORKSPACE::findId(parentid);
-			std::shared_ptr<CBaseObject> child = AP::WORKSPACE::findId(childid);
-
-			removeChild(obj, child);
-		}
-
-		void removeAnnotation(int parentid, int id)
-		{
-			UI::DOCK::WORKSPACE::removeItem(id);
-			UI::DOCK::PROPERTIES::selectionChanged(parentid);
-
-			std::shared_ptr<CBaseObject> an = AP::WORKSPACE::findId(id);
-
-			if (an == nullptr) return;
-
-			std::shared_ptr<CBaseObject> parent = an->getParentPtr();
-			
-			if (parent != nullptr)
-			{
-				if (parent->hasType(CBaseObject::MODEL))
-				{
-					((CModel3D*)parent.get())->removeAnnotation(id);
-				}
-				else if (parent->hasCategory(CBaseObject::ANNOTATION))
-				{
-					((CAnnotation*)parent.get())->removeAnnotation(id);
-				}
-			}
-
-			UI::updateAllViews();
-		}
 	}
+
 
 
 	namespace WORKSPACE {
@@ -409,62 +306,22 @@ namespace AP
 			return AP::WORKSPACE::addModel(std::dynamic_pointer_cast<CModel3D>(im));
 		}
 
-		bool removeImage(int id)
-		{
-			AP::mainWin().closePicViewers(id);
-			return removeModel(id);
-		}
+		bool removeModel(int id) { return CWorkspace::instance()->_objectRemove(id); };
+		bool removeModel(std::shared_ptr<CModel3D> obj) { return CWorkspace::instance()->_objectRemove(obj); };
 
-		bool removeImage(std::shared_ptr<CImage> im)
-		{
-			AP::mainWin().closePicViewers(im->id());
-			return removeModel(im->id());
-		}
+		bool removeImage(int id) { return CWorkspace::instance()->_objectRemove(id); }
+		bool removeImage(std::shared_ptr<CImage> im) { return CWorkspace::instance()->_objectRemove(im); };
 
-		bool removeModel( int id)
-		{
-			if (getWorkspace()->_removeModel(id))
-			{
-				std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
-				if (nullptr != obj)
-				{
-					UI::DOCK::WORKSPACE::selectItem(obj->id());
-					UI::DOCK::PROPERTIES::selectionChanged(obj->id());
-				}
-				else
-				{
-					UI::DOCK::WORKSPACE::selectItem(NO_CURRENT_MODEL);
-					UI::DOCK::PROPERTIES::selectionChanged(NO_CURRENT_MODEL);
-				}
-					
-				UI::DOCK::WORKSPACE::removeItem(id);
-
-				UI::changeMenuAfterSelect();
-				UI::updateAllViews();
-
-				return true;
-			}
-
-			return false;
-		}
-
-		bool removeModel(std::shared_ptr<CModel3D> obj)
-		{
-			return removeModel(obj->id());
-		}
-
-		//bool removeModel(CModel3D* obj)
-		//{
-		//	return removeModel(obj->id());
-		//}
 
 		bool removeCurrentModel()
 		{
-			int id = AP::WORKSPACE::getCurrentModelId();
+			auto wksp = CWorkspace::instance();
+
+			int id = wksp->_getCurrentModelId();
 
 			if (NO_CURRENT_MODEL == id) return false;
 
-			return AP::WORKSPACE::removeModel(id);
+			return wksp->_objectRemove(id);
 		}
 
 		bool removeAllModels()
@@ -479,24 +336,21 @@ namespace AP
 
 		bool removeSelectedModels()
 		{
-			std::list<int> sel = AP::getWorkspace()->getSelection();
+			auto wksp = CWorkspace::instance();
+			std::list<int> sel = wksp->getSelection();
 			for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
 			{
-				AP::WORKSPACE::removeModel(*it);
+				wksp->_objectRemove(*it);
 			}
 			return true;
 		}
 
 		int setCurrentModel( int id )
 		{
-			int newId = getWorkspace()->_setCurrentModel(id);
-
-			//UI::DOCK::WORKSPACE::selectItem( id );
-			//UI::DOCK::PROPERTIES::selectionChanged( id );
-			//UI::changeMenuAfterSelect();
-
-			//UI::updateAllViews();
-			return newId;
+			auto wksp = CWorkspace::instance();
+			
+			wksp->_objectActivate(id);
+			return wksp->_getCurrentModelId();
 		}
 
 		std::shared_ptr<CModel3D> duplicateModel(std::shared_ptr<CModel3D> orginal)
@@ -686,42 +540,10 @@ namespace AP
 
 #include "Histogram.h"
 
-bool AP::OBJECT::remove(std::shared_ptr<CBaseObject> obj)
-{
-	if (obj == nullptr) return false;
 
-	bool isRemoved = false;
+bool AP::OBJECT::remove(std::shared_ptr<CBaseObject> obj) { return CWorkspace::instance()->_objectRemove(obj); };
+bool AP::OBJECT::removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child) { return CWorkspace::instance()->_objectRemove(child); };
 
-	std::shared_ptr<CBaseObject> parent = obj->getParentPtr();
-	if (parent == nullptr)
-	{
-		if (obj == AP::WORKSPACE::getModel(obj->id()))
-		{
-			if (obj->hasType(CObject::Type::MODEL))
-				return AP::WORKSPACE::removeModel(obj->id());
-			else if (obj->hasType(CObject::Type::IMAGE))
-				return AP::WORKSPACE::removeImage(obj->id());
-		}
-	}
-	else
-	{
-		if (obj->hasType(CAnnotation::HISTOGRAM))
-		{
-			std::shared_ptr<CHistogram> h = std::dynamic_pointer_cast<CHistogram>(obj);
-
-			if (UI::DOCK::HISTOGRAM::getHistogram() == h.get())
-			{
-				h->setSelfVisibility(false);
-				UI::DOCK::HISTOGRAM::show(false);
-				UI::DOCK::HISTOGRAM::setHistogram(NULL);
-			}
-		}
-
-		return AP::OBJECT::removeChild(parent, obj);
-	}
-
-	return false;
-}
 
 int AP::OBJECT::addChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child)
 {
@@ -758,50 +580,11 @@ int AP::OBJECT::addChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBase
 	return id;
 }
 
-bool AP::OBJECT::removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child)
-{
-	if (child == nullptr) return false;
-	if (obj == nullptr) return false;
-	if (child->getParentPtr() != std::shared_ptr<CBaseObject>(obj)) return false;
-
-	bool isRemoved = false;
-
-//	if (obj->hasCategory(CBaseObject::Category::OBJECT))
-	if (auto ob = std::dynamic_pointer_cast<CObject>(obj))
-	{
-		if (child->hasCategory(CBaseObject::Category::OBJECT))
-		{
-			//isRemoved = std::dynamic_pointer_cast<CObject>(obj)->removeChild(child->id());
-			isRemoved = ob->removeChild(child->id());
-		}
-		else if (child->hasCategory(CBaseObject::Category::ANNOTATION))
-		{
-			//isRemoved = std::dynamic_pointer_cast<CObject>(obj)->removeAnnotation(std::dynamic_pointer_cast<CAnnotation>(child));
-			isRemoved = ob->removeAnnotation(std::dynamic_pointer_cast<CAnnotation>(child));
-		}
-	}
-//	else if (obj->hasCategory(CBaseObject::Category::ANNOTATION))
-	else if (auto an = std::dynamic_pointer_cast<CAnnotation>(obj))
-	{
-		//isRemoved = (nullptr != std::dynamic_pointer_cast<CAnnotation>(obj)->removeAnnotation(child->id()));
-		isRemoved = (nullptr != an->removeAnnotation(child->id()));
-	}
-
-	if (isRemoved)
-	{
-		UI::DOCK::WORKSPACE::removeItem(child->id());
-		UI::DOCK::PROPERTIES::selectionChanged(obj->id());
-
-		UI::updateAllViews();
-
-		return true;
-	}
-
-	return false;
-}
 
 void AP::OBJECT::moveTo(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> newParent, bool keep_pos)
 {
+	auto wksp = CWorkspace::instance();
+
 	if (obj != nullptr)
 	{
 		if ((newParent != nullptr) && newParent->hasCategory(CBaseObject::Category::ANNOTATION) && obj->hasCategory(CBaseObject::Category::OBJECT))
@@ -821,10 +604,7 @@ void AP::OBJECT::moveTo(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseO
 		}
 		else
 		{
-			if (obj == AP::WORKSPACE::getModel(obj->id()))
-			{
-				AP::WORKSPACE::removeModel(obj->id());
-			}
+			wksp->_objectRemove(obj->id());
 		}
 
 		if (keep_pos)
@@ -950,3 +730,6 @@ void AP::OBJECT::copyTo(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseO
 		UI::updateAllViews();
 	}
 }
+
+
+

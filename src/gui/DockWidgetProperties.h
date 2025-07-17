@@ -30,8 +30,12 @@ public:
 	void addExpandableItem(QString title, PropWidget* contentWidget);
 
 public slots:
-	void onCurrentObjectChanged(int);
-	void onCurrentObjectChanged(CBaseObject*);
+	void onWorkspaceObjectActivated(int);
+	void onWorkspaceObjectActivated(CBaseObject*);
+
+	void onWorkspaceObjectRemoved(int);
+
+
 	void onDarkModeChanged(bool);
 
 private:

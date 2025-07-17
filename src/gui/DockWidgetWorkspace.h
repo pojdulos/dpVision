@@ -101,8 +101,8 @@ signals:
 	void currentObjectChanged(int);
 
 public slots:
-	void onCurrentObjectChanged(int);
-	//void onCurrentObjectChanged(std::shared_ptr<CBaseObject>);
+	void onWorkspaceObjectActivated(int);
+	void onWorkspaceObjectRemoved(int);
 
 	void onTreeViewItemClicked(QModelIndex);
 

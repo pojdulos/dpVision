@@ -100,7 +100,7 @@ void CMainWindow::proceessData()
 
 		std::shared_ptr<CModel3D> obj = std::dynamic_pointer_cast<CModel3D>(AP::WORKSPACE::findId(id));
 		if (obj != nullptr) {
-			AP::WORKSPACE::removeModel(id);
+			CWorkspace::instance()->_objectRemove(id);
 			updateAllViews();
 			UI::DOCK::PROPERTIES::updateProperties();
 			clientSocket->write(QString("Gotowe.\n\r").toLocal8Bit());

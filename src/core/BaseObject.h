@@ -100,7 +100,7 @@ public:
 	// konstruktor kopiuj�cy
 	CBaseObject(const CBaseObject &b);
 
-	//virtual ~CBaseObject(void) {};
+	virtual ~CBaseObject(void);
 
 
 	void* operator new(std::size_t) = delete;

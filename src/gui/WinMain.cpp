@@ -102,7 +102,7 @@ int main(int argc, char* argv[])
         }
     }
     
-    CWorkspace::instance()->_setCurrentModel(NO_CURRENT_MODEL);
+    CWorkspace::instance()->_objectActivate(NO_CURRENT_MODEL);
 
     CMainApplication::theApp->isInitialised = true;
 

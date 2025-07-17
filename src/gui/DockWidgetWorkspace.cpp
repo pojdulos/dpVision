@@ -74,8 +74,8 @@ void DockWidgetWorkspace::onCustomContextMenu(const QPoint &point)
 	{
 		ui.treeView->clearSelection();
 
-		CWorkspace::instance()->onCurrentObjectChanged(NO_CURRENT_MODEL);
-		emit currentObjectChanged(NO_CURRENT_MODEL);
+		CWorkspace::instance()->_objectActivate(NO_CURRENT_MODEL);
+		//emit currentObjectChanged(NO_CURRENT_MODEL);
 
 		CContextMenu(nullptr, ui.treeView).exec(ui.treeView->mapToGlobal(point));
 	}
@@ -551,8 +551,8 @@ void DockWidgetWorkspace::colNameClicked(std::shared_ptr<CBaseObject> obj, Works
 		obj->setSelected(b);
 		if (!wksp->changeSelection(obj->id(), b))
 		{
-			wksp->onCurrentObjectChanged(obj->id());
-			emit currentObjectChanged(obj->id());
+			wksp->_objectActivate(obj->id());
+			//emit currentObjectChanged(obj->id());
 		}
 	}
 	else
@@ -569,7 +569,7 @@ void DockWidgetWorkspace::colNameClicked(std::shared_ptr<CBaseObject> obj, Works
 	}
 }
 
-void DockWidgetWorkspace::onCurrentObjectChanged(int i)
+void DockWidgetWorkspace::onWorkspaceObjectActivated(int i)
 {
 	selectItem(i);
 }
@@ -582,6 +582,13 @@ void DockWidgetWorkspace::onCurrentObjectChanged(int i)
 //		selectItem(NO_CURRENT_MODEL);
 //}
 
+#include "dpLog.h"
+
+void DockWidgetWorkspace::onWorkspaceObjectRemoved(int id) {
+	dpDebug() << "DockWidgetWorkspace::onWorkspaceObjectRemoved() id=" << id;
+	selectItem(CWorkspace::instance()->_getCurrentModelId());
+	removeItem(id);
+}
 
 void DockWidgetWorkspace::onTreeViewItemClicked(QModelIndex current)
 {
@@ -615,13 +622,13 @@ void DockWidgetWorkspace::onTreeViewItemClicked(QModelIndex current)
 				break;
 		}
 
-		wksp->onCurrentObjectChanged(clickedObject->id());
+		wksp->_objectActivate(clickedObject->id());
 		emit(currentObjectChanged(clickedObject->id()));
 		AP::EVENTS::workspaceTreeClicked(clickedObject->id());
 	}
 	else
 	{
-		wksp->onCurrentObjectChanged(NO_CURRENT_MODEL);
+		wksp->_objectActivate(NO_CURRENT_MODEL);
 		emit(currentObjectChanged(NO_CURRENT_MODEL));
 		AP::EVENTS::workspaceTreeClicked(NO_CURRENT_MODEL);
 	}

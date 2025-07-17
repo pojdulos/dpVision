@@ -201,8 +201,10 @@ public slots:
 	void viewerSelected(QMdiSubWindow*);
 
 
-	void onCurrentObjectChanged(int);
-	void onCurrentObjectChanged(CBaseObject*);
+	void onWorkspaceObjectActivated(int);
+	void onWorkspaceObjectActivated(CBaseObject*);
+	void onWorkspaceObjectRemoved(int);
+	
 
 
 	// menu File

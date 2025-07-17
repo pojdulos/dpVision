@@ -170,3 +170,9 @@ Eigen::Matrix4d CBaseObject::getGlobalTransformationMatrix()
 	return aktualnaMacierz;
 }
 
+
+#include "dpLog.h"
+CBaseObject::~CBaseObject(void) {
+	dpWarn() << "Destuctor, id=" << m_Id;
+};
+

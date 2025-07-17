@@ -145,15 +145,19 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 	auto wkspEvents = std::make_shared<QtWorkspaceEvents>();
 	CWorkspace::instance()->addListener(wkspEvents);
 
-	connect(wkspEvents.get(), SIGNAL(modelChangedSignal(int)), this, SLOT(onCurrentObjectChanged(int)));
-	connect(wkspEvents.get(), SIGNAL(modelChangedSignal(int)), dockWorkspace, SLOT(onCurrentObjectChanged(int)));
-	connect(wkspEvents.get(), SIGNAL(modelChangedSignal(int)), dockProperties, SLOT(onCurrentObjectChanged(int)));
+	connect(wkspEvents.get(), SIGNAL(objectActivatedSignal(int)), this, SLOT(onWorkspaceObjectActivated(int)));
+	connect(wkspEvents.get(), SIGNAL(objectActivatedSignal(int)), dockWorkspace, SLOT(onWorkspaceObjectActivated(int)));
+	connect(wkspEvents.get(), SIGNAL(objectActivatedSignal(int)), dockProperties, SLOT(onWorkspaceObjectActivated(int)));
+
+	connect(wkspEvents.get(), SIGNAL(objectRemovedSignal(int)), this, SLOT(onWorkspaceObjectRemoved(int)));
+	connect(wkspEvents.get(), SIGNAL(objectRemovedSignal(int)), dockWorkspace, SLOT(onWorkspaceObjectRemoved(int)));
+	connect(wkspEvents.get(), SIGNAL(objectRemovedSignal(int)), dockProperties, SLOT(onWorkspaceObjectRemoved(int)));
 
 
+	// all communication via CWorkspace, not signals
 	//connect(dockWorkspace, SIGNAL(currentObjectChanged(int)), CWorkspace::instance(), SLOT(onCurrentObjectChanged(int)));
-
-	connect(dockWorkspace, SIGNAL(currentObjectChanged(int)), this, SLOT(onCurrentObjectChanged(int)));
-	connect(dockWorkspace, SIGNAL(currentObjectChanged(int)), dockProperties, SLOT(onCurrentObjectChanged(int)));
+	//connect(dockWorkspace, SIGNAL(currentObjectChanged(int)), this, SLOT(onCurrentObjectChanged(int)));
+	//connect(dockWorkspace, SIGNAL(currentObjectChanged(int)), dockProperties, SLOT(onCurrentObjectChanged(int)));
 
 	connect(ui.mdiArea, &QMdiArea::subWindowActivated, this, [this](QMdiSubWindow* window) {
 		if (window != nullptr) {

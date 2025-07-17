@@ -7,6 +7,8 @@
 #include "Model3D.h"
 #include "Utilities.h"
 
+#include "Annotation.h"
+
 #include <vector>
 #include <memory>
 
@@ -63,9 +65,110 @@ public:
 			listeners_.erase(it);
 	}
 
-	void notifyModelChanged(int modelId) {
-		for (auto l : listeners_) l->modelChanged(modelId);
+	// Listener notifiers:
+
+	void notifyObjectActivated(int id) {
+		WorkspaceEvent e;
+		e.type = WorkspaceEventType::ObjectActivated;
+		e.objectId = id;
+		for (auto l : listeners_) l->emitWorkspaceEvent(e);
 	}
+
+	void notifyObjectRemoved(int id, CBaseObject::Type tp = CBaseObject::Type::GENERIC) {
+		WorkspaceEvent e;
+		e.type = WorkspaceEventType::ObjectRemoved;
+		e.objectId = id;
+		e.objectType = tp;
+		for (auto l : listeners_) l->emitWorkspaceEvent(e);
+	}
+
+	// API interfaces for windows and user code:
+
+	void _objectActivate(int id) {
+		int top_i = id;
+		if (id != NO_CURRENT_MODEL) {
+			if (m_data.find(id) == m_data.end()) //it is not TopModel Id
+			{
+				top_i = NO_CURRENT_MODEL;
+			}
+		}
+		m_idOfCurrentModel = top_i;
+		notifyObjectActivated(id);
+	}
+
+
+
+	//bool _removeModel(int id)
+	//{
+	//	if (id != NO_CURRENT_MODEL) {
+	//		auto found = m_data.find(id);
+	//		if (found != m_data.end())
+	//		{
+	//			if (inSelection(id)) removeFromSelection(id);
+
+	//			if (id == m_idOfCurrentModel) _objectActivate(NO_CURRENT_MODEL);
+
+	//			m_data.erase(found);
+	//			return true;
+	//		}
+	//	}
+	//	return false;
+	//}
+
+	bool _objectRemove(std::shared_ptr<CBaseObject> obj)
+	{
+		//dpInfo() << "_objectRemove()";
+		if (obj == nullptr) return false;
+		auto id = obj->id();
+
+		auto parent = obj->getParentPtr();
+		if (parent) { // it is not Workspace TopModel
+			if (auto c = std::dynamic_pointer_cast<CAnnotation>(obj)) {
+				if (auto p = std::dynamic_pointer_cast<CObject>(parent)) {
+					p->removeAnnotation(c);
+				}
+				else if (auto p = std::dynamic_pointer_cast<CAnnotation>(parent)) {
+					p->removeAnnotation(id);
+				}
+			}
+			else {
+				if (auto p = std::dynamic_pointer_cast<CObject>(parent)) {
+					p->removeChild(id);
+				}
+				else {
+					return false;
+				}
+			}
+			obj->setParent(nullptr);
+		}
+		else {
+			auto found = m_data.find(id);
+			if (found != m_data.end()) {//it is Workspace TopModel Id
+				m_data.erase(found);
+			}
+			else {
+				return false;
+			}
+		}
+
+		if (inSelection(id)) removeFromSelection(id);
+		if (id == m_idOfCurrentModel) _objectActivate(NO_CURRENT_MODEL);
+
+		notifyObjectRemoved(id, (CBaseObject::Type)obj->type());
+
+		return true;
+	}
+
+	bool _objectRemove(int id)
+	{
+		if (auto obj = getSomethingWithId(id))
+			return _objectRemove(obj);
+		else
+			return false;
+	}
+
+
+
 
 	typedef CModel3D ChildType;
 	//typedef std::map<int, ChildType*> Children;
@@ -122,13 +225,13 @@ public:
 	bool		_addModel(std::shared_ptr<CModel3D> obj );
 	inline bool	_addModel(CModel3D* obj) { return _addModel(std::shared_ptr<CModel3D>(obj)); }
 
-	int			_setCurrentModel( int i );
+	//int			_setCurrentModel( int i );
 
 	int			_getCurrentModelId() { return m_idOfCurrentModel; };
 
 	std::shared_ptr<CWorkspace::ChildType> _getModel( int i );
 
-	bool		_removeModel( int i);
+	//bool		_removeModel( int i);
 
 	bool		_removeAllModels();
 
@@ -163,9 +266,6 @@ public:
 
 	CBoundingBox topBB();
 
-	void onCurrentObjectChanged(int);
-//	void onCurrentObjectChanged(CBaseObject*);
-	
 private:
 	void InitLights();
 

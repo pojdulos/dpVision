@@ -205,14 +205,14 @@ void DockWidgetProperties::addExpandableItem(QString title, PropWidget* contentW
 	item->setExpanded(true);
 }
 
-void DockWidgetProperties::onCurrentObjectChanged(int i)
+void DockWidgetProperties::onWorkspaceObjectActivated(int i)
 {
 	raise();
 	selectionChanged(i);
 	update();
 }
 
-void DockWidgetProperties::onCurrentObjectChanged(CBaseObject* obj)
+void DockWidgetProperties::onWorkspaceObjectActivated(CBaseObject* obj)
 {
 	raise();
 
@@ -221,6 +221,11 @@ void DockWidgetProperties::onCurrentObjectChanged(CBaseObject* obj)
 	else
 		selectionChanged(NO_CURRENT_MODEL);
 
+	update();
+}
+
+void DockWidgetProperties::onWorkspaceObjectRemoved(int) {
+	selectionChanged(CWorkspace::instance()->_getCurrentModelId());
 	update();
 }
 

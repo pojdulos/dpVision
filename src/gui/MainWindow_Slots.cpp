@@ -74,13 +74,19 @@ void CMainWindow::viewerSelected(QMdiSubWindow* window)
 	}
 }
 
-void CMainWindow::onCurrentObjectChanged(int i)
+void CMainWindow::onWorkspaceObjectActivated(int i)
 {
 	changeMenuAfterSelect();
 	updateView(true, true);
 }
 
-void CMainWindow::onCurrentObjectChanged(CBaseObject* obj)
+void CMainWindow::onWorkspaceObjectActivated(CBaseObject* obj)
+{
+	changeMenuAfterSelect();
+	updateView(true, true);
+}
+
+void CMainWindow::onWorkspaceObjectRemoved(int i)
 {
 	changeMenuAfterSelect();
 	updateView(true, true);
@@ -1159,18 +1165,20 @@ void CMainWindow::modelClose()
 		}
 	}
 
+	auto wksp = CWorkspace::instance();
+
 	auto obj = AP::WORKSPACE::getCurrentModel();
 
 	if (obj != nullptr)
 	{
 		if (auto im = std::dynamic_pointer_cast<CImage>(obj))
 		{
-			if (AP::WORKSPACE::removeImage(im))
+			if (wksp->_objectRemove(im))
 				StatusBarManager::setText("Current image has been removed...");
 		}
 		else
 		{
-			if (AP::WORKSPACE::removeModel(obj))
+			if (wksp->_objectRemove(obj))
 				StatusBarManager::setText("Current model has been removed...");
 		}
 	}

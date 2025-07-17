@@ -33,7 +33,7 @@ void CWorkspace::clear()
 	m_selection.clear();
 	m_data.clear();
 
-	_setCurrentModel(NO_CURRENT_MODEL);
+	_objectActivate(NO_CURRENT_MODEL);
 }
 
 
@@ -60,28 +60,6 @@ bool CWorkspace::_addModel( std::shared_ptr<CModel3D> pMdlR )
 	return true;
 }
 
-bool CWorkspace::_removeModel( int i)
-{
-	if (NO_CURRENT_MODEL == i) return false;
-
-	if ( m_data.find( i ) != m_data.end() )
-	{
-		if (inSelection(i)) removeFromSelection(i);
-
-		if (i == m_idOfCurrentModel)
-		{
-			_setCurrentModel(NO_CURRENT_MODEL);
-		}
-		
-		//if (deleteIt) delete m_data[i];
-
-		m_data.erase( i );
-		return true;
-	}
-
-	return false;
-}
-
 bool CWorkspace::_removeAllModels()
 {
 	for (Children::iterator it = m_data.begin(); it != m_data.end(); )
@@ -91,7 +69,7 @@ bool CWorkspace::_removeAllModels()
 	}
 	m_selection.clear();
 
-	_setCurrentModel(NO_CURRENT_MODEL);
+	_objectActivate(NO_CURRENT_MODEL);
 
 	return true;
 }
@@ -108,17 +86,17 @@ std::shared_ptr<CWorkspace::ChildType> CWorkspace::_getModel( int i )
 }
 
 
-int CWorkspace::_setCurrentModel( int i )
-{
-	if (i != m_idOfCurrentModel)
-	{
-		onCurrentObjectChanged(i);
-
-		this->notifyModelChanged(m_idOfCurrentModel);
-	}
-
-	return m_idOfCurrentModel;
-}
+//int CWorkspace::_setCurrentModel( int i )
+//{
+//	if (i != m_idOfCurrentModel)
+//	{
+//		onCurrentObjectChanged(i);
+//
+//		this->_objectActivate(m_idOfCurrentModel);
+//	}
+//
+//	return m_idOfCurrentModel;
+//}
 
 
 
@@ -279,7 +257,8 @@ int CWorkspace::_setNextModelCurrent()
 		}
 	}
 	
-	return _setCurrentModel( i );
+	_objectActivate(i);
+	return m_idOfCurrentModel;
 }
 
 
@@ -305,7 +284,8 @@ int CWorkspace::_setPreviousModelCurrent()
 		}
 	}
 	
-	return _setCurrentModel( i );
+	_objectActivate(i);
+	return m_idOfCurrentModel;
 }
 
 
@@ -435,17 +415,17 @@ std::vector<CRGBA> CWorkspace::getXRayImage( CPoint3f pkt0, int size )
 //		onCurrentObjectChanged(obj->id());
 //}
 
-void CWorkspace::onCurrentObjectChanged(int i)
-{
-	if ((i == NO_CURRENT_MODEL) || (m_data.find(i) == m_data.end()))
-	{
-		m_idOfCurrentModel = NO_CURRENT_MODEL;
-	}
-	else
-	{
-		m_idOfCurrentModel = i;
-	}
-}
+//void CWorkspace::onCurrentObjectChanged(int i)
+//{
+//	if ((i == NO_CURRENT_MODEL) || (m_data.find(i) == m_data.end()))
+//	{
+//		m_idOfCurrentModel = NO_CURRENT_MODEL;
+//	}
+//	else
+//	{
+//		m_idOfCurrentModel = i;
+//	}
+//}
 
 CBoundingBox CWorkspace::topBB()
 {
