@@ -102,6 +102,7 @@ signals:
 
 public slots:
 	void onWorkspaceObjectActivated(int);
+	void onWorkspaceObjectAdded(int);
 	void onWorkspaceObjectRemoved(int);
 
 	void onTreeViewItemClicked(QModelIndex);

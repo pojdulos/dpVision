@@ -86,6 +86,12 @@ void CMainWindow::onWorkspaceObjectActivated(CBaseObject* obj)
 	updateView(true, true);
 }
 
+void CMainWindow::onWorkspaceObjectAdded(int i)
+{
+	changeMenuAfterSelect();
+	updateView(true, true);
+}
+
 void CMainWindow::onWorkspaceObjectRemoved(int i)
 {
 	changeMenuAfterSelect();

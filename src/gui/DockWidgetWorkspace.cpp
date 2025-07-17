@@ -584,6 +584,11 @@ void DockWidgetWorkspace::onWorkspaceObjectActivated(int i)
 
 #include "dpLog.h"
 
+void DockWidgetWorkspace::onWorkspaceObjectAdded(int id) {
+	if (auto obj = CWorkspace::instance()->getSomethingWithId(id))
+		addItem(obj);
+}
+
 void DockWidgetWorkspace::onWorkspaceObjectRemoved(int id) {
 	dpDebug() << "DockWidgetWorkspace::onWorkspaceObjectRemoved() id=" << id;
 	selectItem(CWorkspace::instance()->_getCurrentModelId());

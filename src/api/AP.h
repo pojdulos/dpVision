@@ -196,7 +196,7 @@ namespace AP
          * @param an Annotation to add
          * @return Annotation ID
          */
-        DPVISION_EXPORT int addAnnotation(int parentid, std::shared_ptr<CAnnotation> an);
+        //DPVISION_EXPORT int addAnnotation(int parentid, std::shared_ptr<CAnnotation> an);
 
         DPVISION_EXPORT void removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child);
         DPVISION_EXPORT void removeChild(int parentid, int childid);

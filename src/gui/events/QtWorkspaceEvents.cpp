@@ -4,7 +4,6 @@
 #include "DockWidgetHistogram.h"
 
 void QtWorkspaceEvents::emitWorkspaceEvent(const WorkspaceEvent& event) {
-    // Rozsy³anie odpowiednich sygna³ów Qt w zale¿noœci od typu zdarzenia
     switch (event.type) {
     case WorkspaceEventType::ObjectActivated:
         emit objectActivatedSignal(event.objectId);

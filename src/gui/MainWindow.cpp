@@ -153,11 +153,9 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 	connect(wkspEvents.get(), SIGNAL(objectRemovedSignal(int)), dockWorkspace, SLOT(onWorkspaceObjectRemoved(int)));
 	connect(wkspEvents.get(), SIGNAL(objectRemovedSignal(int)), dockProperties, SLOT(onWorkspaceObjectRemoved(int)));
 
+	connect(wkspEvents.get(), SIGNAL(objectAddedSignal(int)), this, SLOT(onWorkspaceObjectAdded(int)));
+	connect(wkspEvents.get(), SIGNAL(objectAddedSignal(int)), dockWorkspace, SLOT(onWorkspaceObjectAdded(int)));
 
-	// all communication via CWorkspace, not signals
-	//connect(dockWorkspace, SIGNAL(currentObjectChanged(int)), CWorkspace::instance(), SLOT(onCurrentObjectChanged(int)));
-	//connect(dockWorkspace, SIGNAL(currentObjectChanged(int)), this, SLOT(onCurrentObjectChanged(int)));
-	//connect(dockWorkspace, SIGNAL(currentObjectChanged(int)), dockProperties, SLOT(onCurrentObjectChanged(int)));
 
 	connect(ui.mdiArea, &QMdiArea::subWindowActivated, this, [this](QMdiSubWindow* window) {
 		if (window != nullptr) {

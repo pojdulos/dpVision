@@ -203,6 +203,7 @@ public slots:
 
 	void onWorkspaceObjectActivated(int);
 	void onWorkspaceObjectActivated(CBaseObject*);
+	void onWorkspaceObjectAdded(int);
 	void onWorkspaceObjectRemoved(int);
 	
 

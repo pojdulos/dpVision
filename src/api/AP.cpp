@@ -72,13 +72,17 @@ namespace AP
 
 	int addAnnotation(int parentId, std::shared_ptr<CAnnotation> an)
 	{
-		return AP::MODEL::addAnnotation(parentId, an);
+		auto wksp = CWorkspace::instance();
+		return wksp->_objectAdd(an, wksp->getSomethingWithId(parentId));
+		//return AP::MODEL::addAnnotation(parentId, an);
 	}
 
 
 	int addAnnotation(std::shared_ptr<CModel3D> obj, std::shared_ptr<CAnnotation> an)
 	{
-		return AP::MODEL::addAnnotation(obj, an);
+		auto wksp = CWorkspace::instance();
+		return wksp->_objectAdd(an, obj);
+		//return AP::MODEL::addAnnotation(obj, an);
 	}
 
 
@@ -126,49 +130,41 @@ namespace AP
 			if (child == nullptr) return NO_CURRENT_MODEL;
 			if (obj == nullptr) return NO_CURRENT_MODEL;
 
-			int id = -1;
-			if (child->hasCategory(CBaseObject::Category::ANNOTATION))
-			{
-				id = obj->addAnnotation(std::dynamic_pointer_cast<CAnnotation>(child));
-			}
-			else if (child->hasCategory(CBaseObject::Category::OBJECT))
-			{
-				id = obj->addChild(child);
-			}
-
-			UI::DOCK::WORKSPACE::addItem(id, obj->id());
-			UI::updateAllViews();
-			return id;
+			auto wksp = CWorkspace::instance();
+			return wksp->_objectAdd(child, obj);
 		}
 
-		int addChild(CModel3D* obj, CBaseObject* child) { return addChild(std::shared_ptr<CModel3D>(obj), std::shared_ptr<CBaseObject>(child)); }
+		//int addChild(CModel3D* obj, CBaseObject* child) { return addChild(std::shared_ptr<CModel3D>(obj), std::shared_ptr<CBaseObject>(child)); }
 
-		int addChild(int parentId, std::shared_ptr<CBaseObject> child)
-		{
-			return addChild(AP::WORKSPACE::getModel(parentId), child);
-		}
+		// int addChild(int parentId, std::shared_ptr<CBaseObject> child)
+		// {
+		// 	return addChild(AP::WORKSPACE::getModel(parentId), child);
+		// }
 
-		int addChild(int parentId, CBaseObject* child)
-		{
-			return addChild(AP::WORKSPACE::getModel(parentId), std::shared_ptr<CBaseObject>(child));
-		}
+		// int addChild(int parentId, CBaseObject* child)
+		// {
+		// 	return addChild(AP::WORKSPACE::getModel(parentId), std::shared_ptr<CBaseObject>(child));
+		// }
 
 		int addAnnotation(std::shared_ptr<CModel3D> obj, std::shared_ptr<CAnnotation> an)
 		{
 			if (an == nullptr) return NO_CURRENT_MODEL;
 			if (obj == nullptr) return NO_CURRENT_MODEL;
 
-			int id = obj->addAnnotation(an);
+			auto wksp = CWorkspace::instance();
+			return wksp->_objectAdd(an, obj);
 
-			UI::DOCK::WORKSPACE::addItem(id, obj->id());
-			UI::updateAllViews();
-			return id;
+			// int id = obj->addAnnotation(an);
+
+			// UI::DOCK::WORKSPACE::addItem(id, obj->id());
+			// UI::updateAllViews();
+			// return id;
 		}
 
-		int addAnnotation(int parentId, std::shared_ptr<CAnnotation> an)
-		{
-			return addAnnotation(AP::WORKSPACE::getModel(parentId), an);
-		}
+		// int addAnnotation(int parentId, std::shared_ptr<CAnnotation> an)
+		// {
+		// 	return addAnnotation(AP::WORKSPACE::getModel(parentId), an);
+		// }
 	}
 
 
@@ -242,59 +238,68 @@ namespace AP
 
 		bool addModel(std::shared_ptr<CModel3D> obj, bool setItCurrent)
 		{
-			if (AP::getWorkspace()->_addModel(obj))
-			{
-				UI::DOCK::WORKSPACE::addItem(obj);
+			auto wksp = CWorkspace::instance();
+			auto result = wksp->_objectAdd(obj);
+			if (setItCurrent) wksp->_objectActivate(obj->id());
+			return result!=-1;
+			// if (AP::getWorkspace()->_addModel(obj))
+			// {
+			// 	UI::DOCK::WORKSPACE::addItem(obj);
 
-				int id = (setItCurrent) ? obj->id() : -1;
+			// 	int id = (setItCurrent) ? obj->id() : -1;
 
-				if (id != AP::WORKSPACE::getCurrentModelId())
-				{
-					AP::WORKSPACE::setCurrentModel(id);
+			// 	if (id != AP::WORKSPACE::getCurrentModelId())
+			// 	{
+			// 		AP::WORKSPACE::setCurrentModel(id);
 
-					UI::DOCK::WORKSPACE::selectItem(id);
-					UI::DOCK::PROPERTIES::selectionChanged(id);
+			// 		UI::DOCK::WORKSPACE::selectItem(id);
+			// 		UI::DOCK::PROPERTIES::selectionChanged(id);
 
-					UI::changeMenuAfterSelect();
-				}
-				UI::updateAllViews();
-				return true;
-			}
-			return false;
+			// 		UI::changeMenuAfterSelect();
+			// 	}
+			// 	UI::updateAllViews();
+			// 	return true;
+			// }
+			// return false;
 		}
 
 		bool addModel(CModel3D* obj, bool setItCurrent) { return addModel(std::shared_ptr<CModel3D>(obj), setItCurrent); }
 
 		bool addObject(std::shared_ptr<CBaseObject> obj, bool setItCurrent)
 		{
-			if (obj->hasType(CBaseObject::Type::MODEL))
-			{
-				addModel(std::dynamic_pointer_cast<CModel3D>(obj), setItCurrent);
-				return true;
-			}
-			else if (obj->hasType(CBaseObject::Type::IMAGE))
-			{
-				addImage(std::dynamic_pointer_cast<CImage>(obj), false, true);
-				return true;
-			}
-			else
-			{
-				std::shared_ptr<CModel3D> mdl = std::make_shared<CModel3D>();
-				if (obj->hasCategory(CBaseObject::Category::OBJECT))
-				{
-					mdl->addChild(obj);
-					mdl->importChildrenGeometry();
-					addModel(mdl, setItCurrent);
-					return true;
-				}
-				else if (obj->hasCategory(CBaseObject::Category::ANNOTATION))
-				{
-					mdl->addAnnotation(std::dynamic_pointer_cast<CAnnotation>(obj));
-					addModel(mdl, setItCurrent);
-					return true;
-				}
-			}
-			return false;
+			auto wksp = CWorkspace::instance();
+			auto result = wksp->_objectAdd(obj);
+			if (setItCurrent) wksp->_objectActivate(obj->id());
+			return result!=-1;
+
+		// 	if (obj->hasType(CBaseObject::Type::MODEL))
+		// 	{
+		// 		addModel(std::dynamic_pointer_cast<CModel3D>(obj), setItCurrent);
+		// 		return true;
+		// 	}
+		// 	else if (obj->hasType(CBaseObject::Type::IMAGE))
+		// 	{
+		// 		addImage(std::dynamic_pointer_cast<CImage>(obj), false, true);
+		// 		return true;
+		// 	}
+		// 	else
+		// 	{
+		// 		std::shared_ptr<CModel3D> mdl = std::make_shared<CModel3D>();
+		// 		if (obj->hasCategory(CBaseObject::Category::OBJECT))
+		// 		{
+		// 			mdl->addChild(obj);
+		// 			mdl->importChildrenGeometry();
+		// 			addModel(mdl, setItCurrent);
+		// 			return true;
+		// 		}
+		// 		else if (obj->hasCategory(CBaseObject::Category::ANNOTATION))
+		// 		{
+		// 			mdl->addAnnotation(std::dynamic_pointer_cast<CAnnotation>(obj));
+		// 			addModel(mdl, setItCurrent);
+		// 			return true;
+		// 		}
+		// 	}
+		// 	return false;
 		}
 
 		bool addImage(std::shared_ptr<CImage> im, bool showViewer, bool show3d)
@@ -550,34 +555,38 @@ int AP::OBJECT::addChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBase
 	if (child == nullptr) return NO_CURRENT_MODEL;
 	if (obj == nullptr) return NO_CURRENT_MODEL;
 
-	int id = NO_CURRENT_MODEL;
+	auto wksp = CWorkspace::instance();
+	auto result = wksp->_objectAdd(child, obj);
+	return result;
 
-	if (obj->hasCategory(CBaseObject::Category::ANNOTATION))
-	{
-		if (child->hasCategory(CBaseObject::Category::ANNOTATION))
-		{
-			id = std::dynamic_pointer_cast<CAnnotation>(obj)->addAnnotation(std::dynamic_pointer_cast<CAnnotation>(child));
-		}
-	}
-	else if (obj->hasCategory(CBaseObject::Category::OBJECT))
-	{
-		if (child->hasCategory(CBaseObject::Category::ANNOTATION))
-		{
-			id = std::dynamic_pointer_cast<CObject>(obj)->addAnnotation(std::dynamic_pointer_cast<CAnnotation>(child));
-		}
-		else if (child->hasCategory(CBaseObject::Category::OBJECT))
-		{
-			id = std::dynamic_pointer_cast<CObject>(obj)->addChild(child);
-		}
-	}
+	// int id = NO_CURRENT_MODEL;
 
-	if (id > 0)
-	{
-		UI::DOCK::WORKSPACE::addItem(child);
-		UI::updateAllViews();
-	}
+	// if (obj->hasCategory(CBaseObject::Category::ANNOTATION))
+	// {
+	// 	if (child->hasCategory(CBaseObject::Category::ANNOTATION))
+	// 	{
+	// 		id = std::dynamic_pointer_cast<CAnnotation>(obj)->addAnnotation(std::dynamic_pointer_cast<CAnnotation>(child));
+	// 	}
+	// }
+	// else if (obj->hasCategory(CBaseObject::Category::OBJECT))
+	// {
+	// 	if (child->hasCategory(CBaseObject::Category::ANNOTATION))
+	// 	{
+	// 		id = std::dynamic_pointer_cast<CObject>(obj)->addAnnotation(std::dynamic_pointer_cast<CAnnotation>(child));
+	// 	}
+	// 	else if (child->hasCategory(CBaseObject::Category::OBJECT))
+	// 	{
+	// 		id = std::dynamic_pointer_cast<CObject>(obj)->addChild(child);
+	// 	}
+	// }
 
-	return id;
+	// if (id > 0)
+	// {
+	// 	UI::DOCK::WORKSPACE::addItem(child);
+	// 	UI::updateAllViews();
+	// }
+
+	// return id;
 }
 
 
