@@ -2,10 +2,10 @@
 #ifndef _MODEL_H_BY_DP_INCLUDED_
 #define _MODEL_H_BY_DP_INCLUDED_
 
-#include "Global.h"
+//#include "Global.h"
 
 #include "Mesh.h"
-#include "Quaternion.h"
+//#include "Quaternion.h"
 #include "Transform.h"
 
 #include "DPFileInfo.h"
@@ -131,7 +131,7 @@ public:
 	bool switchOption( CModel3D::Opt iOption, CModel3D::Switch iSet );
 	bool testOption( CModel3D::Opt iOption );
 
-	//kolejne do przemyœlenia:
+	//kolejne do przemyï¿½lenia:
 	void prepare();
 	
 	/*deprecated*/ void calcVN();

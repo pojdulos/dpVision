@@ -24,6 +24,8 @@ target_include_directories(dpVisionApi PUBLIC
 target_link_libraries(dpVisionApi
     dpVision::Core
     dpVision::Gui
+    Qt5::Core
+    Qt5::Gui
     Qt5::OpenGL
     Eigen3::Eigen
 )
