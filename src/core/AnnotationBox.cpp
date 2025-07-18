@@ -28,7 +28,7 @@ CAnnotationBox::CAnnotationBox(CAnnotationBox& p) : CAnnotation(p)
 
 std::wstring CAnnotationBox::getInfoRow()
 {
-	std::wstring info = L"";// MinSize: " + std::to_wstring((long long)m_data.size());
+	std::wstring info = L"";// MinSize: " + std::to_wstring((long long)m_pairs.size());
 
 	return info;
 }

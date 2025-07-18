@@ -460,7 +460,11 @@ void DockWidgetWorkspace::addItem(int id, int parentId)
 			else {
 				// dodaj� childa do modelu
 
-				std::shared_ptr<CBaseObject> child = parent->getSomethingWithId(id);
+				std::shared_ptr<CBaseObject> child;
+				if (parent->id() == id)
+					child = parent;
+				else 
+					child = parent->getSomethingWithId(id);
 
 				switch (child->category()) {
 					case CBaseObject::Category::OBJECT:

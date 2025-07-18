@@ -114,7 +114,7 @@ public:
 
 	void deleteSelectedVoxelsVolTK(CVolTK& cloud, CTransform& transform, bool deleteSelected);
 
-	void deleteSelectedVoxels(Volumetric* vol, bool deleteSelected);
+	void deleteSelectedVoxels(std::shared_ptr<Volumetric> vol, bool deleteSelected);
 
 	void deleteSelectedVertices(bool deleteSelected=true);
 

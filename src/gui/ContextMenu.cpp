@@ -320,7 +320,7 @@ void CContextMenu::saveObjAs()
 		else
 		{
 			tmpObj = std::make_shared<CModel3D>();
-			tmpObj->addChild(m_obj);
+			tmpObj->addChild(tmpObj, m_obj);
 			if (tmpObj->save(fileName))
 			{
 				StatusBarManager::setText("Saved: " + fileName);
@@ -403,14 +403,14 @@ void reversePath(std::vector<std::shared_ptr<CBaseObject>>& path, std::shared_pt
 			if (p) p->removeChild(objD->id());
 
 			if (mDop.isIdentity()) {
-				objA->addChild(objD);
+				objA->addChild(objA, objD);
 			}
 			else {
 				std::shared_ptr<CModel3D> objDop = std::make_shared<CModel3D>();
 				objDop->setTransform(mDop);
 				objDop->setLabel("DOPASOWANIE");
-				objA->addChild(objDop);
-				objDop->addChild(objD);
+				objA->addChild(objA, objDop);
+				objDop->addChild(objDop, objD);
 			}
 
 			//CModel3D* objA_inv = new CModel3D();
@@ -444,7 +444,7 @@ bool makeObjectRoot(std::shared_ptr<CObject> m_obj)
 		return false;
 
 	// Zbuduj ścieżkę do korzenia
-	auto path = m_obj->getPathToRoot();
+	auto path = CBaseObject::getPathToRoot(m_obj);
 
 	// Znajdź korzeń drzewa
 	if (path.empty()) // already root
@@ -473,14 +473,14 @@ void CContextMenu::slot_make_me_root()
 		return;
 	}
 
-	std::shared_ptr<CBaseObject> top = m_obj->getRoot();
+	std::shared_ptr<CBaseObject> top = CBaseObject::getRoot(m_obj);
 
 	if (top == m_obj) {
 		QMessageBox::information(0,"","An object is already root,\nso you are not changing anything");
 		return;
 	}
 
-	Eigen::Matrix4d globalM = m_obj->getGlobalTransformationMatrix();
+	Eigen::Matrix4d globalM = CBaseObject::getGlobalTransformationMatrix(m_obj);
 
 	auto wksp = CWorkspace::instance();
 
@@ -500,13 +500,12 @@ void CContextMenu::slot_make_me_root()
 
 #include "GraphViewer.h"
 
+
+
 void CContextMenu::slot_test_graph()
 {
-	static GraphViewer* gv = nullptr;
-
-	if (gv) delete gv;
-	
-	gv = new GraphViewer(m_obj.get());
+	auto* gv = new GraphViewer(m_obj); // bez parenta!
+	gv->setAttribute(Qt::WA_DeleteOnClose, true); // Qt samo usunie obiekt po zamknięciu okna
 	gv->show();
 }
 
@@ -525,7 +524,7 @@ void CContextMenu::slot_make_me_root2()
 	while (top->getParent() != nullptr)
 		top = std::static_pointer_cast<CObject>(top->getParentPtr());
 
-	Eigen::Matrix4d globalM = m_obj->getGlobalTransformationMatrix();
+	Eigen::Matrix4d globalM = CBaseObject::getGlobalTransformationMatrix(m_obj);
 
 	auto wksp = CWorkspace::instance();
 
@@ -551,13 +550,13 @@ void CContextMenu::slot_make_me_root2()
 			tmp->transform().fromEigenMatrix4d(m.inverse());
 			tmp->setLabel("DOPASOWANIE");
 
-			p->addChild(tmp);
+			p->addChild(p, tmp);
 
-			new_parent->addChild(parent);
+			new_parent->addChild(new_parent, parent);
 			new_parent = tmp;
 		}
 		else {
-			new_parent->addChild(parent);
+			new_parent->addChild(new_parent, parent);
 			new_parent = std::dynamic_pointer_cast<CObject>(parent);
 		}
 		parent = grandpa;
@@ -606,8 +605,8 @@ void CContextMenu::slot_repositioning()
 				return;
 			}
 
-			std::shared_ptr<CBaseObject> tgt_top = (wybranyObiekt)?wybranyObiekt->getRoot():nullptr;
-			std::shared_ptr<CBaseObject> top = m_obj->getRoot();
+			std::shared_ptr<CBaseObject> tgt_top = (wybranyObiekt)?CBaseObject::getRoot(wybranyObiekt):nullptr;
+			std::shared_ptr<CBaseObject> top = CBaseObject::getRoot(m_obj);
 
 			if (top == tgt_top) {
 				QMessageBox::information(0,"","An object cannot be a descendant of its own descendant");
@@ -621,7 +620,7 @@ void CContextMenu::slot_repositioning()
 				return;
 			}
 
-			Eigen::Matrix4d globalM = m_obj->getGlobalTransformationMatrix();
+			Eigen::Matrix4d globalM = CBaseObject::getGlobalTransformationMatrix(m_obj);
 
 			CWorkspace::instance()->_objectRemove(std::static_pointer_cast<CModel3D>(top));
 
@@ -632,7 +631,7 @@ void CContextMenu::slot_repositioning()
 					if (keep_pos && ! m_obj->hasType(CObject::Type::MODEL)) // musze dodać macierz dopasowujacą
 					{
 						std::shared_ptr<CModel3D> mdl = std::make_shared<CModel3D>();
-						mdl->addChild(m_obj);
+						mdl->addChild(mdl, m_obj);
 						mdl->setLabel("<**>");
 						mdl->importChildrenGeometry();
 						AP::OBJECT::addChild(wybranyObiekt, mdl);
@@ -806,7 +805,7 @@ void CContextMenu::setOfFacesToMesh()
 		std::shared_ptr<CMesh> mesh = std::static_pointer_cast<CAnnotationSetOfFaces>(m_obj)->toMesh();
 
 		std::shared_ptr<CModel3D> obj = std::make_shared<CModel3D>();
-		obj->addChild(mesh);
+		obj->addChild(obj, mesh);
 		obj->importChildrenGeometry();
 		AP::WORKSPACE::addModel(obj);
 	}
@@ -911,11 +910,11 @@ void CContextMenu::slot_copy_frames_as_models()
 			mdl->setLabel(fv.getLabel());
 
 			for (auto k : r->children()) {
-				mdl->addChild(k.second->getCopy());
+				mdl->addChild(mdl, k.second->getCopy());
 			}
 
 			for (auto k : r->annotations()) {
-				mdl->addAnnotation(std::static_pointer_cast<CAnnotation>(k.second->getCopy()));
+				mdl->addAnnotation(mdl, std::static_pointer_cast<CAnnotation>(k.second->getCopy()));
 			}
 
 			std::shared_ptr<CObject> p = std::dynamic_pointer_cast<CObject>(r->getParentPtr());

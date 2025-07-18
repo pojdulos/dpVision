@@ -102,6 +102,8 @@ public:
 
 	virtual ~CBaseObject(void);
 
+	virtual void updateChildrenParentPointers(const std::shared_ptr<CBaseObject>& self) {}
+	virtual std::shared_ptr<CBaseObject> getCopy() { return std::make_shared<CBaseObject>(*this); }
 
 	void* operator new(std::size_t) = delete;
 	//void operator delete(void*) = delete;
@@ -125,15 +127,8 @@ public:
 
 	//virtual CBaseObject *getCopy() { return new CBaseObject( *this ); }
 
-	virtual std::shared_ptr<CBaseObject> getCopy() { return std::make_shared<CBaseObject>(*this); }
 
-	virtual std::shared_ptr<CBaseObject> getSomethingWithId(int id)
-	{
-		if (m_Id == id)
-			return shared_from_this();
-		else
-			return nullptr; 
-	}
+	virtual std::shared_ptr<CBaseObject> getSomethingWithId(int id) { return nullptr; }
 
 	virtual void switchOpt(int /*key*/, int /*val*/) {};
 
@@ -169,29 +164,15 @@ public:
 	}
 
 
-	std::shared_ptr<CBaseObject> getParentPtr()
-	{
-		if (m_parent) {
-			try {
-				return m_parent->shared_from_this();
-			}
-			catch (...) {
-				return nullptr;
-			}
-		}
-		return nullptr; 
-	};
-
-	CBaseObject* getParent() { return m_parent; };
+	std::shared_ptr<CBaseObject> getParentPtr() { return m_parent.lock(); }
+	CBaseObject* getParent() {	return m_parent.lock().get(); };
 	
-	void setParent(std::shared_ptr<CBaseObject> p) { m_parent = p.get(); };
-	void setParent(CBaseObject *p) { m_parent = p; };
+	void setParent(std::shared_ptr<CBaseObject> p) { m_parent = p; };
+	//void setParent(CBaseObject *p) { m_parent = p; };
 	void setParent(int objId);
 
-
-	std::vector<std::shared_ptr<CBaseObject>> getPathToRoot();
-
-	std::shared_ptr<CBaseObject> getRoot();
+	static std::vector<std::shared_ptr<CBaseObject>> getPathToRoot(std::shared_ptr<CBaseObject>);
+	static std::shared_ptr<CBaseObject> getRoot(std::shared_ptr<CBaseObject>);
 
 	virtual void setVisible(bool v) { m_showSelf = v; };
 
@@ -205,7 +186,7 @@ public:
 	virtual void showChildren(bool show, QSet<CBaseObject::Type> inc = {}, QSet<CBaseObject::Type> exc = {}) {};
 
 	int id() { return m_Id; };
-	int parentId() { return m_parent ? m_parent->id() : NO_CURRENT_MODEL; };
+	int parentId() { if (auto o = m_parent.lock()) return o->id(); else return NO_CURRENT_MODEL; };
 
 	virtual inline bool setSelected(bool sel) { return m_selected = sel; };
 	virtual inline bool isSelected() { return m_selected; };
@@ -216,7 +197,8 @@ public:
 
 	virtual bool hasTransformation() { return false; };
 	virtual Eigen::Matrix4d getTransformationMatrix() {	return Eigen::Matrix4d::Identity();	};
-	virtual Eigen::Matrix4d getGlobalTransformationMatrix();
+	
+	static Eigen::Matrix4d getGlobalTransformationMatrix(std::shared_ptr<CBaseObject>);
 	
 	//std::string getLabel() { return m_label.toStdString(); };
 	const QString& getLabel() { return m_label; };
@@ -253,7 +235,7 @@ protected:
 	QSet<QString> m_keywords;
 	QString m_path;
 
-	CBaseObject* m_parent;
+	std::weak_ptr<CBaseObject> m_parent;
 
 	bool m_selected;
 

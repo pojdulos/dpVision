@@ -103,13 +103,14 @@ std::shared_ptr<CModel3D> CParserDPVISION::load(const QString path, bool wait, s
 					/* ZMODYFIKOWAĆ GDY BEDZIE MOŻLIWOŚĆ DODAWANIA INNYCH OBIEKTOW DO WORKSPACE */
 
 					std::shared_ptr<CModel3D> tmp = std::make_shared<CModel3D>();
-					tmp->addChild(o.ptr);
+					tmp->addChild(tmp, o.ptr);
 					modele.push_back(tmp);
 				} 
 			}
 			else
 			{
-				std::dynamic_pointer_cast<CObject>(it->ptr)->addChild(o.ptr);
+				if (auto shp = std::dynamic_pointer_cast<CObject>(it->ptr))
+					CObject::addChild(shp, o.ptr);
 			}
 		}
 		else if (o.ptr->hasCategory(CBaseObject::Category::ANNOTATION))
@@ -120,7 +121,7 @@ std::shared_ptr<CModel3D> CParserDPVISION::load(const QString path, bool wait, s
 			if (it != mapaObiektow.end())
 			{
 				auto ob = std::dynamic_pointer_cast<CObject>(it->ptr);
-				ob->addAnnotation(an);
+				ob->addAnnotation(ob, an);
 			}
 		}
 	}

@@ -54,7 +54,11 @@ public:
 	virtual ~CMovement() { m_seqlist.clear(); m_animationTimer.stop(); }
 
 	inline int type() override { return CObject::Type::MOVEMENT; };
-	virtual std::shared_ptr<CBaseObject> getCopy() override { return std::make_shared<CMovement>(*this); };
+	virtual std::shared_ptr<CBaseObject> getCopy() override {
+		auto obj = std::make_shared<CMovement>(*this);
+		updateChildrenParentPointers(obj);
+		return obj;
+	};
 
 	void info(std::wstring i[4]) override;
 	std::wstring infoRow() override;

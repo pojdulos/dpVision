@@ -5,13 +5,14 @@
 #include "GraphNode.h"
 #include "GraphEdge.h"
 #include "Object.h"
+#include "dpLog.h"
 
-GraphViewer::GraphViewer(CBaseObject* root) : QGraphicsView(), m_obj(root) {
+GraphViewer::GraphViewer(std::shared_ptr<CBaseObject> root) : QGraphicsView(), m_obj(root) {
 	m_scene = new QGraphicsScene(0, 0, 2400, 1200);
-	GraphNode* n = new GraphNode((qreal)10.0, (qreal)10.0, m_obj);
+	GraphNode* n = new GraphNode((qreal)10.0, (qreal)10.0, m_obj.lock().get());
 
 	m_scene->addItem(n);
-	layoutTree(n, (CObject*)m_obj, 0, 50, m_scene);
+	layoutTree(n, (CObject*)m_obj.lock().get(), 0, 50, m_scene);
 
 	// Na koñcu, po dodaniu wszystkich itemów i ustawieniu pozycji:
 	double margines = 40.0;
@@ -22,6 +23,10 @@ GraphViewer::GraphViewer(CBaseObject* root) : QGraphicsView(), m_obj(root) {
 	this->setScene(m_scene);
 	this->setAttribute(Qt::WA_DeleteOnClose); // automatycznie siê usunie po zamkniêciu
 	this->resize(600, 400);
+}
+
+GraphViewer::~GraphViewer() {
+	dpDebug() << "destructor ~GraphViewer";
 }
 
 void GraphViewer::sceneAddKid(QGraphicsScene* scene, GraphNode* parentnode, CObject* kid)

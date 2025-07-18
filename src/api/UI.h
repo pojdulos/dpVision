@@ -172,7 +172,7 @@ namespace UI
          * @param dir Direction to view from (1-front, 2-back, 3-left, 4-right, 5-top, 6-bottom)
          * @param obj Optional object to center on (nullptr centers on entire scene)
          */
-		DPVISION_EXPORT void setView(int dir, CModel3D* obj = nullptr);
+		DPVISION_EXPORT void setView(int dir, std::shared_ptr<CModel3D> obj = nullptr);
 
         /**
          * @brief Gets current GLViewer instance

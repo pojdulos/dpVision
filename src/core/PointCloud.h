@@ -81,7 +81,11 @@ public:
 	inline int type() override { return CObject::Type::CLOUD; };
 	std::wstring infoRow() override;
 
-	virtual std::shared_ptr<CBaseObject> getCopy() override { return std::make_shared<CPointCloud>(*this); };
+	virtual std::shared_ptr<CBaseObject> getCopy() override {
+		auto obj = std::make_shared<CPointCloud>(*this); 
+		updateChildrenParentPointers(obj);
+		return obj;
+	};
 
 	//inline CVertex &vertex(size_t i) { return m_vertices.at(i); };
 	//inline CRGBA &vertexColor(size_t i) { return m_vcolors.at(i); };

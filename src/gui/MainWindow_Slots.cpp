@@ -548,7 +548,7 @@ void CMainWindow::cameraResetPosition()
 }
 
 
-void CMainWindow::actionLookDir(int direction, CModel3D* obj)
+void CMainWindow::actionLookDir(int direction, std::shared_ptr<CModel3D> obj)
 {
 	if ((direction < 1) || (direction > 6)) return;
 
@@ -586,11 +586,11 @@ void CMainWindow::actionLookDir(int direction, CModel3D* obj)
 	
 	if (obj != nullptr)
 	{
-		CModel3D* current = obj;
+		auto current = obj;
 
 		if (current->getBoundingBox().isInvalid()) return;
 
-		Eigen::Matrix4d MT = current->getGlobalTransformationMatrix();
+		Eigen::Matrix4d MT = CBaseObject::getGlobalTransformationMatrix(current);
 
 		for (CPoint3d& corner : current->getCorners())
 		{
@@ -755,7 +755,7 @@ void CMainWindow::actionLookDir()
 		dir = 6;
 	}
 
-	actionLookDir(dir, AP::WORKSPACE::getCurrentModel().get());
+	actionLookDir(dir, AP::WORKSPACE::getCurrentModel());
 }
 
 void CMainWindow::actionSelectSelectionDelete()

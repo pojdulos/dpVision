@@ -37,7 +37,6 @@ public:
 	double getLength() { return m_length; };
 	virtual std::wstring getTypeWSTR() { return L"v_path"; };
 	virtual std::wstring getInfoRow();
-	virtual void renderSelf() override;
 	ListOfVIndices::iterator cyclicNext(ListOfVIndices::iterator current);
 	ListOfVIndices::iterator cyclicPrev(ListOfVIndices::iterator current);
 };

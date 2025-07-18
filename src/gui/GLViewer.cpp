@@ -550,12 +550,12 @@ int glhProjectf(double objx, double objy, double objz, double* modelview, double
 #include <omp.h>
 #include <GL/glu.h>
 
-void GLViewer::deleteSelectedVoxels(Volumetric* vol, bool deleteSelected)
+void GLViewer::deleteSelectedVoxels(std::shared_ptr<Volumetric> vol, bool deleteSelected)
 {
 	auto win = CMainWindow::instance();
 	auto progress = win->progressIndicator;
 
-	Eigen::Matrix4d m1 = vol->getGlobalTransformationMatrix(); // point to workspace
+	Eigen::Matrix4d m1 = CBaseObject::getGlobalTransformationMatrix(vol); // point to workspace
 	Eigen::Matrix4d m2 = m_transform.toEigenMatrix4d(); // workspace to viewer
 
 	Eigen::Matrix4d M = m2 * m1;
@@ -665,9 +665,9 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 		{
 			if (child.second->getSelfVisibility())
 			{
-				if (child.second->hasType(CObject::VOLUMETRIC_NEW))
+				if (auto vsh = std::dynamic_pointer_cast<Volumetric>(child.second))
 				{
-					deleteSelectedVoxels((Volumetric*)child.second.get(), deleteSelected);
+					deleteSelectedVoxels(vsh, deleteSelected);
 				}
 				else if (child.second->hasType(CObject::VOLTK))
 				{
@@ -676,7 +676,7 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 				else if (child.second->hasType(CObject::CLOUD) || child.second->hasType(CObject::ORDEREDCLOUD) || child.second->hasType(CObject::MESH))
 				{
 
-					CPointCloud* cloud = (CPointCloud*)child.second.get();
+					auto cloud = std::dynamic_pointer_cast<CPointCloud>(child.second);
 
 					int size = cloud->vertices().size();
 					int step = size / 100;
@@ -692,7 +692,7 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 
 					std::map<size_t, size_t> idxMap;
 
-					Eigen::Matrix4d m1 = cloud->getGlobalTransformationMatrix(); // point to workspace
+					Eigen::Matrix4d m1 = CBaseObject::getGlobalTransformationMatrix(cloud); // point to workspace
 					Eigen::Matrix4d m2 = m_transform.toEigenMatrix4d(); // workspace to viewer
 					
 					m2.block<3, 1>(0, 3) -= cam.m_pos.toVector3();
@@ -747,9 +747,8 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 						//printf("Koniec iteracji %d przez wątek %d\n", i, omp_get_thread_num());
 					}
 					
-					if (cloud->hasType(CObject::MESH))
+					if (auto mesh = std::dynamic_pointer_cast<CMesh>(cloud))
 					{
-						CMesh* mesh = (CMesh*)cloud;
 						if (mesh->hasFaces())
 						{
 							mesh->fnormals().clear();

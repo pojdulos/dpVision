@@ -206,7 +206,7 @@ int CMovement::increaseKey(bool _loop)
 
 std::wstring CMovement::infoRow()
 {
-	//size_t n = m_data.size();
+	//size_t n = m_pairs.size();
 	//size_t np = m_annotations.size();
 	std::wstring ret = L"Movement (id:"+ std::to_wstring(m_Id) + L")";
 	

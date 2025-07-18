@@ -18,7 +18,7 @@ CAnnotationElasticPath::CAnnotationElasticPath() {
 	renderer_ = std::make_shared<IAnnotationElasticPathRenderer>();
 }
 
-CAnnotationElasticPath::CAnnotationElasticPath(CModel3D* m) {
+CAnnotationElasticPath::CAnnotationElasticPath(std::shared_ptr<CModel3D> m) {
 	setLabel("path");
 	m_parent = m;
 	m_color = CRGBA(1.0f, 0.0f, 0.0f, 1.0f);

@@ -133,8 +133,8 @@ CVolTK::CVolTK(const CVolTK& src, uint16_t lowerBound, uint16_t upperBound)
 
 	colorFilters = src.colorFilters;
 
-	m_currentIntensityRange.upper = m_dataIntensityRange.upper = 0xffff;// m_data.crbegin()->first;
-	m_currentIntensityRange.lower = m_dataIntensityRange.lower = 0;// m_data.cbegin()->first;
+	m_currentIntensityRange.upper = m_dataIntensityRange.upper = 0xffff;// m_pairs.crbegin()->first;
+	m_currentIntensityRange.lower = m_dataIntensityRange.lower = 0;// m_pairs.cbegin()->first;
 
 
 	m_Min = src.m_Min;
@@ -173,8 +173,8 @@ CVolTK::CVolTK(const CVolTK& src, CPoint3s mB, CPoint3s mE, uint16_t lowerC, uin
 
 	colorFilters = src.colorFilters;
 
-	m_currentIntensityRange.upper = m_dataIntensityRange.upper = 0xffff;// m_data.crbegin()->first;
-	m_currentIntensityRange.lower = m_dataIntensityRange.lower = 0;// m_data.cbegin()->first;
+	m_currentIntensityRange.upper = m_dataIntensityRange.upper = 0xffff;// m_pairs.crbegin()->first;
+	m_currentIntensityRange.lower = m_dataIntensityRange.lower = 0;// m_pairs.cbegin()->first;
 
 	m_Min = mB;
 	m_Max = mE - CPoint3s(1, 1, 1);
@@ -203,7 +203,9 @@ CVolTK::~CVolTK(void)
 
 std::shared_ptr<CBaseObject> CVolTK::getCopy()
 {
-	return std::make_shared<CVolTK>(*this, m_b, m_e, m_currentIntensityRange.lower, m_currentIntensityRange.upper+1);
+	auto obj = std::make_shared<CVolTK>(*this, m_b, m_e, m_currentIntensityRange.lower, m_currentIntensityRange.upper+1);
+	updateChildrenParentPointers(obj);
+	return obj;
 }
 
 CVolTK* CVolTK::getPart(CPoint3s min, CPoint3s max)
@@ -1284,8 +1286,8 @@ std::shared_ptr<CMesh> CVolTK::createMesh(int winMin, int winMax, CRGBA col)
 	if (winMin < m_currentIntensityRange.lower) winMin = m_currentIntensityRange.lower;
 	if (winMax > m_currentIntensityRange.upper) winMax = m_currentIntensityRange.upper;
 
-	//CVolTK::DisplayData::iterator wB = m_data.lower_bound(winMin);
-	//CVolTK::DisplayData::iterator wE = m_data.upper_bound(winMax);
+	//CVolTK::DisplayData::iterator wB = m_pairs.lower_bound(winMin);
+	//CVolTK::DisplayData::iterator wE = m_pairs.upper_bound(winMax);
 
 	std::set<CPoint3s> sasiedztwo;
 
@@ -1361,7 +1363,7 @@ std::shared_ptr<CModel3D> CVolTK::toMesh()
 		{
 			if (f.second.first)
 			{
-				newModel->addChild(createMesh(wB, wE, f.second.second));
+				newModel->addChild(newModel, createMesh(wB, wE, f.second.second));
 			}
 			wB = wE;
 		}
@@ -1372,7 +1374,7 @@ std::shared_ptr<CModel3D> CVolTK::toMesh()
 	wE = m_currentIntensityRange.upper;
 	if (wE > wB)
 	{
-		newModel->addChild(createMesh(wB, wE, CRGBA(1.0f, 1.0f, 1.0f, 0.5f)));
+		newModel->addChild(newModel, createMesh(wB, wE, CRGBA(1.0f, 1.0f, 1.0f, 0.5f)));
 	}
 
 	if (prg_) prg_->hide();
@@ -1390,8 +1392,8 @@ std::shared_ptr<CPointCloud> CVolTK::createCloud(uint16_t winMin, uint16_t winMa
 	if (winMin < m_currentIntensityRange.lower) winMin = m_currentIntensityRange.lower;
 	if (winMax > m_currentIntensityRange.upper) winMax = m_currentIntensityRange.upper;
 
-//	CVolTK::DisplayData::iterator wB = m_data.lower_bound(winMin);
-//	CVolTK::DisplayData::iterator wE = m_data.upper_bound(winMax);
+//	CVolTK::DisplayData::iterator wB = m_pairs.lower_bound(winMin);
+//	CVolTK::DisplayData::iterator wE = m_pairs.upper_bound(winMax);
 
 //	CVolTK::DisplayData::iterator itz;
 
@@ -1436,7 +1438,7 @@ std::shared_ptr<CModel3D> CVolTK::toCloud()
 			{
 				if (f.second.first)
 				{
-					newModel->addChild(createCloud(wB, wE, f.second.second));
+					newModel->addChild(newModel, createCloud(wB, wE, f.second.second));
 				}
 				wB = wE;
 			}
@@ -1447,7 +1449,7 @@ std::shared_ptr<CModel3D> CVolTK::toCloud()
 		wE = m_currentIntensityRange.upper;
 		if (wE > wB)
 		{
-			newModel->addChild(createCloud(wB, wE, CRGBA(1.0f, 1.0f, 1.0f, 0.5f)));
+			newModel->addChild(newModel, createCloud(wB, wE, CRGBA(1.0f, 1.0f, 1.0f, 0.5f)));
 		}
 
 		if (prg_) prg_->hide();

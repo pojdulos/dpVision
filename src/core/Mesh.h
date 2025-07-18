@@ -80,7 +80,11 @@ public:
 
 	inline int type() override { return CObject::Type::MESH; };
 
-	virtual std::shared_ptr<CBaseObject> getCopy() override { return std::make_shared<CMesh>(*this); };
+	virtual std::shared_ptr<CBaseObject> getCopy() override {
+		auto obj = std::make_shared<CMesh>(*this);
+		updateChildrenParentPointers(obj);
+		return obj;
+	};
 	std::wstring infoRow() override;
 	void info(std::wstring i[4]) override;
 

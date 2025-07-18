@@ -25,7 +25,9 @@ public:
 
 	virtual std::shared_ptr<CBaseObject> getCopy() override
 	{
-		return std::make_shared<CAnnotationPlane>(*this);
+		auto obj = std::make_shared<CAnnotationPlane>(*this);
+		updateChildrenParentPointers(obj);
+		return obj;
 	}
 
 	void setSize(double s) { m_size = s; };

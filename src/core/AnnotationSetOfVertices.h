@@ -35,5 +35,4 @@ public:
 	virtual std::wstring getTypeWSTR() override { return L"set of v-indices"; };
 	virtual std::wstring getInfoRow() override;
 	QString toString(QString prefix = "", QString suffix = "", QString separator = " ");
-	virtual void renderSelf() override;
 };

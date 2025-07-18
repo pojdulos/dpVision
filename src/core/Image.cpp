@@ -173,46 +173,6 @@ uint32_t CImage::pixel( int x, int y ) const { return QImage::pixel(x, y); }
 void CImage::setPixel(int x, int y, uint32_t pixel) { QImage::setPixel(x, y, pixel); }
 CImage::Format CImage::format() const { return QImage::format(); }
 
-void CImage::renderSelf()
-{
-	if (m_showSelf)
-	{
-		QOpenGLTexture ogltx(*this);
-
-		glLoadName(m_Id);
-		glPushName(m_Id);
-
-		glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-
-		glBindTexture(GL_TEXTURE_2D, ogltx.textureId());
-		glEnable(GL_TEXTURE_2D);
-
-		glPolygonMode(GL_FRONT, GL_FILL);
-		glPolygonMode(GL_BACK, GL_FILL);
-
-		glBegin(GL_QUADS);
-
-		glTexCoord2f(0.0, 0.0); 		glVertex2f(-img3d_half_width,  img3d_half_height);
-		glTexCoord2f(1.0, 0.0); 		glVertex2f( img3d_half_width,  img3d_half_height);
-		glTexCoord2f(1.0, 1.0); 		glVertex2f( img3d_half_width, -img3d_half_height);
-		glTexCoord2f(0.0, 1.0); 		glVertex2f(-img3d_half_width, -img3d_half_height);
-
-		glEnd();
-
-
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_COLOR_MATERIAL);
-
-		glPopAttrib();
-
-		glPopName();
-		glLoadName(0);
-
-		if (bDrawBB) renderBoundingBox();
-	}
-}
-
 
 //void CImage::info(std::wstring i[4])
 //{

@@ -135,7 +135,7 @@ void TreeSelectDialog::onItemSelectionChanged()
 
         selectedObjectHandle = item->data(0, Qt::UserRole).value<std::shared_ptr<CBaseObject>>();
 
-        bool disable = selectedObjectHandle && (selectedObjectHandle->getRoot() == m_obj->getRoot());
+        bool disable = selectedObjectHandle && (CBaseObject::getRoot(selectedObjectHandle) == CBaseObject::getRoot(m_obj));
 
         rearrangeButton->setDisabled(disable);
     }

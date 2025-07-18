@@ -424,14 +424,14 @@ std::wstring CModel3D::infoRow()
 //
 //	CBaseObject::Children newChildren;
 //
-//	for (CBaseObject::Children::iterator it = m_data.begin(); it != m_data.end(); it++)
+//	for (CBaseObject::Children::iterator it = m_pairs.begin(); it != m_pairs.end(); it++)
 //	{
 //		int newId = getNewId();
 //		it->second->setId(newId);
 //		newChildren[newId] = it->second;
 //	}
 //
-//	m_data = newChildren;
+//	m_pairs = newChildren;
 //
 //	CModel3D::Annotations newAnnot;
 //	for (CModel3D::Annotations::iterator it = m_annotations.begin(); it != m_annotations.end(); it++)
@@ -449,7 +449,9 @@ std::wstring CModel3D::infoRow()
 
 std::shared_ptr<CBaseObject> CModel3D::getCopy()
 {
-	return std::make_shared<CModel3D>(*this);
+	auto obj = std::make_shared<CModel3D>(*this);
+	updateChildrenParentPointers(obj);
+	return obj;
 }
 
 void CModel3D::info(std::wstring i[4])
@@ -473,7 +475,7 @@ void CModel3D::calcVN()
 //{
 //	unsigned int newId = this->m_Id + 1;
 //
-//	while ((m_annotations.find(newId) != m_annotations.end()) || (m_data.find(newId) != m_data.end())) newId++;
+//	while ((m_annotations.find(newId) != m_annotations.end()) || (m_pairs.find(newId) != m_pairs.end())) newId++;
 //
 //	return newId;
 //}
@@ -587,9 +589,19 @@ bool CModel3D::save(const QString path)
 {
 	CParser* parser = CFileConnector::getSaveParser( path );
 
+	bool result = false;
 	if (NULL != parser)
 	{
-		bool result = parser->save(std::dynamic_pointer_cast<CModel3D>(this->shared_from_this()), path);
+		std::shared_ptr<CBaseObject> this_shared;
+		try {
+			this_shared = shared_from_this();
+			result = parser->save(std::dynamic_pointer_cast<CModel3D>(this_shared), path);
+		}
+		catch (const std::bad_weak_ptr&) {
+			dpError() << "SHARED_FROM_THIS (CModel3D::save)!!!";
+			this_shared = nullptr;
+		}
+
 
 		if (!parser->inPlugin()) delete parser;
 

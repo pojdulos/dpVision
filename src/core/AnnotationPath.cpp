@@ -89,7 +89,7 @@ void CAnnotationPath::renderSelf()
 
 		CVertex v1 = *ip;
 
-		while (++ip != this->m_data.end())
+		while (++ip != this->m_pairs.end())
 		{
 			CVertex v2 = *ip;
 

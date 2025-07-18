@@ -608,7 +608,7 @@ void AP::OBJECT::moveTo(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseO
 
 		if (oldParent != nullptr)
 		{
-			t0 = CTransform(oldParent->getGlobalTransformationMatrix());
+			t0 = CTransform(CBaseObject::getGlobalTransformationMatrix(oldParent));
 			AP::OBJECT::removeChild(oldParent, obj);
 		}
 		else
@@ -624,12 +624,12 @@ void AP::OBJECT::moveTo(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseO
 
 			if (obj->hasCategory(CBaseObject::OBJECT))
 			{
-				newmodel->addChild(obj);
+				newmodel->addChild(newmodel, obj);
 				newmodel->importChildrenGeometry();
 			}
 			else if (obj->hasCategory(CBaseObject::ANNOTATION))
 			{
-				newmodel->addAnnotation(std::dynamic_pointer_cast<CAnnotation>(obj));
+				newmodel->addAnnotation(newmodel, std::dynamic_pointer_cast<CAnnotation>(obj));
 			}
 
 			if (newParent == nullptr) // copyToNew
@@ -640,7 +640,7 @@ void AP::OBJECT::moveTo(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseO
 			}
 			else // copyTo existing
 			{
-				CTransform t1(newParent->getGlobalTransformationMatrix());
+				CTransform t1(CBaseObject::getGlobalTransformationMatrix(newParent));
 				CTransform ft = CTransform::fromTo(t0, t1);
 
 				newmodel->setTransform(ft);
@@ -681,7 +681,7 @@ void AP::OBJECT::copyTo(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseO
 		{
 			CTransform t0;
 			if (obj->getParent() != nullptr)
-				t0 = CTransform(obj->getParent()->getGlobalTransformationMatrix());
+				t0 = CTransform(CBaseObject::getGlobalTransformationMatrix(obj->getParentPtr()));
 
 			std::shared_ptr<CModel3D> newmodel = std::make_shared<CModel3D>();
 			newmodel->setLabel("<=>");
@@ -691,21 +691,21 @@ void AP::OBJECT::copyTo(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseO
 			{
 				if (kopia->hasCategory(CBaseObject::OBJECT))
 				{
-					newmodel->addChild(kopia);
+					newmodel->addChild(newmodel, kopia);
 					newmodel->importChildrenGeometry();
 					newmodel->setTransform(t0);
 					AP::WORKSPACE::addModel(newmodel);
 				}
 				else if (kopia->hasCategory(CBaseObject::ANNOTATION))
 				{
-					newmodel->addAnnotation(std::dynamic_pointer_cast<CAnnotation>(kopia));
+					newmodel->addAnnotation(newmodel, std::dynamic_pointer_cast<CAnnotation>(kopia));
 					newmodel->setTransform(t0);
 					AP::WORKSPACE::addModel(newmodel);
 				}
 			}
 			else // copyTo existing
 			{
-				CTransform t1(newParent->getGlobalTransformationMatrix());
+				CTransform t1(CBaseObject::getGlobalTransformationMatrix(newParent));
 				CTransform ft = CTransform::fromTo(t0, t1);
 
 				if (ft.toQMatrix4x4().isIdentity())
@@ -715,7 +715,7 @@ void AP::OBJECT::copyTo(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseO
 				}
 				else
 				{
-					newmodel->addChild(kopia);
+					newmodel->addChild(newmodel, kopia);
 					newmodel->importChildrenGeometry();
 					newmodel->setTransform(ft);
 

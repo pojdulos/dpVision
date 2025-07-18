@@ -7,7 +7,7 @@
 
 //void CWorkspaceFile::saveDPW(CWorkspace & wksp, std::wstring p)
 //{
-//	int lb = wksp.m_data.size();
+//	int lb = wksp.m_pairs.size();
 //	const char * path = UI::wstr2str(p).c_str();
 //	
 //	char section[255];
@@ -16,7 +16,7 @@
 //	sprintf(value, "%d", lb);
 //	WritePrivateProfileStringA("workspace", "count", value, path);
 //
-//	for (std::map<int, CModel3D*>::iterator it = wksp.m_data.begin(); it != wksp.m_data.end(); it++)
+//	for (std::map<int, CModel3D*>::iterator it = wksp.m_pairs.begin(); it != wksp.m_pairs.end(); it++)
 //	{
 //		sprintf(section, "model_%d", (*it).second->id());
 //		WritePrivateProfileStringA(section, "filename", (*it).second->pathA().c_str(), path);

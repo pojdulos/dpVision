@@ -25,7 +25,10 @@ public:
 
 	virtual std::shared_ptr<CBaseObject> getCopy() override
 	{
-		return std::make_shared<CAnnotationTriangle>(*this);
+		auto obj = std::make_shared<CAnnotationTriangle>(*this);
+		updateChildrenParentPointers(obj);
+		return obj;
+
 	}
 
 	CPoint3d &C() { return m_pC; }

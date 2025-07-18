@@ -21,11 +21,14 @@ public:
 
 	CAnnotationSetOfFaces( const SetOfFIndices& list );;
 
-	~CAnnotationSetOfFaces() override { SetOfFIndices::clear(); } // m_data.clear(); };
+	~CAnnotationSetOfFaces() override { SetOfFIndices::clear(); } // m_pairs.clear(); };
 
 	virtual std::shared_ptr<CBaseObject> getCopy() override
 	{
-		return std::make_shared<CAnnotationSetOfFaces>(*this);
+		auto obj = std::make_shared<CAnnotationSetOfFaces>(*this);
+		updateChildrenParentPointers(obj);
+		return obj;
+
 	}
 
 	CAnnotationSetOfFaces& operator=(const CAnnotationSetOfFaces& p)
@@ -66,8 +69,6 @@ public:
 	virtual std::wstring getInfoRow();
 	
 	QString toString(QString prefix = "", QString suffix = "", QString separator = " ");
-	
-	virtual void renderSelf() override;
 };
 
 

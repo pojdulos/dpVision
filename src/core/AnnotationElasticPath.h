@@ -13,7 +13,7 @@ public:
 
 	CAnnotationElasticPath();;
 	
-	CAnnotationElasticPath( CModel3D *m );;
+	CAnnotationElasticPath(std::shared_ptr<CModel3D> m );;
 
 	~CAnnotationElasticPath(void) { m_data.clear(); };
 

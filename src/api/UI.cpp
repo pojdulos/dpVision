@@ -577,7 +577,7 @@ CTransform* UI::CAMERA::transform()
 }
 
 
-void UI::CAMERA::setView(int dir, CModel3D* obj)
+void UI::CAMERA::setView(int dir, std::shared_ptr<CModel3D> obj)
 {
 	AP::mainWin().actionLookDir(dir, obj);
 }

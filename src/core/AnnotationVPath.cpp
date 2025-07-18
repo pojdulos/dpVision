@@ -57,8 +57,6 @@ CAnnotationVPath::CAnnotationVPath(ListOfVIndices& list, std::shared_ptr<CBaseOb
 }
 
 
-
-
 std::wstring CAnnotationVPath::getInfoRow()
 {
 	std::wstring info = L"Length: " + std::to_wstring(m_length) + L" Size: " + std::to_wstring((long long) size()) + L" points.";
@@ -66,61 +64,6 @@ std::wstring CAnnotationVPath::getInfoRow()
 	return info;
 }
 
-void CAnnotationVPath::renderSelf()
-{
-	if (m_parent == nullptr) return;
-	
-	if (m_parent->category() != CBaseObject::Category::OBJECT) return;
-
-	if (this->size() > 1)
-	{
-		auto mesh = std::dynamic_pointer_cast<CMesh>(((CObject*)m_parent)->getChild());
-
-		glPushMatrix();
-		glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-		glDisable(GL_TEXTURE_2D);
-
-		glPolygonMode(GL_FRONT, GL_LINE);
-		glPolygonMode(GL_BACK, GL_LINE);
-		glEnable(GL_COLOR_MATERIAL);
-		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-
-		if (m_selected)
-		{
-			glLineWidth(5.0);
-			glColor4ubv( m_selcolor.V() );
-		}
-		else
-		{
-			glLineWidth(3.0);
-			glColor4ubv( m_color.V() );
-		}
-
-		glBegin(GL_LINES);
-
-		ListOfVIndices::iterator ip = this->begin();
-
-		CVertex v1 = mesh->vertices()[*ip];
-
-		while (++ip != this->end())
-		{
-			CVertex v2 = mesh->vertices()[*ip];
-
-			glVertex3fv( v1.toVector() );
-			glVertex3fv( v2.toVector() );
-
-			v1 = v2;
-		}
-
-		glEnd();
-		
-		glDisable(GL_COLOR_MATERIAL);
-	
-		glPopAttrib();
-		glPopMatrix();
-	}
-}
 
 
 ListOfVIndices::iterator CAnnotationVPath::cyclicNext(ListOfVIndices::iterator current)

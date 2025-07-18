@@ -519,7 +519,7 @@ size_t CParserDICOM::Run()
 
 	//volum->m_minDisplWin = 600.0f;
 
-	m_model->addChild(volum);
+	m_model->addChild(m_model, volum);
 	m_model->importChildrenGeometry();
 
 	return volum->layers() * volum->rows() * volum->columns();

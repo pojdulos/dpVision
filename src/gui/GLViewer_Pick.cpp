@@ -387,7 +387,7 @@ void GLViewer::PickMeshPoint(double xx, double yy, std::shared_ptr<CModel3D> obj
 			{
 				std::shared_ptr<CAnnotationPoint> pt = std::make_shared<CAnnotationPoint>(IntersectionPoint);
 
-				pt->setParent(obj->shared_from_this());
+				pt->setParent(obj);
 
 				if (AP::mainApp().bPickSnap)
 				{

@@ -64,7 +64,7 @@ public:
 	void copyFrom(const RAWdicomData& src, int flag = 0);
 
 	//WORD& operator()(short x, short y, short z) {
-	//	return m_data[idx(x, y, z)];
+	//	return m_pairs[idx(x, y, z)];
 	//};
 
 	inline WORD* layer(short z) { return &m_data[idx(0, 0, z)]; }
@@ -76,16 +76,16 @@ public:
 	//WORD get0based(short x, short y, short z) {
 	//	if (m_pixRepr == 1)
 	//	{
-	//		int16_t pix2 = *(int16_t*)&(m_data[idx0based(x, y, z)]);
+	//		int16_t pix2 = *(int16_t*)&(m_pairs[idx0based(x, y, z)]);
 	//		WORD pix = 0x8000 + pix2;
 
 	//		return pix;
 	//	}
-	//	return m_data[idx0based(x, y, z)];
+	//	return m_pairs[idx0based(x, y, z)];
 	//};
 
 	//void set(short x, short y, short z, WORD d) {
-	//	m_data[idx(x, y, z)] = d;
+	//	m_pairs[idx(x, y, z)] = d;
 	//};
 };
 

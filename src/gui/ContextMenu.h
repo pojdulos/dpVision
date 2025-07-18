@@ -41,7 +41,6 @@ public:
 
 private:
 	std::shared_ptr<CBaseObject> m_obj;
-
 	//QGraphicsView* m_graphView = nullptr; // lub std::unique_ptr, jeœli C++11+
 
 public slots:

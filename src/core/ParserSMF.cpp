@@ -15,7 +15,7 @@ size_t CParserSMF::Run()
 {
 	if ( this->bIsNotSet ) return 0;
 
-	m_model->addChild( pMeshData = std::make_shared<CMesh>() );
+	m_model->addChild(m_model, pMeshData = std::make_shared<CMesh>() );
 	if ( pMeshData == NULL ) return 0;
 
 	return ReadSMF_V3();

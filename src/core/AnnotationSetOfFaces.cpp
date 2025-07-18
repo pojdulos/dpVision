@@ -27,28 +27,18 @@ CAnnotationSetOfFaces::CAnnotationSetOfFaces(const SetOfFIndices& list) : CAnnot
 
 std::shared_ptr<CMesh> CAnnotationSetOfFaces::getDest()
 {
-	if (m_mesh == nullptr)
-	{
-		if (m_parent == nullptr) return nullptr;
-		if (m_parent->category() != CBaseObject::Category::OBJECT) return nullptr;
+	if (m_mesh) return m_mesh;
+	
+	if (auto parent_mesh = std::dynamic_pointer_cast<CMesh>(m_parent.lock())) return m_mesh = parent_mesh;
 
-		if (m_parent->hasType(CBaseObject::Type::MESH))
-			m_mesh = std::dynamic_pointer_cast<CMesh>(this->getParentPtr());
-		else
+	if (auto parent_obj = std::dynamic_pointer_cast<CObject>(m_parent.lock())) {
+		for (auto c : parent_obj->children())
 		{
-			for (auto c : ((CObject*)m_parent)->children())
-			{
-				std::shared_ptr<CBaseObject> child = c.second;
-				if ((child != nullptr) &&
-					 child->hasType(CBaseObject::Type::MESH))
-				{
-					m_mesh = std::dynamic_pointer_cast<CMesh>(child);
-				}
-			}
+			if (auto first_child_mesh = std::dynamic_pointer_cast<CMesh>(c.second)) return m_mesh = first_child_mesh;
 		}
-
 	}
-	return m_mesh;
+	
+	return nullptr;
 }
 
 std::shared_ptr<CMesh> CAnnotationSetOfFaces::toMesh()
@@ -103,73 +93,3 @@ QString CAnnotationSetOfFaces::toString(QString prefix, QString suffix, QString 
 }
 
 
-void CAnnotationSetOfFaces::renderSelf()
-{
-	if (m_mesh == nullptr)
-	{
-		if (m_parent == nullptr) return;
-		if (m_parent->category() != CBaseObject::Category::OBJECT) return;
-
-		if ( m_parent->hasType(CBaseObject::Type::MESH) )
-			m_mesh = std::dynamic_pointer_cast<CMesh>(this->getParentPtr());
-		else
-		{
-			std::shared_ptr<CBaseObject> child = std::shared_ptr<CBaseObject>(((CObject*)m_parent)->getChild());
-			if (child == nullptr) return;
-			else if (child->hasType(CBaseObject::Type::MESH))
-			{
-				m_mesh = std::dynamic_pointer_cast<CMesh>(child);
-			}
-			else
-			{
-				return;
-			}
-		}
-
-	}
-
-	if (this->size() > 1)
-	{
-		//CMesh *mesh = (CMesh*) ((CObject*)m_parent)->getChild();
-
-		glPushMatrix();
-		glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-		glDisable(GL_TEXTURE_2D);
-
-		glPolygonMode(GL_FRONT, GL_FILL);
-		glPolygonMode(GL_BACK, GL_FILL);
-		glEnable(GL_COLOR_MATERIAL);
-		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-
-		if (m_selected)
-		{
-			glLineWidth(5.0);
-			glColor4ubv( m_selcolor.V() );
-		}
-		else
-		{
-			glLineWidth(3.0);
-			glColor4ubv( m_color.V() );
-		}
-
-
-		glBegin(GL_TRIANGLES);
-
-		SetOfFIndices::iterator it;
-		for ( it = this->begin(); it != this->end(); it++ )
-		{
-			//glNormal3fv( mesh->fnormals()[*it].toVector() );
-
-			glVertex3fv( m_mesh->vertices()[m_mesh->faces()[*it].A()].toVector() );
-			glVertex3fv( m_mesh->vertices()[m_mesh->faces()[*it].B()].toVector() );
-			glVertex3fv( m_mesh->vertices()[m_mesh->faces()[*it].C()].toVector() );
-		}
-		glEnd();
-
-		glDisable(GL_COLOR_MATERIAL);
-	
-		glPopAttrib();
-		glPopMatrix();
-	}
-}

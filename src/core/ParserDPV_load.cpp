@@ -810,7 +810,7 @@ std::shared_ptr<CObject> CParserDPVISION::parseOBJ(QTextStream& in, QuaZip& zip,
 		std::shared_ptr<CModel3D> parentObj = std::make_shared<CModel3D>();
 		for (const auto& c : vec)
 		{
-			parentObj->addChild(c);
+			parentObj->addChild(parentObj, c);
 		}
 		parentObj->importChildrenGeometry();
 

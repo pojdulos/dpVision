@@ -28,7 +28,10 @@ public:
 
 	virtual std::shared_ptr<CBaseObject> getCopy() override
 	{
-		return std::make_shared<CAnnotationPoint>(*this);
+		auto obj = std::make_shared<CAnnotationPoint>(*this);
+		updateChildrenParentPointers(obj);
+		return obj;
+
 	}
 
 	virtual int type() { return CAnnotation::POINT; }

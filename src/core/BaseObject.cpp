@@ -24,7 +24,7 @@ CBaseObject::CBaseObject(std::shared_ptr<CBaseObject> p)
 	m_label = "baseObject";
 	m_descr = "";
 	m_path = "";
-	m_parent = p.get();
+	m_parent = p;
 
 	m_selected = false;
 
@@ -44,7 +44,7 @@ CBaseObject::CBaseObject(int objId)
 	m_label = "baseObject";
 	m_descr = "";
 	m_path = "";
-	m_parent = AP::WORKSPACE::getModel(objId).get();
+	m_parent = CWorkspace::instance()->getSomethingWithId(objId);
 
 	m_selected = false;
 
@@ -83,14 +83,14 @@ void CBaseObject::render() {
 	if (renderer_) renderer_->render(this);
 }
 
-void CBaseObject::setParent(int objId)
-{
-	m_parent = AP::WORKSPACE::getModel(objId).get();
-}
 
-std::vector<std::shared_ptr<CBaseObject>> CBaseObject::getPathToRoot() {
+
+//void setParent(CBaseObject *p) { m_parent = p; };
+void CBaseObject::setParent(int objId) { m_parent = CWorkspace::instance()->getSomethingWithId(objId); }
+
+std::vector<std::shared_ptr<CBaseObject>> CBaseObject::getPathToRoot(std::shared_ptr<CBaseObject> obj) {
 	std::vector<std::shared_ptr<CBaseObject>> path;
-	std::shared_ptr<CBaseObject> curr = std::shared_ptr<CBaseObject>(this);
+	std::shared_ptr<CBaseObject> curr = obj;
 	while (curr->getParent() != nullptr) {
 		curr = curr->getParentPtr();
 		path.push_back(curr);
@@ -98,11 +98,11 @@ std::vector<std::shared_ptr<CBaseObject>> CBaseObject::getPathToRoot() {
 	return path;
 }
 
-std::shared_ptr<CBaseObject> CBaseObject::getRoot() {
-	std::vector<std::shared_ptr<CBaseObject>> path = getPathToRoot();
+std::shared_ptr<CBaseObject> CBaseObject::getRoot(std::shared_ptr<CBaseObject> obj) {
+	std::vector<std::shared_ptr<CBaseObject>> path = CBaseObject::getPathToRoot(obj);
 	
 	if (path.empty()) // this object is root
-		return this->shared_from_this();
+		return obj;
 	
 	return path.back();
 }
@@ -138,35 +138,36 @@ void testMM(CBaseObject* obj)
 	std::cout << std::endl << "TESTOWA:" << std::endl << aktualnaMacierz << std::endl;
 }
 
-Eigen::Matrix4d CBaseObject::getGlobalTransformationMatrix()
+Eigen::Matrix4d CBaseObject::getGlobalTransformationMatrix(std::shared_ptr<CBaseObject> obj)
 {
 	Eigen::Matrix4d aktualnaMacierz = Eigen::Matrix4d::Identity();
 
-	std::vector<std::shared_ptr<CBaseObject>> fifo;
+	if (obj) {
+		std::vector<std::shared_ptr<CBaseObject>> fifo;
 
-	fifo.push_back(this->shared_from_this());
+		fifo.push_back(obj);
 
-	std::shared_ptr<CBaseObject> parent = this->getParentPtr();
-	while (parent != nullptr)
-	{
-		fifo.push_back(parent);
-		parent = parent->getParentPtr();
-	}
-
-	for (int i = 0; i < fifo.size(); i++)
-	{
-		std::shared_ptr<CBaseObject> currentObj = fifo[i];
-
-		if (currentObj->hasTransformation())
+		std::shared_ptr<CBaseObject> parent = obj->getParentPtr();
+		while (parent != nullptr)
 		{
-			Eigen::Matrix4d kolejnaMacierzZlisty = currentObj->getTransformationMatrix();
-			aktualnaMacierz = kolejnaMacierzZlisty * aktualnaMacierz;
+			fifo.push_back(parent);
+			parent = parent->getParentPtr();
 		}
+
+		for (int i = 0; i < fifo.size(); i++)
+		{
+			std::shared_ptr<CBaseObject> currentObj = fifo[i];
+
+			if (currentObj->hasTransformation())
+			{
+				Eigen::Matrix4d kolejnaMacierzZlisty = currentObj->getTransformationMatrix();
+				aktualnaMacierz = kolejnaMacierzZlisty * aktualnaMacierz;
+			}
+		}
+
+		//std::cout << std::endl << aktualnaMacierz << std::endl;
+		//testMM(this);
 	}
-
-	//std::cout << std::endl << aktualnaMacierz << std::endl;
-	//testMM(this);
-
 	return aktualnaMacierz;
 }
 

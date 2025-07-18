@@ -107,7 +107,7 @@ void CWorkspace::addToSelection(int id)
 		m_selection.push_back(id);
 		StatusBarManager::setText( QString("Object selected (pos.: %1)").arg(getNumberInSelection(id)));
 	}
-	//m_data[id]->setSelected(true);
+	//m_pairs[id]->setSelected(true);
 }
 
 void CWorkspace::removeFromSelection(int id)
@@ -117,7 +117,7 @@ void CWorkspace::removeFromSelection(int id)
 		StatusBarManager::setText(QString("Object at pos.: %1 unselected").arg(getNumberInSelection(id)));
 		m_selection.remove(id);
 	}
-	//m_data[id]->setSelected(false);
+	//m_pairs[id]->setSelected(false);
 }
 
 bool CWorkspace::inSelection(int id)
@@ -177,7 +177,15 @@ std::list<int> CWorkspace::getSelection(std::set<CBaseObject::Type> types, std::
 	std::list<int> result;
 	for (auto id : m_selection)
 	{
-		std::shared_ptr<CBaseObject> kid = (dad==nullptr)?getSomethingWithId(id):dad->getSomethingWithId(id); // szukam w�r�d wszystkich obiekt�w w scenie lub w obiekcie (jest to wolniejsze)
+		std::shared_ptr<CBaseObject> kid;
+		
+		if (dad == nullptr)
+			kid = getSomethingWithId(id);
+		else if (dad->id() == id)
+			kid = dad;
+		else
+			kid = dad->getSomethingWithId(id); // szukam w�r�d wszystkich obiekt�w w scenie lub w obiekcie (jest to wolniejsze)
+
 		if ((kid != nullptr) && (types.empty() || types.find((CBaseObject::Type)kid->type()) != types.end())) // i sprawdzam czy typ jest na li�cie
 		{
 			result.push_back(id);
@@ -192,7 +200,15 @@ std::list<std::shared_ptr<CBaseObject>> CWorkspace::getSelected(std::set<CBaseOb
 	std::list<std::shared_ptr<CBaseObject>> result;
 	for (auto id : m_selection)
 	{
-		std::shared_ptr<CBaseObject> kid = (dad == nullptr) ? getSomethingWithId(id) : dad->getSomethingWithId(id); // szukam w�r�d wszystkich obiekt�w w scenie lub w obiekcie (jest to wolniejsze)
+		std::shared_ptr<CBaseObject> kid;
+		
+		if (dad == nullptr)
+			kid = getSomethingWithId(id);
+		else if (dad->id() == id)
+			kid = dad;
+		else
+			kid = dad->getSomethingWithId(id); // szukam w�r�d wszystkich obiekt�w w scenie lub w obiekcie (jest to wolniejsze)
+		
 		if ((kid != nullptr) && (types.empty() || types.find((CBaseObject::Type)kid->type()) != types.end())) // i sprawdzam czy typ jest na li�cie
 		{
 			result.push_back(kid);
@@ -335,13 +351,13 @@ void CWorkspace::reset()
 //{
 //	// prawid�owo, ale na razie musi by� inaczej
 //	//int newId = MODEL_ID_OFFSET;
-//	//while ( m_data.find( newId ) != m_data.end() )
+//	//while ( m_pairs.find( newId ) != m_pairs.end() )
 //	//{
 //	//	newId += 1000;
 //	//}
 //	//return newId;
 //
-//	if ( m_data.empty() )
+//	if ( m_pairs.empty() )
 //		return MODEL_ID_OFFSET;
 //	else
 //		return last()->id()+MODEL_DATA_SPACE;
@@ -417,7 +433,7 @@ std::vector<CRGBA> CWorkspace::getXRayImage( CPoint3f pkt0, int size )
 
 //void CWorkspace::onCurrentObjectChanged(int i)
 //{
-//	if ((i == NO_CURRENT_MODEL) || (m_data.find(i) == m_data.end()))
+//	if ((i == NO_CURRENT_MODEL) || (m_pairs.find(i) == m_pairs.end()))
 //	{
 //		m_idOfCurrentModel = NO_CURRENT_MODEL;
 //	}
@@ -515,7 +531,7 @@ CBoundingBox CWorkspace::topBB()
 //		{
 //			QVector<CBaseObject*> objects;
 //
-//			for (const auto& o : this->m_data)
+//			for (const auto& o : this->m_pairs)
 //			{
 //				objects << (CBaseObject*)o.second;
 //			}

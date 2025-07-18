@@ -56,7 +56,7 @@
 
 	int CWorkspace::_objectAdd(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> parent)
 	{
-		auto old_p = obj->getParentPtr();
+		auto old_p = obj->getParent();
 		if (old_p || (m_data.find(obj->id()) != m_data.end())) {
 			_objectRemove(obj->id());
 		}
@@ -66,11 +66,16 @@
 
 		if (parent) {
 			if (auto p = std::dynamic_pointer_cast<CObject>(parent)) {
-				result = p->addChild(obj);
+				if (auto c = std::dynamic_pointer_cast<CAnnotation>(obj)) {
+					result = p->addAnnotation(p, c);
+				}
+				else {
+					result = p->addChild(p, obj);
+				}
 			}
 			else if (auto p = std::dynamic_pointer_cast<CAnnotation>(parent)) {
 				if (auto c = std::dynamic_pointer_cast<CAnnotation>(obj)) {
-					result = p->addAnnotation(c);
+					result = p->addAnnotation(p, c);
 				}
 			}
 		}
@@ -83,7 +88,7 @@
 			}
 			else { 
 				auto tmp = std::make_shared<CModel3D>();
-				tmp->addChild(obj);
+				tmp->addChild(tmp, obj);
 				id = tmp->id();
                 m_data[id] = tmp;
 			}

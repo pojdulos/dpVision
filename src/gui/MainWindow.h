@@ -235,7 +235,7 @@ public slots:
 	void useShaders(bool);
 	void cameraResetPosition();
 
-	void actionLookDir(int,CModel3D*);
+	void actionLookDir(int,std::shared_ptr<CModel3D>);
 
 	void actionLookDir();
 

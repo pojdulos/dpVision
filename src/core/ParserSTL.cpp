@@ -297,7 +297,7 @@ size_t CParserSTL::Run()
 {
 	if ( this->bIsNotSet ) return 0;
 
-	m_model->addChild( pMeshData = std::make_shared<CMesh>() );
+	m_model->addChild(m_model, pMeshData = std::make_shared<CMesh>() );
 	if ( pMeshData == NULL ) return 0;
 
 	// najpierw trzeba sprawdzi� czy tekstowy czy binarny, w tym celu pobieram pierwsz� lini� lub 80 bajt�w

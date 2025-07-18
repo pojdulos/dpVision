@@ -19,65 +19,14 @@ CAnnotationPolygon2D::CAnnotationPolygon2D(std::shared_ptr<CBaseObject> m) :CAnn
 CAnnotationPolygon2D::CAnnotationPolygon2D(CAnnotationPolygon2D& p) : CAnnotation(p)
 {
 	setLabel("polygon2d");
-	m_data = p.m_data;
+	m_pairs = p.m_pairs;
 	renderer_ = std::make_shared<IAnnotationPolygon2DRenderer>();
 }
 
 std::wstring CAnnotationPolygon2D::getInfoRow()
 {
-	std::wstring info = L"Size: " + std::to_wstring((long long)m_data.size());
+	std::wstring info = L"Size: " + std::to_wstring((long long)m_pairs.size());
 
 	return info;
 }
 
-#include "UI.h"
-
-void CAnnotationPolygon2D::renderSelf()
-{
-	glPushMatrix();
-	glPushAttrib( GL_ALL_ATTRIB_BITS );
-
-	glDisable(GL_TEXTURE_2D);
-	glEnable(GL_COLOR_MATERIAL);
-	
-	glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);	
-
-
-	if ( m_selected )
-	{
-		glColor4ubv(m_selcolor.V());
-	}
-	else
-	{
-		glColor4ubv(m_color.V());
-	}
-
-	//glViewport(0, 0, 1920, 1080);
-	//glMatrixMode(GL_PROJECTION);
-	//glLoadIdentity();
-	//glOrtho(0, 1920, 1080, 20, -1, 1);
-	//glMatrixMode(GL_MODELVIEW);
-	//glLoadIdentity();
-
-	glLineWidth(5);
-
-	CModel3D* obj = (CModel3D*)m_parent;
-	CMesh* mesh = (CMesh*) obj->getChild().get();
-
-	glBegin(GL_POLYGON);
-	for (auto pt2d : m_data )
-	{
-
-		CPoint3d MousePt(pt2d.first, pt2d.second, 5);
-		CPoint3d Pt;
-
-		UI::CAMERA::convertWinToWorld(MousePt, Pt);
-		Pt = obj->getTransform().world2local( Pt );
-
-		glVertex3dv( Pt.toVector() );
-	}
-	glEnd();
-
-	glPopAttrib();
-	glPopMatrix();
-}

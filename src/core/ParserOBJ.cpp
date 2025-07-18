@@ -346,7 +346,7 @@ size_t CParserOBJ::Run()
 	pMeshData = std::make_shared<CMesh>();
     if (pMeshData == nullptr) return 0;
 
-	m_model->addChild(pMeshData);
+	m_model->addChild(m_model, pMeshData);
 
     meshinfo.clear();
 
@@ -420,10 +420,10 @@ size_t CParserOBJ::Run()
 
                 for (auto& child : currentModel->children())
                 {
-                    tmpModel->addChild(child.second);
+                    tmpModel->addChild(tmpModel, child.second);
                 }
                 currentModel->removeChild(0);
-                currentModel->addChild(tmpModel);
+                currentModel->addChild(currentModel, tmpModel);
                 currentModel = tmpModel;
             }
             else
@@ -528,7 +528,7 @@ size_t CParserOBJ::Run()
 
             if (hasGroups)
             {
-                parent->addChild(pMeshData = std::make_shared<CMesh>());
+                parent->addChild(parent, pMeshData = std::make_shared<CMesh>());
             }
             hasGroups = true;
             pMeshData->setLabel(name);

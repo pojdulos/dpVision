@@ -53,6 +53,9 @@ std::shared_ptr<CBaseObject> Volumetric::getCopy()
 	int new_Columns = 1 + this->m_maxColumn - this->m_minColumn;
 	
 	std::shared_ptr<Volumetric> volum = create(new_Layers, new_Rows, new_Columns );
+	
+	// are children copied?
+	//updateChildrenParentPointers(volum);
 
 	if (volum) {
 #pragma omp parallel for
@@ -380,7 +383,7 @@ void Volumetric::drawCylinder(CPoint3i origin = { 0, 0, 0 }, int radius = 1, int
 //					int pz = static_cast<int>(c.z + offset.z);
 //
 //					if (px >= 0 && px < m_columns && py >= 0 && py < m_rows && pz >= 0 && pz < m_layers)
-//						m_data[pz][py * m_columns + px] = color;
+//						m_pairs[pz][py * m_columns + px] = color;
 //				}
 //			}
 //		}
@@ -1069,7 +1072,7 @@ QImage Volumetric::generateFreeViewSliceImage(const CVector3f& normal, const CPo
 //
 //			if (point.x >= 0 && point.x < m_columns && point.y >= 0 && point.y < m_rows && point.z >= 0 && point.z < m_layers)
 //			{
-//				VoxelType val = interpolateVoxel(m_data, point);
+//				VoxelType val = interpolateVoxel(m_pairs, point);
 //				
 //				if (tresh)
 //				{

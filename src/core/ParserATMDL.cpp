@@ -58,7 +58,7 @@ std::shared_ptr<CObject> CParserATMDL::clean_model(std::shared_ptr<CModel3D> obj
 				std::shared_ptr<CAnnotation> an = (*it).second;
 				it = obj->annotations().erase(it);
 
-				c->addAnnotation(an);
+				c->addAnnotation(c, an);
 			}
 		}
 
@@ -99,9 +99,9 @@ std::shared_ptr<CObject> CParserATMDL::loadShellFile(const QString filepath, QFi
 void CParserATMDL::add_kid(std::shared_ptr<CObject> obj, std::shared_ptr<CBaseObject> kid)
 {
 	if (kid->hasCategory(CBaseObject::OBJECT))
-		obj->addChild(kid);
+		obj->addChild(obj, kid);
 	else if (kid->hasCategory(CBaseObject::ANNOTATION))
-		obj->addAnnotation(std::dynamic_pointer_cast<CAnnotation>(kid));
+		obj->addAnnotation(obj, std::dynamic_pointer_cast<CAnnotation>(kid));
 }
 
 void CParserATMDL::replaceKeysWithValues(QString& txt) {

@@ -57,7 +57,7 @@ RAWdicomData& RAWdicomData::operator=(const RAWdicomData& src)
 
 void RAWdicomData::copyFrom(const RAWdicomData& src, int flag)
 {
-	//m_data = nullptr;
+	//m_pairs = nullptr;
 
 	m_cols = src.m_cols;
 	m_rows = src.m_rows;
@@ -75,7 +75,7 @@ void RAWdicomData::copyFrom(const RAWdicomData& src, int flag)
 	case 99:
 
 		if (size > 0) {
-			//m_data = new WORD[size];
+			//m_pairs = new WORD[size];
 
 			for (int l = 0; l < m_lays; l++)
 				for (int r = 0; r < m_rows; r++)

@@ -147,7 +147,9 @@ void CAnnotationCamera::renderSelf()
 
 	glMultMatrixd(m_matrix);
 
-	if ( m_parent->isSelected() || m_selected )
+	std::shared_ptr<CBaseObject> parent = this->getParentPtr();
+
+	if ( parent->isSelected() || m_selected )
 	{
 		glColor4ubv(m_selcolor.V());
 	}
@@ -160,7 +162,6 @@ void CAnnotationCamera::renderSelf()
 	glPolygonMode(GL_BACK, GL_FILL);
 
 	double scale = 1.0;
-	std::shared_ptr<CBaseObject> parent = this->getParentPtr();
 	if (parent != nullptr)
 	{
 		while (parent->getParent() != nullptr)

@@ -102,8 +102,8 @@ public:
 	
 	//ChildType*& operator[](int i)
 	//{
-	//	assert(m_data.find(i) != m_data.end());
-	//	return m_data[i].get();
+	//	assert(m_pairs.find(i) != m_pairs.end());
+	//	return m_pairs[i].get();
 	//}
 
 	std::shared_ptr<ChildType> first() { if (m_data.empty()) return nullptr; return m_data.begin()->second; };

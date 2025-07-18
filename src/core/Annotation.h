@@ -28,6 +28,7 @@ public:
 	CAnnotation( int parentId );
 	CAnnotation(const CAnnotation& a);
 
+	virtual void updateChildrenParentPointers(const std::shared_ptr<CBaseObject>& self) override;
 	virtual std::shared_ptr<CBaseObject> getCopy() override;
 
 	virtual ~CAnnotation() { this->clear(); };
@@ -47,7 +48,7 @@ public:
 
 	inline Annotations& annotations() { return m_annotations; };
 
-	int addAnnotation(std::shared_ptr<CAnnotation> ad);
+	static int addAnnotation(std::shared_ptr<CAnnotation> parent, std::shared_ptr<CAnnotation> ad);
 
 	std::shared_ptr<CAnnotation> removeAnnotation(int id);
 
