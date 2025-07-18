@@ -471,58 +471,6 @@ void CModel3D::calcVN()
 	if (auto m = std::dynamic_pointer_cast<CMesh>(this->getChild())) m->calcVN();
 }
 
-//unsigned int CModel3D::getNewId()
-//{
-//	unsigned int newId = this->m_Id + 1;
-//
-//	while ((m_annotations.find(newId) != m_annotations.end()) || (m_pairs.find(newId) != m_pairs.end())) newId++;
-//
-//	return newId;
-//}
-
-//int CModel3D::addAnnotation(CAnnotation * ad)
-//{
-//	//unsigned int newId = getNewId();
-//	//ad->setId(newId);
-//
-//	m_annotations[ad->id()] = ad;
-//	ad->setParent(this);
-//
-//	return ad->id();
-//}
-//
-//CAnnotation * CModel3D::removeAnnotation( int id )
-//{
-//	CBaseObject *an = getSomethingWithId( id );
-//	
-//	if (an == nullptr) return nullptr;
-//	if (an->category() != CBaseObject::Category::ANNOTATION) return nullptr;
-//
-//	CBaseObject* parent = an->getParent();
-//
-//	if (parent == this)
-//	{
-//		m_annotations.erase(id);
-//	}
-//	else
-//	{
-//		((CAnnotation*)parent)->removeAnnotation(id);
-//	}
-//
-//	return (CAnnotation*) an;
-//}
-//
-//CAnnotation * CModel3D::annotation(int id)
-//{
-//	Annotations::iterator it;
-//	for (it = m_annotations.begin(); it != m_annotations.end(); it++)
-//	{
-//		if ( it->first == id ) return it->second;
-//		CAnnotation* obj = it->second->annotation(id);
-//		if (obj != nullptr) return obj;
-//	}
-//	return nullptr;
-//}
 
 #include "FileConnector.h"
 
@@ -532,14 +480,10 @@ std::shared_ptr<CModel3D> CModel3D::load(const QString fext, const QString path,
 
 	if (nullptr != parser)
 	{
-		//unsigned long t1, t2;
-
-		// t1 = GetTickCount();
 		auto t0 = std::chrono::steady_clock::now();
 
 		std::shared_ptr<CModel3D> obj = parser->load(path, synchronous);
 
-		// t2 = GetTickCount();
 		auto t1 = std::chrono::steady_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
 
@@ -559,14 +503,10 @@ std::shared_ptr<CModel3D> CModel3D::load(const QString path, bool synchronous, s
 
 	if (nullptr != parser)
 	{
-		// unsigned long t1, t2;
-
-		// t1 = GetTickCount();
 		auto t0 = std::chrono::steady_clock::now();
 
 		std::shared_ptr<CModel3D> obj = parser->load( path, synchronous, prg );
 
-		// t2 = GetTickCount();
 		auto t1 = std::chrono::steady_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
 
@@ -623,46 +563,3 @@ bool CModel3D::save(std::wstring path)
 	return save( QString::fromStdWString(path) );
 }
 
-
-
-//int CModel3D::setAnimation(int anim)
-//{
-//	if (bAnime = (0 != anim))
-//		iAnimeDir = (anim<0) ? -1 : 1;
-//
-//	lastanim = GetTickCount64();
-//
-//	return bAnime ? iAnimeDir : 0;
-//}
-//
-//int CModel3D::toggleAnimation()
-//{
-//	lastanim = GetTickCount64();
-//	return (bAnime = !bAnime) ? iAnimeDir : 0;
-//}
-//
-//int CModel3D::toggleAnimationDir()
-//{
-//	if (bAnime)
-//		return iAnimeDir = -iAnimeDir;
-//	return 0;
-//}
-//
-
-
-//CBaseObject::Visibility CModel3D::setVisibility(CBaseObject::Visibility v)
-//{
-//	if (v == Visibility::HIDE_SELF)
-//	{
-//		return (m_visible = Visibility::HIDE_ALL);
-//	}
-//	return (m_visible = v);
-//}
-//
-//CBaseObject::Visibility CModel3D::switchVisibility()
-//{
-//	if 	((m_visible == HIDE_ALL) || (m_visible == HIDE_SELF))
-//		return m_visible = SHOW;
-//	else
-//		return m_visible = HIDE_ALL;
-//}

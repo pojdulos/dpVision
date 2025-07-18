@@ -9,6 +9,10 @@ Plugin::Plugin(void)
     CommonDLL::Instance().AddName( QString(PLUGIN_NAME).toStdWString() );
 }
 
+#include "dpLog.h"
+Plugin::~Plugin(void) {
+	dpDebug() << "destuctor ~Plugin, id=" << m_Name;
+};
 
 inline std::string Plugin::uuid() const
 {

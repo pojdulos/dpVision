@@ -15,6 +15,8 @@
 
 #include "MainWindow.h"
 
+#include "dpLog.h"
+
 DockWidgetWorkspace::DockWidgetWorkspace(QWidget *parent) : QDockWidget(parent)
 {
 	setupUi();
@@ -396,7 +398,8 @@ void DockWidgetWorkspace::addItem(std::shared_ptr<CBaseObject> obj)
 	if (obj == nullptr) return;
 
 	WorkspaceTreeModel* model = (WorkspaceTreeModel*)ui.treeView->model();
-	CBaseObject* parent = obj->getParent();
+	auto parent = obj->getParentPtr();
+
 
 	if (parent == nullptr)
 	{
@@ -407,7 +410,11 @@ void DockWidgetWorkspace::addItem(std::shared_ptr<CBaseObject> obj)
 	}
 	else
 	{
+		//dpDebug() << "parent: " << parent->id();
+
 		QModelIndex parentIndex = findWorkspaceTreeModelIndex(parent->id());
+
+		//dpDebug() << "parentId: " << parent->id() << "INDEX VALID: " << parentIndex.isValid();
 
 		if (parentIndex.isValid())
 		{
@@ -589,12 +596,14 @@ void DockWidgetWorkspace::onWorkspaceObjectActivated(int i)
 #include "dpLog.h"
 
 void DockWidgetWorkspace::onWorkspaceObjectAdded(int id) {
-	if (auto obj = CWorkspace::instance()->getSomethingWithId(id))
+	//dpDebug() << "DockWidgetWorkspace::onWorkspaceObjectAdded() id=" << id;
+	if (auto obj = CWorkspace::instance()->getSomethingWithId(id)) {
 		addItem(obj);
+	}
 }
 
 void DockWidgetWorkspace::onWorkspaceObjectRemoved(int id) {
-	dpDebug() << "DockWidgetWorkspace::onWorkspaceObjectRemoved() id=" << id;
+	//dpDebug() << "DockWidgetWorkspace::onWorkspaceObjectRemoved() id=" << id;
 	selectItem(CWorkspace::instance()->_getCurrentModelId());
 	removeItem(id);
 }

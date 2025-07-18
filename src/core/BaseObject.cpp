@@ -174,6 +174,6 @@ Eigen::Matrix4d CBaseObject::getGlobalTransformationMatrix(std::shared_ptr<CBase
 
 #include "dpLog.h"
 CBaseObject::~CBaseObject(void) {
-	dpWarn() << "Destuctor, id=" << m_Id;
+	dpDebug() << "destuctor ~CBaseObject, id=" << m_Id;
 };
 

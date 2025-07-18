@@ -11,7 +11,8 @@ class DPVISION_DLL_API Plugin : public PluginInterface
 {
 public:
 	Plugin(void);
-
+	~Plugin(void);
+	
 	std::string uuid() const;
 	void setUUID(const std::string& uuid);
 	bool hasUUID(std::string strUUID);

@@ -127,12 +127,6 @@ namespace AP
         DPVISION_EXPORT bool remove(std::shared_ptr<CBaseObject> obj);
         DPVISION_EXPORT bool removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child);
 
-        /**
-         * @brief Adds a child object to a parent object
-         * @param obj Parent object
-         * @param child Child object to add
-         * @return Child object ID
-         */
         DPVISION_EXPORT int addChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child);
 
 
@@ -164,39 +158,8 @@ namespace AP
          */
         DPVISION_EXPORT std::shared_ptr<CModel3D> load(std::wstring path, bool synchronous = true);
 
-        /**
-         * @brief Adds a child object to a 3D model
-         * @param obj Parent model
-         * @param child Child object to add
-         * @return Child object ID
-         */
         DPVISION_EXPORT int addChild(std::shared_ptr<CModel3D> obj, std::shared_ptr<CBaseObject> child);
-        //DPVISION_EXPORT int addChild(CModel3D* obj, CBaseObject* child);
-
-        /**
-         * @brief Adds a child object to a parent identified by ID
-         * @param parentId Parent object ID
-         * @param child Child object to add
-         * @return Child object ID
-         */
-        //DPVISION_EXPORT int addChild(int parentId, CBaseObject* child);
-
-
-        /**
-         * @brief Adds an annotation to a 3D model
-         * @param obj Parent model
-         * @param an Annotation to add
-         * @return Annotation ID
-         */
         DPVISION_EXPORT int addAnnotation(std::shared_ptr<CModel3D> obj, std::shared_ptr<CAnnotation> an);
-
-        /**
-         * @brief Adds an annotation to a parent object identified by ID
-         * @param parentid Parent object ID
-         * @param an Annotation to add
-         * @return Annotation ID
-         */
-        //DPVISION_EXPORT int addAnnotation(int parentid, std::shared_ptr<CAnnotation> an);
 
         DPVISION_EXPORT void removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child);
         DPVISION_EXPORT void removeChild(int parentid, int childid);
@@ -227,30 +190,8 @@ namespace AP
          */
         DPVISION_EXPORT std::shared_ptr<CBaseObject> findId(int id);
 
-        /**
-         * @brief Adds a 3D model to workspace
-         * @param obj Model to add
-         * @param setItCurrent If true, sets the model as current
-         * @return True if addition was successful
-         */
-        DPVISION_EXPORT bool addModel(std::shared_ptr<CModel3D> obj, bool setItCurrent = false);
-        //DPVISION_EXPORT bool addModel(CModel3D* obj, bool setItCurrent = false);
-
-        /**
-         * @brief Adds an image to workspace
-         * @param im Image to add
-         * @param showViewer If true, shows the image viewer
-         * @param show3d If true, shows 3D view
-         * @return True if addition was successful
-         */
         DPVISION_EXPORT bool addImage(std::shared_ptr<CImage> im, bool showViewer = true, bool show3d = false);
-
-        /**
-         * @brief Adds a generic object to workspace
-         * @param obj Object to add
-         * @param setItCurrent If true, sets the object as current
-         * @return True if addition was successful
-         */
+        DPVISION_EXPORT bool addModel(std::shared_ptr<CModel3D> obj, bool setItCurrent = false);
         DPVISION_EXPORT bool addObject(std::shared_ptr<CBaseObject> obj, bool setItCurrent = false);
 
         /**

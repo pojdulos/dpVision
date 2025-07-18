@@ -318,6 +318,9 @@ void GLViewer::PickMeshPoint(double xx, double yy, std::shared_ptr<CModel3D> obj
 {
 	CPoint3d pkt0, pkt1;
 	CVector3d vRay;
+
+	auto wksp = CWorkspace::instance();
+
 	if (screen2obj(xx, yy, obj.get(), /*ref*/pkt0, /*ref*/pkt1, /*ref*/vRay))
 	{
 		std::shared_ptr<CMesh> mesh = std::dynamic_pointer_cast<CMesh>(obj->getChild());
@@ -402,7 +405,7 @@ void GLViewer::PickMeshPoint(double xx, double yy, std::shared_ptr<CModel3D> obj
 					mesh->vertices()[mesh->faces()[faceIdx].B()],
 					mesh->vertices()[mesh->faces()[faceIdx].C()]);
 
-				unsigned int ptId = AP::MODEL::addAnnotation(obj, pt);
+				unsigned int ptId = wksp->_objectAdd(pt, obj);
 			}
 
 			//tymczasowo !!! -----------------------------------------------------
@@ -430,6 +433,9 @@ void GLViewer::PickCloudPoint(double xx, double yy, std::shared_ptr<CModel3D> ob
 {
 	CPoint3d pkt0, pkt1;
 	CVector3d vRay;
+
+	auto wksp = CWorkspace::instance();
+
 	if (screen2obj(xx, yy, obj.get(), /*ref*/pkt0, /*ref*/pkt1, /*ref*/vRay))
 	{
 		std::shared_ptr<CPointCloud> cloud = std::dynamic_pointer_cast<CPointCloud>(obj->getChild());
@@ -516,21 +522,12 @@ void GLViewer::PickCloudPoint(double xx, double yy, std::shared_ptr<CModel3D> ob
 
 		if (!usedInPlugin && AP::mainApp().bGlobalPicking)
 		{
-			AP::MODEL::addAnnotation(obj, apy);
-
-			AP::MODEL::addAnnotation(obj, hits);
-
+			wksp->_objectAdd(apy, obj);	
+			wksp->_objectAdd(hits, obj);
 			pointsInPixelShadow->setColor(CRGBA(1.0f, 1.0f, 0.0f));
-			AP::MODEL::addAnnotation(obj, pointsInPixelShadow);
+			wksp->_objectAdd(pointsInPixelShadow, obj);
 		}
-		//else
-		//{
-		//	delete apy;
-		//	delete hits;
-		//	delete pointsInPixelShadow;
-		//}
 
-		//ULONGLONG t1 = GetTickCount64();
 		auto t1 = std::chrono::steady_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
 

@@ -88,13 +88,12 @@ CAnnotation* CAnnotation::annotation(int id)
 	return nullptr;
 }
 
-std::shared_ptr<CBaseObject> CAnnotation::getSomethingWithId(int id)
+std::shared_ptr<CBaseObject> CAnnotation::getSomethingWithId(int id) 
 {
-	for (const auto& a : m_annotations)
+	for (const auto& d : m_annotations)
 	{
-		std::shared_ptr<CBaseObject> result = a.second->getSomethingWithId(id);
-		if (result != nullptr) return result;
+		if (id == d.second->id()) return d.second;
+		else if (auto result = d.second->getSomethingWithId(id)) return result;
 	}
-
 	return nullptr;
 }

@@ -307,14 +307,10 @@ int CWorkspace::_setPreviousModelCurrent()
 
 std::shared_ptr<CBaseObject> CWorkspace::getSomethingWithId(int id)
 {
-	for (auto& model : this->m_data)
+	for (const auto& d : m_data)
 	{
-		if (model.second->id() == id) return model.second;
-		else
-		{
-			std::shared_ptr<CBaseObject> obj = model.second->getSomethingWithId(id);
-			if (obj != nullptr) return obj;
-		}
+		if (id == d.second->id()) return d.second;
+		else if (auto result = d.second->getSomethingWithId(id)) return result;
 	}
 	return nullptr;
 }

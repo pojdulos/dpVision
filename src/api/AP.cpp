@@ -11,6 +11,7 @@
 #include "MdiChild.h"
 #include "Image.h"
 #include "Workspace.h"
+#include "Histogram.h"
 
 #include <QtCore/QString>
 #include "StatusBarManager.h"
@@ -21,7 +22,6 @@
 namespace AP
 {
 	CMainApplication& mainApp() {
-		//return *CMainApplication::theApp;
 		return (CMainApplication&)*QApplication::instance();
 	}
 	
@@ -29,20 +29,9 @@ namespace AP
 	
 	CMainWindow* mainWinPtr() { return CMainWindow::instance(); }
 
-	void leaveSelectionMode()
-	{
-		CMainWindow *win = CMainWindow::instance();
-		if ( win != nullptr )
-			win->leaveSelectionMode();
-	};
+	void leaveSelectionMode() { if ( auto win = CMainWindow::instance() ) win->leaveSelectionMode(); }
 
-	int getUniqueId()
-	{
-		int i = AP::mainApp().getUniqueId();
-		
-		return i;
-	}
-
+	int getUniqueId() {	return AP::mainApp().getUniqueId(); }
 
 
 	void processEvents(bool immediate)
@@ -59,22 +48,15 @@ namespace AP
 	}
 
 
-	CWorkspace* getWorkspace(void)
-	{
-		return CWorkspace::instance();
-	}
+	CWorkspace* getWorkspace(void) { return CWorkspace::instance(); }
 
-	const QString& getExeFilePath(void)
-	{
-		return AP::mainApp().appExecDir();
-	}
+	const QString& getExeFilePath(void) { return AP::mainApp().appExecDir(); }
 
 
 	int addAnnotation(int parentId, std::shared_ptr<CAnnotation> an)
 	{
 		auto wksp = CWorkspace::instance();
 		return wksp->_objectAdd(an, wksp->getSomethingWithId(parentId));
-		//return AP::MODEL::addAnnotation(parentId, an);
 	}
 
 
@@ -82,7 +64,6 @@ namespace AP
 	{
 		auto wksp = CWorkspace::instance();
 		return wksp->_objectAdd(an, obj);
-		//return AP::MODEL::addAnnotation(obj, an);
 	}
 
 
@@ -133,19 +114,7 @@ namespace AP
 			auto wksp = CWorkspace::instance();
 			return wksp->_objectAdd(child, obj);
 		}
-
-		//int addChild(CModel3D* obj, CBaseObject* child) { return addChild(std::shared_ptr<CModel3D>(obj), std::shared_ptr<CBaseObject>(child)); }
-
-		// int addChild(int parentId, std::shared_ptr<CBaseObject> child)
-		// {
-		// 	return addChild(AP::WORKSPACE::getModel(parentId), child);
-		// }
-
-		// int addChild(int parentId, CBaseObject* child)
-		// {
-		// 	return addChild(AP::WORKSPACE::getModel(parentId), std::shared_ptr<CBaseObject>(child));
-		// }
-
+	
 		int addAnnotation(std::shared_ptr<CModel3D> obj, std::shared_ptr<CAnnotation> an)
 		{
 			if (an == nullptr) return NO_CURRENT_MODEL;
@@ -153,18 +122,7 @@ namespace AP
 
 			auto wksp = CWorkspace::instance();
 			return wksp->_objectAdd(an, obj);
-
-			// int id = obj->addAnnotation(an);
-
-			// UI::DOCK::WORKSPACE::addItem(id, obj->id());
-			// UI::updateAllViews();
-			// return id;
 		}
-
-		// int addAnnotation(int parentId, std::shared_ptr<CAnnotation> an)
-		// {
-		// 	return addAnnotation(AP::WORKSPACE::getModel(parentId), an);
-		// }
 	}
 
 
@@ -213,10 +171,6 @@ namespace AP
 				{
 					return obj;
 				}
-				//else
-				//{
-				//	delete obj;
-				//}
 			}
 			return nullptr;
 		}
@@ -242,28 +196,7 @@ namespace AP
 			auto result = wksp->_objectAdd(obj);
 			if (setItCurrent) wksp->_objectActivate(obj->id());
 			return result!=-1;
-			// if (AP::getWorkspace()->_addModel(obj))
-			// {
-			// 	UI::DOCK::WORKSPACE::addItem(obj);
-
-			// 	int id = (setItCurrent) ? obj->id() : -1;
-
-			// 	if (id != AP::WORKSPACE::getCurrentModelId())
-			// 	{
-			// 		AP::WORKSPACE::setCurrentModel(id);
-
-			// 		UI::DOCK::WORKSPACE::selectItem(id);
-			// 		UI::DOCK::PROPERTIES::selectionChanged(id);
-
-			// 		UI::changeMenuAfterSelect();
-			// 	}
-			// 	UI::updateAllViews();
-			// 	return true;
-			// }
-			// return false;
 		}
-
-		bool addModel(CModel3D* obj, bool setItCurrent) { return addModel(std::shared_ptr<CModel3D>(obj), setItCurrent); }
 
 		bool addObject(std::shared_ptr<CBaseObject> obj, bool setItCurrent)
 		{
@@ -271,35 +204,6 @@ namespace AP
 			auto result = wksp->_objectAdd(obj);
 			if (setItCurrent) wksp->_objectActivate(obj->id());
 			return result!=-1;
-
-		// 	if (obj->hasType(CBaseObject::Type::MODEL))
-		// 	{
-		// 		addModel(std::dynamic_pointer_cast<CModel3D>(obj), setItCurrent);
-		// 		return true;
-		// 	}
-		// 	else if (obj->hasType(CBaseObject::Type::IMAGE))
-		// 	{
-		// 		addImage(std::dynamic_pointer_cast<CImage>(obj), false, true);
-		// 		return true;
-		// 	}
-		// 	else
-		// 	{
-		// 		std::shared_ptr<CModel3D> mdl = std::make_shared<CModel3D>();
-		// 		if (obj->hasCategory(CBaseObject::Category::OBJECT))
-		// 		{
-		// 			mdl->addChild(obj);
-		// 			mdl->importChildrenGeometry();
-		// 			addModel(mdl, setItCurrent);
-		// 			return true;
-		// 		}
-		// 		else if (obj->hasCategory(CBaseObject::Category::ANNOTATION))
-		// 		{
-		// 			mdl->addAnnotation(std::dynamic_pointer_cast<CAnnotation>(obj));
-		// 			addModel(mdl, setItCurrent);
-		// 			return true;
-		// 		}
-		// 	}
-		// 	return false;
 		}
 
 		bool addImage(std::shared_ptr<CImage> im, bool showViewer, bool show3d)
@@ -308,8 +212,11 @@ namespace AP
 
 			if (showViewer) MdiChild::create(im.get(), AP::mainWin().ui.mdiArea);
 
-			return AP::WORKSPACE::addModel(std::dynamic_pointer_cast<CModel3D>(im));
+			auto wksp = CWorkspace::instance();
+			auto result = wksp->_objectAdd(im);
+			return result!=-1;
 		}
+
 
 		bool removeModel(int id) { return CWorkspace::instance()->_objectRemove(id); };
 		bool removeModel(std::shared_ptr<CModel3D> obj) { return CWorkspace::instance()->_objectRemove(obj); };
@@ -541,204 +448,177 @@ namespace AP
 			}
 		}
 	}
-}
 
-#include "Histogram.h"
+	namespace OBJECT {
+		bool remove(std::shared_ptr<CBaseObject> obj) { return CWorkspace::instance()->_objectRemove(obj); };
+		bool removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child) { return CWorkspace::instance()->_objectRemove(child); };
 
-
-bool AP::OBJECT::remove(std::shared_ptr<CBaseObject> obj) { return CWorkspace::instance()->_objectRemove(obj); };
-bool AP::OBJECT::removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child) { return CWorkspace::instance()->_objectRemove(child); };
-
-
-int AP::OBJECT::addChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child)
-{
-	if (child == nullptr) return NO_CURRENT_MODEL;
-	if (obj == nullptr) return NO_CURRENT_MODEL;
-
-	auto wksp = CWorkspace::instance();
-	auto result = wksp->_objectAdd(child, obj);
-	return result;
-
-	// int id = NO_CURRENT_MODEL;
-
-	// if (obj->hasCategory(CBaseObject::Category::ANNOTATION))
-	// {
-	// 	if (child->hasCategory(CBaseObject::Category::ANNOTATION))
-	// 	{
-	// 		id = std::dynamic_pointer_cast<CAnnotation>(obj)->addAnnotation(std::dynamic_pointer_cast<CAnnotation>(child));
-	// 	}
-	// }
-	// else if (obj->hasCategory(CBaseObject::Category::OBJECT))
-	// {
-	// 	if (child->hasCategory(CBaseObject::Category::ANNOTATION))
-	// 	{
-	// 		id = std::dynamic_pointer_cast<CObject>(obj)->addAnnotation(std::dynamic_pointer_cast<CAnnotation>(child));
-	// 	}
-	// 	else if (child->hasCategory(CBaseObject::Category::OBJECT))
-	// 	{
-	// 		id = std::dynamic_pointer_cast<CObject>(obj)->addChild(child);
-	// 	}
-	// }
-
-	// if (id > 0)
-	// {
-	// 	UI::DOCK::WORKSPACE::addItem(child);
-	// 	UI::updateAllViews();
-	// }
-
-	// return id;
-}
-
-
-void AP::OBJECT::moveTo(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> newParent, bool keep_pos)
-{
-	auto wksp = CWorkspace::instance();
-
-	if (obj != nullptr)
-	{
-		if ((newParent != nullptr) && newParent->hasCategory(CBaseObject::Category::ANNOTATION) && obj->hasCategory(CBaseObject::Category::OBJECT))
+		int addChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child)
 		{
-			UI::MESSAGEBOX::error("regular object cannot be moved as a descendant of annotation");
-			return;
+			if (child == nullptr) return NO_CURRENT_MODEL;
+			if (obj == nullptr) return NO_CURRENT_MODEL;
+
+			auto wksp = CWorkspace::instance();
+			auto result = wksp->_objectAdd(child, obj);
+			return result;
 		}
 
-		std::shared_ptr<CBaseObject> oldParent = obj->getParentPtr();
-
-		CTransform t0;
-
-		if (oldParent != nullptr)
+		void moveTo(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> newParent, bool keep_pos)
 		{
-			t0 = CTransform(CBaseObject::getGlobalTransformationMatrix(oldParent));
-			AP::OBJECT::removeChild(oldParent, obj);
-		}
-		else
-		{
-			wksp->_objectRemove(obj->id());
-		}
+			auto wksp = CWorkspace::instance();
 
-		if (keep_pos)
-		{
-			std::shared_ptr<CModel3D> newmodel = std::make_shared<CModel3D>();
-			newmodel->setLabel("<=>");
-			newmodel->setDescr("Macierz dopasowania, wygenerowana podczas przenoszenia obiektu");
-
-			if (obj->hasCategory(CBaseObject::OBJECT))
+			if (obj != nullptr)
 			{
-				newmodel->addChild(newmodel, obj);
-				newmodel->importChildrenGeometry();
-			}
-			else if (obj->hasCategory(CBaseObject::ANNOTATION))
-			{
-				newmodel->addAnnotation(newmodel, std::dynamic_pointer_cast<CAnnotation>(obj));
-			}
-
-			if (newParent == nullptr) // copyToNew
-			{
-				newmodel->setTransform(t0);
-
-				AP::WORKSPACE::addModel(newmodel);
-			}
-			else // copyTo existing
-			{
-				CTransform t1(CBaseObject::getGlobalTransformationMatrix(newParent));
-				CTransform ft = CTransform::fromTo(t0, t1);
-
-				newmodel->setTransform(ft);
-
-				AP::OBJECT::addChild(newParent, newmodel);
-				//((CObject*)newParent)->importChildrenGeometry();
-			}
-		}
-		else
-		{
-			if (newParent == nullptr) // moveToNew
-			{
-				AP::WORKSPACE::addObject(obj);
-			}
-			else // moveTo existing
-			{
-				AP::OBJECT::addChild(newParent, obj);
-			}
-		}
-
-		UI::updateAllViews();
-	}
-}
-
-void AP::OBJECT::copyTo(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> newParent, bool keep_pos)
-{
-	if (obj != nullptr)
-	{
-		if ((newParent != nullptr) && newParent->hasCategory(CBaseObject::Category::ANNOTATION) && obj->hasCategory(CBaseObject::Category::OBJECT))
-		{
-			UI::MESSAGEBOX::error("regular object cannot be copied as a descendant of annotation");
-			return;
-		}
-
-		std::shared_ptr<CBaseObject> kopia = obj->getCopy();
-
-		if (keep_pos)
-		{
-			CTransform t0;
-			if (obj->getParent() != nullptr)
-				t0 = CTransform(CBaseObject::getGlobalTransformationMatrix(obj->getParentPtr()));
-
-			std::shared_ptr<CModel3D> newmodel = std::make_shared<CModel3D>();
-			newmodel->setLabel("<=>");
-			newmodel->setDescr("Macierz dopasowania, wygenerowana podczas kopiowania obiektu");
-
-			if (newParent == nullptr) // copyToNew
-			{
-				if (kopia->hasCategory(CBaseObject::OBJECT))
+				if ((newParent != nullptr) && newParent->hasCategory(CBaseObject::Category::ANNOTATION) && obj->hasCategory(CBaseObject::Category::OBJECT))
 				{
-					newmodel->addChild(newmodel, kopia);
-					newmodel->importChildrenGeometry();
-					newmodel->setTransform(t0);
-					AP::WORKSPACE::addModel(newmodel);
+					UI::MESSAGEBOX::error("regular object cannot be moved as a descendant of annotation");
+					return;
 				}
-				else if (kopia->hasCategory(CBaseObject::ANNOTATION))
-				{
-					newmodel->addAnnotation(newmodel, std::dynamic_pointer_cast<CAnnotation>(kopia));
-					newmodel->setTransform(t0);
-					AP::WORKSPACE::addModel(newmodel);
-				}
-			}
-			else // copyTo existing
-			{
-				CTransform t1(CBaseObject::getGlobalTransformationMatrix(newParent));
-				CTransform ft = CTransform::fromTo(t0, t1);
 
-				if (ft.toQMatrix4x4().isIdentity())
+				std::shared_ptr<CBaseObject> oldParent = obj->getParentPtr();
+
+				CTransform t0;
+
+				if (oldParent != nullptr)
 				{
-					AP::OBJECT::addChild(newParent, kopia);
-					//delete newmodel;
+					t0 = CTransform(CBaseObject::getGlobalTransformationMatrix(oldParent));
+					AP::OBJECT::removeChild(oldParent, obj);
 				}
 				else
 				{
-					newmodel->addChild(newmodel, kopia);
-					newmodel->importChildrenGeometry();
-					newmodel->setTransform(ft);
-
-					AP::OBJECT::addChild(newParent, newmodel);
+					wksp->_objectRemove(obj->id());
 				}
 
-				//((CObject*)newParent)->importChildrenGeometry();
+				if (keep_pos)
+				{
+					std::shared_ptr<CModel3D> newmodel = std::make_shared<CModel3D>();
+					newmodel->setLabel("<=>");
+					newmodel->setDescr("Macierz dopasowania, wygenerowana podczas przenoszenia obiektu");
+
+					if (obj->hasCategory(CBaseObject::OBJECT))
+					{
+						newmodel->addChild(newmodel, obj);
+						newmodel->importChildrenGeometry();
+					}
+					else if (obj->hasCategory(CBaseObject::ANNOTATION))
+					{
+						newmodel->addAnnotation(newmodel, std::dynamic_pointer_cast<CAnnotation>(obj));
+					}
+
+					if (newParent == nullptr) // copyToNew
+					{
+						newmodel->setTransform(t0);
+
+						AP::WORKSPACE::addModel(newmodel);
+					}
+					else // copyTo existing
+					{
+						CTransform t1(CBaseObject::getGlobalTransformationMatrix(newParent));
+						CTransform ft = CTransform::fromTo(t0, t1);
+
+						newmodel->setTransform(ft);
+
+						AP::OBJECT::addChild(newParent, newmodel);
+						//((CObject*)newParent)->importChildrenGeometry();
+					}
+				}
+				else
+				{
+					if (newParent == nullptr) // moveToNew
+					{
+						AP::WORKSPACE::addObject(obj);
+					}
+					else // moveTo existing
+					{
+						AP::OBJECT::addChild(newParent, obj);
+					}
+				}
+
+				UI::updateAllViews();
 			}
 		}
-		else
+
+		void copyTo(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> newParent, bool keep_pos)
 		{
-			if (newParent == nullptr) // copyToNew
+			if (obj != nullptr)
 			{
-				AP::WORKSPACE::addObject(kopia);
-			}
-			else // copyTo existing
-			{
-				AP::OBJECT::addChild(newParent, kopia);
+				if ((newParent != nullptr) && newParent->hasCategory(CBaseObject::Category::ANNOTATION) && obj->hasCategory(CBaseObject::Category::OBJECT))
+				{
+					UI::MESSAGEBOX::error("regular object cannot be copied as a descendant of annotation");
+					return;
+				}
+
+				std::shared_ptr<CBaseObject> kopia = obj->getCopy();
+
+				if (keep_pos)
+				{
+					CTransform t0;
+					if (obj->getParent() != nullptr)
+						t0 = CTransform(CBaseObject::getGlobalTransformationMatrix(obj->getParentPtr()));
+
+					std::shared_ptr<CModel3D> newmodel = std::make_shared<CModel3D>();
+					newmodel->setLabel("<=>");
+					newmodel->setDescr("Macierz dopasowania, wygenerowana podczas kopiowania obiektu");
+
+					if (newParent == nullptr) // copyToNew
+					{
+						if (kopia->hasCategory(CBaseObject::OBJECT))
+						{
+							newmodel->addChild(newmodel, kopia);
+							newmodel->importChildrenGeometry();
+							newmodel->setTransform(t0);
+							AP::WORKSPACE::addModel(newmodel);
+						}
+						else if (kopia->hasCategory(CBaseObject::ANNOTATION))
+						{
+							newmodel->addAnnotation(newmodel, std::dynamic_pointer_cast<CAnnotation>(kopia));
+							newmodel->setTransform(t0);
+							AP::WORKSPACE::addModel(newmodel);
+						}
+					}
+					else // copyTo existing
+					{
+						CTransform t1(CBaseObject::getGlobalTransformationMatrix(newParent));
+						CTransform ft = CTransform::fromTo(t0, t1);
+
+						if (ft.toQMatrix4x4().isIdentity())
+						{
+							AP::OBJECT::addChild(newParent, kopia);
+							//delete newmodel;
+						}
+						else
+						{
+							newmodel->addChild(newmodel, kopia);
+							newmodel->importChildrenGeometry();
+							newmodel->setTransform(ft);
+
+							AP::OBJECT::addChild(newParent, newmodel);
+						}
+
+						//((CObject*)newParent)->importChildrenGeometry();
+					}
+				}
+				else
+				{
+					if (newParent == nullptr) // copyToNew
+					{
+						AP::WORKSPACE::addObject(kopia);
+					}
+					else // copyTo existing
+					{
+						AP::OBJECT::addChild(newParent, kopia);
+					}
+				}
+				UI::updateAllViews();
 			}
 		}
-		UI::updateAllViews();
 	}
 }
+
+
+
+
+
 
 
 

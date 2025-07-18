@@ -67,10 +67,10 @@
 		if (parent) {
 			if (auto p = std::dynamic_pointer_cast<CObject>(parent)) {
 				if (auto c = std::dynamic_pointer_cast<CAnnotation>(obj)) {
-					result = p->addAnnotation(p, c);
+					result = CObject::addAnnotation(p, c);
 				}
 				else {
-					result = p->addChild(p, obj);
+					result = CObject::addChild(p, obj);
 				}
 			}
 			else if (auto p = std::dynamic_pointer_cast<CAnnotation>(parent)) {
@@ -94,14 +94,17 @@
 			}
 		}
 	
+		//auto parentId = obj->getParentPtr() ? obj->getParentPtr()->id() : -1;
+		//dpInfo() << "CWorkspace::_objectAdd() id=" << obj->id() << " (id = " << id << ") parentId= " << parentId;
+
 		notifyObjectAdded(id);
 
-        return obj->id();
+        return id;
 	}
 
 	bool CWorkspace::_objectRemove(std::shared_ptr<CBaseObject> obj)
 	{
-		dpInfo() << "_objectRemove(): " << obj.use_count();
+		//dpInfo() << "_objectRemove(): " << obj.use_count();
 		if (obj == nullptr) return false;
 		auto id = obj->id();
 
@@ -140,7 +143,7 @@
 
 		notifyObjectRemoved(id, (CBaseObject::Type)obj->type());
 
-		dpInfo() << "_objectRemove(): " << obj.use_count();
+		//dpInfo() << "_objectRemove(): " << obj.use_count();
 		return true;
 	}
 
