@@ -120,7 +120,7 @@ size_t CParserWRL::ReadVRML()
 
 	if (strcmp(a1, "#VRML"))
 	{
-		// brak nag��wka pliku vrml - wyskakujemy
+		// brak nagłówka pliku vrml - wyskakujemy
 		fclose(plik);
 		return 0;
 	}
@@ -136,7 +136,7 @@ size_t CParserWRL::ReadVRML()
 	}
 	else
 	{
-		// nieobs�ugiwana wersja
+		// nieobsługiwana wersja
 		fclose(plik);
 		return 0;
 	}
