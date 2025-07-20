@@ -559,7 +559,7 @@ void DockWidgetWorkspace::colNameClicked(std::shared_ptr<CBaseObject> obj, Works
 
 		bool b = clickedItem->checkState() == Qt::Checked;
 
-		obj->setSelected(b);
+		obj->setChecked(b);
 		if (!wksp->changeSelection(obj->id(), b))
 		{
 			wksp->_objectActivate(obj->id());
@@ -569,7 +569,7 @@ void DockWidgetWorkspace::colNameClicked(std::shared_ptr<CBaseObject> obj, Works
 	else
 	{
 		bool b = clickedItem->checkState() == Qt::Checked;
-		obj->setSelected(b);
+		obj->setChecked(b);
 		wksp->changeSelection(obj->id(), b);
 
 		//Qt::CheckState state = clickedItem->checkState();

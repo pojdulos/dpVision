@@ -176,7 +176,7 @@ void PropBaseObject::changedSelection(int checkState)
 	}
 	else
 	{
-		obj->setSelected( b );
+		obj->setChecked( b );
 	}
 	UI::DOCK::WORKSPACE::setItemCheckedById(obj->id(), b );
 	UI::updateAllViews();

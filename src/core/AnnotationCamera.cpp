@@ -149,7 +149,7 @@ void CAnnotationCamera::renderSelf()
 
 	std::shared_ptr<CBaseObject> parent = this->getParentPtr();
 
-	if ( parent->isSelected() || m_selected )
+	if ( parent->isSelected() || m_checked )
 	{
 		glColor4ubv(m_selcolor.V());
 	}

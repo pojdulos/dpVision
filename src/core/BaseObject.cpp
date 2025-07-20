@@ -26,7 +26,7 @@ CBaseObject::CBaseObject(std::shared_ptr<CBaseObject> p)
 	m_path = "";
 	m_parent = p;
 
-	m_selected = false;
+	m_checked = false;
 
 	m_showSelf = true;
 	m_showKids = true;
@@ -46,7 +46,7 @@ CBaseObject::CBaseObject(int objId)
 	m_path = "";
 	m_parent = CWorkspace::instance()->getSomethingWithId(objId);
 
-	m_selected = false;
+	m_checked = false;
 
 	m_showSelf = true;
 	m_showKids = true;
@@ -69,7 +69,7 @@ CBaseObject::CBaseObject(const CBaseObject &b)
 
 	m_parent = b.m_parent;
 
-	m_selected = false;
+	m_checked = false;
 
 	m_showSelf = true;
 	m_showKids = true;

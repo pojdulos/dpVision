@@ -188,10 +188,10 @@ public:
 	int id() { return m_Id; };
 	int parentId() { if (auto o = m_parent.lock()) return o->id(); else return NO_CURRENT_MODEL; };
 
-	virtual inline bool setSelected(bool sel) { return m_selected = sel; };
-	virtual inline bool isSelected() { return m_selected; };
+	virtual inline bool setChecked(bool sel) { return m_checked = sel; };
+	virtual inline bool isSelected() { return m_checked; };
 
-	// dla zachowania zgodno�ci przy wyszukiwaniu potomk�w
+	// dla zachowania zgodności przy wyszukiwaniu potomków
 	virtual std::shared_ptr<CBaseObject> findId(int /*id*/) { return nullptr; };
 	virtual inline bool hasChildren() { return false; };
 
@@ -237,7 +237,7 @@ protected:
 
 	std::weak_ptr<CBaseObject> m_parent;
 
-	bool m_selected;
+	bool m_checked;
 
 	//Visibility m_visible;
 	bool m_showSelf;

@@ -65,9 +65,18 @@ public:
 
 	// API interfaces for windows and user code:
 
+	// set object active (like single click in workspace tree)
 	void _objectActivate(int id);
+
+    // adds object to workspace or optionaly to other object.
+	// If parent is nullptr, obj will be always add to Workspace tree 
+	// If parent is not a part of Workspace - obj will be set as children to him but they both will not insert to Wokspace tree
 	int _objectAdd(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> parent=nullptr);
+
+	// remove object from workspace
 	bool _objectRemove(std::shared_ptr<CBaseObject> obj);
+
+	// remove object from workspace
 	bool _objectRemove(int id);
 
 

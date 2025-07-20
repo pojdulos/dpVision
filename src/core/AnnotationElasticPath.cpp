@@ -14,7 +14,7 @@ CAnnotationElasticPath::CAnnotationElasticPath() {
 	setLabel("path");
 	setParent(nullptr);
 	setColor(CRGBA(1.0f, 0.0f, 0.0f, 1.0f));
-	m_selected = false; 
+	m_checked = false; 
 	renderer_ = std::make_shared<IAnnotationElasticPathRenderer>();
 }
 
@@ -22,7 +22,7 @@ CAnnotationElasticPath::CAnnotationElasticPath(std::shared_ptr<CModel3D> m) {
 	setLabel("path");
 	m_parent = m;
 	m_color = CRGBA(1.0f, 0.0f, 0.0f, 1.0f);
-	m_selected = false; 
+	m_checked = false; 
 	renderer_ = std::make_shared<IAnnotationElasticPathRenderer>();
 }
 
@@ -48,7 +48,7 @@ void CAnnotationElasticPath::renderSelf()
 		glEnable(GL_COLOR_MATERIAL);
 		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 
-		if (m_selected)
+		if (m_checked)
 		{
 			glColor4ubv(m_selcolor.V());
 		}

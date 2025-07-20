@@ -47,7 +47,7 @@ void CAnnotationBox::renderSelf()
 	glPolygonMode(GL_BACK, GL_LINE);
 
 
-	if ( m_selected )
+	if ( m_checked )
 	{
 		glColor4ubv(m_selcolor.V());
 	}

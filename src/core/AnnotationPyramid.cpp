@@ -48,7 +48,7 @@ void CAnnotationPyramid::renderSelf()
 	//glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);	
 
 
-	if ( m_selected )
+	if ( m_checked )
 	{
 		glColor4ubv(m_selcolor.V());
 	}

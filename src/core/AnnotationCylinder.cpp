@@ -51,7 +51,7 @@ void CAnnotationCylinder::renderSelf()
 	
 	glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);	
 
-	if ( m_selected )
+	if ( m_checked )
 	{
 		glPointSize(9);
 		glColor4ubv(m_selcolor.V());

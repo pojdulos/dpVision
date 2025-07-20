@@ -83,7 +83,7 @@ void CAnnotationEdges::renderSelf()
 		glEnable(GL_COLOR_MATERIAL);
 		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 
-		if (m_selected)
+		if (m_checked)
 		{
 			glLineWidth(1.0);
 			glColor4ubv( m_selcolor.V() );

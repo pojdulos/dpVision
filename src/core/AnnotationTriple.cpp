@@ -89,7 +89,7 @@ void CAnnotationTriple::renderSelf()
 
 	drawAxes();
 
-	if (m_selected)
+	if (m_checked)
 	{
 		glColor4ubv(m_selcolor.V());
 	}
@@ -110,7 +110,7 @@ void CAnnotationTriple::renderSelf()
 
 	glPointSize(5);
 
-	if (m_selected)
+	if (m_checked)
 	{
 		glColor4ubv(m_selcolor.V());
 	}
