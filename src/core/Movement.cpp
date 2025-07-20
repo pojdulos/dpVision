@@ -77,8 +77,8 @@ void CMovement::renderRotationAxe(CTransform curr, CTransform prev)
 	double relLen = 200.0;// 10000.0 * relAngle;
 
 	dpInfo() << "-------------------------------------------------------------" << Qt::endl;
-	dpInfo() << "ABS angle: " << rad2deg(absAngle) << "� translation: " << currT.length() << "mm" << Qt::endl;
-	dpInfo() << "REL angle: " << rad2deg(relAngle) << "� translation: " << relT.length() << "mm" << Qt::endl;
+	dpInfo() << "ABS angle: " << rad2deg(absAngle) << "° translation: " << currT.length() << "mm" << Qt::endl;
+	dpInfo() << "REL angle: " << rad2deg(relAngle) << "° translation: " << relT.length() << "mm" << Qt::endl;
 
 	glPushMatrix();
 	glPushAttrib(GL_ALL_ATTRIB_BITS);

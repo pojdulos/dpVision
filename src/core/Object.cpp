@@ -236,7 +236,7 @@ int CObject::addChild(std::shared_ptr<CObject> parent, std::shared_ptr<CBaseObje
 	child->setParent(parent);
 
 	parent->m_data[child->id()] = child;
-
+	
 	return child->id();
 }
 

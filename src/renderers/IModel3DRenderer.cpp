@@ -6,33 +6,18 @@
 
 #include "../api/UI.h"
 
-void IModel3DRenderer::renderBoundingBox(CModel3D* obj)
-{
-	QVector<std::shared_ptr<CBaseObject>> objts = UI::DOCK::WORKSPACE::getSelectedObjects();
-
-	CBoundingBox::Style style = objts.contains(obj->shared_from_this()) ? CBoundingBox::Style::Unlocked : CBoundingBox::Style::NotSelected;
-
-	obj->draw(style, obj->isChecked());
-}
-
 void IModel3DRenderer::renderTransform(const CBaseObject* _obj)
 {
 	CModel3D* obj = (CModel3D*)_obj;
 	if (obj->getSelfVisibility()) obj->transform().render();
-	if (obj->bDrawBB) renderBoundingBox(obj);
 }
 
 
-void IModel3DRenderer::renderSelf(const CBaseObject* _obj)
+void IModel3DRenderer::renderLast(const CBaseObject *_obj)
 {
-	//if (bDrawBB) renderAxes();
-
-	//if (m_visible != Visibility::HIDE_ALL)
-	//{
-	//	renderKids();
-	//}
+	CModel3D* obj = (CModel3D*)_obj;
+	if (obj->bDrawBB) renderBoundingBox(obj); // from IObjectRenderer
 }
-
 
 void IModel3DRenderer::renderAxes()
 {

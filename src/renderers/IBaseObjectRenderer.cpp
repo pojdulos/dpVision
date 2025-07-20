@@ -7,8 +7,10 @@
 void IBaseObjectRenderer::render(const CBaseObject* obj)
 {
 	glPushMatrix();
+	renderFirst(obj);
 	renderTransform(obj);
 	if (obj->getSelfVisibility()) renderSelf(obj);
 	if (obj->getKidsVisibility()) renderKids(obj);
+	renderLast(obj);
 	glPopMatrix();
 }

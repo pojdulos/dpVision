@@ -828,6 +828,7 @@ void CTransform::fromRowMatrix(QString text, QString separator)
 }
 
 #include "K3Screw.h"
+#include "dpLog.h"
 
 void CTransform::renderScrew(float r = 1., float g = 1., float b = 0.)
 {
@@ -841,7 +842,7 @@ void CTransform::renderScrew(float r = 1., float g = 1., float b = 0.)
 	//std::cout << "\nalpha =" << rad2deg(alpha);
 	//std::cout << "\nD = " << dispMatrixXd(D);
 	//std::cout << "\nt = " << dispMatrixXd(t) << endl;
-
+	dpInfo() << "alpha: " << rad2deg(alpha) << "°";
 	Vector3d P = K3Screw::K3Projection({ 0., 0., 0. }, D, V);
 
 	//std::cout << "\nnz =" << dispMatrixXd(P);
