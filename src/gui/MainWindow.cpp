@@ -1,6 +1,6 @@
 #include "MainWindow.h"
 
-#include "AP.h"
+#include "../api/AP.h"
 #include "MainApplication.h"
 #include "Model3D.h"
 

@@ -1,7 +1,7 @@
 #include "DockWidgetPluginPanel.h"
 
-#include "UI.h"
-#include "AP.h"
+#include "../api/UI.h"
+#include "../api/AP.h"
 
 #include "Plugin.h"
 

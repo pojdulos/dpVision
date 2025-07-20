@@ -114,7 +114,7 @@ void ImageLabel::moveSelection(QPoint real_mouse)
 	m_selection.setSize(size);
 }
 
-#include "UI.h"
+#include "../api/UI.h"
 
 
 void ImageLabel::mouseMoveEvent(QMouseEvent* e)

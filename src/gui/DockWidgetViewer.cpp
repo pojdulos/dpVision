@@ -1,7 +1,7 @@
 #include "DockWidgetViewer.h"
 
-#include "UI.h"
-#include "AP.h"
+#include "../api/UI.h"
+#include "../api/AP.h"
 
 #include "Quaternion.h"
 #include "MainWindow.h"

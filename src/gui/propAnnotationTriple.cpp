@@ -1,7 +1,7 @@
 #include "propAnnotationTriple.h"
 #include "AnnotationTriple.h"
 
-#include "UI.h"
+#include "../api/UI.h"
 #include <QVBoxLayout>
 
 PropAnnotationTriple::PropAnnotationTriple(CAnnotationTriple *an, QWidget *parent) : PropWidget( parent )

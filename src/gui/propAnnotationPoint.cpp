@@ -1,7 +1,7 @@
 #include "propAnnotationPoint.h"
 #include "AnnotationPoint.h"
 
-#include "UI.h"
+#include "../api/UI.h"
 #include <QVBoxLayout>
 
 PropAnnotationPoint::PropAnnotationPoint(CAnnotationPoint *an, QWidget *parent) : PropWidget( parent )

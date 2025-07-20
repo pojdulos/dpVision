@@ -3,9 +3,9 @@
 #include <QtGui/QKeyEvent>
 #include <QMessageLogger>
 
-#include "AP.h"
+#include "../api/AP.h"
 
-#include "UI.h"
+#include "../api/UI.h"
 
 #include "AppSettings.h"
 #include "MainApplication.h"

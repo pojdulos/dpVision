@@ -5,7 +5,7 @@
 #include <QBrush>
 #include <QPainter>
 #include "BaseObject.h"
-#include "UI.h"
+#include "../api/UI.h"
 
 GraphNode::GraphNode(qreal x, qreal y, const QString& label, ShapeType shape)
     : QGraphicsTextItem(label), m_shape(shape), m_obj(nullptr)

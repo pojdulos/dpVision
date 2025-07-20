@@ -2,7 +2,7 @@
 
 #include "ParserWRL.h"
 
-#include "UI.h"
+#include "../api/UI.h"
 
 void CParserWRL::VRML_ParseNode_IndexedFaceSet( FILE *plik )
 {

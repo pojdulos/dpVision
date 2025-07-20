@@ -1,6 +1,6 @@
 #include "DockWidgetProperties.h"
 
-#include "UI.h"
+#include "../api/UI.h"
 
 #include "DockWidgetWorkspace.h"
 #include "Annotation.h"
@@ -36,7 +36,7 @@
 #include <QLayout>
 #include <QScrollArea>
 
-#include "AP.h"
+#include "../api/AP.h"
 
 #include "Model3D.h"
 
@@ -234,7 +234,7 @@ void DockWidgetProperties::onDarkModeChanged(bool dark)
 	QPalette palette = ui.tree->palette();
 	QColor dialogBackgroundColor = QApplication::palette().color(QPalette::Window);
 
-	// Ustawienie koloru t³a w palecie
+	// Ustawienie koloru tï¿½a w palecie
 	palette.setColor(QPalette::Base, dialogBackgroundColor);
 	ui.tree->setPalette(palette);
 }

@@ -1,7 +1,7 @@
 // WorkspaceAPIAdapter.h
 #pragma once
 #include "../interfaces/IWorkspaceAPI.h"
-#include "AP.h"
+#include "../api/AP.h"
 #include "Workspace.h"
 
 class WorkspaceAPIAdapter : public IWorkspaceAPI {

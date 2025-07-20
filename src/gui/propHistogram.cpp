@@ -1,7 +1,7 @@
 #include "propHistogram.h"
 #include "Histogram.h"
 
-#include "UI.h"
+#include "../api/UI.h"
 #include <QVBoxLayout>
 
 //PropHistogram::PropHistogram(CHistogram *an, QWidget *parent) : PropBaseObject( an, parent ) //: PropAnnotation( an, parent )

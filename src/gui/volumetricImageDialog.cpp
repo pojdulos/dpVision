@@ -4,7 +4,7 @@
 //#include <QResizeEvent>
 
 #include "ImageLabel.h"
-#include "UI.h"
+#include "../api/UI.h"
 #include <QKeyEvent>
 #include <QPainter>
 
@@ -1935,7 +1935,7 @@ void VolumetricImageDialog::onImageMouseMoved(QMouseEvent* e)
 //}
 //
 
-//#include "AP.h"
+//#include "../api/AP.h"
 
 //void VolTKimageDialog::onCreateVolTKStructureBtn()
 //{

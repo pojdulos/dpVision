@@ -1,6 +1,6 @@
-#include "AP.h"
+#include "../api/AP.h"
 
-#include "UI.h"
+#include "../api/UI.h"
 
 #include "MainApplication.h"
 #include "MainWindow.h"

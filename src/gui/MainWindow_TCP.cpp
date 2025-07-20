@@ -1,9 +1,9 @@
 #include "MainWindow.h"
 
-#include "AP.h"
+#include "../api/AP.h"
 #include "MainApplication.h"
 
-#include "UI.h"
+#include "../api/UI.h"
 
 #include <QtNetwork/QLocalServer>
 #include <QtNetwork/QTcpServer>

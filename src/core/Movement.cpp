@@ -7,7 +7,7 @@
 #include "PMFactory.h"
 #include "Utilities.h"
 
-#include "AP.h"
+#include "../api/AP.h"
 
 #include "MainApplication.h"
 
@@ -160,7 +160,7 @@ void CMovement::setTimer()
 	QObject::connect(&m_animationTimer, &QTimer::timeout, [&]() { onTimeout(); });
 }
 
-#include "UI.h"
+#include "../api/UI.h"
 
 void CMovement::onTimeout()
 {

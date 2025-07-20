@@ -1,6 +1,6 @@
 #include "propBaseObject.h"
 #include "BaseObject.h"
-#include "UI.h"
+#include "../api/UI.h"
 
 bool PropBaseObject::group_visible = true;
 
@@ -107,7 +107,7 @@ void PropBaseObject::updateKeywords()
 	ui.keywordsAreaContents->update();
 }
 
-#include "AP.h"
+#include "../api/AP.h"
 #include "Workspace.h"
 
 void PropBaseObject::changedLabel(QString s)

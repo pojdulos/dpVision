@@ -1,7 +1,7 @@
 #include "propDataChild.h"
 #include "MainWindow.h"
-#include "UI.h"
-#include "AP.h"
+#include "../api/UI.h"
+#include "../api/AP.h"
 #include <QVBoxLayout>
 
 PropDataChild::PropDataChild(CBaseObject *m, QWidget *parent) : PropWidget( parent )

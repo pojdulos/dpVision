@@ -2,7 +2,7 @@
 #include "QtWidgets/QSpinBox"
 #include "QtWidgets/QLineEdit"
 
-#include "UI.h"
+#include "../api/UI.h"
 
 QWidget* CSpinBoxDelegate::createSpinBox(QWidget* parent, int min, int max, int step) const
 {

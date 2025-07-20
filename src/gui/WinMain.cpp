@@ -15,7 +15,7 @@
 
 #include "AppSettings.h"
 
-#include "AP.h"
+#include "../api/AP.h"
 
 #include "StatusBarManager.h"
 

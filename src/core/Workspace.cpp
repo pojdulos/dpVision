@@ -2,7 +2,7 @@
 //#include "WorkspaceXML.h"
 #include "WorkspaceFile.h"
 
-#include "AP.h"
+#include "../api/AP.h"
 
 #include "../renderers/IWorkspaceRenderer.h"
 #include "StatusBarManager.h"

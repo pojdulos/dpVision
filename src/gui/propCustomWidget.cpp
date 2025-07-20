@@ -1,6 +1,6 @@
 #include "propBaseObject.h"
 #include "propCustomWidget.h"
-#include "UI.h"
+#include "../api/UI.h"
 
 #include <QColorDialog>
 #include <QPushButton>

@@ -1,4 +1,4 @@
-#include "UI.h"
+#include "../api/UI.h"
 
 #include "MainWindow.h"
 
@@ -21,7 +21,7 @@
 
 #include "GLViewer.h"
 
-#include "AP.h"
+#include "../api/AP.h"
 
 
 void UI::adjustGroupBoxHeight(QGroupBox* groupBox, bool checked)

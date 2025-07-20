@@ -130,7 +130,7 @@ std::wstring CPointCloud::infoRow()
 //
 //}
 
-#include "AP.h"
+#include "../api/AP.h"
 // #include "MainWindow.h"
 // #include "GLViewer.h"
 

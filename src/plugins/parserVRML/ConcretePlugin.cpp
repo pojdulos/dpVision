@@ -2,7 +2,7 @@
 #include "CommonDLL.h"
 #include "ConcretePlugin.h"
 
-#include "AP.h"
+#include "../api/AP.h"
 
 ConcretePlugin::ConcretePlugin(void)
 {
@@ -14,7 +14,7 @@ ConcretePlugin::~ConcretePlugin(void)
 {
 }
 
-#include "UI.h"
+#include "../api/UI.h"
 #include "FileConnector.h"
 #include "ParserWRL.h"
 

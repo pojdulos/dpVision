@@ -7,8 +7,8 @@
 #include "AnnotationPlane.h"
 #include "FileConnector.h"
 
-#include "AP.h"
-#include "UI.h"
+#include "../api/AP.h"
+#include "../api/UI.h"
 
 #include "AppSettings.h"
 

@@ -2,7 +2,7 @@
 #include "AnnotationSetOfFaces.h"
 #include "propTransform.h"
 
-#include "UI.h"
+#include "../api/UI.h"
 #include <QVBoxLayout>
 
 PropAnnotationSetOfFaces::PropAnnotationSetOfFaces(CAnnotationSetOfFaces *an, QWidget *parent) : PropWidget(parent)//: PropAnnotation( an, parent )

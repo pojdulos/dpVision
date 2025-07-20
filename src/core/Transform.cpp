@@ -1,6 +1,6 @@
 #include "Transform.h"
 
-#include "AP.h"
+#include "../api/AP.h"
 
 #include "MainApplication.h"
 
@@ -59,8 +59,8 @@ void CTransform::reset() {
 }
 
 /*
-obrót wokó³ zadanej osi przechodz¹cej przez [0,0,0]
-Wp³ywa tylko na macierz transformacji. Nie modyfikuje wspó³rzêdnych punktów
+obrï¿½t wokï¿½ zadanej osi przechodzï¿½cej przez [0,0,0]
+Wpï¿½ywa tylko na macierz transformacji. Nie modyfikuje wspï¿½rzï¿½dnych punktï¿½w
 */
 void  CTransform::rotateAroundAxis(CVector3d axis, double angle, bool internal)
 {
@@ -75,16 +75,16 @@ void  CTransform::rotateAroundAxis(CVector3d axis, double angle, bool internal)
 	{
 		CQuaternion invRot = m_rot.inverse();
 
-		// przeliczam origin (tu translacjê) do wspó³rzêdnych wewnêtrznych obiektu
-		// przed wykonaniem obrotu, ale nie stosujê skalowania
-		// wiec nie trzeba go bêdzie potem skalowaæ spowrotem
+		// przeliczam origin (tu translacjï¿½) do wspï¿½rzï¿½dnych wewnï¿½trznych obiektu
+		// przed wykonaniem obrotu, ale nie stosujï¿½ skalowania
+		// wiec nie trzeba go bï¿½dzie potem skalowaï¿½ spowrotem
 		Eigen::Vector3d tmpOrigin = invRot * m_tra.toVector3();
 
-		// OBRÓT wokó³ osi przekszta³conej do wspó³rzêdnych obiektu
+		// OBRï¿½T wokï¿½ osi przeksztaï¿½conej do wspï¿½rzï¿½dnych obiektu
 		m_rot *= CQuaternion( angle, Eigen::Vector3d( invRot * axis.toVector3() ) );
 		m_rot.normalize();
 
-		// przeliczam origin (tu translacjê) do wspó³rzêdnych zewnêtrzych
+		// przeliczam origin (tu translacjï¿½) do wspï¿½rzï¿½dnych zewnï¿½trzych
 		m_tra = m_rot * tmpOrigin;
 	}
 }
@@ -92,9 +92,9 @@ void  CTransform::rotateAroundAxis(CVector3d axis, double angle, bool internal)
 
 
 /*
-obrót wokó³ zadanej osi przechodz¹cej przez origin
-Zostanie wykonana rotacja wokó³ osi przechodz¹cej przez punkt [0,0,0] oraz translacja by œrodek obrotu pozosta³ w tym samym miejscu.
-Wp³ywa tylko na macierz transformacji. Nie modyfikuje wspó³rzêdnych punktów.
+obrï¿½t wokï¿½ zadanej osi przechodzï¿½cej przez origin
+Zostanie wykonana rotacja wokï¿½ osi przechodzï¿½cej przez punkt [0,0,0] oraz translacja by ï¿½rodek obrotu pozostaï¿½ w tym samym miejscu.
+Wpï¿½ywa tylko na macierz transformacji. Nie modyfikuje wspï¿½rzï¿½dnych punktï¿½w.
 */
 void CTransform::rotateAroundAxis(CPoint3d origin, CVector3d axis, double angle, bool internal)
 {
@@ -134,9 +134,9 @@ void CTransform::rotateAroundAxis(CPoint3d origin, CVector3d axis, double angle,
 
 
 /*
-z³o¿enie obrotów - zawsze wokó³ punktu [0,0,0]. Osie obrotu: xAxis, yAxis i zAxis 
-Wp³ywa tylko na macierz transformacji. Nie modyfikuje wspó³rzêdnych punktów
-K¹ty podajemy w radianach.
+zï¿½oï¿½enie obrotï¿½w - zawsze wokï¿½ punktu [0,0,0]. Osie obrotu: xAxis, yAxis i zAxis 
+Wpï¿½ywa tylko na macierz transformacji. Nie modyfikuje wspï¿½rzï¿½dnych punktï¿½w
+Kï¿½ty podajemy w radianach.
 */
 void CTransform::rotate(std::vector<std::pair<CVector3d, double>> axisAngle, bool internal)
 {
@@ -168,10 +168,10 @@ void CTransform::rotate(std::vector<std::pair<CVector3d, double>> axisAngle, boo
 
 
 /*
-z³o¿enie obrotów wokó³ zadanego punktu
-Zostanie wykonana rotacja wokó³ punktu [0,0,0] oraz translacja by œrodek obrotu pozosta³ w tym samym miejscu.
-Wp³ywa tylko na macierz transformacji. Nie modyfikuje wspó³rzêdnych punktów.
-K¹ty podajemy w radianach.
+zï¿½oï¿½enie obrotï¿½w wokï¿½ zadanego punktu
+Zostanie wykonana rotacja wokï¿½ punktu [0,0,0] oraz translacja by ï¿½rodek obrotu pozostaï¿½ w tym samym miejscu.
+Wpï¿½ywa tylko na macierz transformacji. Nie modyfikuje wspï¿½rzï¿½dnych punktï¿½w.
+Kï¿½ty podajemy w radianach.
 */
 void CTransform::rotate(CPoint3d origin, std::vector<std::pair<CVector3d,double>> axisAngle, bool internal)
 {

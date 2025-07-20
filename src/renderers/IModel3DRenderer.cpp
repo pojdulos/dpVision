@@ -2,8 +2,9 @@
 #include <qopengl.h>
 #include "../core/Model3D.h"
 #include "../core/Annotation.h"
-#include "../core/UI.h"
 #include "../core/BoundingBox.h"
+
+#include "../api/UI.h"
 
 void IModel3DRenderer::renderBoundingBox(CModel3D* obj)
 {

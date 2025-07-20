@@ -3,7 +3,7 @@
 
 #include <qclipboard.h>
 
-#include "UI.h"
+#include "../api/UI.h"
 #include <QVBoxLayout>
 
 PropAnnotationCamera::PropAnnotationCamera(CAnnotationCamera*an, QWidget *parent) : PropWidget( parent )

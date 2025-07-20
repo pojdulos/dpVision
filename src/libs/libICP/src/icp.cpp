@@ -85,7 +85,7 @@ double Icp::fit( double *T,const int32_t T_num,Matrix &R,Matrix &t,double indist
 	return getResidual(T,T_num,R,t,m_active);
 }
 
-#include "UI.h"
+#include "../api/UI.h"
 
 void Icp::fitIterate( double *T,const int32_t T_num,Matrix &R,Matrix &t, double indist /*= -1*/ )
 {

@@ -2,8 +2,8 @@
 #include <qopengl.h>
 #include "../core/Object.h"
 #include "../core/Annotation.h"
-#include "../core/UI.h"
 #include "../core/BoundingBox.h"
+#include "../api/UI.h"
 
 void IObjectRenderer::renderBoundingBox(CObject* obj)
 {

@@ -6,7 +6,7 @@
 #include "utils/StringUtils.h"
 #include "StatusBarManager.h"
 
-#include "UI.h"
+#include "../api/UI.h"
 #include "dpLog.h"
 
 CHistogram::CHistogram(std::vector<double> data, int levels) :CAnnotation()

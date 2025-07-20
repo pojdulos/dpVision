@@ -267,7 +267,7 @@ std::wstring CVolTK::infoRow()
 // #endif
 
 //#include <qglshaderprogram.h>
-#include "AP.h"
+#include "../api/AP.h"
 //#include "MainWindow.h"
 //#include "GLViewer.h"
 

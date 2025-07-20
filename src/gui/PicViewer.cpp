@@ -5,7 +5,7 @@
 
 #include <QScrollArea>
 #include <QVBoxLayout>
-#include "AP.h"
+#include "../api/AP.h"
 
 PicViewer::PicViewer(QWidget* parent) : QWidget( parent )
 {

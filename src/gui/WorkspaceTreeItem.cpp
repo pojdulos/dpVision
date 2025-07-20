@@ -1,5 +1,5 @@
 #include "WorkspaceTreeItem.h"
-#include "AP.h"
+#include "../api/AP.h"
 #include "Model3D.h"
 
 WorkspaceTreeItem::WorkspaceTreeItem(std::shared_ptr<CBaseObject> obj) : QStandardItem()

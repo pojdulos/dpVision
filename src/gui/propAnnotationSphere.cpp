@@ -1,7 +1,7 @@
 #include "propAnnotationSphere.h"
 #include "AnnotationSphere.h"
 
-#include "UI.h"
+#include "../api/UI.h"
 #include <QVBoxLayout>
 
 PropAnnotationSphere::PropAnnotationSphere(CAnnotationSphere *an, QWidget *parent) : PropWidget( parent )
