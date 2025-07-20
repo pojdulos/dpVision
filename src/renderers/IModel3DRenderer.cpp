@@ -11,7 +11,7 @@ void IModel3DRenderer::renderBoundingBox(CModel3D* obj)
 
 	CBoundingBox::Style style = objts.contains(obj->shared_from_this()) ? CBoundingBox::Style::Unlocked : CBoundingBox::Style::NotSelected;
 
-	obj->draw(style, obj->isSelected());
+	obj->draw(style, obj->isChecked());
 }
 
 void IModel3DRenderer::renderTransform(const CBaseObject* _obj)

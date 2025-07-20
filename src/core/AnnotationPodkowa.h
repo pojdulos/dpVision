@@ -29,7 +29,5 @@ public:
 	virtual std::wstring getInfoRow();
 	virtual std::wstring getTypeWSTR() { return L"podkowa"; };
 
-	virtual void renderSelf() override;
-
 };
 

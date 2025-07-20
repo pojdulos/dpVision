@@ -5,10 +5,10 @@
 #include "AP.h"
 //#include "UI.h"
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-#include <GL/gl.h>
+// #ifdef _WIN32
+// #include <windows.h>
+// #endif
+// #include <GL/gl.h>
 
 #include <regex>
 
@@ -135,101 +135,3 @@ std::wstring CAnnotationCamera::getInfoRow()
 	return info;
 }
 
-void CAnnotationCamera::renderSelf()
-{
-	glPushMatrix();
-	glPushAttrib( GL_ALL_ATTRIB_BITS );
-
-	glDisable(GL_TEXTURE_2D);
-	glEnable(GL_COLOR_MATERIAL);
-	
-	//glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);	
-
-	glMultMatrixd(m_matrix);
-
-	std::shared_ptr<CBaseObject> parent = this->getParentPtr();
-
-	if ( parent->isSelected() || m_checked )
-	{
-		glColor4ubv(m_selcolor.V());
-	}
-	else
-	{
-		glColor4ubv(m_color.V());
-	}
-
-	glPolygonMode(GL_FRONT, GL_FILL);
-	glPolygonMode(GL_BACK, GL_FILL);
-
-	double scale = 1.0;
-	if (parent != nullptr)
-	{
-		while (parent->getParent() != nullptr)
-		{
-			scale *= ((CAnnotation*)parent.get())->getTransform().scale().x;
-			parent = parent->getParentPtr();
-		}
-		scale *= ((CModel3D*)parent.get())->getTransform().scale().x;
-	}
-
-	double aspect = m_sensor.realWidth / m_sensor.realHeight;
-	double sX = 0.40 / scale;
-	double sY = sX / aspect;
-	//double f = displayScale * m_sensor.mmFocalLength;
-
-	glLineWidth(3);
-
-	glBegin( GL_QUADS );
-	/*glVertex3d(-sX, -sY, f);
-	glVertex3d(sX, -sY, f);
-	glVertex3d(sX, sY, f);
-	glVertex3d(-sX, sY, f);
-	*/glVertex3d(-sX, -sY, 0);
-	glVertex3d(sX, -sY, 0);
-	glVertex3d(sX, sY, 0);
-	glVertex3d(-sX, sY, 0);
-	glEnd();
-
-
-	glColor4ub(0, 0, 0, 255);
-	glBegin(GL_LINES);
-	glVertex3d(-sX, -sY, 0); glVertex3d(sX, -sY, 0);
-	glVertex3d(sX, -sY, 0); glVertex3d(sX, sY, 0);
-	glVertex3d(sX, sY, 0); glVertex3d(-sX, sY, 0);
-	glVertex3d(-sX, sY, 0); glVertex3d(-sX, -sY, 0);
-	glEnd();
-
-
-	//glColor4ub(255, 255, 0, 255);
-
-	//glPolygonMode(GL_FRONT, GL_LINE);
-	//glPolygonMode(GL_BACK, GL_LINE);
-
-
-	//glBegin(GL_TRIANGLES);
-	//glVertex3d(0.0, 0.0, 0.0);
-	//glVertex3d(-sX, sY, f);
-	//glVertex3d(sX, sY, f);
-
-	//glVertex3d(0.0, 0.0, 0.0);
-	//glVertex3d(sX, -sY, f);
-	//glVertex3d(-sX, -sY, f);
-	//glEnd();
-
-	//glBegin(GL_LINES);
-	//	glVertex3d(0.0, 0.0, 0.0);
-	//	glVertex3d(-sX, sY, f);
-
-	//	glVertex3d(0.0, 0.0, 0.0);
-	//	glVertex3d(sX, sY, f);
-
-	//	glVertex3d(0.0, 0.0, 0.0);
-	//	glVertex3d(sX, -sY, f);
-
-	//	glVertex3d(0.0, 0.0, 0.0);
-	//	glVertex3d(-sX, -sY, f);
-	//glEnd();
-
-	glPopAttrib();
-	glPopMatrix();
-}

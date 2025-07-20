@@ -33,5 +33,5 @@ public:
 
 	virtual std::wstring getTypeWSTR() { return L"path"; };
 	virtual std::wstring getInfoRow();
-	virtual void renderSelf() override;
+
 };

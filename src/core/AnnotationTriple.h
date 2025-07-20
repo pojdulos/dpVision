@@ -36,8 +36,5 @@ public:
 	virtual std::wstring getInfoRow();
 	virtual std::wstring getTypeWSTR() { return L"triple"; };
 
-	void drawAxes();
-
-	virtual void renderSelf() override;
 };
 

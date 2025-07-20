@@ -13,7 +13,7 @@ WorkspaceTreeItem::WorkspaceTreeItem(std::shared_ptr<CBaseObject> obj) : QStanda
 		//	setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable);
 		setFlags(Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable);
 		setCheckable(true);
-		setCheckState(obj->isSelected() ? Qt::Checked : Qt::Unchecked);
+		setCheckState(obj->isChecked() ? Qt::Checked : Qt::Unchecked);
 
 		setToolTip(QString::fromStdWString(obj->infoRow()));
 	

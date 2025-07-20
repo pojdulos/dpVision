@@ -44,6 +44,5 @@ public:
 	virtual std::wstring getInfoRow();
 	virtual std::wstring getTypeWSTR() { return L"triangle"; };
 
-	virtual void renderSelf() override;
 };
 

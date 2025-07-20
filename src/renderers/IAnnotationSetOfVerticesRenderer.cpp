@@ -20,7 +20,7 @@ void IAnnotationSetOfVerticesRenderer::renderSelf(const CBaseObject* _obj)
 
 		glPointSize(obj->m_pointSize);
 
-		glColor4ubv(obj->isSelected() ? obj->getSelColor().V() : obj->getColor().V());
+		glColor4ubv(obj->isChecked() ? obj->getSelColor().V() : obj->getColor().V());
 
 		glEnable(GL_POINT_SMOOTH);
 		glBegin(GL_POINTS);

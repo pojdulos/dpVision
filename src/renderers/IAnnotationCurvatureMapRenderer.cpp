@@ -5,5 +5,5 @@
 void IAnnotationCurvatureMapRenderer::renderSelf(const CBaseObject* _obj)
 {
     CAnnotationCurvatureMap* obj = (CAnnotationCurvatureMap*)_obj;
-    obj->renderSelf();
+    //obj->renderSelf();
 }

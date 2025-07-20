@@ -21,7 +21,7 @@ void IAnnotationPolygon2DRenderer::renderSelf(const CBaseObject* _obj)
 			glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 
 
-			if (obj->isSelected())
+			if (obj->isChecked())
 			{
 				glColor4ubv(obj->getSelColor().V());
 			}

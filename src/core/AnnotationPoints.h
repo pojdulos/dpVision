@@ -29,5 +29,5 @@ public:
 
 	virtual std::wstring getTypeWSTR() override { return L"points"; };
 	virtual std::wstring getInfoRow() override;
-	virtual void renderSelf() override;
+
 };

@@ -47,7 +47,7 @@ void IAnnotationPlaneRenderer::renderSelf(const CBaseObject* _obj)
 
 		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 
-		if (obj->isSelected())
+		if (obj->isChecked())
 		{
 			glPointSize(9);
 			glColor4ubv(obj->getSelColor().V());

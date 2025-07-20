@@ -176,11 +176,6 @@ bool CObject::removeAnnotation(std::shared_ptr<CAnnotation> an)
 {
 	if (an == nullptr) return false;
 	
-	//bool isAnno = an->hasCategory(CBaseObject::Category::ANNOTATION);
-
-	//if (! isAnno )
-	//	return false;
-
 	Annotations::iterator it = m_annotations.find(an->id());
 
 	if (it != m_annotations.end())
@@ -294,16 +289,6 @@ void CObject::removeAllChilds()
 }
 
 
-//void CObject::removeChild(CBaseObject *d)
-//{
-//	if (d == NULL) return;
-//}
-
-//int CObject::getChildId(CBaseObject *d)
-//{
-//	if (d == NULL) return 0;
-//}
-
 std::shared_ptr<CBaseObject> CObject::findId( int id )
 {
 	Children::iterator it = m_data.find(id);
@@ -322,63 +307,6 @@ std::shared_ptr<CBaseObject> CObject::findId( int id )
 	return nullptr;
 }
 
-#include "GLViewer.h"
-
-//void CObject::render()
-//{
-//	if (m_visible != Visibility::HIDE_ALL)
-//		renderKids();
-//}
-
-#include "UI.h"
-
-void CObject::renderBoundingBox(std::shared_ptr<CObject> obj)
-{
-	QVector<std::shared_ptr<CBaseObject>> objts = UI::DOCK::WORKSPACE::getSelectedObjects();
-
-	CBoundingBox::Style style = objts.contains(obj) ? CBoundingBox::Style::Unlocked : CBoundingBox::Style::NotSelected;
-	
-	obj->CBoundingBox::draw(style, obj->isSelected());
-}
-
-//void CObject::renderTransform()
-//{
-//	if (bDrawBB) renderBoundingBox();
-//}
-//
-//void CObject::renderKids()
-//{
-//	//std::cout << "CObject::renderKids(): " << m_label.toStdString() << std::endl;
-//	for (const auto &itd : m_pairs )
-//	{
-//		//if (itd.second->getVisibility() != Visibility::HIDE_ALL)
-//		{
-//			switch (itd.second->type())
-//			{
-//			case CObject::MODEL:
-//				itd.second->render();
-//				break;
-//			default:
-//				glLoadName(m_Id);
-//				glPushName(m_Id);
-//
-//				itd.second->render();
-//
-//				glPopName();
-//				glLoadName(0);
-//				break;
-//			}
-//		}
-//	}
-//
-//	for (const auto &it : m_annotations )
-//	{
-//		//if (it.second->getVisibility() != Visibility::HIDE_ALL)
-//		{
-//			it.second->render();
-//		}
-//	}
-//}
 
 std::vector<unsigned int> CObject::getChildrenIds()
 {

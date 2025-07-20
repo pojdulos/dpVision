@@ -19,7 +19,7 @@ void IAnnotationSphereRenderer::renderSelf(const CBaseObject* _obj)
 
 	//drawAxes();
 
-	if (obj->isSelected())
+	if (obj->isChecked())
 	{
 		glColor4ubv(obj->getSelColor().V());
 	}

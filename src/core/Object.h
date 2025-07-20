@@ -35,10 +35,8 @@ public:
 	CObject(std::shared_ptr<CBaseObject> p = nullptr);
 	CObject(int parentId);
 
-	// konstruktor kopiuj¹cy
+	// konstruktor kopiujÄ…cy
 	CObject(const CObject &b);
-
-
 	virtual void updateChildrenParentPointers(const std::shared_ptr<CBaseObject>& self) override;
 
 	virtual std::shared_ptr<CBaseObject> getCopy() override;
@@ -102,12 +100,6 @@ public:
 	std::vector<CBaseObject*> getChildren(CBaseObject::Type type);
 
 	virtual std::shared_ptr<CBaseObject> findId( int id ) override;
-
-	static void renderBoundingBox(std::shared_ptr<CObject>);
-
-	//virtual void renderTransform() override;
-	//virtual void renderKids() override;
-	//virtual void render() override;
 };
 
 typedef CObject* PtrObject;

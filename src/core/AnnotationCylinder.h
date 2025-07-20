@@ -36,7 +36,5 @@ public:
 	virtual std::wstring getInfoRow();
 	virtual std::wstring getTypeWSTR() { return L"cylinder"; };
 
-	virtual void renderSelf() override;
-
 };
 

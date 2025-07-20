@@ -91,13 +91,12 @@ public:
 
 
 	// konstruktor ze wskazaniem rodzica
-	//CBaseObject(std::shared_ptr<CBaseObject> p = nullptr);
 	CBaseObject(std::shared_ptr<CBaseObject> p = nullptr);
 
 	// konstruktor ze wskazaniem rodzica
 	CBaseObject(int objId);
 
-	// konstruktor kopiuj�cy
+	// konstruktor kopiujący
 	CBaseObject(const CBaseObject &b);
 
 	virtual ~CBaseObject(void);
@@ -113,7 +112,7 @@ public:
 
 	virtual inline bool hasCategory(CBaseObject::Category cat)
 	{
-		return cat == category();
+		return cat == category(); 
 	};
 
 	virtual inline bool hasType(CBaseObject::Type typ)
@@ -189,7 +188,7 @@ public:
 	int parentId() { if (auto o = m_parent.lock()) return o->id(); else return NO_CURRENT_MODEL; };
 
 	virtual inline bool setChecked(bool sel) { return m_checked = sel; };
-	virtual inline bool isSelected() { return m_checked; };
+	virtual inline bool isChecked() { return m_checked; };
 
 	// dla zachowania zgodności przy wyszukiwaniu potomków
 	virtual std::shared_ptr<CBaseObject> findId(int /*id*/) { return nullptr; };

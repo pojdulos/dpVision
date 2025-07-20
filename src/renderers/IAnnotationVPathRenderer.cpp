@@ -22,7 +22,7 @@ void IAnnotationVPathRenderer::renderSelf(const CBaseObject* _obj)
 				glEnable(GL_COLOR_MATERIAL);
 				glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 
-				if (obj->isSelected())
+				if (obj->isChecked())
 				{
 					glLineWidth(5.0);
 					glColor4ubv(obj->getSelColor().V());

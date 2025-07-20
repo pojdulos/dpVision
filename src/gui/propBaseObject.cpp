@@ -57,7 +57,7 @@ void PropBaseObject::updateProperties()
 		ui.descrEdit->blockSignals(false);
 
 		ui.selected->blockSignals(true);
-		ui.selected->setChecked(obj->isSelected());
+		ui.selected->setChecked(obj->isChecked());
 		ui.selected->blockSignals(false);
 
 		ui.visible->blockSignals(true);

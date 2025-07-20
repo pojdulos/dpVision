@@ -113,6 +113,5 @@ public:
 
 	virtual std::wstring getInfoRow();
 
-	virtual void renderSelf() override;
 };
 

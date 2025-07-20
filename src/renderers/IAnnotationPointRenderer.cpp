@@ -17,7 +17,7 @@ void IAnnotationPointRenderer::renderSelf(const CBaseObject* _obj)
 
 	if ( obj->getFaceId() > -1 )
 	{
-		if ( obj->isSelected() )
+		if ( obj->isChecked() )
 		{
 			glColor4f( 0.7f, 0.0f, 0.0f, 1.0f );
 		}
@@ -37,7 +37,7 @@ void IAnnotationPointRenderer::renderSelf(const CBaseObject* _obj)
 
 
 
-	if ( obj->isSelected() )
+	if ( obj->isChecked() )
 	{
 		glPointSize(9);
 		glColor4ubv(obj->getSelColor().V());

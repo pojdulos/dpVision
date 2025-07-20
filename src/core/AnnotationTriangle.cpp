@@ -3,10 +3,10 @@
 
 #include "AP.h"
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-#include <GL/gl.h>
+// #ifdef _WIN32
+// #include <windows.h>
+// #endif
+// #include <GL/gl.h>
 
 #include "../renderers/IAnnotationTriangleRenderer.h"
 
@@ -67,53 +67,3 @@ std::wstring CAnnotationTriangle::getInfoRow()
 	return info;
 }
 
-void CAnnotationTriangle::renderSelf()
-{
-	glPushMatrix();
-	glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-	glDisable(GL_TEXTURE_2D);
-	glEnable(GL_COLOR_MATERIAL);
-
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-
-	if (m_checked)
-	{
-		glColor4ubv(m_selcolor.V());
-	}
-	else
-	{
-		glColor4ubv(m_color.V());
-	}
-
-	//glLineWidth(5);
-
-	glBegin(GL_TRIANGLES);
-		glVertex3dv(m_pA.toVector());
-		glVertex3dv(m_pB.toVector());
-		glVertex3dv(m_pC.toVector());
-	glEnd();
-
-
-	glPointSize(5);
-
-	if (m_checked)
-	{
-		glColor4ubv(m_selcolor.V());
-	}
-	else
-	{
-		glColor4ubv(m_color.V());
-	}
-
-	glEnable(GL_POINT_SMOOTH);
-	glBegin(GL_POINTS);
-		glVertex3dv(m_pA.toVector());
-		glVertex3dv(m_pB.toVector());
-		glVertex3dv(m_pC.toVector());
-	glEnd();
-
-
-	glPopAttrib();
-	glPopMatrix();
-}

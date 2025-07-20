@@ -332,43 +332,6 @@ void CContextMenu::saveObjAs()
 	}
 }
 
-//std::vector<CObject*> getPathToRoot(CObject* obj) {
-//	std::vector<CObject*> path;
-//	CObject* curr = obj;
-//	while (curr->getParent() != nullptr) {
-//		curr = (CObject*)curr->getParent();
-//		path.push_back(curr);
-//	}
-//	return path;
-//}
-
-// Odwróć ścieżkę do korzenia
-//void reversePath_BAK(std::vector<CBaseObject*>& path, CObject* start) {
-//	CObject* new_parent = start;
-//	Eigen::Matrix4d new_m = (new_parent->hasType(CObject::Type::MODEL)) ? ((CModel3D*)new_parent)->transform().toEigenMatrix4d() : Eigen::Matrix4d::Identity();
-//	
-//	for (CBaseObject* cur_obj : path)
-//	{
-//		CObject* cur_parent = (CObject*)cur_obj;
-//		CObject* cur_grandpa = (CObject*)cur_parent->getParent();
-//
-//		if (cur_grandpa)
-//			cur_grandpa->removeChild(cur_parent->id());
-//
-//		Eigen::Matrix4d cur_m = (cur_parent->hasType(CObject::Type::MODEL)) ? ((CModel3D*)cur_parent)->transform().toEigenMatrix4d() : Eigen::Matrix4d::Identity();
-//		Eigen::Matrix4d inv_m = (new_parent->hasType(CObject::Type::MODEL)) ? (Eigen::Matrix4d)new_m.inverse() : Eigen::Matrix4d::Identity();
-//
-//		if (cur_parent->hasType(CObject::Type::MODEL)) 
-//			((CModel3D*)cur_parent)->setTransform(inv_m);
-//
-//		new_parent->addChild(cur_parent);
-//
-//		new_parent = cur_parent;
-//		new_m = cur_m;
-//	}
-//}
-
-
 void reversePath(std::vector<std::shared_ptr<CBaseObject>>& path, std::shared_ptr<CObject> start) {
 	
 	std::vector<std::shared_ptr<CBaseObject>> revpath(path);

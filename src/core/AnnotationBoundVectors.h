@@ -34,6 +34,4 @@ public:
 
 	virtual std::wstring getTypeWSTR() override { return L"bound_vectors"; };
 	virtual std::wstring getInfoRow() override;
-	
-	virtual void renderSelf() override;
 };

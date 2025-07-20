@@ -9,10 +9,10 @@
 
 class DPVISION_EXPORT CAnnotationPyramid : public CAnnotation
 {
+public:
 	CPoint3d m_bottom[4];
 	CPoint3d m_top[4];
 
-public:
 	CAnnotationPyramid(std::shared_ptr<CBaseObject> m = nullptr);
 
 	CAnnotationPyramid( CAnnotationPyramid &p );
@@ -47,6 +47,5 @@ public:
 
 	virtual std::wstring getInfoRow();
 
-	virtual void renderSelf() override;
 };
 

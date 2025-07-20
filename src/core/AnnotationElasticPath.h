@@ -20,7 +20,7 @@ public:
 	virtual int type() { return CAnnotation::ELASTICPATH; }
 
 	virtual std::wstring getInfoRow();
-	virtual void renderSelf() override;
+
 };
 
 //class DPVISION_EXPORT CPathsMap : public std::map<int, CAnnotationPath*> {};
