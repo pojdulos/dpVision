@@ -1,15 +1,6 @@
 #include "Utilities.h"
-//#include "../api/AP.h"
-#include <cmath>
 
-/*
-std::string GetResourceString( unsigned int item )
-{
-	char strbuf[255];
-	LoadString( AP::mainApp().hInstance, item, strbuf, 255 );
-	return std::string( strbuf );
-}
-*/
+#include <cmath>
 
 double smartRound(double d, int decimal)
 {

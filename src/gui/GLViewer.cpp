@@ -455,62 +455,6 @@ void GLViewer::setSelectionMode(int mode)
 	repaint();
 }
 
-#include "VolTK.h"
-#include "ProgressIndicator.h"
-
-void GLViewer::deleteSelectedVoxelsVolTK(CVolTK& vol, CTransform& transform, bool deleteSelected)
-{
-	int i = 0;
-	auto progress = CMainWindow::instance()->progressIndicator;
-
-	progress->init(0, vol.m_displayData.size(), 0);
-
-	CVolTK::DisplayDataPart selected, unselected;
-
-	uint16_t wB = vol.m_currentIntensityRange.lower;
-	uint16_t wE;
-
-	for ( const CVolTK::DisplayData::value_type &dataPart : vol.m_displayData )
-	{
-		//selected.reserve(dataPart.second->size());
-		//unselected.reserve(dataPart.second->size());
-		selected.reserve(dataPart->size());
-		unselected.reserve(dataPart->size());
-
-		//for (CPoint3s dp : *dataPart.second)
-		for (CPoint3s dp : *dataPart)
-		{
-			CPoint3d point = vol.realXYZ(dp);
-			CPoint3d workspace = transform.l2w(point);
-			CPoint3d world = m_transform.l2w(workspace) - cam.m_pos;
-			CPoint3d win = world2win(world);
-
-			QPoint pXY(win.x, win.y);
-
-			if (qRgba(0, 255, 255, 255) == m_mask.pixel(pXY))
-			{
-				selected.push_back(dp);
-			}
-			else
-			{
-				unselected.push_back(dp);
-			}
-		}
-
-		selected.shrink_to_fit();
-		unselected.shrink_to_fit();
-
-		//*dataPart.second = (deleteSelected) ? unselected : selected;
-		*dataPart = (deleteSelected) ? unselected : selected;
-
-		selected.clear();
-		unselected.clear();
-
-		progress->setValue(++i);
-	}
-
-	progress->hide();
-}
 
 // the glhProjectf (works only from perspective projection.
 // With the orthogonal projection it gives different results than standard gluProject. 
@@ -547,6 +491,7 @@ int glhProjectf(double objx, double objy, double objz, double* modelview, double
 	return 1;
 }
 
+#include "ProgressIndicator.h"
 #include <omp.h>
 #include <GL/glu.h>
 
@@ -668,10 +613,6 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 				if (auto vsh = std::dynamic_pointer_cast<Volumetric>(child.second))
 				{
 					deleteSelectedVoxels(vsh, deleteSelected);
-				}
-				else if (child.second->hasType(CObject::VOLTK))
-				{
-					deleteSelectedVoxelsVolTK(*(CVolTK*)child.second.get(), obj->transform(), deleteSelected);
 				}
 				else if (child.second->hasType(CObject::CLOUD) || child.second->hasType(CObject::ORDEREDCLOUD) || child.second->hasType(CObject::MESH))
 				{

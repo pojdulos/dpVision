@@ -32,7 +32,7 @@
 
 class CBoundVector;
 class CAnnotationPyramid;
-class CVolTK;
+
 #include "Volumetric.h"
 
 
@@ -111,8 +111,6 @@ public:
 	void screenshot(QString path = QString());
 
 	void setSelectionMode(int mode);
-
-	void deleteSelectedVoxelsVolTK(CVolTK& cloud, CTransform& transform, bool deleteSelected);
 
 	void deleteSelectedVoxels(std::shared_ptr<Volumetric> vol, bool deleteSelected);
 

@@ -69,52 +69,52 @@ std::shared_ptr<CBaseObject> CParserDPVISION::parseObject(const QDomElement& cur
 		{
 			obj = readZippedFileObj(zip, path + currentId);
 		}
-		else if (typ == "volumetric")
-		{
-			size_t lays = currentElement.attribute("layers").toULong();
-			size_t rows = currentElement.attribute("rows").toULong();
-			size_t cols = currentElement.attribute("columns").toULong();
+		//else if (typ == "volumetric")
+		//{
+		//	size_t lays = currentElement.attribute("layers").toULong();
+		//	size_t rows = currentElement.attribute("rows").toULong();
+		//	size_t cols = currentElement.attribute("columns").toULong();
 
-			QDomElement voxel = currentElement.firstChildElement("voxelSize");
+		//	QDomElement voxel = currentElement.firstChildElement("voxelSize");
 
-			CPoint3d voxelSize;
-			voxelSize.x = voxel.attribute("x").toDouble();
-			voxelSize.y = voxel.attribute("y").toDouble();
-			voxelSize.z = voxel.attribute("z").toDouble();
+		//	CPoint3d voxelSize;
+		//	voxelSize.x = voxel.attribute("x").toDouble();
+		//	voxelSize.y = voxel.attribute("y").toDouble();
+		//	voxelSize.z = voxel.attribute("z").toDouble();
 
-			QString objPath = path + currentId + ".raw";
+		//	QString objPath = path + currentId + ".raw";
 
-			qDebug() << "Reading " << objPath << Qt::endl;
+		//	qDebug() << "Reading " << objPath << Qt::endl;
 
-			zip.setCurrentFile(objPath);
+		//	zip.setCurrentFile(objPath);
 
-			QuaZipFile file(&zip);
+		//	QuaZipFile file(&zip);
 
-			if (file.open(QIODevice::ReadOnly))
-			{
-				QByteArray ba = file.readAll();
+		//	if (file.open(QIODevice::ReadOnly))
+		//	{
+		//		QByteArray ba = file.readAll();
 
-				file.close();
+		//		file.close();
 
-				QDataStream rawStream(&ba, QIODevice::ReadOnly);
+		//		QDataStream rawStream(&ba, QIODevice::ReadOnly);
 
-				std::shared_ptr<CVolTK> volTK = std::make_shared<CVolTK>(nullptr, cols, rows, lays, 16);
-				
-				int dataSize = volTK->kostka.size() * sizeof(NowaKostka1::Type);
-				int read = rawStream.readRawData((char*)volTK->kostka.layer(0), dataSize);
-				
-				//volTK->m_voxelSize = voxelSize;
-				volTK->createDisplayData();
+		//		std::shared_ptr<CVolTK> volTK = std::make_shared<CVolTK>(nullptr, cols, rows, lays, 16);
+		//		
+		//		int dataSize = volTK->kostka.size() * sizeof(NowaKostka1::Type);
+		//		int read = rawStream.readRawData((char*)volTK->kostka.layer(0), dataSize);
+		//		
+		//		//volTK->m_voxelSize = voxelSize;
+		//		volTK->createDisplayData();
 
-				obj = volTK;
-			}
-			else
-			{
+		//		obj = volTK;
+		//	}
+		//	else
+		//	{
 
-				qDebug() << "BŁĄD! nie otwarto pliku" << Qt::endl;
-				//return nullptr;
-			}
-		}
+		//		qDebug() << "BŁĄD! nie otwarto pliku" << Qt::endl;
+		//		//return nullptr;
+		//	}
+		//}
 	}
 	else if (cls == "annotation")
 	{

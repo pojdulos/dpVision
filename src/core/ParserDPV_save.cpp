@@ -214,37 +214,37 @@ void CParserDPVISION::saveMTL(QuaZip& zip, CMaterial& material, QString path, QS
 
 }
 
-void CVolTKtoZIP(CVolTK* volTK, QuaZip& zip, QString pathInZip)
-{
-	int layerSize = volTK->kostka.m_cols * volTK->kostka.m_rows * sizeof(NowaKostka1::Type);
-
-	QuaZipFile file(&zip);
-
-	if (file.open(QIODevice::OpenModeFlag::WriteOnly, QuaZipNewInfo(pathInZip)))
-	{
-		auto prg_ = IProgressListener::getDefault();
-		if (prg_) prg_->init(0, volTK->kostka.m_lays, 0, "saving volumetric data to zip file");
-		for (int l = 0; l < volTK->kostka.m_lays; l++)
-		{
-			file.write(QByteArray::fromRawData((const char*)volTK->kostka.layer(l), layerSize));
-			if (prg_) prg_->setValue(l);
-		}
-		if (prg_) prg_->hide();
-
-		file.close();
-
-		if (file.getZipError() != 0)
-		{
-			std::cout << "zipFile.getZipError != 0\n";
-			return;
-		}
-	}
-	else
-	{
-		std::cout << "nie otwarto pliku " << pathInZip.toStdString().c_str() << "\n";
-		return;
-	}
-}
+//void CVolTKtoZIP(CVolTK* volTK, QuaZip& zip, QString pathInZip)
+//{
+//	int layerSize = volTK->kostka.m_cols * volTK->kostka.m_rows * sizeof(NowaKostka1::Type);
+//
+//	QuaZipFile file(&zip);
+//
+//	if (file.open(QIODevice::OpenModeFlag::WriteOnly, QuaZipNewInfo(pathInZip)))
+//	{
+//		auto prg_ = IProgressListener::getDefault();
+//		if (prg_) prg_->init(0, volTK->kostka.m_lays, 0, "saving volumetric data to zip file");
+//		for (int l = 0; l < volTK->kostka.m_lays; l++)
+//		{
+//			file.write(QByteArray::fromRawData((const char*)volTK->kostka.layer(l), layerSize));
+//			if (prg_) prg_->setValue(l);
+//		}
+//		if (prg_) prg_->hide();
+//
+//		file.close();
+//
+//		if (file.getZipError() != 0)
+//		{
+//			std::cout << "zipFile.getZipError != 0\n";
+//			return;
+//		}
+//	}
+//	else
+//	{
+//		std::cout << "nie otwarto pliku " << pathInZip.toStdString().c_str() << "\n";
+//		return;
+//	}
+//}
 
 void CParserDPVISION::saveObject(QuaZip& zip, std::shared_ptr<CBaseObject> obj, QString path)
 {
@@ -277,10 +277,10 @@ void CParserDPVISION::saveObject(QuaZip& zip, std::shared_ptr<CBaseObject> obj, 
 
 			saveMTL(zip, std::static_pointer_cast<CPointCloud>(obj)->getMaterial(), path, objBaseName);
 		}
-		else if (obj->hasType(CObject::VOLTK))
-		{
-			CVolTKtoZIP((CVolTK*)obj.get(), zip, path + objBaseName + ".raw");
-		}
+		//else if (obj->hasType(CObject::VOLTK))
+		//{
+		//	CVolTKtoZIP((CVolTK*)obj.get(), zip, path + objBaseName + ".raw");
+		//}
 
 
 		for (const auto& c : std::static_pointer_cast<CObject>(obj)->children())
@@ -340,25 +340,25 @@ void CParserDPVISION::createXmlNodeObject(std::shared_ptr<CObject> obj, QDomElem
 			//file.setAttribute("texture", IdToString(obj->id()) + "." + QFileInfo(mat.TexInfo).suffix());
 		}
 	}
-	else if (obj->hasType(CObject::Type::VOLTK))
-	{
-		std::shared_ptr<CVolTK> volTK = std::static_pointer_cast<CVolTK>(obj);
+	//else if (obj->hasType(CObject::Type::VOLTK))
+	//{
+	//	std::shared_ptr<CVolTK> volTK = std::static_pointer_cast<CVolTK>(obj);
 
-		child.setAttribute("type", "volumetric");
-		child.setAttribute("layers", (qulonglong) volTK->kostka.m_lays);
-		child.setAttribute("rows", (qulonglong) volTK->kostka.m_rows);
-		child.setAttribute("columns", (qulonglong) volTK->kostka.m_cols);
-		QDomElement voxel = docu.createElement("voxelSize");
-		voxel.setAttribute("x", volTK->getVoxelSize().x);
-		voxel.setAttribute("y", volTK->getVoxelSize().y);
-		voxel.setAttribute("z", volTK->getVoxelSize().z);
-		child.appendChild(voxel);
+	//	child.setAttribute("type", "volumetric");
+	//	child.setAttribute("layers", (qulonglong) volTK->kostka.m_lays);
+	//	child.setAttribute("rows", (qulonglong) volTK->kostka.m_rows);
+	//	child.setAttribute("columns", (qulonglong) volTK->kostka.m_cols);
+	//	QDomElement voxel = docu.createElement("voxelSize");
+	//	voxel.setAttribute("x", volTK->getVoxelSize().x);
+	//	voxel.setAttribute("y", volTK->getVoxelSize().y);
+	//	voxel.setAttribute("z", volTK->getVoxelSize().z);
+	//	child.appendChild(voxel);
 
-		QDomElement file = docu.createElement("file");
-		file.setAttribute("format", "raw");
-		file.setAttribute("data", IdToString(volTK->id()) + ".raw");
-		child.appendChild(file);
-	}
+	//	QDomElement file = docu.createElement("file");
+	//	file.setAttribute("format", "raw");
+	//	file.setAttribute("data", IdToString(volTK->id()) + ".raw");
+	//	child.appendChild(file);
+	//}
 
 	root.appendChild(child);
 

@@ -25,7 +25,6 @@ inline bool isAlmostOne(double f) { return abs(1.0 - abs(f)) <= ALMOST_NULL; }
 
 DPVISION_EXPORT double smartRound(double d, int decimal);
 
-
 #ifndef deg2rad
 //#define deg2rad(a) ((a)*PI/180.0)
 #define deg2rad(x) ((x) * 0.01745329251994329576923690768489)

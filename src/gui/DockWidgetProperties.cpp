@@ -26,7 +26,7 @@
 #include "propHistogram.h"
 #include "propViewer.h"
 #include "propModel.h"
-#include "propVolTK.h"
+//#include "propVolTK.h"
 #include "propVolumetric.h"
 #include "propImage.h"
 #include "propMovement.h"
