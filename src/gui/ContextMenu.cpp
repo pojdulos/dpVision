@@ -837,8 +837,8 @@ void CContextMenu::slot_vol_show_images()
 {
 	if (m_obj->hasType(CBaseObject::VOLUMETRIC_NEW))
 	{
-		std::shared_ptr<VolumetricImageDialog> dialog = std::make_shared<VolumetricImageDialog>((Volumetric*)m_obj.get());
-
+		auto* dialog = new VolumetricImageDialog((Volumetric*)m_obj.get());
+		dialog->setAttribute(Qt::WA_DeleteOnClose, true); // Qt samo usunie obiekt po zamknięciu okna
 		dialog->show();
 	}
 }
