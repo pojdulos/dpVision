@@ -8,100 +8,180 @@
 #include "Triple.h"
 #include "Vector3.h"
 
+/**
+ * @brief Template class representing a 3D point with arithmetic and geometric operations.
+ * 
+ * Inherits from CTriple and provides point-specific operations such as distance calculation,
+ * box inclusion test, and transformation by matrices.
+ * 
+ * @tparam _T Numeric type (e.g., float, double, int)
+ */
 template<
 	typename _T,
-	typename = typename std::enable_if<std::is_arithmetic<_T>::value, _T>::type >  class DPVISION_EXPORT CPoint3 : public CTriple<_T>
+	typename = typename std::enable_if<std::is_arithmetic<_T>::value, _T>::type >
+class DPVISION_EXPORT CPoint3 : public CTriple<_T>
 {
 public:
-	CPoint3() : CTriple<_T>() {};
-	CPoint3(_T fx, _T fy, _T fz) :CTriple<_T>(fx, fy, fz) {};
-	CPoint3(_T f) : CTriple<_T>(f, f, f) {};
+	/// Default constructor. Initializes all coordinates to 0.
+	CPoint3() noexcept : CTriple<_T>() {}
 
+	/// Constructor from three values.
+	CPoint3(_T fx, _T fy, _T fz) noexcept : CTriple<_T>(fx, fy, fz) {}
 
-	template<typename _W> CPoint3(const CTriple<_W>& t) :CTriple<_T>(t) {};
-	//template<typename _W> CPoint3(const CPoint3<_W> &t) :CTriple<_T>(t) {};
+	/// Constructor with all coordinates set to the same value.
+	CPoint3(_T f) noexcept : CTriple<_T>(f, f, f) {}
 
-	// constructor from Eigen::Vector3
-	template<typename _W> CPoint3(const Eigen::Matrix<_W, 3, 1>& t) : CTriple<_T>(t.x(), t.y(), t.z()) {};
+	/// Constructor from another CTriple (possibly different type).
+	template<typename _W> CPoint3(const CTriple<_W>& t) noexcept : CTriple<_T>(t) {}
 
-	// constructor from Eigen::RowVector3
-	template<typename _W> CPoint3(const Eigen::Matrix<_W, 1, 3>& t) : CTriple<_T>(t.x(), t.y(), t.z()) {};
+	// Constructor from Eigen::Vector3
+	template<typename _W> CPoint3(const Eigen::Matrix<_W, 3, 1>& t) noexcept : CTriple<_T>(t.x(), t.y(), t.z()) {}
 
-	// constructor from Eigen::Vector4
-	template<typename _W> CPoint3(const Eigen::Matrix<_W, 4, 1>& t) : CTriple<_T>(t.x(), t.y(), t.z()) {};
+	// Constructor from Eigen::RowVector3
+	template<typename _W> CPoint3(const Eigen::Matrix<_W, 1, 3>& t) noexcept : CTriple<_T>(t.x(), t.y(), t.z()) {}
 
-	// constructor from Eigen::RowVector4
-	template<typename _W> CPoint3(const Eigen::Matrix<_W, 1, 4>& t) : CTriple<_T>(t.x(), t.y(), t.z()) {};
+	// Constructor from Eigen::Vector4
+	template<typename _W> CPoint3(const Eigen::Matrix<_W, 4, 1>& t) noexcept : CTriple<_T>(t.x(), t.y(), t.z()) {}
 
+	// Constructor from Eigen::RowVector4
+	template<typename _W> CPoint3(const Eigen::Matrix<_W, 1, 4>& t) noexcept : CTriple<_T>(t.x(), t.y(), t.z()) {}
 
+	/**
+	 * @brief Checks if the point is inside the axis-aligned box defined by min and max.
+	 * @param min Minimum corner of the box
+	 * @param max Maximum corner of the box
+	 * @return true if the point is inside the box
+	 */
+	template<typename _W> bool isInBox(const CPoint3<_W>& min, const CPoint3<_W>& max) const noexcept {
+		return (this->x >= min.X()) && (this->x <= max.X()) &&
+		       (this->y >= min.Y()) && (this->y <= max.Y()) &&
+		       (this->z >= min.Z()) && (this->z <= max.Z());
+	}
 
-
-	template<typename _W> bool isInBox(CPoint3<_W> min, CPoint3<_W> max) { return (this->x >= min.X()) && (this->x <= max.X()) && (this->y >= min.Y()) && (this->y <= max.Y()) && (this->z >= min.Z()) && (this->z <= max.Z()); }
-
-	CPoint3<_T> operator-() const {
+	/**
+	 * @brief Negation operator (returns the point with all coordinates negated).
+	 * @return Negated point
+	 */
+	CPoint3<_T> operator-() const noexcept {
 		return CPoint3<_T>(-this->x, -this->y, -this->z);
-	};
+	}
 
-	template<typename _W> CPoint3<_T> operator+(const CTriple<_W>& c) const {
+	/**
+	 * @brief Addition with a vector or triple.
+	 * @param c Vector or triple to add
+	 * @return Resulting point
+	 */
+	template<typename _W> CPoint3<_T> operator+(const CTriple<_W>& c) const noexcept {
 		return CPoint3<_T>(this->x + c.x, this->y + c.y, this->z + c.z);
-	};
+	}
 
-	template<typename _W> CPoint3<_T> operator+=(const CTriple<_W>& c) {
-		return CPoint3<_T>(this->x += c.x, this->y += c.y, this->z += c.z);
-	};
-
-	// Point minus Point is Vector
-	template<typename _W> CVector3<_T> operator-(const CPoint3<_W>& c) const {
+	/**
+	 * @brief Subtraction of two points returns a vector.
+	 * @param c Point to subtract
+	 * @return Vector from c to this point
+	 */
+	template<typename _W> CVector3<_T> operator-(const CPoint3<_W>& c) const noexcept {
 		return CVector3<_T>(this->x - c.x, this->y - c.y, this->z - c.z);
-	};
+	}
 
-	// Point minus Vector is Point
-	template<typename _W> CPoint3<_T> operator-(const CVector3<_W>& c) const {
+	/**
+	 * @brief Subtraction of a vector from a point returns a point.
+	 * @param c Vector to subtract
+	 * @return Resulting point
+	 */
+	template<typename _W> CPoint3<_T> operator-(const CVector3<_W>& c) const noexcept {
 		return CPoint3<_T>(this->x - c.x, this->y - c.y, this->z - c.z);
-	};
+	}
 
-	//template<typename _W> CPoint3<_T> operator-(const CTriple<_W>& c) const {
-	//	return CPoint3<_T>(x - c.x, y - c.y, z - c.z);
-	//};
-
-	template<typename _W> CPoint3<_T> operator-=(const CTriple<_W>& c) {
-		return CPoint3<_T>(this->x -= c.x, this->y -= c.y, this->z -= c.z);
-	};
-
+	/**
+	 * @brief Division by scalar.
+	 * @param c Scalar value
+	 * @return Resulting point
+	 */
 	CPoint3<_T> operator/(const _T c) const {
+		assert(c != static_cast<_T>(0) && "Division by zero");
 		return CPoint3<_T>(this->x / c, this->y / c, this->z / c);
-	};
+	}
 
-	CPoint3<_T> operator*(const _T c) const {
+	/**
+	 * @brief Multiplication by scalar.
+	 * @param c Scalar value
+	 * @return Resulting point
+	 */
+	CPoint3<_T> operator*(const _T c) const noexcept {
 		return CPoint3<_T>(this->x * c, this->y * c, this->z * c);
-	};
+	}
 
-	CPoint3<_T> operator/=(const _T c) {
-		return CPoint3<_T>(this->x /= c, this->y /= c, this->z /= c);
-	};
+	/**
+	 * @brief Addition and assignment with a vector or triple.
+	 * @param c Vector or triple to add
+	 * @return Reference to this object
+	 */
+	template<typename _W> CPoint3<_T>& operator+=(const CTriple<_W>& c) noexcept {
+		this->x += c.x; this->y += c.y; this->z += c.z;
+		return *this;
+	}
 
-	CPoint3<_T> operator*=(const _T c) {
-		return CPoint3<_T>(this->x *= c, this->y *= c, this->z *= c);
-	};
+	/**
+	 * @brief Subtraction and assignment with a vector or triple.
+	 * @param c Vector or triple to subtract
+	 * @return Reference to this object
+	 */
+	template<typename _W> CPoint3<_T>& operator-=(const CTriple<_W>& c) noexcept {
+		this->x -= c.x; this->y -= c.y; this->z -= c.z;
+		return *this;
+	}
 
-	template<typename _W> double squaredDistanceTo(CPoint3<_W> p) {
+	/**
+	 * @brief Division by scalar and assignment.
+	 * @param c Scalar value
+	 * @return Reference to this object
+	 */
+	CPoint3<_T>& operator/=(const _T c) {
+		assert(c != static_cast<_T>(0) && "Division by zero");
+		this->x /= c; this->y /= c; this->z /= c;
+		return *this;
+	}
+
+	/**
+	 * @brief Multiplication by scalar and assignment.
+	 * @param c Scalar value
+	 * @return Reference to this object
+	 */
+	CPoint3<_T>& operator*=(const _T c) noexcept {
+		this->x *= c; this->y *= c; this->z *= c;
+		return *this;
+	}
+
+	/**
+	 * @brief Squared distance to another point.
+	 * @param p Another point
+	 * @return Squared distance
+	 */
+	template<typename _W> double squaredDistanceTo(const CPoint3<_W>& p) const noexcept {
 		double dx = p.x - this->x;
 		double dy = p.y - this->y;
 		double dz = p.z - this->z;
-
 		return dx * dx + dy * dy + dz * dz;
 	}
 
-	template<typename _W> double distanceTo(CPoint3<_W> p) {
+	/**
+	 * @brief Euclidean distance to another point.
+	 * @param p Another point
+	 * @return Distance
+	 */
+	template<typename _W> double distanceTo(const CPoint3<_W>& p) const noexcept {
 		double dx = p.x - this->x;
 		double dy = p.y - this->y;
 		double dz = p.z - this->z;
-
 		return sqrt(dx * dx + dy * dy + dz * dz);
 	}
 
-	// export to Eigen::Vector4<Type>
-	Eigen::Matrix<_T, 4, 1> toVector4()
+	/**
+	 * @brief Convert to Eigen::Vector4 (last component is 1).
+	 * @return Eigen 4x1 vector
+	 */
+	Eigen::Matrix<_T, 4, 1> toVector4() const noexcept
 	{
 		Eigen::Matrix<_T, 4, 1> ev;
 		ev(0, 0) = this->x;
@@ -111,17 +191,23 @@ public:
 		return ev;
 	}
 
-	// export to Eigen::RowVector4<Type>
-	Eigen::Matrix<_T, 1, 4> toRowVector4()
+	/**
+	 * @brief Convert to Eigen::RowVector4 (last component is 1).
+	 * @return Eigen 1x4 row vector
+	 */
+	Eigen::Matrix<_T, 1, 4> toRowVector4() const noexcept
 	{
 		Eigen::Matrix<_T, 1, 4> erv;
 		erv(0, 0) = this->x;		erv(0, 1) = this->y;		erv(0, 2) = this->z;		erv(0, 3) = 1;
 		return erv;
 	}
 
-	// Multiply by matrix 4x4 (result 'w' component is discarded)
-	// OpenGL (column-first) format of the matrix
-	CPoint3<_T> transformByMatrixF(float matrix[16])
+	/**
+	 * @brief Transform by 4x4 matrix (float). The result 'w' component is handled for perspective division.
+	 * @param matrix 4x4 matrix in column-major order (OpenGL style)
+	 * @return Transformed point
+	 */
+	CPoint3<_T> transformByMatrixF(const float matrix[16]) const noexcept
 	{
 		CPoint3<_T> result;
 
@@ -140,8 +226,12 @@ public:
 		return result;
 	}
 
-	// OpenGL (column-first) format of the matrix
-	CPoint3<_T> transformByMatrixD(double matrix[16])
+	/**
+	 * @brief Transform by 4x4 matrix (double). The result 'w' component is handled for perspective division.
+	 * @param matrix 4x4 matrix in column-major order (OpenGL style)
+	 * @return Transformed point
+	 */
+	CPoint3<_T> transformByMatrixD(const double matrix[16]) const noexcept
 	{
 		CPoint3<_T> result;
 
@@ -160,7 +250,12 @@ public:
 		return result;
 	}
 
-	CPoint3<_T> transformByMatrix(Eigen::Matrix4d matrix)
+	/**
+	 * @brief Transform by Eigen 4x4 matrix. The result 'w' component is handled for perspective division.
+	 * @param matrix Eigen 4x4 matrix
+	 * @return Transformed point
+	 */
+	CPoint3<_T> transformByMatrix(const Eigen::Matrix4d& matrix) const noexcept
 	{
 		CPoint3<_T> result;
 
@@ -179,7 +274,12 @@ public:
 		return result;
 	}
 
-	CPoint3<_T> transformByMatrix(Eigen::Matrix3d matrix)
+	/**
+	 * @brief Transform by Eigen 3x3 matrix (affine transform).
+	 * @param matrix Eigen 3x3 matrix
+	 * @return Transformed point
+	 */
+	CPoint3<_T> transformByMatrix(const Eigen::Matrix3d& matrix) const noexcept
 	{
 		CPoint3<_T> result;
 
