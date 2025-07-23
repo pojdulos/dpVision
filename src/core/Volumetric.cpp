@@ -954,10 +954,6 @@ Volumetric* Volumetric::scal1(Volumetric* src1, Volumetric* src2)
 	return nullptr;
 }
 
-
-
-
-
 #include <QtGui/QImage>
 #include <vector>
 #include <cmath>

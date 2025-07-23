@@ -3,11 +3,6 @@
 
 #include "../api/AP.h"
 
-// #ifdef _WIN32
-// #include <windows.h>
-// #endif
-// #include <GL/gl.h>
-
 #include "../renderers/IAnnotationTripleRenderer.h"
 
 CAnnotationTriple::CAnnotationTriple(std::shared_ptr<CBaseObject> m) :CAnnotation(m)

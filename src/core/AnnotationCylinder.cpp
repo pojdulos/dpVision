@@ -3,12 +3,6 @@
 
 #include "../api/AP.h"
 
-// #ifdef _WIN32
-// #include <windows.h>
-// #endif
-// #include <GL/gl.h>
-// #include <GL/glu.h> 
-
 #include "../renderers/IAnnotationCylinderRenderer.h"
 
 CAnnotationCylinder::CAnnotationCylinder(std::shared_ptr<CBaseObject> m) :CAnnotation(m)

@@ -3,10 +3,6 @@
 
 #include "../api/AP.h"
 
-//#include <Windows.h>
-#include <GL/gl.h>
-
-
 #include "../renderers/IAnnotationSetOfVerticesRenderer.h"
 
 CAnnotationSetOfVertices::CAnnotationSetOfVertices(std::shared_ptr<CBaseObject> m) :CAnnotation(m)

@@ -3,9 +3,6 @@
 
 #include "../api/AP.h"
 
-// //#include <Windows.h>
-// #include <GL/gl.h>
-
 #include "../renderers/IAnnotationPointsRenderer.h"
 
 CAnnotationPoints::CAnnotationPoints(std::shared_ptr<CBaseObject> m) :CAnnotation(m)

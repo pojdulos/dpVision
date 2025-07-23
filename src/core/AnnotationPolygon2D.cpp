@@ -5,9 +5,6 @@
 #include "Model3D.h"
 #include "Mesh.h"
 
-//#include <Windows.h>
-#include <GL/gl.h>
-
 #include "../renderers/IAnnotationPolygon2DRenderer.h"
 
 CAnnotationPolygon2D::CAnnotationPolygon2D(std::shared_ptr<CBaseObject> m) :CAnnotation(m)

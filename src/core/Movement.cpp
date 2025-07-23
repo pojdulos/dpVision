@@ -66,12 +66,12 @@ void CMovement::renderRotationAxe(CTransform curr, CTransform prev)
 
 	CVector3d relT = currT - prevT;
 
-	Eigen::AngleAxisd absAA(currQ.toRotationMatrix());
+	Eigen::AngleAxisd absAA(currQ.toEigen().toRotationMatrix());
 	Eigen::Vector3d absAxis = absAA.axis();
 	double absAngle = absAA.angle(); // K�t w radianach
 	double absLen = 200.0;// 1000.0 * absAngle;
 
-	Eigen::AngleAxisd relAA(relQ.toRotationMatrix());
+	Eigen::AngleAxisd relAA(relQ.toEigen().toRotationMatrix());
 	Eigen::Vector3d relAxis = relAA.axis();
 	double relAngle = relAA.angle(); // K�t w radianach
 	double relLen = 200.0;// 10000.0 * relAngle;

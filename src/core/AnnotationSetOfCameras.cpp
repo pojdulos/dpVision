@@ -4,10 +4,6 @@
 #include "Model3D.h"
 
 #include "../api/AP.h"
-//#include "../api/UI.h"
-
-//#include <Windows.h>
-#include <GL/gl.h>
 
 #include <regex>
 

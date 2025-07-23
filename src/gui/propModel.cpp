@@ -255,7 +255,7 @@ void PropModel::changedQX(double x)
 {
 	if (NULL != obj)
 	{
-		((CModel3D*)obj)->getTransform().rotation().x() = x;
+		((CModel3D*)obj)->getTransform().rotation().setX(x);
 		rot = ((CModel3D*)obj)->getTransform().rotation().eulerAnglesDeg();
 		UI::updateAllViews();
 		updateProperties();
@@ -266,7 +266,7 @@ void PropModel::changedQY(double y)
 {
 	if (NULL != obj)
 	{
-		((CModel3D*)obj)->getTransform().rotation().y() = y;
+		((CModel3D*)obj)->getTransform().rotation().setY(y);
 		rot = ((CModel3D*)obj)->getTransform().rotation().eulerAnglesDeg();
 		UI::updateAllViews();
 		updateProperties();
@@ -277,7 +277,7 @@ void PropModel::changedQZ(double z)
 {
 	if (NULL != obj)
 	{
-		((CModel3D*)obj)->getTransform().rotation().z() = z;
+		((CModel3D*)obj)->getTransform().rotation().setZ(z);
 		rot = ((CModel3D*)obj)->getTransform().rotation().eulerAnglesDeg();
 		UI::updateAllViews();
 		updateProperties();
@@ -288,7 +288,7 @@ void PropModel::changedQW(double w)
 {
 	if (NULL != obj)
 	{
-		((CModel3D*)obj)->getTransform().rotation().w() = w;
+		((CModel3D*)obj)->getTransform().rotation().setW(w);
 		rot = ((CModel3D*)obj)->getTransform().rotation().eulerAnglesDeg();
 		UI::updateAllViews();
 		updateProperties();

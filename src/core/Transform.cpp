@@ -4,6 +4,8 @@
 
 #include "MainApplication.h"
 
+#include "../renderers/ITransformRenderer.h"
+
 CTransform::CTransform()
 {
 	m_bLocked = false;
@@ -16,6 +18,8 @@ CTransform::CTransform()
 	m_rot.setIdentity();
 	m_tra = 0.0;
 	m_sca = 1.0;
+
+	renderer_ = std::make_shared<ITransformRenderer>();
 }
 
 // Copy constructor
@@ -30,6 +34,8 @@ CTransform::CTransform(const CTransform &t)
 
 	m_bLocked = t.m_bLocked;
 	m_bRelocateCtr = t.m_bRelocateCtr;
+
+	renderer_ = std::make_shared<ITransformRenderer>();
 }
 
 CTransform::CTransform(const Eigen::Matrix4d& mat)
@@ -42,6 +48,8 @@ CTransform::CTransform(const Eigen::Matrix4d& mat)
 	m_origin = 0.0;
 
 	m_show_screw = false;
+
+	renderer_ = std::make_shared<ITransformRenderer>();
 }
 
 CTransform::~CTransform()
@@ -78,14 +86,14 @@ void  CTransform::rotateAroundAxis(CVector3d axis, double angle, bool internal)
 		// przeliczam origin (tu translacj�) do wsp�rz�dnych wewn�trznych obiektu
 		// przed wykonaniem obrotu, ale nie stosuj� skalowania
 		// wiec nie trzeba go b�dzie potem skalowa� spowrotem
-		Eigen::Vector3d tmpOrigin = invRot * m_tra.toVector3();
+		Eigen::Vector3d tmpOrigin = invRot.toEigen() * m_tra.toVector3();
 
 		// OBR�T wok� osi przekszta�conej do wsp�rz�dnych obiektu
-		m_rot *= CQuaternion( angle, Eigen::Vector3d( invRot * axis.toVector3() ) );
+		m_rot *= CQuaternion( angle, Eigen::Vector3d( invRot.toEigen() * axis.toVector3() ) );
 		m_rot.normalize();
 
 		// przeliczam origin (tu translacj�) do wsp�rz�dnych zewn�trzych
-		m_tra = m_rot * tmpOrigin;
+		m_tra = m_rot.toEigen() * tmpOrigin;
 	}
 }
 
@@ -102,16 +110,16 @@ void CTransform::rotateAroundAxis(CPoint3d origin, CVector3d axis, double angle,
 
 	if (internal)
 	{
-		CPoint3d oldOrigin = m_rot * origin.toVector3();
+		CPoint3d oldOrigin = m_rot.toEigen() * origin.toVector3();
 		oldOrigin.scaleByVector(m_sca);
 
 		CQuaternion invRot = m_rot.inverse();
-		Eigen::Vector3d tmpOrigin = invRot * oldOrigin.toVector3();
+		Eigen::Vector3d tmpOrigin = invRot.toEigen() * oldOrigin.toVector3();
 
 		m_rot *= CQuaternion(angle, axis);
 		m_rot.normalize();
 
-		CPoint3d newOrigin = m_rot * tmpOrigin;
+		CPoint3d newOrigin = m_rot.toEigen() * tmpOrigin;
 		translate(oldOrigin - newOrigin);
 	}
 	else
@@ -120,12 +128,12 @@ void CTransform::rotateAroundAxis(CPoint3d origin, CVector3d axis, double angle,
 
 		CPoint3d oldOrigin = origin - m_tra;
 		
-		Eigen::Vector3d tmpOrigin = invRot * oldOrigin.toVector3();
+		Eigen::Vector3d tmpOrigin = invRot.toEigen() * oldOrigin.toVector3();
 
-		m_rot *= CQuaternion(angle, Eigen::Vector3d(invRot * axis.toVector3()));
+		m_rot *= CQuaternion(angle, Eigen::Vector3d(invRot.toEigen() * axis.toVector3()));
 		m_rot.normalize();
 
-		CPoint3d newOrigin = m_rot * tmpOrigin;
+		CPoint3d newOrigin = m_rot.toEigen() * tmpOrigin;
 		translate(oldOrigin - newOrigin);
 	}
 }
@@ -154,15 +162,15 @@ void CTransform::rotate(std::vector<std::pair<CVector3d, double>> axisAngle, boo
 	{
 		CQuaternion invRot = m_rot.inverse();
 
-		Eigen::Vector3d tmpOrigin = invRot * m_tra.toVector3();
+		Eigen::Vector3d tmpOrigin = invRot.toEigen() * m_tra.toVector3();
 
 		for (auto aa : axisAngle)
 		{
-			m_rot *= CQuaternion(aa.second, invRot * aa.first.toVector3());
+			m_rot *= CQuaternion(aa.second, invRot.toEigen() * aa.first.toVector3());
 		}
 		m_rot.normalize();
 
-		m_tra = m_rot * tmpOrigin;
+		m_tra = m_rot.toEigen() * tmpOrigin;
 	}
 }
 
@@ -179,11 +187,11 @@ void CTransform::rotate(CPoint3d origin, std::vector<std::pair<CVector3d,double>
 
 	if (internal)
 	{
-		CPoint3d oldOrigin = m_rot * origin.toVector3();
+		CPoint3d oldOrigin = m_rot.toEigen() * origin.toVector3();
 		oldOrigin.scaleByVector(m_sca);
 
 		CQuaternion invRot = m_rot.inverse();
-		Eigen::Vector3d tmpOrigin = invRot * oldOrigin.toVector3();
+		Eigen::Vector3d tmpOrigin = invRot.toEigen() * oldOrigin.toVector3();
 
 		for (auto aa : axisAngle)
 		{
@@ -191,7 +199,7 @@ void CTransform::rotate(CPoint3d origin, std::vector<std::pair<CVector3d,double>
 		}
 		m_rot.normalize();
 
-		CPoint3d newOrigin = m_rot * tmpOrigin;
+		CPoint3d newOrigin = m_rot.toEigen() * tmpOrigin;
 		translate(oldOrigin - newOrigin);
 	}
 	else
@@ -200,16 +208,16 @@ void CTransform::rotate(CPoint3d origin, std::vector<std::pair<CVector3d,double>
 
 		CPoint3d oldOrigin = origin - m_tra;
 
-		Eigen::Vector3d tmpOrigin = invRot * oldOrigin.toVector3();
+		Eigen::Vector3d tmpOrigin = invRot.toEigen() * oldOrigin.toVector3();
 
 		for (auto aa : axisAngle)
 		{
-			m_rot *= CQuaternion(aa.second, invRot * aa.first.toVector3());
+			m_rot *= CQuaternion(aa.second, invRot.toEigen() * aa.first.toVector3());
 		}
 
 		m_rot.normalize();
 
-		CPoint3d newOrigin = m_rot * tmpOrigin;
+		CPoint3d newOrigin = m_rot.toEigen() * tmpOrigin;
 		translate(oldOrigin - newOrigin);
 	}
 }
@@ -385,7 +393,7 @@ Eigen::Matrix4d CTransform::toEigenMatrix4d()
 
 
 	//VERSION OPTIMISED FOR SPEED
-	Eigen::Matrix3d R = m_rot.toRotationMatrix();
+	Eigen::Matrix3d R = m_rot.toEigen().toRotationMatrix();
 	Eigen::Matrix4d m;
 
 	m <<
@@ -827,64 +835,5 @@ void CTransform::fromRowMatrix(QString text, QString separator)
 	}
 }
 
-#include "K3Screw.h"
-#include "dpLog.h"
 
-void CTransform::renderScrew(float r = 1., float g = 1., float b = 0.)
-{
-	auto k3 = K3Screw::K3RigidToScrew(this->toEigenMatrix4d());
-	Vector3d V = std::get<0>(k3);
-	double alpha = std::get<1>(k3);
-	Vector3d D = std::get<2>(k3);
-	Vector3d t = std::get<3>(k3);
-
-	//std::cout << "\nV =" << dispMatrixXd(V);
-	//std::cout << "\nalpha =" << rad2deg(alpha);
-	//std::cout << "\nD = " << dispMatrixXd(D);
-	//std::cout << "\nt = " << dispMatrixXd(t) << endl;
-	dpInfo() << "alpha: " << rad2deg(alpha) << "°";
-	Vector3d P = K3Screw::K3Projection({ 0., 0., 0. }, D, V);
-
-	//std::cout << "\nnz =" << dispMatrixXd(P);
-
-	std::vector<Vector3d> A = { P - 50 * V, P, P + 50 * V };
-	
-	Eigen::Quaterniond q = this->m_rot;
-	//std::cout << "\nq = [ w: " << q.w() << ", x: " << q.x() << ", y: " << q.y() << ", z: " << q.z() << "]" << std::endl;
-
-	glPushMatrix();
-	glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-	glDisable(GL_TEXTURE_2D);
-	glEnable(GL_COLOR_MATERIAL);
-
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-
-	glColor3f(r, g, b);
-
-	glLineWidth(3.0);
-	glBegin(GL_LINES);
-	glVertex3f(A[0][0], A[0][1], A[0][2]);
-	glVertex3f(A[2][0], A[2][1], A[2][2]);
-	glEnd();
-	glLineWidth(1.0);
-	glBegin(GL_LINES);
-	glVertex3f(0., 0., 0.);
-	glVertex3f(A[1][0], A[1][1], A[1][2]);
-	glEnd();
-
-	glPopAttrib();
-	glPopMatrix();
-}
-
-void CTransform::render()
-{
-	if (m_show_screw) renderScrew();
-	//float matrix[16];
-
-	//toGLMatrixF(matrix);
-
-	//glMultMatrixf(matrix);
-
-	glMultMatrixf(toQMatrix4x4().data());
-}
+void CTransform::render() {	if (renderer_) renderer_->render(this); }

@@ -7,10 +7,15 @@
 #include "Quaternion.h"
 
 #include<Eigen/Geometry>
-#include <QtGui/QMatrix4x4>
+//#include <QtGui/QMatrix4x4>
+#include <memory>
+
+class ITransformRenderer;
 
 class  DPVISION_EXPORT CTransform
 {
+	std::shared_ptr<ITransformRenderer> renderer_ = nullptr;
+
 	CVector3d m_tra; // translacja
 	CQuaternion m_rot; // kwaternion obrotu
 	CPoint3d m_sca; // skala
