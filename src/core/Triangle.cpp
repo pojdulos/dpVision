@@ -2,11 +2,7 @@
 
 #include "Mesh.h"
 
-//using namespace std;
 
-CTriangle::~CTriangle() {}
-
-CTriangle::CTriangle() {}
 
 CTriangle::CTriangle(CPoint3d pA, CPoint3d pB, CPoint3d pC)
 {
@@ -46,13 +42,13 @@ CTriangle::CTriangle(int idx, CMesh& mesh)
 //	return t;
 //}
 
-CBoundingBox CTriangle::getBoundingBox()
+CBoundingBox CTriangle::getBoundingBox() const
 {
 	return CBoundingBox(a, b, c);
 }
 
 
-CPoint3d CTriangle::getMidpoint()
+CPoint3d CTriangle::getMidpoint() const
 {
 	return CBoundingBox(a, b, c).getMidpoint();
 }
@@ -170,7 +166,7 @@ CTriangle CTriangle::transformByMatrix(Eigen::Matrix3d matrix)
 	return result;
 }
 
-CVector3d CTriangle::getNormal()
+CVector3d CTriangle::getNormal() const
 {
 	// wektor f.A->f.B
 	CVector3d v1(a, b);
