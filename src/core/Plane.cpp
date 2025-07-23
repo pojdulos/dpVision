@@ -12,13 +12,13 @@ void generateSquarePoints(const CPoint3d& point, const CVector3d& normal, double
 	CVector3d vec1 = normal.crossProduct(arbitraryVector).getNormalized() * sideLength;
 	CVector3d vec2 = normal.crossProduct(vec1).getNormalized() * sideLength;
 
-	// Generowanie punktów kwadratu
+	// Generowanie punktï¿½w kwadratu
 	CPoint3d p1 = point + vec1 + vec2;
 	CPoint3d p2 = point + vec1 - vec2;
 	CPoint3d p3 = point - vec1 - vec2;
 	CPoint3d p4 = point - vec1 + vec2;
 
-	// Wyœwietlanie punktów
+	// Wyï¿½wietlanie punktï¿½w
 	std::cout << "P1: (" << p1.x << ", " << p1.y << ", " << p1.z << ")\n";
 	std::cout << "P2: (" << p2.x << ", " << p2.y << ", " << p2.z << ")\n";
 	std::cout << "P3: (" << p3.x << ", " << p3.y << ", " << p3.z << ")\n";
@@ -27,14 +27,14 @@ void generateSquarePoints(const CPoint3d& point, const CVector3d& normal, double
 
 
 
-// dzieli kwadratowe oczka na dwa trójk¹ty
+// dzieli kwadratowe oczka na dwa trï¿½jkï¿½ty
 std::shared_ptr<CMesh> generateTriangleMesh(const CPoint3d& topLeft, const CPoint3d& topRight,
 	const CPoint3d& bottomLeft, const CPoint3d& bottomRight, int divisions)
 {
 	auto mesh = std::make_shared<CMesh>();
 
 	double step = 1.0 / divisions;
-	// Generowanie wierzcho³ków
+	// Generowanie wierzchoï¿½kï¿½w
 	for (int i = 0; i <= divisions; ++i) {
 		for (int j = 0; j <= divisions; ++j) {
 			CPoint3d vertex = topLeft + (topRight - topLeft) * step * j + (bottomLeft - topLeft) * step * i;
@@ -42,7 +42,7 @@ std::shared_ptr<CMesh> generateTriangleMesh(const CPoint3d& topLeft, const CPoin
 		}
 	}
 
-	// Generowanie indeksów
+	// Generowanie indeksï¿½w
 	for (int i = 0; i < divisions; ++i) {
 		for (int j = 0; j < divisions; ++j) {
 			int topLeftIndex = i * (divisions + 1) + j;
@@ -50,10 +50,10 @@ std::shared_ptr<CMesh> generateTriangleMesh(const CPoint3d& topLeft, const CPoin
 			int bottomLeftIndex = (i + 1) * (divisions + 1) + j;
 			int bottomRightIndex = bottomLeftIndex + 1;
 
-			// Pierwszy trójk¹t
+			// Pierwszy trï¿½jkï¿½t
 			mesh->faces().push_back( CFace( topLeftIndex, bottomLeftIndex, topRightIndex) );
 
-			// Drugi trójk¹t
+			// Drugi trï¿½jkï¿½t
 			mesh->faces().push_back(CFace( topRightIndex, bottomLeftIndex, bottomRightIndex) );
 		}
 	}
@@ -61,7 +61,7 @@ std::shared_ptr<CMesh> generateTriangleMesh(const CPoint3d& topLeft, const CPoin
 	return mesh;
 }
 
-// dieli kwadratowe oczka na cztery trójk¹ty dodajêc wierzcho³ek w œrodku
+// dieli kwadratowe oczka na cztery trï¿½jkï¿½ty dodajï¿½c wierzchoï¿½ek w ï¿½rodku
 std::shared_ptr<CMesh> generateTriangleMesh2(const CPoint3d& topLeft, const CPoint3d& topRight,
 	const CPoint3d& bottomLeft, const CPoint3d& bottomRight, int divisions )
 {
@@ -69,7 +69,7 @@ std::shared_ptr<CMesh> generateTriangleMesh2(const CPoint3d& topLeft, const CPoi
 
 	double step = 1.0 / divisions;
 
-	// Generowanie wierzcho³ków
+	// Generowanie wierzchoï¿½kï¿½w
 	for (int i = 0; i <= divisions; ++i) {
 		for (int j = 0; j <= divisions; ++j) {
 			CPoint3d vertex = topLeft + (topRight - topLeft) * step * j + (bottomLeft - topLeft) * step * i;
@@ -77,7 +77,7 @@ std::shared_ptr<CMesh> generateTriangleMesh2(const CPoint3d& topLeft, const CPoi
 		}
 	}
 
-	// Dodanie dodatkowych wierzcho³ków w œrodkach kwadratów
+	// Dodanie dodatkowych wierzchoï¿½kï¿½w w ï¿½rodkach kwadratï¿½w
 	int offset = mesh->vertices().size();
 	for (int i = 0; i < divisions; ++i) {
 		for (int j = 0; j < divisions; ++j) {
@@ -89,7 +89,7 @@ std::shared_ptr<CMesh> generateTriangleMesh2(const CPoint3d& topLeft, const CPoi
 		}
 	}
 
-	// Generowanie indeksów
+	// Generowanie indeksï¿½w
 	for (int i = 0; i < divisions; ++i) {
 		for (int j = 0; j < divisions; ++j) {
 			int topLeftIndex = i * (divisions + 1) + j;
@@ -98,7 +98,7 @@ std::shared_ptr<CMesh> generateTriangleMesh2(const CPoint3d& topLeft, const CPoi
 			int bottomRightIndex = bottomLeftIndex + 1;
 			int centerIndex = offset + i * divisions + j;
 
-			// Dzielenie kwadratu na cztery trójk¹ty
+			// Dzielenie kwadratu na cztery trï¿½jkï¿½ty
 			mesh->addFace(CFace(topLeftIndex,topRightIndex,centerIndex));
 			mesh->addFace(CFace(topRightIndex,bottomRightIndex,centerIndex));
 			mesh->addFace(CFace(bottomRightIndex,bottomLeftIndex,centerIndex));
@@ -123,7 +123,7 @@ std::shared_ptr<CMesh> CPlane::getMesh(double size, int divX, int divY)
 	CVector3d vec1 = normal.crossProduct(arbitraryVector).getNormalized() * sideLength;
 	CVector3d vec2 = normal.crossProduct(vec1).getNormalized() * sideLength;
 
-	// Generowanie punktów kwadratu
+	// Generowanie punktï¿½w kwadratu
 	CPoint3d v1 = point + vec1 + vec2;
 	CPoint3d v2 = point + vec1 - vec2;
 	CPoint3d v3 = point - vec1 - vec2;
@@ -218,53 +218,58 @@ CTransform CPlane::toTransform1()
 }
 
 
-
-Eigen::Matrix3d calculateRotationMatrix(const std::vector<double>& newNormal) {
-	// Wektor normalny [0,1,0]
-	std::vector<double> defaultNormal = { 0, 0, 1 };
-
-	// Obliczenie osi rotacji (iloczyn wektorowy)
-	std::vector<double> rotationAxis = {
-		defaultNormal[1] * newNormal[2] - defaultNormal[2] * newNormal[1],
-		defaultNormal[2] * newNormal[0] - defaultNormal[0] * newNormal[2],
-		defaultNormal[0] * newNormal[1] - defaultNormal[1] * newNormal[0]
-	};
-
-	// Obliczenie k¹ta rotacji (iloczyn skalarny i arccos)
-	double dotProduct = defaultNormal[1] * newNormal[1]; // Tylko sk³adowe Y, inne s¹ zerowe
-	double angle = acos(dotProduct);
-
-	// Normalizacja osi rotacji
-	double norm = sqrt(rotationAxis[0] * rotationAxis[0] +
-		rotationAxis[1] * rotationAxis[1] +
-		rotationAxis[2] * rotationAxis[2]);
-	rotationAxis[0] /= norm;
-	rotationAxis[1] /= norm;
-	rotationAxis[2] /= norm;
-
-	// Sk³adniki macierzy skoœnosymetrycznej
-	double Kx = rotationAxis[0], Ky = rotationAxis[1], Kz = rotationAxis[2];
-	Eigen::Matrix3d K;
-	K(0, 1) = -Kz; K(0, 2) = Ky;
-	K(1, 0) = Kz;  K(1, 2) = -Kx;
-	K(2,0) = -Ky; K(2,1) = Kx;
-
-	// Obliczenie macierzy rotacji
-	Eigen::Matrix3d R;
-	for (int i = 0; i < 3; ++i) {
-		for (int j = 0; j < 3; ++j) {
-			R(i,j) = 0;
-			for (int k = 0; k < 3; ++k) {
-				R(i,j) += (sin(angle) * K(i,k) + (1 - cos(angle)) * K(i,k) * K(k,j));
-			}
-			if (i == j) {
-				R(i,j) += 1;
-			}
-		}
-	}
-
-	return R;
+Eigen::Matrix3d calculateRotationMatrix(const Eigen::Vector3d& newNormal) {
+    Eigen::Vector3d defaultNormal(0, 0, 1);
+    Eigen::Quaterniond q = Eigen::Quaterniond::FromTwoVectors(defaultNormal, newNormal.normalized());
+    return q.toRotationMatrix();
 }
+
+// Eigen::Matrix3d calculateRotationMatrix(const std::vector<double>& newNormal) {
+// 	// Wektor normalny [0,1,0]
+// 	std::vector<double> defaultNormal = { 0, 0, 1 };
+
+// 	// Obliczenie osi rotacji (iloczyn wektorowy)
+// 	std::vector<double> rotationAxis = {
+// 		defaultNormal[1] * newNormal[2] - defaultNormal[2] * newNormal[1],
+// 		defaultNormal[2] * newNormal[0] - defaultNormal[0] * newNormal[2],
+// 		defaultNormal[0] * newNormal[1] - defaultNormal[1] * newNormal[0]
+// 	};
+
+// 	// Obliczenie kï¿½ta rotacji (iloczyn skalarny i arccos)
+// 	double dotProduct = defaultNormal[1] * newNormal[1]; // Tylko skï¿½adowe Y, inne sï¿½ zerowe
+// 	double angle = acos(dotProduct);
+
+// 	// Normalizacja osi rotacji
+// 	double norm = sqrt(rotationAxis[0] * rotationAxis[0] +
+// 		rotationAxis[1] * rotationAxis[1] +
+// 		rotationAxis[2] * rotationAxis[2]);
+// 	rotationAxis[0] /= norm;
+// 	rotationAxis[1] /= norm;
+// 	rotationAxis[2] /= norm;
+
+// 	// Skï¿½adniki macierzy skoï¿½nosymetrycznej
+// 	double Kx = rotationAxis[0], Ky = rotationAxis[1], Kz = rotationAxis[2];
+// 	Eigen::Matrix3d K;
+// 	K(0, 1) = -Kz; K(0, 2) = Ky;
+// 	K(1, 0) = Kz;  K(1, 2) = -Kx;
+// 	K(2,0) = -Ky; K(2,1) = Kx;
+
+// 	// Obliczenie macierzy rotacji
+// 	Eigen::Matrix3d R;
+// 	for (int i = 0; i < 3; ++i) {
+// 		for (int j = 0; j < 3; ++j) {
+// 			R(i,j) = 0;
+// 			for (int k = 0; k < 3; ++k) {
+// 				R(i,j) += (sin(angle) * K(i,k) + (1 - cos(angle)) * K(i,k) * K(k,j));
+// 			}
+// 			if (i == j) {
+// 				R(i,j) += 1;
+// 			}
+// 		}
+// 	}
+
+// 	return R;
+// }
 
 Eigen::Matrix4d CPlane::toEigenMatrix4d()
 {
