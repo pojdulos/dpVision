@@ -6,11 +6,14 @@
 
 #include <Eigen/Geometry>
 #include <type_traits>
+#include <cassert>
 
 template<
 	typename _T,
-	typename = typename std::enable_if<std::is_arithmetic<_T>::value, _T>::type >  class DPVISION_EXPORT CTriple
+	typename = typename std::enable_if<std::is_arithmetic<_T>::value, _T>::type >
+class DPVISION_EXPORT CTriple
 {
+	static_assert(std::is_arithmetic<_T>::value, "CTriple<> type must be numeric");
 public:
 	union {
 		_T v[3];
@@ -19,21 +22,16 @@ public:
 	};
 
 public:
-	CTriple()
-	{
-		static_assert(std::is_arithmetic<_T>::value, "CTriple<> type must be numeric");
-		x = static_cast<_T>(0);
-		y = static_cast<_T>(0);
-		z = static_cast<_T>(0);
-	};
+	constexpr CTriple() noexcept
+		: x(static_cast<_T>(0)), y(static_cast<_T>(0)), z(static_cast<_T>(0)) {}
 
-	template<typename _W> CTriple( _W *f )
+	template<typename _W> explicit CTriple(const _W* f)
 	{
 		static_assert(std::is_arithmetic<_W>::value, "CTriple<> type must be numeric");
 		x = static_cast<_T>(f[0]);
 		y = static_cast<_T>(f[1]);
 		z = static_cast<_T>(f[2]);
-	};
+	}
 
 	template<typename _W> CTriple(_W fx, _W fy, _W fz)
 	{
@@ -51,10 +49,10 @@ public:
 		z = static_cast<_T>(t.Z());
 	};
 
-	~CTriple() {};
+	~CTriple() = default;
 	
 	// export to Eigen::Vector3<Type>
-	Eigen::Matrix<_T, 3, 1> toVector3()
+	Eigen::Matrix<_T, 3, 1> toVector3() const
 	{
 		Eigen::Matrix<_T, 3, 1> ev;
 		ev(0, 0) = x;
@@ -64,7 +62,7 @@ public:
 	}
 
 	// export to Eigen::RowVector3<Type>
-	Eigen::Matrix<_T, 1, 3> toRowVector3()
+	Eigen::Matrix<_T, 1, 3> toRowVector3() const
 	{
 		Eigen::Matrix<_T, 1, 3> erv;
 		erv(0, 0) = x;		erv(0, 1) = y;		erv(0, 2) = z;
@@ -199,7 +197,8 @@ public:
 	};
 
 	CTriple<_T> operator+=( const CTriple<_T>& c ) {
-		return CTriple<_T>( x += c.x, y += c.y, z += c.z );
+		x += c.x; y += c.y; z += c.z;
+		return *this;
 	};
 
 	CTriple<_T> operator-( const CTriple<_T>& c ) const {
@@ -207,7 +206,8 @@ public:
 	};
 
 	CTriple<_T> operator-=( const CTriple<_T>& c ) {
-		return CTriple<_T>( x -= c.x, y -= c.y, z -= c.z );
+		x -= c.x; y -= c.y; z -= c.z;
+		return *this;
 	};
 
 	CTriple<_T> operator/( const _T c ) const {
@@ -219,11 +219,13 @@ public:
 	};
 
 	CTriple<_T> operator/=( const _T c ) {
-		return CTriple<_T>( x/=c, y/=c, z/=c ); 
+		x /= c; y /= c; z /= c;
+		return *this;
 	};
 
 	CTriple<_T> operator*=(const _T c) {
-		return CTriple<_T>(x *= c, y *= c, z *= c);
+		x *= c; y *= c; z *= c;
+		return *this;
 	};
 
 
@@ -256,17 +258,17 @@ public:
 	bool operator>( const CTriple<_T> &c ) const {
 		if ( x > c.x ) return true;
 		else if ( x < c.x ) return false;
-		else if ( x > c.y ) return true;
-		else if ( x < c.y ) return false;
-		return ( x > c.z );
+		else if ( y > c.y ) return true;
+		else if ( y < c.y ) return false;
+		return ( z > c.z );
 	}
 
 	bool operator>=( const CTriple<_T> &c ) const {
 		if ( x > c.x ) return true;
 		else if ( x < c.x ) return false;
-		else if ( x > c.y ) return true;
-		else if ( x < c.y ) return false;
-		return ( x >= c.z );
+		else if ( y > c.y ) return true;
+		else if ( y < c.y ) return false;
+		return ( z >= c.z );
 	}
 
 };
