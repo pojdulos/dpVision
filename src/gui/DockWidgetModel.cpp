@@ -53,27 +53,27 @@ void DockWidgetModel::updateProperties()
 		CVector3d e = tr.rotation().eulerAnglesDeg();
 
 		ui.spinRotX->blockSignals(true);
-		ui.spinRotX->setValue( rot.X( e.x ) );
+		ui.spinRotX->setValue( rot.X( e.x ).x );
 		ui.spinRotX->blockSignals(false);
 
 		ui.spinRotY->blockSignals(true);
-		ui.spinRotY->setValue( rot.Y( e.y ) );
+		ui.spinRotY->setValue( rot.Y( e.y ).y );
 		ui.spinRotY->blockSignals(false);
 
 		ui.spinRotZ->blockSignals(true);
-		ui.spinRotZ->setValue( rot.Z( e.z ) );
+		ui.spinRotZ->setValue( rot.Z( e.z ).z );
 		ui.spinRotZ->blockSignals(false);
 
 		ui.spinTransX->blockSignals(true);
-		ui.spinTransX->setValue( tra.X( tr.translation().X() ) );
+		ui.spinTransX->setValue( tra.X( tr.translation().x ).x );
 		ui.spinTransX->blockSignals(false);
 
 		ui.spinTransY->blockSignals(true);
-		ui.spinTransY->setValue( tra.Y( tr.translation().Y() ) );
+		ui.spinTransY->setValue( tra.Y( tr.translation().y ).y );
 		ui.spinTransY->blockSignals(false);
 
 		ui.spinTransZ->blockSignals(true);
-		ui.spinTransZ->setValue( tra.Z( tr.translation().Z() ) );
+		ui.spinTransZ->setValue( tra.Z( tr.translation().z ).z );
 		ui.spinTransZ->blockSignals(false);
 
 		ui.spinScale->blockSignals(true);

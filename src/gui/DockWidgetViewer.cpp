@@ -39,27 +39,27 @@ void DockWidgetViewer::updateProperties()
 		CVector3d e = view->transform().rotation().eulerAnglesDeg();
 
 		ui.spinViewRotX->blockSignals(true);
-		ui.spinViewRotX->setValue( rot.X( e.x ) );
+		ui.spinViewRotX->setValue( rot.X( e.x ).x );
 		ui.spinViewRotX->blockSignals(false);
 
 		ui.spinViewRotY->blockSignals(true);
-		ui.spinViewRotY->setValue( rot.Y( e.y ) );
+		ui.spinViewRotY->setValue( rot.Y( e.y ).y );
 		ui.spinViewRotY->blockSignals(false);
 
 		ui.spinViewRotZ->blockSignals(true);
-		ui.spinViewRotZ->setValue( rot.Z( e.z ) );
+		ui.spinViewRotZ->setValue( rot.Z( e.z ).z );
 		ui.spinViewRotZ->blockSignals(false);
 
 		ui.spinViewTransX->blockSignals(true);
-		ui.spinViewTransX->setValue( tra.X(view->transform().translation().X() ) );
+		ui.spinViewTransX->setValue( tra.X(view->transform().translation().x ).x );
 		ui.spinViewTransX->blockSignals(false);
 
 		ui.spinViewTransY->blockSignals(true);
-		ui.spinViewTransY->setValue( tra.Y(view->transform().translation().Y() ) );
+		ui.spinViewTransY->setValue( tra.Y(view->transform().translation().y ).y );
 		ui.spinViewTransY->blockSignals(false);
 
 		ui.spinViewTransZ->blockSignals(true);
-		ui.spinViewTransZ->setValue( tra.Z(view->transform().translation().Z() ) );
+		ui.spinViewTransZ->setValue( tra.Z(view->transform().translation().z ).z );
 		ui.spinViewTransZ->blockSignals(false);
 
 		ui.spinViewScale->blockSignals(true);
