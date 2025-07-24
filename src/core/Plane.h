@@ -62,52 +62,6 @@ public:
 		m_d = recalc_D();
 	}
 
-	/*
-	CPlane( double pA, double pB, double pC, double pD )
-	{
-		vn.Set( pA, pB, pC );
-		d = pD;
-
-		normalize();
-	}
-
-	CPlane( const CTriple<double> &p, const CVector3<double> &normal )
-	{
-		vn = normal;
-		vn.normalize();
-		d = - vn.dotProduct( (CVector3<double>)p );
-	}
-
-	//CPlane( const CPoint3f &Pt, const CVector3<double> &V1, const CVector3<double> &V2)
-	//{
-	//	CPlane( Pt, V1.crossProduct(V2) );
-	//}
-
-	CPlane(CTriple<double> p0, CTriple<double> p1, CTriple<double> p2)
-	{
-		CPlane( p0, CVector3<double>(p0, p1).crossProduct(CVector3<double>(p0, p2)));
-	}
-	*/
-
-	//// konstruktor - p�aszczyzna przez 3 punkty
-	//CPlane( CPoint3d p0, CPoint3d p1, CPoint3d p2 )
-	//{
-	//	CMatrix3x3<double> Mx( p0.Y(), p0.Z(),    1.0, p1.Y(), p1.Z(),    1.0, p2.Y(), p2.Z(),    1.0 );
-	//	CMatrix3x3<double> My( p0.X(), p0.Z(),    1.0, p1.X(), p1.Z(),    1.0, p2.X(), p2.Z(),    1.0 );
-	//	CMatrix3x3<double> Mz( p0.X(), p0.Y(),    1.0, p1.X(), p1.Y(),    1.0, p2.X(), p2.Y(),    1.0 );
-	//	//CMatrix3x3<double> M1( p0.X(), p0.Y(), p0.Z(), p1.X(), p1.Y(), p1.Z(), p2.X(), p2.Y(), p2.Z() );
-
-	//	// wyznaczniki
-	//	double a = Mx.det();
-	//	double b = -My.det();
-	//	double c = Mz.det();
-	//	//double d = - M1.det();
-
-	//	m_center = p0;
-	//	m_normal.Set(a, b, c);
-	//	m_normal.normalize();
-	//}
-
 	/**
 	 * @brief Construct plane from three points.
 	 * @param p0 First point
@@ -312,292 +266,6 @@ public:
 	}
 
 
-	// void regresionFromPoints(std::vector<CPoint3d> pts)
-	// {
-	// 	size_t pts_cnt = pts.size();
-
-	// 	double sum_pts[3];
-	// 	sum_pts[0] = 0.0;
-	// 	sum_pts[1] = 0.0;
-	// 	sum_pts[2] = 0.0;
-
-	// 	for (int ii = 0; ii < pts_cnt; ii++)
-	// 	{
-	// 		sum_pts[0] += pts[ii].X();
-	// 		sum_pts[1] += pts[ii].Y();
-	// 		sum_pts[2] += pts[ii].Z();
-	// 	}
-
-	// 	CPoint3d centroid(sum_pts[0] / pts_cnt, sum_pts[1] / pts_cnt, sum_pts[2] / pts_cnt);
-
-	// 	// Calculate full 3x3 covariance matrix, excluding symmetries:
-	// 	double xx = 0.0, xy = 0.0, xz = 0.0;
-	// 	double yy = 0.0, yz = 0.0, zz = 0.0;
-
-	// 	for (int ii = 0; ii < pts_cnt; ii++)
-	// 	{
-	// 		CVector3d r;
-	// 		r = pts[ii] - centroid;
-	// 		xx += r.X() * r.X();
-	// 		xy += r.X() * r.Y();
-	// 		xz += r.X() * r.Z();
-	// 		yy += r.Y() * r.Y();
-	// 		yz += r.Y() * r.Z();
-	// 		zz += r.Z() * r.Z();
-	// 	}
-
-	// 	xx /= pts_cnt;
-	// 	xy /= pts_cnt;
-	// 	xz /= pts_cnt;
-	// 	yy /= pts_cnt;
-	// 	yz /= pts_cnt;
-	// 	zz /= pts_cnt;
-
-	// 	CVector3d weighted_dir(0.0, 0.0, 0.0);
-
-	// 	double det_x = yy * zz - yz * yz;
-
-	// 	CVector3d axis_dir_x(det_x, xz * yz - xy * zz, xy * yz - xz * yy);
-
-	// 	double weight = det_x * det_x;
-
-	// 	if (weighted_dir.dotProduct(axis_dir_x) < 0.0)
-	// 		weight = -weight;
-	// 	weighted_dir += axis_dir_x * weight;
-
-	// 	double det_y = xx * zz - xz * xz;
-	// 	CVector3d axis_dir_y(xz * yz - xy * zz, det_y, xy * xz - yz * xx);
-	// 	weight = det_y * det_y;
-	// 	if (weighted_dir.dotProduct(axis_dir_y) < 0.0)
-	// 		weight = -weight;
-	// 	weighted_dir += axis_dir_y * weight;
-
-	// 	double det_z = xx * yy - xy * xy;
-	// 	CVector3d axis_dir_z(xy * yz - xz * yy, xy * xz - yz * xx, det_z);
-	// 	weight = det_z * det_z;
-	// 	if (weighted_dir.dotProduct(axis_dir_z) < 0.0)
-	// 		weight = -weight;
-	// 	weighted_dir += axis_dir_x * weight;
-
-	// 	m_center = centroid;
-	// 	m_normal = weighted_dir;
-	// 	m_normal.normalize();
-
-	// 	m_d = recalc_D();
-	// }
-	// bool regresionFromPoints(std::set<CVertex>& pts)
-	// {
-	// 	size_t pts_cnt = pts.size();
-
-	// 	if (pts_cnt < 3) return false;
-
-	// 	CPoint3d centroid = std::accumulate(pts.begin(), pts.end(), CPoint3d(0.0, 0.0, 0.0)) / pts_cnt;
-
-	// 	// Calculate full 3x3 covariance matrix, excluding symmetries:
-	// 	double xx = 0.0, xy = 0.0, xz = 0.0;
-	// 	double yy = 0.0, yz = 0.0, zz = 0.0;
-
-	// 	//for each (CVertex v in pts)
-	// 	for (CVertex v : pts)
-	// 	{
-	// 		CVector3d r;
-	// 		r = (CPoint3d)v - centroid;
-	// 		xx += r.X() * r.X();
-	// 		xy += r.X() * r.Y();
-	// 		xz += r.X() * r.Z();
-	// 		yy += r.Y() * r.Y();
-	// 		yz += r.Y() * r.Z();
-	// 		zz += r.Z() * r.Z();
-	// 	}
-
-	// 	xx /= pts_cnt;
-	// 	xy /= pts_cnt;
-	// 	xz /= pts_cnt;
-	// 	yy /= pts_cnt;
-	// 	yz /= pts_cnt;
-	// 	zz /= pts_cnt;
-
-	// 	CVector3d weighted_dir(0.0, 0.0, 0.0);
-
-	// 	double det_x = yy * zz - yz * yz;
-
-	// 	CVector3d axis_dir_x(det_x, xz * yz - xy * zz, xy * yz - xz * yy);
-
-	// 	double weight = det_x * det_x;
-
-	// 	if (weighted_dir.dotProduct(axis_dir_x) < 0.0)
-	// 		weight = -weight;
-	// 	weighted_dir += axis_dir_x * weight;
-
-	// 	double det_y = xx * zz - xz * xz;
-	// 	CVector3d axis_dir_y(xz * yz - xy * zz, det_y, xy * xz - yz * xx);
-	// 	weight = det_y * det_y;
-	// 	if (weighted_dir.dotProduct(axis_dir_y) < 0.0)
-	// 		weight = -weight;
-	// 	weighted_dir += axis_dir_y * weight;
-
-	// 	double det_z = xx * yy - xy * xy;
-	// 	CVector3d axis_dir_z(xy * yz - xz * yy, xy * xz - yz * xx, det_z);
-	// 	weight = det_z * det_z;
-	// 	if (weighted_dir.dotProduct(axis_dir_z) < 0.0)
-	// 		weight = -weight;
-	// 	weighted_dir += axis_dir_x * weight;
-
-	// 	m_center = centroid;
-	// 	m_normal = weighted_dir;
-	// 	m_normal.normalize();
-
-	// 	m_d = recalc_D();
-
-	// 	return true;
-	// }
-	// void regresionFromPoints(std::set<size_t>& idxs, std::vector<CPoint3f>& pts)
-	// {
-	// 	size_t pts_cnt = idxs.size();
-
-	// 	double sum_pts[3];
-	// 	sum_pts[0] = 0.0;
-	// 	sum_pts[1] = 0.0;
-	// 	sum_pts[2] = 0.0;
-
-	// 	for (auto ii : idxs)
-	// 	{
-	// 		sum_pts[0] += pts[ii].X();
-	// 		sum_pts[1] += pts[ii].Y();
-	// 		sum_pts[2] += pts[ii].Z();
-	// 	}
-
-	// 	CPoint3d centroid(sum_pts[0] / pts_cnt, sum_pts[1] / pts_cnt, sum_pts[2] / pts_cnt);
-
-	// 	// Calculate full 3x3 covariance matrix, excluding symmetries:
-	// 	double xx = 0.0, xy = 0.0, xz = 0.0;
-	// 	double yy = 0.0, yz = 0.0, zz = 0.0;
-
-	// 	for (auto ii : idxs)
-	// 	{
-	// 		CVector3d r;
-	// 		r = pts[ii] - centroid;
-	// 		xx += r.X() * r.X();
-	// 		xy += r.X() * r.Y();
-	// 		xz += r.X() * r.Z();
-	// 		yy += r.Y() * r.Y();
-	// 		yz += r.Y() * r.Z();
-	// 		zz += r.Z() * r.Z();
-	// 	}
-
-	// 	xx /= pts_cnt;
-	// 	xy /= pts_cnt;
-	// 	xz /= pts_cnt;
-	// 	yy /= pts_cnt;
-	// 	yz /= pts_cnt;
-	// 	zz /= pts_cnt;
-
-	// 	CVector3d weighted_dir(0.0, 0.0, 0.0);
-
-	// 	double det_x = yy * zz - yz * yz;
-
-	// 	CVector3d axis_dir_x(det_x, xz * yz - xy * zz, xy * yz - xz * yy);
-
-	// 	double weight = det_x * det_x;
-
-	// 	if (weighted_dir.dotProduct(axis_dir_x) < 0.0)
-	// 		weight = -weight;
-	// 	weighted_dir += axis_dir_x * weight;
-
-	// 	double det_y = xx * zz - xz * xz;
-	// 	CVector3d axis_dir_y(xz * yz - xy * zz, det_y, xy * xz - yz * xx);
-	// 	weight = det_y * det_y;
-	// 	if (weighted_dir.dotProduct(axis_dir_y) < 0.0)
-	// 		weight = -weight;
-	// 	weighted_dir += axis_dir_y * weight;
-
-	// 	double det_z = xx * yy - xy * xy;
-	// 	CVector3d axis_dir_z(xy * yz - xz * yy, xy * xz - yz * xx, det_z);
-	// 	weight = det_z * det_z;
-	// 	if (weighted_dir.dotProduct(axis_dir_z) < 0.0)
-	// 		weight = -weight;
-	// 	weighted_dir += axis_dir_x * weight;
-
-	// 	m_center = centroid;
-	// 	m_normal = weighted_dir;
-	// 	m_normal.normalize();
-
-	// 	m_d = recalc_D();
-	// }
-	// void regresionFromPoints(std::set<INDEX_TYPE>& idxs, std::vector<CVertex>& pts)
-	// {
-	// 	size_t pts_cnt = idxs.size();
-
-	// 	double sum_pts[3];
-	// 	sum_pts[0] = 0.0;
-	// 	sum_pts[1] = 0.0;
-	// 	sum_pts[2] = 0.0;
-
-	// 	for (auto ii : idxs)
-	// 	{
-	// 		sum_pts[0] += pts[ii].X();
-	// 		sum_pts[1] += pts[ii].Y();
-	// 		sum_pts[2] += pts[ii].Z();
-	// 	}
-
-	// 	CPoint3d centroid(sum_pts[0] / pts_cnt, sum_pts[1] / pts_cnt, sum_pts[2] / pts_cnt);
-
-	// 	// Calculate full 3x3 covariance matrix, excluding symmetries:
-	// 	double xx = 0.0, xy = 0.0, xz = 0.0;
-	// 	double yy = 0.0, yz = 0.0, zz = 0.0;
-
-	// 	for (auto ii : idxs)
-	// 	{
-	// 		CVector3d r;
-	// 		r = pts[ii] - centroid;
-	// 		xx += r.X() * r.X();
-	// 		xy += r.X() * r.Y();
-	// 		xz += r.X() * r.Z();
-	// 		yy += r.Y() * r.Y();
-	// 		yz += r.Y() * r.Z();
-	// 		zz += r.Z() * r.Z();
-	// 	}
-
-	// 	xx /= pts_cnt;
-	// 	xy /= pts_cnt;
-	// 	xz /= pts_cnt;
-	// 	yy /= pts_cnt;
-	// 	yz /= pts_cnt;
-	// 	zz /= pts_cnt;
-
-	// 	CVector3d weighted_dir(0.0, 0.0, 0.0);
-
-	// 	double det_x = yy * zz - yz * yz;
-
-	// 	CVector3d axis_dir_x(det_x, xz * yz - xy * zz, xy * yz - xz * yy);
-
-	// 	double weight = det_x * det_x;
-
-	// 	if (weighted_dir.dotProduct(axis_dir_x) < 0.0)
-	// 		weight = -weight;
-	// 	weighted_dir += axis_dir_x * weight;
-
-	// 	double det_y = xx * zz - xz * xz;
-	// 	CVector3d axis_dir_y(xz * yz - xy * zz, det_y, xy * xz - yz * xx);
-	// 	weight = det_y * det_y;
-	// 	if (weighted_dir.dotProduct(axis_dir_y) < 0.0)
-	// 		weight = -weight;
-	// 	weighted_dir += axis_dir_y * weight;
-
-	// 	double det_z = xx * yy - xy * xy;
-	// 	CVector3d axis_dir_z(xy * yz - xz * yy, xy * xz - yz * xx, det_z);
-	// 	weight = det_z * det_z;
-	// 	if (weighted_dir.dotProduct(axis_dir_z) < 0.0)
-	// 		weight = -weight;
-	// 	weighted_dir += axis_dir_x * weight;
-
-	// 	m_center = centroid;
-	// 	m_normal = weighted_dir;
-	// 	m_normal.normalize();
-
-	// 	m_d = recalc_D();
-	// }
-
 	/**
 	 * @brief Returns the signed value indicating the position of a point relative to the plane.
 	 * @param p Point to test
@@ -779,13 +447,32 @@ private:
 	}	
 
 public:
-	// Dla dowolnego kontenera punktów 3D (CVertex, CPoint3f, CPoint3d, ...)
+	/**
+	 * @brief Fits a plane to a container of 3D points using least squares regression.
+	 *
+	 * This method computes the best-fit plane (in the least squares sense) for a set of 3D points.
+	 * The plane's center and normal are updated to match the regression result.
+	 *
+	 * @tparam PointContainer Container type holding 3D points (e.g., CVertex, CPoint3f, CPoint3d, etc.)
+	 * @param pts Container of 3D points
+	 */
 	template<typename PointContainer>
 	void regresionFromPoints(const PointContainer& pts) {
 		regressionFromPointsImpl(pts.begin(), pts.end(), [](const auto& p) -> const CPoint3d& { return p; });
 	}
 
-	// Dla indeksów do kontenera punktów
+	/**
+	 * @brief Fits a plane to a subset of points, specified by indices into a container.
+	 *
+	 * This method computes the best-fit plane (in the least squares sense) for a subset of 3D points,
+	 * where the subset is specified by a container of indices into a point container.
+	 * The plane's center and normal are updated to match the regression result.
+	 *
+	 * @tparam IndexContainer Container type holding indices (e.g., std::set<size_t>)
+	 * @tparam PointContainer Container type holding 3D points
+	 * @param idxs Container of indices into the point container
+	 * @param pts Container of 3D points
+	 */
 	template<typename IndexContainer, typename PointContainer>
 	void regresionFromPoints(const IndexContainer& idxs, const PointContainer& pts) {
 		regressionFromPointsImpl(idxs.begin(), idxs.end(), [&pts](auto idx) -> const CPoint3d& { return pts[idx]; });
