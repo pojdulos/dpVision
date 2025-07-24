@@ -10,6 +10,7 @@
 #include "Transform.h"
 #include "Vertex.h"
 
+#include <array>
 
 class CMesh;
 

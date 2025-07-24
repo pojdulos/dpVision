@@ -60,12 +60,12 @@ void CFace::setAt(int n, const INDEX_TYPE v_id)
 	}
 }
 
-INDEX_TYPE CFace::at(int n)
+INDEX_TYPE CFace::at(int n) const
 {
 	switch (n) {
-		case 0: return x; break;
-		case 1: return y; break;
-		case 2: return z; break;
-		default: return -1; break;
+		case 0: return x;
+		case 1: return y;
+		case 2: return z;
+		default: return static_cast<INDEX_TYPE>(-1);
 	}
 }
