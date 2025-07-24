@@ -1,6 +1,4 @@
 #pragma once
-#ifndef _PLANE_H_BY_DP_INCLUDED_
-#define _PLANE_H_BY_DP_INCLUDED_
 
 #include "dll_global.h"
 
@@ -699,12 +697,6 @@ public:
 	std::shared_ptr<CMesh> getMesh( double size, int divX=1, int divY=1 );
 
 	/**
-	 * @brief Export the plane to a 4x4 matrix.
-	 * @param m Output: pointer to matrix data
-	 */
-	void toMatrix(double* m);
-
-	/**
 	 * @brief Convert the plane to a transformation (method 1).
 	 * @return Transformation object
 	 */
@@ -714,7 +706,7 @@ public:
 	 * @brief Convert the plane to an Eigen 4x4 matrix.
 	 * @return Eigen 4x4 matrix
 	 */
-	Eigen::Matrix4d toEigenMatrix4d();
+	Eigen::Matrix4d toEigenMatrix4d() const;
 
 	/**
 	 * @brief Convert the plane to a transformation.
@@ -798,28 +790,4 @@ public:
 	void regresionFromPoints(const IndexContainer& idxs, const PointContainer& pts) {
 		regressionFromPointsImpl(idxs.begin(), idxs.end(), [&pts](auto idx) -> const CPoint3d& { return pts[idx]; });
 	}
-
-	// // For std::vector<CPoint3d>
-	// void regresionFromPoints(const std::vector<CPoint3d>& pts) {
-	// 	regressionFromPointsImpl(pts.begin(), pts.end(), [](const CPoint3d& p) -> const CPoint3d& { return p; });
-	// }
-
-	// // For std::set<CVertex>
-	// bool regresionFromPoints(const std::set<CVertex>& pts) {
-	// 	if (pts.size() < 3) return false;
-	// 	regressionFromPointsImpl(pts.begin(), pts.end(), [](const CVertex& v) -> CPoint3d { return static_cast<CPoint3d>(v); });
-	// 	return true;
-	// }
-
-	// // For std::set<size_t> and std::vector<CPoint3f>
-	// void regresionFromPoints(const std::set<size_t>& idxs, const std::vector<CPoint3f>& pts) {
-	// 	regressionFromPointsImpl(idxs.begin(), idxs.end(), [&pts](size_t idx) -> CPoint3d { return pts[idx]; });
-	// }
-
-	// // For std::set<INDEX_TYPE> and std::vector<CVertex>
-	// void regresionFromPoints(const std::set<INDEX_TYPE>& idxs, const std::vector<CVertex>& pts) {
-	// 	regressionFromPointsImpl(idxs.begin(), idxs.end(), [&pts](INDEX_TYPE idx) -> CPoint3d { return static_cast<CPoint3d>(pts[idx]); });
-	// }	
 };
-
-#endif /* _PLANE_H_BY_DP_INCLUDED_ */
