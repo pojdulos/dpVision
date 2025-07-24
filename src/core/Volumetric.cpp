@@ -647,12 +647,12 @@ std::shared_ptr<CMesh> Volumetric::marching_cube(int factor) {
 
 			if (it == indexMap.end())
 			{
-				f[i] = mesh->addVertex(v);
-				indexMap[v] = f[i];
+				f.setAt(i, mesh->addVertex(v));
+				indexMap[v] = f.at(i);
 			}
 			else
 			{
-				f[i] = it->second;
+				f.setAt(i, it->second);
 			}
 		}
 
@@ -711,12 +711,12 @@ std::shared_ptr<CMesh> Volumetric::marching_tetrahedron(int factor) {
 
 			if (it == indexMap.end())
 			{
-				f[i] = mesh->addVertex(v);
-				indexMap[v] = f[i];
+				f.setAt(i, mesh->addVertex(v));
+				indexMap[v] = f.at(i);
 			}
 			else
 			{
-				f[i] = it->second;
+				f.setAt(i, it->second);
 			}
 		}
 

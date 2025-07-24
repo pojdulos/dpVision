@@ -660,7 +660,7 @@ void CMesh::removeUnusedVertices()
 
 		for (int idx = 0; idx < 3; idx++)
 		{
-			INDEX_TYPE vertex_id = face[idx];
+			INDEX_TYPE vertex_id = face.at(idx);
 			if (vIndexMap.end() == vIndexMap.find(vertex_id))
 			{
 				vIndexMap[vertex_id] = newVertices.size();
@@ -674,7 +674,7 @@ void CMesh::removeUnusedVertices()
 
 				expand(m_vertices[vertex_id]);
 			}
-			face[idx] = vIndexMap.at(vertex_id);
+			face.setAt(idx, vIndexMap.at(vertex_id));
 		}
 
 		//====================================================
@@ -1285,7 +1285,7 @@ void CMesh::removeDuplicateVertices(double eps)
 	for (int i = m_poly.faces().size() - 1; i >= 0; i--) {
 		auto& f = m_poly.faces()[i];
 
-		f.Set(vertexMap[f.first], vertexMap[f.second], vertexMap[f.third]);
+		f.Set(vertexMap[f.A()], vertexMap[f.B()], vertexMap[f.C()]);
 		if ((f.A() == f.B()) || (f.A() == f.C()) || (f.C() == f.B()))
 		{
 			m_poly.removeFace(i);
