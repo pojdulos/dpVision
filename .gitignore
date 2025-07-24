@@ -6,6 +6,3 @@ buildMS/
 3rdParty/
 zPlugins/
 dPlugins/
-src/plugins/splint_maker
-src/plugins/noweTestyDoSzyny
-src/plugins/volumetricSplint
