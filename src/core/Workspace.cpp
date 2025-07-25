@@ -2,22 +2,22 @@
 //#include "WorkspaceXML.h"
 #include "WorkspaceFile.h"
 
-#include "AP.h"
+#include "../api/AP.h"
 
-CWorkspace::CWorkspace() : QObject()
+#include "../renderers/IWorkspaceRenderer.h"
+#include "StatusBarManager.h"
+
+CWorkspace::CWorkspace() //: QObject()
 {
 	m_bOK = true;
 	m_idOfCurrentModel = NO_CURRENT_MODEL;
+
+	renderer_ = std::make_shared<IWorkspaceRenderer>();
 
 	m_selection.clear();
 
 	InitLights();
 }
-
-//CWorkspace::~CWorkspace()
-//{
-	//clear();
-//}
 
 CWorkspace* CWorkspace::instance()
 {
@@ -33,7 +33,7 @@ void CWorkspace::clear()
 	m_selection.clear();
 	m_data.clear();
 
-	_setCurrentModel(NO_CURRENT_MODEL);
+	_objectActivate(NO_CURRENT_MODEL);
 }
 
 
@@ -60,28 +60,6 @@ bool CWorkspace::_addModel( std::shared_ptr<CModel3D> pMdlR )
 	return true;
 }
 
-bool CWorkspace::_removeModel( int i)
-{
-	if (NO_CURRENT_MODEL == i) return false;
-
-	if ( m_data.find( i ) != m_data.end() )
-	{
-		if (inSelection(i)) removeFromSelection(i);
-
-		if (i == m_idOfCurrentModel)
-		{
-			_setCurrentModel(NO_CURRENT_MODEL);
-		}
-		
-		//if (deleteIt) delete m_data[i];
-
-		m_data.erase( i );
-		return true;
-	}
-
-	return false;
-}
-
 bool CWorkspace::_removeAllModels()
 {
 	for (Children::iterator it = m_data.begin(); it != m_data.end(); )
@@ -91,7 +69,7 @@ bool CWorkspace::_removeAllModels()
 	}
 	m_selection.clear();
 
-	_setCurrentModel(NO_CURRENT_MODEL);
+	_objectActivate(NO_CURRENT_MODEL);
 
 	return true;
 }
@@ -107,18 +85,18 @@ std::shared_ptr<CWorkspace::ChildType> CWorkspace::_getModel( int i )
 	return m_data[ i ];
 }
 
-#include "GroupObject.h"
 
-int CWorkspace::_setCurrentModel( int i )
-{
-	if (i != m_idOfCurrentModel)
-	{
-		onCurrentObjectChanged(i);
-		emit currentObjectChanged(m_idOfCurrentModel);
-	}
-
-	return m_idOfCurrentModel;
-}
+//int CWorkspace::_setCurrentModel( int i )
+//{
+//	if (i != m_idOfCurrentModel)
+//	{
+//		onCurrentObjectChanged(i);
+//
+//		this->_objectActivate(m_idOfCurrentModel);
+//	}
+//
+//	return m_idOfCurrentModel;
+//}
 
 
 
@@ -127,19 +105,19 @@ void CWorkspace::addToSelection(int id)
 	if (!inSelection(id))
 	{
 		m_selection.push_back(id);
-		UI::STATUSBAR::setText(QString("Object selected (pos.: ") + QString::number(getNumberInSelection(id)) + ")");
+		StatusBarManager::setText( QString("Object selected (pos.: %1)").arg(getNumberInSelection(id)));
 	}
-	//m_data[id]->setSelected(true);
+	//m_pairs[id]->setSelected(true);
 }
 
 void CWorkspace::removeFromSelection(int id)
 {
 	if (inSelection(id))
 	{
-		UI::STATUSBAR::setText(QString("Object at pos. ") + QString::number(getNumberInSelection(id)) + " unselected");
+		StatusBarManager::setText(QString("Object at pos.: %1 unselected").arg(getNumberInSelection(id)));
 		m_selection.remove(id);
 	}
-	//m_data[id]->setSelected(false);
+	//m_pairs[id]->setSelected(false);
 }
 
 bool CWorkspace::inSelection(int id)
@@ -199,7 +177,15 @@ std::list<int> CWorkspace::getSelection(std::set<CBaseObject::Type> types, std::
 	std::list<int> result;
 	for (auto id : m_selection)
 	{
-		std::shared_ptr<CBaseObject> kid = (dad==nullptr)?getSomethingWithId(id):dad->getSomethingWithId(id); // szukam w�r�d wszystkich obiekt�w w scenie lub w obiekcie (jest to wolniejsze)
+		std::shared_ptr<CBaseObject> kid;
+		
+		if (dad == nullptr)
+			kid = getSomethingWithId(id);
+		else if (dad->id() == id)
+			kid = dad;
+		else
+			kid = dad->getSomethingWithId(id); // szukam w�r�d wszystkich obiekt�w w scenie lub w obiekcie (jest to wolniejsze)
+
 		if ((kid != nullptr) && (types.empty() || types.find((CBaseObject::Type)kid->type()) != types.end())) // i sprawdzam czy typ jest na li�cie
 		{
 			result.push_back(id);
@@ -214,7 +200,15 @@ std::list<std::shared_ptr<CBaseObject>> CWorkspace::getSelected(std::set<CBaseOb
 	std::list<std::shared_ptr<CBaseObject>> result;
 	for (auto id : m_selection)
 	{
-		std::shared_ptr<CBaseObject> kid = (dad == nullptr) ? getSomethingWithId(id) : dad->getSomethingWithId(id); // szukam w�r�d wszystkich obiekt�w w scenie lub w obiekcie (jest to wolniejsze)
+		std::shared_ptr<CBaseObject> kid;
+		
+		if (dad == nullptr)
+			kid = getSomethingWithId(id);
+		else if (dad->id() == id)
+			kid = dad;
+		else
+			kid = dad->getSomethingWithId(id); // szukam w�r�d wszystkich obiekt�w w scenie lub w obiekcie (jest to wolniejsze)
+		
 		if ((kid != nullptr) && (types.empty() || types.find((CBaseObject::Type)kid->type()) != types.end())) // i sprawdzam czy typ jest na li�cie
 		{
 			result.push_back(kid);
@@ -279,7 +273,8 @@ int CWorkspace::_setNextModelCurrent()
 		}
 	}
 	
-	return _setCurrentModel( i );
+	_objectActivate(i);
+	return m_idOfCurrentModel;
 }
 
 
@@ -305,20 +300,17 @@ int CWorkspace::_setPreviousModelCurrent()
 		}
 	}
 	
-	return _setCurrentModel( i );
+	_objectActivate(i);
+	return m_idOfCurrentModel;
 }
 
 
 std::shared_ptr<CBaseObject> CWorkspace::getSomethingWithId(int id)
 {
-	for (auto& model : this->m_data)
+	for (const auto& d : m_data)
 	{
-		if (model.second->id() == id) return model.second;
-		else
-		{
-			std::shared_ptr<CBaseObject> obj = model.second->getSomethingWithId(id);
-			if (obj != nullptr) return obj;
-		}
+		if (id == d.second->id()) return d.second;
+		else if (auto result = d.second->getSomethingWithId(id)) return result;
 	}
 	return nullptr;
 }
@@ -326,130 +318,14 @@ std::shared_ptr<CBaseObject> CWorkspace::getSomethingWithId(int id)
 
 void CWorkspace::render()
 {
-	for (auto &model : this->m_data )
-	{
-		glPushMatrix();
-
-		//rysuje model
-		if (model.second != nullptr)
-		{
-			model.second->render();
-		}
-		
-		// przywracam macierz widoku przestrzeni roboczej
-		glPopMatrix();
-	}
+	if (renderer_) renderer_->render(this);
 }
-
 
 void CWorkspace::renderLights( bool perm )
 {
-//	GLUquadric* q = gluNewQuadric();
-	for (int iL=0; iL<8; iL++)
-	{
-		if ( perm != m_lights[iL].fixed )
-			continue;
-		else if ( m_lights[iL].active )
-		{
-			glDisable( m_lights[iL].light );
-			glLightfv( m_lights[iL].light, GL_AMBIENT, m_lights[iL].ambient );
-			glLightfv( m_lights[iL].light, GL_DIFFUSE, m_lights[iL].diffuse );
-			glLightfv( m_lights[iL].light, GL_SPECULAR, m_lights[iL].specular );
-			glLightfv( m_lights[iL].light, GL_POSITION, m_lights[iL].position );
-			CVector3f w( m_lights[iL].spot_direction[0], m_lights[iL].spot_direction[1], m_lights[iL].spot_direction[2] );
-			w.normalize();
-			float tmp[3];
-			tmp[0] = w.X();
-			tmp[1] = w.Y();
-			tmp[2] = w.Z();
-			glLightfv( m_lights[iL].light, GL_SPOT_DIRECTION, tmp );
-			glLightf( m_lights[iL].light, GL_SPOT_CUTOFF, m_lights[iL].spot_cut_off );
-			glEnable( m_lights[iL].light );
-/*
-			if ( 0.0 != m_lights[iL].position[3] ) // jesli 0.0 to swiatlo kierunkowe z nieskonczonosci
-			{
-				glPushMatrix();
-
-				glMaterialfv( GL_FRONT, GL_SPECULAR, m_lights[iL].specular );
-				glMaterialfv( GL_FRONT, GL_AMBIENT, m_lights[iL].ambient );
-				glMaterialfv( GL_FRONT, GL_DIFFUSE, m_lights[iL].diffuse );
-				glMateriali(GL_FRONT, GL_SHININESS,255);
-
-				glTranslatef( m_lights[iL].position[0], m_lights[iL].position[1], m_lights[iL].position[2] ); 
-				gluSphere( q, 1.0, 32, 32 );
-
-				glPopMatrix();
-			}
-*/
-		}
-		else
-		{
-			glDisable( m_lights[iL].light );
-		}
-
-	}
-//	gluDeleteQuadric( q );
+	if (renderer_) renderer_->renderLights(this, perm);
 }
 
-/*
-void CWorkspace::RysujOsie()
-{
-	glPushAttrib( GL_ALL_ATTRIB_BITS );
-
-	float g0 = 0.5f, g1 = 1.0f, a=1.0f;
-	int s0 = 32;
-
-	glDisable(GL_TEXTURE_2D);
-	glEnable(GL_COLOR_MATERIAL);
-
-	//glColorMaterial(GL_FRONT_AND_BACK,GL_EMISSION);
-	//glColorMaterial(GL_FRONT_AND_BACK,GL_SPECULAR);
-	glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);	
-
-	if ( this->m_idOfSelected < 0 ) glColor4f(0.8f, 0.2f, 0.2f, a);
-	else glColor4f(0.2f, 0.2f, 0.2f, a);
-
-//	GLUquadric* q = gluNewQuadric();
-	glBegin(GL_LINES);
-		glVertex3f( 0, 0, 0 );
-		glVertex3f( 0, 0, 50 );
-	glEnd();
-//	glPushMatrix();
-//		glTranslatef( 0, 0, 50 ); 
-//		gluCylinder( q, g1, 0.0, 5.0, s0, 1 );
-//	glPopMatrix();
-
-	if ( this->m_idOfSelected < 0 ) glColor4f(0.2f, 0.8f, 0.2f, a);
-	else glColor4f(0.2f, 0.2f, 0.2f, a);
-	glBegin(GL_LINES);
-		glVertex3f( 0, 0, 0 );
-		glVertex3f( 0, 55, 0 );
-	glEnd();
-//	glPushMatrix();
-//		glRotatef( 270.0, 1.0, 0.0, 0.0 ); 
-//		glTranslatef( 0, 0, 50 ); 
-//		gluCylinder( q, g1, 0.0, 5.0, s0, 1 );
-//	glPopMatrix();
-
-	if ( this->m_idOfSelected < 0 ) glColor4f(0.2f, 0.2f, 0.8f, a);
-	else glColor4f(0.2f, 0.2f, 0.2f, a);
-	glBegin(GL_LINES);
-		glVertex3f( 0, 0, 0 );
-		glVertex3f( 55, 0, 0 );
-	glEnd();
-//	glPushMatrix();
-//		glRotatef( 90.0, 0.0, 1.0, 0.0 ); 
-//		glTranslatef( 0, 0, 50 ); 
-//		gluCylinder( q, g1, 0.0, 5.0, s0, 1 );
-//	glPopMatrix();
-
-//	gluDeleteQuadric( q );
-
-	glDisable(GL_COLOR_MATERIAL);
-
-	glPopAttrib();
-}
-*/
 
 void CWorkspace::reset()
 {
@@ -471,13 +347,13 @@ void CWorkspace::reset()
 //{
 //	// prawid�owo, ale na razie musi by� inaczej
 //	//int newId = MODEL_ID_OFFSET;
-//	//while ( m_data.find( newId ) != m_data.end() )
+//	//while ( m_pairs.find( newId ) != m_pairs.end() )
 //	//{
 //	//	newId += 1000;
 //	//}
 //	//return newId;
 //
-//	if ( m_data.empty() )
+//	if ( m_pairs.empty() )
 //		return MODEL_ID_OFFSET;
 //	else
 //		return last()->id()+MODEL_DATA_SPACE;
@@ -533,7 +409,7 @@ std::vector<CRGBA> CWorkspace::getXRayImage( CPoint3f pkt0, int size )
 					auto t1 = std::chrono::steady_clock::now();
 					auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
 
-					UI::STATUSBAR::printf( "Tested point [%d,%d] iL=%f, maxLen=%f (time:%ld)", x, y, iL, maxLen, duration );
+					StatusBarManager::setText( QString("Tested point [%1,%2] iL=%3, maxLen=%4 (time:%5)").arg(x).arg(y).arg(iL).arg(maxLen).arg(duration));
 				}
 			}
 
@@ -545,25 +421,23 @@ std::vector<CRGBA> CWorkspace::getXRayImage( CPoint3f pkt0, int size )
 
 
 
-// SLOTS
+//void CWorkspace::onCurrentObjectChanged(CBaseObject* obj)
+//{
+//	if (obj != nullptr)
+//		onCurrentObjectChanged(obj->id());
+//}
 
-void CWorkspace::onCurrentObjectChanged(CBaseObject* obj)
-{
-	if (obj != nullptr)
-		onCurrentObjectChanged(obj->id());
-}
-
-void CWorkspace::onCurrentObjectChanged(int i)
-{
-	if ((i == NO_CURRENT_MODEL) || (m_data.find(i) == m_data.end()))
-	{
-		m_idOfCurrentModel = NO_CURRENT_MODEL;
-	}
-	else
-	{
-		m_idOfCurrentModel = i;
-	}
-}
+//void CWorkspace::onCurrentObjectChanged(int i)
+//{
+//	if ((i == NO_CURRENT_MODEL) || (m_pairs.find(i) == m_pairs.end()))
+//	{
+//		m_idOfCurrentModel = NO_CURRENT_MODEL;
+//	}
+//	else
+//	{
+//		m_idOfCurrentModel = i;
+//	}
+//}
 
 CBoundingBox CWorkspace::topBB()
 {
@@ -653,7 +527,7 @@ CBoundingBox CWorkspace::topBB()
 //		{
 //			QVector<CBaseObject*> objects;
 //
-//			for (const auto& o : this->m_data)
+//			for (const auto& o : this->m_pairs)
 //			{
 //				objects << (CBaseObject*)o.second;
 //			}

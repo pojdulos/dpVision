@@ -7,13 +7,42 @@
 #include "PMFactory.h"
 #include "Utilities.h"
 
-#include "AP.h"
+#include "../api/AP.h"
 
 #include "MainApplication.h"
 
 #include "GLViewer.h"
 #include "Parser.h"
 
+#include "dpLog.h"
+
+#include "../renderers/IMovementRenderer.h"
+
+CMovement::CMovement() : CObject(nullptr), m_isPlaying(false), m_currentKey(0)
+{
+	setLabel("animation");
+	bDrawBB = false;
+	setTimer();
+
+	renderer_ = std::make_shared<IMovementRenderer>();
+}
+
+CMovement::CMovement(const CMovement& m) : CObject(m), m_seqlist(m.m_seqlist), m_isPlaying(false), m_currentKey(0)
+{
+	bDrawBB = false;
+	setTimer();
+
+	renderer_ = std::make_shared<IMovementRenderer>();
+}
+
+CMovement::CMovement(const SeqList& s) : CObject(nullptr), m_seqlist(s), m_isPlaying(false), m_currentKey(0)
+{
+	setLabel("animation");
+	bDrawBB = false;
+	setTimer();
+
+	renderer_ = std::make_shared<IMovementRenderer>();
+}
 
 
 CMovement::FrameVal& CMovement::frame(int k)
@@ -37,19 +66,19 @@ void CMovement::renderRotationAxe(CTransform curr, CTransform prev)
 
 	CVector3d relT = currT - prevT;
 
-	Eigen::AngleAxisd absAA(currQ.toRotationMatrix());
+	Eigen::AngleAxisd absAA(currQ.toEigen().toRotationMatrix());
 	Eigen::Vector3d absAxis = absAA.axis();
 	double absAngle = absAA.angle(); // K�t w radianach
 	double absLen = 200.0;// 1000.0 * absAngle;
 
-	Eigen::AngleAxisd relAA(relQ.toRotationMatrix());
+	Eigen::AngleAxisd relAA(relQ.toEigen().toRotationMatrix());
 	Eigen::Vector3d relAxis = relAA.axis();
 	double relAngle = relAA.angle(); // K�t w radianach
 	double relLen = 200.0;// 10000.0 * relAngle;
 
-	qInfo() << "-------------------------------------------------------------" << Qt::endl;
-	qInfo() << "ABS angle: " << rad2deg(absAngle) << "� translation: " << currT.length() << "mm" << Qt::endl;
-	qInfo() << "REL angle: " << rad2deg(relAngle) << "� translation: " << relT.length() << "mm" << Qt::endl;
+	dpInfo() << "-------------------------------------------------------------" << Qt::endl;
+	dpInfo() << "ABS angle: " << rad2deg(absAngle) << "° translation: " << currT.length() << "mm" << Qt::endl;
+	dpInfo() << "REL angle: " << rad2deg(relAngle) << "° translation: " << relT.length() << "mm" << Qt::endl;
 
 	glPushMatrix();
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -131,6 +160,8 @@ void CMovement::setTimer()
 	QObject::connect(&m_animationTimer, &QTimer::timeout, [&]() { onTimeout(); });
 }
 
+#include "../api/UI.h"
+
 void CMovement::onTimeout()
 {
 	if (m_isPlaying) {
@@ -173,17 +204,9 @@ int CMovement::increaseKey(bool _loop)
 	return m_currentKey;
 }
 
-
-void CMovement::renderKids()
-{
-	renderFrame();
-}
-
-
-
 std::wstring CMovement::infoRow()
 {
-	//size_t n = m_data.size();
+	//size_t n = m_pairs.size();
 	//size_t np = m_annotations.size();
 	std::wstring ret = L"Movement (id:"+ std::to_wstring(m_Id) + L")";
 	
@@ -202,6 +225,7 @@ std::wstring CMovement::infoRow()
 	
 	return ret;
 }
+
 
 
 

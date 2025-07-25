@@ -15,17 +15,9 @@ class DPVISION_EXPORT CAnnotationPodkowa : public CAnnotationCylinder
 public:
 	double m_arm_length;
 
-	CAnnotationPodkowa(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotationCylinder( m )
-	{
-		setLabel("podkowa");
-		m_arm_length = 50.0;
-	};
+	CAnnotationPodkowa(std::shared_ptr<CBaseObject> m = nullptr);;
 
-	CAnnotationPodkowa( CAnnotationPodkowa &t ) :CAnnotationCylinder( t )
-	{
-		setLabel("podkowa");
-		m_arm_length = t.m_arm_length;
-	};
+	CAnnotationPodkowa( CAnnotationPodkowa &t );;
 
 	~CAnnotationPodkowa(void){};
 
@@ -36,8 +28,6 @@ public:
 
 	virtual std::wstring getInfoRow();
 	virtual std::wstring getTypeWSTR() { return L"podkowa"; };
-
-	virtual void renderSelf() override;
 
 };
 

@@ -1,5 +1,7 @@
 #include "FileConnector.h"
 
+#include "StatusBarManager.h"
+
 CFileConnector::CFileConnector(void)
 {
 }
@@ -30,7 +32,7 @@ bool CFileConnector::save( CModel3D *m, QString path )
 
 void CFileConnector::SavePMT( CModel3D *m, const char* nazwa )
 {
-	UI::STATUSBAR::printf( "PMFactory::SaveNewFormSMF() is writing to file (ver.5) now, please wait..." );
+	StatusBarManager::setText( "PMFactory::SaveNewFormSMF() is writing to file (ver.5) now, please wait..." );
 
 	CMesh *src = (CMesh*)m->getChild().get();
 
@@ -101,7 +103,7 @@ void CFileConnector::SavePMT( CModel3D *m, const char* nazwa )
 
 void CFileConnector::SaveXML( CModel3D *m, const char* nazwa )
 {
-	UI::STATUSBAR::printf( "PMFactory::SaveXML() is writing to file now, please wait..." );
+	StatusBarManager::setText( "PMFactory::SaveXML() is writing to file now, please wait..." );
 	
 	CMesh *src = (CMesh*)m->getChild().get();
 
@@ -327,6 +329,7 @@ QString CFileConnector::getExtByFileContent(QString path)
 #include "ParserDPV.h"
 #include "ParserATMDL.h"
 
+#include "MessageBoxManager.h"
 
 CParser * CFileConnector::getLoadParser( QString path )
 {
@@ -371,7 +374,7 @@ CParser * CFileConnector::getLoadParser( QString path )
 			}
 		}
 
-		UI::MESSAGEBOX::error( L"Unknown file extension.\n" + path.toStdWString() );
+		MessageBoxManager::error( std::string("Unknown file extension.\n") + path.toStdString() );
 	}
 
 	return parser;

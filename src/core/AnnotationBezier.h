@@ -14,11 +14,7 @@ public:
 
 	int m_type;
 
-	CAnnotationBezier(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation( m )
-	{
-		setLabel("bezier");
-		m_type = 0;
-	};
+	CAnnotationBezier(std::shared_ptr<CBaseObject> m = nullptr);;
 
 	~CAnnotationBezier() override { m_list.clear();  m_spline.clear(); };
 
@@ -27,10 +23,8 @@ public:
 	CPoint3d deCastelJau(double u, int count, int startIndex);
 
 	std::vector<CPoint3d> krzywa();
-	void drawBeziers( int deg, int den, int cut );
 
 	void createTinySpline( int deg, int den );
-	void drawTinySpline();
 
 	void addPoint(const CPoint3d &t) { m_list.push_back(t); };
 	void addPoint(double x, double y, double z) { m_list.push_back(CPoint3d(x, y, z)); };
@@ -42,5 +36,4 @@ public:
 	virtual std::wstring getTypeWSTR() override { return L"bezier"; };
 	virtual std::wstring getInfoRow() override;
 	
-	virtual void renderSelf() override;
 };

@@ -7,7 +7,7 @@
 
 #include "Vertex.h"
 #include "KDTree.h"
-#include "UI.h"
+//#include "../api/UI.h"
 
 class CPlane;
 
@@ -68,6 +68,9 @@ protected:
 
 	CPointCloud::KDtree *m_kdtree;
 
+	//static IRenderer* renderer_;
+
+
 public:
 	static int m_pointSize;
 
@@ -78,7 +81,11 @@ public:
 	inline int type() override { return CObject::Type::CLOUD; };
 	std::wstring infoRow() override;
 
-	virtual std::shared_ptr<CBaseObject> getCopy() override { return std::make_shared<CPointCloud>(*this); };
+	virtual std::shared_ptr<CBaseObject> getCopy() override {
+		auto obj = std::make_shared<CPointCloud>(*this); 
+		updateChildrenParentPointers(obj);
+		return obj;
+	};
 
 	//inline CVertex &vertex(size_t i) { return m_vertices.at(i); };
 	//inline CRGBA &vertexColor(size_t i) { return m_vcolors.at(i); };
@@ -156,9 +163,9 @@ public:
 	inline bool hasVertexColors() { return !m_vcolors.empty() && (m_vcolors.size() >= m_vertices.size()); };
 	inline bool hasVertexNormals() { return !m_vnormals.empty() && (m_vnormals.size() >= m_vertices.size()); };
 
-	void renderBACKUP();
+	//void renderBACKUP();
 
-	virtual void renderSelf() override;
+	//virtual void renderSelf() override;
 	//virtual void render() override;
 
 

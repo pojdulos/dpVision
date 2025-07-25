@@ -2,10 +2,10 @@
 #ifndef _MODEL_H_BY_DP_INCLUDED_
 #define _MODEL_H_BY_DP_INCLUDED_
 
-#include "Global.h"
+//#include "Global.h"
 
 #include "Mesh.h"
-#include "Quaternion.h"
+//#include "Quaternion.h"
 #include "Transform.h"
 
 #include "DPFileInfo.h"
@@ -18,6 +18,7 @@
 #include <set>
 
 class CAnnotation;
+class IProgressListener;
 
 //enum _animDir {
 //	_ANIM_LEFT = 0,
@@ -50,7 +51,7 @@ protected:
 
 	//CFileInfo plikSiatki;
 
-	void renderAxes();
+	//void renderAxes();
 	//void renderBoundingBox();
 
 public:
@@ -72,7 +73,7 @@ public:
 
 	static std::shared_ptr<CModel3D> load(const QString fext, const QString path, bool synchronous = true);
 
-	static std::shared_ptr<CModel3D> load(const QString path, bool synchronous = true);
+	static std::shared_ptr<CModel3D> load(const QString path, bool synchronous = true, std::shared_ptr<IProgressListener> prg = nullptr);
 	static std::shared_ptr<CModel3D> load(const char* path, bool synchronous = true) { return load(QString(path), synchronous); }
 	static std::shared_ptr<CModel3D> load(const std::wstring path, bool synchronous = true) { return load(QString::fromStdWString(path), synchronous); }
 	static std::shared_ptr<CModel3D> load(const std::string path, bool synchronous = true) { return load(QString::fromStdString(path), synchronous); }
@@ -113,8 +114,8 @@ public:
 	std::string lastError() { return m_sError; }
 
 	//using CBaseObject::render;
-	virtual void renderTransform() override;
-	virtual void renderSelf() override;
+	//virtual void renderTransform() override;
+	//virtual void renderSelf() override;
 
 	//inline CFileInfo &fileInfo(void) { return CFileInfo(m_path); }
 
@@ -130,7 +131,7 @@ public:
 	bool switchOption( CModel3D::Opt iOption, CModel3D::Switch iSet );
 	bool testOption( CModel3D::Opt iOption );
 
-	//kolejne do przemyœlenia:
+	//kolejne do przemyï¿½lenia:
 	void prepare();
 	
 	/*deprecated*/ void calcVN();

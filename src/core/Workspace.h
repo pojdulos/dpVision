@@ -3,14 +3,18 @@
 #define _WORKSPACE_H_BY_DP_INCLUDED_
 #include "dll_global.h"
 
-#include "Global.h"
+//#include "Global.h"
 #include "Model3D.h"
-#include "Utilities.h"
+//#include "Utilities.h"
 
+#include "Annotation.h"
+
+#include <vector>
+#include <memory>
 
 struct _light
 {
-	GLenum light;
+	unsigned int light;
 	bool active;
 	bool fixed;
 	float ambient[4];
@@ -40,18 +44,41 @@ struct _light
 	void setSpot( float f3 ) { spot_cut_off=f3; };
 };
 
-class IWorkspaceEvents;
+#include "events/IWorkspaceEvents.h"
 
-class CWorkspace : public QObject
+class IWorkspaceRenderer;
+
+class DPVISION_EXPORT CWorkspace
 {
-	Q_OBJECT
-
-private:
-	IWorkspaceEvents* events_ = nullptr;
+	std::shared_ptr<IWorkspaceRenderer> renderer_ = nullptr;
+	std::vector<std::shared_ptr<IWorkspaceEvents>> listeners_;
 
 public:
-	void setEventsDispatcher(IWorkspaceEvents* events) { events_ = events; }
-	IWorkspaceEvents* eventsDispatcher() const { return events_; }
+	void addListener(std::shared_ptr<IWorkspaceEvents> l);
+	void removeListener(std::shared_ptr<IWorkspaceEvents> l);
+
+	// Listener notifiers:
+
+	void notifyObjectActivated(int id);
+	void notifyObjectAdded(int id);
+	void notifyObjectRemoved(int id, CBaseObject::Type tp = CBaseObject::Type::GENERIC);
+
+	// API interfaces for windows and user code:
+
+	// set object active (like single click in workspace tree)
+	void _objectActivate(int id);
+
+    // adds object to workspace or optionaly to other object.
+	// If parent is nullptr, obj will be always add to Workspace tree 
+	// If parent is not a part of Workspace - obj will be set as children to him but they both will not insert to Wokspace tree
+	int _objectAdd(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> parent=nullptr);
+
+	// remove object from workspace
+	bool _objectRemove(std::shared_ptr<CBaseObject> obj);
+
+	// remove object from workspace
+	bool _objectRemove(int id);
+
 
 	typedef CModel3D ChildType;
 	//typedef std::map<int, ChildType*> Children;
@@ -84,8 +111,8 @@ public:
 	
 	//ChildType*& operator[](int i)
 	//{
-	//	assert(m_data.find(i) != m_data.end());
-	//	return m_data[i].get();
+	//	assert(m_pairs.find(i) != m_pairs.end());
+	//	return m_pairs[i].get();
 	//}
 
 	std::shared_ptr<ChildType> first() { if (m_data.empty()) return nullptr; return m_data.begin()->second; };
@@ -108,13 +135,13 @@ public:
 	bool		_addModel(std::shared_ptr<CModel3D> obj );
 	inline bool	_addModel(CModel3D* obj) { return _addModel(std::shared_ptr<CModel3D>(obj)); }
 
-	int			_setCurrentModel( int i );
+	//int			_setCurrentModel( int i );
 
 	int			_getCurrentModelId() { return m_idOfCurrentModel; };
 
 	std::shared_ptr<CWorkspace::ChildType> _getModel( int i );
 
-	bool		_removeModel( int i);
+	//bool		_removeModel( int i);
 
 	bool		_removeAllModels();
 
@@ -149,14 +176,6 @@ public:
 
 	CBoundingBox topBB();
 
-signals:
-	void currentObjectChanged(int);
-	void currentObjectChanged(CBaseObject*);
-
-public slots:
-	void onCurrentObjectChanged(int);
-	void onCurrentObjectChanged(CBaseObject*);
-	
 private:
 	void InitLights();
 

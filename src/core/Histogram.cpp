@@ -2,7 +2,12 @@
 
 #include "Stat.h"
 #include <algorithm>
-#include "UI.h"
+
+#include "utils/StringUtils.h"
+#include "StatusBarManager.h"
+
+#include "../api/UI.h"
+#include "dpLog.h"
 
 CHistogram::CHistogram(std::vector<double> data, int levels) :CAnnotation()
 {
@@ -18,7 +23,7 @@ CHistogram::CHistogram(std::vector<double> data, int levels) :CAnnotation()
 	setData(data);
 }
 
-CHistogram::CHistogram(CModel3D* parent, std::vector<double> data, int levels) :CAnnotation()
+CHistogram::CHistogram(std::shared_ptr<CBaseObject> parent, std::vector<double> data, int levels) :CAnnotation()
 {
 	setLabel("histogram");
 	m_colormode = CHistogram::ColorMode::BlueGreenRed;
@@ -29,7 +34,7 @@ CHistogram::CHistogram(CModel3D* parent, std::vector<double> data, int levels) :
 
 	m_showOutOfRangeData = true;// false;
 
-	m_parent = (CBaseObject*)parent;
+	m_parent = parent;
 	m_destination = nullptr;
 	setData(data);
 }
@@ -45,19 +50,13 @@ CHistogram::CHistogram(CPointCloud* cloud, std::vector<double> data, int levels)
 
 	m_showOutOfRangeData = true;// false;
 
-	m_parent = cloud->getParent();
+	m_parent = cloud->getParentPtr();
 	m_destination = nullptr;
 	setData(data);
 }
 
 
-CHistogram::~CHistogram()
-{
-	//if (UI::DOCK::HISTOGRAM::getHistogram() == this) {
-	//	UI::DOCK::HISTOGRAM::show(false);
-	//	UI::DOCK::HISTOGRAM::setHistogram(NULL);
-	//}
-}
+CHistogram::~CHistogram() {}
 
 
 void CHistogram::setSelfVisibility(bool sel) {
@@ -98,7 +97,7 @@ void CHistogram::colorizeParentVertices(bool b)
 
 		for (int i = 0; i < m_destination->vertices().size(); i++)
 		{
-			UI::STATUSBAR::printfTimed(1000, L"colorizing (%d)...", i);
+			StatusBarManager::setTextTimed(1000, QString("colorizing (%1)...").arg(i));
 
 			int idx = getHistogramIndex(m_data[i]);
 			m_destination->vcolors()[i] = getColor(idx);
@@ -482,13 +481,13 @@ void CHistogram::savePLT(std::wstring fdir, std::wstring fname, std::vector<std:
 
 		if (eqLevels)
 		{
-			plik << "dane = \"" << UI::wstr2str(fname) << ".csv\"\n";
+			plik << "dane = \"" << dpVisionCore::utils::wstr2str(fname) << ".csv\"\n";
 		}
 		else
 		{
 			for (int i = 0; i < v.size(); i++)
 			{
-				plik << "dane" << i << " = \"" << UI::wstr2str(fname) << i << ".csv\"\n";
+				plik << "dane" << i << " = \"" << dpVisionCore::utils::wstr2str(fname) << i << ".csv\"\n";
 			}
 		}
 
@@ -575,9 +574,18 @@ void CHistogram::save(std::wstring fdir, std::wstring fname)
 
 		plik.close();
 
-		CHistogram::savePLT(fdir, fname, std::vector<std::shared_ptr<CHistogram>>{std::dynamic_pointer_cast<CHistogram>(this->shared_from_this())}, true);
+		std::shared_ptr<CBaseObject> this_shared;
+		try {
+			this_shared = shared_from_this();
+		}
+		catch (const std::bad_weak_ptr&) {
+			dpError() << "SHARED_FROM_THIS (CHistogram)!!!";
+			this_shared = nullptr;
+		}
 
-		UI::STATUSBAR::setText(L"DONE !");
+		CHistogram::savePLT(fdir, fname, std::vector<std::shared_ptr<CHistogram>>{std::dynamic_pointer_cast<CHistogram>(this_shared)}, true);
+
+		StatusBarManager::setText("DONE !");
 	}
 }
 
@@ -697,7 +705,7 @@ void CHistogram::save(std::vector<std::shared_ptr<CHistogram>> v, std::wstring f
 
 	CHistogram::savePLT(fdir, fname, v, eqLevels);
 
-	UI::STATUSBAR::setText(L"DONE !");
+	StatusBarManager::setText("DONE !");
 }
 
 

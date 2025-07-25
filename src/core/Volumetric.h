@@ -27,17 +27,10 @@ struct SliceMetadata
 };
 
 
-class QOpenGLShaderProgram;
 
 class CPointCloud;
 class CMesh;
 
-#include <QOpenGLBuffer>
-#include <QOpenGLVertexArrayObject>
-#include <QtGui/QOpenGLFunctions_3_2_Core>
-#include <QtGui/QOpenGLFunctions>
-
-#define QOpenGLFunctionsType QOpenGLFunctions_3_2_Core
 
 #define _VoxelTypeINT32
 //#define _VoxelTypeFLOAT
@@ -90,17 +83,13 @@ public:
 	};
 	
 	typedef std::vector<SliceType> VolumeType;
-	typedef SliceMetadata SliceMetadata;
+	typedef struct SliceMetadata SliceMetadata;
 	
 	typedef enum { XY, YZ, ZX, TEST } LayerPlane;
 
 	typedef enum { MONOCHROME2, RGB } ColorSpace;
 
 	int i = 0;
-	GLuint vbo = 0;
-	//QOpenGLVertexArrayObject vao;
-	//QOpenGLShaderProgram* shader_program = nullptr;
-	GLuint shader_program = 0;
 	
 	VoxelType m_minVal = VoxelTypeMin;
 	VoxelType m_maxVal = VoxelTypeMax;
@@ -109,6 +98,9 @@ public:
 	
 	bool m_fastDraw = true;
 	bool m_renderBoxes = false;
+
+	inline void switch_renderBoxes(bool b) { this->m_renderBoxes = b; }
+
 	std::vector<SliceMetadata> metadata;
 	int m_minSlice = 0;
 	int m_maxSlice = 0;
@@ -135,20 +127,17 @@ public:
 		{1.0f, 1.0f, 1.0f} };
 
 
-	Volumetric(ColorSpace csp=MONOCHROME2, std::shared_ptr<CBaseObject> p = nullptr):CObject(p),m_csp(csp) {};
+	Volumetric(ColorSpace csp=MONOCHROME2, std::shared_ptr<CBaseObject> p = nullptr);;
 	~Volumetric() {};
 
 	virtual inline int type() override { return CObject::Type::VOLUMETRIC_NEW; };
 	virtual std::wstring infoRow() override;
 	virtual std::shared_ptr<CBaseObject> getCopy() override;
 
-	//GLuint compile_shader(QOpenGLFunctions* functions, QString source, GLenum shader_type);
-
-	void remove_shader_program();
-
-	bool create_program(QOpenGLFunctionsType* f);
-
-	virtual void renderSelf() override;
+	Volumetric::SliceType clip2D(const Volumetric::SliceType& layer, int rows, int cols, int startRow, int endRow, int startCol, int endCol);
+	Volumetric::VolumeType clip3D(const Volumetric::VolumeType& volume, int layers, int rows, int cols, int startLayer, int endLayer, int startRow, int endRow, int startCol, int endCol);
+	Volumetric::SliceType downsample2D(const Volumetric::SliceType& layer, int rows, int cols, int factor, int startRow, int endRow, int startCol, int endCol);
+	Volumetric::VolumeType downsample3D(const Volumetric::VolumeType& volume, int layers, int rows, int cols, int factor, int startLayer, int endLayer, int startRow, int endRow, int startCol, int endCol);
 
 	std::shared_ptr<CPointCloud> sift_cloud( int nfeatures = 0, int nOctaveLayers = 3, double contrastThreshold = 0.04, double edgeThreshold = 10, double sigma = 1.6, int factor = 1 );
 	std::shared_ptr<CMesh> marching_cube(int factor = 1);
@@ -221,7 +210,7 @@ public:
 
 	VoxelType& altData(unsigned int idx, unsigned int layer, unsigned int row, unsigned int col) { return m_data[layer].at(row,col); };
 
-private:
+//private:
 	VolumeType m_data;
 	unsigned int m_layers = 0;
 	unsigned int m_rows = 0;

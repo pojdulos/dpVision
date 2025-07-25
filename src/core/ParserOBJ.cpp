@@ -3,179 +3,16 @@
 
 #include <fstream>
 
-CParserOBJ::CParserOBJ()
-{
+#include "interfaces/IProgressListener.h"
+#include "StatusBarManager.h"
+
+CParserOBJ::CParserOBJ(void) {
 	setDescr("OBJ File");
 	m_exts.insert("obj");
 	m_save_exts.insert("obj");
 }
 
-CParserOBJ::~CParserOBJ(void)
-{
-}
-
-
-// void CParserOBJ::ParseObjMTLFile( const wchar_t *npl )
-// {
-// 	float alpha = 1.0;
-
-// 	CFileInfo info(npl);
-// 	info.setDir(plikSiatki.absolutePath());
-
-// 	QFile inputFile(info.absoluteFilePath());
-
-// 	if (!inputFile.open(QIODevice::ReadOnly | QFile::Text))
-// 	{
-// 		UI::STATUSBAR::setText("Can't open file.");
-// 		return;
-// 	}
-
-// 	QTextStream in(&inputFile);
-// 	in.setCodec("UTF-8");
-
-// 	for (auto& m : mats) delete m.second;
-// 	mats.clear();
-
-// 	currentName = "default";
-// 	currentMaterial = nullptr;
-
-// 	while (!cancelled && !in.atEnd())
-// 	{
-// 		QString qline = in.readLine();
-// 		std::string line = qline.toStdString();
-
-
-// 		if (qline.startsWith("newmtl", Qt::CaseInsensitive))
-// 		{
-// 			//# material name :
-// 			//newmtl KZdeb_1
-
-// 			QStringList qlist = qline.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
-			
-// 			if (currentMaterial != nullptr)
-// 			{
-// 				mats[currentName] = currentMaterial;
-// 			}
-
-// 			if (mats.find(currentName) != mats.end())
-// 				currentMaterial = new CMaterial(*mats[currentName]);
-// 			else
-// 				currentMaterial = new CMaterial;
-
-// 			if (qlist.size() > 1) currentName = qlist[1];
-// 			else currentName = "default";
-// 		}
-// 		else if (qline.startsWith("Ka", Qt::CaseInsensitive))
-// 		{
-// 			//# Ka = ambient color
-// 			//Ka 0.540000 0.540000 0.540000
-// 			//char* ptr = (char*)&qline.toStdString().c_str()[2];
-// 			std::string line = qline.toStdString();
-// 			char* ptr = (char*)&line[2];
-
-// 			float r = std::strtof(ptr, &ptr);
-// 			float g = std::strtof(ptr, &ptr);
-// 			float b = std::strtof(ptr, &ptr);
-// 			currentMaterial->FrontColor.ambient.setRGBAf(r, g, b);
-// 		}
-// 		else if (qline.startsWith("Kd", Qt::CaseInsensitive))
-// 		{
-// 			//# Kd = diffuse color
-// 			//Kd 0.550000 0.550000 0.550000
-// 			//char* ptr = (char*)&qline.toStdString().c_str()[2];
-// 			std::string line = qline.toStdString();
-// 			char* ptr = (char*)&line[2];
-
-// 			float r = std::strtof(ptr, &ptr);
-// 			float g = std::strtof(ptr, &ptr);
-// 			float b = std::strtof(ptr, &ptr);
-// 			currentMaterial->FrontColor.diffuse.setRGBAf(r, g, b);
-// 		}
-// 		else if (qline.startsWith("Ks", Qt::CaseInsensitive))
-// 		{
-// 			//# Ks = specular color
-// 			//Ks 0.500000 0.500000 0.500000
-// 			//char* ptr = (char*)&qline.toStdString().c_str()[2];
-// 			std::string line = qline.toStdString();
-// 			char* ptr = (char*)&line[2];
-
-// 			float r = std::strtof(ptr, &ptr);
-// 			float g = std::strtof(ptr, &ptr);
-// 			float b = std::strtof(ptr, &ptr);
-// 			currentMaterial->FrontColor.specular.setRGBAf(r, g, b);
-// 		}
-// 		else if (qline.startsWith("Ns", Qt::CaseInsensitive))
-// 		{
-// 			//# Ns = specular coefficient.
-// 			//Ns 0.000000
-// 		}
-// 		else if (qline.startsWith("map_Ka", Qt::CaseInsensitive))
-// 		{
-// 			//map_Ka KZdeb_1.bmp
-// 		}
-// 		else if (qline.startsWith("map_Kd", Qt::CaseInsensitive))
-// 		{
-// 			//map_Kd KZdeb_1.bmp
-// 			QStringList qlist = qline.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
-// 			if (qlist.size() > 1)
-// 			{
-// 				currentMaterial->TexInfo = qlist[1];
-// 			}
-// 		}
-// 		else if (qline.startsWith("map_Ks", Qt::CaseInsensitive))
-// 		{
-// 			//map_Ks KZdeb_1.bmp
-// 		}
-// 		else if (qline.startsWith("d", Qt::CaseInsensitive))
-// 		{
-// 			//char* ptr = (char*)&qline.toStdString().c_str()[2];
-// 			std::string line = qline.toStdString();
-// 			char* ptr = (char*)&line[2];
-
-// 			float alpha = std::strtof(ptr, &ptr);
-// 			currentMaterial->FrontColor.ambient.setAlpha(alpha * 255);
-// 			currentMaterial->FrontColor.diffuse.setAlpha(alpha * 255);
-
-// 		}
-// 		else if (qline.startsWith("Tr", Qt::CaseInsensitive))
-// 		{
-// 			//# Tr = transparency, some implementations use 'd' others use 'Tr'
-// 			// Tr = 1.0 - d;
-// 			//char* ptr = (char*)&qline.toStdString().c_str()[2];
-// 			std::string line = qline.toStdString();
-// 			char* ptr = (char*)&line[2];
-
-// 			float alpha = std::strtof(ptr, &ptr);
-// 			currentMaterial->FrontColor.ambient.setAlpha((1.0 - alpha) * 255);
-// 			currentMaterial->FrontColor.diffuse.setAlpha((1.0 - alpha) * 255);
-// 		}
-// 		else if (qline.startsWith("illum", Qt::CaseInsensitive))
-// 		{
-// 			//# illum:
-// 			//# 0. Color on and Ambient off
-// 			//# 1. Color on and Ambient on
-// 			//# 2. Highlight on
-// 			//# 3. Reflection on and Ray trace on
-// 			//# 4. Transparency: Glass on, Reflection : Ray trace on
-// 			//# 5. Reflection: Fresnel on and Ray trace on
-// 			//# 6. Transparency: Refraction on, Reflection : Fresnel offand Ray trace on
-// 			//# 7. Transparency: Refraction on, Reflection : Fresnel onand Ray trace on
-// 			//# 8. Reflection on and Ray trace off
-// 			//# 9. Transparency: Glass on, Reflection : Ray trace off
-// 			//#10. Casts shadows onto invisible surfaces
-
-// 			//illum 0
-// 		}
-// 	}
-
-// 	if (currentMaterial != nullptr)
-// 	{
-// 		mats[currentName] = currentMaterial;
-// 	}
-
-// 	return;
-// }
-
+CParserOBJ::~CParserOBJ(void) {}
 
 void CParserOBJ::ParseObjMTLFile(const wchar_t* npl)
 {
@@ -188,7 +25,7 @@ void CParserOBJ::ParseObjMTLFile(const wchar_t* npl)
 
     if (!inputFile.open(QIODevice::ReadOnly | QFile::Text))
     {
-        UI::STATUSBAR::setText("Can't open file.");
+		StatusBarManager::setText("Can't open file.");
         return;
     }
 
@@ -498,349 +335,9 @@ void CParserOBJ::parseF(std::string &line, size_t& lbf, size_t& lbti)
 	}
 }
 
-#include "ProgressIndicator.h"
-#include <QtCore/QFile>
-#include "QtCore/QTextStream"
+//#include <QtCore/QFile>
+//#include "QtCore/QTextStream"
 
-
-
-
-// size_t CParserOBJ::Run()
-// {
-// 	if (this->bIsNotSet) return 0;
-
-// 	m_model->addChild(pMeshData = new CMesh(m_model));
-// 	if (pMeshData == NULL) return 0;
-
-// 	meshinfo.clear();
-
-// 	size_t lbv = 0, lbf = 0, lbti = 0;
-// 	float nx, ny, nz, ax, ay, az, tcs, tct;
-
-// 	m_firstFace = true;
-
-// 	CVertex vertex;
-// 	CVector3f WNorm;
-// 	CFace face;
-// 	CTIndex tidx;
-// 	CTCoord tcoord;
-
-// 	ProgressIndicator* progressIndicator = UI::PROGRESSBAR::instance();
-
-// 	progressIndicator->init(0, 100, 0, "Reading " + plikSiatki.fileName() + "...");
-
-// 	connect(this, SIGNAL(sendProgress(int)), progressIndicator, SLOT(setValue(int)));
-// 	connect(progressIndicator->cancelButton(), SIGNAL(clicked()), this, SLOT(onLoadCancelled()));
-// 	progressIndicator->cancelButton()->show();
-
-// 	cancelled = false;
-// 	// DWORD t1 = GetTickCount() + 1000;
-// 	auto t1 = std::chrono::steady_clock::now();
-
-// 	QFile inputFile( plikSiatki.absoluteFilePath() );
-
-// 	if (!inputFile.open(QIODevice::ReadOnly | QFile::Text))
-// 	{
-// 		UI::STATUSBAR::setText("Can't open file.");
-// 		m_model->removeChild(pMeshData->id());
-// 		delete pMeshData;
-// 		return 0;
-// 	}
-
-// 	pMeshData->setPath(plikSiatki.absoluteFilePath());
-// 	m_model->setPath(plikSiatki.absoluteFilePath());
-// 	m_model->setLabel(plikSiatki.fileName());
-
-// 	QTextStream in(&inputFile);
-// 	in.setCodec("UTF-8");
-
-// 	CPointCloud::Vertices tmpV;
-// 	CPointCloud::Colors tmpC;
-// 	CPointCloud::Normals tmpN;
-// 	CMaterial::TextureCoordinates tmpTC;
-// 	CBoundingBox tmpBB;
-
-// 	bool hasGroups = false;
-// 	bool hasMoreTrans = false;
-// 	CModel3D* currentModel = m_model;
-
-// 	meshinfo[pMeshData->id()] = { true,true,true };
-
-// 	//pMeshData->setSelfVisibility(false);
-
-// 	while (!cancelled && !in.atEnd())
-// 	{
-// 		QString qline = in.readLine();
-// 		qline = qline.trimmed();
-
-// 		std::string line = qline.toStdString();
-
-// 		//UWAGA: split() bardzo spowalnia wczytywanie
-// 		//QStringList qlist = qline.split(QRegExp("\\s+"), QString::SkipEmptyParts);
-// 		//if (qlist.empty()) continue;
-
-// 		if (qline.startsWith("#@trans", Qt::CaseInsensitive))
-// 		{
-// 			QStringList qlist = qline.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
-
-// 			while (qlist.size() > 3)
-// 			{
-// 				qlist[qlist.size() - 2] += qlist[qlist.size() - 1];
-// 				qlist.pop_back();
-			
-// 			}
-
-// 			if (hasMoreTrans)
-// 			{
-// 				CModel3D* tmpModel = new CModel3D;
-// 				tmpModel->setLabel(qlist[1]);
-// 				tmpModel->transform().fromRowMatrix(qlist[2], ",");
-
-// 				for (auto& child : currentModel->children())
-// 				{
-// 					tmpModel->addChild(child.second);
-// 				}
-// 				currentModel->removeChild(0); //remove all
-
-// 				currentModel->addChild(tmpModel);
-// 				currentModel = tmpModel;
-// 			}
-// 			else
-// 			{
-// 				m_model->setLabel(qlist[1]);
-// 				m_model->transform().fromRowMatrix(qlist[2], ",");
-// 				hasMoreTrans = true;
-// 			}
-// 		}
-// 		else if (qline.startsWith("#@objDescr begin", Qt::CaseInsensitive))
-// 		{
-// 			QString descr("");
-// 			QString descrLine = in.readLine();
-// 			while (!descrLine.startsWith("#@objDescr end", Qt::CaseInsensitive))
-// 			{
-// 				descr.append(descrLine.midRef(1) + "\n");
-// 				descrLine = in.readLine();
-// 			}
-// 			m_model->setDescr(descr);
-// 		}
-// 		else if (qline.startsWith("#@gDescr begin", Qt::CaseInsensitive))
-// 		{
-// 			QString descr("");
-// 			QString descrLine = in.readLine();
-// 			while (!descrLine.startsWith("#@gDescr end", Qt::CaseInsensitive))
-// 			{
-// 				descr.append(descrLine.midRef(1) + "\n");
-// 				descrLine = in.readLine();
-// 			}
-// 			pMeshData->setDescr(descr);
-// 		}
-// 		else if (qline.startsWith("#@novc", Qt::CaseInsensitive))
-// 		{
-// 			meshinfo[pMeshData->id()].hasVC = false;
-// 		}
-// 		else if (qline.startsWith("vn", Qt::CaseInsensitive))
-// 		{
-// 			// Normals in (x,y,z) form; normals might not be unit.
-// 			// vn 0.707 0.000 0.707
-
-// 			char* ptr = &line[2];
-// 			//char* ptr = (char*) & qline.toStdString().c_str()[2];
-// 			nx = std::strtof(ptr, &ptr);
-// 			ny = std::strtof(ptr, &ptr);
-// 			nz = std::strtof(ptr, &ptr);
-// 			//pMeshData->vnormals().push_back(CVector3f(nx, ny, nz));
-// 			tmpN.push_back(CVector3f(nx, ny, nz));
-// 		}
-// 		else if (qline.startsWith("vt", Qt::CaseInsensitive))
-// 		{
-// 			// Texture coordinates, in (u,v[,w]) coordinates, w is optional.
-// 			// vt 0.500 -1.352 [0.234]
-
-// 			//qline
-// 			char* ptr = &line[2];
-// 			tcs = std::strtof(ptr, &ptr);
-// 			tct = std::strtof(ptr, &ptr);
-// 			//pMeshData->getMaterial(0).texcoord.push_back(CTCoord(tcs, tct));
-// 			tmpTC.push_back(CTCoord(tcs, tct));
-// 		}
-// 		else if (qline.startsWith("v", Qt::CaseInsensitive))
-// 		{
-// 			float cr, cg, cb;
-
-// 			char* ptr = &line[2];
-// 			//char* ptr = (char*)&qline.toStdString().c_str()[2];
-// 			ax = std::strtof(ptr, &ptr);
-// 			ay = std::strtof(ptr, &ptr);
-// 			az = std::strtof(ptr, &ptr);
-			
-// 			qInfo() << QString::fromStdString(line), line[2], ax, ay, az;
-
-// 			char* tst = ptr;
-// 			cr = std::strtof(ptr, &ptr);
-
-// 			if (ptr > tst)
-// 			{
-// 				cg = std::strtof(ptr, &ptr);
-// 				cb = std::strtof(ptr, NULL);
-
-// 				//pMeshData->addVertex(CVertex(ax, ay, az), CRGBA(cr, cg, cb));
-// 				tmpV.push_back(CVertex(ax, ay, az));
-// 				tmpC.push_back(CRGBA(cr, cg, cb));
-// 				lbv++;
-// 			}
-// 			else
-// 			{
-// 				//pMeshData->addVertex(CVertex(ax, ay, az));
-// 				tmpV.push_back(CVertex(ax, ay, az));
-// 				lbv++;
-// 			}
-// 			tmpBB.expand(CVertex(ax, ay, az));
-// 		}
-// 		else if (qline.startsWith("f", Qt::CaseInsensitive))
-// 		{
-// 			parseF(line, lbf, lbti);
-// 		}
-// 		else if (qline.startsWith("mtllib", Qt::CaseInsensitive))
-// 		{
-// 			//mtllib ./duck.obj.mtlStream
-// 			std::wstring wline = qline.toStdWString();
-// 			// Wszystko od 8 znaku do ko�ca linii
-// 			std::wstring ws = &wline[7];
-
-// 			ParseObjMTLFile(ws.c_str());
-// 		}
-// 		//else if (qline.startsWith("#@part", Qt::CaseInsensitive))
-// 		//{
-// 		//	QStringList qlist = qline.split(QRegExp("\\s+"), QString::SkipEmptyParts);
-
-// 		//	QString name = "mesh";
-// 		//	CObject* parent = m_model;
-// 		//	for (const QString &ql : qlist)
-// 		//	{
-// 		//		QStringList qlist2 = ql.split(QRegExp("="), QString::SkipEmptyParts);
-// 		//		if (qlist2[0].startsWith("#@part", Qt::CaseInsensitive))
-// 		//		{
-// 		//			name = qlist2[1];
-// 		//		}
-// 		//		else if (qlist2[0].startsWith("parent", Qt::CaseInsensitive))
-// 		//		{
-// 		//			if (parent->getLabel() != qlist2[1])
-// 		//			{
-// 		//				for (auto c : parent->children())
-// 		//				{
-
-// 		//				}
-// 		//			}
-// 		//		}
-// 		//	}
-
-// 		//	if (hasGroups) m_model->addChild(pMeshData = new CMesh);
-// 		//	hasGroups = true;
-// 		//	if (qlist.size() > 1)
-// 		//	{
-// 		//		pMeshData->setLabel(qlist[1]);
-// 		//	}
-// 		//}
-// 		else if (qline.startsWith("g", Qt::CaseInsensitive))
-// 		{
-// 			QStringList qlist = qline.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
-			
-// 			CObject* parent = currentModel;
-// 			QString name = "mesh";
-
-// 			if (qlist.size() > 1)
-// 			{
-// 				QStringList qlist2 = qlist[1].split(":", Qt::SkipEmptyParts);
-
-// 				name = qlist2.last();
-
-// 				while (qlist2.length() > 1)
-// 				{
-// 					CBaseObject* hit = parent->getChild(qlist2.first());
-
-// 					if (hit!=nullptr)
-// 					{
-// 						parent = (CObject*)hit;
-// 						qlist2.pop_front();
-// 					}
-// 					else
-// 					{
-// 						break;
-// 					}
-// 				}
-// 			}
-
-// 			if (hasGroups)
-// 			{
-// 				parent->addChild(pMeshData = new CMesh);
-// 			}
-// 			hasGroups = true;
-// 			pMeshData->setLabel(name);
-// 			pMeshData->setPath(plikSiatki.absoluteFilePath());
-// 			meshinfo[pMeshData->id()] = { true,true,true };
-// 		}
-// 		else if (qline.startsWith("usemtl", Qt::CaseInsensitive))
-// 		{
-// 			//usemtl [material name]
-
-// 			QStringList qlist = qline.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
-// 			if (qlist.size() > 1)
-// 			{
-// 				if (mats.find(qlist[1])!=mats.end())
-// 					pMeshData->getMaterial(0) = *mats[qlist[1]];
-// 			}
-// 		}
-// 		//else if (qline.startsWith("o", Qt::CaseInsensitive))
-// 		//{
-// 		//}
-// 		//else if (qline.startsWith("s", Qt::CaseInsensitive))
-// 		//{
-// 		//}
-// 		//else if (qline.startsWith("#", Qt::CaseInsensitive))
-// 		//{
-// 		//}
-// 		//else
-// 		//{
-// 		//}
-
-// 		auto t2 = std::chrono::steady_clock::now();
-// 		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
-		
-// 		if ( duration > 1000 )
-// 		{
-// 			int progress = round((100.0f * (inputFile.size() - inputFile.bytesAvailable())) / inputFile.size());
-// 			emit(sendProgress(progress));
-// 			t1 = std::chrono::steady_clock::now();
-// 		}
-// 	}
-
-// 	progressIndicator->hide();
-
-// 	if (cancelled)
-// 	{
-// 		for (const CObject::Children::value_type &c : m_model->children())
-// 		{
-// 			m_model->removeChild(c.second->id());
-// 			delete c.second;
-// 		}
-// 		UI::STATUSBAR::setText("File loading cancelled!");
-// 		return 0;
-// 	}
-// 	else
-// 	{
-// 		setChildrenVertices(m_model, tmpV, tmpC, tmpN, tmpTC);
-
-// 		m_model->importChildrenGeometry();
-
-// 		CMesh *m = (CMesh*)m_model->getChild();
-// 		qInfo() << m->getLabel();
-// 		qInfo() << m->vertices().size();
-// 		qInfo() << m->faces().size();
-
-// 		UI::STATUSBAR::setText("File loading done!");
-// 		return lbv;
-// 	}
-// }
 
 size_t CParserOBJ::Run()
 {
@@ -849,7 +346,7 @@ size_t CParserOBJ::Run()
 	pMeshData = std::make_shared<CMesh>();
     if (pMeshData == nullptr) return 0;
 
-	m_model->addChild(pMeshData);
+	m_model->addChild(m_model, pMeshData);
 
     meshinfo.clear();
 
@@ -864,12 +361,12 @@ size_t CParserOBJ::Run()
     CTIndex tidx;
     CTCoord tcoord;
 
-    ProgressIndicator* progressIndicator = UI::PROGRESSBAR::instance();
-    progressIndicator->init(0, 100, 0, "Reading " + plikSiatki.fileName() + "...");
+	StatusBarManager::setText("Loading in progress...");
 
-    connect(this, SIGNAL(sendProgress(int)), progressIndicator, SLOT(setValue(int)));
-    connect(progressIndicator->cancelButton(), SIGNAL(clicked()), this, SLOT(onLoadCancelled()));
-    progressIndicator->cancelButton()->show();
+	if (progress_) {
+		progress_->useCancelButton([this]() { this->cancelled = true; });
+		progress_->init(0, 100, 0, "Reading " + plikSiatki.fileName().toStdString() + "...");
+	}
 
     cancelled = false;
     auto t1 = std::chrono::steady_clock::now();
@@ -877,9 +374,8 @@ size_t CParserOBJ::Run()
     QFile inputFile(plikSiatki.absoluteFilePath());
     if (!inputFile.open(QIODevice::ReadOnly | QFile::Text))
     {
-        UI::STATUSBAR::setText("Can't open file.");
+		StatusBarManager::setText("Can't open file.");
         m_model->removeChild(pMeshData->id());
-        //delete pMeshData;
         return 0;
     }
 
@@ -924,10 +420,10 @@ size_t CParserOBJ::Run()
 
                 for (auto& child : currentModel->children())
                 {
-                    tmpModel->addChild(child.second);
+                    tmpModel->addChild(tmpModel, child.second);
                 }
                 currentModel->removeChild(0);
-                currentModel->addChild(tmpModel);
+                currentModel->addChild(currentModel, tmpModel);
                 currentModel = tmpModel;
             }
             else
@@ -1032,7 +528,7 @@ size_t CParserOBJ::Run()
 
             if (hasGroups)
             {
-                parent->addChild(pMeshData = std::make_shared<CMesh>());
+                parent->addChild(parent, pMeshData = std::make_shared<CMesh>());
             }
             hasGroups = true;
             pMeshData->setLabel(name);
@@ -1052,24 +548,22 @@ size_t CParserOBJ::Run()
         auto t2 = std::chrono::steady_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
 
-        if (duration > 1000)
+        if (duration > 500)
         {
             int progress = round((100.0f * (inputFile.size() - inputFile.bytesAvailable())) / inputFile.size());
-            emit(sendProgress(progress));
-            t1 = std::chrono::steady_clock::now();
+            
+			if (progress_) progress_->setValue(progress);
+
+			t1 = std::chrono::steady_clock::now();
         }
     }
 
-    progressIndicator->hide();
+	if (progress_) progress_->hide();
 
     if (cancelled)
     {
-        for (const CObject::Children::value_type& c : m_model->children())
-        {
-            m_model->removeChild(c.second->id());
-            //delete c.second;
-        }
-        UI::STATUSBAR::setText("File loading cancelled!");
+		m_model->removeAllChilds();
+		StatusBarManager::setText("File loading cancelled!");
         return 0;
     }
     else
@@ -1077,7 +571,7 @@ size_t CParserOBJ::Run()
         setChildrenVertices(m_model.get(), tmpV, tmpC, tmpN, tmpTC);
         m_model->importChildrenGeometry();
 
-        UI::STATUSBAR::setText("File loading done!");
+		StatusBarManager::setText("File loading done!");
         return lbv;
     }
 }
@@ -1164,7 +658,7 @@ void  CParserOBJ::saveMesh(QTextStream& objFile, CMesh* src, size_t& vStart)
 		CMesh::Colors::iterator itcol = src->vcolors().begin();
 		for (CMesh::Vertices::iterator itv = src->vertices().begin(); itv != src->vertices().end(); itv++)
 		{
-			UI::STATUSBAR::printfTimed(500, L"Saving vertices: %d", vCnt++);
+			StatusBarManager::setTextTimed(500, QString("Saving vertices: %1").arg(vCnt++));
 			
 			objFile << "v " << itv->X() << " "
 				            << itv->Y() << " "
@@ -1180,7 +674,7 @@ void  CParserOBJ::saveMesh(QTextStream& objFile, CMesh* src, size_t& vStart)
 	{
 		for (CMesh::Vertices::iterator itv = src->vertices().begin(); itv != src->vertices().end(); itv++)
 		{
-			UI::STATUSBAR::printfTimed(500, L"Saving vertices: %d", vCnt++);
+			StatusBarManager::setTextTimed(500, QString("Saving vertices: %1").arg(vCnt++));
 			
 			//objFile << "v " << itv->X() << " "
 			//	            << itv->Y()	<< " "
@@ -1198,7 +692,7 @@ void  CParserOBJ::saveMesh(QTextStream& objFile, CMesh* src, size_t& vStart)
 		int vnCnt = 0;
 		for (CMesh::Normals::iterator itv = src->vnormals().begin(); itv != src->vnormals().end(); itv++)
 		{
-			UI::STATUSBAR::printfTimed(500, L"Saving normals: %d", vnCnt++);
+			StatusBarManager::setTextTimed(500, QString("Saving normals: %1").arg(vnCnt++));
 
 			objFile << "vn " << itv->X() << " "
 				             << itv->Y() << " "
@@ -1274,7 +768,7 @@ void  CParserOBJ::saveCloud(QTextStream& objFile, CPointCloud* src, size_t& vSta
 		CPointCloud::Colors::iterator itcol = src->vcolors().begin();
 		for (CPointCloud::Vertices::iterator itv = src->vertices().begin(); itv != src->vertices().end(); itv++)
 		{
-			UI::STATUSBAR::printfTimed(500, L"Saving vertices: %d", vCnt++);
+			StatusBarManager::setTextTimed(500, QString("Saving vertices: %1").arg(vCnt++));
 			
 			objFile << "v " << itv->X() << " "
 				            << itv->Y() << " "
@@ -1290,7 +784,7 @@ void  CParserOBJ::saveCloud(QTextStream& objFile, CPointCloud* src, size_t& vSta
 	{
 		for (CPointCloud::Vertices::iterator itv = src->vertices().begin(); itv != src->vertices().end(); itv++)
 		{
-			UI::STATUSBAR::printfTimed(500, L"Saving vertices: %d", vCnt++);
+			StatusBarManager::setTextTimed(500, QString("Saving vertices: %1").arg(vCnt++));
 			
 			objFile << "v " << itv->X() << " "
 				            << itv->Y() << " "
@@ -1304,7 +798,7 @@ void  CParserOBJ::saveCloud(QTextStream& objFile, CPointCloud* src, size_t& vSta
 		int vnCnt = 0;
 		for (CPointCloud::Normals::iterator itv = src->vnormals().begin(); itv != src->vnormals().end(); itv++)
 		{
-			UI::STATUSBAR::printfTimed(500, L"Saving normals: %d", vnCnt++);
+			StatusBarManager::setTextTimed(500, QString("Saving normals: %1").arg(vnCnt++));
 			
 			objFile << "vn " << itv->X() << " "
 				             << itv->Y() << " "
@@ -1414,12 +908,12 @@ void CParserOBJ::saveChildren(QTextStream& objStream, QTextStream& mtlStream, CO
 
 bool CParserOBJ::save()
 {
-	UI::STATUSBAR::setText("CParserOBJ::save() is writing to file, please wait...");
+	StatusBarManager::setText("CParserOBJ::save() is writing to file, please wait...");
 
 	QFile objFile(plikSiatki.absoluteFilePath());
 	if (!objFile.open(QIODevice::WriteOnly | QFile::Text))
 	{
-		UI::STATUSBAR::setText("Can't create .obj file.");
+		StatusBarManager::setText("Can't create .obj file.");
 		return false;
 	}
 
@@ -1429,7 +923,7 @@ bool CParserOBJ::save()
 	if (!mtlFile.open(QIODevice::WriteOnly | QFile::Text))
 	{
 		objFile.close();
-		UI::STATUSBAR::setText("Can't create .mtl file.");
+		StatusBarManager::setText("Can't create .mtl file.");
 		return false;
 	}
 
@@ -1465,8 +959,3 @@ bool CParserOBJ::save()
 	return true;
 }
 
-
-void CParserOBJ::onLoadCancelled()
-{
-	cancelled = true;
-}

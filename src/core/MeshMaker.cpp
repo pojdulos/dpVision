@@ -2,7 +2,8 @@
 //#include "VolTK.h"
 #include "Volumetric.h"
 
-#include "UI.h"
+//#include "../api/UI.h"
+#include "interfaces/IProgressListener.h"
 
 //These tables are used so that everything can be done in little loops that you can look at all at once
 // rather than in pages and pages of unrolled code.
@@ -586,8 +587,8 @@ void MeshMaker::MarchingTetrahedron(double _DIV)
 
     //triangles.reserve( m_volume->kostka.size() );
 
-    UI::PROGRESSBAR::init(0, m_volume->columns(), 0);
-    UI::PROGRESSBAR::setText("MarchingTetrahedron:");
+    auto prg_ = IProgressListener::getDefault();
+    if (prg_) prg_->init(0, m_volume->columns(), 0, "MarchingTetrahedron:");
 
     short bX = m_volume->m_minColumn;
     bX /= DIVIDER;
@@ -607,7 +608,7 @@ void MeshMaker::MarchingTetrahedron(double _DIV)
 
     for (short iX = bX; iX < eX; iX += DIVIDER)
     {
-        UI::PROGRESSBAR::setValue(iX);
+        if (prg_) prg_->setValue(iX);
         for (short iY = bY; iY < eY; iY += DIVIDER)
             for (short iZ = bZ; iZ < eZ; iZ += DIVIDER)
             {
@@ -618,7 +619,7 @@ void MeshMaker::MarchingTetrahedron(double _DIV)
 
     //for (short iX = 0; iX < (m_volume->kostka.m_cols - DIVIDER); iX += DIVIDER)
     //{
-    //    UI::PROGRESSBAR::setValue(iX);
+    //    if (prg_) prg_->setValue(iX);
     //    for (short iY = 0; iY < (m_volume->kostka.m_rows - DIVIDER); iY += DIVIDER)
     //        for (short iZ = 0; iZ < (m_volume->kostka.m_lays - DIVIDER); iZ += DIVIDER)
     //        {
@@ -626,7 +627,7 @@ void MeshMaker::MarchingTetrahedron(double _DIV)
     //        }
     //}
 
-    UI::PROGRESSBAR::hide();
+    if (prg_) prg_->hide();
 }
 
 
@@ -636,8 +637,8 @@ void MeshMaker::MarchingCube(double _DIV)
 
     //triangles.reserve(m_volume->kostka.size());
 
-    UI::PROGRESSBAR::init(0, m_volume->columns(), 0);
-    UI::PROGRESSBAR::setText("MarchingCube:");
+    auto prg_ = IProgressListener::getDefault();
+    if (prg_) prg_->init(0, m_volume->columns(), 0, "MarchingCube:");
 
     short bX = m_volume->m_minColumn;
     bX /= DIVIDER;
@@ -657,7 +658,7 @@ void MeshMaker::MarchingCube(double _DIV)
 
     for (short iX = bX; iX < eX; iX += DIVIDER)
     {
-        UI::PROGRESSBAR::setValue(iX);
+        if (prg_) prg_->setValue(iX);
         for (short iY = bY; iY < eY; iY += DIVIDER)
             for (short iZ = bZ; iZ < eZ; iZ += DIVIDER)
             //for (short iZ = eZ-1; iZ >= bZ; iZ -= DIVIDER)
@@ -666,7 +667,7 @@ void MeshMaker::MarchingCube(double _DIV)
             }
     }
 
-    UI::PROGRESSBAR::hide();
+    if (prg_) prg_->hide();
 }
 
 

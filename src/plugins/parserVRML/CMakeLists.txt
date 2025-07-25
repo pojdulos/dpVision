@@ -16,7 +16,10 @@ target_link_libraries (${PLUGIN_NAME}
 	dpVision::Core
 	dpVision::PluginManager
 	Eigen3::Eigen
-	#opencv_world
+)
+
+target_include_directories (${PLUGIN_NAME} PUBLIC
+	${dpVision_INCLUDE_DIR}
 )
 
 if (MSVC)

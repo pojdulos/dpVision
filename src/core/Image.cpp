@@ -1,7 +1,11 @@
 #include "Image.h"
-#include "AP.h"
-#include "MainWindow.h"
+#include "../api/AP.h"
+//#include "MainWindow.h"
 #include "MdiChild.h"
+
+#include "../renderers/IImageRenderer.h"
+
+#include "StatusBarManager.h"
 
 CImage::CImage() : CModel3D(), QImage()
 {
@@ -9,23 +13,9 @@ CImage::CImage() : CModel3D(), QImage()
 	fitToWindow = false;
 
 	CModel3D::bDrawBB = false;
+
+	renderer_ = std::make_shared<IImageRenderer>();
 }
-
-CImage::CImage(const QString& path, const char* format) : CModel3D(), QImage(path, format)
-{
-	m_label = QFileInfo(path).fileName();
-	m_path = path;
-	fitToWindow = false;
-
-	img3d_half_width = (float)this->width() / 100.0f;
-	img3d_half_height = (float)this->height() / 100.0f;
-
-	setMin(CPoint3d(-img3d_half_width, -img3d_half_height, 0));
-	setMax(CPoint3d(img3d_half_width, img3d_half_height, 0));
-
-	CModel3D::bDrawBB = false;
-}
-
 
 CImage::CImage(const QImage& i) : CModel3D(), QImage(i)
 {
@@ -39,6 +29,29 @@ CImage::CImage(const QImage& i) : CModel3D(), QImage(i)
 	setMax(CPoint3d(img3d_half_width, img3d_half_height, 0));
 
 	CModel3D::bDrawBB = false;
+	renderer_ = std::make_shared<IImageRenderer>();
+}
+
+
+/*
+This constructor always (!!!) returns valid CImage instance, but it is a null-size image if load error.
+So never check if NULL is returned by 'new' command, but check if newImage->isNull() returns true.
+You can also use static CImage* load(path) method. It returns NULL on load error and don't create invalid CImage instance.
+*/
+CImage::CImage(const QString& path, const char* format) : CModel3D(), QImage(path, format)
+{
+	m_label = QFileInfo(path).fileName();
+	m_path = path;
+	fitToWindow = false;
+
+	img3d_half_width = (float)this->width() / 100.0f;
+	img3d_half_height = (float)this->height() / 100.0f;
+
+	setMin(CPoint3d(-img3d_half_width, -img3d_half_height, 0));
+	setMax(CPoint3d(img3d_half_width, img3d_half_height, 0));
+
+	CModel3D::bDrawBB = false;
+	renderer_ = std::make_shared<IImageRenderer>();
 }
 
 CImage::CImage(const CImage& i) : CModel3D( i ), QImage( i )
@@ -53,6 +66,7 @@ CImage::CImage(const CImage& i) : CModel3D( i ), QImage( i )
 	setMax(CPoint3d(img3d_half_width, img3d_half_height, 0));
 
 	CModel3D::bDrawBB = false;
+	renderer_ = std::make_shared<IImageRenderer>();
 }
 
 CImage::CImage(const uchar* b, int ww, int hh, CImage::Format f) : CModel3D(), QImage(b, ww, hh, f)
@@ -67,6 +81,7 @@ CImage::CImage(const uchar* b, int ww, int hh, CImage::Format f) : CModel3D(), Q
 	setMax(CPoint3d(img3d_half_width, img3d_half_height, 0));
 
 	CModel3D::bDrawBB = false;
+	renderer_ = std::make_shared<IImageRenderer>();
 }
 
 CImage::CImage(int ww, int hh, CImage::Format f) : CModel3D(), QImage(ww, hh, f)
@@ -81,6 +96,7 @@ CImage::CImage(int ww, int hh, CImage::Format f) : CModel3D(), QImage(ww, hh, f)
 	setMax(CPoint3d(img3d_half_width, img3d_half_height, 0));
 
 	CModel3D::bDrawBB = false;
+	renderer_ = std::make_shared<IImageRenderer>();
 }
 
 CImage::~CImage() {}
@@ -156,46 +172,6 @@ void CImage::setColor(int i, uint32_t argb) { QImage::setColor(i, argb); }
 uint32_t CImage::pixel( int x, int y ) const { return QImage::pixel(x, y); }
 void CImage::setPixel(int x, int y, uint32_t pixel) { QImage::setPixel(x, y, pixel); }
 CImage::Format CImage::format() const { return QImage::format(); }
-
-void CImage::renderSelf()
-{
-	if (m_showSelf)
-	{
-		QOpenGLTexture ogltx(*this);
-
-		glLoadName(m_Id);
-		glPushName(m_Id);
-
-		glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-
-		glBindTexture(GL_TEXTURE_2D, ogltx.textureId());
-		glEnable(GL_TEXTURE_2D);
-
-		glPolygonMode(GL_FRONT, GL_FILL);
-		glPolygonMode(GL_BACK, GL_FILL);
-
-		glBegin(GL_QUADS);
-
-		glTexCoord2f(0.0, 0.0); 		glVertex2f(-img3d_half_width,  img3d_half_height);
-		glTexCoord2f(1.0, 0.0); 		glVertex2f( img3d_half_width,  img3d_half_height);
-		glTexCoord2f(1.0, 1.0); 		glVertex2f( img3d_half_width, -img3d_half_height);
-		glTexCoord2f(0.0, 1.0); 		glVertex2f(-img3d_half_width, -img3d_half_height);
-
-		glEnd();
-
-
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_COLOR_MATERIAL);
-
-		glPopAttrib();
-
-		glPopName();
-		glLoadName(0);
-
-		if (bDrawBB) renderBoundingBox();
-	}
-}
 
 
 //void CImage::info(std::wstring i[4])
@@ -280,7 +256,8 @@ std::pair<int, int> CImage::loadToRGBAvector(std::wstring fname, std::vector<CRG
 
 	int depth = image.depth();
 
-	UI::STATUSBAR::printf(L"depth: %d", depth);
+	StatusBarManager::setText(QString("depth: %1").arg(depth));
+
 	uchar* bits = image.bits(); // pozyskuj� wska�nik na pocz�tek tablicy bit�w
 
 	uchar* bitsEnd = bits + image.sizeInBytes(); // obliczam wska�nik na koniec tablicy

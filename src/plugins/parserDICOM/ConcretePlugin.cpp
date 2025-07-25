@@ -1,8 +1,8 @@
 #include "CommonDLL.h"
 #include "ConcretePlugin.h"
 
-#include "AP.h"
-#include "UI.h"
+#include "../api/AP.h"
+#include "../api/UI.h"
 #include "FileConnector.h"
 #include "ParserDICOM.h"
 

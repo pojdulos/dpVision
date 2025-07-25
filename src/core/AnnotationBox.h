@@ -15,17 +15,9 @@ public:
 	//CPoint3f m_min;
 	//CPoint3f m_max;
 
-	CAnnotationBox(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation(m)
-	{
-		setLabel("box");
-	};
+	CAnnotationBox(std::shared_ptr<CBaseObject> m = nullptr);
 
-	CAnnotationBox( CAnnotationBox &p ) :CAnnotation(p)
-	{
-		setLabel("box");
-		//m_min = p.m_min;
-		//m_max = p.m_max;
-	}
+	CAnnotationBox( CAnnotationBox &p );
 
 	~CAnnotationBox() {};
 
@@ -33,6 +25,5 @@ public:
 
 	virtual std::wstring getInfoRow();
 
-	virtual void renderSelf() override;
 };
 

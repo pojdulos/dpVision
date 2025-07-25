@@ -15,28 +15,20 @@ class DPVISION_EXPORT CAnnotationSetOfFaces : public CAnnotation, public SetOfFI
 	std::shared_ptr<CMesh> m_mesh;
 
 public:
-	CAnnotationSetOfFaces(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation( m )
-	{
-		setLabel("f-indices set");
-		m_mesh = nullptr;
-	};
+	CAnnotationSetOfFaces(std::shared_ptr<CBaseObject> m = nullptr);;
 
-	CAnnotationSetOfFaces( const CAnnotationSetOfFaces& p ) :CAnnotation( p ), SetOfFIndices(p)
-	{
-		m_mesh = p.m_mesh;
-	};
+	CAnnotationSetOfFaces( const CAnnotationSetOfFaces& p );;
 
-	CAnnotationSetOfFaces( const SetOfFIndices& list ) :CAnnotation(), SetOfFIndices(list)
-	{
-		setLabel("f-indices set");
-		m_mesh = nullptr;
-	};
+	CAnnotationSetOfFaces( const SetOfFIndices& list );;
 
-	~CAnnotationSetOfFaces() override { SetOfFIndices::clear(); } // m_data.clear(); };
+	~CAnnotationSetOfFaces() override { SetOfFIndices::clear(); } // m_pairs.clear(); };
 
 	virtual std::shared_ptr<CBaseObject> getCopy() override
 	{
-		return std::make_shared<CAnnotationSetOfFaces>(*this);
+		auto obj = std::make_shared<CAnnotationSetOfFaces>(*this);
+		updateChildrenParentPointers(obj);
+		return obj;
+
 	}
 
 	CAnnotationSetOfFaces& operator=(const CAnnotationSetOfFaces& p)
@@ -77,8 +69,6 @@ public:
 	virtual std::wstring getInfoRow();
 	
 	QString toString(QString prefix = "", QString suffix = "", QString separator = " ");
-	
-	virtual void renderSelf() override;
 };
 
 

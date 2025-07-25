@@ -3,6 +3,9 @@
 #include "Object.h"
 #include "Annotation.h"
 
+#include "../renderers/IObjectRenderer.h"
+#include "dpLog.h"
+
 // konstruktor ze wskazaniem rodzica
 CObject::CObject(std::shared_ptr<CBaseObject> p) : CBaseObject(p), CBoundingBox()//, CMinMax()
 {
@@ -10,6 +13,7 @@ CObject::CObject(std::shared_ptr<CBaseObject> p) : CBaseObject(p), CBoundingBox(
 	bDrawBB = true;
 	m_data.clear();
 	m_annotations.clear();
+	renderer_ = std::make_shared<IObjectRenderer>();
 };
 
 // konstruktor ze wskazaniem rodzica
@@ -19,9 +23,10 @@ CObject::CObject(int parentId) : CBaseObject(parentId), CBoundingBox()
 	bDrawBB = true;
 	m_data.clear();
 	m_annotations.clear();
+	renderer_ = std::make_shared<IObjectRenderer>();
 };
 
-// konstruktor kopiuj¹cy
+// konstruktor kopiujï¿½cy
 CObject::CObject(const CObject &b) : CBaseObject(b), CBoundingBox(b) //CMinMax(b)
 {
 	m_data.clear();
@@ -32,7 +37,7 @@ CObject::CObject(const CObject &b) : CBaseObject(b), CBoundingBox(b) //CMinMax(b
 		std::shared_ptr<CBaseObject> child = it->second->getCopy();
 		if (child)
 		{
-			child->setParent(this);
+			//child->setParent(this_shared);
 			this->m_data[child->id()] = child;
 		}
 	}
@@ -42,36 +47,63 @@ CObject::CObject(const CObject &b) : CBaseObject(b), CBoundingBox(b) //CMinMax(b
 		std::shared_ptr<CAnnotation> child = std::dynamic_pointer_cast<CAnnotation>(it->second->getCopy());
 		if (child)
 		{
-			child->setParent(this);
+			//child->setParent(this_shared);
 			this->m_annotations[child->id()] = child;
 		}
 	}
 	
 	bDrawBB = true;
+	renderer_ = std::make_shared<IObjectRenderer>();
 };
+
+
+
+
+#include "MessageBoxManager.h"
+
+void CObject::updateChildrenParentPointers(const std::shared_ptr<CBaseObject>& self) {
+	for (auto& child : m_data)
+		child.second->setParent(self);
+	for (auto& child : m_annotations)
+		child.second->setParent(self);
+	// MoÅ¼esz dodaÄ‡ tutaj inne pola specyficzne dla CObject
+}
+
+std::shared_ptr<CBaseObject> CObject::getCopy()
+{
+	if (!this->hasType(Type::GENERIC))
+		MessageBoxManager::warning("WARNING: you are calling getCopy() function from CObject!!!\nTo avoid unpleasant surprises override this function in inherited class, please.");
+
+	auto obj = std::make_shared<CObject>(*this);
+
+	updateChildrenParentPointers(obj);
+
+	return obj;
+}
+
 
 
 
 //CObject::~CObject()
 //{
-//	m_data.clear();
-//	while (!m_data.empty())
+//	m_pairs.clear();
+//	while (!m_pairs.empty())
 //	{
 		//try {
-		//	delete m_data.begin()->second;
+		//	delete m_pairs.begin()->second;
 		//} catch (...) {
-		//	std::cout << "B³¹d podczas kasowania obiektu potomnego\n";
+		//	std::cout << "Bï¿½ï¿½d podczas kasowania obiektu potomnego\n";
 		//}
-//		m_data.erase(m_data.begin());
+//		m_pairs.erase(m_pairs.begin());
 //	}
 
-	//auto it = m_data.rbegin();
-	//while (it != m_data.rend())
+	//auto it = m_pairs.rbegin();
+	//while (it != m_pairs.rend())
 	//{
 	//	delete (*it).second;
 	//	it++;
 	//}
-	//m_data.clear();
+	//m_pairs.clear();
 //}
 
 void CObject::applyTransformation(CTransform& from, CTransform& to)
@@ -84,14 +116,6 @@ void CObject::applyTransformation(CTransform& from, CTransform& to)
 
 
 
-#include "UI.h"
-
-std::shared_ptr<CBaseObject> CObject::getCopy()
-{
-	if (!this->hasType(Type::GENERIC))
-		UI::MESSAGEBOX::warning("WARNING: you are calling getCopy() function from CObject!!!\nTo avoid unpleasant surprises override this function in inherited class, please.");
-	return std::make_shared<CObject>(*this);
-}
 
 
 #include "Annotation.h"
@@ -99,37 +123,28 @@ std::shared_ptr<CBaseObject> CObject::getCopy()
 
 std::shared_ptr<CBaseObject> CObject::getSomethingWithId(int id)
 {
-	if (m_Id == id) return shared_from_this();
-	else
+	for (const auto& d : m_data)
 	{
-		for (const auto& d : m_data)
-		{
-			if (d.second->hasCategory(CBaseObject::OBJECT))
-			{
-				std::shared_ptr<CBaseObject> result = ((CObject*)d.second.get())->getSomethingWithId(id);
-				if (result != nullptr) return result;
-			}
-		}
+		if (id == d.second->id()) return d.second;
+		else if (auto result = d.second->getSomethingWithId(id)) return result;
+	}
 
-		for (const auto& a : m_annotations)
-		{
-			if (a.second->hasCategory(CBaseObject::ANNOTATION))
-			{
-				std::shared_ptr<CBaseObject> result = a.second->getSomethingWithId(id);
-				if (result != nullptr) return result;
-			}
-		}
+	for (const auto& d : m_annotations)
+	{
+		if (id == d.second->id()) return d.second;
+		else if (auto result = d.second->getSomethingWithId(id)) return result;
 	}
 	
 	return nullptr;
 }
 
-int CObject::addAnnotation(std::shared_ptr<CAnnotation> ad)
+int CObject::addAnnotation(std::shared_ptr<CObject> parent, std::shared_ptr<CAnnotation> ad)
 {
+	if (parent == nullptr) return NO_CURRENT_MODEL;
 	if (ad == nullptr) return NO_CURRENT_MODEL;
 
-	m_annotations[ad->id()] = ad;
-	ad->setParent(this->shared_from_this());
+	parent->m_annotations[ad->id()] = ad;
+	ad->setParent(parent);
 
 	return ad->id();
 }
@@ -161,11 +176,6 @@ bool CObject::removeAnnotation(std::shared_ptr<CAnnotation> an)
 {
 	if (an == nullptr) return false;
 	
-	//bool isAnno = an->hasCategory(CBaseObject::Category::ANNOTATION);
-
-	//if (! isAnno )
-	//	return false;
-
 	Annotations::iterator it = m_annotations.find(an->id());
 
 	if (it != m_annotations.end())
@@ -218,15 +228,16 @@ void CObject::info(std::wstring i[4])
 }
 
 
-int CObject::addChild(std::shared_ptr<CBaseObject> d)
+int CObject::addChild(std::shared_ptr<CObject> parent, std::shared_ptr<CBaseObject> child)
 {
-	if (d == nullptr) return NO_CURRENT_MODEL;
+	if (parent == nullptr) return NO_CURRENT_MODEL;
+	if (child == nullptr) return NO_CURRENT_MODEL;
 
-	d->setParent(this->shared_from_this());
+	child->setParent(parent);
 
-	this->m_data[d->id()] = d;
-
-	return d->id();
+	parent->m_data[child->id()] = child;
+	
+	return child->id();
 }
 
 std::shared_ptr<CBaseObject> CObject::getChild(int id)
@@ -275,28 +286,8 @@ void CObject::removeAllChilds()
 {
 	m_data.clear();
 	m_annotations.clear();
-
-	//CObject::Children c = this->children();
-	//CObject::Annotations a = this->annotations();
-
-	//for (auto cc : this->m_data) {
-	//	this->removeChild(cc.first);
-	//}
-	//for (auto aa : this->m_annotations) {
-	//	this->removeAnnotation(aa.first);
-	//}
 }
 
-
-//void CObject::removeChild(CBaseObject *d)
-//{
-//	if (d == NULL) return;
-//}
-
-//int CObject::getChildId(CBaseObject *d)
-//{
-//	if (d == NULL) return 0;
-//}
 
 std::shared_ptr<CBaseObject> CObject::findId( int id )
 {
@@ -316,61 +307,6 @@ std::shared_ptr<CBaseObject> CObject::findId( int id )
 	return nullptr;
 }
 
-#include "GLViewer.h"
-
-//void CObject::render()
-//{
-//	if (m_visible != Visibility::HIDE_ALL)
-//		renderKids();
-//}
-
-void CObject::renderBoundingBox()
-{
-	QVector<std::shared_ptr<CBaseObject>> objts = UI::DOCK::WORKSPACE::getSelectedObjects();
-
-	CBoundingBox::Style style = objts.contains(this->shared_from_this()) ? CBoundingBox::Style::Unlocked : CBoundingBox::Style::NotSelected;
-	
-	CBoundingBox::draw(style, this->isSelected());
-}
-
-void CObject::renderTransform()
-{
-	if (bDrawBB) renderBoundingBox();
-}
-
-void CObject::renderKids()
-{
-	//std::cout << "CObject::renderKids(): " << m_label.toStdString() << std::endl;
-	for (const auto &itd : m_data )
-	{
-		//if (itd.second->getVisibility() != Visibility::HIDE_ALL)
-		{
-			switch (itd.second->type())
-			{
-			case CObject::MODEL:
-				itd.second->render();
-				break;
-			default:
-				glLoadName(m_Id);
-				glPushName(m_Id);
-
-				itd.second->render();
-
-				glPopName();
-				glLoadName(0);
-				break;
-			}
-		}
-	}
-
-	for (const auto &it : m_annotations )
-	{
-		//if (it.second->getVisibility() != Visibility::HIDE_ALL)
-		{
-			it.second->render();
-		}
-	}
-}
 
 std::vector<unsigned int> CObject::getChildrenIds()
 {

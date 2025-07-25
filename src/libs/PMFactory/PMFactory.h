@@ -6,7 +6,6 @@
 
 #include "Mesh.h"
 #include "Utilities.h"
-#include "UI.h"
 
 #include "PMFerrors.h"
 #include "PMFfaces.h"
@@ -19,6 +18,8 @@
 #include <set>
 #include <deque> 
 
+#include "StatusBarManager.h"
+#include "MessageBoxManager.h"
 
 struct _sof {
 	CFace f;

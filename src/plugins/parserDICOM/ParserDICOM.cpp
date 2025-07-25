@@ -5,7 +5,8 @@
 #include <sstream>
 
 #include "Image.h"
-#include "AP.h"
+#include "../api/AP.h"
+#include "../api/UI.h"
 
 //#include "dpLog.h"
 //#include <QMessageLogger>
@@ -252,7 +253,7 @@ long CParserDICOM::read_frames(std::shared_ptr<Volumetric> volum, imebra::DataSe
 
 	metadata.slice_distance = metadata.slice_thickness = dataSet.getDouble(imebra::TagId(imebra::tagId_t::SliceThickness_0018_0050), 0);
 
-	qInfo() << "sliceThickness: " << metadata.slice_thickness << endl;
+	qInfo() << "sliceThickness: " << metadata.slice_thickness << Qt::endl;
 
 	try {
 		metadata.gantry_detector_tilt = dataSet.getDouble(imebra::TagId(imebra::tagId_t::GantryDetectorTilt_0018_1120), 0);
@@ -504,7 +505,7 @@ size_t CParserDICOM::Run()
 
 		if (sliceLocation0 > sliceLocation1)
 		{
-			qInfo() << endl << "odwrocona kolejnosc -> odwracam wektory" << endl;
+			qInfo() << Qt::endl << "odwrocona kolejnosc -> odwracam wektory" << Qt::endl;
 			volum->reverse();
 		}
 
@@ -518,7 +519,7 @@ size_t CParserDICOM::Run()
 
 	//volum->m_minDisplWin = 600.0f;
 
-	m_model->addChild(volum);
+	m_model->addChild(m_model, volum);
 	m_model->importChildrenGeometry();
 
 	return volum->layers() * volum->rows() * volum->columns();

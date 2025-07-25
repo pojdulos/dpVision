@@ -14,11 +14,7 @@ class DPVISION_EXPORT CAnnotationPoints : public CAnnotation
 public:
 	SetOfPoints m_list;
 
-	CAnnotationPoints(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation( m )
-	{
-		setLabel("points");
-		m_list.clear();
-	};
+	CAnnotationPoints(std::shared_ptr<CBaseObject> m = nullptr);
 
 	~CAnnotationPoints() override { m_list.clear(); };
 
@@ -33,5 +29,5 @@ public:
 
 	virtual std::wstring getTypeWSTR() override { return L"points"; };
 	virtual std::wstring getInfoRow() override;
-	virtual void renderSelf() override;
+
 };

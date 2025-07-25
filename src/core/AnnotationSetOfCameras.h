@@ -9,15 +9,9 @@
 class DPVISION_EXPORT CAnnotationSetOfCameras : public CAnnotation
 {
 public:
-	CAnnotationSetOfCameras(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation(m)
-	{
-		setLabel("set of Cameras");
-	};
+	CAnnotationSetOfCameras(std::shared_ptr<CBaseObject> m = nullptr);;
 
-	CAnnotationSetOfCameras( CAnnotationSetOfCameras &p ) :CAnnotation(p)
-	{
-		setLabel("set of Cameras");
-	}
+	CAnnotationSetOfCameras( CAnnotationSetOfCameras &p );
 
 	virtual int type() { return CAnnotation::SETOFCAMERAS; }
 

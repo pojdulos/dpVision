@@ -1,15 +1,17 @@
 #include "PMFactory.h"
 
+#include "interfaces/IProgressListener.h"
+
 void PMFactory::eColl( CMesh &dst, unsigned int iNewSize )
 {
-	UI::STATUSBAR::printf( "PMFactory::eColl(): Begin of method." );
+	StatusBarManager::setText( "PMFactory::eColl(): Begin of method." );
 
 	CMeshToQuadrics( dst );
-	UI::STATUSBAR::printf( "PMFactory::eColl(): After call CMeshToQuadrics()." );
+	StatusBarManager::setText( "PMFactory::eColl(): After call CMeshToQuadrics()." );
 
 
 	initial_quadrics();
-	UI::STATUSBAR::printf( "PMFactory::eColl(): After call initial_quadrics()." );
+	StatusBarManager::setText( "PMFactory::eColl(): After call initial_quadrics()." );
 
 	try {
 		Reduction( iNewSize );
@@ -23,23 +25,23 @@ void PMFactory::eColl( CMesh &dst, unsigned int iNewSize )
 		vsplits.clear();
 		texidxs.clear();
 		texcoords.clear();
-		UI::STATUSBAR::printf( "Allocation error in Reduction(): %s", e.what() );
-		UI::MESSAGEBOX::error( L"Allocation error in Reduction()" );
+		StatusBarManager::setText( QString("Allocation error in Reduction(): %1").arg(e.what()));
+		MessageBoxManager::error( "Allocation error in Reduction()" );
 		return;
 	}
-	UI::STATUSBAR::printf( "PMFactory::eColl(): After call Reduction()." );
+	StatusBarManager::setText( "PMFactory::eColl(): After call Reduction()." );
 
 	dst.orgsize = this->orgsize;
 	
 	QuadricsToCMesh( dst );
 
-	UI::STATUSBAR::printf( "PMFactory::eColl(): End of method." );
+	StatusBarManager::setText( "PMFactory::eColl(): End of method." );
 }
 
 
 void PMFactory::Renumerate( CMesh &dst )
 {
-	UI::STATUSBAR::printf( "PMFactory::Renumerate(): Begin of method." );
+	StatusBarManager::setText( "PMFactory::Renumerate(): Begin of method." );
 
 	size_t tcidx = mTindexesMap.size();
 	size_t value = mVerticesMap.size();
@@ -49,7 +51,7 @@ void PMFactory::Renumerate( CMesh &dst )
 			mVerticesMap[ dst.vsplits[i].i2 ] = value++;
 		}
 		catch ( std::bad_alloc &e ) {
-			UI::MESSAGEBOX::error( L"PMFactory::Renumerate(): mVerticesMap[]=" );
+			MessageBoxManager::error( "PMFactory::Renumerate(): mVerticesMap[]=" );
 			throw e;
 		}
 
@@ -60,7 +62,7 @@ void PMFactory::Renumerate( CMesh &dst )
 
 	}
 
-	UI::STATUSBAR::printf( "PMFactory::Renumerate(): After mVerticesMap generation." );
+	StatusBarManager::setText( "PMFactory::Renumerate(): After mVerticesMap generation." );
 
 	for ( CMesh::Vsplits::iterator itvs=dst.vsplits.begin(); itvs!=dst.vsplits.end(); itvs++ )
 	{
@@ -96,13 +98,13 @@ void PMFactory::Renumerate( CMesh &dst )
 
 	dst.version = 2;
 
-	UI::STATUSBAR::printf( "PMFactory::Renumerate(): End of method." );
+	StatusBarManager::setText( "PMFactory::Renumerate(): End of method." );
 	return;
 }
 
 void PMFactory::Reduction(size_t target_num_vertices)
 {
-	UI::STATUSBAR::printf( "PMFactory::Reduction(): calculating initial errors..." );
+	StatusBarManager::setText( "PMFactory::Reduction(): calculating initial errors..." );
 	// calculate initial error for each valid pair
 
 	select_pair();
@@ -132,18 +134,19 @@ void PMFactory::Reduction(size_t target_num_vertices)
 			itm++;
 	}
 
-	UI::PROGRESSBAR::init( 0, vertices.size() - target_num_vertices, 0 );
+	auto progress_ = IProgressListener::getDefault();
+	if (progress_) progress_->init( 0, vertices.size() - target_num_vertices, 0 );
 
 	while (vertices.size() > target_num_vertices)
 	{
-		UI::STATUSBAR::printfTimed( 500, "\r    PMFactory::Reduction(): reduction from %d to %d -> current: %d              ", orgsize, target_num_vertices, vertices.size() );
-		UI::PROGRESSBAR::setValue( orgsize - vertices.size() );
+		StatusBarManager::setTextTimed( 500, QString("\r    PMFactory::Reduction(): reduction from %1 to %2 -> current: %3              ").arg(orgsize).arg(target_num_vertices).arg(vertices.size()));
+		if (progress_) progress_->setValue( orgsize - vertices.size() );
 
 		CPMFerrors::iterator iter_min_error = errors.GetMinError();
 		
 		if ( iter_min_error == errors.end() )
 		{
-			UI::STATUSBAR::printf( "PMFactory::Reduction(): ERROR" );
+			StatusBarManager::setText( "PMFactory::Reduction(): ERROR" );
 			break;
 		}
 
@@ -281,7 +284,7 @@ void PMFactory::Reduction(size_t target_num_vertices)
 
 	}
 
-	UI::PROGRESSBAR::hide();
+	if (progress_) progress_->hide();
 
 	quadrics.clear();
 	quadrics.swap(quadrics);

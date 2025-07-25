@@ -4,12 +4,12 @@
 #define MINDIST 0.00001
 
 /*
-* A, B, C - wierzcho³ki trójk¹ta
+* A, B, C - wierzchoï¿½ki trï¿½jkï¿½ta
 */
 Kula* Kula::fromTriangle(CPoint3d A, CPoint3d B, CPoint3d C)
 {
 	/*
-	* a, b, c - d³ugosci boków le¿¹cych naprzeciw odpowiedniego wierzcho³ka
+	* a, b, c - dï¿½ugosci bokï¿½w leï¿½ï¿½cych naprzeciw odpowiedniego wierzchoï¿½ka
 	*/
 	double a = B.distanceTo(C);
 	double b = C.distanceTo(A);
@@ -18,7 +18,7 @@ Kula* Kula::fromTriangle(CPoint3d A, CPoint3d B, CPoint3d C)
 	if ((a < MINDIST) || (b < MINDIST) || (c < MINDIST)) return nullptr;
 
 	/*
-	* k - kosinus k¹ta miêdzy wektorami CA i CB
+	* k - kosinus kï¿½ta miï¿½dzy wektorami CA i CB
 	* s - sinus j/w
 	*/
 	double k = CVector3d(C, A).dotProduct(CVector3d(C, B)) / (b*a);
@@ -28,8 +28,8 @@ Kula* Kula::fromTriangle(CPoint3d A, CPoint3d B, CPoint3d C)
 
 
 	/*
-	* definiuje uk³ad wspó³rzêdnych PQ na p³aszczyŸnie trójk¹ta
-	* z pocz¹tkiem w punkcie C i osi¹ P wyznaczon¹ przez wektor CB
+	* definiuje ukï¿½ad wspï¿½rzï¿½dnych PQ na pï¿½aszczyï¿½nie trï¿½jkï¿½ta
+	* z poczï¿½tkiem w punkcie C i osiï¿½ P wyznaczonï¿½ przez wektor CB
 	*/
 	double p_C = 0.0;
 	double q_C = 0.0;
@@ -42,7 +42,7 @@ Kula* Kula::fromTriangle(CPoint3d A, CPoint3d B, CPoint3d C)
 
 
 	/*
-	* œrodek okrêgu opisanego (z przekszta³ceñ wzorów na symetralne)
+	* ï¿½rodek okrï¿½gu opisanego (z przeksztaï¿½ceï¿½ wzorï¿½w na symetralne)
 	*/
 	double p_S = a / 2;
 	double q_S = (b - (a * k)) / (2 * s);
@@ -59,14 +59,15 @@ Kula* Kula::fromTriangle(CPoint3d A, CPoint3d B, CPoint3d C)
 //	double R = (a * b * c) / (4 * P);
 
 	/*
-	* promieñ
+	* promieï¿½
 	*/
 	double R = S.distanceTo(A);
 
 	return new Kula(S, R);
 }
 
-#include "UI.h"
+//#include "../api/UI.h"
+#include "StatusBarManager.h"
 
 Kula* Kula::fromPoints(std::vector<CVertex> pts)
 {
@@ -78,7 +79,7 @@ Kula* Kula::fromPoints(std::vector<CVertex> pts)
 
 	for (int i = 0; i < pts.size(); i++)
 	{
-		UI::STATUSBAR::printfTimed(500,"%d", i);
+		StatusBarManager::setTextTimed(500, QString::number(i));
 
 		bool isA = false;
 		bool isB = false;
@@ -88,7 +89,7 @@ Kula* Kula::fromPoints(std::vector<CVertex> pts)
 
 		bool zmiana = false;
 
-		if (! kula->contains(D)) // D jest poza kul¹
+		if (! kula->contains(D)) // D jest poza kulï¿½
 		{
 			Kula* kulaA = Kula::fromTriangle(D, B, C);
 			Kula* kulaB = Kula::fromTriangle(A, D, C);
@@ -243,7 +244,7 @@ Kula* Kula::fromPoints2(std::vector<CVertex>& pts)
 	{
 		for (int i = 1; i < 3; i++)
 		{
-			UI::STATUSBAR::printfTimed(500, "%d", i);
+			StatusBarManager::setTextTimed(500, QString::number(i));
 
 			Kula* kula2 = Kula::fromTriangle(pts[i], pts[i + 1], pts[i + 2]);
 
@@ -315,7 +316,7 @@ Kula* Kula::fromMesh(std::vector<CFace> &fcs, std::vector<CVertex> &pts)
 
 	for (int i = 1; i < fcs.size(); i++)
 	{
-		UI::STATUSBAR::printfTimed(500, "%d", i);
+		StatusBarManager::setTextTimed(500, QString::number(i));
 
 		Kula* kula2 = Kula::fromTriangle(pts[fcs[i].A()], pts[fcs[i].B()], pts[fcs[i].C()]);
 
@@ -343,7 +344,7 @@ Kula* Kula::fromMesh(std::vector<CFace> &fcs, std::vector<CVertex> &pts)
 //
 //	// helpers
 //	const double iwsl2 = 1.0 / (2.0 * wsl);
-//	const double tt = t.dotProduct(t);  //kwadrat modu³u ???
+//	const double tt = t.dotProduct(t);  //kwadrat moduï¿½u ???
 //	const double uu = u.dotProduct(u);
 //
 //	// result circle

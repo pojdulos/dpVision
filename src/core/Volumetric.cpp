@@ -1,16 +1,11 @@
 #include "stdafx.h"
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-#include <GL/gl.h>
-
 #include "Volumetric.h"
-#include "Volumetric_shaders.h"
-
 #include <omp.h>
 
-extern bool mouse_key_pressed;
+#include "dpLog.h"
+
+//extern bool mouse_key_pressed;
 
 template <typename T> T Volumetric::clamp(T value, T min, T max) {
 	if (value < min) return min;
@@ -18,6 +13,13 @@ template <typename T> T Volumetric::clamp(T value, T min, T max) {
 	return value;
 }
 
+#include "../renderers/IVolumetricRenderer.h"
+#include "interfaces/IProgressListener.h"
+
+Volumetric::Volumetric(ColorSpace csp, std::shared_ptr<CBaseObject> p) :CObject(p), m_csp(csp)
+{
+	renderer_ = std::make_shared<IVolumetricRenderer>();
+}
 
 std::wstring Volumetric::infoRow()
 {
@@ -51,6 +53,9 @@ std::shared_ptr<CBaseObject> Volumetric::getCopy()
 	int new_Columns = 1 + this->m_maxColumn - this->m_minColumn;
 	
 	std::shared_ptr<Volumetric> volum = create(new_Layers, new_Rows, new_Columns );
+	
+	// are children copied?
+	//updateChildrenParentPointers(volum);
 
 	if (volum) {
 #pragma omp parallel for
@@ -74,267 +79,7 @@ std::shared_ptr<CBaseObject> Volumetric::getCopy()
 	return volum;
 }
 
-
-#include <QOpenGLContext>
-#include <QOpenGLFunctions>
-#include <QOpenGLShaderProgram>
-#include <QOpenGLShader>
-#include <QOpenGLVertexArrayObject>
-
-/*
-bool Volumetric::create_program() {
-	// Tworzenie programu shader�w
-	this->shader_program = new QOpenGLShaderProgram;
-
-	// Inicjalizacja i konfiguracja shader�w
-
-	QOpenGLShader* vertex_shader = new QOpenGLShader(QOpenGLShader::Vertex);
-	if (vertex_shader->compileSourceCode(vertex_shader_code)) {
-		this->shader_program->addShader(vertex_shader);
-	}
-	else {
-		qInfo() << "BLAD KOMPILACJI SHADERA WIERZCHO�K�W" << Qt::endl;
-	}
-
-
-	QOpenGLShader* geometry_shader = new QOpenGLShader(QOpenGLShader::Geometry);
-	bool success = false;
-	if (this->m_renderBoxes)
-		success = geometry_shader->compileSourceCode(geometry_shader_code_boxes);
-	else
-		success = geometry_shader->compileSourceCode(geometry_shader_code);
-
-	if (success) {
-		this->shader_program->addShader(geometry_shader);
-	}
-	else {
-		qInfo() << "BLAD KOMPILACJI SHADERA GEOMETRII" << Qt::endl;
-	}
-
-	QOpenGLShader* fragment_shader = new QOpenGLShader(QOpenGLShader::Fragment);
-	if (fragment_shader->compileSourceCode(fragment_shader_code)) {
-		this->shader_program->addShader(fragment_shader);
-	}
-	else {
-		qInfo() << "BLAD KOMPILACJI SHADERA FRAGMENT�W" << Qt::endl;
-	}
-
-	// Linkowanie programu shader�w po do��czeniu wszystkich shader�w
-	return (this->shader_program->link());
-}
-*/
-
-void checkGLError(const char *label, const char *txt="") {
-	GLenum err;
-	while ((err = glGetError()) != GL_NO_ERROR) {
-		qInfo() << "OpenGL error: " << err << " after " << label << Qt::endl;
-		qInfo() << txt << Qt::endl;
-	}
-}
-
-#include <exception>
-
-GLuint compile_shader(QOpenGLFunctionsType* f, const char* source, GLenum shader_type) {
-	GLuint shader = f->glCreateShader(shader_type);
-
-	f->glShaderSource(shader, 1, &source, NULL);
-	f->glCompileShader(shader);
-
-	// Sprawdzenie, czy kompilacja si� powiod�a
-	GLint success;
-	f->glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-
-//	checkGLError("compile_shaders",source);
-
-	if (! success)
-	{
-		char info_log[512];
-		GLsizei len;
-		f->glGetShaderInfoLog(shader, 512, &len, info_log);
-		qInfo() << "ERROR::SHADER::COMPILATION_FAILED\n" <<info_log << Qt::endl;
-		f->glDeleteShader(shader);
-		//throw std::exception("Shader compilation failed");
-		throw "Shader compilation failed";
-	}
-
-
-	return shader;
-}
-
-void Volumetric::remove_shader_program() {
-	QOpenGLFunctions* f = QOpenGLContext::currentContext()->functions();
-	f->glDeleteProgram(this->shader_program);
-	this->shader_program = 0;
-}
-
-bool Volumetric::create_program(QOpenGLFunctionsType* f) {
-	//QOpenGLFunctions* f = QOpenGLContext::currentContext()->functions();
-
-	GLuint vertex_shader = compile_shader(f, vertex_shader_code, GL_VERTEX_SHADER);
-
-	GLuint geometry_shader;
-	if (this->m_renderBoxes)
-		geometry_shader = compile_shader(f, geometry_shader_code_boxes, GL_GEOMETRY_SHADER);
-	else
-		geometry_shader = compile_shader(f, geometry_shader_code, GL_GEOMETRY_SHADER);
-
-	GLuint fragment_shader = compile_shader(f, fragment_shader_code, GL_FRAGMENT_SHADER);
-
-	this->shader_program = f->glCreateProgram();
-
-	f->glAttachShader(this->shader_program, vertex_shader);
-	f->glAttachShader(this->shader_program, geometry_shader);
-	f->glAttachShader(this->shader_program, fragment_shader);
-
-	f->glLinkProgram(this->shader_program);
-
-	// Sprawdzanie, czy program zosta� powi�zany poprawnie
-	GLint success;
-	f->glGetProgramiv(this->shader_program, GL_LINK_STATUS, &success);
-	
-	if (! success)
-	{
-		qInfo() << "Error linking shaders" << Qt::endl;
-	}
-
-	f->glDeleteShader(vertex_shader);
-	f->glDeleteShader(geometry_shader);
-	f->glDeleteShader(fragment_shader);
-
-	return true;
-}
-
-
-/*
-void Volumetric::renderSelf() {
-	QOpenGLFunctions* f = QOpenGLContext::currentContext()->functions();
-
-	//f->glEnable(GL_PROGRAM_POINT_SIZE);
-
-	if (this->shader_program == nullptr)
-		if (!this->create_program())
-			qInfo() << "BLAD LINKOWANIA PROGRAMU SHADER�W" << Qt::endl;
-
-
-	// U�ywanie programu shader�w
-	if (! this->shader_program->bind() )
-		qInfo() << "BLAD BINDOWANIA PROGRAMU SHADER�W" << Qt::endl;
-	
-
-	// Konfiguracja atrybut�w wierzcho�ka
-	if (!this->vao.isCreated())
-		this->vao.create();
-
-	this->vao.bind();
-
-	if (!this->vbo.isCreated())
-		this->vbo.create();
-
-	this->vbo.bind();
-
-	// Pobieranie macierzy modelview i przekazywanie jej do shadera
-	float modelview[16];
-	glGetFloatv(GL_MODELVIEW_MATRIX, modelview);
-	QMatrix4x4 mvMatrix(modelview,4,4);
-	this->shader_program->setUniformValue("modelviewMatrix", mvMatrix);
-
-
-	float projection[16];
-	glGetFloatv(GL_PROJECTION_MATRIX, projection);
-	QMatrix4x4 projMatrix(projection, 4, 4);
-	this->shader_program->setUniformValue("projectionMatrix", projMatrix);
-
-
-	this->shader_program->setUniformValue("minColor", this->m_minDisplWin);
-	this->shader_program->setUniformValue("maxColor", this->m_maxDisplWin);
-	this->shader_program->setUniformValueArray("f", (float*)this->m_filters, 7, 3);
-	this->shader_program->setUniformValueArray("fcolors", (float*)this->m_fcolors, 7, 3);
-
-	int factor = 1;
-	//if (this->m_fastDraw) // || AP.mouse_key_pressed )
-	//{
-	//	if (this->m_volume.size() < 1536)
-	//		factor = 4;
-	//	else
-	//		factor = 8;
-	//}
-
-	this->shader_program->setUniformValue("factor", factor);
-	
-	int first_slice = factor * int(this->m_minSlice / factor);
-	int first_row = factor * int(this->m_minRow / factor);
-	int first_column = factor * int(this->m_minColumn / factor);
-
-	int small_shape[3] = { this->m_shape[0] / factor, this->m_shape[1] / factor, this->m_shape[2] / factor };
-
-	//std::vector<std::vector<float>> subvolume;
-	//for (auto layer = m_volume.begin(); layer < m_volume.end(); layer += factor) {
-	//	std::vector<float> slice;
-
-	//	for (auto valptr = layer->begin(); valptr < layer->end(); valptr += factor) {
-	//			slice.push_back(*valptr);
-	//	}
-	//	
-	//	subvolume.push_back(slice);
-	//}
-	auto& subvolume = this->m_volume;
-
-	this->shader_program->setUniformValue("sizeX", small_shape[2]);
-	this->shader_program->setUniformValue("sizeY", small_shape[1]);
-
-	this->vbo.release();
-	this->vao.release();
-
-	for (int idx_in_subvolume = 0; idx_in_subvolume < small_shape[0]; idx_in_subvolume++)
-	{
-		this->vbo.bind();
-		this->vao.bind();
-
-		//qInfo() << idx_in_subvolume << Qt::endl;
-		int true_index_of_slice = first_slice + idx_in_subvolume * factor;
-
-		auto& metadata = this->metadata[true_index_of_slice];
-
-		float imagePosition[3] = {
-			metadata.image_position_patient[0] + metadata.pixel_spacing[0] * float(first_column),
-			metadata.image_position_patient[1] + metadata.pixel_spacing[1] * float(first_row),
-			metadata.image_position_patient[2]
-		};
-
-		float voxel_size[3] = {
-			metadata.pixel_spacing[0],
-			metadata.pixel_spacing[1],
-			metadata.slice_thickness
-		};
-
-		this->shader_program->setUniformValueArray("imagePosition", (float*)imagePosition, 3, 1);
-		this->shader_program->setUniformValueArray("voxelSize", (float*)voxel_size, 3, 1);
-
-		auto &colors = subvolume[idx_in_subvolume];
-
-		this->vbo.bind();
-
-		this->vbo.allocate(colors.data(), colors.size() * sizeof(float));
-
-		int color_location = shader_program->attributeLocation("vertexColor");
-		shader_program->enableAttributeArray(color_location);
-		shader_program->setAttributeBuffer(color_location, GL_FLOAT, 0, 1);
-
-		this->vbo.release();
-		this->vao.release();
-
-		//=====================================================
-
-		this->vao.bind();
-		glDrawArrays(GL_POINTS, 0, colors.size());
-		this->vao.release();
-	}
-
-	this->shader_program->release();
-}
-*/
-
-Volumetric::SliceType clip2D(const Volumetric::SliceType& layer, int rows, int cols, int startRow, int endRow, int startCol, int endCol) {
+Volumetric::SliceType Volumetric::clip2D(const Volumetric::SliceType& layer, int rows, int cols, int startRow, int endRow, int startCol, int endCol) {
 	int newRows = 1 + endRow - startRow;
 	int newCols = 1 + endCol - startCol;
 	
@@ -352,7 +97,7 @@ Volumetric::SliceType clip2D(const Volumetric::SliceType& layer, int rows, int c
 	return result;
 }
 
-Volumetric::VolumeType clip3D(const Volumetric::VolumeType& volume, int layers, int rows, int cols, int startLayer, int endLayer, int startRow, int endRow, int startCol, int endCol) {
+Volumetric::VolumeType Volumetric::clip3D(const Volumetric::VolumeType& volume, int layers, int rows, int cols, int startLayer, int endLayer, int startRow, int endRow, int startCol, int endCol) {
 	int newLayers = 1 + endLayer - startLayer;
 	int newRows = 1 + endRow - startRow;
 	int newCols = 1 + endCol - startCol;
@@ -369,7 +114,7 @@ Volumetric::VolumeType clip3D(const Volumetric::VolumeType& volume, int layers, 
 
 
 // Funkcja przeskalowuj�ca jednowymiarowy wektor float�w reprezentuj�cy obraz 2D z okre�lonymi granicami
-Volumetric::SliceType downsample2D(const Volumetric::SliceType& layer, int rows, int cols, int factor, int startRow, int endRow, int startCol, int endCol) {
+Volumetric::SliceType Volumetric::downsample2D(const Volumetric::SliceType& layer, int rows, int cols, int factor, int startRow, int endRow, int startCol, int endCol) {
 	int newRows = 1 + (endRow - startRow) / factor;
 	int newCols = 1 + (endCol - startCol) / factor;
 	
@@ -389,7 +134,7 @@ Volumetric::SliceType downsample2D(const Volumetric::SliceType& layer, int rows,
 }
 
 // Funkcja przeskalowuj�ca tr�jwymiarow� struktur� danych wolumetrycznych z okre�lonymi granicami
-Volumetric::VolumeType downsample3D(const Volumetric::VolumeType& volume, int layers, int rows, int cols, int factor, int startLayer, int endLayer, int startRow, int endRow, int startCol, int endCol) {
+Volumetric::VolumeType Volumetric::downsample3D(const Volumetric::VolumeType& volume, int layers, int rows, int cols, int factor, int startLayer, int endLayer, int startRow, int endRow, int startCol, int endCol) {
 	int newLayers = 1 + (endLayer - startLayer) / factor;
 	int newRows = 1 + (endRow - startRow) / factor;
 	int newCols = 1 + (endCol - startCol) / factor;
@@ -403,164 +148,6 @@ Volumetric::VolumeType downsample3D(const Volumetric::VolumeType& volume, int la
 	return result;
 }
 
-
-void Volumetric::renderSelf() {
-    QOpenGLFunctionsType *f = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctionsType>();
-
-	f->glEnable(GL_PROGRAM_POINT_SIZE);
-
-	if (this->shader_program == 0) {
-		this->create_program(f);
-	}
-
-	f->glUseProgram(this->shader_program);
-
-	if (this->vbo == 0)
-		f->glGenBuffers(1, &this->vbo);
-
-	f->glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
-
-	// Ustawienie atrybutu aCol w location 0
-	f->glEnableVertexAttribArray(0);
-
-	//f->glVertexAttribPointer(0, 1, GL_FLOAT, GL_FALSE, 0, nullptr);
-    f->glVertexAttribIPointer(0, 1, GL_INT, 0, nullptr);
-
-
-	// Pobieranie macierzy modelview i projection
-	float modelview[16];
-	f->glGetFloatv(GL_MODELVIEW_MATRIX, modelview);
-	GLint modelview_loc = f->glGetUniformLocation(this->shader_program, "modelviewMatrix");
-	f->glUniformMatrix4fv(modelview_loc, 1, GL_FALSE, modelview);
-
-	float projection[16];
-	f->glGetFloatv(GL_PROJECTION_MATRIX, projection);
-	GLint projection_loc = f->glGetUniformLocation(this->shader_program, "projectionMatrix");
-	f->glUniformMatrix4fv(projection_loc, 1, GL_FALSE, projection);
-
-	// Ustawianie uniform�w
-	GLint minColor_loc = f->glGetUniformLocation(this->shader_program, "minColor");
-	f->glUniform1f(minColor_loc, float(this->m_minDisplWin));
-
-	GLint maxColor_loc = f->glGetUniformLocation(this->shader_program, "maxColor");
-	f->glUniform1f(maxColor_loc, float(this->m_maxDisplWin));
-
-	GLint f_loc = f->glGetUniformLocation(this->shader_program, "f");
-	f->glUniform3fv(f_loc, 7, (float*)this->m_filters);
-	//f->glUniform3iv(f_loc, 7, (int32_t*)this->m_filters);
-
-	GLint fcolors_loc = f->glGetUniformLocation(this->shader_program, "fcolors");
-	f->glUniform3fv(fcolors_loc, 7, (float*)this->m_fcolors);
-
-	int factor = 1;
-	if (this->m_fastDraw || mouse_key_pressed)
-		factor = 4;
-
-
-	GLint factor_loc = f->glGetUniformLocation(this->shader_program, "factor");
-	f->glUniform1i(factor_loc, factor);
-
-
-	int first_slice = this->m_minSlice;
-	int first_row = this->m_minRow;
-	int first_column = this->m_minColumn;
-
-	int last_slice = this->m_maxSlice;
-	int last_row = this->m_maxRow;
-	int last_column = this->m_maxColumn;
-
-	int small_shape[3];
-
-	small_shape[0] = 1 + last_slice - first_slice;
-	small_shape[1] = 1 + last_row - first_row;
-	small_shape[2] = 1 + last_column - first_column;
-
-
-	if (factor > 1) {
-		first_slice = (this->m_minSlice / factor) * factor;
-		first_row = (this->m_minRow / factor) * factor;
-		first_column = (this->m_minColumn / factor) * factor;
-
-		last_slice = (this->m_maxSlice / factor) * factor;
-		last_row = (this->m_maxRow / factor) * factor;
-		last_column = (this->m_maxColumn / factor) * factor;
-
-		small_shape[0] = 1 + (last_slice - first_slice) / factor;
-		small_shape[1] = 1 + (last_row - first_row) / factor;
-		small_shape[2] = 1 + (last_column - first_column) / factor;
-	}
-
-
-	VolumeType subvolume;
-
-	if (factor > 1) {
-		subvolume = downsample3D(
-			m_data,
-			m_layers, m_rows, m_columns,
-			factor,
-			first_slice, last_slice,
-			first_row, last_row,
-			first_column, last_column);
-	}
-	else {
-		subvolume = clip3D(
-			m_data,
-			m_layers, m_rows, m_columns,
-			first_slice, last_slice,
-			first_row, last_row,
-			first_column, last_column);
-	}
-
-	GLint sizeX_loc = f->glGetUniformLocation(this->shader_program, "sizeX");
-	f->glUniform1i(sizeX_loc, small_shape[2]);
-
-	GLint sizeY_loc = f->glGetUniformLocation(this->shader_program, "sizeY");
-	f->glUniform1i(sizeY_loc, small_shape[1]);
-
-	int maxSubLayer = std::min(this->m_maxSlice / factor, small_shape[0]);
-
-	for (int idx_in_subvolume = 0; idx_in_subvolume < small_shape[0]; idx_in_subvolume++) {
-		int true_index_of_slice = first_slice + idx_in_subvolume * factor;
-
-#if defined(_VoxelTypeFLOAT)
-		SliceType colors = subvolume[idx_in_subvolume];
-#else
-        SliceType colors = subvolume[idx_in_subvolume];
-		// SliceType subvol = subvolume[idx_in_subvolume];
-		// std::vector<float> colors(subvol.size());
-		// std::transform(subvol.begin(), subvol.end(), colors.begin(), [](VoxelType value) { return static_cast<float>(value); });
-#endif
-
-		f->glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(int32_t), colors.data(), GL_STATIC_DRAW);
-		//f->glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(float), colors.data(), GL_STATIC_DRAW);
-
-		SliceMetadata metadata = this->metadata[true_index_of_slice];
-
-		float imagePosition[3] = {
-			metadata.image_position_patient[0] + metadata.pixel_spacing[0] * float(first_column),
-			metadata.image_position_patient[1] + metadata.pixel_spacing[1] * float(first_row),
-			metadata.image_position_patient[2]
-		};
-
-		float voxel_size[3] = {
-			metadata.pixel_spacing[0],
-			metadata.pixel_spacing[1],
-			metadata.slice_thickness
-		};
-
-		GLint imagePosition_loc = f->glGetUniformLocation(this->shader_program, "imagePosition");
-		f->glUniform3fv(imagePosition_loc, 1, imagePosition);
-
-		GLint voxelSize_loc = f->glGetUniformLocation(this->shader_program, "voxelSize");
-		f->glUniform3fv(voxelSize_loc, 1, voxel_size);
-
-		f->glDrawArrays(GL_POINTS, 0, colors.size());
-	}
-
-	f->glBindBuffer(GL_ARRAY_BUFFER, 0);
-	f->glUseProgram(0);
-	f->glDisable(GL_PROGRAM_POINT_SIZE);
-}
 
 CPoint3d Volumetric::getVoxelSize() {
 	return CPoint3d(this->metadata[0].pixel_spacing[0], this->metadata[0].pixel_spacing[1], this->metadata[0].slice_distance);
@@ -585,7 +172,7 @@ std::shared_ptr<Volumetric> Volumetric::create(int layers, int rows, int columns
 
 		}
 		catch (...) {
-			qInfo() << "\nBRAK PAMIĘCI !!!" << Qt::endl;
+			dpError() << "\nBRAK PAMIĘCI !!!" << Qt::endl;
 
 			//CZYSZCZENIE 
 
@@ -796,7 +383,7 @@ void Volumetric::drawCylinder(CPoint3i origin = { 0, 0, 0 }, int radius = 1, int
 //					int pz = static_cast<int>(c.z + offset.z);
 //
 //					if (px >= 0 && px < m_columns && py >= 0 && py < m_rows && pz >= 0 && pz < m_layers)
-//						m_data[pz][py * m_columns + px] = color;
+//						m_pairs[pz][py * m_columns + px] = color;
 //				}
 //			}
 //		}
@@ -932,7 +519,7 @@ void Volumetric::drawCylinder(CPoint3i origin, CVector3i vector, int radius = 1,
 
 #include "Mesh.h"
 #include "MeshMaker.h"
-#include "AP.h"
+#include "../api/AP.h"
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/core.hpp>
@@ -945,20 +532,17 @@ void Volumetric::drawCylinder(CPoint3i origin, CVector3i vector, int radius = 1,
 #include <opencv2/features2d.hpp>
 
 std::shared_ptr<CPointCloud> Volumetric::sift_cloud(int nfeatures, int nOctaveLayers, double contrastThreshold, double edgeThreshold, double sigma, int factor) {
-	//UI::MESSAGEBOX::information("NOT IMPLEMENTED YET");
-	//return;
-
 	std::shared_ptr<CPointCloud> cloud = std::make_shared<CPointCloud>();
 
-	UI::PROGRESSBAR::init(this->m_minSlice, this->m_maxSlice, this->m_minSlice);
-	UI::PROGRESSBAR::setText("Sift Cloud:");
+	auto prg_ = IProgressListener::getDefault();
+	if (prg_) prg_->init(this->m_minSlice, this->m_maxSlice, this->m_minSlice, "Sift Cloud:");
 
 	// Tworzenie obiektu SIFT z ustawionymi parametrami
 	cv::Ptr<cv::SIFT> sift = cv::SIFT::create(nfeatures, nOctaveLayers, contrastThreshold, edgeThreshold, sigma);
 
 	for (int idx_of_slice = this->m_minSlice; idx_of_slice <= this->m_maxSlice; idx_of_slice++)
 	{
-		UI::PROGRESSBAR::setValue(idx_of_slice);
+		if (prg_) prg_->setValue(idx_of_slice);
 
 		auto image = clip2D(m_data[idx_of_slice], m_rows, m_columns, this->m_minRow, this->m_maxRow, this->m_minColumn, this->m_maxColumn);
 
@@ -1011,7 +595,7 @@ std::shared_ptr<CPointCloud> Volumetric::sift_cloud(int nfeatures, int nOctaveLa
 			sift->detectAndCompute(obraz, cv::noArray(), keypoints, descriptors);
 		}
 		catch (cv::Exception ex) {
-			qInfo() << ex.msg.c_str() << Qt::endl;
+			dpError() << ex.msg.c_str() << Qt::endl;
 		}
 		// Wy�wietlanie kluczowych punkt�w na obrazie
 		//cv::Mat outputImg;
@@ -1031,7 +615,7 @@ std::shared_ptr<CPointCloud> Volumetric::sift_cloud(int nfeatures, int nOctaveLa
 		}
 	}
 	
-	UI::PROGRESSBAR::hide();
+	if (prg_) prg_->hide();
 
 	return cloud;
 }
@@ -1063,12 +647,12 @@ std::shared_ptr<CMesh> Volumetric::marching_cube(int factor) {
 
 			if (it == indexMap.end())
 			{
-				f[i] = mesh->addVertex(v);
-				indexMap[v] = f[i];
+				f.setAt(i, mesh->addVertex(v));
+				indexMap[v] = f.at(i);
 			}
 			else
 			{
-				f[i] = it->second;
+				f.setAt(i, it->second);
 			}
 		}
 
@@ -1088,7 +672,7 @@ std::shared_ptr<CMesh> Volumetric::marching_cube(int factor) {
 
 	QString label("c_" + QString::number(pMin) + "_" + QString::number(pMax) + "_" + QString::number(div));
 	mesh->setLabel(label);
-	mesh->setDescr("source data: " + volTK->getParent()->getLabel()
+	mesh->setDescr("source data: " + volTK->getLabel()
 		+ "\nvolume size: " + QString::number(volTK->m_columns) + " x " + QString::number(volTK->m_rows) + " x " + QString::number(volTK->m_layers)
 		+ "\nintensity range: " + QString::number(volTK->m_minDisplWin) + " - " + QString::number(volTK->m_maxDisplWin)
 		+ "\n"
@@ -1127,12 +711,12 @@ std::shared_ptr<CMesh> Volumetric::marching_tetrahedron(int factor) {
 
 			if (it == indexMap.end())
 			{
-				f[i] = mesh->addVertex(v);
-				indexMap[v] = f[i];
+				f.setAt(i, mesh->addVertex(v));
+				indexMap[v] = f.at(i);
 			}
 			else
 			{
-				f[i] = it->second;
+				f.setAt(i, it->second);
 			}
 		}
 
@@ -1370,10 +954,6 @@ Volumetric* Volumetric::scal1(Volumetric* src1, Volumetric* src2)
 	return nullptr;
 }
 
-
-
-
-
 #include <QtGui/QImage>
 #include <vector>
 #include <cmath>
@@ -1488,7 +1068,7 @@ QImage Volumetric::generateFreeViewSliceImage(const CVector3f& normal, const CPo
 //
 //			if (point.x >= 0 && point.x < m_columns && point.y >= 0 && point.y < m_rows && point.z >= 0 && point.z < m_layers)
 //			{
-//				VoxelType val = interpolateVoxel(m_data, point);
+//				VoxelType val = interpolateVoxel(m_pairs, point);
 //				
 //				if (tresh)
 //				{

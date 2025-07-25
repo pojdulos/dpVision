@@ -32,7 +32,8 @@ class DPVISION_EXPORT CParserDPVISION :public QObject, public CParser
 
 
 
-	void parseF(QString& line, CMesh::Faces& faces, CMaterial& material, size_t& lbf, size_t& lbti);
+	void parseF(std::string &line, CMesh::Faces& faces, CMaterial& material, size_t& lbf, size_t& lbti);
+	//void parseF(QString& line, CMesh::Faces& faces, CMaterial& material, size_t& lbf, size_t& lbti);
 	void ParseObjMTLFile(QTextStream& in, std::map<QString, CMaterial*>& mats, QuaZip& zip, QString pathInZip);
 	std::shared_ptr<CObject> parseOBJ(QTextStream& in, QuaZip& zip, QString pathInZip);
 	void setChildrenVertices(QVector<std::shared_ptr<CObject>> vec, CPointCloud::Vertices& tmpV, CPointCloud::Colors& tmpC, CPointCloud::Normals& tmpN, CMaterial::TextureCoordinates& tmpTC);
@@ -53,7 +54,7 @@ public:
 	CParserDPVISION(void);
 	~CParserDPVISION(void);
 
-	virtual std::shared_ptr<CModel3D> load(const QString path, bool wait) override;
+	virtual std::shared_ptr<CModel3D> load(const QString path, bool wait, std::shared_ptr<IProgressListener> prg = nullptr) override;
 	virtual bool save(std::shared_ptr<CModel3D> obj, const QString path) override;
 	virtual bool save(QVector<std::shared_ptr<CBaseObject>> objects, const QString path) override;
 };

@@ -80,7 +80,11 @@ public:
 
 	inline int type() override { return CObject::Type::MESH; };
 
-	virtual std::shared_ptr<CBaseObject> getCopy() override { return std::make_shared<CMesh>(*this); };
+	virtual std::shared_ptr<CBaseObject> getCopy() override {
+		auto obj = std::make_shared<CMesh>(*this);
+		updateChildrenParentPointers(obj);
+		return obj;
+	};
 	std::wstring infoRow() override;
 	void info(std::wstring i[4]) override;
 
@@ -92,12 +96,12 @@ public:
 
 	inline CFace& face(INDEX_TYPE idx) { return m_poly.faces()[idx]; };
 	inline CTriangle getFaceAsTriangle(INDEX_TYPE idx) { return CTriangle(idx, this); };
-	inline CVertex& vertex(INDEX_TYPE face_idx, int vid) { return m_vertices[m_poly.faces()[face_idx].toVector()[vid]]; };
+	inline CVertex& vertex(INDEX_TYPE face_idx, int vid) { return m_vertices[m_poly.faces()[face_idx].at(vid)]; };
 
 	bool calcVN( bool weighted = true );
 	bool calcFN();
 
-	virtual void renderSelf() override;
+	//virtual void renderSelf111() override;
 	//virtual void render() override;
 	virtual void prepare() override {};
 
@@ -116,41 +120,41 @@ public:
 
 	std::vector<CVector3f> &getVectors( CPoint3f pkt0 );
 
-	/* tworzy mapê powi¹zañ indeksów wierzcho³ków z indeksami œcianek */
+	/* tworzy mapï¿½ powiï¿½zaï¿½ indeksï¿½w wierzchoï¿½kï¿½w z indeksami ï¿½cianek */
 	void createV2Fmap( CMesh::V2Fmap &map );
 
 	void createV2Emap(CMesh::V2Emap& v2e);
 
 	void createMaps(CMesh::V2Fmap& v2f, CMesh::V2Emap& v2e);
 	
-	/* szuka wszystkich s¹siadek œcianki i podanym indeksie, s¹siedztwo mo¿e byc po krawêdziach (limit=1) lub po wierzcho³kach (limit=0)*/
+	/* szuka wszystkich sï¿½siadek ï¿½cianki i podanym indeksie, sï¿½siedztwo moï¿½e byc po krawï¿½dziach (limit=1) lub po wierzchoï¿½kach (limit=0)*/
 	void findNeighborsOfFace( INDEX_TYPE idxF, CMesh::V2Fmap &map, CMesh::Neighbors *sasiadki, int limit = 1);
 
-	/* zwraca uporz¹dkowany zbiór (std::set) œcianek brzegowych dla ca³ej siatki */
+	/* zwraca uporzï¿½dkowany zbiï¿½r (std::set) ï¿½cianek brzegowych dla caï¿½ej siatki */
 	void findBoundaryFaces( std::set<INDEX_TYPE> &brzegowe, CMesh::V2Fmap &map );
 
-	/* zwraca mapê (std::map) œcianek brzegowych wraz z ich s¹siedztwem dla ca³ej siatki */
+	/* zwraca mapï¿½ (std::map) ï¿½cianek brzegowych wraz z ich sï¿½siedztwem dla caï¿½ej siatki */
 	void findBoundaryFaces( CMesh::Neighborhood &brzegowe, CMesh::V2Fmap &map);
 
-	/* zwraca uporz¹dkowany zbiór (std::set) œcianek brzegowych dla podanego podzbioru œcianek */
+	/* zwraca uporzï¿½dkowany zbiï¿½r (std::set) ï¿½cianek brzegowych dla podanego podzbioru ï¿½cianek */
 	void findBoundaryFaces( std::set<INDEX_TYPE> &brzegowe, CMesh::V2Fmap &map, std::set< INDEX_TYPE > &scianki);
 
-	/* zwraca mapê (std::map) œcianek brzegowych wraz z ich s¹siedztwem dla podanego podzbioru œcianek */
+	/* zwraca mapï¿½ (std::map) ï¿½cianek brzegowych wraz z ich sï¿½siedztwem dla podanego podzbioru ï¿½cianek */
 	void findBoundaryFaces( CMesh::Neighborhood &brzegowe, CMesh::V2Fmap &map, std::set< INDEX_TYPE > &scianki);
 
-	/* szuka krawêdzi brzegowych gdy mamy juz znalezione œcianki brzegowe */
+	/* szuka krawï¿½dzi brzegowych gdy mamy juz znalezione ï¿½cianki brzegowe */
 	void findBoundaryEdges( CMesh::Edges &edges, CMesh::Neighborhood sciankiBrzegowe );
 
-	/* zwraca zbiór (std::set) wszystkich krawêdzi w siatce */
+	/* zwraca zbiï¿½r (std::set) wszystkich krawï¿½dzi w siatce */
 	void getEdges( CMesh::Edges &edges);
 
-	/* zwraca zbiór (std::set) wszystkich krawêdzi dla podanego podzbioru œcianek */
+	/* zwraca zbiï¿½r (std::set) wszystkich krawï¿½dzi dla podanego podzbioru ï¿½cianek */
 	void getEdges( CMesh::Edges &edges, std::set< INDEX_TYPE > &scianki);
 
-	/* zwraca zbiór (std::set) wszystkich krawêdzi brzegowych w siatce */
+	/* zwraca zbiï¿½r (std::set) wszystkich krawï¿½dzi brzegowych w siatce */
 	void findBoundaryEdges( CMesh::Edges &edges );
 
-	/* zwraca zbiór (std::set) wszystkich krawêdzi brzegowych dla podanego podzbioru œcianek */
+	/* zwraca zbiï¿½r (std::set) wszystkich krawï¿½dzi brzegowych dla podanego podzbioru ï¿½cianek */
 	void findBoundaryEdges( CMesh::Edges &edges, std::set< INDEX_TYPE > &scianki );
 
 	void removeDuplicateVertices(double eps = 0.0);
@@ -228,6 +232,9 @@ public:
 
 	// experimental...
 	void merge(CMesh*);
+
+protected:
+	//static IRenderer* renderer_;
 };
 
 typedef CMesh* PtrMesh;

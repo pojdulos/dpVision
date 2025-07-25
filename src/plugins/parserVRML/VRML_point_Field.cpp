@@ -2,6 +2,8 @@
 
 #include "ParserWRL.h"
 
+#include "../api/UI.h"
+
 size_t CParserWRL::VRML_ParseField_point( FILE *plik )
 {
 	size_t lp=0;

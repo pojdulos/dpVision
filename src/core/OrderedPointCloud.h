@@ -18,12 +18,16 @@ public:
 	COrderedPointCloud(COrderedPointCloud&);
 	~COrderedPointCloud();
 
-	virtual std::shared_ptr<CBaseObject> getCopy() override { return std::make_shared<COrderedPointCloud>(*this); };
+	virtual std::shared_ptr<CBaseObject> getCopy() override {
+		auto obj = std::make_shared<COrderedPointCloud>(*this); 
+		updateChildrenParentPointers(obj);
+		return obj;
+	};
 
 	inline int type() override { return CObject::Type::ORDEREDCLOUD; };
 	std::wstring infoRow() override;
 
-	virtual void renderSelf() override;
+	//virtual void renderSelf() override;
 private:
 
 	void renderAsMesh();

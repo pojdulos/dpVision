@@ -13,11 +13,12 @@ class DPVISION_EXPORT CTriangle {
 public:
 	CVertex a, b, c;
 
-	CTriangle();
+	CTriangle() = default;
 	CTriangle(CPoint3d pA, CPoint3d pB, CPoint3d pC);
 	CTriangle(int idx, CMesh& mesh);
 	CTriangle(int idx, CMesh* mesh);
-	~CTriangle();
+
+	~CTriangle() = default;
 
 	CVertex& operator[](size_t i) {
 		switch (i) {
@@ -38,10 +39,10 @@ public:
 	}
 	//static CTriangle * fromCFace(CFace &f, CMesh &mesh);
 
-	CBoundingBox getBoundingBox();
-	CPoint3d getMidpoint();
+	CBoundingBox getBoundingBox() const;
+	CPoint3d getMidpoint() const;
 
-	CVector3d getNormal();
+	CVector3d getNormal() const;
 
 	static CPoint3d getClosestPoint(const CPoint3d& sourcePosition, const CVertex& _a, const CVertex& _b, const CVertex& _c);
 	inline CPoint3d getClosestPoint(const CPoint3d& sourcePosition) {

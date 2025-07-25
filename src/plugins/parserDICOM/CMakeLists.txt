@@ -35,13 +35,13 @@ target_link_libraries (${PLUGIN_NAME}
 	dpVision::PluginManager
 	Qt5::Core
 	Eigen3::Eigen
-	#opencv_world
 )
 
 target_include_directories (${PLUGIN_NAME} PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/imebra/include
 	${CMAKE_CURRENT_SOURCE_DIR}/imebra/implementation
+	${dpVision_INCLUDE_DIR}
 )
 
 message("Imebra include path: ${CMAKE_CURRENT_SOURCE_DIR}/imebra/include")

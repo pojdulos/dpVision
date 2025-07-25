@@ -50,7 +50,22 @@ int CFace::hasVertex( const INDEX_TYPE v_id )
 	return -1;
 }
 
-void CFace::setAt( int n, const INDEX_TYPE v_id )
+void CFace::setAt(int n, const INDEX_TYPE v_id)
 {
-	if ( (n>=0) && (n<3) )	toVector()[n] = v_id;
+	switch (n) {
+		case 0: x = v_id; break;
+		case 1: y = v_id; break;
+		case 2: z = v_id; break;
+		default: break;
+	}
+}
+
+INDEX_TYPE CFace::at(int n) const
+{
+	switch (n) {
+		case 0: return x;
+		case 1: return y;
+		case 2: return z;
+		default: return static_cast<INDEX_TYPE>(-1);
+	}
 }

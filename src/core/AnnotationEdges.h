@@ -21,22 +21,11 @@ class DPVISION_EXPORT CAnnotationEdges : public CAnnotation
 public:
 	std::list<CAnnotationEdge> m_list;
 
-	CAnnotationEdges(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation( m )
-	{
-		setLabel("edge_set");
-	};
+	CAnnotationEdges(std::shared_ptr<CBaseObject> m = nullptr);;
 
-	CAnnotationEdges( CAnnotationEdges &p ) :CAnnotation( p )
-	{
-		setLabel("edge_set");
-		m_list = p.m_list;
-	};
+	CAnnotationEdges( CAnnotationEdges &p );;
 
-	CAnnotationEdges( std::list<CAnnotationEdge> &list, std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation(m)
-	{
-		setLabel("edge_set");
-		m_list = list;
-	};
+	CAnnotationEdges( std::list<CAnnotationEdge> &list, std::shared_ptr<CBaseObject> m = nullptr);;
 
 	~CAnnotationEdges() { m_list.clear(); };
 	
@@ -48,7 +37,7 @@ public:
 
 	virtual std::wstring getTypeWSTR() { return L"edge_set"; };
 	virtual std::wstring getInfoRow();
-	virtual void renderSelf() override;
+
 };
 
 //class  DPVISION_EXPORT CPathsMap : public std::map<int, CAnnotationPath*> {};

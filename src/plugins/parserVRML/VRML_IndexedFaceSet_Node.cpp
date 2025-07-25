@@ -2,6 +2,8 @@
 
 #include "ParserWRL.h"
 
+#include "../api/UI.h"
+
 void CParserWRL::VRML_ParseNode_IndexedFaceSet( FILE *plik )
 {
 	char bufor[80];

@@ -4,14 +4,16 @@
 #include "Utilities.h"
 
 #include "Objects"
-#include "Annotations"
+#include "AnnotationSetOfVertices.h"
+#include "AnnotationSetOfFaces.h"
 
 #include <fstream>
 
 #include "quazip.h"
 #include "quazipfile.h"
 #include "quazipdir.h"
-
+#include "StatusBarManager.h"
+#include "interfaces/IProgressListener.h"
 
 void CParserDPVISION::copyFileToZip(QuaZip& zip, QString pathInZip, QString inFileName)
 {
@@ -73,7 +75,7 @@ void CParserDPVISION::saveMesh(QTextStream& objStream, std::shared_ptr<CObject> 
 			CMesh::Colors::iterator itcol = cloud->vcolors().begin();
 			for (CMesh::Vertices::iterator itv = cloud->vertices().begin(); itv != cloud->vertices().end(); itv++)
 			{
-				UI::STATUSBAR::printfTimed(500, L"Saving vertices: %d", vCnt++);
+				StatusBarManager::setTextTimed(500, QString("Saving vertices: %1").arg(vCnt++));
 
 				objStream << "v " << itv->X() << " "
 					<< itv->Y() << " "
@@ -89,7 +91,7 @@ void CParserDPVISION::saveMesh(QTextStream& objStream, std::shared_ptr<CObject> 
 		{
 			for (CMesh::Vertices::iterator itv = cloud->vertices().begin(); itv != cloud->vertices().end(); itv++)
 			{
-				UI::STATUSBAR::printfTimed(500, L"Saving vertices: %d", vCnt++);
+				StatusBarManager::setTextTimed(500, QString("Saving vertices: %1").arg(vCnt++));
 
 				objStream << "v " << itv->X() << " "
 					<< itv->Y() << " "
@@ -102,7 +104,7 @@ void CParserDPVISION::saveMesh(QTextStream& objStream, std::shared_ptr<CObject> 
 			int vnCnt = 0;
 			for (CMesh::Normals::iterator itv = cloud->vnormals().begin(); itv != cloud->vnormals().end(); itv++)
 			{
-				UI::STATUSBAR::printfTimed(500, L"Saving normals: %d", vnCnt++);
+				StatusBarManager::setTextTimed(500, QString("Saving normals : %1").arg(vnCnt++));
 
 				objStream << "vn " << itv->X() << " "
 					<< itv->Y() << " "
@@ -212,37 +214,37 @@ void CParserDPVISION::saveMTL(QuaZip& zip, CMaterial& material, QString path, QS
 
 }
 
-void CVolTKtoZIP(CVolTK* volTK, QuaZip& zip, QString pathInZip)
-{
-	int layerSize = volTK->kostka.m_cols * volTK->kostka.m_rows * sizeof(NowaKostka1::Type);
-
-	QuaZipFile file(&zip);
-
-	if (file.open(QIODevice::OpenModeFlag::WriteOnly, QuaZipNewInfo(pathInZip)))
-	{
-		UI::PROGRESSBAR::init(0, volTK->kostka.m_lays, 0);
-		UI::PROGRESSBAR::setText("saving volumetric data to zip file");
-		for (int l = 0; l < volTK->kostka.m_lays; l++)
-		{
-			file.write(QByteArray::fromRawData((const char*)volTK->kostka.layer(l), layerSize));
-			UI::PROGRESSBAR::setValue(l);
-		}
-		UI::PROGRESSBAR::hide();
-
-		file.close();
-
-		if (file.getZipError() != 0)
-		{
-			std::cout << "zipFile.getZipError != 0\n";
-			return;
-		}
-	}
-	else
-	{
-		std::cout << "nie otwarto pliku " << pathInZip.toStdString().c_str() << "\n";
-		return;
-	}
-}
+//void CVolTKtoZIP(CVolTK* volTK, QuaZip& zip, QString pathInZip)
+//{
+//	int layerSize = volTK->kostka.m_cols * volTK->kostka.m_rows * sizeof(NowaKostka1::Type);
+//
+//	QuaZipFile file(&zip);
+//
+//	if (file.open(QIODevice::OpenModeFlag::WriteOnly, QuaZipNewInfo(pathInZip)))
+//	{
+//		auto prg_ = IProgressListener::getDefault();
+//		if (prg_) prg_->init(0, volTK->kostka.m_lays, 0, "saving volumetric data to zip file");
+//		for (int l = 0; l < volTK->kostka.m_lays; l++)
+//		{
+//			file.write(QByteArray::fromRawData((const char*)volTK->kostka.layer(l), layerSize));
+//			if (prg_) prg_->setValue(l);
+//		}
+//		if (prg_) prg_->hide();
+//
+//		file.close();
+//
+//		if (file.getZipError() != 0)
+//		{
+//			std::cout << "zipFile.getZipError != 0\n";
+//			return;
+//		}
+//	}
+//	else
+//	{
+//		std::cout << "nie otwarto pliku " << pathInZip.toStdString().c_str() << "\n";
+//		return;
+//	}
+//}
 
 void CParserDPVISION::saveObject(QuaZip& zip, std::shared_ptr<CBaseObject> obj, QString path)
 {
@@ -275,10 +277,10 @@ void CParserDPVISION::saveObject(QuaZip& zip, std::shared_ptr<CBaseObject> obj, 
 
 			saveMTL(zip, std::static_pointer_cast<CPointCloud>(obj)->getMaterial(), path, objBaseName);
 		}
-		else if (obj->hasType(CObject::VOLTK))
-		{
-			CVolTKtoZIP((CVolTK*)obj.get(), zip, path + objBaseName + ".raw");
-		}
+		//else if (obj->hasType(CObject::VOLTK))
+		//{
+		//	CVolTKtoZIP((CVolTK*)obj.get(), zip, path + objBaseName + ".raw");
+		//}
 
 
 		for (const auto& c : std::static_pointer_cast<CObject>(obj)->children())
@@ -338,25 +340,25 @@ void CParserDPVISION::createXmlNodeObject(std::shared_ptr<CObject> obj, QDomElem
 			//file.setAttribute("texture", IdToString(obj->id()) + "." + QFileInfo(mat.TexInfo).suffix());
 		}
 	}
-	else if (obj->hasType(CObject::Type::VOLTK))
-	{
-		std::shared_ptr<CVolTK> volTK = std::static_pointer_cast<CVolTK>(obj);
+	//else if (obj->hasType(CObject::Type::VOLTK))
+	//{
+	//	std::shared_ptr<CVolTK> volTK = std::static_pointer_cast<CVolTK>(obj);
 
-		child.setAttribute("type", "volumetric");
-		child.setAttribute("layers", (qulonglong) volTK->kostka.m_lays);
-		child.setAttribute("rows", (qulonglong) volTK->kostka.m_rows);
-		child.setAttribute("columns", (qulonglong) volTK->kostka.m_cols);
-		QDomElement voxel = docu.createElement("voxelSize");
-		voxel.setAttribute("x", volTK->getVoxelSize().x);
-		voxel.setAttribute("y", volTK->getVoxelSize().y);
-		voxel.setAttribute("z", volTK->getVoxelSize().z);
-		child.appendChild(voxel);
+	//	child.setAttribute("type", "volumetric");
+	//	child.setAttribute("layers", (qulonglong) volTK->kostka.m_lays);
+	//	child.setAttribute("rows", (qulonglong) volTK->kostka.m_rows);
+	//	child.setAttribute("columns", (qulonglong) volTK->kostka.m_cols);
+	//	QDomElement voxel = docu.createElement("voxelSize");
+	//	voxel.setAttribute("x", volTK->getVoxelSize().x);
+	//	voxel.setAttribute("y", volTK->getVoxelSize().y);
+	//	voxel.setAttribute("z", volTK->getVoxelSize().z);
+	//	child.appendChild(voxel);
 
-		QDomElement file = docu.createElement("file");
-		file.setAttribute("format", "raw");
-		file.setAttribute("data", IdToString(volTK->id()) + ".raw");
-		child.appendChild(file);
-	}
+	//	QDomElement file = docu.createElement("file");
+	//	file.setAttribute("format", "raw");
+	//	file.setAttribute("data", IdToString(volTK->id()) + ".raw");
+	//	child.appendChild(file);
+	//}
 
 	root.appendChild(child);
 

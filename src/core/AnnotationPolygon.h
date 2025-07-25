@@ -9,19 +9,11 @@
 
 class DPVISION_EXPORT CAnnotationPolygon : public CAnnotation
 {
+public:
 	std::list<CPoint3d> m_data;
 
-public:
-	CAnnotationPolygon(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation(m)
-	{
-		setLabel("polygon");
-	};
-
-	CAnnotationPolygon( CAnnotationPolygon &p ) :CAnnotation(p)
-	{
-		setLabel("polygon");
-		m_data = p.m_data;
-	}
+	CAnnotationPolygon(std::shared_ptr<CBaseObject> m = nullptr);
+	CAnnotationPolygon( CAnnotationPolygon &p );
 
 	~CAnnotationPolygon() { m_data.clear(); };
 
@@ -32,6 +24,5 @@ public:
 
 	virtual std::wstring getInfoRow();
 
-	virtual void renderSelf() override;
 };
 

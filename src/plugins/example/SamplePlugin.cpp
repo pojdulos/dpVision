@@ -1,13 +1,15 @@
 #include "SamplePlugin.h"
 
 #include "Workspace.h"
-#include "MainApplication.h"
+//#include "MainApplication.h"
 
 #include "AnnotationPoint.h"
 #include "AnnotationPlane.h"
 #include "FileConnector.h"
 
-#include "AP.h"
+#include "../api/AP.h"
+#include "../api/UI.h"
+
 #include "AppSettings.h"
 
 #include <QPushButton>
@@ -116,7 +118,7 @@ void SamplePlugin::createBox()
 	// matrix to your object,
 	// so you can rotate and move it
 	std::shared_ptr<CModel3D> obj = std::make_shared<CModel3D>();
-	obj->addChild(mesh);
+	obj->addChild(obj, mesh);
 	obj->importChildrenGeometry();
 
 	// this command causes the object to be displayed
@@ -238,7 +240,7 @@ void SamplePlugin::cutMesh() {
 			std::shared_ptr<CModel3D> obj1 = std::make_shared<CModel3D>();
 
 			// set obj1 as parent of your mesh
-			obj1->addChild(mesh1);
+			obj1->addChild(obj1, mesh1);
 
 			// and optionaly correct parents boundingbox
 			obj1->importChildrenGeometry();
@@ -260,7 +262,7 @@ void SamplePlugin::cutMesh() {
 
 			std::shared_ptr<CModel3D> obj2 = std::make_shared<CModel3D>();
 
-			obj2->addChild(mesh2);
+			obj2->addChild(obj2, mesh2);
 			obj2->importChildrenGeometry();
 			obj2->setLabel("bottom part");
 

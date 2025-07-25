@@ -6,6 +6,10 @@
 #include "AnnotationTriangle.h"
 
 #include "FileConnector.h"
+#include "StatusBarManager.h"
+#include "interfaces/IProgressListener.h"
+
+#include "dpLog.h"
 
 QMap<QString, QString> CParserATMDL::defs;
 
@@ -25,7 +29,7 @@ QString CParserATMDL::skip_comments(QTextStream& in)
 	in >> slowo;
 	while (slowo.trimmed().startsWith('#'))
 	{
-		qInfo() << "COMMENT: " + slowo + in.readLine() << Qt::endl;
+		dpInfo() << "COMMENT: " + slowo + in.readLine();// ; //<< Qt::endl;
 		in >> slowo;
 	}
 
@@ -54,7 +58,7 @@ std::shared_ptr<CObject> CParserATMDL::clean_model(std::shared_ptr<CModel3D> obj
 				std::shared_ptr<CAnnotation> an = (*it).second;
 				it = obj->annotations().erase(it);
 
-				c->addAnnotation(an);
+				c->addAnnotation(c, an);
 			}
 		}
 
@@ -78,7 +82,7 @@ std::shared_ptr<CObject> CParserATMDL::loadShellFile(const QString filepath, QFi
 
 		if (!fi.exists())
 		{
-			qWarning() << "\033[31m --- File not exists: " << myPath << " --- \033[0m" << Qt::endl;
+			dpError() << "File not exists: " << myPath;
 			return nullptr;
 		}
 
@@ -95,9 +99,9 @@ std::shared_ptr<CObject> CParserATMDL::loadShellFile(const QString filepath, QFi
 void CParserATMDL::add_kid(std::shared_ptr<CObject> obj, std::shared_ptr<CBaseObject> kid)
 {
 	if (kid->hasCategory(CBaseObject::OBJECT))
-		obj->addChild(kid);
+		obj->addChild(obj, kid);
 	else if (kid->hasCategory(CBaseObject::ANNOTATION))
-		obj->addAnnotation(std::dynamic_pointer_cast<CAnnotation>(kid));
+		obj->addAnnotation(obj, std::dynamic_pointer_cast<CAnnotation>(kid));
 }
 
 void CParserATMDL::replaceKeysWithValues(QString& txt) {
@@ -141,7 +145,7 @@ QString CParserATMDL::parseType_string(QTextStream& in)
 			in >> znak;
 			if ((znak == '\n') || (znak == '\r'))
 			{
-				qInfo() << QString::fromUtf8("UWAGA: Napotkano koniec linii bez zamknięcia cudzysłowu") << Qt::endl;
+				dpWarn() << QString::fromUtf8("UWAGA: Napotkano koniec linii bez zamknięcia cudzysłowu"); // << Qt::endl;
 				break;
 			}
 			slowo += znak;
@@ -168,7 +172,7 @@ QString CParserATMDL::parseType_string(QTextStream& in)
 
 	replaceKeysWithValues(slowo);
 
-	qInfo() << "STRING: " << slowo << Qt::endl;
+	dpInfo() << "STRING: " << slowo; // << Qt::endl;
 
 	return slowo;
 }
@@ -205,7 +209,7 @@ QString CParserATMDL::parseType_matrix(QTextStream& in)
 		tekst.chop(1);
 	}
 
-	qInfo() << "MATRIX: " << tekst << Qt::endl;
+	dpInfo() << "MATRIX: " << tekst; // << Qt::endl;
 	return tekst;
 }
 
@@ -213,12 +217,12 @@ QList<double> CParserATMDL::parseType_MatrixOfDouble(QTextStream& in, int size)
 {
 	QString tekst = parseType_matrix(in);
 
-	QStringList qCoords = tekst.split(",", QString::SkipEmptyParts);
+	QStringList qCoords = tekst.split(",", Qt::SkipEmptyParts);
 
 	if (qCoords.size() != size)
 	{ 	//qInfo() << "\033[31m" << "To jest komunikat b��du" << "\033[0m" << Qt::endl;
 
-		qWarning() << "\033[33mOczekiwano macierzy o rozmiarze " + QString::number(size) + " elementów. Odczytano " + QString::number(qCoords.size()) + " elementów.\033[0m" << Qt::endl;
+		qWarning() << "\033[33mOczekiwano macierzy o rozmiarze " + QString::number(size) + " elementów. Odczytano " + QString::number(qCoords.size()) + " elementów.\033[0m"; // << Qt::endl;
 	}
 
 	while (qCoords.size() > size)
@@ -238,7 +242,7 @@ QList<double> CParserATMDL::parseType_MatrixOfDouble(QTextStream& in, int size)
 		qlist.append(0.0);
 	}
 
-	qInfo() << "DOUBLE MATRIX: " << qlist << Qt::endl;
+	dpInfo() << "DOUBLE MATRIX: " << qlist;
 	return qlist;
 }
 
@@ -250,7 +254,7 @@ CTransform CParserATMDL::parseProperty_rotation(QTextStream& in)
 
 	if (slowo != "{")
 	{
-		qInfo() << QString::fromUtf8("B��D. Oczekiwano znaku { odczytano: ") << slowo << Qt::endl;
+		dpError() << QString::fromUtf8("BŁĄD. Oczekiwano znaku { odczytano: ") << slowo; // << Qt::endl;
 
 		return CTransform();
 	}
@@ -277,11 +281,11 @@ CTransform CParserATMDL::parseProperty_rotation(QTextStream& in)
 		}
 		else if (slowo == "}")
 		{
-			qInfo() << "Poprawnie odczytano punkt" << Qt::endl;
+			dpInfo() << "Poprawnie odczytano punkt"; // << Qt::endl;
 		}
 		else
 		{
-			qInfo() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo << Qt::endl;
+			dpError() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo; // << Qt::endl;
 			return CTransform();
 		}
 
@@ -289,7 +293,7 @@ CTransform CParserATMDL::parseProperty_rotation(QTextStream& in)
 
 	if (opis.contains("axis"))
 	{
-		QStringList axisList = opis["axis"].split(",", QString::SkipEmptyParts);
+		QStringList axisList = opis["axis"].split(",", Qt::SkipEmptyParts);
 
 		CVector3d axis(axisList[0].toDouble(), axisList[1].toDouble(), axisList[2].toDouble());
 
@@ -297,7 +301,7 @@ CTransform CParserATMDL::parseProperty_rotation(QTextStream& in)
 
 		if (opis.contains("origin"))
 		{
-			QStringList originList = opis["origin"].split(",", QString::SkipEmptyParts);
+			QStringList originList = opis["origin"].split(",", Qt::SkipEmptyParts);
 			origin.Set(originList[0].toDouble(), originList[1].toDouble(), originList[2].toDouble());
 		}
 
@@ -323,7 +327,7 @@ CTransform CParserATMDL::parseProperty_translation(QTextStream& in)
 {
 	QString slowo =	parseType_matrix(in);
 	
-	QStringList axisList = slowo.split(",", QString::SkipEmptyParts);
+	QStringList axisList = slowo.split(",", Qt::SkipEmptyParts);
 
 	CVector3d axis(axisList[0].toDouble(), axisList[1].toDouble(), axisList[2].toDouble());
 
@@ -342,7 +346,7 @@ CMovement::SeqList CParserATMDL::parseProperty_frameset(QTextStream& in)
 
 	if (slowo != "{")
 	{
-		qInfo() << QString::fromUtf8("BŁĄD. Oczekiwano znaku { odczytano: ") << slowo << Qt::endl;
+		dpError() << QString::fromUtf8("BŁĄD. Oczekiwano znaku { odczytano: ") << slowo; // << Qt::endl;
 
 		return CMovement::SeqList();
 	}
@@ -392,11 +396,11 @@ CMovement::SeqList CParserATMDL::parseProperty_frameset(QTextStream& in)
 		}
 		else if (slowo == "}")
 		{
-			qInfo() << QString::fromUtf8("Poprawnie odczytano transformację") << Qt::endl;
+			dpInfo() << QString::fromUtf8("Poprawnie odczytano transformację"); // << Qt::endl;
 		}
 		else
 		{
-			qInfo() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo << Qt::endl;
+			dpError() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo; // << Qt::endl;
 			return CMovement::SeqList();
 		}
 
@@ -442,7 +446,7 @@ CMovement::FrameVal CParserATMDL::parseProperty_frame(QTextStream& in)
 
 	if (slowo != "{")
 	{
-		qInfo() << QString::fromUtf8("BŁĄD. Oczekiwano znaku { odczytano: ") << slowo << Qt::endl;
+		dpError() << QString::fromUtf8("BŁĄD. Oczekiwano znaku { odczytano: ") << slowo ; //<< Qt::endl;
 
 		return CMovement::FrameVal();
 	}
@@ -492,11 +496,11 @@ CMovement::FrameVal CParserATMDL::parseProperty_frame(QTextStream& in)
 		}
 		else if (slowo == "}")
 		{
-			qInfo() << QString::fromUtf8("Poprawnie odczytano klatkę animacji") << Qt::endl;
+			dpInfo() << QString::fromUtf8("Poprawnie odczytano klatkę animacji") ; //<< Qt::endl;
 		}
 		else
 		{
-			qInfo() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo << Qt::endl;
+			dpError() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo ; //<< Qt::endl;
 			return CMovement::FrameVal();
 		}
 
@@ -530,7 +534,7 @@ CMovement::SeqList CParserATMDL::parseProperty_sequence(QTextStream& in)
 
 	if (slowo != "{")
 	{
-		qInfo() << QString::fromUtf8("BŁĄD. Oczekiwano znaku { odczytano: ") << slowo << Qt::endl;
+		dpError() << QString::fromUtf8("BŁĄD. Oczekiwano znaku { odczytano: ") << slowo ; //<< Qt::endl;
 
 		return CMovement::SeqList();
 	}
@@ -557,11 +561,11 @@ CMovement::SeqList CParserATMDL::parseProperty_sequence(QTextStream& in)
 		}
 		else if (slowo == "}")
 		{
-			qInfo() << "Poprawnie odczytano sekwencje, rozmiar: " << seq.size() << Qt::endl;
+			dpInfo() << "Poprawnie odczytano sekwencje, rozmiar: " << seq.size() ; //<< Qt::endl;
 		}
 		else
 		{
-			qInfo() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo << Qt::endl;
+			dpError() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo ; //<< Qt::endl;
 			return CMovement::SeqList();
 		}
 
@@ -572,7 +576,8 @@ CMovement::SeqList CParserATMDL::parseProperty_sequence(QTextStream& in)
 
 QSet<QString> CParserATMDL::parseProperty_keywords_v1(QString keywords)
 {
-	QSet<QString> out = keywords.split(";", QString::SkipEmptyParts).toSet();
+	QStringList parts = keywords.split(";", Qt::SkipEmptyParts);
+	QSet<QString> out(parts.begin(), parts.end());
 	return out;
 }
 
@@ -582,11 +587,11 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_shell(QTextStream& in)
 
 	slowo = skip_comments(in);
 
-	qInfo() << "Rozpoczeto interpretacje obiektu shell" << Qt::endl;
+	dpInfo() << "Rozpoczeto interpretacje obiektu shell" ; //<< Qt::endl;
 
 	if (slowo != "{")
 	{
-		qInfo() << QString::fromUtf8("BŁĄD. Oczekiwano znaku { odczytano: ") << slowo << Qt::endl;
+		dpError() << QString::fromUtf8("BŁĄD. Oczekiwano znaku { odczytano: ") << slowo ; //<< Qt::endl;
 
 		return nullptr;
 	}
@@ -620,11 +625,11 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_shell(QTextStream& in)
 		}
 		else if (slowo == "}")
 		{
-			qInfo() << "znaleziono klamre zamykajaca" << Qt::endl;
+			dpInfo() << "znaleziono klamre zamykajaca" ; //<< Qt::endl;
 		}
 		else
 		{
-			qInfo() << QString::fromUtf8("BLAD. Nierozpoznany symbol ") << slowo << Qt::endl;
+			dpError() << QString::fromUtf8("BLAD. Nierozpoznany symbol ") << slowo ; //<< Qt::endl;
 			return nullptr;
 		}
 
@@ -648,7 +653,7 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_shell(QTextStream& in)
 		for (auto kid : kids) add_kid(obj, kid);
 	}
 
-	qInfo() << "Zakonczono interpretacje obiektu shell" << Qt::endl;
+	dpInfo() << "Zakonczono interpretacje obiektu shell" ; //<< Qt::endl;
 
 	return obj;
 }
@@ -659,7 +664,7 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_transformation(QTextStrea
 
 	if (slowo != "{")
 	{
-		qInfo() << QString::fromUtf8("BŁĄD. Oczekiwano znaku { odczytano: ") << slowo << Qt::endl;
+		dpError() << QString::fromUtf8("BŁĄD. Oczekiwano znaku { odczytano: ") << slowo ; //<< Qt::endl;
 
 		return nullptr;
 	}
@@ -709,11 +714,11 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_transformation(QTextStrea
 		}
 		else if (slowo == "}")
 		{
-			qInfo() << QString::fromUtf8("Poprawnie odczytano transformację").toStdU16String() << Qt::endl;
+			dpInfo() << QString::fromUtf8("Poprawnie odczytano transformację").toStdU16String() ; //<< Qt::endl;
 		}
 		else
 		{
-			qInfo() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo << Qt::endl;
+			dpError() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo ; //<< Qt::endl;
 			return nullptr;
 		}
 
@@ -759,7 +764,7 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_point(QTextStream& in)
 
 	if (slowo != "{")
 	{
-		qInfo() << QString::fromUtf8("BŁĄD. Oczekiwano znaku { odczytano: ") << slowo << Qt::endl;
+		dpError() << QString::fromUtf8("BŁĄD. Oczekiwano znaku { odczytano: ") << slowo ; //<< Qt::endl;
 
 		return nullptr;
 	}
@@ -794,11 +799,11 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_point(QTextStream& in)
 		}
 		else if (slowo == "}")
 		{
-			qInfo() << "Poprawnie odczytano punkt" << Qt::endl;
+			dpInfo() << "Poprawnie odczytano punkt" ; //<< Qt::endl;
 		}
 		else
 		{
-			qInfo() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo << Qt::endl;
+			dpError() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo ; //<< Qt::endl;
 			return nullptr;
 		}
 
@@ -806,7 +811,7 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_point(QTextStream& in)
 
 	if (opis.contains("coords"))
 	{
-		QStringList qCoords = opis["coords"].split(",", QString::SkipEmptyParts);
+		QStringList qCoords = opis["coords"].split(",", Qt::SkipEmptyParts);
 
 		std::shared_ptr<CAnnotationPoint> obj = std::make_shared<CAnnotationPoint>();
 
@@ -816,8 +821,8 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_point(QTextStream& in)
 
 			if (opis.contains("normal"))
 			{
-				QStringList qNormal = opis["normal"].split(",", QString::SkipEmptyParts);
-				qInfo() << qNormal;
+				QStringList qNormal = opis["normal"].split(",", Qt::SkipEmptyParts);
+				dpInfo() << qNormal;
 				obj->setDirection(qNormal[0].toDouble(), qNormal[1].toDouble(), qNormal[2].toDouble());
 			}
 
@@ -841,7 +846,7 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_plane(QTextStream& in)
 
 	if (slowo != "{")
 	{
-		qInfo() << QString::fromUtf8("BŁĄD. Oczekiwano znaku { odczytano: ") << slowo << Qt::endl;
+	dpError() << QString::fromUtf8("BŁĄD. Oczekiwano znaku { odczytano: ") << slowo ; //<< Qt::endl;
 
 		return nullptr;
 	}
@@ -884,11 +889,11 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_plane(QTextStream& in)
 		}
 		else if (slowo == "}")
 		{
-			qInfo() << "Poprawnie odczytano plaszczyzne" << Qt::endl;
+			dpInfo() << "Poprawnie odczytano plaszczyzne" ; //<< Qt::endl;
 		}
 		else
 		{
-			qInfo() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo << Qt::endl;
+			dpError() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo ; //<< Qt::endl;
 			return nullptr;
 		}
 
@@ -896,7 +901,7 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_plane(QTextStream& in)
 
 	if (opis.contains("center"))
 	{
-		QStringList qCoords = opis["center"].split(",", QString::SkipEmptyParts);
+		QStringList qCoords = opis["center"].split(",", Qt::SkipEmptyParts);
 
 		std::shared_ptr<CAnnotationPlane> obj = std::make_shared<CAnnotationPlane>();
 
@@ -906,8 +911,8 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_plane(QTextStream& in)
 
 			if (opis.contains("normal"))
 			{
-				QStringList qNormal = opis["normal"].split(",", QString::SkipEmptyParts);
-				qInfo() << qNormal;
+				QStringList qNormal = opis["normal"].split(",", Qt::SkipEmptyParts);
+				dpInfo() << qNormal;
 				obj->setNormal(CVector3d(qNormal[0].toDouble(), qNormal[1].toDouble(), qNormal[2].toDouble()));
 			}
 			else {
@@ -917,7 +922,7 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_plane(QTextStream& in)
 			if (opis.contains("size"))
 			{
 				double size = opis["size"].toDouble();
-				qInfo() << "size = " << size;
+				dpInfo() << "size = " << size;
 				obj->setSize(size);
 			}
 
@@ -942,7 +947,7 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_sphere(QTextStream& in)
 
 	if (slowo != "{")
 	{
-		qInfo() << QString::fromUtf8("BŁĄD. Oczekiwano znaku { odczytano: ") << slowo << Qt::endl;
+		dpError() << QString::fromUtf8("BŁĄD. Oczekiwano znaku { odczytano: ") << slowo ; //<< Qt::endl;
 
 		return nullptr;
 	}
@@ -978,11 +983,11 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_sphere(QTextStream& in)
 		}
 		else if (slowo == "}")
 		{
-			qInfo() << "Poprawnie odczytano punkt" << Qt::endl;
+			dpInfo() << "Poprawnie odczytano punkt" ; //<< Qt::endl;
 		}
 		else
 		{
-			qInfo() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo << Qt::endl;
+			dpError() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo ; //<< Qt::endl;
 			return nullptr;
 		}
 
@@ -992,7 +997,7 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_sphere(QTextStream& in)
 
 	if (opis.contains("coords"))
 	{
-		QStringList qCoords = opis["coords"].split(",", QString::SkipEmptyParts);
+		QStringList qCoords = opis["coords"].split(",", Qt::SkipEmptyParts);
 		coords.Set(qCoords[0].toDouble(), qCoords[1].toDouble(), qCoords[2].toDouble());
 	}
 
@@ -1031,7 +1036,7 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_triangle(QTextStream& in)
 
 	if (slowo != "{")
 	{
-		qInfo() << QString::fromUtf8("BŁĄD. Oczekiwano znaku { odczytano: ") << slowo << Qt::endl;
+		dpError() << QString::fromUtf8("BŁĄD. Oczekiwano znaku { odczytano: ") << slowo ; //<< Qt::endl;
 
 		return nullptr;
 	}
@@ -1073,11 +1078,11 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_triangle(QTextStream& in)
 		}
 		else if (slowo == "}")
 		{
-			qInfo() << "Poprawnie odczytano trojkat" << Qt::endl;
+			dpInfo() << "Poprawnie odczytano trojkat" ; //<< Qt::endl;
 		}
 		else
 		{
-			qInfo() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo << Qt::endl;
+			dpError() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo ; //<< Qt::endl;
 			return nullptr;
 		}
 
@@ -1086,9 +1091,9 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_triangle(QTextStream& in)
 	if (opis.contains("coordsA")&& opis.contains("coordsB")&& opis.contains("coordsC"))
 //	if (opis.contains("coordsB") && opis.contains("coordsC"))
 	{
-		QStringList qCoordsA = opis["coordsA"].split(",", QString::SkipEmptyParts);
-		QStringList qCoordsB = opis["coordsB"].split(",", QString::SkipEmptyParts);
-		QStringList qCoordsC = opis["coordsC"].split(",", QString::SkipEmptyParts);
+		QStringList qCoordsA = opis["coordsA"].split(",", Qt::SkipEmptyParts);
+		QStringList qCoordsB = opis["coordsB"].split(",", Qt::SkipEmptyParts);
+		QStringList qCoordsC = opis["coordsC"].split(",", Qt::SkipEmptyParts);
 
 		//CPoint3d vA(cA[0], cA[1], cA[2]);
 		CPoint3d vA(qCoordsA[0].toDouble(), qCoordsA[1].toDouble(), qCoordsA[2].toDouble());
@@ -1118,7 +1123,7 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_animation(QTextStream& in
 
 	if (slowo != "{")
 	{
-		qInfo() << QString::fromUtf8("BŁĄD. Oczekiwano znaku { odczytano: ") << slowo << Qt::endl;
+		dpError() << QString::fromUtf8("BŁĄD. Oczekiwano znaku { odczytano: ") << slowo ; //<< Qt::endl;
 
 		return nullptr;
 	}
@@ -1150,11 +1155,11 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_animation(QTextStream& in
 		}
 		else if (slowo == "}")
 		{
-			qInfo() << QString::fromUtf8("Poprawnie odczytano ruch") << Qt::endl;
+			dpInfo() << QString::fromUtf8("Poprawnie odczytano ruch") ; //<< Qt::endl;
 		}
 		else
 		{
-			qInfo() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo << Qt::endl;
+			dpError() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo ; //<< Qt::endl;
 			return nullptr;
 		}
 
@@ -1220,13 +1225,15 @@ void dpTest(const char* msg)
 
 }
 
-std::shared_ptr<CModel3D> CParserATMDL::load(const QString path, bool wait)
+std::shared_ptr<CModel3D> CParserATMDL::load(const QString path, bool wait, std::shared_ptr<IProgressListener> prg)
 {
+	progress_ = prg ? prg : IProgressListener::getDefault();
+
 	atmdlFile.setFileName(path);
 
 	if (!atmdlFile.open(QIODevice::ReadOnly | QFile::Text))
 	{
-		UI::STATUSBAR::setText("Can't open ATML file.");
+		StatusBarManager::setText("Can't open ATML file.");
 		return nullptr;
 	}
 
@@ -1241,8 +1248,8 @@ std::shared_ptr<CModel3D> CParserATMDL::load(const QString path, bool wait)
 
 	QString slowo;
 
-	//qInfo() << "\033[31m" << "To jest komunikat b��du" << "\033[0m" << Qt::endl;
-	
+	//dpError() << "To jest testowy komunikat błędu";
+
 	while (!in.atEnd())
 	{
 		slowo = skip_comments(in);
@@ -1255,7 +1262,8 @@ std::shared_ptr<CModel3D> CParserATMDL::load(const QString path, bool wait)
 			if (defs.find(slowo) != defs.end()) back_defs[slowo] = defs[slowo];
 			
 			defs[slowo] = parseType_string(in);
-			qInfo() << "\033[33m" << "DEFINICJA: " << slowo << " : " << defs[slowo] << "\033[0m" << Qt::endl;
+			//dpInfo() << "\033[33m" << "DEFINICJA: " << slowo << " : " << defs[slowo] << "\033[0m" ; //<< Qt::endl;
+			dpDebug() << "DEFINICJA: " + slowo + " : " + defs[slowo]; // +Qt::endl;
 		}
 		else if (auto tmp = parseObject(in, slowo))
 		{
@@ -1267,12 +1275,12 @@ std::shared_ptr<CModel3D> CParserATMDL::load(const QString path, bool wait)
 		}
 		else
 		{
-			qCritical() << "\033[33m" << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo << "\033[0m" << Qt::endl;
+			dpError() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo;
 			break;
 		}
 	}
 
-	//for (auto d : defs.keys()) qInfo() << d << " : " << defs[d] << Qt::endl;
+	//for (auto d : defs.keys()) qInfo() << d << " : " << defs[d] ; //<< Qt::endl;
 
 	for (auto d : back_defs.keys()) defs[d] = back_defs[d];
 
@@ -1407,7 +1415,7 @@ bool CParserATMDL::save(QVector<std::shared_ptr<CBaseObject>> objects, const QSt
 	QFile objFile(path);
 	if (!objFile.open(QIODevice::WriteOnly | QFile::Text))
 	{
-		UI::STATUSBAR::setText("Can't create file.");
+		StatusBarManager::setText("Can't create file.");
 		return false;
 	}
 	QTextStream objStream(&objFile);
@@ -1436,7 +1444,7 @@ bool CParserATMDL::save(std::shared_ptr<CModel3D> obj, const QString path)
 	QFile objFile(path);
 	if (!objFile.open(QIODevice::WriteOnly | QFile::Text))
 	{
-		UI::STATUSBAR::setText("Can't create file.");
+		StatusBarManager::setText("Can't create file.");
 		return false;
 	}
 

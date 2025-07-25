@@ -2,7 +2,7 @@
 
 #include "ParserWRL.h"
 #include "Utilities.h"
-#include "UI.h"
+#include "../api/UI.h"
 
 CParserWRL::CParserWRL(void)
 {
@@ -20,7 +20,7 @@ size_t CParserWRL::Run()
 {
 	if ( this->bIsNotSet ) return 0;
 
-	m_model->addChild( pMeshData = std::make_shared<CMesh>() );
+	m_model->addChild(m_model, pMeshData = std::make_shared<CMesh>() );
 	if ( pMeshData == NULL ) return 0;
 
 	return ReadVRML();
@@ -120,7 +120,7 @@ size_t CParserWRL::ReadVRML()
 
 	if (strcmp(a1, "#VRML"))
 	{
-		// brak nag��wka pliku vrml - wyskakujemy
+		// brak nagłówka pliku vrml - wyskakujemy
 		fclose(plik);
 		return 0;
 	}
@@ -136,7 +136,7 @@ size_t CParserWRL::ReadVRML()
 	}
 	else
 	{
-		// nieobs�ugiwana wersja
+		// nieobsługiwana wersja
 		fclose(plik);
 		return 0;
 	}

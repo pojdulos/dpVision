@@ -15,6 +15,8 @@
 #endif
 #include "PluginManager.h"
 
+#include "dpLog.h"
+
 // Define the prototype for a function that should exist in the DLL
 // that is used to create and return the plugin type in the DLL.
 typedef Plugin* (*fnCreatePlugin)(void);
@@ -88,20 +90,20 @@ PluginInterface* PluginManager::LoadPlugin( const QString& pluginPath )
                 }
                 else
                 {
-                    qInfo() << "ERROR: Could not load plugin from " << pluginPath << Qt::endl;
+                    dpError() << "ERROR: Could not load plugin from " << pluginPath << Qt::endl;
                     // Unload the library.
                     FreeLibraryFunc(hModule);
                 }
             }
             else
             {
-                qInfo() << "ERROR: Could not find symbol \"CreatePlugin\" in " << pluginPath << Qt::endl;
+                dpError() << "ERROR: Could not find symbol \"CreatePlugin\" in " << pluginPath << Qt::endl;
                 FreeLibraryFunc(hModule);
             }
         }
         else
         {
-            qInfo() << "ERROR: Could not load library: " << pluginPath << Qt::endl;
+            dpError() << "ERROR: Could not load library: " << pluginPath << Qt::endl;
         }
     }
     else
@@ -112,7 +114,7 @@ PluginInterface* PluginManager::LoadPlugin( const QString& pluginPath )
                 (LPCWSTR)L"Plugin is already loaded!!!",
                 (LPCWSTR)L"PluginManager", MB_DEFBUTTON2 );
         #else
-            qInfo() << "Plugin is already loaded!!!";
+            dpInfo() << "Plugin is already loaded!!!";
         #endif
     }
 
@@ -150,7 +152,7 @@ bool PluginManager::UnloadPlugin( const QString& pluginPath )
             }
             else
             {
-                qInfo() << "ERROR: Unable to find symbol \"DestroyPlugin\" in library \"" << pluginPath << Qt::endl;
+                dpError() << "Unable to find symbol \"DestroyPlugin\" in library \"" << pluginPath << Qt::endl;
             }
             // Unload the library and remove the library from the map.
             FreeLibraryFunc(hModule);
@@ -164,7 +166,7 @@ bool PluginManager::UnloadPlugin( const QString& pluginPath )
 			//NULL,
 			//(LPCWSTR)L"Plugin is already unloaded or never been loaded!!!",
 			//(LPCWSTR)L"PluginManager", MB_DEFBUTTON2 );
-            qInfo() << "WARNING: Trying to unload a plugin that is already unloaded or has never been loaded." << Qt::endl;
+            dpWarn() << "Trying to unload a plugin that is already unloaded or has never been loaded." << Qt::endl;
 
             return false;
         }

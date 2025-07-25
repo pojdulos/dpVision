@@ -251,7 +251,7 @@ bool CBoundingBox::hit(CPoint3d origin, CVector3d dir, CPoint3d & coord)
 {
 	bool inside = true;
 	char quadrant[NUMDIM];
-	register int i;
+	int i;
 	int whichPlane;
 	double maxT[NUMDIM];
 	double candidatePlane[NUMDIM];

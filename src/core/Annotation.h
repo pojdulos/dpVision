@@ -22,38 +22,16 @@ public:
 	typedef std::map<int, std::shared_ptr<CAnnotation>> Annotations;
 	//unused, always empty, may be used in inheriting class for subAnnotations
 	Annotations m_annotations; 
-
 	CTransform m_transform;
 
-	CAnnotation( std::shared_ptr<CBaseObject> parent = nullptr) : CBaseObject(parent)
-	{
-		m_annotations.clear();
-		setLabel("annotation");
-		m_color = CRGBA(0.0f, 0.0f, 1.0f, 0.4f);
-		m_selcolor = CRGBA(1.0f, 0.0f, 0.0f, 0.4f);
-	};
-
-	CAnnotation( int parentId ) : CBaseObject( parentId )
-	{
-		m_annotations.clear();
-		setLabel("annotation");
-		m_color = CRGBA(0.0f, 0.0f, 1.0f, 0.4f);
-		m_selcolor = CRGBA(1.0f, 0.0f, 0.0f, 0.4f);
-	};
-
-	// konstruktor kopiuj¹cy
+	CAnnotation( std::shared_ptr<CBaseObject> parent = nullptr);
+	CAnnotation( int parentId );
 	CAnnotation(const CAnnotation& a);
 
-	virtual std::shared_ptr<CBaseObject> getCopy() override
-	{
-		auto an = std::make_shared<CAnnotation>(*this);
-		return an;
-	}
+	virtual void updateChildrenParentPointers(const std::shared_ptr<CBaseObject>& self) override;
+	virtual std::shared_ptr<CBaseObject> getCopy() override;
 
-	virtual ~CAnnotation()
-	{
-		this->clear();
-	};
+	virtual ~CAnnotation() { this->clear(); };
 
 	virtual inline CBaseObject::Category category() { return CBaseObject::Category::ANNOTATION; };
 	virtual int type() { return CAnnotation::Type::BASEANNOTATION; }
@@ -70,39 +48,11 @@ public:
 
 	inline Annotations& annotations() { return m_annotations; };
 
-	int addAnnotation(std::shared_ptr<CAnnotation> ad)
-	{
-		if (ad == nullptr) return NO_CURRENT_MODEL;
+	static int addAnnotation(std::shared_ptr<CAnnotation> parent, std::shared_ptr<CAnnotation> ad);
 
-		m_annotations[ad->id()] = ad;
-		ad->setParent(this->shared_from_this());
+	std::shared_ptr<CAnnotation> removeAnnotation(int id);
 
-		return ad->id();
-	}
-
-	std::shared_ptr<CAnnotation> removeAnnotation(int id)
-	{
-		Annotations::iterator it = m_annotations.find(id);
-		if (it != m_annotations.end())
-		{
-			std::shared_ptr<CAnnotation> an = it->second;
-			m_annotations.erase(id);
-			return an;
-		}
-		return nullptr;
-	}
-
-	CAnnotation* annotation(int id)
-	{
-		Annotations::iterator it;
-		for (it = m_annotations.begin(); it != m_annotations.end(); it++)
-		{
-			if (it->first == id) return it->second.get();
-			CAnnotation* obj = it->second->annotation(id);
-			if (obj != nullptr) return obj;
-		}
-		return nullptr;
-	}
+	CAnnotation* annotation(int id);
 
 	virtual std::shared_ptr<CBaseObject> getSomethingWithId(int id);
 
@@ -110,20 +60,10 @@ public:
 
 	std::wstring infoRow() override { return getInfoRow(); };
 
-	virtual inline void clear() override
-	{
-		//for (auto& a : m_annotations)
-		//{
-		//	delete a.second;
-		//}
-		m_annotations.clear();
-	}
+	virtual inline void clear() override { m_annotations.clear(); }
 
 	virtual std::wstring getInfoRow() { return m_label.toStdWString(); };
 	virtual std::wstring getTypeWSTR() { return L"annotation"; };
-
-	virtual void renderTransform() override;
-	virtual void renderKids() override;
 };
 
 typedef CAnnotation* PtrAnnotation;

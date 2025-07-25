@@ -11,13 +11,16 @@
 #include "PMFactory.h"
 #include "Utilities.h"
 
-#include "AP.h"
+#include "../api/AP.h"
 
 #include "MainApplication.h"
 
 #include "GLViewer.h"
 #include "Parser.h"
 
+#include "dpLog.h"
+#include "../renderers/IModel3DRenderer.h"
+#include "StatusBarManager.h"
 
 CModel3D::CModel3D(std::shared_ptr<CBaseObject> p) : CObject(p)
 {
@@ -35,6 +38,8 @@ CModel3D::CModel3D(std::shared_ptr<CBaseObject> p) : CObject(p)
 
 	//m_fastmeshData.iMeshType = CMesh::MESHTYPE_NONE;
 	//m_fastmeshData.setParent( this );
+
+	renderer_ = std::make_shared<IModel3DRenderer>();
 }
 
 CModel3D::CModel3D( const CModel3D &m ) : CObject(m)
@@ -57,6 +62,8 @@ CModel3D::CModel3D( const CModel3D &m ) : CObject(m)
 	//{
 	//	createFastMesh();
 	//}
+
+	renderer_ = std::make_shared<IModel3DRenderer>();
 }
 
 
@@ -147,7 +154,7 @@ void CModel3D::PMeshVsplit( GLuint rzm )
 	//d.iMeshType &= 0xFFF0;
 	//d.iMeshType |= CMesh::MESHTYPE_PROGRESSIVEMESH3V;
 
-	UI::STATUSBAR::printf( "I'm returning from CModel3D::PMeshVsplitSelf()..." );
+	StatusBarManager::setText( "I'm returning from CModel3D::PMeshVsplitSelf()..." );
 }
 
 //void CModel3D::deleteFastMesh()
@@ -281,21 +288,6 @@ void CModel3D::prepare()
 }
 
 
-void CModel3D::renderTransform()
-{
-	if (m_showSelf) m_transform.render();
-	if (bDrawBB) renderBoundingBox();
-}
-
-void CModel3D::renderSelf()
-{
-	//if (bDrawBB) renderAxes();
-
-	//if (m_visible != Visibility::HIDE_ALL)
-	//{
-	//	renderKids();
-	//}
-}
 
 
 bool CModel3D::switchOption( CModel3D::Opt iOpt, CModel3D::Switch iSet )
@@ -432,14 +424,14 @@ std::wstring CModel3D::infoRow()
 //
 //	CBaseObject::Children newChildren;
 //
-//	for (CBaseObject::Children::iterator it = m_data.begin(); it != m_data.end(); it++)
+//	for (CBaseObject::Children::iterator it = m_pairs.begin(); it != m_pairs.end(); it++)
 //	{
 //		int newId = getNewId();
 //		it->second->setId(newId);
 //		newChildren[newId] = it->second;
 //	}
 //
-//	m_data = newChildren;
+//	m_pairs = newChildren;
 //
 //	CModel3D::Annotations newAnnot;
 //	for (CModel3D::Annotations::iterator it = m_annotations.begin(); it != m_annotations.end(); it++)
@@ -457,7 +449,9 @@ std::wstring CModel3D::infoRow()
 
 std::shared_ptr<CBaseObject> CModel3D::getCopy()
 {
-	return std::make_shared<CModel3D>(*this);
+	auto obj = std::make_shared<CModel3D>(*this);
+	updateChildrenParentPointers(obj);
+	return obj;
 }
 
 void CModel3D::info(std::wstring i[4])
@@ -477,58 +471,6 @@ void CModel3D::calcVN()
 	if (auto m = std::dynamic_pointer_cast<CMesh>(this->getChild())) m->calcVN();
 }
 
-//unsigned int CModel3D::getNewId()
-//{
-//	unsigned int newId = this->m_Id + 1;
-//
-//	while ((m_annotations.find(newId) != m_annotations.end()) || (m_data.find(newId) != m_data.end())) newId++;
-//
-//	return newId;
-//}
-
-//int CModel3D::addAnnotation(CAnnotation * ad)
-//{
-//	//unsigned int newId = getNewId();
-//	//ad->setId(newId);
-//
-//	m_annotations[ad->id()] = ad;
-//	ad->setParent(this);
-//
-//	return ad->id();
-//}
-//
-//CAnnotation * CModel3D::removeAnnotation( int id )
-//{
-//	CBaseObject *an = getSomethingWithId( id );
-//	
-//	if (an == nullptr) return nullptr;
-//	if (an->category() != CBaseObject::Category::ANNOTATION) return nullptr;
-//
-//	CBaseObject* parent = an->getParent();
-//
-//	if (parent == this)
-//	{
-//		m_annotations.erase(id);
-//	}
-//	else
-//	{
-//		((CAnnotation*)parent)->removeAnnotation(id);
-//	}
-//
-//	return (CAnnotation*) an;
-//}
-//
-//CAnnotation * CModel3D::annotation(int id)
-//{
-//	Annotations::iterator it;
-//	for (it = m_annotations.begin(); it != m_annotations.end(); it++)
-//	{
-//		if ( it->first == id ) return it->second;
-//		CAnnotation* obj = it->second->annotation(id);
-//		if (obj != nullptr) return obj;
-//	}
-//	return nullptr;
-//}
 
 #include "FileConnector.h"
 
@@ -538,18 +480,14 @@ std::shared_ptr<CModel3D> CModel3D::load(const QString fext, const QString path,
 
 	if (nullptr != parser)
 	{
-		//unsigned long t1, t2;
-
-		// t1 = GetTickCount();
 		auto t0 = std::chrono::steady_clock::now();
 
 		std::shared_ptr<CModel3D> obj = parser->load(path, synchronous);
 
-		// t2 = GetTickCount();
 		auto t1 = std::chrono::steady_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
 
-		qInfo() << "Load time: " << duration;
+		dpInfo() << "Load time: " << duration;
 
 		if (!parser->inPlugin()) delete parser;
 
@@ -559,24 +497,20 @@ std::shared_ptr<CModel3D> CModel3D::load(const QString fext, const QString path,
 	return nullptr;
 }
 
-std::shared_ptr<CModel3D> CModel3D::load(const QString path, bool synchronous)
+std::shared_ptr<CModel3D> CModel3D::load(const QString path, bool synchronous, std::shared_ptr<IProgressListener> prg)
 {
 	CParser* parser = CFileConnector::getLoadParser( path );
 
 	if (nullptr != parser)
 	{
-		// unsigned long t1, t2;
-
-		// t1 = GetTickCount();
 		auto t0 = std::chrono::steady_clock::now();
 
-		std::shared_ptr<CModel3D> obj = parser->load( path, synchronous );
+		std::shared_ptr<CModel3D> obj = parser->load( path, synchronous, prg );
 
-		// t2 = GetTickCount();
 		auto t1 = std::chrono::steady_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
 
-		qInfo() << "Load time: " << duration;
+		dpInfo() << "Load time: " << duration;
 
 		if (!parser->inPlugin()) delete parser;
 
@@ -595,12 +529,19 @@ bool CModel3D::save(const QString path)
 {
 	CParser* parser = CFileConnector::getSaveParser( path );
 
+	bool result = false;
 	if (NULL != parser)
 	{
-		//parser->set( UI::getNativePath(path), this );
-		//bool result = parser->save();
+		std::shared_ptr<CBaseObject> this_shared;
+		try {
+			this_shared = shared_from_this();
+			result = parser->save(std::dynamic_pointer_cast<CModel3D>(this_shared), path);
+		}
+		catch (const std::bad_weak_ptr&) {
+			dpError() << "SHARED_FROM_THIS (CModel3D::save)!!!";
+			this_shared = nullptr;
+		}
 
-		bool result = parser->save(std::dynamic_pointer_cast<CModel3D>(this->shared_from_this()), path);
 
 		if (!parser->inPlugin()) delete parser;
 
@@ -622,179 +563,3 @@ bool CModel3D::save(std::wstring path)
 	return save( QString::fromStdWString(path) );
 }
 
-
-void drawBox(CPoint3f min, CPoint3f max, bool dashed=false)
-{
-	if (dashed)
-	{
-		glLineStipple(3, 0x00FF);
-		glEnable(GL_LINE_STIPPLE);
-	}
-
-	glPushAttrib(GL_ENABLE_BIT);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	glBegin(GL_QUAD_STRIP);
-	glVertex3f(max.X(), min.Y(), min.Z());
-	glVertex3f(max.X(), min.Y(), max.Z());
-
-	glVertex3f(min.X(), min.Y(), min.Z());
-	glVertex3f(min.X(), min.Y(), max.Z());
-
-	glVertex3f(min.X(), max.Y(), min.Z());
-	glVertex3f(min.X(), max.Y(), max.Z());
-
-	glVertex3f(max.X(), max.Y(), min.Z());
-	glVertex3f(max.X(), max.Y(), max.Z());
-
-	glVertex3f(max.X(), min.Y(), min.Z());
-	glVertex3f(max.X(), min.Y(), max.Z());
-	glEnd();
-
-	glPopAttrib();
-}
-
-//void CModel3D::renderBoundingBox()
-//{
-//	CBoundingBox::Style style;
-//
-//	if (AP::WORKSPACE::getCurrentModelId() != m_Id)
-//		style = CBoundingBox::Style::NotSelected;
-//	else
-//		if (isLocked())
-//			style = CBoundingBox::Style::Locked;
-//		else
-//			style = CBoundingBox::Style::Unlocked;
-//
-//	if (AP::WORKSPACE::SELECTION::isModelSelected(m_Id))
-//	{
-//		CBoundingBox::draw(style, true);
-//	}
-//	else
-//	{
-//		CBoundingBox::draw(style, false);
-//	}
-//}
-
-//void CModel3D::renderBoundingBox()
-//{
-//	glPushAttrib(GL_ALL_ATTRIB_BITS);
-//
-//	glDisable(GL_TEXTURE_2D);
-//
-//	glEnable(GL_COLOR_MATERIAL);
-//	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-//
-//	glLineWidth(1.0);
-//	if ( AP::WORKSPACE::getCurrentModelId() == m_Id )
-//		if (isLocked())
-//			glColor3f(1.0f, 0.0f, 0.0f);
-//		else
-//			glColor3f(0.0f, 0.5f, 0.0f);
-//	else
-//		glColor3f(0.2f, 0.2f, 0.2f);
-//
-//	drawBox(m_min, m_max);
-//
-//	if (AP::WORKSPACE::SELECTION::isModelSelected(m_Id))
-//	{
-//		glLineWidth(3.0);
-//		glColor4f(0.5f, 0.5f, 0.0f, 0.5f);
-//		drawBox(m_min, m_max, true);
-//	}
-//
-//	glDisable(GL_COLOR_MATERIAL);
-//
-//	glPopAttrib();
-//}
-
-void CModel3D::renderAxes()
-{
-	glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-	glDisable(GL_TEXTURE_2D);
-	glEnable(GL_COLOR_MATERIAL);
-	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-
-	float buf[4];
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, CRGBA(_DEF_AMBIENT).fV(buf));
-	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, CRGBA(_DEF_DIFFUSE).fV(buf));
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, CRGBA(_DEF_SPECULAR).fV(buf));
-	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, CRGBA(_DEF_EMISSION).fV(buf));
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, _DEF_SHININESS);
-
-	glLineWidth(2.0);
-
-	int L = 5;
-
-	glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
-
-	glBegin(GL_LINES);
-
-	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-	glVertex3f(-L, 0, 0);
-	glVertex3f( L, 0, 0);
-
-	glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
-	glVertex3f(0, -L, 0);
-	glVertex3f(0,  L, 0);
-
-	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-	glVertex3f(0, 0, -L);
-	glVertex3f(0, 0,  L);
-	
-	glEnd();
-
-	//glColor3f(0.5f, 0.5f, 0.5f);
-	//glEnable(GL_POINT_SMOOTH);
-	//glPointSize(5);
-	//glBegin(GL_POINTS);
-	//glVertex3f(0, 0, 0);
-	//glEnd();
-
-	glDisable(GL_COLOR_MATERIAL);
-
-	glPopAttrib();
-}
-
-//int CModel3D::setAnimation(int anim)
-//{
-//	if (bAnime = (0 != anim))
-//		iAnimeDir = (anim<0) ? -1 : 1;
-//
-//	lastanim = GetTickCount64();
-//
-//	return bAnime ? iAnimeDir : 0;
-//}
-//
-//int CModel3D::toggleAnimation()
-//{
-//	lastanim = GetTickCount64();
-//	return (bAnime = !bAnime) ? iAnimeDir : 0;
-//}
-//
-//int CModel3D::toggleAnimationDir()
-//{
-//	if (bAnime)
-//		return iAnimeDir = -iAnimeDir;
-//	return 0;
-//}
-//
-
-
-//CBaseObject::Visibility CModel3D::setVisibility(CBaseObject::Visibility v)
-//{
-//	if (v == Visibility::HIDE_SELF)
-//	{
-//		return (m_visible = Visibility::HIDE_ALL);
-//	}
-//	return (m_visible = v);
-//}
-//
-//CBaseObject::Visibility CModel3D::switchVisibility()
-//{
-//	if 	((m_visible == HIDE_ALL) || (m_visible == HIDE_SELF))
-//		return m_visible = SHOW;
-//	else
-//		return m_visible = HIDE_ALL;
-//}

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "dll_global.h"
+
 #include <vector>
 #include <map>
 #include <typeinfo>

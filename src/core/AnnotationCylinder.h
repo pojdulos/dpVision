@@ -12,25 +12,9 @@ public:
 	float m_radius, m_halfLength;
 	double m_start_angle, m_end_angle;
 
-	CAnnotationCylinder(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation( m )
-	{
-		setLabel("cylinder");
-		m_point = CPoint3f(0,0,0);
-		m_radius = 0;
-		m_halfLength = 0;
-		m_start_angle = 0.0;
-		m_end_angle = 360.0;
-	};
+	CAnnotationCylinder(std::shared_ptr<CBaseObject> m = nullptr);;
 
-	CAnnotationCylinder( CAnnotationCylinder &t ) :CAnnotation( t )
-	{
-		setLabel("cylinder");
-		m_point = t.m_point;
-		m_radius = t.m_radius;
-		m_halfLength = t.m_halfLength;
-		m_start_angle = t.m_start_angle;
-		m_end_angle = t.m_end_angle;
-	};
+	CAnnotationCylinder( CAnnotationCylinder &t );;
 
 	~CAnnotationCylinder(void){};
 
@@ -51,8 +35,6 @@ public:
 
 	virtual std::wstring getInfoRow();
 	virtual std::wstring getTypeWSTR() { return L"cylinder"; };
-
-	virtual void renderSelf() override;
 
 };
 

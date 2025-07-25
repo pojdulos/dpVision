@@ -1,7 +1,7 @@
 #include "Stat.h"
 
 #include <algorithm>
-#include "UI.h"
+//#include "../api/UI.h"
 #include <random>
 #include <cmath>
 
@@ -153,7 +153,7 @@ double CStat::quantile(std::vector<double>& data, double q)
 		std::nth_element(data.begin(), data.begin() + n14, data.end());
 		kwantyl = data[n14];
 	}
-	else //trafienie pomiêdzy dwa elementy
+	else //trafienie pomiï¿½dzy dwa elementy
 	{
 		std::nth_element(data.begin(), data.begin() + n14, data.end());
 		kwantyl = data[n14];
@@ -180,7 +180,7 @@ double CStat::quantile2(std::vector<double>& data, double q)
 		std::nth_element(data.begin(), data.begin() + n14, data.end());
 		kwantyl = data[n14];
 	}
-	else //trafienie pomiêdzy dwa elementy
+	else //trafienie pomiï¿½dzy dwa elementy
 	{
 		double d1 = 1.0 - fracIdx;
 		double d2 = fracIdx;

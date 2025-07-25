@@ -163,5 +163,5 @@ endif()
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 
-target_include_directories ( ${EXE_NAME} PUBLIC ${OpenCV_INCLUDE_DIRS} )
-target_link_libraries ( ${EXE_NAME} ${OpenCV_LIBS} )
+# target_include_directories ( ${EXE_NAME} PUBLIC ${OpenCV_INCLUDE_DIRS} )
+# target_link_libraries ( ${EXE_NAME} ${OpenCV_LIBS} )

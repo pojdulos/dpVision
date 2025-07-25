@@ -14,11 +14,7 @@ public:
 	
 	std::list<_BoundVector> m_data;
 
-	CAnnotationBoundVectors(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation( m )
-	{
-		setLabel("bound_vectors");
-		m_data.clear();
-	};
+	CAnnotationBoundVectors(std::shared_ptr<CBaseObject> m = nullptr);;
 
 	~CAnnotationBoundVectors() override { m_data.clear(); };
 
@@ -38,6 +34,4 @@ public:
 
 	virtual std::wstring getTypeWSTR() override { return L"bound_vectors"; };
 	virtual std::wstring getInfoRow() override;
-	
-	virtual void renderSelf() override;
 };

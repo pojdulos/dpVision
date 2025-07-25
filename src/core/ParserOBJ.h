@@ -2,8 +2,6 @@
 #include "dll_global.h"
 
 #include "Parser.h"
-#include <QtCore>
-
 
 struct _predata {
 	int f;
@@ -23,11 +21,10 @@ struct Meshinfo {
 	bool hasVT;
 };
 
+class IProgressListener;
 
-class CParserOBJ :public QObject, public CParser
+class CParserOBJ : public CParser
 {
-	Q_OBJECT
-
 	bool cancelled;
 	bool m_firstFace;
 	bool m_bN, m_bT;
@@ -60,9 +57,4 @@ public:
 	void saveChildren(QTextStream& objStream, QTextStream& mtlStream, CObject* obj, QString prefix, size_t& vStart);
 
 	virtual bool save() override;
-signals:
-	void sendProgress(int);
-
-public slots:
-	void onLoadCancelled();
 };

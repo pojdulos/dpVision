@@ -11,10 +11,7 @@ typedef std::list<CPoint3d> ListOfPoints;
 class DPVISION_EXPORT CAnnotationPath : public CAnnotation, public ListOfPoints
 {
 public:
-	CAnnotationPath(std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation( m )
-	{
-		setLabel("path");
-	};
+	CAnnotationPath(std::shared_ptr<CBaseObject> m = nullptr);;
 
 	~CAnnotationPath() override { clear(); };
 
@@ -36,5 +33,5 @@ public:
 
 	virtual std::wstring getTypeWSTR() { return L"path"; };
 	virtual std::wstring getInfoRow();
-	virtual void renderSelf() override;
+
 };

@@ -2,10 +2,6 @@
 #ifndef _VERTEX_H_BY_DP_INCLUDED_
 #define _VERTEX_H_BY_DP_INCLUDED_
 
-#ifndef VERTEX_INTERNAL_TYPE
-#define VERTEX_INTERNAL_TYPE float
-#endif /* VERTEX_INTERNAL_TYPE */
-
 #include "dll_global.h"
 
 #include <map>
@@ -13,7 +9,9 @@
 #include "Point3.h"
 #include "RGBA.h"
 
-//#include "gltools.h"
+#ifndef VERTEX_INTERNAL_TYPE
+#define VERTEX_INTERNAL_TYPE float
+#endif /* VERTEX_INTERNAL_TYPE */
 
 class DPVISION_EXPORT CVertex : public CPoint3<VERTEX_INTERNAL_TYPE> {
 public:

@@ -3,6 +3,8 @@
 //#include <cstdlib>
 #include "PMFactory.h"
 
+#include "interfaces/IProgressListener.h"
+
 void PMFactory::initial_quadrics()
 {
 	for (int i = 1; i <= static_cast<int>(vertices.size()); i++)
@@ -65,12 +67,14 @@ void PMFactory::select_pair()
 	/* id_v1 < id_v2*/
 	size_t cnter = 0;
 
-	UI::PROGRESSBAR::init( 0, faces.size(), 0 );
+	auto progress_ = IProgressListener::getDefault();
+	if (progress_) progress_->init( 0, faces.size(), 0 );
+
 	int progress = 0;
 	for (CPMFfaces::iterator fit=faces.begin(); fit!=faces.end(); fit++)
 	{
-		UI::STATUSBAR::printfTimed( 500, "Quadrics::select_pair(): f=%d ", cnter++ );
-		UI::PROGRESSBAR::setValue( progress++ );
+		StatusBarManager::setTextTimed( 500, QString("Quadrics::select_pair(): f=%1 ").arg(cnter++));
+		if (progress_) progress_->setValue( progress++ );
 
 		// sciana ma 3 krawedzie - dla kazdej krawedzi sprawdzam czy juz jest w bazie bledow
 		// jesli nie, to wyliczam blad dla tej krawedzi i dopisuje do errors
@@ -96,7 +100,7 @@ void PMFactory::select_pair()
 			errors.insert(CPMFerrors::value_type(Pair(min_vid, max_vid), calculate_error(min_vid, max_vid)));
 		}
 	}
-	UI::PROGRESSBAR::hide();
+	if (progress_) progress_->hide();
 
 	// to dotyczy sytuacji gdy pozwalamy na redukowanie niepolaczonych wierzcholkow
 	// pod warunkiem, ze spelniaja zaleznosc |v1 - v2| < t
@@ -139,7 +143,7 @@ error_type PMFactory::calculate_error(int id_v1, int id_v2, double* vx, double* 
 	if (q_bar[1] != q_bar[4] || q_bar[2] != q_bar[8] || q_bar[6] != q_bar[9] || 
 		q_bar[3] != q_bar[12] || q_bar[7] != q_bar[13] || q_bar[11] != q_bar[14])
 	{
-		UI::STATUSBAR::printf("ERROR: Matrix q_bar is not symmetric! id_v1 = %d, id_v2 = %d", id_v1, id_v2);
+		StatusBarManager::setText(QString("ERROR: Matrix q_bar is not symmetric! id_v1 = %1, id_v2 = %2").arg(id_v1).arg(id_v2));
 		system("PAUSE");
 		exit(-3);
 	}

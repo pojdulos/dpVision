@@ -94,7 +94,7 @@ public:
 
 	inline Type* layer(size_t z) { return &m_data[idx(0, 0, z)]; }
 
-	//inline Type& operator()(size_t x, size_t y, size_t z) { return m_data[idx(x, y, z)]; }
+	//inline Type& operator()(size_t x, size_t y, size_t z) { return m_pairs[idx(x, y, z)]; }
 	
 	inline Type get(size_t x, size_t y, size_t z) { return m_data[idx(x, y, z)]; }
 	inline Type get(size_t adr) { return m_data[adr]; }

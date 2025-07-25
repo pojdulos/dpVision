@@ -17,7 +17,7 @@ void PMFactory::CMeshToQuadrics( CMesh &src )
 
 	for ( CMesh::Vertices::iterator it=src.vertices().begin(); it!=src.vertices().end(); it++ )
 	{
-		UI::STATUSBAR::printfTimed( 500, "PMFactory: Importing vertices... %d", local_num_vertices );
+		StatusBarManager::setTextTimed( 500, QString("PMFactory: Importing vertices... %1").arg(local_num_vertices));
 
 		v.X( it->X() );
 		v.Y( it->Y() );
@@ -27,7 +27,7 @@ void PMFactory::CMeshToQuadrics( CMesh &src )
 		weights.insert(LoF::value_type(local_num_vertices,0)); // zamiast 0 wstawiæ wagê, gdzie 0 = dowolny wierzcho³ek, 255 = ca³kowicie zafiksowany;
 	}
 
-	UI::STATUSBAR::printf( "PMFactory: Importing faces..." );
+	StatusBarManager::setText( "PMFactory: Importing faces..." );
 	for ( CMesh::Faces::iterator itf=src.faces().begin(); itf!=src.faces().end(); itf++ )
 	{
 		f.A( itf->A()+1 );
@@ -40,7 +40,7 @@ void PMFactory::CMeshToQuadrics( CMesh &src )
 	hasTexture = false;
 	if ( ! src.getMaterial(matIdx).texindex.empty() )
 	{
-		UI::STATUSBAR::printf( "PMFactory: Importing texidxs..." );
+		StatusBarManager::setText( "PMFactory: Importing texidxs..." );
 		for ( size_t j=0; j<static_cast<size_t>(src.getMaterial(matIdx).texindex.size()); j++ )
 		{
 			CTIndex ti;
@@ -55,7 +55,7 @@ void PMFactory::CMeshToQuadrics( CMesh &src )
 
 	if ( ! src.getMaterial(matIdx).texcoord.empty() )
 	{
-		UI::STATUSBAR::printf( "PMFactory: Importing texcoords..." );
+		StatusBarManager::setText( "PMFactory: Importing texcoords..." );
 		for ( size_t j=0; j<static_cast<size_t>(src.getMaterial(matIdx).texcoord.size()); j++ )
 		{
 			CTCoord tc;
@@ -67,7 +67,7 @@ void PMFactory::CMeshToQuadrics( CMesh &src )
 		}
 	}
 
-	UI::STATUSBAR::printf( "PMFactory: Importing vsplits..." );
+	StatusBarManager::setText( "PMFactory: Importing vsplits..." );
 	for ( CMesh::Vsplits::reverse_iterator rit=src.vsplits.rbegin(); rit!=src.vsplits.rend(); rit++ )
 	{
 		SVsplit vs;
@@ -107,7 +107,7 @@ void PMFactory::CMeshToQuadrics( CMesh &src )
 		vsplits.push_back( vs );
 	}
 
-	UI::STATUSBAR::printf( "Importing data... Done");
+	StatusBarManager::setText( "Importing data... Done");
 }
 
 void PMFactory::QuadricsToCMesh( CMesh &dst )
@@ -116,13 +116,13 @@ void PMFactory::QuadricsToCMesh( CMesh &dst )
 
 	//---------------------------------------------------------------------------------
 
-	UI::STATUSBAR::printf( "Exporting data: Vertices array" );
+	StatusBarManager::setText( "Exporting data: Vertices array" );
 
 	try {
 		dst.vertices().resize( vertices.size() );
 	}
 	catch ( std::bad_alloc &e ) {
-		UI::MESSAGEBOX::error( L"vertices.resize()" );
+		MessageBoxManager::error( "vertices.resize()" );
 		throw e;
 	}
 
@@ -140,7 +140,7 @@ void PMFactory::QuadricsToCMesh( CMesh &dst )
 			mVerticesMap.insert(_mapOfVertices::value_type(key, idx));
 		}
 		catch ( std::bad_alloc &e ) {
-			UI::MESSAGEBOX::error( L"mVerticesMap.insert()" );
+			MessageBoxManager::error( "mVerticesMap.insert()" );
 			throw e;
 		}
 		idx++;
@@ -160,11 +160,11 @@ void PMFactory::QuadricsToCMesh( CMesh &dst )
 			dst.getMaterial(matIdx).texcoord.resize( texcoords.size() );
 		}
 		catch ( std::bad_alloc &e ) {
-			UI::MESSAGEBOX::error( L"texcoord.resize()" );
+			MessageBoxManager::error( "texcoord.resize()" );
 			throw e;
 		}
 
-		UI::STATUSBAR::printf( "PMFactory: Exporting texcoords..." );
+		StatusBarManager::setText( "PMFactory: Exporting texcoords..." );
 
 		size_t idx = 0;
 		//for ( size_t j=0; j<static_cast<size_t>(texcoords.size()); j++ )
@@ -179,7 +179,7 @@ void PMFactory::QuadricsToCMesh( CMesh &dst )
 				mTindexesMap.insert(_mapOfVertices::value_type(key, idx));
 			}
 			catch ( std::bad_alloc &e ) {
-				UI::MESSAGEBOX::error( L"mTindexesMap.insert()" );
+				MessageBoxManager::error( "mTindexesMap.insert()" );
 				throw e;
 			}
 			idx++;
@@ -194,7 +194,7 @@ void PMFactory::QuadricsToCMesh( CMesh &dst )
 		dst.faces().resize( faces.size() );
 	}
 	catch ( std::bad_alloc &e ) {
-		UI::MESSAGEBOX::error( L"faces.resize()" );
+		MessageBoxManager::error( "faces.resize()" );
 		throw e;
 	}
 
@@ -202,11 +202,11 @@ void PMFactory::QuadricsToCMesh( CMesh &dst )
 		dst.fnormals().resize( faces.size() );
 	}
 	catch ( std::bad_alloc &e ) {
-		UI::MESSAGEBOX::error( L"fnormals().resize()" );
+		MessageBoxManager::error( "fnormals().resize()" );
 		throw e;
 	}
 
-	UI::STATUSBAR::printf( "Exporting data: Faces array" );
+	StatusBarManager::setText( "Exporting data: Faces array" );
 	idx = 0;
 	for (CPMFfaces::iterator fit=faces.begin(); fit!=faces.end();)
 	{
@@ -225,7 +225,7 @@ void PMFactory::QuadricsToCMesh( CMesh &dst )
 	if ( hasTexture && ( ! texidxs.empty() ) )
 	{
 		dst.getMaterial(matIdx).texindex.resize( texidxs.size() );
-		UI::STATUSBAR::printf( "PMFactory: Exporting texidxs..." );
+		StatusBarManager::setText( "PMFactory: Exporting texidxs..." );
 
 		idx=0;
 		for (TextureIndexes::iterator tit=texidxs.begin(); tit!=texidxs.end();)
@@ -250,7 +250,7 @@ void PMFactory::QuadricsToCMesh( CMesh &dst )
 	dst.vsplits.clear();
 	dst.vsplits.reserve( vsplits.size() );
 
-	UI::STATUSBAR::printf( "Exporting data: Vsplits array" );
+	StatusBarManager::setText( "Exporting data: Vsplits array" );
 
 	for (int i = static_cast<int>(vsplits.size()-1); i >= 0; i--)
 	{
@@ -258,7 +258,7 @@ void PMFactory::QuadricsToCMesh( CMesh &dst )
 			dst.vsplits.push_back( vsplits[i] );
 		}
 		catch ( std::bad_alloc &e ) {
-			UI::MESSAGEBOX::error( L"vsplits.push_back()" );
+			MessageBoxManager::error( "vsplits.push_back()" );
 			throw std::runtime_error( e.what() );
 		} 
 	}
@@ -271,13 +271,13 @@ void PMFactory::QuadricsToCMesh( CMesh &dst )
 
 	Renumerate( dst );
 
-	UI::STATUSBAR::printf( "PMFactory::QuadricsToCMesh(): End of method." );
+	StatusBarManager::setText( "PMFactory::QuadricsToCMesh(): End of method." );
 }
 
 /*
 void PMFactory::SavePMT( CMesh &src, const char* nazwa, CVector3f r, CVector3f t )
 {
-	UI::STATUSBAR::printf( "PMFactory::SaveNewFormSMF() is writing to file (ver.5) now, please wait..." );
+	StatusBarManager::setText( "PMFactory::SaveNewFormSMF() is writing to file (ver.5) now, please wait..." );
 	
 	FILE *plik = fopen( nazwa, "w" );
 	
@@ -343,7 +343,7 @@ void PMFactory::SavePMT( CMesh &src, const char* nazwa, CVector3f r, CVector3f t
 /*
 void PMFactory::SaveXML( CMesh &src, const char* nazwa )
 {
-	UI::STATUSBAR::printf( "PMFactory::SaveXML() is writing to file now, please wait..." );
+	StatusBarManager::setText( "PMFactory::SaveXML() is writing to file now, please wait..." );
 	
 	FILE *plik = fopen( nazwa, "w" );
 	

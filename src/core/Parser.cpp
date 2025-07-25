@@ -1,7 +1,9 @@
-
 #include "Parser.h"
 
-CParser::CParser()
+#include "interfaces/IProgressListener.h"
+#include "MessageBoxManager.h"
+
+CParser::CParser(void):progress_(nullptr)
 {
 	setDescr("Sample description");
 	m_exts.clear(); 
@@ -15,8 +17,11 @@ CParser::~CParser(void)
 {
 }
 
-std::shared_ptr<CModel3D> CParser::load(const QString path, bool wait)
+
+std::shared_ptr<CModel3D> CParser::load(const QString path, bool wait, std::shared_ptr<IProgressListener> prg)
 {
+	progress_ = prg ? prg : IProgressListener::getDefault();
+
 	std::shared_ptr<CModel3D> obj;
 
 	// allocate
@@ -59,7 +64,7 @@ std::shared_ptr<CModel3D> CParser::load(const QString path, bool wait)
 		}
 		else
 		{
-			UI::MESSAGEBOX::error(L"Nie udało sie wczytać pliku");
+			MessageBoxManager::error("Nie udało sie wczytać pliku");
 		}
 	}
 

@@ -23,6 +23,7 @@ public:
 	You can also use static CImage* load(path) method. It returns NULL on load error and don't create invalid CImage instance.
 	*/
 	CImage(const QString& path, const char* format = nullptr);
+	
 	CImage(const char* path) { CImage(QString(path)); }
 	CImage(const std::string path) { CImage(QString::fromStdString(path)); }
 	CImage(const std::wstring path) { CImage(QString::fromStdWString(path)); }
@@ -57,7 +58,11 @@ public:
 	using CModel3D::transform;
 	using CModel3D::render;
 
-	virtual std::shared_ptr<CBaseObject> getCopy() override { return std::static_pointer_cast<CBaseObject>( std::make_shared<CImage>(*this) ); }
+	virtual std::shared_ptr<CBaseObject> getCopy() override {
+		auto obj = std::static_pointer_cast<CBaseObject>( std::make_shared<CImage>(*this) );
+		updateChildrenParentPointers(obj);
+		return obj;
+	}
 
 	CImage* copy(int x, int y, int w, int h) const;
 
@@ -99,8 +104,6 @@ public:
 
 	CImage::Format format() const;
 
-	virtual void renderSelf() override;
-
 	virtual inline int type() override { return CObject::Type::IMAGE; };
 	//void info(std::wstring i[4]) override;
 	virtual std::wstring infoRow() override;
@@ -108,7 +111,7 @@ public:
 	static std::pair<int, int> loadToBYTEvector(std::wstring fname, std::vector<uint8_t>& bufor, int& depth);
 	static std::pair<int, int> loadToRGBAvector(std::wstring fname, std::vector<CRGBA>& bufor, uchar alpha = 255);
 
-private:
+//private:
 	float img3d_half_width, img3d_half_height, img3d_Z;
 };
 

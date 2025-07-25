@@ -35,8 +35,11 @@ public:
 	CObject(std::shared_ptr<CBaseObject> p = nullptr);
 	CObject(int parentId);
 
-	// konstruktor kopiuj¹cy
+	// konstruktor kopiujÄ…cy
 	CObject(const CObject &b);
+	virtual void updateChildrenParentPointers(const std::shared_ptr<CBaseObject>& self) override;
+
+	virtual std::shared_ptr<CBaseObject> getCopy() override;
 
 
 	//virtual ~CObject(void);
@@ -47,8 +50,6 @@ public:
 	virtual inline CBaseObject::Category category() override { return CBaseObject::Category::OBJECT; };
 	virtual inline int type() override { return CObject::Type::GENERIC; };
 
-	virtual std::shared_ptr<CBaseObject> getCopy() override;
-
 	std::wstring infoRow() override { return L". Object type: Generic CObject()"; };
 
 	void info( std::wstring i[4] ) override;
@@ -58,7 +59,7 @@ public:
 	Annotations& annotations() { return m_annotations; };
 	CAnnotation* annotation(int id);
 
-	int addAnnotation(std::shared_ptr<CAnnotation> ad);
+	static int addAnnotation(std::shared_ptr<CObject> parent, std::shared_ptr<CAnnotation> ad);
 	std::shared_ptr<CAnnotation> removeAnnotation(int);
 
 	bool removeAnnotation(std::shared_ptr<CAnnotation> an);
@@ -76,7 +77,7 @@ public:
 	//deprecated, use: expandBoundingBox( point )
 	inline void calcMinMax(const CPoint3d &v) { expandBoundingBox(v); };
 
-	int addChild( std::shared_ptr<CBaseObject> d );
+	static int addChild(std::shared_ptr<CObject> parent, std::shared_ptr<CBaseObject> child );
 	bool removeChild( int id = 0 );
 	
 	/*
@@ -99,12 +100,6 @@ public:
 	std::vector<CBaseObject*> getChildren(CBaseObject::Type type);
 
 	virtual std::shared_ptr<CBaseObject> findId( int id ) override;
-
-	void renderBoundingBox();
-
-	virtual void renderTransform() override;
-	virtual void renderKids() override;
-	//virtual void render() override;
 };
 
 typedef CObject* PtrObject;

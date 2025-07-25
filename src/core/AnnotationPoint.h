@@ -16,77 +16,22 @@ class DPVISION_EXPORT CAnnotationPoint : public CAnnotation, public CPoint3d
 
 public:
 	bool m_showNorm;
-	CAnnotationPoint( std::shared_ptr<CBaseObject> m = nullptr) :CAnnotation( m ), CPoint3d()
-	{
-		setLabel("point");
-		m_direction.Set( 0, 0, 0 );
-		m_faceId = -1;
-		m_showNorm = true;
-	};
-
-	CAnnotationPoint(int objId) :CAnnotation(objId), CPoint3d()
-	{
-		setLabel("point");
-		m_direction.Set(0, 0, 0);
-		m_faceId = -1;
-		m_showNorm = true;
-	};
-
-	CAnnotationPoint( CAnnotationPoint &t ) :CAnnotation( t ), CPoint3d( t )
-	{
-		m_faceId = t.m_faceId;
-		m_faceA = t.m_faceA;
-		m_faceB = t.m_faceB;
-		m_faceC = t.m_faceC;
-		m_direction = t.m_direction;
-		m_showNorm = true;
-	};
-
-
-	CAnnotationPoint( const double &tx, const double &ty, const double &tz ) :CAnnotation(-1), CPoint3d( tx, ty, tz )
-	{
-		//m_point.Set(tx, ty, tz);
-		setLabel("point");
-		m_direction.Set( 0, 0, 0 );
-		m_faceId = -1;
-		m_showNorm = true;
-	};
-
-	CAnnotationPoint( const CPoint3d &t ) :CAnnotation(-1), CPoint3d( t )
-	{
-		//m_point.Set( t );
-		setLabel("point");
-		m_direction.Set( 0, 0, 0 );
-		m_faceId = -1;
-		m_showNorm = true;
-	};
-	
-	CAnnotationPoint( const CPoint3d &t, const CPoint3d &t0 ) :CAnnotation(-1), CPoint3d( t )
-	{
-		//m_point.Set(t);
-
-		setLabel("point");
-		m_direction = CVector3d(t0, t);
-		m_direction.normalize();
-
-		m_faceId = -1;
-		m_showNorm = true;
-	};
-
-	CAnnotationPoint( const CPoint3d &t, const CRGBA kol ) :CAnnotation(-1), CPoint3d( t )
-	{
-		//m_point.Set( t );
-		setLabel("point");
-		m_direction.Set( 0, 0, 0 );
-		m_faceId = -1;
-		m_showNorm = true;
-	};
+	CAnnotationPoint( std::shared_ptr<CBaseObject> m = nullptr);
+	CAnnotationPoint(int objId);
+	CAnnotationPoint( CAnnotationPoint &t );
+	CAnnotationPoint( const double &tx, const double &ty, const double &tz );
+	CAnnotationPoint( const CPoint3d &t );
+	CAnnotationPoint(const CPoint3d& t, const CPoint3d& t0);
+	CAnnotationPoint( const CPoint3d &t, const CRGBA kol );
 
 	~CAnnotationPoint(void){};
 
 	virtual std::shared_ptr<CBaseObject> getCopy() override
 	{
-		return std::make_shared<CAnnotationPoint>(*this);
+		auto obj = std::make_shared<CAnnotationPoint>(*this);
+		updateChildrenParentPointers(obj);
+		return obj;
+
 	}
 
 	virtual int type() { return CAnnotation::POINT; }
@@ -109,8 +54,6 @@ public:
 
 	virtual std::wstring getInfoRow();
 	virtual std::wstring getTypeWSTR() { return L"point"; };
-
-	virtual void renderSelf() override; 
 
 	// OBSOLETE FUNCTIONS FOR BACK COMPATIBILITY
 

@@ -1,12 +1,10 @@
 #include "Global.h"
 #include "AnnotationBezier.h"
 
-#include "AP.h"
+#include "../api/AP.h"
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-#include <GL/gl.h>
+
+#include "StatusBarManager.h"
 
 std::wstring CAnnotationBezier::getInfoRow()
 {
@@ -15,6 +13,15 @@ std::wstring CAnnotationBezier::getInfoRow()
 	return info;
 }
 
+#include "../renderers/IAnnotationBezierRenderer.h"
+
+inline CAnnotationBezier::CAnnotationBezier(std::shared_ptr<CBaseObject> m) :CAnnotation(m)
+{
+	setLabel("bezier");
+	m_type = 0;
+
+	renderer_ = std::make_shared<IAnnotationBezierRenderer>();
+}
 
 CPoint3d CAnnotationBezier::deCastelJau(double u, int count, int startIndex)
 {
@@ -135,28 +142,10 @@ void CAnnotationBezier::createTinySpline(int deg, int den)
 
 	}
 	catch (std::exception e) {
-		UI::STATUSBAR::printf(e.what());
+		StatusBarManager::setText(QString(e.what()));
 	}
 }
 
-void CAnnotationBezier::drawTinySpline()
-{
-	glLineWidth(2.0);
-	glBegin(GL_LINE_STRIP);
-	for (int i = 0; i < m_spline.size(); i++)
-	{
-		glVertex3dv( m_spline[i].toVector() );
-	}
-	glEnd();
-
-	glPointSize(5.0);
-	glBegin(GL_POINTS);
-	for (int i = 0; i < m_spline.size(); i++)
-	{
-		glVertex3dv(m_spline[i].toVector());
-	}
-	glEnd();
-}
 
 void CAnnotationBezier::applyTransformation(CTransform &prevT, CTransform &newT)
 {
@@ -171,66 +160,3 @@ void CAnnotationBezier::applyTransformation(CTransform &prevT, CTransform &newT)
 	}
 }
 
-void CAnnotationBezier::drawBeziers(int deg, int den, int cut )
-{
-	int div = deg * den;
-
-	for (int idx = 0; idx < m_list.size(); idx ++)
-	{
-		glBegin(GL_LINE_STRIP);
-
-		for (int i = cut; i <= div - cut; i++)
-		{
-			CPoint3d p = deCastelJau((GLdouble)i / div, deg, idx);
-			glVertex3dv(p.toVector());
-		}
-
-		glEnd();
-	}
-}
-
-void CAnnotationBezier::renderSelf()
-{
-	if (this->m_list.size() > 1)
-	{
-		glPushMatrix();
-		glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-		glDisable(GL_TEXTURE_2D);
-
-		glPolygonMode(GL_FRONT, GL_LINE);
-		glPolygonMode(GL_BACK, GL_LINE);
-		glLineWidth(3.0);
-		glEnable(GL_COLOR_MATERIAL);
-		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-
-		if (m_selected)
-		{
-			glColor4ubv(m_selcolor.V());
-		}
-		else
-		{
-			glColor4ubv(m_color.V());
-		}
-
-		if ( m_type == 1 ) drawTinySpline();
-		else drawBeziers(8, 10, 34);
-
-		glPointSize(10.0);
-		glBegin(GL_POINTS);
-		//for (int i = 0; i < m_list.size(); i++) glVertex3fv(&m_list[i].toVector()[0]);
-		glColor4ubv( CRGBA( 0.0f, 1.0f, 0.0f, 1.0f ).V() );
-		glVertex3dv( m_spline[0].toVector() );
-		glColor4ubv(CRGBA(1.0f, 0.0f, 0.0f, 1.0f).V());
-		glVertex3dv( m_spline[m_spline.size()-1].toVector() );
-
-		glEnd();
-
-
-
-		glDisable(GL_COLOR_MATERIAL);
-	
-		glPopAttrib();
-		glPopMatrix();
-	}
-}
