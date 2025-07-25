@@ -1,8 +1,9 @@
 #include <string>
 #include <functional>
 #include <memory>
+#include "dll_global.h"
 
-class IProgressListener {
+class DPVISION_EXPORT IProgressListener {
 public:
     virtual ~IProgressListener() = default;
     virtual void init(int min, int max, int val, std::string text = "") = 0;

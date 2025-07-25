@@ -672,7 +672,7 @@ std::shared_ptr<CMesh> Volumetric::marching_cube(int factor) {
 
 	QString label("c_" + QString::number(pMin) + "_" + QString::number(pMax) + "_" + QString::number(div));
 	mesh->setLabel(label);
-	mesh->setDescr("source data: " + volTK->getParent()->getLabel()
+	mesh->setDescr("source data: " + volTK->getLabel()
 		+ "\nvolume size: " + QString::number(volTK->m_columns) + " x " + QString::number(volTK->m_rows) + " x " + QString::number(volTK->m_layers)
 		+ "\nintensity range: " + QString::number(volTK->m_minDisplWin) + " - " + QString::number(volTK->m_maxDisplWin)
 		+ "\n"

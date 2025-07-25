@@ -1,10 +1,11 @@
 #include <QObject>
 #include <QDebug>
+#include "dll_global.h"
 #include "interfaces/IProgressListener.h"
 #include "../MainWindow.h"
 #include "../ProgressIndicator.h"
 
-class QtProgressAdapter : public QObject, public IProgressListener {
+class DPVISION_EXPORT QtProgressAdapter : public QObject, public IProgressListener {
     Q_OBJECT
     ProgressIndicator* indicator_;
 public:

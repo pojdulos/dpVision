@@ -1,7 +1,7 @@
 #pragma once
 #ifndef _WORKSPACE_H_BY_DP_INCLUDED_
 #define _WORKSPACE_H_BY_DP_INCLUDED_
-//#include "dll_global.h"
+#include "dll_global.h"
 
 //#include "Global.h"
 #include "Model3D.h"
@@ -48,7 +48,7 @@ struct _light
 
 class IWorkspaceRenderer;
 
-class CWorkspace
+class DPVISION_EXPORT CWorkspace
 {
 	std::shared_ptr<IWorkspaceRenderer> renderer_ = nullptr;
 	std::vector<std::shared_ptr<IWorkspaceEvents>> listeners_;
