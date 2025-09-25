@@ -448,7 +448,7 @@ CBoundingBox CWorkspace::topBB()
 		CPoint3d min = m.second->getMin();
 		CPoint3d max = m.second->getMax();
 		
-		Eigen::Matrix4d T = m.second->transform().toEigenMatrix4d();
+		Eigen::Matrix4d T = CBaseObject::getGlobalTransformationMatrix(m.second);
 
 		CPoint3d m1 = T * min;
 		CPoint3d m2 = T * CPoint3d(min.x, min.y, max.z);
@@ -468,17 +468,6 @@ CBoundingBox CWorkspace::topBB()
 		bb.expand(m7);
 		bb.expand(m8);
 
-		//min = CPoint3d(
-		//	std::min(std::min(std::min(m1.x, m2.x), std::min(m3.x, m4.x)), std::min(std::min(m5.x, m6.x), std::min(m7.x, m8.x))),
-		//	std::min(std::min(std::min(m1.y, m2.y), std::min(m3.y, m4.y)), std::min(std::min(m5.y, m6.y), std::min(m7.y, m8.y))),
-		//	std::min(std::min(std::min(m1.z, m2.z), std::min(m3.z, m4.z)), std::min(std::min(m5.z, m6.z), std::min(m7.z, m8.z))));
-
-		//max = CPoint3d(
-		//	std::max(std::max(std::max(m1.x, m2.x), std::max(m3.x, m4.x)), std::max(std::max(m5.x, m6.x), std::max(m7.x, m8.x))),
-		//	std::max(std::max(std::max(m1.y, m2.y), std::max(m3.y, m4.y)), std::max(std::max(m5.y, m6.y), std::max(m7.y, m8.y))),
-		//	std::max(std::max(std::max(m1.z, m2.z), std::max(m3.z, m4.z)), std::max(std::max(m5.z, m6.z), std::max(m7.z, m8.z))));
-
-		//bb.expand(CBoundingBox(min, max));
 	}
 
 	return bb;

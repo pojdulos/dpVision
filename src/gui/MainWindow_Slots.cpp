@@ -547,6 +547,32 @@ void CMainWindow::cameraResetPosition()
 		}
 }
 
+double computeCameraDistance(CBoundingBox& bb, double fovY_deg,	double aspect)
+{
+	if (bb.isInvalid()) return 1.0;
+
+	double fovY = fovY_deg * M_PI / 180.0;
+	double fovX = 2.0 * atan(tan(fovY / 2.0) * aspect);
+
+	CPoint3d min = bb.getMin();
+	CPoint3d max = bb.getMax();
+
+	double halfWidth = (max.x - min.x) * 0.5;
+	double halfHeight = (max.y - min.y) * 0.5;
+	double halfDepth = (max.z - min.z) * 0.5;
+
+	// odległość wymagana w pionie i w poziomie
+	double dY = halfHeight / tan(fovY / 2.0);
+	double dX = halfWidth / tan(fovX / 2.0);
+
+	double dist = std::max(dX, dY);
+
+	// dodajemy głębokość, żeby box się mieścił w Z
+	dist += halfDepth;
+
+	return dist;
+}
+
 
 void CMainWindow::actionLookDir(int direction, std::shared_ptr<CModel3D> obj)
 {
@@ -580,7 +606,7 @@ void CMainWindow::actionLookDir(int direction, std::shared_ptr<CModel3D> obj)
 		view->transform().rotateAroundAxisDeg(CVector3d::YAxis(), 180);
 	}
 
-	bool center = true;
+	bool b_center = true;
 	CBoundingBox bb;
 
 	
@@ -606,121 +632,28 @@ void CMainWindow::actionLookDir(int direction, std::shared_ptr<CModel3D> obj)
 	}
 
 
-	if (center)
-	{
-		CPoint3d mdl = bb.getMidpoint();
-
-		std::cout << "\nmidpoint:\n" << mdl.toVector3() << "\n";
-
-		CVector3d tra;// = CPoint3d() - mdl;
-
-		//1 - front, 2 - back, 3 - left, 4 - right, 5 - top, 6 - bottom
-		if (direction == 1)
-		{
-			tra.Set(-mdl.x, -mdl.y, 0.0);
-		}
-		else if (direction == 5)
-		{
-			tra.Set(-mdl.x, mdl.z, 0.0);
-		}
-		else if (direction == 6)
-		{
-			tra.Set(-mdl.x, -mdl.z, 0.0);
-		}
-		else if (direction == 3)
-		{
-			tra.Set(-mdl.z, -mdl.y, 0.0);
-		}
-		else if (direction == 4)
-		{
-			tra.Set(mdl.z, -mdl.y, 0.0);
-		}
-		else if (direction == 2)
-		{
-			tra.Set(mdl.x, -mdl.y, 0.0);
-		}
-
-		view->transform().translate(tra);
-	}
-
-
-	double minX = DBL_MAX;
-	double maxX = -DBL_MAX;
-	double minY = DBL_MAX;
-	double maxY = -DBL_MAX;
-
-	Eigen::Matrix4d MT = view->transform().toEigenMatrix4d();
-
-	for (CPoint3d& corner : bb.getCorners())
-	{
-		corner = MT * corner;
-		corner = corner - view->camPos();
-		corner = view->world2win(corner);
-
-		minX = corner.x < minX ? corner.x : minX;
-		minY = corner.y < minY ? corner.y : minY;
-		maxX = corner.x > maxX ? corner.x : maxX;
-		maxY = corner.y > maxY ? corner.y : maxY;
-	}
 
 	QRect r = view->rect();
-	qInfo() << r << QVector<int>({r.left(),r.top(),r.right(),r.bottom()});
-	qInfo() << QVector<double>({ minX, minY, maxX, maxY });
+	double aspect = double(r.width()) / double(r.height());
+	double fovY = view->getVAngle(); //getFovY(); // np. 45 stopni
 
 
-	CTransform T;
+	Eigen::Matrix4d R = view->transform().toEigenMatrix4d(); // zawiera już obrót
 
-	while ((minX > r.left()) && (minY > r.top()) && (maxX < r.right()) && (maxY < r.bottom()))
-	{
-		view->transform().translate(CVector3d(0.0, 0.0, 1.0) );
+	CPoint3d center = bb.getMidpoint();
+	CPoint3d rotatedCenter = R * center;
 
-		T = view->transform();
+	// teraz centrowanie
+	view->transform().translate(CVector3d(-rotatedCenter.x,
+		-rotatedCenter.y,
+		0.0));
 
-		minX = DBL_MAX;
-		maxX = -DBL_MAX;
-		minY = DBL_MAX;
-		maxY = -DBL_MAX;
+	// obliczenie zoomu
+	double dist = computeCameraDistance(bb, fovY, aspect);
+	double targetZ = 200.0 - dist;
 
-		for (CPoint3d& corner : bb.getCorners())
-		{
-			corner = T * corner;
-			corner = corner - view->camPos();
-			corner = view->world2win(corner);
-
-			minX = corner.x < minX ? corner.x : minX;
-			minY = corner.y < minY ? corner.y : minY;
-			maxX = corner.x > maxX ? corner.x : maxX;
-			maxY = corner.y > maxY ? corner.y : maxY;
-		}
-
-		qInfo() << view->rect() << QVector<double>({ minX, minY, maxX, maxY });
-	}
-
-	while ((minX < r.left()) || (minY < r.top()) || (maxX > r.right()) || (maxY > r.bottom()))
-	{
-		view->transform().translate(CVector3d(0.0, 0.0, -1.0));
-
-		T = view->transform();
-
-		minX = DBL_MAX;
-		maxX = -DBL_MAX;
-		minY = DBL_MAX;
-		maxY = -DBL_MAX;
-
-		for (CPoint3d& corner : bb.getCorners())
-		{
-			corner = T * corner;
-			corner = corner - view->camPos();
-			corner = view->world2win(corner);
-
-			minX = corner.x < minX ? corner.x : minX;
-			minY = corner.y < minY ? corner.y : minY;
-			maxX = corner.x > maxX ? corner.x : maxX;
-			maxY = corner.y > maxY ? corner.y : maxY;
-		}
-
-		qInfo() << view->rect() << QVector<double>({ minX, minY, maxX, maxY });
-	}
+	// przesunięcie w Z
+	view->transform().translate(CVector3d(0.0, 0.0, targetZ - rotatedCenter.z));
 
 	UI::DOCK::PROPERTIES::updateProperties();
 	updateAllViews();
