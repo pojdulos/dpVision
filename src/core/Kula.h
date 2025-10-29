@@ -15,7 +15,8 @@ public:
 	Kula() : m_c(0.0, 0.0, 0.0), m_r(1.0) {};
 	Kula(double x, double y, double z, double r) : m_c(x,y,z), m_r(r) {};
 	Kula(CPoint3d c, double r) : m_c(c), m_r(r) {};
-	Kula(Kula &k) : m_c(k.m_c), m_r(k.m_r) {};
+	Kula(const Kula &k) : m_c(k.m_c), m_r(k.m_r) {};
+	Kula(Kula& k) : m_c(k.m_c), m_r(k.m_r) {};
 	~Kula() {};
 
 	CPoint3d& center() { return m_c; };
