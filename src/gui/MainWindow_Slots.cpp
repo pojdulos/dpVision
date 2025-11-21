@@ -44,7 +44,7 @@ void saveDockGeometry(QDockWidget* dock)
 
 void CMainWindow::keyPressEvent(QKeyEvent * e)
 {
-	if (e->key() == Qt::Key_Control)
+	if (e->key() == Qt::Key_Alt) //:Key_Control)
 	{
 		QApplication::setOverrideCursor(Qt::PointingHandCursor);
 	}
@@ -52,7 +52,7 @@ void CMainWindow::keyPressEvent(QKeyEvent * e)
 
 void CMainWindow::keyReleaseEvent(QKeyEvent * e)
 {
-	if (e->key() == Qt::Key_Control)
+	if (e->key() == Qt::Key_Alt) //:Key_Control)
 	{
 		QApplication::restoreOverrideCursor();
 	}
