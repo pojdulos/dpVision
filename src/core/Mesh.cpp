@@ -539,14 +539,18 @@ void CMesh::correctNormals()
 }
 
 
-CVector3d CMesh::getMainNormalVector()
+CVector3d CMesh::getMainNormalVector(bool weighted)
 {
 	std::vector<CVector3d> vnormals(m_poly.size());
 
 	for (int i = m_poly.size() - 1; i >= 0; i--)
 	{
+		auto f = m_poly[i];
+
 		StatusBarManager::setTextTimed(1000, QString("(CMesh) Computing main normal vector. %1 more to be done").arg(i));
-		vnormals[i] = m_poly[i].getNormal(m_vertices);
+		vnormals[i] = f.getNormal(m_vertices);
+		if (weighted)
+			vnormals[i] *= f.triangleArea(m_vertices[f.A()], m_vertices[f.B()], m_vertices[f.C()]);
 	}
 
 	CVector3d result(0, 0, 0);

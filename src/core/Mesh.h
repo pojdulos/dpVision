@@ -171,7 +171,7 @@ public:
 	void cutPlane(CPlane &m_cutPlane, std::shared_ptr<CMesh> reszta = nullptr, std::shared_ptr<CMesh> krawedz = nullptr, std::shared_ptr<CAnnotationPoints> pts = nullptr);
 
 	void correctNormals();
-	CVector3d getMainNormalVector();
+	CVector3d getMainNormalVector(bool weighted = false);
 	void invertNormals();
 	void removeUnusedVertices();
 	

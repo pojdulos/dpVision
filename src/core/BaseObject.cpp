@@ -22,7 +22,7 @@ CBaseObject::CBaseObject(std::shared_ptr<CBaseObject> p)
 {
 	m_Id = AP::getUniqueId();
 
-	dpDebug() << "CBaseObject - constructor wit parent ptr = " << (p ? p->id() : -1);
+	//dpDebug() << "CBaseObject - constructor wit parent ptr = " << (p ? p->id() : -1);
 
 	m_label = "baseObject";
 	m_descr = "";
@@ -44,7 +44,7 @@ CBaseObject::CBaseObject(int objId)
 {
 	m_Id = AP::getUniqueId();
 	
-	dpDebug() << "CBaseObject - constructor wit parent id = " << objId;
+	//dpDebug() << "CBaseObject - constructor wit parent id = " << objId;
 
 	m_label = "baseObject";
 	m_descr = "";
