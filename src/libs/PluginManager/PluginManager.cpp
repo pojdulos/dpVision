@@ -136,6 +136,8 @@ bool PluginManager::UnloadPlugin( PluginInterface*& plugin )
 
 bool PluginManager::UnloadPlugin( const QString& pluginPath )
 {
+	dpDebug() << "Unloading plugin: " << pluginPath;
+
         LibraryMap::iterator iter = m_Implementation->m_Libs.find( pluginPath );
         if( iter != m_Implementation->m_Libs.end() )
         {
@@ -152,7 +154,7 @@ bool PluginManager::UnloadPlugin( const QString& pluginPath )
             }
             else
             {
-                dpError() << "Unable to find symbol \"DestroyPlugin\" in library \"" << pluginPath << Qt::endl;
+                dpError() << "Unable to find symbol \"DestroyPlugin\" in library \"" << pluginPath;
             }
             // Unload the library and remove the library from the map.
             FreeLibraryFunc(hModule);
@@ -166,7 +168,7 @@ bool PluginManager::UnloadPlugin( const QString& pluginPath )
 			//NULL,
 			//(LPCWSTR)L"Plugin is already unloaded or never been loaded!!!",
 			//(LPCWSTR)L"PluginManager", MB_DEFBUTTON2 );
-            dpWarn() << "Trying to unload a plugin that is already unloaded or has never been loaded." << Qt::endl;
+            dpWarn() << "Plugin not found in LibraryMap (" << pluginPath << ")";
 
             return false;
         }
