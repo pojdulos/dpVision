@@ -1,5 +1,6 @@
 #include "KDNode2.h"
 #include "Mesh.h"
+#include "dpLog.h"
 
 KDNode2::~KDNode2()
 {
@@ -30,66 +31,12 @@ CBoundingBox KDNode2::createBB(CMesh* mesh, std::vector<INDEX_TYPE> tris)
 KDNode2* KDNode2::build(CMesh* mesh, int maxTrisSize)
 {
 	std::vector<INDEX_TYPE> tris;
-	for (int i = 0; i < mesh->faces().size(); i++) tris.push_back(i);
+	for (int i = 0; i < mesh->faces().size(); i++)
+		tris.push_back(i);
 
-	return build2( mesh, tris, 0, maxTrisSize);
+	return build( mesh, tris, 0, maxTrisSize);
 }
 
-
-KDNode2* KDNode2::build2(CMesh* mesh, std::vector<INDEX_TYPE>& tris, int depth, int maxTrisSize)
-{
-	KDNode2* node = new KDNode2();
-
-	if (tris.empty()) return node;
-
-	node->m_bbox = createBB(mesh, tris);
-
-	if (tris.size() > maxTrisSize)
-	{
-		int axis = node->m_bbox.longest_axis();
-
-		double sum = 0.0;
-		for (INDEX_TYPE idx : tris)
-		{
-			sum += createBB(mesh, idx).getMidpoint()[axis];
-		}
-
-		double midpt = sum / tris.size();
-
-		std::vector<INDEX_TYPE> left_tris;
-		std::vector<INDEX_TYPE> right_tris;
-
-		for (INDEX_TYPE currentIndex : tris)
-		{
-			CBoundingBox tmpBB = createBB(mesh, currentIndex);
-
-			if (tmpBB.getMin()[axis] >= midpt)
-			{
-				right_tris.push_back(currentIndex);
-			}
-			else
-				if (tmpBB.getMax()[axis] <= midpt)
-				{
-					left_tris.push_back(currentIndex);
-				}
-				else
-				{
-					node->m_tris.push_back(currentIndex);
-				}
-		}
-
-		node->m_left = KDNode2::build(mesh, left_tris, depth + 1, maxTrisSize);
-		node->m_right = KDNode2::build(mesh, right_tris, depth + 1, maxTrisSize);
-	}
-	else
-	{
-		node->m_tris = tris;
-		node->m_left = new KDNode2();
-		node->m_right = new KDNode2();
-	}
-
-	return node;
-}
 
 KDNode2 * KDNode2::build(CMesh* mesh, std::vector<INDEX_TYPE> &tris, int depth, int maxTrisSize)
 {
@@ -97,35 +44,60 @@ KDNode2 * KDNode2::build(CMesh* mesh, std::vector<INDEX_TYPE> &tris, int depth, 
 
 	if ( tris.empty() ) return node;
 
+	// Ochrona przed zbyt du¿¹ g³êbokoœci¹
+	const int MAX_DEPTH = 50;
+	if (depth >= MAX_DEPTH)
+	{
+		dpWarn() << "Maximum depth reached at depth " << depth << " with " << tris.size() << " triangles.";
+		node->m_tris = tris;
+		node->m_bbox = createBB(mesh, tris);
+		node->m_left = new KDNode2();
+		node->m_right = new KDNode2();
+		return node;
+	}
+
+	dpDebug() << "Building KDNode2 at depth " << depth << " with " << tris.size() << " triangles.";
+
 	node->m_bbox = createBB(mesh, tris);
 
 	if (tris.size() > maxTrisSize)
 	{
-		CPoint3d midpt = node->m_bbox.getMidpoint();
+		int axis = node->m_bbox.longest_axis();
+
+		// Zbierz pary: (œrodek, indeks)
+		std::vector<std::pair<double, INDEX_TYPE>> centerPairs;
+		centerPairs.reserve(tris.size());
+		for (INDEX_TYPE idx : tris)
+		{
+			double center = createBB(mesh, idx).getMidpoint()[axis];
+			centerPairs.push_back(std::make_pair(center, idx));
+		}
+
+		// Posortuj wed³ug œrodka
+		std::sort(centerPairs.begin(), centerPairs.end(), 
+			[](const std::pair<double, INDEX_TYPE>& a, const std::pair<double, INDEX_TYPE>& b) {
+				return a.first < b.first;
+			});
+
+		// Podziel dok³adnie po po³owie (gwarantowany balans)
+		size_t mid = centerPairs.size() / 2;
 
 		std::vector<INDEX_TYPE> left_tris;
 		std::vector<INDEX_TYPE> right_tris;
+		left_tris.reserve(mid);
+		right_tris.reserve(centerPairs.size() - mid);
 
-		int axis = node->m_bbox.longest_axis();
-
-		for (INDEX_TYPE currentIndex : tris)
+		for (size_t i = 0; i < mid; i++)
 		{
-			CBoundingBox tmpBB = createBB(mesh, currentIndex);
-
-			if (tmpBB.getMin()[axis] >= midpt[axis])
-			{
-				right_tris.push_back(currentIndex);
-			}
-			else if (tmpBB.getMax()[axis] <= midpt[axis])
-			{
-				left_tris.push_back(currentIndex);
-			}
-			else
-			{
-				node->m_tris.push_back(currentIndex);
-			}
+			left_tris.push_back(centerPairs[i].second);
 		}
 
+		for (size_t i = mid; i < centerPairs.size(); i++)
+		{
+			right_tris.push_back(centerPairs[i].second);
+		}
+
+		// Teraz left_tris i right_tris s¹ zawsze zbalansowane
 		node->m_left = KDNode2::build(mesh, left_tris, depth + 1, maxTrisSize);
 		node->m_right = KDNode2::build(mesh, right_tris, depth + 1, maxTrisSize);
 	}
@@ -171,8 +143,19 @@ bool KDNode2::hit(CMesh* mesh, const CPoint3d origin, const CVector3d dir, Shade
 
 		bool ret = hit_tri && !sr.fidxs.empty();
 
-		bool retLeft = m_left->hit(mesh, origin, dir, sr);
-		bool retRight = m_right->hit(mesh, origin, dir, sr);
+		// SprawdŸ potomków tylko jeœli nie s¹ pustymi wêz³ami
+		bool retLeft = false;
+		bool retRight = false;
+		
+		if (m_left && !m_left->m_tris.empty())
+		{
+			retLeft = m_left->hit(mesh, origin, dir, sr);
+		}
+		
+		if (m_right && !m_right->m_tris.empty())
+		{
+			retRight = m_right->hit(mesh, origin, dir, sr);
+		}
 
 		return ret || retLeft || retRight;
 	}
@@ -208,8 +191,19 @@ bool KDNode2::hit(CMesh* mesh, const CPoint3d origin, const CVector3d dir, HitMa
 
 		bool ret = hit_tri && !hits.empty();
 
-		bool retLeft = m_left->hit(mesh, origin, dir, hits, vidx);
-		bool retRight = m_right->hit(mesh, origin, dir, hits, vidx);
+		// SprawdŸ potomków tylko jeœli nie s¹ pustymi wêz³ami
+		bool retLeft = false;
+		bool retRight = false;
+		
+		if (m_left && !m_left->m_tris.empty())
+		{
+			retLeft = m_left->hit(mesh, origin, dir, hits, vidx);
+		}
+		
+		if (m_right && !m_right->m_tris.empty())
+		{
+			retRight = m_right->hit(mesh, origin, dir, hits, vidx);
+		}
 
 		return ret || retLeft || retRight;
 	}
@@ -218,13 +212,18 @@ bool KDNode2::hit(CMesh* mesh, const CPoint3d origin, const CVector3d dir, HitMa
 
 bool KDNode2::findCrossedBB(CBoundingBox bb, CMesh* mesh, std::set<INDEX_TYPE> &result)
 {
-	CBoundingBox ibb = CBoundingBox::intersection(bb, this->m_bbox);
-	
 	if ( bb.intersects( this->m_bbox ) )
 	{
-		bool lb = this->m_left->findCrossedBB(bb, mesh, result);
+		// SprawdŸ potomków tylko jeœli nie s¹ pustymi wêz³ami
+		if (m_left && !m_left->m_tris.empty())
+		{
+			m_left->findCrossedBB(bb, mesh, result);
+		}
 
-		bool rb = this->m_right->findCrossedBB(bb, mesh, result);
+		if (m_right && !m_right->m_tris.empty())
+		{
+			m_right->findCrossedBB(bb, mesh, result);
+		}
 
 		for (INDEX_TYPE i : this->m_tris)
 		{

@@ -27,11 +27,9 @@ public:
 	~KDNode2();
 
 	static CBoundingBox createBB(CMesh* mesh, INDEX_TYPE face_idxi);
-
 	static CBoundingBox createBB(CMesh* mesh, std::vector<INDEX_TYPE> tris);
 
 	static KDNode2* build(CMesh* mesh, int maxTrisSize = 256);
-	static KDNode2* build2(CMesh* mesh, std::vector<INDEX_TYPE>& tris, int depth, int maxTrisSize);
 	static KDNode2* build(CMesh* mesh, std::vector<INDEX_TYPE>& tris, int depth, int maxTrisSize = 256);
 
 	bool hit(CMesh *mesh, const CPoint3d origin, const CVector3d dir, ShadeRec &sr);
