@@ -26,7 +26,7 @@ public:
 	KDNode2() :m_left{ NULL }, m_right{ NULL }, m_tris( std::vector<INDEX_TYPE>(0) ), m_bbox( CBoundingBox(CBoundingBox::InvalidBB) ) {};
 	~KDNode2();
 
-	static CBoundingBox createBB(CMesh* mesh, INDEX_TYPE face_idxi);
+	static CBoundingBox createBB(CMesh* mesh, INDEX_TYPE face_idx);
 	static CBoundingBox createBB(CMesh* mesh, std::vector<INDEX_TYPE> tris);
 
 	static KDNode2* build(CMesh* mesh, int maxTrisSize = 256);

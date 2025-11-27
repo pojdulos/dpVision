@@ -51,8 +51,8 @@ KDNode2 * KDNode2::build(CMesh* mesh, std::vector<INDEX_TYPE> &tris, int depth, 
 		dpWarn() << "Maximum depth reached at depth " << depth << " with " << tris.size() << " triangles.";
 		node->m_tris = tris;
 		node->m_bbox = createBB(mesh, tris);
-		node->m_left = new KDNode2();
-		node->m_right = new KDNode2();
+		node->m_left = nullptr;
+		node->m_right = nullptr;
 		return node;
 	}
 
@@ -104,8 +104,8 @@ KDNode2 * KDNode2::build(CMesh* mesh, std::vector<INDEX_TYPE> &tris, int depth, 
 	else
 	{
 		node->m_tris = tris;
-		node->m_left = new KDNode2();
-		node->m_right = new KDNode2();
+		node->m_left = nullptr;
+		node->m_right = nullptr;
 	}
 
 	return node;
@@ -147,12 +147,12 @@ bool KDNode2::hit(CMesh* mesh, const CPoint3d origin, const CVector3d dir, Shade
 		bool retLeft = false;
 		bool retRight = false;
 		
-		if (m_left && !m_left->m_tris.empty())
+		if (m_left)
 		{
 			retLeft = m_left->hit(mesh, origin, dir, sr);
 		}
 		
-		if (m_right && !m_right->m_tris.empty())
+		if (m_right)
 		{
 			retRight = m_right->hit(mesh, origin, dir, sr);
 		}
@@ -195,12 +195,12 @@ bool KDNode2::hit(CMesh* mesh, const CPoint3d origin, const CVector3d dir, HitMa
 		bool retLeft = false;
 		bool retRight = false;
 		
-		if (m_left && !m_left->m_tris.empty())
+		if (m_left)
 		{
 			retLeft = m_left->hit(mesh, origin, dir, hits, vidx);
 		}
 		
-		if (m_right && !m_right->m_tris.empty())
+		if (m_right)
 		{
 			retRight = m_right->hit(mesh, origin, dir, hits, vidx);
 		}
@@ -215,12 +215,12 @@ bool KDNode2::findCrossedBB(CBoundingBox bb, CMesh* mesh, std::set<INDEX_TYPE> &
 	if ( bb.intersects( this->m_bbox ) )
 	{
 		// SprawdŸ potomków tylko jeœli nie s¹ pustymi wêz³ami
-		if (m_left && !m_left->m_tris.empty())
+		if (m_left)
 		{
 			m_left->findCrossedBB(bb, mesh, result);
 		}
 
-		if (m_right && !m_right->m_tris.empty())
+		if (m_right)
 		{
 			m_right->findCrossedBB(bb, mesh, result);
 		}
