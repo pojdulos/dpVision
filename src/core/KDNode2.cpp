@@ -1,6 +1,7 @@
 #include "KDNode2.h"
 #include "Mesh.h"
 #include "dpLog.h"
+#include <omp.h>
 
 KDNode2::~KDNode2()
 {
@@ -18,11 +19,23 @@ CBoundingBox KDNode2::createBB(CMesh* mesh, std::vector<INDEX_TYPE> tris)
 {
 	CBoundingBox bb(CBoundingBox::InvalidBB);
 
-	for (INDEX_TYPE face_idx : tris)
+	#pragma omp parallel
 	{
-		bb.expand(mesh->vertex(face_idx, 0));
-		bb.expand(mesh->vertex(face_idx, 1));
-		bb.expand(mesh->vertex(face_idx, 2));
+		CBoundingBox local_bb(CBoundingBox::InvalidBB);
+		
+		#pragma omp for nowait
+		for (int i = 0; i < tris.size(); i++)
+		{
+			INDEX_TYPE face_idx = tris[i];
+			local_bb.expand(mesh->vertex(face_idx, 0));
+			local_bb.expand(mesh->vertex(face_idx, 1));
+			local_bb.expand(mesh->vertex(face_idx, 2));
+		}
+		
+		#pragma omp critical
+		{
+			bb.expand(local_bb);
+		}
 	}
 
 	return bb;
@@ -67,11 +80,29 @@ KDNode2 * KDNode2::build(CMesh* mesh, std::vector<INDEX_TYPE> &tris, int depth, 
 		// Zbierz pary: (œrodek, indeks)
 		std::vector<std::pair<double, INDEX_TYPE>> centerPairs;
 		centerPairs.reserve(tris.size());
-		for (INDEX_TYPE idx : tris)
+
+		#pragma omp parallel
 		{
-			double center = createBB(mesh, idx).getMidpoint()[axis];
-			centerPairs.push_back(std::make_pair(center, idx));
+			int num_threads = omp_get_num_threads();
+			int thread_id = omp_get_thread_num();
+
+			std::vector<std::pair<double, INDEX_TYPE>> local_pairs;
+			local_pairs.reserve(tris.size() / num_threads + 1);
+
+			#pragma omp for nowait
+			for (int i = 0; i < tris.size(); i++)
+			{
+				INDEX_TYPE idx = tris[i];
+				double center = createBB(mesh, idx).getMidpoint()[axis];
+				local_pairs.push_back(std::make_pair(center, idx));
+			}
+
+			#pragma omp critical
+			{
+				centerPairs.insert(centerPairs.end(), local_pairs.begin(), local_pairs.end());
+			}
 		}
+
 
 		// Posortuj wed³ug œrodka
 		std::sort(centerPairs.begin(), centerPairs.end(), 

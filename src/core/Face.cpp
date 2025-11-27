@@ -8,28 +8,28 @@ void CFace::invert()
 }
 
 
-CVector3d CFace::getNormal(const std::vector<CVertex> &vertices)
+CVector3d CFace::getNormal(const std::vector<CVertex>& vertices) const
 {
-	CVector3d v1, v2;
 	CVector3d vn;
 
-	if (MAX3(x, y, z) < vertices.size())
+	if (std::max({ x, y, z }) < vertices.size())
 	{
-		// wektor f.A->f.B
-		CVector3d v1(vertices[x], vertices[y]);
+		CVector3d v1(vertices[x], vertices[y]); // A->B
+		CVector3d v2(vertices[x], vertices[z]); // A->C
 
-		// wektor f.A->f.C
-		CVector3d v2(vertices[x], vertices[z]);
-
-		// iloczyn wektorowy
 		vn = v1.crossProduct(v2);
-
-		// Normalizacja
 		vn.normalize();
 	}
 
-	return (vn);
+	return vn;
 }
+
+CVector3d CFace::getNormal(const std::vector<CVertex>& vertices)
+{
+	// Delegacja do wersji const
+	return static_cast<const CFace&>(*this).getNormal(vertices);
+}
+
 
 CVector3d CFace::triangleNormal(CPoint3d pA, CPoint3d pB, CPoint3d pC)
 {

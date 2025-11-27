@@ -90,6 +90,7 @@ public:
 	 * @return Normalized normal vector of the face
 	 */
 	CVector3d getNormal(const std::vector<CVertex>& vertices);
+	CVector3d getNormal(const std::vector<CVertex>& vertices) const;
 
 	/**
 	 * @brief Computes the normal vector of a triangle given its three points.
