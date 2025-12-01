@@ -290,7 +290,7 @@ void CPointCloud::rebuildBoundingBox()
 void CPointCloud::createKDtree()
 {
 	removeKDtree();
-	StatusBarManager::setText("I'm creating KDtree. Please wait...");
+	StatusBarManager::setText(QString("I'm creating KDtree for %1 vertices. Please wait...").arg(m_vertices.size()));
 	m_kdtree = new CPointCloud::KDtree(m_vertices);
 }
 

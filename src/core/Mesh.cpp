@@ -1264,7 +1264,7 @@ void CMesh::removeDuplicateVertices(double eps)
 {
 	this->createKDtree();
 	std::map<INDEX_TYPE, INDEX_TYPE> vertexMap;
-	
+
 	for (int i = 0; i < m_vertices.size(); i++)
 	{
 		if (vertexMap.find(i) == vertexMap.end())
@@ -1276,9 +1276,12 @@ void CMesh::removeDuplicateVertices(double eps)
 
 			std::vector<INDEX_TYPE> v = m_kdtree->find_all_in_distance_to_pt(eps2, m_vertices[i]);
 
+			// ===== POPRAWKA: Porównaj kwadrat odległości z kwadratem tolerancji =====
+			double epsSquared = eps * eps;
+
 			for (INDEX_TYPE idx : v)
 			{
-				if ((idx != i) && (CVector3f(m_vertices[i], m_vertices[idx]).squaredLength() <= eps))
+				if ((idx != i) && (CVector3f(m_vertices[i], m_vertices[idx]).squaredLength() <= epsSquared))
 				{
 					vertexMap[idx] = i;
 				}
@@ -1295,8 +1298,6 @@ void CMesh::removeDuplicateVertices(double eps)
 			m_poly.removeFace(i);
 		}
 	}
-
-
 
 	this->removeUnusedVertices();
 }
