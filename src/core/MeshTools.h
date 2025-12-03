@@ -1,5 +1,6 @@
 #pragma once
 #include "Global.h"
+#include "dll_global.h"
 #include "Edge.h"
 
 class CMesh;
@@ -34,7 +35,7 @@ namespace std {
     };
 }
 
-class MeshTools
+class DPVISION_EXPORT  MeshTools
 {
 public:
 	static void removeInvalidFaces(CMesh& mesh);
