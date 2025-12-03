@@ -91,9 +91,14 @@ public:
 	//inline CRGBA &vertexColor(size_t i) { return m_vcolors.at(i); };
 	//inline CVector3f &vertexNormal(size_t i) { return m_vnormals.at(i); };
 
-	inline Vertices &vertices() { return m_vertices; };
-	inline Colors &vcolors() { return m_vcolors; };
-	inline Normals &vnormals() { return m_vnormals; };
+	inline Vertices& vertices() { return m_vertices; };
+	inline const Vertices& vertices() const { return m_vertices; };
+
+	inline Colors& vcolors() { return m_vcolors; };
+	inline const Colors& vcolors() const { return m_vcolors; };
+
+	inline Normals& vnormals() { return m_vnormals; };
+	inline const Normals& vnormals() const { return m_vnormals; };
 
 	// Fast, return reference. But to access the vector out of index will result in undefined behavior
 	inline CVertex& vertex(size_t idx)

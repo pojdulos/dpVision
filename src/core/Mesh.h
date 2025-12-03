@@ -90,9 +90,14 @@ public:
 
 	inline CPolygonGroup &poly() { return m_poly; };
 
-	inline Faces &faces() { return m_poly.faces(); };
-	inline Normals &fnormals() { return m_poly.normals(); };
-	inline Colors &fcolors() { return m_poly.colors(); };
+	inline Faces& faces() { return m_poly.faces(); };
+	inline const Faces& faces() const { return m_poly.faces(); };
+
+	inline Normals& fnormals() { return m_poly.normals(); };
+	inline const Normals& fnormals() const { return m_poly.normals(); };
+
+	inline Colors& fcolors() { return m_poly.colors(); };
+	inline const Colors& fcolors() const { return m_poly.colors(); };
 
 	inline CFace& face(INDEX_TYPE idx) { return m_poly.faces()[idx]; };
 	inline CTriangle getFaceAsTriangle(INDEX_TYPE idx) { return CTriangle(idx, this); };

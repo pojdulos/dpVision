@@ -31,8 +31,13 @@ public:
 	void setParent(CBaseObject *p) { m_parent = p; };
 
 	inline Faces &faces() { return m_faces; };
-	inline Normals &normals() { return m_normals; };
-	inline Colors &colors() { return m_colors; };
+	inline const Faces& faces() const { return m_faces; };
+
+	inline Normals& normals() { return m_normals; };
+	inline const Normals& normals() const { return m_normals; };
+
+	inline Colors& colors() { return m_colors; };
+	inline const Colors& colors() const { return m_colors; };
 
 	CFace & operator[](INDEX_TYPE index) { return m_faces[index]; }
 	const CFace & operator[](INDEX_TYPE index) const { return m_faces[index]; }

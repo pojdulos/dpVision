@@ -4,6 +4,7 @@
 
 #include "../renderers/IMeshRenderer.h"
 #include "StatusBarManager.h"
+#include "dpLog.h"
 
 CMesh::CMesh(std::shared_ptr<CBaseObject> p) :CPointCloud(p)
 {
@@ -1128,6 +1129,7 @@ void CMesh::findBoundaryEdges( CMesh::Edges &edges, CMesh::Neighborhood sciankiB
 
 void CMesh::getEdges(CMesh::Edges &edges)
 {
+	dpDebug() << "CMesh::getEdges() - start";
 	edges.clear();
 	for (int myIndex = 0; myIndex < m_poly.size(); myIndex++)
 	{
@@ -1136,6 +1138,7 @@ void CMesh::getEdges(CMesh::Edges &edges)
 		edges.insert(CEdge( f.B(), f.C(), myIndex));
 		edges.insert(CEdge( f.C(), f.A(), myIndex));
 	}
+	dpDebug() << "CMesh::getEdges() - found edges:" << edges.size();
 }
 
 //void CMesh::findBoundaryEdges( CMesh::Edges &edges )
