@@ -10,10 +10,15 @@ add_library (${PLUGIN_NAME} SHARED
     ${${PLUGIN_NAME}_HDR}
 )
 
-target_compile_definitions(${PLUGIN_NAME} PRIVATE DPVISION_PLUGIN_DLL)
+target_compile_definitions(${PLUGIN_NAME} PRIVATE
+    DPVISION_PLUGIN_DLL
+    NOMINMAX
+    WIN32_LEAN_AND_MEAN
+)
 
 target_link_libraries (${PLUGIN_NAME}
 	dpVision::Core
+	dpVision::Gui
 	dpVision::PluginManager
 	Eigen3::Eigen
 )

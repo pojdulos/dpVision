@@ -1,17 +1,19 @@
 // ObjectAPIAdapter.h
 #pragma once
 #include "../interfaces/IObjectAPI.h"
-#include "../api/AP.h"
+#include "Workspace.h"
 
 class ObjectAPIAdapter : public IObjectAPI {
 public:
     bool remove(std::shared_ptr<CBaseObject> obj) override {
-        return AP::OBJECT::remove(obj);
+        return CWorkspace::instance()->_objectRemove(obj);
     }
     int addChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child) override {
-        return AP::OBJECT::addChild(obj, child);
+        if (obj == nullptr || child == nullptr) return -1;
+        return CWorkspace::instance()->_objectAdd(child, obj);
     }
     bool removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child) override {
-        return AP::OBJECT::removeChild(obj, child);
+        Q_UNUSED(obj);
+        return CWorkspace::instance()->_objectRemove(child);
     }
 };

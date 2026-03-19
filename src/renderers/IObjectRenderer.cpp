@@ -3,13 +3,12 @@
 #include "../core/Object.h"
 #include "../core/Annotation.h"
 #include "../core/BoundingBox.h"
-#include "../api/UI.h"
 
 void IObjectRenderer::renderBoundingBox(CObject* obj)
 {
-	QVector<std::shared_ptr<CBaseObject>> objts = UI::DOCK::WORKSPACE::getSelectedObjects();
-
-	CBoundingBox::Style style = objts.contains(obj->shared_from_this()) ? CBoundingBox::Style::Unlocked : CBoundingBox::Style::NotSelected;
+	CBoundingBox::Style style = obj->isChecked()
+		? CBoundingBox::Style::Unlocked
+		: CBoundingBox::Style::NotSelected;
 
 	obj->draw(style, obj->isChecked());
 }

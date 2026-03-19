@@ -18,6 +18,8 @@ add_library(dpVisionCore SHARED
     ${DPVISION_CORE_SRC}
 )
 
+target_compile_definitions(dpVisionCore PRIVATE DPVISION_BUILD)
+
 target_include_directories(dpVisionCore PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../gui

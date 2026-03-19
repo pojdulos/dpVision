@@ -7,7 +7,7 @@
 #include "PMFactory.h"
 #include "Utilities.h"
 
-#include "../api/AP.h"
+#include "../api/adapters/AppAPIAdapter.h"
 
 #include "MainApplication.h"
 
@@ -16,6 +16,14 @@
 #include "dpLog.h"
 
 #include "../renderers/IMovementRenderer.h"
+
+namespace {
+AppAPIAdapter& appApi()
+{
+	static AppAPIAdapter api;
+	return api;
+}
+}
 
 CMovement::CMovement() : CObject(nullptr), m_isPlaying(false), m_currentKey(0)
 {
@@ -159,15 +167,13 @@ void CMovement::setTimer()
 	QObject::connect(&m_animationTimer, &QTimer::timeout, [&]() { onTimeout(); });
 }
 
-#include "../api/UI.h"
-
 void CMovement::onTimeout()
 {
 	if (m_isPlaying) {
 		m_currentKey = (m_currentKey + 1) % m_seqlist.size();
 
-		UI::DOCK::PROPERTIES::updateProperties();
-		UI::updateAllViews();
+		appApi().updateProperties();
+		appApi().updateAllViews();
 		
 		m_animationTimer.start(m_seqlist[m_currentKey].msec);
 	}

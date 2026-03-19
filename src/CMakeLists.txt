@@ -42,10 +42,12 @@ find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets OpenGL Xml Network)
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS})
 
+qt5_add_resources(DPVISION_EXE_QRC ${PROJECT_SOURCE_DIR}/gui/${EXE_NAME}.qrc)
 
 # === WYKONYWALNY EXE (tylko plik wejściowy, np. WinMain.cpp) ===
 add_executable(${EXE_NAME}
     ${PROJECT_SOURCE_DIR}/gui/WinMain.cpp
+    ${DPVISION_EXE_QRC}
 )
 
 ################################################################
@@ -85,9 +87,13 @@ add_subdirectory(libs/PMFactory)
 target_link_libraries(${EXE_NAME} #PRIVATE
     dpVision::Gui
     dpVision::Core
-    #dpVision::Renderers
+    dpVision::LegacyApi
     dpVision::PluginManager
     dpVision::Api
+    Qt5::Core
+    Qt5::Gui
+    Qt5::Widgets
+    Qt5::OpenGL
 )
 
 
@@ -143,7 +149,7 @@ endforeach()
 set(BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
 install(TARGETS ${EXE_NAME} dpVisionCore DESTINATION ${BINARY_DIR})
 install(TARGETS ${EXE_NAME} dpVisionGui DESTINATION ${BINARY_DIR})
-install(TARGETS ${EXE_NAME} dpVisionApi DESTINATION ${BINARY_DIR})
+install(TARGETS ${EXE_NAME} dpVisionLegacyApi DESTINATION ${BINARY_DIR})
 install(TARGETS ${EXE_NAME} PluginManager DESTINATION ${BINARY_DIR})
 install(TARGETS ${DPV_PLUGINS} DESTINATION ${BINARY_DIR}/plugins)
 

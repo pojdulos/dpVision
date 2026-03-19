@@ -1,8 +1,8 @@
 // WorkspaceAPIAdapter.h
 #pragma once
 #include "../interfaces/IWorkspaceAPI.h"
-#include "../api/AP.h"
 #include "Workspace.h"
+#include "Model3D.h"
 
 class WorkspaceAPIAdapter : public IWorkspaceAPI {
     CWorkspace* ws_;
@@ -10,27 +10,37 @@ public:
     WorkspaceAPIAdapter(CWorkspace* ws = nullptr) : ws_(ws ? ws : CWorkspace::instance()) {}
 
     bool addModel(std::shared_ptr<CModel3D> obj, bool setItCurrent = false) override {
-        return AP::WORKSPACE::addModel(obj, setItCurrent);
+        if (obj == nullptr) return false;
+        const auto result = ws_->_objectAdd(obj);
+        if (setItCurrent) ws_->_objectActivate(obj->id());
+        return result != -1;
     }
     bool addObject(std::shared_ptr<CBaseObject> obj, bool setItCurrent = false) override {
-        return AP::WORKSPACE::addObject(obj, setItCurrent);
+        if (obj == nullptr) return false;
+        const auto result = ws_->_objectAdd(obj);
+        if (setItCurrent) ws_->_objectActivate(obj->id());
+        return result != -1;
     }
     bool removeModel(int id) override {
-        return AP::WORKSPACE::removeModel(id);
+        return ws_->_objectRemove(id);
     }
     std::shared_ptr<CModel3D> getModel(int id) override {
-        return AP::WORKSPACE::getModel(id);
+        return ws_->_getModel(id);
     }
     std::shared_ptr<CModel3D> getCurrentModel() override {
-        return AP::WORKSPACE::getCurrentModel();
+        return ws_->_getModel(ws_->_getCurrentModelId());
     }
     int getCurrentModelId() override {
-        return AP::WORKSPACE::getCurrentModelId();
+        return ws_->_getCurrentModelId();
     }
     std::shared_ptr<CModel3D> loadModel(const QString& path, bool synchronous = true, bool setItCurrent = false) override {
-        return AP::WORKSPACE::loadModel(path, synchronous, setItCurrent);
+        auto obj = CModel3D::load(path, synchronous);
+        if (obj != nullptr && addModel(obj, setItCurrent)) {
+            return obj;
+        }
+        return nullptr;
     }
     size_t size() override {
-        return AP::WORKSPACE::size();
+        return ws_->size();
     }
 };
