@@ -25,6 +25,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+file(GENERATE
+    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/qt.conf"
+    CONTENT "[Paths]\nPlugins = .\n"
+)
+
+set(QT_RUNTIME_ROOT "${CMAKE_BINARY_DIR}/vcpkg_installed/x64-windows")
+
 if(MSVC)
     add_compile_options(/FS)
 endif()
@@ -104,6 +111,34 @@ target_include_directories(${EXE_NAME} PUBLIC
     ${PluginManager_INCLUDE_DIR}
     ${PMFactory_INCLUDE_DIR}
 )
+
+if(WIN32)
+    add_custom_command(TARGET ${EXE_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_RUNTIME_DLLS:${EXE_NAME}>
+            $<TARGET_FILE_DIR:${EXE_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${CMAKE_CURRENT_BINARY_DIR}/qt.conf"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/qt.conf"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/platforms"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/imageformats"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/styles"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/bearer"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${QT_RUNTIME_ROOT}/plugins/platforms"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/platforms"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${QT_RUNTIME_ROOT}/plugins/imageformats"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/imageformats"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${QT_RUNTIME_ROOT}/plugins/styles"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/styles"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${QT_RUNTIME_ROOT}/plugins/bearer"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/bearer"
+        COMMAND_EXPAND_LISTS
+    )
+endif()
 
 add_library(dpVision::Exe INTERFACE IMPORTED)
 

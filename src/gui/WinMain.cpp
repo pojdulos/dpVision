@@ -9,7 +9,9 @@
 #include <QCommandLineOption>
 #include <QDebug>
 #include <QDialog>
+#include <QFileInfo>
 #include <QLabel>
+#include <QDir>
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -35,6 +37,9 @@ int main(int argc, char* argv[])
 #endif
 
     QT_REQUIRE_VERSION(argc, argv, "5.15.2")
+
+    const QString exeDir = QFileInfo(QString::fromLocal8Bit(argv[0])).absolutePath();
+    qputenv("QT_QPA_PLATFORM_PLUGIN_PATH", QDir(exeDir).filePath("platforms").toLocal8Bit());
 
     CMainApplication::theApp = new CMainApplication(argc, argv);
 

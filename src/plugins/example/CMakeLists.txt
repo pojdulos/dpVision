@@ -28,10 +28,7 @@ if (MSVC)
 	set_target_properties( ${_NAME} PROPERTIES
 		FOLDER "plugins"
 		LINKER_LANGUAGE CXX
-	)
-	add_custom_command(TARGET ${_NAME} POST_BUILD
-		COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${_NAME}>/plugins/
-		COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${_NAME}> $<TARGET_FILE_DIR:${_NAME}>/plugins/
+		RUNTIME_OUTPUT_DIRECTORY "$<TARGET_FILE_DIR:dpVision>/plugins"
 	)
 else (MSVC)
 	set_target_properties(${_NAME} PROPERTIES
