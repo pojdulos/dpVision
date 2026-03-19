@@ -67,6 +67,8 @@
 
 #ifdef DPVISION_BUILD
 #  define DPVISION_EXPORT DP_DECL_EXPORT
+#  define DPVISION_STATIC_EXPORT  // Puste podczas budowy DLL
 #else
 #  define DPVISION_EXPORT DP_DECL_IMPORT
+#  define DPVISION_STATIC_EXPORT extern  // extern podczas importu
 #endif

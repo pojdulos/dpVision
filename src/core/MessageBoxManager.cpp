@@ -1,3 +1,7 @@
 #include "MessageBoxManager.h"
 
-IMessageListener* MessageBoxManager::listener_ = nullptr;
+IMessageListener*& MessageBoxManager::listenerRef()
+{
+    static IMessageListener* listener = nullptr;
+    return listener;
+}

@@ -5,7 +5,7 @@
 #include "Vector3.h"
 #include "RGBA.h"
 
-class DPVISION_EXPORT CAnnotationPoint : public CAnnotation, public CPoint3d
+class CAnnotationPoint : public CAnnotation, public CPoint3d
 {
 	size_t m_faceId;
 	CPoint3f m_faceA;
@@ -16,13 +16,13 @@ class DPVISION_EXPORT CAnnotationPoint : public CAnnotation, public CPoint3d
 
 public:
 	bool m_showNorm;
-	CAnnotationPoint( std::shared_ptr<CBaseObject> m = nullptr);
-	CAnnotationPoint(int objId);
-	CAnnotationPoint( CAnnotationPoint &t );
-	CAnnotationPoint( const double &tx, const double &ty, const double &tz );
-	CAnnotationPoint( const CPoint3d &t );
-	CAnnotationPoint(const CPoint3d& t, const CPoint3d& t0);
-	CAnnotationPoint( const CPoint3d &t, const CRGBA kol );
+	DPVISION_EXPORT CAnnotationPoint( std::shared_ptr<CBaseObject> m = nullptr);
+	DPVISION_EXPORT CAnnotationPoint(int objId);
+	DPVISION_EXPORT CAnnotationPoint( CAnnotationPoint &t );
+	DPVISION_EXPORT CAnnotationPoint( const double &tx, const double &ty, const double &tz );
+	DPVISION_EXPORT CAnnotationPoint( const CPoint3d &t );
+	DPVISION_EXPORT CAnnotationPoint(const CPoint3d& t, const CPoint3d& t0);
+	DPVISION_EXPORT CAnnotationPoint( const CPoint3d &t, const CRGBA kol );
 
 	~CAnnotationPoint(void){};
 
@@ -36,7 +36,7 @@ public:
 
 	virtual int type() { return CAnnotation::POINT; }
 
-	virtual void applyTransformation(CTransform& from, CTransform& to) override;
+	DPVISION_EXPORT virtual void applyTransformation(CTransform& from, CTransform& to) override;
 
 	void setDirection(CVector3d ray) { m_direction.Set( ray ); };
 	void setDirection(double x, double y, double z) { m_direction.Set(x,y,z); };
@@ -52,7 +52,7 @@ public:
 	CPoint3f getFaceB() { return m_faceB; };
 	CPoint3f getFaceC() { return m_faceC; };
 
-	virtual std::wstring getInfoRow();
+	DPVISION_EXPORT virtual std::wstring getInfoRow();
 	virtual std::wstring getTypeWSTR() { return L"point"; };
 
 	// OBSOLETE FUNCTIONS FOR BACK COMPATIBILITY

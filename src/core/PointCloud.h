@@ -72,7 +72,8 @@ protected:
 
 
 public:
-	static int m_pointSize;
+	static int pointSize();
+	static void setPointSize(int size);
 
 	CPointCloud(std::shared_ptr<CBaseObject> p= nullptr);
 	CPointCloud(CPointCloud&);
@@ -157,9 +158,6 @@ public:
 	inline Materials &materials() { return m_materials; }
 	inline CMaterial& getMaterial(INDEX_TYPE idx = 0) { return *m_materials[idx]; };
 
-	//static int getPointSize() { return m_pointSize; };
-	//static void setPointSize(int s) { m_pointSize = s; };
-
 	CVertex & operator[](INDEX_TYPE index) { return m_vertices[index]; }
 	const CVertex & operator[](INDEX_TYPE index) const { return m_vertices[index]; }
 
@@ -191,6 +189,9 @@ public:
 	void transformByMatrixD(double matrix[16]);
 	void cutPlane(CPlane &m_cutPlane, std::shared_ptr<CPointCloud> &rest);
 	static std::shared_ptr<CPointCloud> findNClosest(std::shared_ptr<CPointCloud> ruchoma, std::shared_ptr<CPointCloud> nieruchoma, int limit);
+
+private:
+	static int& pointSizeRef();
 };
 
 typedef CPointCloud* PtrPointCloud;

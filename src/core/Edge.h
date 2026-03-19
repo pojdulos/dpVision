@@ -115,7 +115,7 @@ public:
 };
 
 
-class DPVISION_EXPORT  CSetOfEdges : public std::set< CEdge >
+class CSetOfEdges : public std::set< CEdge >
 {
 public:
 	CSetOfEdges::iterator findFirstVertex(INDEX_TYPE index);
@@ -126,7 +126,7 @@ public:
 };
 
 
-class DPVISION_EXPORT  CListOfEdges : public std::list< CEdge > {
+class CListOfEdges : public std::list< CEdge > {
 public:
 	CListOfEdges::iterator findFirstVertex(INDEX_TYPE index);
 	CListOfEdges::iterator findSecondVertex(INDEX_TYPE index);

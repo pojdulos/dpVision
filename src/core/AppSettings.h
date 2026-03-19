@@ -32,5 +32,5 @@ public:
     static std::unique_ptr<QSettings> pluginSettings(const QString& pluginId);
 
 private:
-    static std::unique_ptr<QSettings> settings;
+    static std::unique_ptr<QSettings>& settingsRef();
 };

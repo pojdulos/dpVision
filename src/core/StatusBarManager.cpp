@@ -1,16 +1,20 @@
 #include "StatusBarManager.h"
 #include <QElapsedTimer>
 
-IStatusListener* StatusBarManager::listener_ = nullptr;
+IStatusListener*& StatusBarManager::listenerRef()
+{
+    static IStatusListener* listener = nullptr;
+    return listener;
+}
 
 void StatusBarManager::setTextTimed(int mst, const QString& txt) {
-    if (listener_) {
+    if (listenerRef()) {
         static QElapsedTimer timer;
         if (!timer.isValid())
             timer.start();
 
         if (timer.elapsed() > mst) {
-            listener_->setText(txt.toStdString());
+            listenerRef()->setText(txt.toStdString());
             timer.restart();
         }
     }

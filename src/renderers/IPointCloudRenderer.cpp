@@ -31,7 +31,7 @@ void IPointCloudRenderer::renderSelf(const CBaseObject* _obj)
 	glEnableClientState(GL_VERTEX_ARRAY);
 
 	glEnable(GL_POINT_SMOOTH);
-	glPointSize(CPointCloud::m_pointSize);
+	glPointSize(CPointCloud::pointSize());
 
 	size_t idx = 0;
 

@@ -4,7 +4,21 @@
 #include "../renderers/IPointCloudRenderer.h"
 #include "StatusBarManager.h"
 
-int CPointCloud::m_pointSize = 1;
+int& CPointCloud::pointSizeRef()
+{
+	static int pointSize = 1;
+	return pointSize;
+}
+
+int CPointCloud::pointSize()
+{
+	return pointSizeRef();
+}
+
+void CPointCloud::setPointSize(int size)
+{
+	pointSizeRef() = size;
+}
 
 CPointCloud::CPointCloud(std::shared_ptr<CBaseObject> p) : CObject(p)
 {

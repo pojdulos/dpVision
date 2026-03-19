@@ -70,7 +70,7 @@ void IMeshRenderer::renderPoly(CPolygonGroup &poly)
 		glPolygonMode(GL_FRONT, GL_POINT);
 		glPolygonMode(GL_BACK, GL_POINT);
 		glEnable(GL_POINT_SMOOTH);
-		glPointSize(CPointCloud::m_pointSize);
+		glPointSize(CPointCloud::pointSize());
 	}
 	else if (mesh->renderFacesAsEdges())
 	{

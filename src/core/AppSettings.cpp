@@ -1,9 +1,14 @@
 #include "AppSettings.h"
 #include <QStyle>
 
+
 //bool AppSettings::darkMode = false;
 //QFont AppSettings::appFont = QApplication::font();
-std::unique_ptr<QSettings> AppSettings::settings = nullptr;
+std::unique_ptr<QSettings>& AppSettings::settingsRef()
+{
+    static std::unique_ptr<QSettings> settings = nullptr;
+    return settings;
+}
 
 
 AppSettingsNotifier* AppSettingsNotifier::instance()
@@ -15,6 +20,7 @@ AppSettingsNotifier* AppSettingsNotifier::instance()
 
 void AppSettings::init()
 {
+    auto& settings = settingsRef();
     if (!settings)
         settings = std::make_unique<QSettings>();
 }
@@ -48,6 +54,7 @@ void AppSettings::apply()
 
 void AppSettings::setDarkMode(bool enable)
 {
+    auto& settings = settingsRef();
     if (enable) {
         QPalette dark;
         dark.setColor(QPalette::Window, QColor(53, 53, 53));
@@ -76,11 +83,13 @@ void AppSettings::setDarkMode(bool enable)
 
 bool AppSettings::isDarkMode()
 {
+    auto& settings = settingsRef();
     return settings->value("ui/darkMode", false).toBool();
 }
 
 void AppSettings::setFont(const QFont& font)
 {
+    auto& settings = settingsRef();
     QApplication::setFont(font);
 
     settings->setValue("ui/font", font);
@@ -90,11 +99,13 @@ void AppSettings::setFont(const QFont& font)
 
 QFont AppSettings::getFont()
 {
+    auto& settings = settingsRef();
     return settings->value("ui/font", QApplication::font()).value<QFont>();
 }
 
 QSettings* AppSettings::mainSettings()
 {
+    auto& settings = settingsRef();
     return settings.get();
 }
 

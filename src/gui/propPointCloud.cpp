@@ -107,7 +107,7 @@ void PropPointCloud::updateProperties()
 	//ui.colorGroupBox->setStyleSheet(s);
 
 	ui.spinPointSize->blockSignals(true);
-	ui.spinPointSize->setValue(CPointCloud::m_pointSize);
+	ui.spinPointSize->setValue(CPointCloud::pointSize());
 	ui.spinPointSize->blockSignals(false);
 
 	QString info = "Vertices: " + QString::number(((CPointCloud*)obj)->vertices().size()) + "\n";
@@ -131,7 +131,7 @@ void PropPointCloud::adjustGroupHeight(bool checked) {
 
 void PropPointCloud::pointSizeChanged(int s)
 {
-	CPointCloud::m_pointSize = s;
+	CPointCloud::setPointSize(s);
 
 	UI::updateAllViews();
 }

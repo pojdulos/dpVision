@@ -4,7 +4,7 @@
 #include "../adapters/WorkspaceAPIAdapter.h"
 #include "../adapters/ModelAPIAdapter.h"
 #include "../adapters/ObjectAPIAdapter.h"
-#include "MainApplication.h"
+#include "../../gui/MainApplication.h"
 #include "Global.h"
 #include <QtWidgets/QApplication>
 #include <QtCore/QCoreApplication>

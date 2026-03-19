@@ -1,17 +1,18 @@
 #pragma once
+#include "dll_global.h"
 #include "interfaces/IStatusListener.h"
 
 #include <cstdarg>
 #include <string>
 #include <QtCore/QString>
 
-class StatusBarManager {
+class DPVISION_EXPORT StatusBarManager {
 public:
-    static void setListener(IStatusListener* l) { listener_ = l; }
-    static IStatusListener* listener() { return listener_; }
+    static void setListener(IStatusListener* l) { listenerRef() = l; }
+    static IStatusListener* listener() { return listenerRef(); }
 
     static void setText(const QString& text) {
-        if (listener_) listener_->setText(text.toStdString());
+        if (listenerRef()) listenerRef()->setText(text.toStdString());
     }
 
     //static void setText(const std::string& text) {
@@ -24,8 +25,8 @@ public:
     static void printfTimed(int mst, const char* format, ...);
 
     static void clear() {
-        if (listener_) listener_->clear();
+        if (listenerRef()) listenerRef()->clear();
     }
 private:
-    static IStatusListener* listener_;
+    static IStatusListener*& listenerRef();
 };

@@ -7,8 +7,8 @@
 #include "AnnotationPlane.h"
 #include "FileConnector.h"
 
-#include "../api/UI.h"
 #include "../api/adapters/AppAPIAdapter.h"
+#include "../api/adapters/PluginUIAPIAdapter.h"
 
 #include "AppSettings.h"
 
@@ -19,6 +19,12 @@ AppAPIAdapter& appApi()
 {
 	static AppAPIAdapter api;
 	return api;
+}
+
+PluginUIAPIAdapter& uiApi()
+{
+    static PluginUIAPIAdapter api;
+    return api;
 }
 }
 
@@ -48,19 +54,19 @@ void SamplePlugin::onButton(const QString &name)
  */
 void SamplePlugin::onLoad()
 {
-	UI::PLUGINPANEL::create( m_ID, "Working example" );
+	uiApi().pluginPanel().create(m_ID, "Working example");
 
-	UI::PLUGINPANEL::clear(m_ID);
+	uiApi().pluginPanel().clear(m_ID);
 
 	int nextPos = 0;
 	
-	UI::PLUGINPANEL::addButton(m_ID, "createBox", "Create box", nextPos++, 0);
-	UI::PLUGINPANEL::addButton(m_ID, "loadObject", "Load object", nextPos++, 0);
-	UI::PLUGINPANEL::addButton(m_ID, "cutMesh", "Cut mesh", nextPos++, 0);
+	uiApi().pluginPanel().addButton(m_ID, "createBox", "Create box", nextPos++, 0);
+	uiApi().pluginPanel().addButton(m_ID, "loadObject", "Load object", nextPos++, 0);
+	uiApi().pluginPanel().addButton(m_ID, "cutMesh", "Cut mesh", nextPos++, 0);
 
 	//QObject::connect(UI::PLUGINPANEL::addButton(m_ID, "create box", "createBox", nextPos++, 0), SIGNAL(clicked()), SLOT(createBox()));
 
-	UI::PLUGINPANEL::setEnabled(m_ID, true);
+	uiApi().pluginPanel().setEnabled(m_ID, true);
 }
 
 /**
@@ -72,7 +78,10 @@ void SamplePlugin::loadObject(const QString &path)
 	QString fileName = path;
 	
 	if (!QFileInfo(fileName).exists()) {
-		fileName = UI::FILECHOOSER::getOpenFileName(tr("Open File"), AppSettings::mainSettings()->value("recentFile").toString(), CFileConnector::getLoadExts());
+		fileName = uiApi().fileDialog().getOpenFileName(
+            tr("Open File"),
+            AppSettings::mainSettings()->value("recentFile").toString(),
+            CFileConnector::getLoadExts());
 	}
 	
 	if (!fileName.isEmpty()) // if empty: you pressed Cancel 
@@ -83,7 +92,7 @@ void SamplePlugin::loadObject(const QString &path)
 		}
 		else // this should not have happened
 		{
-			UI::MESSAGEBOX::error("Something went wrong", "File doesn't exists");
+			uiApi().messageBox().error("Something went wrong", "File doesn't exists");
 		}
 	}
 }
@@ -183,7 +192,7 @@ static void DivideMesh(std::shared_ptr<CMesh> mesh, const CPoint3d& centroid, co
 
 
 void SamplePlugin::cutMesh() {
-	QString fileName = UI::FILECHOOSER::getOpenFileName(
+	QString fileName = uiApi().fileDialog().getOpenFileName(
 		tr("Open File"),
 		AppSettings::mainSettings()->value("recentFile").toString(),
 		CFileConnector::getLoadExts());
@@ -199,13 +208,13 @@ void SamplePlugin::cutMesh() {
 
 			if (obj == nullptr)
 			{
-				UI::MESSAGEBOX::error("Something went wrong", "Can't read file");
+				uiApi().messageBox().error("Something went wrong", "Can't read file");
 				return;
 			}
 		}
 		else // this should not have happened
 		{
-			UI::MESSAGEBOX::error("Something went wrong", "File doesn't exists");
+			uiApi().messageBox().error("Something went wrong", "File doesn't exists");
 			return;
 		}
 
@@ -278,12 +287,12 @@ void SamplePlugin::cutMesh() {
 		}
 		else
 		{
-			UI::MESSAGEBOX::error("Something went wrong", "Object is not mesh");
+			uiApi().messageBox().error("Something went wrong", "Object is not mesh");
 			return;
 		}
 
 		// refresh viewers, probably it is not needed
-		UI::updateAllViews();
+		uiApi().updateAllViews();
 	}
 
 }
