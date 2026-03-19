@@ -30,8 +30,6 @@ file(GENERATE
     CONTENT "[Paths]\nPlugins = .\n"
 )
 
-set(QT_RUNTIME_ROOT "${CMAKE_BINARY_DIR}/vcpkg_installed/x64-windows")
-
 if(MSVC)
     add_compile_options(/FS)
 endif()
@@ -48,6 +46,14 @@ find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets OpenGL Xml Network)
 
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS})
+
+get_target_property(QT5_CORE_IMPORTED_LOCATION Qt5::Core IMPORTED_LOCATION_RELEASE)
+if(NOT QT5_CORE_IMPORTED_LOCATION)
+    get_target_property(QT5_CORE_IMPORTED_LOCATION Qt5::Core IMPORTED_LOCATION)
+endif()
+get_filename_component(QT_RUNTIME_BIN_DIR "${QT5_CORE_IMPORTED_LOCATION}" DIRECTORY)
+get_filename_component(QT_RUNTIME_ROOT "${QT_RUNTIME_BIN_DIR}" DIRECTORY)
+set(QT_PLUGIN_DIR "${QT_RUNTIME_ROOT}/plugins")
 
 qt5_add_resources(DPVISION_EXE_QRC ${PROJECT_SOURCE_DIR}/gui/${EXE_NAME}.qrc)
 
@@ -125,17 +131,37 @@ if(WIN32)
         COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/styles"
         COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/bearer"
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-            "${QT_RUNTIME_ROOT}/plugins/platforms"
+            "${QT_PLUGIN_DIR}/platforms"
             "$<TARGET_FILE_DIR:${EXE_NAME}>/platforms"
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-            "${QT_RUNTIME_ROOT}/plugins/imageformats"
+            "${QT_PLUGIN_DIR}/imageformats"
             "$<TARGET_FILE_DIR:${EXE_NAME}>/imageformats"
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-            "${QT_RUNTIME_ROOT}/plugins/styles"
+            "${QT_PLUGIN_DIR}/styles"
             "$<TARGET_FILE_DIR:${EXE_NAME}>/styles"
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-            "${QT_RUNTIME_ROOT}/plugins/bearer"
+            "${QT_PLUGIN_DIR}/bearer"
             "$<TARGET_FILE_DIR:${EXE_NAME}>/bearer"
+        COMMAND ${CMAKE_COMMAND} -E rm -f
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/qt.conf"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/Qt5Core.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/Qt5Gui.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/Qt5Widgets.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/Qt5OpenGL.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/Qt5Network.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/Qt5Xml.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/Qt5Svg.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/zlib1.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/pcre2-16.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/double-conversion.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/libEGL.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/libGLESv2.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/opengl32sw.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/D3Dcompiler_47.dll"
+        COMMAND ${CMAKE_COMMAND} -E remove_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/platforms"
+        COMMAND ${CMAKE_COMMAND} -E remove_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/imageformats"
+        COMMAND ${CMAKE_COMMAND} -E remove_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/styles"
+        COMMAND ${CMAKE_COMMAND} -E remove_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/bearer"
         COMMAND_EXPAND_LISTS
     )
 endif()

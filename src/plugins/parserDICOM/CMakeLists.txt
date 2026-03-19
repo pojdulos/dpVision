@@ -55,7 +55,10 @@ if (MSVC)
 	set_target_properties( ${PLUGIN_NAME} PROPERTIES
 		FOLDER "plugins"
 		LINKER_LANGUAGE CXX
-		RUNTIME_OUTPUT_DIRECTORY "$<TARGET_FILE_DIR:dpVision>/plugins"
+	)
+	add_custom_command(TARGET ${PLUGIN_NAME} POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:dpVision>/plugins
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${PLUGIN_NAME}> $<TARGET_FILE_DIR:dpVision>/plugins/
 	)
 	
 	target_compile_options(${PLUGIN_NAME} PRIVATE /bigobj)
