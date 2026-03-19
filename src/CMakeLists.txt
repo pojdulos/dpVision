@@ -9,7 +9,7 @@ set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Możliwe konfiguracj
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(EXE_NAME dpVision)
-project(${EXE_NAME})
+project(${EXE_NAME} LANGUAGES C CXX)
 
 # Ustawienia katalogów i opcji CMake
 set(AUTOGEN_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/${EXE_NAME}_autogen/include")
@@ -25,6 +25,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+if(MSVC)
+    add_compile_options(/FS)
+endif()
+
 # Dodaj katalogi include dla core i gui
 set(dpVision_INCLUDE_DIR
     ${PROJECT_SOURCE_DIR}/core
@@ -33,20 +37,10 @@ set(dpVision_INCLUDE_DIR
 
 # Znajdowanie pakietów
 find_package(OpenMP REQUIRED)
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Gui REQUIRED)
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5OpenGL REQUIRED)
-find_package(Qt5Xml REQUIRED)
-find_package(Qt5Network REQUIRED)
-find_package(Qt5 COMPONENTS OpenGL REQUIRED)
+find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets OpenGL Xml Network)
 
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS})
-find_library(GLU_LIBRARY NAMES GLU glu)
-if (NOT GLU_LIBRARY)
-    message(FATAL_ERROR "GLU library not found. Please install libglu1-mesa-dev (Ubuntu)")
-endif()
 
 
 # === WYKONYWALNY EXE (tylko plik wejściowy, np. WinMain.cpp) ===
@@ -60,17 +54,15 @@ include(cmake/ArchAndRuntime.cmake)
 include(cmake/getOpenCV.cmake)
 include(cmake/Zlib.cmake)
 include(cmake/QuaZip.cmake)
-include_directories(/usr/include/quazip5)
+include(cmake/GLU.cmake)
 # include_directories(/usr/include/QtQuaZip)  # niektóre wersje
 
 include(cmake/Eigen3.cmake)
 include(cmake/Boost.cmake)
 
-include_directories(/usr/include/quazip5)
 
 
 add_subdirectory(libs/PluginManager)
-#add_library(dpVision::PluginManager ALIAS PluginManager)
 
 add_library(dpVision::PluginManager INTERFACE IMPORTED)
 set_target_properties(dpVision::PluginManager PROPERTIES
@@ -117,7 +109,7 @@ set_target_properties(dpVision::Exe PROPERTIES
 
 add_library(dpVision::libICP INTERFACE IMPORTED)
 set_target_properties(dpVision::libICP PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/libs/libICP/src
+    INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/libs/libICP/src
     INTERFACE_LINK_LIBRARIES libICP
 )
 
@@ -154,9 +146,6 @@ install(TARGETS ${EXE_NAME} dpVisionGui DESTINATION ${BINARY_DIR})
 install(TARGETS ${EXE_NAME} dpVisionApi DESTINATION ${BINARY_DIR})
 install(TARGETS ${EXE_NAME} PluginManager DESTINATION ${BINARY_DIR})
 install(TARGETS ${DPV_PLUGINS} DESTINATION ${BINARY_DIR}/plugins)
-if(MSVC)
-    install(TARGETS QuaZip DESTINATION ${BINARY_DIR})
-endif()
 
 if(UNIX OR MINGW)
     file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/run_ldd.sh

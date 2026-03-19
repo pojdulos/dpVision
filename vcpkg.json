@@ -1,0 +1,12 @@
+{
+  "name": "dpvision",
+  "version": "1.0.0",
+  "dependencies": [
+    "qt5-base",
+    "eigen3",
+    "opencv",
+    "boost-array",
+    "boost-multi-array",
+    "zlib"
+  ]
+}
