@@ -1,8 +1,16 @@
 #include "BackgroundPlane.h"
 
-#include "../api/AP.h"
+#include "../api/adapters/AppAPIAdapter.h"
 
 #include "Global.h"
+
+namespace {
+AppAPIAdapter& appApi()
+{
+	static AppAPIAdapter api;
+	return api;
+}
+}
 
 CBackgroundPlane::CBackgroundPlane(void)
 {
@@ -157,7 +165,7 @@ bool CBackgroundPlane::AddImage( const char *f, int sX, int sY, int IsStereo, in
 	}
 	else
 	{
-		vImages[iBgCount].path = QString(AP::getExeFilePath() + "/" + QFileInfo(vImages[iBgCount].path).path() + "/" + QFileInfo(vImages[iBgCount].path).fileName());
+		vImages[iBgCount].path = QString(appApi().exeFilePath() + "/" + QFileInfo(vImages[iBgCount].path).path() + "/" + QFileInfo(vImages[iBgCount].path).fileName());
 
 		tex = vImages[iBgCount].tex = new CTexture( vImages[iBgCount].path );
 		if ( tex != nullptr )

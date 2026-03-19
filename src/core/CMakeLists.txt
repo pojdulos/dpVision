@@ -22,7 +22,7 @@ target_include_directories(dpVisionCore PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../gui
     ${dpVision_INCLUDE_DIR}
-    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/gui/dpVisionGui_autogen/include>
+    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/src/gui/dpVisionGui_autogen/include_$<CONFIG>>
     $<INSTALL_INTERFACE:include>
 )
 

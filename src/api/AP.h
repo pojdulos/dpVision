@@ -75,6 +75,12 @@ namespace AP
     DPVISION_EXPORT const QString& getExeFilePath(void);
 
     /**
+     * @brief Updates application state for a newly opened file
+     * @param filePath Path to the file that became current
+     */
+    DPVISION_EXPORT void adjustForCurrentFile(const QString& filePath);
+
+    /**
      * @brief Adds annotation to a parent object (OBSOLETE)
      * @deprecated Use AP::MODEL::addAnnotation(int parentid, CAnnotation *an) instead
      */

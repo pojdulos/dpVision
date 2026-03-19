@@ -4,6 +4,8 @@
 
 #include "BoundVector.h"
 
+#include <QtOpenGL>
+
 CBoundingBox::CBoundingBox(InitialValues v)
 {
 	reset(v);
@@ -35,9 +37,6 @@ CBoundingBox::CBoundingBox( CPoint3d a, CPoint3d b, CPoint3d c )
 CBoundingBox::~CBoundingBox()
 {
 }
-
-#include "GLViewer.h"
-
 void CBoundingBox::draw( Style style, bool checked)
 {
 	if ( isInvalid() || (style == DontRender) ) return;

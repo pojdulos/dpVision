@@ -1,9 +1,17 @@
 #include "WorkspaceFile.h"
 //#include "MainWindow.h"
-#include "GLViewer.h"
 //#include "ChildWindow.h"
+#include "../api/adapters/AppAPIAdapter.h"
 #include "StatusBarManager.h"
 #include "utils/StringUtils.h"
+
+namespace {
+AppAPIAdapter& appApi()
+{
+	static AppAPIAdapter api;
+	return api;
+}
+}
 
 //void CWorkspaceFile::saveDPW(CWorkspace & wksp, std::wstring p)
 //{
@@ -113,7 +121,7 @@ void CWorkspaceFile::loadFaro(std::wstring p, CWorkspace & wksp)
 		}
 		else
 		{
-			std::shared_ptr<CModel3D> obj = AP::WORKSPACE::loadModel(fwsname.absoluteFilePath().toStdWString());
+			std::shared_ptr<CModel3D> obj = appApi().workspace().loadModel(fwsname.absoluteFilePath());
 			if (NULL != obj)
 			{
 				id = obj->id();

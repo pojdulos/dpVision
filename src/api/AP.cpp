@@ -52,6 +52,14 @@ namespace AP
 
 	const QString& getExeFilePath(void) { return AP::mainApp().appExecDir(); }
 
+	void adjustForCurrentFile(const QString& filePath)
+	{
+		if (auto win = CMainWindow::instance())
+		{
+			win->adjustForCurrentFile(filePath);
+		}
+	}
+
 
 	int addAnnotation(int parentId, std::shared_ptr<CAnnotation> an)
 	{

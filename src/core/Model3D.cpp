@@ -15,7 +15,6 @@
 
 #include "MainApplication.h"
 
-#include "GLViewer.h"
 #include "Parser.h"
 
 #include "dpLog.h"

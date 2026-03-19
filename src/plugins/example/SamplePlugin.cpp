@@ -7,12 +7,20 @@
 #include "AnnotationPlane.h"
 #include "FileConnector.h"
 
-#include "../api/AP.h"
 #include "../api/UI.h"
+#include "../api/adapters/AppAPIAdapter.h"
 
 #include "AppSettings.h"
 
 #include <QPushButton>
+
+namespace {
+AppAPIAdapter& appApi()
+{
+	static AppAPIAdapter api;
+	return api;
+}
+}
 
 /**
  * @brief Called when button on PluginPanel is pressed
@@ -71,7 +79,7 @@ void SamplePlugin::loadObject(const QString &path)
 	{
 		if (QFileInfo(fileName).exists())
 		{
-			AP::WORKSPACE::loadModel(fileName);
+			appApi().workspace().loadModel(fileName);
 		}
 		else // this should not have happened
 		{
@@ -123,7 +131,7 @@ void SamplePlugin::createBox()
 
 	// this command causes the object to be displayed
 	// and visible in the scene tree
-	AP::WORKSPACE::addModel(obj, true);
+	appApi().workspace().addModel(obj, true);
 }
 
 
@@ -187,7 +195,7 @@ void SamplePlugin::cutMesh() {
 		{
 			// load the model and if exists add it to workspace
 			// using AP namespace is good choise because it automaticaly refreshes viewer
-			obj = AP::WORKSPACE::loadModel(fileName);
+			obj = appApi().workspace().loadModel(fileName);
 
 			if (obj == nullptr)
 			{
@@ -215,7 +223,7 @@ void SamplePlugin::cutMesh() {
 
 		// add plane to workspace
 		// using AP namespace is good choise because it automaticaly refreshes viewer
-		AP::OBJECT::addChild(obj, plane);
+		appApi().object().addChild(obj, plane);
 
 		if (child->hasType(CObject::MESH))
 		{
@@ -249,7 +257,7 @@ void SamplePlugin::cutMesh() {
 			obj1->setLabel("upper part");
 			
 			// add to workspace for display it in viewer and in workspace tree dialog
-			AP::WORKSPACE::addObject(obj1);
+			appApi().workspace().addObject(obj1);
 
 			// create deep copy of original mesh
 			std::shared_ptr<CMesh> mesh2 = std::dynamic_pointer_cast<CMesh>(mesh->getCopy());
@@ -266,7 +274,7 @@ void SamplePlugin::cutMesh() {
 			obj2->importChildrenGeometry();
 			obj2->setLabel("bottom part");
 
-			AP::WORKSPACE::addObject(obj2);
+			appApi().workspace().addObject(obj2);
 		}
 		else
 		{

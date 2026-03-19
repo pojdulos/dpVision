@@ -1,6 +1,5 @@
 #include "Global.h"
 #include "PointCloud.h"
-#include "GLViewer.h"
 
 #include "../renderers/IPointCloudRenderer.h"
 #include "StatusBarManager.h"

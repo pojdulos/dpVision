@@ -24,15 +24,13 @@ add_library(dpVisionGui SHARED
     ${DPVISION_GUI_SRC}
 )
 
-
-set(AUTOGEN_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/gui/dpVisionGui_autogen/include")
+set(GUI_AUTOGEN_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/dpVisionGui_autogen/include_$<CONFIG>")
 
 target_include_directories(dpVisionGui PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../core
     ${CMAKE_CURRENT_SOURCE_DIR}/../libs/PluginManager
-    ${AUTOGEN_INCLUDE_DIR}
-    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/gui/dpVisionGui_autogen/include>
+    $<BUILD_INTERFACE:${GUI_AUTOGEN_INCLUDE_DIR}>
     $<INSTALL_INTERFACE:include>
 )
 

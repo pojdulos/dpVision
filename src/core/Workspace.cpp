@@ -2,10 +2,18 @@
 //#include "WorkspaceXML.h"
 #include "WorkspaceFile.h"
 
-#include "../api/AP.h"
+#include "../api/adapters/AppAPIAdapter.h"
 
 #include "../renderers/IWorkspaceRenderer.h"
 #include "StatusBarManager.h"
+
+namespace {
+AppAPIAdapter& appApi()
+{
+	static AppAPIAdapter api;
+	return api;
+}
+}
 
 CWorkspace::CWorkspace() //: QObject()
 {
@@ -366,9 +374,9 @@ std::vector<CRGBA> CWorkspace::getXRayImage( CPoint3f pkt0, int size )
 
 	result.reserve( size * size );
 
-	if ( -1 != AP::WORKSPACE::getCurrentModelId() )
+	if ( -1 != appApi().workspace().getCurrentModelId() )
 	{
-			std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+			std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
 
 			//pkt0 = PointTransform( pkt0, obj->getRotation(), obj->getTranslation(), obj->getScale(), obj->getCtr(), obj->relocateCtr() );
 			pkt0 = obj->getTransform().world2local( pkt0 );

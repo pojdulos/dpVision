@@ -9,15 +9,14 @@ add_library(dpVisionApi SHARED ${API_SRC})
 
 add_library(dpVision::Api ALIAS dpVisionApi)
 
-set(AUTOGEN_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/dpVisionCore_autogen/include")
+set(API_AUTOGEN_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/dpVisionApi_autogen/include_$<CONFIG>")
 
 target_include_directories(dpVisionApi PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${dpVision_INCLUDE_DIR}
-    ${AUTOGEN_INCLUDE_DIR}
-    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/core/dpVisionCore_autogen/include>
-    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/gui/dpVisionGui_autogen/include>
-    $<BUILD_INTERFACE:${AUTOGEN_INCLUDE_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/src/core/dpVisionCore_autogen/include_$<CONFIG>>
+    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/src/gui/dpVisionGui_autogen/include_$<CONFIG>>
+    $<BUILD_INTERFACE:${API_AUTOGEN_INCLUDE_DIR}>
     $<INSTALL_INTERFACE:include>
 )
 

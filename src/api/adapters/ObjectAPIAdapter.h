@@ -5,13 +5,13 @@
 
 class ObjectAPIAdapter : public IObjectAPI {
 public:
-    bool remove(std::shared_ptr<CBaseObject> obj, bool deleteIt = false) override {
-        return AP::OBJECT::remove(obj, deleteIt);
+    bool remove(std::shared_ptr<CBaseObject> obj) override {
+        return AP::OBJECT::remove(obj);
     }
     int addChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child) override {
         return AP::OBJECT::addChild(obj, child);
     }
-    bool removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child, bool deleteIt = false) override {
-        return AP::OBJECT::removeChild(obj, child, deleteIt);
+    bool removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child) override {
+        return AP::OBJECT::removeChild(obj, child);
     }
 };

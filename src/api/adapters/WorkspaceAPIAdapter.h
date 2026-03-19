@@ -12,6 +12,9 @@ public:
     bool addModel(std::shared_ptr<CModel3D> obj, bool setItCurrent = false) override {
         return AP::WORKSPACE::addModel(obj, setItCurrent);
     }
+    bool addObject(std::shared_ptr<CBaseObject> obj, bool setItCurrent = false) override {
+        return AP::WORKSPACE::addObject(obj, setItCurrent);
+    }
     bool removeModel(int id) override {
         return AP::WORKSPACE::removeModel(id);
     }
@@ -20,6 +23,12 @@ public:
     }
     std::shared_ptr<CModel3D> getCurrentModel() override {
         return AP::WORKSPACE::getCurrentModel();
+    }
+    int getCurrentModelId() override {
+        return AP::WORKSPACE::getCurrentModelId();
+    }
+    std::shared_ptr<CModel3D> loadModel(const QString& path, bool synchronous = true, bool setItCurrent = false) override {
+        return AP::WORKSPACE::loadModel(path, synchronous, setItCurrent);
     }
     size_t size() override {
         return AP::WORKSPACE::size();
