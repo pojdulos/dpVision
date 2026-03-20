@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 
 #include "../api/AP.h"
+#include "../api/adapters/AppAPIAdapter.h"
 #include "MainApplication.h"
 #include "Model3D.h"
 
@@ -38,6 +39,15 @@
 #include "adapters/QtMessageBoxAdapter.h"
 #include "adapters/QtProgressAdapter.h"
 #include "adapters/QtWorkspacePanelAdapter.h"
+
+namespace
+{
+	AppAPIAdapter& appApi()
+	{
+		static AppAPIAdapter api;
+		return api;
+	}
+}
 #include "events/QtWorkspaceEvents.h"
 
 void restoreDockGeometry(QDockWidget* dock)
@@ -286,7 +296,7 @@ void CMainWindow::addPluginToListView( int id, QString txt )
 
 void CMainWindow::changeMenuAfterSelect()
 {
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
 
 	if ( NULL == obj )
 	{
@@ -424,7 +434,7 @@ void CMainWindow::activatePicViewerInstance(int id)
 	}
 	else
 	{
-		ui.mdiArea->setActiveSubWindow(MdiChild::create((CImage*)AP::WORKSPACE::getModel(id).get(), ui.mdiArea));
+		ui.mdiArea->setActiveSubWindow(MdiChild::create((CImage*)appApi().workspace().getModel(id).get(), ui.mdiArea));
 	}
 }
 

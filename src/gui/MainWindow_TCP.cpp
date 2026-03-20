@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 
 #include "../api/AP.h"
+#include "../api/adapters/AppAPIAdapter.h"
 #include "../core/AppStateManager.h"
 #include "MainApplication.h"
 
@@ -15,6 +16,12 @@
 
 namespace
 {
+	AppAPIAdapter& appApi()
+	{
+		static AppAPIAdapter api;
+		return api;
+	}
+
 	CMainApplication* mainApplication()
 	{
 		return static_cast<CMainApplication*>(QApplication::instance());
@@ -94,7 +101,7 @@ void CMainWindow::proceessData()
 		int id = QString(cmdline.at(1)).toInt();
 		double rX = QString(cmdline.at(2)).toDouble();
 
-		std::shared_ptr<CModel3D> obj = std::dynamic_pointer_cast<CModel3D>( AP::WORKSPACE::findId(id) );
+		std::shared_ptr<CModel3D> obj = std::dynamic_pointer_cast<CModel3D>(appApi().workspace().findId(id));
 		if (obj != nullptr) {
 			obj->getTransform().rotateAroundAxisDeg(CVector3d::XAxis(), rX);
 			updateAllViews();
@@ -107,7 +114,7 @@ void CMainWindow::proceessData()
 	else if (cmd.startsWith("remove")) {
 		int id = QString(cmdline.at(1)).toInt();
 
-		std::shared_ptr<CModel3D> obj = std::dynamic_pointer_cast<CModel3D>(AP::WORKSPACE::findId(id));
+		std::shared_ptr<CModel3D> obj = std::dynamic_pointer_cast<CModel3D>(appApi().workspace().findId(id));
 		if (obj != nullptr) {
 			CWorkspace::instance()->_objectRemove(id);
 			updateAllViews();
