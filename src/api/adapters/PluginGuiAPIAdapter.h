@@ -1,25 +1,22 @@
 #pragma once
 
-// Compatibility facade for plugins that should not need a direct link to dpVisionGui.
-// For GUI-coupled plugins prefer PluginGuiAPIAdapter.
-
-#include "PluginPanelAPIAdapter.h"
+#include "GuiPluginPanelAPIAdapter.h"
 #include "FileDialogAPIAdapter.h"
 #include "MessageBoxAPIAdapter.h"
 #include "StatusBarAPIAdapter.h"
-#include "CameraAPIAdapter.h"
-#include "ProgressAPIAdapter.h"
+#include "GuiCameraAPIAdapter.h"
+#include "GuiProgressAPIAdapter.h"
 #include "UIAPIAdapter.h"
 #include "../../core/AppStateManager.h"
 
-class PluginUIAPIAdapter {
+class PluginGuiAPIAdapter {
     UIAPIAdapter uiApi_;
-    PluginPanelAPIAdapter pluginPanelAdapter_;
+    GuiPluginPanelAPIAdapter pluginPanelAdapter_;
     FileDialogAPIAdapter fileDialogAdapter_;
     MessageBoxAPIAdapter messageBoxAdapter_;
     StatusBarAPIAdapter statusBarAdapter_;
-    CameraAPIAdapter cameraAdapter_;
-    ProgressAPIAdapter progressAdapter_;
+    GuiCameraAPIAdapter cameraAdapter_;
+    GuiProgressAPIAdapter progressAdapter_;
 
 public:
     IPluginPanelAPI& pluginPanel() { return pluginPanelAdapter_; }

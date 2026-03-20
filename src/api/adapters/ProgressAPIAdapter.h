@@ -1,45 +1,27 @@
 #pragma once
 
 #include "../interfaces/IProgressAPI.h"
-#include "../../api/AP.h"
-#include "../../gui/MainWindow.h"
-#include "../../gui/ProgressIndicator.h"
+#include "../UI.h"
 
 class ProgressAPIAdapter : public IProgressAPI {
 public:
     ProgressIndicator* instance() override {
-        if (auto win = AP::mainWinPtr()) {
-            return win->progressIndicator;
-        }
-        return nullptr;
+        return UI::PROGRESSBAR::instance();
     }
 
     void init(int min, int max, int val) override {
-        if (auto progress = instance()) {
-            progress->init(min, max, val);
-            progress->show();
-        }
-        AP::processEvents(true);
+        UI::PROGRESSBAR::init(min, max, val);
     }
 
     void setValue(int val) override {
-        if (auto progress = instance()) {
-            progress->setValue(val);
-        }
-        AP::processEvents(true);
+        UI::PROGRESSBAR::setValue(val);
     }
 
     void hide() override {
-        if (auto progress = instance()) {
-            progress->hide();
-        }
-        AP::processEvents(true);
+        UI::PROGRESSBAR::hide();
     }
 
     void setText(const QString& text) override {
-        if (auto progress = instance()) {
-            progress->setText(text);
-        }
-        AP::processEvents(true);
+        UI::PROGRESSBAR::setText(text);
     }
 };
