@@ -81,6 +81,13 @@ Privileged replacements:
 - New home: `IMessageBoxAPI`
 - Note: compatibility overloads remain in `UI` because some external plugins
   still build against `UI::MESSAGEBOX::*`.
+- Implementation note: legacy calls now route through `MessageBoxManager`,
+  which in turn delegates to the newer `UserMessageManager` / `IMessageListener`
+  mechanism. This is the basis for policy-based routing to message box, status
+  bar, or log without changing call sites in core/plugins.
+- Current policy: direct `MessageBoxManager::{information,warning,error}` calls
+  default to `Log`, while legacy `UI::MESSAGEBOX::*` and `IMessageBoxAPI`
+  force `Modal` and are additionally logged by the Qt adapter.
 
 `UI::FILECHOOSER::*`
 - Status: legacy wrapper

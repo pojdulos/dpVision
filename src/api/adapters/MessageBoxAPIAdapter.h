@@ -6,15 +6,15 @@
 class MessageBoxAPIAdapter : public IMessageBoxAPI {
 public:
     void information(const QString& message, const QString& title = QString()) override {
-        MessageBoxManager::information(message.toStdString(), title.toStdString());
+        MessageBoxManager::information(message.toStdString(), title.toStdString(), UserMessageChannel::Modal);
     }
 
     void warning(const QString& message, const QString& title = QString()) override {
-        MessageBoxManager::warning(message.toStdString(), title.toStdString());
+        MessageBoxManager::warning(message.toStdString(), title.toStdString(), UserMessageChannel::Modal);
     }
 
     void error(const QString& message, const QString& title = QString()) override {
-        MessageBoxManager::error(message.toStdString(), title.toStdString());
+        MessageBoxManager::error(message.toStdString(), title.toStdString(), UserMessageChannel::Modal);
     }
 
     int question(
@@ -23,11 +23,11 @@ public:
         const QString& button0 = QString("Yes"),
         const QString& button1 = QString("No"),
         const QString& button2 = QString()) override {
-        Q_UNUSED(message);
-        Q_UNUSED(title);
-        Q_UNUSED(button0);
-        Q_UNUSED(button1);
-        Q_UNUSED(button2);
-        return 0;
+        return MessageBoxManager::question(
+            message.toStdString(),
+            title.toStdString(),
+            button0.toStdString(),
+            button1.toStdString(),
+            button2.toStdString());
     }
 };

@@ -23,6 +23,7 @@
 #include "GLViewer.h"
 
 #include "../core/AppStateManager.h"
+#include "../core/MessageBoxManager.h"
 #include "../core/StatusBarManager.h"
 #include "../core/WorkspacePanelManager.h"
 #include "../core/interfaces/IProgressListener.h"
@@ -874,27 +875,25 @@ void UI::STATUSBAR::setText(const QString msg)
 
 // MESSAGEBOX
 
-#include <QtWidgets/QMessageBox>
+void UI::MESSAGEBOX::information(const QString &msg, const QString &tittle) { MessageBoxManager::information(msg.toStdString(), tittle.toStdString(), UserMessageChannel::Modal); }
+void UI::MESSAGEBOX::information(const char* msg, const char* tittle) { MessageBoxManager::information(QString::fromUtf8(msg).toStdString(), QString::fromUtf8(tittle).toStdString(), UserMessageChannel::Modal); }
+void UI::MESSAGEBOX::information(const std::string &msg, const std::string &tittle) { MessageBoxManager::information(msg, tittle, UserMessageChannel::Modal); }
+void UI::MESSAGEBOX::information(const std::wstring &msg, const std::wstring &tittle ) { MessageBoxManager::information(QString::fromWCharArray(msg.c_str()).toStdString(), QString::fromWCharArray(tittle.c_str()).toStdString(), UserMessageChannel::Modal); }
 
-void UI::MESSAGEBOX::information(const QString &msg, const QString &tittle) { QMessageBox::information(0, tittle, msg ); }
-void UI::MESSAGEBOX::information(const char* msg, const char* tittle) { QMessageBox::information(0, QString::fromUtf8(tittle), QString::fromUtf8(msg)); }
-void UI::MESSAGEBOX::information(const std::string &msg, const std::string &tittle) { QMessageBox::information(0, QString::fromUtf8(tittle.c_str()), QString::fromUtf8(msg.c_str())); }
-void UI::MESSAGEBOX::information(const std::wstring &msg, const std::wstring &tittle ) { QMessageBox::information(0, QString::fromWCharArray(tittle.c_str()), QString::fromWCharArray(msg.c_str())); }
+void UI::MESSAGEBOX::warning(const QString &msg, const QString &tittle) { MessageBoxManager::warning(msg.toStdString(), tittle.toStdString(), UserMessageChannel::Modal); }
+void UI::MESSAGEBOX::warning(const char* msg, const char* tittle) { MessageBoxManager::warning(QString::fromUtf8(msg).toStdString(), QString::fromUtf8(tittle).toStdString(), UserMessageChannel::Modal); }
+void UI::MESSAGEBOX::warning(const std::string &msg, const std::string &tittle) { MessageBoxManager::warning(msg, tittle, UserMessageChannel::Modal); }
+void UI::MESSAGEBOX::warning(const std::wstring &msg, const std::wstring &tittle ) { MessageBoxManager::warning(QString::fromWCharArray(msg.c_str()).toStdString(), QString::fromWCharArray(tittle.c_str()).toStdString(), UserMessageChannel::Modal); }
 
-void UI::MESSAGEBOX::warning(const QString &msg, const QString &tittle) { QMessageBox::warning(0, tittle, msg ); }
-void UI::MESSAGEBOX::warning(const char* msg, const char* tittle) { QMessageBox::warning(0, QString::fromUtf8(tittle), QString::fromUtf8(msg)); }
-void UI::MESSAGEBOX::warning(const std::string &msg, const std::string &tittle) { QMessageBox::warning(0, QString::fromUtf8(tittle.c_str()), QString::fromUtf8(msg.c_str())); }
-void UI::MESSAGEBOX::warning(const std::wstring &msg, const std::wstring &tittle ) { QMessageBox::warning(0, QString::fromWCharArray(tittle.c_str()), QString::fromWCharArray(msg.c_str())); }
+void UI::MESSAGEBOX::error(const QString &msg, const QString &tittle) { MessageBoxManager::error(msg.toStdString(), tittle.toStdString(), UserMessageChannel::Modal); }
+void UI::MESSAGEBOX::error(const char* msg, const char* tittle) { MessageBoxManager::error(QString::fromUtf8(msg).toStdString(), QString::fromUtf8(tittle).toStdString(), UserMessageChannel::Modal); }
+void UI::MESSAGEBOX::error(const std::string &msg, const std::string &tittle) { MessageBoxManager::error(msg, tittle, UserMessageChannel::Modal); }
+void UI::MESSAGEBOX::error(const std::wstring &msg, const std::wstring &tittle ) { MessageBoxManager::error(QString::fromWCharArray(msg.c_str()).toStdString(), QString::fromWCharArray(tittle.c_str()).toStdString(), UserMessageChannel::Modal); }
 
-void UI::MESSAGEBOX::error(const QString &msg, const QString &tittle) { QMessageBox::critical(0, tittle, msg ); }
-void UI::MESSAGEBOX::error(const char* msg, const char* tittle) { QMessageBox::critical(0, QString::fromUtf8(tittle), QString::fromUtf8(msg) ); }
-void UI::MESSAGEBOX::error(const std::string &msg, const std::string &tittle) { QMessageBox::critical(0, QString::fromUtf8(tittle.c_str()), QString::fromUtf8(msg.c_str())); }
-void UI::MESSAGEBOX::error(const std::wstring &msg, const std::wstring &tittle ) { QMessageBox::critical( 0, QString::fromWCharArray(tittle.c_str()), QString::fromWCharArray(msg.c_str())); }
-
-int UI::MESSAGEBOX::question(const QString &msg, const QString &tittle, const QString &b0, const QString &b1, const QString &b2) { return QMessageBox::question(0, tittle, msg, b0, b1, b2); }
-int UI::MESSAGEBOX::question(const char* msg, const char* tittle, const char* b0, const char* b1, const char* b2) { return QMessageBox::question(0, QString::fromUtf8(tittle), QString::fromUtf8(msg), QString::fromUtf8(b0), QString::fromUtf8(b1), QString::fromUtf8(b2)); }
-int UI::MESSAGEBOX::question(const std::string &msg, const std::string &tittle, const std::string &b0, const std::string &b1, const std::string &b2) { return QMessageBox::question(0, QString::fromUtf8(tittle.c_str()), QString::fromUtf8(msg.c_str()), QString::fromUtf8(b0.c_str()), QString::fromUtf8(b1.c_str()), QString::fromUtf8(b2.c_str())); }
-int UI::MESSAGEBOX::question(const std::wstring &msg, const std::wstring &tittle, const std::wstring &b0, const std::wstring &b1, const std::wstring &b2 ) { return QMessageBox::question(0, QString::fromWCharArray(tittle.c_str()), QString::fromWCharArray(msg.c_str()), QString::fromWCharArray(b0.c_str()), QString::fromWCharArray(b1.c_str()), QString::fromWCharArray(b2.c_str())); }
+int UI::MESSAGEBOX::question(const QString &msg, const QString &tittle, const QString &b0, const QString &b1, const QString &b2) { return MessageBoxManager::question(msg.toStdString(), tittle.toStdString(), b0.toStdString(), b1.toStdString(), b2.toStdString()); }
+int UI::MESSAGEBOX::question(const char* msg, const char* tittle, const char* b0, const char* b1, const char* b2) { return MessageBoxManager::question(QString::fromUtf8(msg).toStdString(), QString::fromUtf8(tittle).toStdString(), QString::fromUtf8(b0).toStdString(), QString::fromUtf8(b1).toStdString(), QString::fromUtf8(b2).toStdString()); }
+int UI::MESSAGEBOX::question(const std::string &msg, const std::string &tittle, const std::string &b0, const std::string &b1, const std::string &b2) { return MessageBoxManager::question(msg, tittle, b0, b1, b2); }
+int UI::MESSAGEBOX::question(const std::wstring &msg, const std::wstring &tittle, const std::wstring &b0, const std::wstring &b1, const std::wstring &b2 ) { return MessageBoxManager::question(QString::fromWCharArray(msg.c_str()).toStdString(), QString::fromWCharArray(tittle.c_str()).toStdString(), QString::fromWCharArray(b0.c_str()).toStdString(), QString::fromWCharArray(b1.c_str()).toStdString(), QString::fromWCharArray(b2.c_str()).toStdString()); }
 
 
 // FILECHOOSER
