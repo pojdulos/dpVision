@@ -79,7 +79,6 @@ void PropMaterial::updateProperties()
 
 		ui.checkShow->setEnabled(((CPointCloud*)obj)->hasVertexColors());
 		ui.checkShow->setToolTip("Use this checkbox to hide original vertex colors and use selected material.\nIf your model has a texture instead of vertex colors, the checkbox is grayed.\nYou should to hide the texture (menu or key \"T\") to use the material.");
-		//ui.checkShow->setToolTip(AP::::GetResourceString(IDS_PROP_MATERIAL_CHECK));
 		
 		ui.checkShow->blockSignals(false);
 }

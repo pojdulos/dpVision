@@ -34,8 +34,6 @@ CContextMenu::CContextMenu(std::shared_ptr<CBaseObject> obj, QWidget *parent) : 
 	{
 		addMenu(createAddObjectMenu());
 		addSeparator();
-		//addMenu(AP::mainWin().ui.menuWorkspace);
-		//addMenu(AP::mainWin().ui.menuCamera);
 		addMenu(main_window->ui.menuWorkspace);
 		addMenu(main_window->ui.menuCamera);
 	}
@@ -83,14 +81,12 @@ CContextMenu::CContextMenu(std::shared_ptr<CBaseObject> obj, QWidget *parent) : 
 				AP::WORKSPACE::setCurrentModel(m_obj->id());
 				addAction(QIcon(":/icons/Save.ico"), "Save as...", this, SLOT(saveObjAs()));
 				addSeparator();
-				//addMenu(AP::mainWin().ui.menuModel);
 				addMenu(main_window->ui.menuModel);
 				addSeparator();
 				addAction("create inversed transformation", this, SLOT(slot_create_inversed_transform()));
 				break;
 			case CBaseObject::Type::IMAGE:
 				AP::WORKSPACE::setCurrentModel(m_obj->id());
-				//addMenu(AP::mainWin().ui.menuImage);
 				addMenu(main_window->ui.menuImage);
 				break;
 			case CBaseObject::Type::MOVEMENT:

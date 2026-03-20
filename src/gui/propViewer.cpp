@@ -210,22 +210,6 @@ void PropViewer::changedRotZ( double val )
 		updateCurrentView();
 	}
 
-	//GLViewer *view = AP::mainWin().currentViewer();
-	//if ( NULL != view )
-	//{
-	//	double v = val;
-	//	if (v > 180.0) v -= 360.0;
-	//	else if (v <= -180.0) v += 360.0;
-
-	//	CQuaternion q;
-	//	q.FromRotationAxis(deg2rad(v - rot.Z()), 0.0, 0.0, 1.0);
-
-	//	view->transform().rotation().MultAndSet(q);
-
-	//	rot.Z(v);
-
-	//	updateCurrentView();
-	//}
 }
 
 void PropViewer::changedTraXYZ( double val )

@@ -46,27 +46,6 @@ void MdiChild::mouseMoveEvent(QMouseEvent* event)
 	StatusBarManager::setText(QString("(MdiChild) pozycja kursora: " + QString::number(event->pos().x()) + " " + QString::number(event->pos().y())));
 }
 
-//void MdiChild::closeAllPic(int id)
-//{
-//	for ( QMdiSubWindow* window : AP::mainWin().ui.mdiArea->subWindowList() )
-//	{
-//		MdiChild* child = (MdiChild*)window;
-//
-//		if (child != nullptr)
-//		{
-//			if (child->hasType(MdiChild::Type::Pic))
-//			{
-//				PicViewer* pic = qobject_cast<PicViewer*>(child->widget());
-//				if (pic->id() == id)
-//				{
-//					child->close();
-//				}
-//			}
-//		}
-//
-//	}
-//}
-
 
 void MdiChild::fullScreen()
 {
@@ -94,7 +73,7 @@ void MdiChild::fullScreen()
 
 void MdiChild::keyPressEvent(QKeyEvent* e)
 {
-	// To dzia³a tylko w trybie pe³nego ekranu
+	// To dziaÅ‚a tylko w trybie peÅ‚nego ekranu
 
 	StatusBarManager::setText(QString::number(e->key()));
 	if (e->key() == Qt::Key_F11)

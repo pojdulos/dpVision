@@ -27,10 +27,6 @@ CModel3D::CModel3D(std::shared_ptr<CBaseObject> p) : CObject(p)
 
 	m_bOK = true;
 
-	//bAnime = (AP::mainApp().globalParams.RunAnimation != 0);
-	//iAnimeDir = (AP::mainApp().globalParams.RunAnimation < 0) ? -1 : 1;
-	//lastanim = 0;
-
 	m_annotations.clear();
 
 	bDrawBB = false;
@@ -46,10 +42,6 @@ CModel3D::CModel3D( const CModel3D &m ) : CObject(m)
 	m_bOK = true;
 
 	bDrawBB = false;
-
-	//bAnime = (AP::mainApp().globalParams.RunAnimation != 0);
-	//iAnimeDir = (AP::mainApp().globalParams.RunAnimation < 0) ? -1 : 1;
-	//lastanim = 0;
 
 	m_transform = m.m_transform;
 

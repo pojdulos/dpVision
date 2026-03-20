@@ -46,6 +46,9 @@ public:
     bool removeModel(int id) override {
         return ws_->_objectRemove(id);
     }
+    std::shared_ptr<CBaseObject> findId(int id) override {
+        return ws_->getSomethingWithId(id);
+    }
     std::shared_ptr<CModel3D> getModel(int id) override {
         return ws_->_getModel(id);
     }

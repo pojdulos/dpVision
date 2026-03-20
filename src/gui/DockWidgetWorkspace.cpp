@@ -1,7 +1,7 @@
 #include "DockWidgetWorkspace.h"
 
 #include "../api/UI.h"
-#include "../api/AP.h"
+#include "../api/adapters/AppAPIAdapter.h"
 
 #include "DockWidgetModel.h"
 #include "Annotation.h"
@@ -20,6 +20,12 @@
 #include "dpLog.h"
 
 namespace {
+AppAPIAdapter& appApi()
+{
+	static AppAPIAdapter api;
+	return api;
+}
+
 void notifyWorkspaceTreeClicked(int objId)
 {
 	if (PluginInterface* plugin = PluginRuntimeManager::activePlugin()) {
@@ -345,7 +351,7 @@ void DockWidgetWorkspace::setItemCheckedById(int id, bool b)
 void DockWidgetWorkspace::setItemVisibleById(int id, bool b)
 {
 	QModelIndex current = findWorkspaceTreeModelIndex(id);
-	std::shared_ptr<CBaseObject> obj = AP::WORKSPACE::findId(id);
+	std::shared_ptr<CBaseObject> obj = appApi().workspace().findId(id);
 
 	if (current.isValid()) {
 		WorkspaceTreeModel *model = (WorkspaceTreeModel*)ui.treeView->model();
@@ -453,7 +459,7 @@ void DockWidgetWorkspace::addItem(int id, int parentId)
 	if (parentId == -1)
 	{
 		// najwy�szy poziom
-		std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getModel(id);
+		std::shared_ptr<CModel3D> obj = appApi().workspace().getModel(id);
 		if (nullptr != obj)
 		{
 			model->addModelWithChildren(obj);
@@ -467,7 +473,7 @@ void DockWidgetWorkspace::addItem(int id, int parentId)
 		{
 			QStandardItem *i1 = model->itemFromIndex(parentIndex);
 
-			std::shared_ptr<CObject> parent = std::dynamic_pointer_cast<CObject>(AP::WORKSPACE::findId(parentId));
+			std::shared_ptr<CObject> parent = std::dynamic_pointer_cast<CObject>(appApi().workspace().findId(parentId));
 
 			int grandparentId = parent->parentId();
 

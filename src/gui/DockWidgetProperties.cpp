@@ -1,6 +1,7 @@
 #include "DockWidgetProperties.h"
 
 #include "../api/UI.h"
+#include "../api/adapters/AppAPIAdapter.h"
 
 #include "DockWidgetWorkspace.h"
 #include "Annotation.h"
@@ -36,8 +37,6 @@
 #include <QLayout>
 #include <QScrollArea>
 
-#include "../api/AP.h"
-
 #include "Model3D.h"
 
 #include "MainWindow.h"
@@ -47,6 +46,12 @@
 
 namespace
 {
+	AppAPIAdapter& appApi()
+	{
+		static AppAPIAdapter api;
+		return api;
+	}
+
 	GLViewer* currentViewer()
 	{
 		if (auto win = CMainWindow::instance())
@@ -89,7 +94,7 @@ void DockWidgetProperties::selectionChanged( int id )
 	}
 	else
 	{
-		std::shared_ptr<CBaseObject> currentObjectPtr = AP::WORKSPACE::findId(id);
+		std::shared_ptr<CBaseObject> currentObjectPtr = appApi().workspace().findId(id);
 		
 		CBaseObject* currentObject = currentObjectPtr.get(); //TYMCZASOWO
 		

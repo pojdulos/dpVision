@@ -1,12 +1,21 @@
 #include "propModel.h"
 #include "../api/UI.h"
+#include "../api/adapters/AppAPIAdapter.h"
 #include "../core/AppStateManager.h"
-#include "../api/AP.h"
 
 #include "Model3D.h"
 
 #include "MainWindow.h"
 #include "QScrollArea"
+
+namespace
+{
+	AppAPIAdapter& appApi()
+	{
+		static AppAPIAdapter api;
+		return api;
+	}
+}
 
 PropModel::PropModel(CModel3D *m, QWidget *parent) : PropWidget( parent )
 {
@@ -119,7 +128,7 @@ QVector<PropWidget*> PropModel::create_and_get_subwidgets(CBaseObject *obj)
 
 void PropModel::changedRotX( double val )
 {
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
 
 	if ( NULL != obj )
 	{
@@ -153,7 +162,7 @@ void PropModel::changedRotX( double val )
 
 void PropModel::changedRotY( double val )
 {
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
 
 	if (NULL != obj)
 	{
@@ -187,7 +196,7 @@ void PropModel::changedRotY( double val )
 
 void PropModel::changedRotZ( double val )
 {
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
 
 	if (NULL != obj)
 	{
@@ -222,9 +231,9 @@ void PropModel::changedRotZ( double val )
 
 void PropModel::changedTraXYZ( double val )
 {
-	if ( NULL != AP::WORKSPACE::getCurrentModel() )
+	if (std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel())
 	{
-		AP::WORKSPACE::getCurrentModel()->getTransform().translation().Set( ui.spinTransX->value(), ui.spinTransY->value(), ui.spinTransZ->value() );
+		obj->getTransform().translation().Set(ui.spinTransX->value(), ui.spinTransY->value(), ui.spinTransZ->value());
 
 		tra.Set( ui.spinTransX->value(), ui.spinTransY->value(), ui.spinTransZ->value() );
 
@@ -234,9 +243,9 @@ void PropModel::changedTraXYZ( double val )
 
 void PropModel::changedScale( double val )
 {
-	if ( NULL != AP::WORKSPACE::getCurrentModel() )
+	if (std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel())
 	{
-		AP::WORKSPACE::getCurrentModel()->getTransform().setScale( val );
+		obj->getTransform().setScale( val );
 
 		AppStateManager::updateAllViews();
 	}
@@ -244,9 +253,9 @@ void PropModel::changedScale( double val )
 
 void PropModel::changedCentered( int val )
 {
-	if ( NULL != AP::WORKSPACE::getCurrentModel() )
+	if (std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel())
 	{
-		AP::WORKSPACE::getCurrentModel()->getTransform().moveTheOriginToTheCenterOfRotation( val == Qt::Checked );
+		obj->getTransform().moveTheOriginToTheCenterOfRotation( val == Qt::Checked );
 
 		AppStateManager::updateAllViews();
 	}

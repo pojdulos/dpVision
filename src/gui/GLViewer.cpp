@@ -3,6 +3,7 @@
 //#include "../api/AP.h"
 
 #include "../api/UI.h"
+#include "../api/adapters/AppAPIAdapter.h"
 
 //#include <QMdiSubWindow>
 //#include <QCloseEvent>
@@ -16,6 +17,15 @@
 
 
 bool mouse_key_pressed;
+
+namespace
+{
+	AppAPIAdapter& appApi()
+	{
+		static AppAPIAdapter api;
+		return api;
+	}
+}
 
 GLViewer::GLViewer(QWidget *parent) : QOpenGLWidget(parent)
 {
@@ -601,7 +611,7 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 	auto win = CMainWindow::instance();
 	auto progress = win->progressIndicator;
 
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
 	if (NULL != obj)
 	{
 		setSelectionMode(99);
@@ -834,7 +844,7 @@ void GLViewer::rotate(double dx, double dy) {
 	CVector3d yAxis = invR * CVector3d::YAxis();
 	//CVector3d zAxis = invR * CVector3d::ZAxis();
 
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
 
 	auto win = CMainWindow::instance();
 
@@ -863,13 +873,14 @@ void GLViewer::rotate(double dx, double dy) {
 void GLViewer::translate(double dx, double dy, double dz) {
 	auto win = CMainWindow::instance();
 
-	if (NULL != AP::WORKSPACE::getCurrentModel())
+	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
+	if (NULL != obj)
 	{
 		CQuaternion invR = m_transform.rotation().inverse();
 
 		CVector3d t = invR * CVector3d(dx, dy, dz);
 
-		AP::WORKSPACE::getCurrentModel()->transform().translate(t);
+		obj->transform().translate(t);
 
 		emit translationChanged(t.X(), t.Y(), t.Z());
 
@@ -921,13 +932,15 @@ void GLViewer::mouseMoveEvent( QMouseEvent* event )
 			{
 				if (Qt::ShiftModifier == QApplication::keyboardModifiers())
 				{
-					double factor = (NULL != AP::WORKSPACE::getCurrentModel()) ? AP::WORKSPACE::getCurrentModel()->transform().scale().x : 5.0;
+					std::shared_ptr<CModel3D> currentModel = appApi().workspace().getCurrentModel();
+					double factor = (NULL != currentModel) ? currentModel->transform().scale().x : 5.0;
 
 					this->translate(0.0, 0.0, dy / factor);
 				}
 				else if (Qt::ControlModifier == QApplication::keyboardModifiers())
 				{
-					CPoint3d factor = (NULL != AP::WORKSPACE::getCurrentModel()) ? AP::WORKSPACE::getCurrentModel()->transform().scale() : CPoint3d(5.0, 5.0, 5.0);
+					std::shared_ptr<CModel3D> currentModel = appApi().workspace().getCurrentModel();
+					CPoint3d factor = (NULL != currentModel) ? currentModel->transform().scale() : CPoint3d(5.0, 5.0, 5.0);
 					
 					this->translate(dx / factor.x, -dy / factor.y, 0.0);
 				}
@@ -951,13 +964,15 @@ void GLViewer::mouseMoveEvent( QMouseEvent* event )
 			}
 			else if (event->buttons() & Qt::MouseButton::MiddleButton)
 			{
-				double factor = (NULL != AP::WORKSPACE::getCurrentModel()) ? AP::WORKSPACE::getCurrentModel()->transform().scale().x : 5.0;
+				std::shared_ptr<CModel3D> currentModel = appApi().workspace().getCurrentModel();
+				double factor = (NULL != currentModel) ? currentModel->transform().scale().x : 5.0;
 
 				this->translate(0.0, 0.0, dy / factor);
 			}
 			else if (event->buttons() & Qt::MouseButton::RightButton)
 			{
-				CPoint3d factor = (NULL != AP::WORKSPACE::getCurrentModel()) ? AP::WORKSPACE::getCurrentModel()->transform().scale() : CPoint3d(5.0, 5.0, 5.0);
+				std::shared_ptr<CModel3D> currentModel = appApi().workspace().getCurrentModel();
+				CPoint3d factor = (NULL != currentModel) ? currentModel->transform().scale() : CPoint3d(5.0, 5.0, 5.0);
 
 				this->translate(dx / factor.x, -dy / factor.y, 0.0);
 			}
@@ -1005,13 +1020,14 @@ void GLViewer::wheelEvent(QWheelEvent * event)
 
 		double d = -(double)event->angleDelta().y();
 
-		if (NULL != AP::WORKSPACE::getCurrentModel())
+		std::shared_ptr<CModel3D> currentModel = appApi().workspace().getCurrentModel();
+		if (NULL != currentModel)
 		{
-			double factor = 10.0 * AP::WORKSPACE::getCurrentModel()->getTransform().scale().x;
+			double factor = 10.0 * currentModel->getTransform().scale().x;
 
 			CVector3d t = CVector3d(0.0, 0.0, d / factor).transformByMatrixD(matrix);
 
-			AP::WORKSPACE::getCurrentModel()->getTransform().translate(t);
+			currentModel->getTransform().translate(t);
 
 			win->statusBar()->showMessage(QString("translacja obiektu: [%1,%2,%3]").arg(t.x).arg(t.y).arg(t.z));
 		}

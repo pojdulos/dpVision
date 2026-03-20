@@ -13,7 +13,6 @@ PropAnnotationCamera::PropAnnotationCamera(CAnnotationCamera*an, QWidget *parent
 	ui.setupUi(this);
 
 	updateSensorProperties();
-	//UI::IMAGEVIEWER::setImage( "E:/images/" + an->getLabelA(), false );
 }
 
 PropAnnotationCamera::~PropAnnotationCamera()

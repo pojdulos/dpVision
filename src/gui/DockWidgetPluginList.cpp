@@ -57,8 +57,6 @@ void DockWidgetPluginList::runSelectedPlugin( QListWidgetItem *item )
 	{
 		app->RunPlugin(item->data(Qt::UserRole).toUInt());
 	}
-	//foreach ( QListWidgetItem *it, ui.listPlugins->selectedItems() )
-	//	AP::mainApp().RunPlugin( it->data(Qt::UserRole).toUInt() );
 }
 
 void DockWidgetPluginList::removeSelectedPlugin()

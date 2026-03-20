@@ -19,6 +19,7 @@ public:
     virtual bool addModel(std::shared_ptr<CModel3D> obj, bool setItCurrent = false) = 0;
     virtual bool addObject(std::shared_ptr<CBaseObject> obj, bool setItCurrent = false) = 0;
     virtual bool removeModel(int id) = 0;
+    virtual std::shared_ptr<CBaseObject> findId(int id) = 0;
     virtual std::shared_ptr<CModel3D> getModel(int id) = 0;
     virtual std::shared_ptr<CModel3D> getCurrentModel() = 0;
     virtual int getCurrentModelId() = 0;

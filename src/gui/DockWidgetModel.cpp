@@ -1,8 +1,8 @@
 #include "DockWidgetModel.h"
 
 #include "../api/UI.h"
+#include "../api/adapters/AppAPIAdapter.h"
 #include "../core/AppStateManager.h"
-#include "../api/AP.h"
 
 #include "Transform.h"
 #include "Model3D.h"
@@ -14,6 +14,12 @@
 
 namespace
 {
+	AppAPIAdapter& appApi()
+	{
+		static AppAPIAdapter api;
+		return api;
+	}
+
 	GLViewer* currentViewer()
 	{
 		if (auto win = CMainWindow::instance())
@@ -57,7 +63,7 @@ DockWidgetModel::~DockWidgetModel()
 
 void DockWidgetModel::updateProperties()
 {
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
 
 	if ( NULL != obj )
 	{
@@ -113,7 +119,7 @@ void DockWidgetModel::updateTranslations(double x, double y, double z)
 
 void DockWidgetModel::updateModelRotX( double val )
 {
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
 
 	if ( NULL != obj )
 	{
@@ -134,7 +140,7 @@ void DockWidgetModel::updateModelRotX( double val )
 
 void DockWidgetModel::updateModelRotY( double val )
 {
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
 
 	if (NULL != obj)
 	{
@@ -154,7 +160,7 @@ void DockWidgetModel::updateModelRotY( double val )
 
 void DockWidgetModel::updateModelRotZ( double val )
 {
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
 
 	if (NULL != obj)
 	{
@@ -174,9 +180,9 @@ void DockWidgetModel::updateModelRotZ( double val )
 
 void DockWidgetModel::updateModelTrans( double val )
 {
-	if ( NULL != AP::WORKSPACE::getCurrentModel() )
+	if (std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel())
 	{
-		AP::WORKSPACE::getCurrentModel()->getTransform().translation().Set( ui.spinTransX->value(), ui.spinTransY->value(), ui.spinTransZ->value() );
+		obj->getTransform().translation().Set(ui.spinTransX->value(), ui.spinTransY->value(), ui.spinTransZ->value());
 
 		tra.Set( ui.spinTransX->value(), ui.spinTransY->value(), ui.spinTransZ->value() );
 
@@ -186,9 +192,9 @@ void DockWidgetModel::updateModelTrans( double val )
 
 void DockWidgetModel::updateModelScale( double val )
 {
-	if ( NULL != AP::WORKSPACE::getCurrentModel() )
+	if (std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel())
 	{
-		AP::WORKSPACE::getCurrentModel()->getTransform().setScale( ui.spinScale->value() );
+		obj->getTransform().setScale(ui.spinScale->value());
 
 		AppStateManager::updateAllViews();
 	}
@@ -196,9 +202,9 @@ void DockWidgetModel::updateModelScale( double val )
 
 void DockWidgetModel::updateModelCentered( int val )
 {
-	if ( NULL != AP::WORKSPACE::getCurrentModel() )
+	if (std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel())
 	{
-		AP::WORKSPACE::getCurrentModel()->getTransform().moveTheOriginToTheCenterOfRotation( ui.checkCentered->isChecked() );
+		obj->getTransform().moveTheOriginToTheCenterOfRotation(ui.checkCentered->isChecked());
 
 		AppStateManager::updateAllViews();
 	}
