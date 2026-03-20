@@ -31,9 +31,13 @@
 #include "ProgressIndicator.h"
 #include "StatusBarManager.h"
 #include "MessageBoxManager.h"
+#include "../core/AppStateManager.h"
+#include "../core/WorkspacePanelManager.h"
 #include "adapters/QtStatusBarAdapter.h"
+#include "adapters/QtAppStateAdapter.h"
 #include "adapters/QtMessageBoxAdapter.h"
 #include "adapters/QtProgressAdapter.h"
+#include "adapters/QtWorkspacePanelAdapter.h"
 #include "events/QtWorkspaceEvents.h"
 
 void restoreDockGeometry(QDockWidget* dock)
@@ -122,6 +126,8 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 
 	StatusBarManager::setListener(new QtStatusBarAdapter(statusBar()));
 	MessageBoxManager::setListener(new QtMessageBoxAdapter());
+	AppStateManager::setListener(new QtAppStateAdapter(this));
+	WorkspacePanelManager::setListener(new QtWorkspacePanelAdapter(this));
 
 	this->progressIndicator = new ProgressIndicator(this->statusBar());
 	//this->progressIndicator->setMaximumHeight(16);

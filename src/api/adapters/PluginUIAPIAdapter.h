@@ -4,25 +4,36 @@
 #include "FileDialogAPIAdapter.h"
 #include "MessageBoxAPIAdapter.h"
 #include "StatusBarAPIAdapter.h"
-#include "../UI.h"
+#include "CameraAPIAdapter.h"
+#include "ProgressAPIAdapter.h"
+#include "UIAPIAdapter.h"
+#include "../../core/AppStateManager.h"
 
 class PluginUIAPIAdapter {
+    UIAPIAdapter uiApi_;
     PluginPanelAPIAdapter pluginPanelAdapter_;
     FileDialogAPIAdapter fileDialogAdapter_;
     MessageBoxAPIAdapter messageBoxAdapter_;
     StatusBarAPIAdapter statusBarAdapter_;
+    CameraAPIAdapter cameraAdapter_;
+    ProgressAPIAdapter progressAdapter_;
 
 public:
     IPluginPanelAPI& pluginPanel() { return pluginPanelAdapter_; }
     IFileDialogAPI& fileDialog() { return fileDialogAdapter_; }
     IMessageBoxAPI& messageBox() { return messageBoxAdapter_; }
     IStatusBarAPI& statusBar() { return statusBarAdapter_; }
+    ICameraAPI& camera() { return cameraAdapter_; }
+    IProgressAPI& progress() { return progressAdapter_; }
+    IFileSystemAPI& fileSystem() { return uiApi_.fileSystem(); }
+    ITextEncodingAPI& textEncoding() { return uiApi_.textEncoding(); }
+    IUIAPI& ui() { return uiApi_; }
 
     void updateAllViews(bool buffered = true) {
-        UI::updateAllViews(buffered);
+        AppStateManager::updateAllViews(buffered);
     }
 
     void updateProperties() {
-        UI::DOCK::PROPERTIES::updateProperties();
+        AppStateManager::updateProperties();
     }
 };

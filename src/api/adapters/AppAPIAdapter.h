@@ -4,9 +4,9 @@
 #include "../adapters/WorkspaceAPIAdapter.h"
 #include "../adapters/ModelAPIAdapter.h"
 #include "../adapters/ObjectAPIAdapter.h"
-#include "../../gui/MainApplication.h"
+#include "../../core/StatusBarManager.h"
+#include "../../core/AppStateManager.h"
 #include "Global.h"
-#include <QtWidgets/QApplication>
 #include <QtCore/QCoreApplication>
 #include <atomic>
 
@@ -27,14 +27,15 @@ public:
         return exeDir;
     }
     void setStatusText(const QString& text) override {
-        Q_UNUSED(text);
+        StatusBarManager::setText(text);
     }
     void updateProperties() override {
+        AppStateManager::updateProperties();
     }
     void updateAllViews(bool buffered = true) override {
-        Q_UNUSED(buffered);
+        AppStateManager::updateAllViews(buffered);
     }
     void adjustForCurrentFile(const QString& filePath) override {
-        Q_UNUSED(filePath);
+        AppStateManager::adjustForCurrentFile(filePath);
     }
 };

@@ -1,26 +1,26 @@
 #pragma once
 
 #include "../interfaces/IPluginPanelAPI.h"
-#include "../UI.h"
-#include <QString>
-#include <QWidget>
 
-class PluginPanelAPIAdapter : public IPluginPanelAPI {
+class NullPluginPanelAPIAdapter : public IPluginPanelAPI {
 public:
     QWidget* panel(unsigned int pluginId) override {
-        return UI::PLUGINPANEL::instance(pluginId);
+        Q_UNUSED(pluginId);
+        return nullptr;
     }
 
     void create(unsigned int pluginId, const QString& label) override {
-        UI::PLUGINPANEL::create(pluginId, label);
+        Q_UNUSED(pluginId);
+        Q_UNUSED(label);
     }
 
     void clear(unsigned int pluginId) override {
-        UI::PLUGINPANEL::clear(pluginId);
+        Q_UNUSED(pluginId);
     }
 
     void setEnabled(unsigned int pluginId, bool enabled) override {
-        UI::PLUGINPANEL::setEnabled(pluginId, enabled);
+        Q_UNUSED(pluginId);
+        Q_UNUSED(enabled);
     }
 
     QPushButton* addButton(
@@ -31,13 +31,13 @@ public:
         int col,
         int rspan = 0,
         int cspan = 0) override {
-        return UI::PLUGINPANEL::addButton(
-            pluginId,
-            name.toStdString(),
-            label.toStdString(),
-            row,
-            col,
-            rspan,
-            cspan);
+        Q_UNUSED(pluginId);
+        Q_UNUSED(name);
+        Q_UNUSED(label);
+        Q_UNUSED(row);
+        Q_UNUSED(col);
+        Q_UNUSED(rspan);
+        Q_UNUSED(cspan);
+        return nullptr;
     }
 };

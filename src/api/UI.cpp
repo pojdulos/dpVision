@@ -22,6 +22,8 @@
 #include "GLViewer.h"
 
 #include "../api/AP.h"
+#include "../core/AppStateManager.h"
+#include "../core/WorkspacePanelManager.h"
 
 
 void UI::adjustGroupBoxHeight(QGroupBox* groupBox, bool checked)
@@ -120,10 +122,7 @@ void UI::updateCurrentView(bool buffered)
 
 void UI::changeMenuAfterSelect()
 {
-	if (auto win = CMainWindow::instance())
-	{
-		win->changeMenuAfterSelect();
-	}
+	AppStateManager::changeMenuAfterSelect();
 }
 
 
@@ -157,24 +156,12 @@ void UI::DOCK::PROPERTIES::show(bool b)
 
 void UI::DOCK::PROPERTIES::selectionChanged( int id )
 {
-	if (auto win = CMainWindow::instance())
-		if (win->dockProperties)
-		{
-			win->dockProperties->raise();
-			win->dockProperties->selectionChanged(id);
-			win->dockProperties->update();
-		}
+	WorkspacePanelManager::propertiesSelectionChanged(id);
 }
 
 void UI::DOCK::PROPERTIES::updateProperties()
 {
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr && win->dockProperties != nullptr)
-	{
-		win->dockProperties->updateProperties();
-		win->dockProperties->update();
-	}
+	AppStateManager::updateProperties();
 }
 
 
@@ -201,22 +188,12 @@ void UI::DOCK::WORKSPACE::show(bool b)
 
 void UI::DOCK::WORKSPACE::rebuildTree()
 {
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr && win->dockWorkspace != nullptr)
-	{
-		win->dockWorkspace->rebuildTree();
-	}
+	WorkspacePanelManager::rebuildWorkspaceTree();
 }
 
 void UI::DOCK::WORKSPACE::update()
 {
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr && win->dockWorkspace != nullptr)
-	{
-		win->dockWorkspace->rebuildTree();
-	}
+	WorkspacePanelManager::rebuildWorkspaceTree();
 }
 
 void UI::DOCK::WORKSPACE::addItem(int id, int parentId)
@@ -280,32 +257,17 @@ std::shared_ptr<CBaseObject> UI::DOCK::WORKSPACE::getCurrentItemObj()
 
 void UI::DOCK::WORKSPACE::setItemCheckedById(int id, bool b)
 {
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr && win->dockWorkspace != nullptr)
-	{
-		win->dockWorkspace->setItemCheckedById(id, b);
-	}
+	WorkspacePanelManager::setWorkspaceItemChecked(id, b);
 }
 
 void UI::DOCK::WORKSPACE::setItemVisibleById(int id, bool b)
 {
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr && win->dockWorkspace != nullptr)
-	{
-		win->dockWorkspace->setItemVisibleById(id, b);
-	}
+	WorkspacePanelManager::setWorkspaceItemVisible(id, b);
 }
 
 void UI::DOCK::WORKSPACE::setItemKidsVisibleById(int id, bool b)
 {
-	CMainWindow* win = AP::mainWinPtr();
-
-	if (win != nullptr && win->dockWorkspace != nullptr)
-	{
-		win->dockWorkspace->setItemKidsVisibleById(id, b);
-	}
+	WorkspacePanelManager::setWorkspaceItemKidsVisible(id, b);
 }
 
 

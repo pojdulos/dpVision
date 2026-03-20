@@ -1,7 +1,5 @@
 #include "../api/AP.h"
 
-#include "../api/UI.h"
-
 #include "MainApplication.h"
 #include "MainWindow.h"
 
@@ -15,6 +13,9 @@
 
 #include <QtCore/QString>
 #include "StatusBarManager.h"
+#include "MessageBoxManager.h"
+#include "AppStateManager.h"
+#include "WorkspacePanelManager.h"
 
 #include <QElapsedTimer>
 
@@ -54,10 +55,7 @@ namespace AP
 
 	void adjustForCurrentFile(const QString& filePath)
 	{
-		if (auto win = CMainWindow::instance())
-		{
-			win->adjustForCurrentFile(filePath);
-		}
+		AppStateManager::adjustForCurrentFile(filePath);
 	}
 
 
@@ -190,12 +188,12 @@ namespace AP
 				it->second->setSelfVisibility(visibility);
 				it->second->setKidsVisibility(visibility);
 
-				UI::DOCK::WORKSPACE::setItemVisibleById(it->first, visibility);
-				UI::DOCK::WORKSPACE::setItemKidsVisibleById(it->first, visibility);
+				WorkspacePanelManager::setWorkspaceItemVisible(it->first, visibility);
+				WorkspacePanelManager::setWorkspaceItemKidsVisible(it->first, visibility);
 			}
-			UI::changeMenuAfterSelect();
-			UI::DOCK::PROPERTIES::updateProperties();
-			UI::updateAllViews();
+			AppStateManager::changeMenuAfterSelect();
+			AppStateManager::updateProperties();
+			AppStateManager::updateAllViews();
 		}
 
 		bool addModel(std::shared_ptr<CModel3D> obj, bool setItCurrent)
@@ -246,10 +244,10 @@ namespace AP
 
 		bool removeAllModels()
 		{
-			UI::DOCK::PROPERTIES::selectionChanged(NO_CURRENT_MODEL);
+			WorkspacePanelManager::propertiesSelectionChanged(NO_CURRENT_MODEL);
 			AP::getWorkspace()->_removeAllModels();
-			UI::DOCK::WORKSPACE::rebuildTree();
-			UI::updateAllViews();
+			WorkspacePanelManager::rebuildWorkspaceTree();
+			AppStateManager::updateAllViews();
 
 			return true;
 		}
@@ -356,18 +354,18 @@ namespace AP
 				//CModel3D *obj = AP::getWorkspace()->_getModel(id);
 
 				AP::getWorkspace()->addToSelection(id);
-				UI::DOCK::WORKSPACE::setItemCheckedById(id, true);
-				UI::DOCK::PROPERTIES::updateProperties();
-				UI::updateAllViews();
+				WorkspacePanelManager::setWorkspaceItemChecked(id, true);
+				AppStateManager::updateProperties();
+				AppStateManager::updateAllViews();
 			}
 			void unselectModel(int id)
 			{
 				//CModel3D *obj = AP::getWorkspace()->_getModel(id);
 
 				AP::getWorkspace()->removeFromSelection(id);
-				UI::DOCK::WORKSPACE::setItemCheckedById(id, false);
-				UI::DOCK::PROPERTIES::updateProperties();
-				UI::updateAllViews();
+				WorkspacePanelManager::setWorkspaceItemChecked(id, false);
+				AppStateManager::updateProperties();
+				AppStateManager::updateAllViews();
 			}
 
 			bool isModelSelected(int id)
@@ -404,13 +402,13 @@ namespace AP
 					if (m != nullptr)
 					{
 						m->setSelfVisibility(visibility);
-						UI::DOCK::WORKSPACE::setItemVisibleById(*it, visibility);
+						WorkspacePanelManager::setWorkspaceItemVisible(*it, visibility);
 					}
 				}
 
-				UI::changeMenuAfterSelect();
-				UI::DOCK::PROPERTIES::updateProperties();
-				UI::updateAllViews();
+				AppStateManager::changeMenuAfterSelect();
+				AppStateManager::updateProperties();
+				AppStateManager::updateAllViews();
 			}
 		}
 	}
@@ -479,7 +477,7 @@ namespace AP
 			{
 				if ((newParent != nullptr) && newParent->hasCategory(CBaseObject::Category::ANNOTATION) && obj->hasCategory(CBaseObject::Category::OBJECT))
 				{
-					UI::MESSAGEBOX::error("regular object cannot be moved as a descendant of annotation");
+					MessageBoxManager::error("regular object cannot be moved as a descendant of annotation");
 					return;
 				}
 
@@ -542,7 +540,7 @@ namespace AP
 					}
 				}
 
-				UI::updateAllViews();
+				AppStateManager::updateAllViews();
 			}
 		}
 
@@ -552,7 +550,7 @@ namespace AP
 			{
 				if ((newParent != nullptr) && newParent->hasCategory(CBaseObject::Category::ANNOTATION) && obj->hasCategory(CBaseObject::Category::OBJECT))
 				{
-					UI::MESSAGEBOX::error("regular object cannot be copied as a descendant of annotation");
+					MessageBoxManager::error("regular object cannot be copied as a descendant of annotation");
 					return;
 				}
 
@@ -617,7 +615,7 @@ namespace AP
 						AP::OBJECT::addChild(newParent, kopia);
 					}
 				}
-				UI::updateAllViews();
+				AppStateManager::updateAllViews();
 			}
 		}
 	}

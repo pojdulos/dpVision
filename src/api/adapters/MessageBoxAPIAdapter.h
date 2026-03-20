@@ -1,20 +1,20 @@
 #pragma once
 
 #include "../interfaces/IMessageBoxAPI.h"
-#include "../UI.h"
+#include "../../core/MessageBoxManager.h"
 
 class MessageBoxAPIAdapter : public IMessageBoxAPI {
 public:
     void information(const QString& message, const QString& title = QString()) override {
-        UI::MESSAGEBOX::information(message, title);
+        MessageBoxManager::information(message.toStdString(), title.toStdString());
     }
 
     void warning(const QString& message, const QString& title = QString()) override {
-        UI::MESSAGEBOX::warning(message, title);
+        MessageBoxManager::warning(message.toStdString(), title.toStdString());
     }
 
     void error(const QString& message, const QString& title = QString()) override {
-        UI::MESSAGEBOX::error(message, title);
+        MessageBoxManager::error(message.toStdString(), title.toStdString());
     }
 
     int question(
@@ -23,6 +23,11 @@ public:
         const QString& button0 = QString("Yes"),
         const QString& button1 = QString("No"),
         const QString& button2 = QString()) override {
-        return UI::MESSAGEBOX::question(message, title, button0, button1, button2);
+        Q_UNUSED(message);
+        Q_UNUSED(title);
+        Q_UNUSED(button0);
+        Q_UNUSED(button1);
+        Q_UNUSED(button2);
+        return 0;
     }
 };
