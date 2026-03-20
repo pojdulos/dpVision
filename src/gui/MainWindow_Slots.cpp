@@ -21,6 +21,7 @@
 #include "FileConnector.h"
 #include "adapters/QtProgressAdapter.h"
 #include "StatusBarManager.h"
+#include "../core/PluginRuntimeManager.h"
 
 #include <QMessageBox>
 
@@ -889,7 +890,7 @@ void CMainWindow::removeSelectedModels()
 
 void CMainWindow::resetAllTransformations()
 {
-	for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
+	for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = CWorkspace::instance()->begin(); it != CWorkspace::instance()->end(); it++)
 	{
 		it->second->transform().reset();
 	}
@@ -899,7 +900,7 @@ void CMainWindow::resetAllTransformations()
 
 void CMainWindow::resetSelectedTransformations()
 {
-	std::list<int> sel = AP::getWorkspace()->getSelection();
+	std::list<int> sel = CWorkspace::instance()->getSelection();
 	for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
 	{
 		AP::WORKSPACE::getModel(*it)->transform().reset();
@@ -911,7 +912,7 @@ void CMainWindow::resetSelectedTransformations()
 void CMainWindow::lockAllModels()
 {
 	//UI::MESSAGEBOX::information(L"Lock ALL");
-	for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
+	for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = CWorkspace::instance()->begin(); it != CWorkspace::instance()->end(); it++)
 	{
 		it->second->setLocked(true);
 		UI::DOCK::WORKSPACE::setItemLockedById(it->first, true);
@@ -923,7 +924,7 @@ void CMainWindow::lockAllModels()
 
 void CMainWindow::lockSelectedModels()
 {
-	std::list<int> sel = AP::getWorkspace()->getSelection();
+	std::list<int> sel = CWorkspace::instance()->getSelection();
 	for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
 	{
 		std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getModel(*it);
@@ -938,7 +939,7 @@ void CMainWindow::lockSelectedModels()
 void CMainWindow::unlockAllModels()
 {
 	//UI::MESSAGEBOX::information(L"Lock ALL");
-	for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
+	for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = CWorkspace::instance()->begin(); it != CWorkspace::instance()->end(); it++)
 	{
 		it->second->setLocked(false);
 		UI::DOCK::WORKSPACE::setItemLockedById(it->first, false);
@@ -950,7 +951,7 @@ void CMainWindow::unlockAllModels()
 
 void CMainWindow::unlockSelectedModels()
 {
-	std::list<int> sel = AP::getWorkspace()->getSelection();
+	std::list<int> sel = CWorkspace::instance()->getSelection();
 	for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
 	{
 		std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getModel(*it);
@@ -964,8 +965,8 @@ void CMainWindow::unlockSelectedModels()
 
 void CMainWindow::selectAll()
 {
-	AP::getWorkspace()->clearSelection();
-	for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
+	CWorkspace::instance()->clearSelection();
+	for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = CWorkspace::instance()->begin(); it != CWorkspace::instance()->end(); it++)
 	{
 		AP::WORKSPACE::SELECTION::selectModel(it->first);
 	}
@@ -973,7 +974,7 @@ void CMainWindow::selectAll()
 
 void CMainWindow::unselectAll()
 {
-	std::list<int> sel = AP::getWorkspace()->getSelection();
+	std::list<int> sel = CWorkspace::instance()->getSelection();
 	for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
 	{
 		AP::WORKSPACE::SELECTION::unselectModel(*it);
@@ -1218,12 +1219,12 @@ void CMainWindow::pmVsplit()
 
 void CMainWindow::grabPoints(bool b)
 {
-	AP::mainApp().bGlobalPicking = b;
+	PluginRuntimeManager::setGlobalPickingEnabled(b);
 }
 
 void CMainWindow::pickSnap(bool b)
 {
-	AP::mainApp().bPickSnap = b;
+	PluginRuntimeManager::setPickSnapEnabled(b);
 }
 
 

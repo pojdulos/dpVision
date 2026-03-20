@@ -202,7 +202,7 @@ QMenu* CContextMenu::createCopyMenu()
 	menu->addAction("...new model", this, SLOT(copyTo()))->setData(QVariant::fromValue<std::shared_ptr<CBaseObject>>(nullptr));
 	menu->addSeparator();
 
-	for (const auto& m : *AP::getWorkspace())
+	for (const auto& m : *CWorkspace::instance())
 	{
 		if (m.second->children().empty())
 		{
@@ -244,7 +244,7 @@ QMenu* CContextMenu::createMoveMenu()
 	menu->addAction("...new model", this, SLOT(moveTo()))->setData(QVariant::fromValue<std::shared_ptr<CBaseObject>>(nullptr));
 	menu->addSeparator();
 
-	for (const auto& m : *AP::getWorkspace())
+	for (const auto& m : *CWorkspace::instance())
 	{
 		if (m.second->children().empty())
 		{
@@ -1216,7 +1216,10 @@ void CContextMenu::pointHide()
 
 void CContextMenu::newPicWindow()
 {
-	AP::mainWin().createPicViewer((CImage*)m_obj.get());
+	if (auto win = CMainWindow::instance())
+	{
+		win->createPicViewer((CImage*)m_obj.get());
+	}
 }
 
 #include "DockWidgetWorkspace.h"

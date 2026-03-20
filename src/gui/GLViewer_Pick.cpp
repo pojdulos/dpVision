@@ -1,6 +1,7 @@
 #include "GLViewer.h"
 
 #include "MainApplication.h"
+#include "../core/PluginRuntimeManager.h"
 #include "AnnotationPoint.h"
 
 //#include "../api/AP.h"
@@ -353,7 +354,7 @@ void GLViewer::PickMeshPoint(double xx, double yy, std::shared_ptr<CModel3D> obj
 				else
 					vertexId = mesh->faces()[faceIdx].B();
 
-			if (NULL != AP::mainApp().activePlugin)
+			if (PluginInterface* plugin = PluginRuntimeManager::activePlugin())
 			{
 				Plugin::PickEvent pickEvent;
 
@@ -382,17 +383,17 @@ void GLViewer::PickMeshPoint(double xx, double yy, std::shared_ptr<CModel3D> obj
 
 				pickEvent.facePicked = true;
 
-				usedInPlugin = AP::mainApp().activePlugin->onMousePick(pickEvent);
+				usedInPlugin = plugin->onMousePick(pickEvent);
 			}
 
 
-			if (!usedInPlugin && AP::mainApp().bGlobalPicking)
+			if (!usedInPlugin && PluginRuntimeManager::globalPickingEnabled())
 			{
 				std::shared_ptr<CAnnotationPoint> pt = std::make_shared<CAnnotationPoint>(IntersectionPoint);
 
 				pt->setParent(obj);
 
-				if (AP::mainApp().bPickSnap)
+				if (PluginRuntimeManager::pickSnapEnabled())
 				{
 					pt->setPoint(mesh->vertices()[vertexId]);
 				}
@@ -494,7 +495,7 @@ void GLViewer::PickCloudPoint(double xx, double yy, std::shared_ptr<CModel3D> ob
 
 		bool usedInPlugin = false;
 
-		if (NULL != AP::mainApp().activePlugin)
+		if (PluginInterface* plugin = PluginRuntimeManager::activePlugin())
 		{
 			Plugin::PickEvent pickEvent;
 
@@ -517,10 +518,10 @@ void GLViewer::PickCloudPoint(double xx, double yy, std::shared_ptr<CModel3D> ob
 
 			pickEvent.facePicked = false;
 
-			usedInPlugin = AP::mainApp().activePlugin->onMousePick(pickEvent);
+			usedInPlugin = plugin->onMousePick(pickEvent);
 		}
 
-		if (!usedInPlugin && AP::mainApp().bGlobalPicking)
+		if (!usedInPlugin && PluginRuntimeManager::globalPickingEnabled())
 		{
 			wksp->_objectAdd(apy, obj);	
 			wksp->_objectAdd(hits, obj);

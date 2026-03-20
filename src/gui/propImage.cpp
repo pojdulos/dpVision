@@ -7,6 +7,14 @@
 #include "MainWindow.h"
 #include "QScrollArea"
 
+namespace
+{
+	CMainWindow* mainWindow()
+	{
+		return CMainWindow::instance();
+	}
+}
+
 
 PropImage::PropImage(CImage *m, QWidget *parent) : PropWidget( parent )
 {
@@ -24,7 +32,7 @@ PropImage::~PropImage()
 
 void PropImage::updateProperties()
 {
-	QMdiSubWindow* window = AP::mainWinPtr()->getPicViewerInstance(obj->id());
+	QMdiSubWindow* window = mainWindow() ? mainWindow()->getPicViewerInstance(obj->id()) : nullptr;
 	
 	ui.showImageWindow->setChecked(window != nullptr);
 
@@ -84,7 +92,7 @@ void PropImage::scaleChanged(int i)
 		break;
 	}
 
-	QMdiSubWindow* window = AP::mainWinPtr()->getPicViewerInstance(obj->id());
+	QMdiSubWindow* window = mainWindow() ? mainWindow()->getPicViewerInstance(obj->id()) : nullptr;
 	if (window != nullptr)
 	{
 		((PicViewer*)((MdiChild*)window->widget())->m_widget)->reloadImage();
@@ -95,11 +103,17 @@ void PropImage::showWindow(bool b)
 {
 	if (b)
 	{
-		AP::mainWinPtr()->activatePicViewerInstance(obj->id());
+		if (auto win = mainWindow())
+		{
+			win->activatePicViewerInstance(obj->id());
+		}
 	}
 	else
 	{
-		AP::mainWinPtr()->closePicViewers(obj->id());
+		if (auto win = mainWindow())
+		{
+			win->closePicViewers(obj->id());
+		}
 	}
 }
 

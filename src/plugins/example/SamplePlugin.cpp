@@ -10,8 +10,6 @@
 #include "../api/adapters/AppAPIAdapter.h"
 #include "../api/adapters/PluginUIAPIAdapter.h"
 
-#include "AppSettings.h"
-
 #include <QPushButton>
 
 namespace {
@@ -80,7 +78,7 @@ void SamplePlugin::loadObject(const QString &path)
 	if (!QFileInfo(fileName).exists()) {
 		fileName = uiApi().fileDialog().getOpenFileName(
             tr("Open File"),
-            AppSettings::mainSettings()->value("recentFile").toString(),
+            appApi().settings().value("recentFile").toString(),
             CFileConnector::getLoadExts());
 	}
 	
@@ -194,7 +192,7 @@ static void DivideMesh(std::shared_ptr<CMesh> mesh, const CPoint3d& centroid, co
 void SamplePlugin::cutMesh() {
 	QString fileName = uiApi().fileDialog().getOpenFileName(
 		tr("Open File"),
-		AppSettings::mainSettings()->value("recentFile").toString(),
+		appApi().settings().value("recentFile").toString(),
 		CFileConnector::getLoadExts());
 
 	std::shared_ptr<CModel3D> obj = nullptr;

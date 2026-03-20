@@ -11,6 +11,23 @@
 
 #include "AppSettings.h"
 
+namespace
+{
+	CMainWindow* mainWindow()
+	{
+		return CMainWindow::instance();
+	}
+
+	GLViewer* currentViewer()
+	{
+		if (auto win = mainWindow())
+		{
+			return win->currentViewer();
+		}
+		return nullptr;
+	}
+}
+
 PropViewer::PropViewer(GLViewer* m, QWidget *parent)	: PropWidget( parent )
 {
 	treeItemLabel = "Camera properties";
@@ -44,7 +61,7 @@ QVector<PropWidget*> PropViewer::create_and_get_subwidgets(GLViewer* m)
 
 void PropViewer::updateProperties()
 {
-	GLViewer *view = AP::mainWin().currentViewer();
+	GLViewer *view = currentViewer();
 	if (NULL != view)
 	{
 
@@ -110,7 +127,7 @@ void PropViewer::updateProperties()
 
 void PropViewer::rotXeditingFinished()
 {
-	GLViewer* view = AP::mainWin().currentViewer();
+	GLViewer* view = currentViewer();
 	if (NULL != view)
 	{
 		double x = ui.spinViewRotX->value();
@@ -126,7 +143,7 @@ void PropViewer::rotXeditingFinished()
 }
 void PropViewer::changedRotX( double val )
 {
-	GLViewer *view = AP::mainWin().currentViewer();
+	GLViewer *view = currentViewer();
 	if (NULL != view)
 	{
 		double v = val;
@@ -145,7 +162,7 @@ void PropViewer::changedRotX( double val )
 
 void PropViewer::changedRotY( double val )
 {
-	GLViewer *view = AP::mainWin().currentViewer();
+	GLViewer *view = currentViewer();
 	if (NULL != view)
 	{
 		double v = val;
@@ -164,7 +181,7 @@ void PropViewer::changedRotY( double val )
 
 void PropViewer::changedRotZ( double val )
 {
-	GLViewer* view = AP::mainWin().currentViewer();
+	GLViewer* view = currentViewer();
 	if (NULL != view)
 	{
 		//double v = val;
@@ -207,7 +224,7 @@ void PropViewer::changedRotZ( double val )
 
 void PropViewer::changedTraXYZ( double val )
 {
-	GLViewer *view = AP::mainWin().currentViewer();
+	GLViewer *view = currentViewer();
 	if (NULL != view)
 	{
 		view->transform().translation() = CVector3d( ui.spinViewTransX->value(), ui.spinViewTransY->value(), ui.spinViewTransZ->value() );
@@ -220,7 +237,7 @@ void PropViewer::changedTraXYZ( double val )
 
 void PropViewer::changedScale( double val )
 {
-	GLViewer *view = AP::mainWin().currentViewer();
+	GLViewer *view = currentViewer();
 	if (NULL != view)
 	{
 		view->transform().setScale( ui.spinViewScale->value() );
@@ -231,7 +248,7 @@ void PropViewer::changedScale( double val )
 
 void PropViewer::changedBGcolor( double val )
 {
-	GLViewer *view = AP::mainWin().currentViewer();
+	GLViewer *view = currentViewer();
 	if (NULL != view)
 	{
 		view->setBGcolor( ui.spinBG->value() );
@@ -242,7 +259,7 @@ void PropViewer::changedBGcolor( double val )
 
 void PropViewer::changedAngle( int val )
 {
-	GLViewer *view = AP::mainWin().currentViewer();
+	GLViewer *view = currentViewer();
 	if (NULL != view)
 	{
 		view->setVAngle( ui.spinAngleOfView->value() );
@@ -253,7 +270,7 @@ void PropViewer::changedAngle( int val )
 
 void PropViewer::changedOrthoViewSize(double)
 {
-	GLViewer* view = AP::mainWin().currentViewer();
+	GLViewer* view = currentViewer();
 	if (NULL != view)
 	{
 		view->setOrthoSize(ui.spinOrthoViewSize->value());
@@ -264,7 +281,10 @@ void PropViewer::changedOrthoViewSize(double)
 
 void PropViewer::radioPropToggled(bool t)
 {
-	(t) ? AP::mainWin().projectionPerspective() : AP::mainWin().projectionOrthogonal();
+	if (auto win = mainWindow())
+	{
+		(t) ? win->projectionPerspective() : win->projectionOrthogonal();
+	}
 }
 
 void PropViewer::onDarkModeChanged(bool dark)

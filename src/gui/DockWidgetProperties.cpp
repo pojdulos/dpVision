@@ -45,6 +45,18 @@
 
 #include "AppSettings.h"
 
+namespace
+{
+	GLViewer* currentViewer()
+	{
+		if (auto win = CMainWindow::instance())
+		{
+			return win->currentViewer();
+		}
+		return nullptr;
+	}
+}
+
 DockWidgetProperties::DockWidgetProperties(QWidget *parent)	: QDockWidget(parent)
 {
 	ui.setupUi(this);
@@ -72,7 +84,7 @@ void DockWidgetProperties::selectionChanged( int id )
 
 	if (id == NO_CURRENT_MODEL)
 	{
-		GLViewer* view = AP::mainWin().currentViewer();
+		GLViewer* view = currentViewer();
 		submodels = PropViewer::create_and_get_subwidgets(view);
 	}
 	else
@@ -83,7 +95,7 @@ void DockWidgetProperties::selectionChanged( int id )
 		
 		if (currentObject == nullptr)
 		{
-			GLViewer* view = AP::mainWin().currentViewer();
+			GLViewer* view = currentViewer();
 			submodels = PropViewer::create_and_get_subwidgets(view);
 		}
 		else

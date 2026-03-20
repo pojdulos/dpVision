@@ -172,7 +172,7 @@ void PropBaseObject::changedSelection(int checkState)
 	bool b = (checkState == Qt::Checked);
 	if (obj->hasType(CBaseObject::MODEL))
 	{
-		AP::getWorkspace()->changeSelection(obj->id(), b );
+		CWorkspace::instance()->changeSelection(obj->id(), b );
 	}
 	else
 	{

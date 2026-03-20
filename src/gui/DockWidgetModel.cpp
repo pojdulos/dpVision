@@ -11,6 +11,18 @@
 
 #include "StatusBarManager.h"
 
+namespace
+{
+	GLViewer* currentViewer()
+	{
+		if (auto win = CMainWindow::instance())
+		{
+			return win->currentViewer();
+		}
+		return nullptr;
+	}
+}
+
 DockWidgetModel::DockWidgetModel(QWidget *parent)
 	: QDockWidget(parent)
 {
@@ -88,7 +100,7 @@ void DockWidgetModel::updateProperties()
 
 void DockWidgetModel::updateTranslations(double x, double y, double z)
 {
-	GLViewer *view = AP::mainWin().currentViewer();
+	GLViewer *view = currentViewer();
 	if (NULL != view)
 	{
 		;

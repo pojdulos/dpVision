@@ -11,7 +11,6 @@
 #include "Image.h"
 
 // Forward declarations
-class PluginInterface;
 class CWorkspace;
 class CObject;
 class CModel3D;
@@ -29,18 +28,21 @@ namespace AP
     /**
      * @brief Returns reference to the main application instance
      * @return Reference to CMainApplication
+     * @deprecated Legacy escape hatch. Use IAppInternalsAPI::application() only in privileged plugins.
      */
     DPVISION_EXPORT CMainApplication& mainApp();
 
     /**
      * @brief Returns reference to the main window instance
      * @return Reference to CMainWindow
+     * @deprecated Legacy GUI escape hatch. Use IGuiInternalsAPI::mainWindow() only in privileged plugins.
      */
     DPVISION_EXPORT CMainWindow& mainWin();
 
     /**
      * @brief Returns pointer to the main window instance
      * @return Pointer to CMainWindow
+     * @deprecated Legacy GUI escape hatch. Use IGuiInternalsAPI::mainWindow() only in privileged plugins.
      */
     DPVISION_EXPORT CMainWindow* mainWinPtr();
 
@@ -65,6 +67,7 @@ namespace AP
      * @brief Returns pointer to the workspace instance
      * @warning Use only as a last resort. Prefer AP::WORKSPACE namespace functions
      * @return Pointer to CWorkspace
+     * @deprecated Legacy escape hatch. Use IAppInternalsAPI::workspace() only in privileged plugins.
      */
     DPVISION_EXPORT CWorkspace* getWorkspace(void);
 
@@ -91,39 +94,6 @@ namespace AP
      * @deprecated Use AP::MODEL::addAnnotation(CModel3D* obj, CAnnotation *an) instead
      */
     DPVISION_EXPORT int addAnnotation(std::shared_ptr<CModel3D> obj, std::shared_ptr<CAnnotation> an);
-
-    /**
-     * @namespace PLUGIN
-     * @brief Namespace containing plugin management functionality
-     */
-    namespace PLUGIN {
-        /**
-         * @brief Loads a plugin from the specified path
-         * @param pluginPath Path to the plugin file
-         * @return True if loading was successful
-         */
-        DPVISION_EXPORT bool loadPlugin(const QString& pluginPath);
-
-        /**
-         * @brief Unloads a plugin with the specified ID
-         * @param id Plugin identifier
-         */
-        DPVISION_EXPORT void unloadPlugin(const unsigned int id);
-
-        /**
-         * @brief Retrieves a plugin instance by ID
-         * @param id Plugin identifier
-         * @return Pointer to PluginInterface or nullptr if not found
-         */
-        DPVISION_EXPORT PluginInterface* getPlugin(unsigned int id);
-
-        /**
-         * @brief Runs a plugin identified by UUID
-         * @param strUUID Plugin UUID string
-         * @return True if plugin was successfully executed
-         */
-        DPVISION_EXPORT bool runPlugin(const char* strUUID);
-    };
 
     /**
      * @namespace OBJECT
@@ -376,23 +346,6 @@ namespace AP
         }
     };
 
-    /**
-     * @namespace EVENTS
-     * @brief Namespace containing event handling functionality
-     */
-    namespace EVENTS {
-        /**
-         * @brief Triggers model indication event
-         * @param objId ID of the model being indicated
-         */
-        DPVISION_EXPORT void modelIndicationEvent(int objId);
-
-        /**
-         * @brief Handles workspace tree click event
-         * @param objId ID of the clicked object in workspace tree
-         */
-        DPVISION_EXPORT void workspaceTreeClicked(int objId);
-    };
 };
 
 #endif

@@ -1,7 +1,9 @@
 #pragma once
 
+#include "AppInternalsAPIAdapter.h"
 #include "GuiPluginPanelAPIAdapter.h"
 #include "FileDialogAPIAdapter.h"
+#include "GuiInternalsAPIAdapter.h"
 #include "MessageBoxAPIAdapter.h"
 #include "StatusBarAPIAdapter.h"
 #include "GuiCameraAPIAdapter.h"
@@ -11,6 +13,8 @@
 
 class PluginGuiAPIAdapter {
     UIAPIAdapter uiApi_;
+    AppInternalsAPIAdapter appInternalsAdapter_;
+    GuiInternalsAPIAdapter guiInternalsAdapter_;
     GuiPluginPanelAPIAdapter pluginPanelAdapter_;
     FileDialogAPIAdapter fileDialogAdapter_;
     MessageBoxAPIAdapter messageBoxAdapter_;
@@ -19,6 +23,8 @@ class PluginGuiAPIAdapter {
     GuiProgressAPIAdapter progressAdapter_;
 
 public:
+    IAppInternalsAPI& appInternals() { return appInternalsAdapter_; }
+    IGuiInternalsAPI& guiInternals() { return guiInternalsAdapter_; }
     IPluginPanelAPI& pluginPanel() { return pluginPanelAdapter_; }
     IFileDialogAPI& fileDialog() { return fileDialogAdapter_; }
     IMessageBoxAPI& messageBox() { return messageBoxAdapter_; }

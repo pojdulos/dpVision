@@ -155,6 +155,7 @@ namespace UI
         /**
          * @brief Gets camera transform
          * @return Pointer to camera transform
+         * @deprecated Legacy GUI escape hatch. Use IGuiInternalsAPI::currentCameraTransform() in privileged plugins.
          */
 		DPVISION_EXPORT CTransform* transform();
 
@@ -177,6 +178,7 @@ namespace UI
         /**
          * @brief Gets current GLViewer instance
          * @return Pointer to current GLViewer
+         * @deprecated Legacy GUI escape hatch. Use IGuiInternalsAPI::currentViewer() in privileged plugins.
          */
 		DPVISION_EXPORT GLViewer* currentViewer();
 
@@ -230,6 +232,9 @@ namespace UI
          * @brief Workspace dock window functionality
          */
 		namespace WORKSPACE {
+            /**
+             * @deprecated Legacy GUI escape hatch. Use IGuiInternalsAPI::workspaceDock() in privileged plugins.
+             */
 			DPVISION_EXPORT DockWidgetWorkspace* instance();
 			DPVISION_EXPORT void show(bool b);
 			DPVISION_EXPORT void rebuildTree();
@@ -246,10 +251,14 @@ namespace UI
             /**
              * @brief Gets list of selected objects
              * @return Vector of selected object pointers
+             * @deprecated Legacy GUI escape hatch. Use IGuiInternalsAPI::selectedWorkspaceObjects() in privileged plugins.
              */
 			DPVISION_EXPORT QVector<std::shared_ptr<CBaseObject>> getSelectedObjects();
 			
 			
+            /**
+             * @deprecated Legacy GUI escape hatch. Use IGuiInternalsAPI::currentWorkspaceItem() in privileged plugins.
+             */
 			DPVISION_EXPORT std::shared_ptr<CBaseObject> getCurrentItemObj();
 
             /**
@@ -280,6 +289,9 @@ namespace UI
      * @brief Plugin panel functionality namespace
      */
 	namespace PLUGINPANEL {
+        /**
+         * @deprecated Legacy GUI escape hatch. Use IGuiInternalsAPI::pluginPanelHost() in privileged plugins.
+         */
 		DPVISION_EXPORT DockWidgetPluginPanel* mainPanel();
 		DPVISION_EXPORT QWidget* instance(unsigned int pluginId);
 		
@@ -391,6 +403,9 @@ namespace UI
      * @brief Progress bar functionality namespace
      */
 	namespace PROGRESSBAR {
+        /**
+         * @deprecated Legacy GUI escape hatch. Use IGuiInternalsAPI::progressIndicator() in privileged plugins.
+         */
 		DPVISION_EXPORT ProgressIndicator* instance();
 
 		DPVISION_EXPORT void init( int min, int max, int val );

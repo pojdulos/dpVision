@@ -72,35 +72,6 @@ namespace AP
 		return wksp->_objectAdd(an, obj);
 	}
 
-
-	namespace PLUGIN {
-		bool loadPlugin(const QString &pluginPath)
-		{
-			return AP::mainApp().loadPlugin(pluginPath);
-		}
-
-		void unloadPlugin(const unsigned int id)
-		{
-			AP::mainApp().unloadPlugin(id);
-		}
-
-
-		PluginInterface* getPlugin(unsigned int id)
-		{
-			return AP::mainApp().getPlugin(id);
-		}
-
-		// PluginInterface* getPlugin(const char* strUUID)
-		// {
-		// 	return AP::mainApp().getPlugin(strUUID);
-		// }
-
-		bool runPlugin(const char* strUUID)
-		{
-			return AP::mainApp().runPlugin(strUUID);
-		}
-	}
-
 	namespace MODEL {
 		std::shared_ptr<CModel3D> load(std::wstring path, bool synchronous)
 		{
@@ -409,48 +380,6 @@ namespace AP
 				AppStateManager::changeMenuAfterSelect();
 				AppStateManager::updateProperties();
 				AppStateManager::updateAllViews();
-			}
-		}
-	}
-
-	namespace EVENTS {
-		void modelIndicationEvent( int objId )
-		{
-			bool usedInPlugin = false;
-
-			if (nullptr != AP::mainApp().activePlugin)
-				usedInPlugin = AP::mainApp().activePlugin->onModelIndication(objId);
-
-			if (!usedInPlugin)
-			{
-				AP::WORKSPACE::setCurrentModel(objId);
-
-				if (NO_CURRENT_MODEL != objId)
-				{
-					StatusBarManager::setText(QString("Selected (%1) %2").arg(objId).arg(AP::WORKSPACE::getCurrentModel()->getLabel()));
-				}
-				else
-				{
-					StatusBarManager::setText(QString("None selected (%1)").arg(objId));
-				}
-
-				//UI::DOCK::WORKSPACE::selectItem(objId);
-				//UI::DOCK::PROPERTIES::selectionChanged();
-				//UI::changeMenuAfterSelect();
-			}
-		}
-
-		DPVISION_EXPORT void workspaceTreeClicked( int objId )
-		{
-			bool usedInPlugin = false;
-
-			if (nullptr != AP::mainApp().activePlugin)
-				usedInPlugin = AP::mainApp().activePlugin->onModelIndication(objId);
-
-			if (!usedInPlugin)
-			{
-				//DO SOMETHING ELSE
-				;
 			}
 		}
 	}

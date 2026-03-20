@@ -12,6 +12,14 @@
 #include <QtNetwork/QTcpSocket>
 #include <QCloseEvent>
 
+namespace
+{
+	CMainApplication* mainApplication()
+	{
+		return static_cast<CMainApplication*>(QApplication::instance());
+	}
+}
+
 void CMainWindow::startServer()
 {
 	server = new QTcpServer(this);
@@ -73,7 +81,7 @@ void CMainWindow::proceessData()
 	}
 	else if (cmd.startsWith("list")) {
 		response = "";
-		for (auto x : *AP::getWorkspace())
+		for (auto x : *CWorkspace::instance())
 		{
 			if (x.second != nullptr) {
 				response = QString::number(x.second->id()) + " " + x.second->getLabel() + " " + x.second->path() + "\n\r";
@@ -113,7 +121,7 @@ void CMainWindow::proceessData()
 		response = "Niepoprawna sk�adnia polecenia, napisales: %1 \n\r" + recievedData + "\n\r";
 		if (cmdline.at(1).startsWith("run"))
 		{
-			if (AP::PLUGIN::runPlugin(cmdline.at(2)))
+			if (mainApplication() != nullptr && mainApplication()->runPlugin(cmdline.at(2)))
 			{
 				response = "Wtyczka zosta�a uruchomiona.\n\r";
 			}
