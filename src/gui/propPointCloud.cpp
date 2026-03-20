@@ -7,6 +7,31 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
+namespace
+{
+	void adjustGroupBoxHeight(QGroupBox* groupBox, bool checked)
+	{
+		QCheckBox* checkBox = groupBox->findChild<QCheckBox*>();
+		int checkBoxHeight = checkBox ? checkBox->sizeHint().height() : 0;
+		int titleHeight = groupBox->fontMetrics().height();
+		int heightForUnchecked = std::max(checkBoxHeight, titleHeight);
+
+		if (checked)
+		{
+			groupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+			groupBox->setMinimumHeight(0);
+			groupBox->setMaximumHeight(QWIDGETSIZE_MAX);
+			groupBox->adjustSize();
+		}
+		else
+		{
+			groupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+			groupBox->setMinimumHeight(heightForUnchecked);
+			groupBox->setMaximumHeight(heightForUnchecked);
+		}
+	}
+}
+
 bool PropPointCloud::group_visible = true;
 
 PropPointCloud::PropPointCloud(CPointCloud*mesh, QWidget *parent) : PropWidget( parent )
@@ -122,7 +147,7 @@ void PropPointCloud::updateProperties()
 
 void PropPointCloud::adjustGroupHeight(bool checked) {
 	PropPointCloud::group_visible = checked;
-	UI::adjustGroupBoxHeight(ui.cloud, PropPointCloud::group_visible);
+	adjustGroupBoxHeight(ui.cloud, PropPointCloud::group_visible);
 	this->adjustSize();
 	this->parentWidget()->adjustSize();
 }

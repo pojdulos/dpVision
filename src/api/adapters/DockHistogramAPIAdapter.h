@@ -5,21 +5,28 @@
 class DockHistogramAPIAdapter : public IDockHistogramAPI {
 public:
     void show(bool visible) override {
-        visible_ = visible;
+        visibleRef() = visible;
     }
 
     void setHistogram(CHistogram* histogram) override {
-        histogram_ = histogram;
+        histogramRef() = histogram;
     }
 
     CHistogram* getHistogram() override {
-        return histogram_;
+        return histogramRef();
     }
 
     void repaint() override {
     }
 
 private:
-    inline static CHistogram* histogram_ = nullptr;
-    inline static bool visible_ = false;
+    static CHistogram*& histogramRef() {
+        static CHistogram* histogram = nullptr;
+        return histogram;
+    }
+
+    static bool& visibleRef() {
+        static bool visible = false;
+        return visible;
+    }
 };

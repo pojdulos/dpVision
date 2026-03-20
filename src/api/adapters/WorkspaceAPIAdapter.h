@@ -2,6 +2,7 @@
 #pragma once
 #include "../interfaces/IWorkspaceAPI.h"
 #include "Workspace.h"
+#include "Object.h"
 #include "Model3D.h"
 
 class WorkspaceAPIAdapter : public IWorkspaceAPI {
@@ -14,6 +15,18 @@ public:
         result.reserve(ws_->children().size());
         for (const auto& child : ws_->children()) {
             result.push_back(child);
+        }
+        return result;
+    }
+
+    std::vector<std::shared_ptr<CBaseObject>> selectedObjects(
+        std::set<CBaseObject::Type> types = {},
+        std::shared_ptr<CObject> parent = nullptr) override {
+        std::vector<std::shared_ptr<CBaseObject>> result;
+        auto selected = ws_->getSelected(std::move(types), std::move(parent));
+        result.reserve(selected.size());
+        for (const auto& object : selected) {
+            result.push_back(object);
         }
         return result;
     }

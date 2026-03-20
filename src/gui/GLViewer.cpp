@@ -896,7 +896,11 @@ void GLViewer::mouseMoveEvent( QMouseEvent* event )
 {
 	auto win = CMainWindow::instance();
 
-	std::shared_ptr<CBaseObject> obj = UI::DOCK::WORKSPACE::getCurrentItemObj();
+	std::shared_ptr<CBaseObject> obj;
+	if (win != nullptr && win->dockWorkspace != nullptr)
+	{
+		obj = win->dockWorkspace->getCurrentItemObj();
+	}
 	if ( obj != nullptr) {
 		if (obj->mouseMoveEvent(event)) return;
 	}
@@ -988,7 +992,11 @@ void GLViewer::wheelEvent(QWheelEvent * event)
 {
 	auto win = CMainWindow::instance();
 
-	std::shared_ptr<CBaseObject> obj = UI::DOCK::WORKSPACE::getCurrentItemObj();
+	std::shared_ptr<CBaseObject> obj;
+	if (win != nullptr && win->dockWorkspace != nullptr)
+	{
+		obj = win->dockWorkspace->getCurrentItemObj();
+	}
 	if (obj != nullptr) {
 		if (obj->wheelEvent(event)) return;
 	}

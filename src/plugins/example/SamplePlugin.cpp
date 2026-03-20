@@ -58,9 +58,9 @@ void SamplePlugin::onLoad()
 
 	int nextPos = 0;
 	
-	uiApi().pluginPanel().addButton(m_ID, "createBox", "Create box", nextPos++, 0);
-	uiApi().pluginPanel().addButton(m_ID, "loadObject", "Load object", nextPos++, 0);
-	uiApi().pluginPanel().addButton(m_ID, "cutMesh", "Cut mesh", nextPos++, 0);
+	uiApi().pluginPanel().addButton(m_ID, QString("createBox"), "Create box", nextPos++, 0);
+	uiApi().pluginPanel().addButton(m_ID, QString("loadObject"), "Load object", nextPos++, 0);
+	uiApi().pluginPanel().addButton(m_ID, QString("cutMesh"), "Cut mesh", nextPos++, 0);
 
 	//QObject::connect(UI::PLUGINPANEL::addButton(m_ID, "create box", "createBox", nextPos++, 0), SIGNAL(clicked()), SLOT(createBox()));
 

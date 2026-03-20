@@ -21,24 +21,31 @@ class QString;
 
 /**
  * @namespace AP
- * @brief Main application namespace containing core functionality and utility functions
+ * @brief Legacy application API kept as a compatibility shim.
+ *
+ * New code should prefer the explicit interfaces in `src/api/interfaces` and
+ * their adapters. `AP` remains for source compatibility and for semantic
+ * application operations that have not yet been fully migrated.
  */
 namespace AP
 {
     /**
-     * @brief Processes pending events in the application
+     * @brief Legacy compatibility helper for pumping the Qt event loop.
      * @param immediate If true, processes events immediately
+     *
+     * New code should prefer local UI/application helpers instead of reaching
+     * for `AP` as a transport layer to Qt.
      */
     DPVISION_EXPORT void processEvents(bool immediate = false);
 
     /**
-     * @brief Returns the executable file path
+     * @brief Legacy compatibility helper returning the executable directory.
      * @return Const reference to QString containing the path
      */
     DPVISION_EXPORT const QString& getExeFilePath(void);
 
     /**
-     * @brief Updates application state for a newly opened file
+     * @brief Semantic application operation kept as part of the legacy API.
      * @param filePath Path to the file that became current
      */
     DPVISION_EXPORT void adjustForCurrentFile(const QString& filePath);
@@ -57,7 +64,7 @@ namespace AP
 
     /**
      * @namespace OBJECT
-     * @brief Namespace containing object management functionality
+     * @brief Semantic object operations. Safe to keep using during migration.
      */
     namespace OBJECT {
         DPVISION_EXPORT bool remove(std::shared_ptr<CBaseObject> obj);
@@ -83,7 +90,7 @@ namespace AP
 
     /**
      * @namespace MODEL
-     * @brief Namespace containing 3D model management functionality
+     * @brief Semantic model operations. Safe to keep using during migration.
      */
     namespace MODEL {
         /**
@@ -104,7 +111,10 @@ namespace AP
 
     /**
      * @namespace WORKSPACE
-     * @brief Namespace containing workspace management functionality
+     * @brief Semantic workspace operations kept as the main legacy contract.
+     *
+     * Avoid adding new raw escape-hatch accessors here. Prefer extending
+     * `IWorkspaceAPI` when plugins need additional read/write capabilities.
      */
     namespace WORKSPACE {
         /**

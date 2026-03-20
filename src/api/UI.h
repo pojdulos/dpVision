@@ -25,61 +25,60 @@ class QGroupBox;
 
 /**
  * @namespace UI
- * @brief Main UI namespace containing interface management functionality
+ * @brief Legacy UI API kept as a compatibility shim.
+ *
+ * New code should prefer the explicit interfaces in `src/api/interfaces` and
+ * the adapters in `src/api/adapters`. `UI` stays available for source
+ * compatibility and should gradually shrink to thin wrappers over the new API.
  */
 namespace UI
 {
     /**
-     * @brief Adjusts the height of a QGroupBox based on its checked state
-     * @param groupBox The group box to adjust
-     * @param checked The checked state of the group box
-     */
-	DPVISION_EXPORT void adjustGroupBoxHeight(QGroupBox* groupBox, bool checked);
-
-	/**
-     * @brief Checks if specified time has elapsed
-     * @param mst Time in milliseconds
-     * @return True if specified time has elapsed
-     */
-	DPVISION_EXPORT bool timeElapsed(int mst);
-
-    /**
-     * @brief Shows the main UI
-     */
-    DPVISION_EXPORT void show();
-
-    /**
      * @brief Updates the current view
      * @param repaintAll If true, repaints all elements
      * @param buffered If true, uses buffered rendering
+     *
+     * Legacy wrapper. Prefer `IAppAPI::updateAllViews()` or more explicit view
+     * APIs instead of routing view refreshes through `UI`.
      */
     DPVISION_EXPORT void updateView(bool repaintAll = true, bool buffered = true);
 
     /**
      * @brief Updates all views in the application
      * @param buffered If true, uses buffered rendering
+     *
+     * Legacy wrapper. Prefer `IAppAPI::updateAllViews()`.
      */
     DPVISION_EXPORT void updateAllViews(bool buffered = true);
 
     /**
      * @brief Updates only the current view
      * @param buffered If true, uses buffered rendering
+     *
+     * Legacy wrapper. Prefer an explicit viewer/view API when one is introduced.
      */
     DPVISION_EXPORT void updateCurrentView(bool buffered = true);
 
     /**
      * @brief Updates the menu after selection change
+     *
+     * Legacy application-state hook. New code should avoid driving menu state
+     * directly from plugins.
      */
     DPVISION_EXPORT void changeMenuAfterSelect();
 
     /**
      * @brief Updates the selection state for specified ID
      * @param id Object identifier
+     *
+     * Legacy application-state hook. Prefer semantic selection APIs.
      */
     DPVISION_EXPORT void updateSelection(int id);
 
     /**
-     * @brief String encoding conversion functions
+     * @brief Legacy text-encoding helpers.
+     *
+     * Prefer `ITextEncodingAPI` for new code.
      */
     DPVISION_EXPORT std::string utf8_encode(const std::wstring& wstr);
     DPVISION_EXPORT std::wstring utf8_decode(const std::string& str);
@@ -91,7 +90,9 @@ namespace UI
     DPVISION_EXPORT std::string stream2string(std::wstring fname);
 
     /**
-     * @brief Path and file management functions
+     * @brief Legacy path/file helpers.
+     *
+     * Prefer `IFileSystemAPI` and `ITextEncodingAPI` for new code.
      */
     DPVISION_EXPORT std::string getNativePath(std::string path);
     DPVISION_EXPORT std::wstring getNativePath(std::wstring path);
@@ -107,6 +108,8 @@ namespace UI
          * @brief Deletes a file at specified path
          * @param path Path to the file
          * @return True if deletion was successful
+         *
+         * Prefer `IFileSystemAPI` for new code.
          */
  		DPVISION_EXPORT bool deleteFile(std::string path);
 		DPVISION_EXPORT bool deleteFile(std::wstring path);
@@ -114,7 +117,10 @@ namespace UI
 
     /**
      * @namespace CAMERA
-     * @brief Camera control and manipulation namespace
+     * @brief Legacy camera/UI wrapper.
+     *
+     * Prefer `ICameraAPI`, and use `IGuiInternalsAPI` only for privileged
+     * plugins that really need raw viewer access.
      */
     namespace CAMERA {
         /**
@@ -122,6 +128,8 @@ namespace UI
          * @param mx X-axis movement
          * @param my Y-axis movement
          * @param mz Z-axis movement
+         *
+         * Prefer `ICameraAPI::move()`.
          */
         DPVISION_EXPORT void move(float mx, float my, float mz);
 
@@ -130,17 +138,23 @@ namespace UI
          * @param ax X-axis rotation angle
          * @param ay Y-axis rotation angle
          * @param az Z-axis rotation angle
+         *
+         * Prefer `ICameraAPI::rotate()`.
          */
         DPVISION_EXPORT void rotate(float ax, float ay, float az);
 
         /**
          * @brief Sets camera floating state
          * @param f Floating state
+         *
+         * Prefer `ICameraAPI::setFloating()`.
          */
         DPVISION_EXPORT void setFloating(bool f);
 
         /**
          * @brief Coordinate conversion functions
+         *
+         * Prefer the corresponding `ICameraAPI` methods.
          */
 		DPVISION_EXPORT bool convertWinToWorld( CPoint3d winCoords, CPoint3d &worldCoords);
 		DPVISION_EXPORT bool convertWorldToWin( CPoint3d worldCoords, CPoint3d &winCoords);
@@ -149,6 +163,8 @@ namespace UI
         /**
          * @brief Gets current camera position
          * @return Camera position as CPoint3d
+         *
+         * Prefer `ICameraAPI::camPos()`.
          */
 		DPVISION_EXPORT CPoint3d camPos();
 
@@ -172,6 +188,8 @@ namespace UI
          * @brief Sets predefined camera view
          * @param dir Direction to view from (1-front, 2-back, 3-left, 4-right, 5-top, 6-bottom)
          * @param obj Optional object to center on (nullptr centers on entire scene)
+         *
+         * Prefer `ICameraAPI::setView()`.
          */
 		DPVISION_EXPORT void setView(int dir, std::shared_ptr<CModel3D> obj = nullptr);
 
@@ -186,6 +204,8 @@ namespace UI
          * @brief Takes screenshot of viewer window
          * @param path Path to save screenshot
          * @param v Optional viewer pointer (nullptr uses active viewer)
+         *
+         * Prefer `ICameraAPI::screenshot()`.
          */
 		DPVISION_EXPORT void screenshot(QString path, void* v = nullptr);
 		DPVISION_EXPORT inline void screenshot(const char* path, void* v = nullptr) { screenshot(QString::fromStdString(path), v); };
@@ -196,6 +216,9 @@ namespace UI
     /**
      * @namespace PICVIEWER
      * @brief Picture viewer functionality namespace
+     *
+     * Legacy wrapper. Keep out of new plugin contracts unless explicitly moved
+     * into a dedicated image-viewer API.
      */
 	namespace PICVIEWER {
         /**
@@ -208,58 +231,39 @@ namespace UI
 
     /**
      * @namespace DOCK
-     * @brief Dock windows management namespace
+     * @brief Legacy dock management wrapper.
+     *
+     * Prefer dedicated APIs such as `IDockWorkspaceAPI` and
+     * `IDockHistogramAPI`, or GUI internals only where strictly necessary.
      */
 	namespace DOCK {
         /**
-         * @brief Updates all dock windows for specified ID
-         * @param id Object identifier
-         */
-		DPVISION_EXPORT void updateAll( int id );
-
-        /**
          * @namespace PROPERTIES
-         * @brief Properties dock window functionality
+         * @brief Legacy properties-dock wrapper.
+         *
+         * Prefer dedicated state/property APIs instead of driving this dock
+         * directly from new code.
          */
 		namespace PROPERTIES {
-			DPVISION_EXPORT void show(bool b);
 			DPVISION_EXPORT void selectionChanged( int id );
 			DPVISION_EXPORT void updateProperties();
 		}
 
         /**
          * @namespace WORKSPACE
-         * @brief Workspace dock window functionality
+         * @brief Legacy workspace-dock wrapper.
+         *
+         * Prefer `IDockWorkspaceAPI` for safe operations and
+         * `IGuiInternalsAPI` only for privileged raw access.
          */
 		namespace WORKSPACE {
             /**
              * @deprecated Legacy GUI escape hatch. Use IGuiInternalsAPI::workspaceDock() in privileged plugins.
              */
 			DPVISION_EXPORT DockWidgetWorkspace* instance();
-			DPVISION_EXPORT void show(bool b);
-			DPVISION_EXPORT void rebuildTree();
 			DPVISION_EXPORT void update();
 			
-            /**
-             * @brief Item management functions
-             */
-			DPVISION_EXPORT void addItem(int id, int parentId = -1);
-			DPVISION_EXPORT void addItem(std::shared_ptr<CBaseObject> obj);
-			DPVISION_EXPORT void removeItem(int id);
 			DPVISION_EXPORT void selectItem( int id);
-
-            /**
-             * @brief Gets list of selected objects
-             * @return Vector of selected object pointers
-             * @deprecated Legacy GUI escape hatch. Use IGuiInternalsAPI::selectedWorkspaceObjects() in privileged plugins.
-             */
-			DPVISION_EXPORT QVector<std::shared_ptr<CBaseObject>> getSelectedObjects();
-			
-			
-            /**
-             * @deprecated Legacy GUI escape hatch. Use IGuiInternalsAPI::currentWorkspaceItem() in privileged plugins.
-             */
-			DPVISION_EXPORT std::shared_ptr<CBaseObject> getCurrentItemObj();
 
             /**
              * @brief Item property management functions
@@ -274,25 +278,30 @@ namespace UI
 
         /**
          * @namespace HISTOGRAM
-         * @brief Histogram dock window functionality
+         * @brief Legacy histogram-dock wrapper.
+         *
+         * Prefer `IDockHistogramAPI` for new code.
          */
-		namespace HISTOGRAM {
-			DPVISION_EXPORT void show(bool b);
-			DPVISION_EXPORT void setHistogram(CHistogram *histogram);
-			DPVISION_EXPORT CHistogram * getHistogram();
+        namespace HISTOGRAM {
 			DPVISION_EXPORT void repaint();
 		}
 	}
 
     /**
      * @namespace PLUGINPANEL
-     * @brief Plugin panel functionality namespace
+     * @brief Legacy plugin-panel wrapper.
+     *
+     * Prefer `IPluginPanelAPI` for new code.
      */
 	namespace PLUGINPANEL {
         /**
          * @deprecated Legacy GUI escape hatch. Use IGuiInternalsAPI::pluginPanelHost() in privileged plugins.
          */
 		DPVISION_EXPORT DockWidgetPluginPanel* mainPanel();
+        /**
+         * @deprecated Legacy GUI escape hatch. Prefer IPluginPanelAPI and use
+         * raw QWidget access only through GUI-only APIs.
+         */
 		DPVISION_EXPORT QWidget* instance(unsigned int pluginId);
 		
         /**
@@ -307,10 +316,6 @@ namespace UI
 
 		DPVISION_EXPORT void clear(unsigned int pluginId);
 		DPVISION_EXPORT void setEnabled(unsigned int pluginId, bool b);
-
-        /**
-         * @brief Widget management functions
-         */
 		DPVISION_EXPORT void removeWidget(unsigned int pluginId, const QString &name);
 		inline DPVISION_EXPORT void removeWidget(unsigned int pluginId, const char* name) { removeWidget(pluginId, QString::fromUtf8(name)); };
 		inline DPVISION_EXPORT void removeWidget(unsigned int pluginId, const std::string &name) { removeWidget(pluginId, QString::fromUtf8(name.c_str())); };
@@ -318,38 +323,35 @@ namespace UI
 
 		// BUTTON
 
+		// Legacy Qt-signal overload. Prefer the name/label based overloads or
+		// `IPluginPanelAPI` in new code.
 		DPVISION_EXPORT QPushButton* addButton(unsigned int pluginId, QString label, QObject* receiver,const char* slot, int row, int col, int rspan = 0, int cspan = 0);
 
 		DPVISION_EXPORT QPushButton* addButton(unsigned int pluginId, std::string buttonName, std::string label, int row, int col, int rspan = 0, int cspan = 0);
 		DPVISION_EXPORT QPushButton* addButton( unsigned int pluginId, std::wstring buttonName, std::wstring label, int row, int col, int rspan=0, int cspan=0 );
-		
 		DPVISION_EXPORT void setButtonText(unsigned int pluginId, const QString &name, const QString &value);
 		inline DPVISION_EXPORT void setButtonText(unsigned int pluginId, const char* name, const char* value) { setButtonText(pluginId, QString::fromUtf8(name), QString::fromUtf8(value)); };
 		inline DPVISION_EXPORT void setButtonText(unsigned int pluginId, const std::string &name, const std::string &value) { setButtonText(pluginId, QString::fromUtf8(name.c_str()), QString::fromUtf8(value.c_str())); };
 		inline DPVISION_EXPORT void setButtonText(unsigned int pluginId, const std::wstring &name, const std::wstring &value) { setButtonText(pluginId, QString::fromWCharArray(name.c_str()), QString::fromWCharArray(value.c_str())); };
-
-
+		
 		// SLIDER
 
 		DPVISION_EXPORT void addSlider(unsigned int pluginId, const QString &buttonName, int min, int max, int row, int col, int rspan = 0, int cspan = 0);
 		inline DPVISION_EXPORT void addSlider(unsigned int pluginId, const char* buttonName, int min, int max, int row, int col, int rspan = 0, int cspan = 0) { addSlider(pluginId, QString::fromUtf8(buttonName), min, max, row, col, rspan, cspan); };
 		inline DPVISION_EXPORT void addSlider(unsigned int pluginId, const std::string &buttonName, int min, int max, int row, int col, int rspan = 0, int cspan = 0) { addSlider(pluginId, QString::fromUtf8(buttonName.c_str()), min, max, row, col, rspan, cspan); };
 		inline DPVISION_EXPORT void addSlider(unsigned int pluginId, const std::wstring &buttonName, int min, int max, int row, int col, int rspan = 0, int cspan = 0) { addSlider(pluginId, QString::fromWCharArray(buttonName.c_str()), min, max, row, col, rspan, cspan); };
-
 		DPVISION_EXPORT int getSliderValue(unsigned int pluginId, const QString &name);
 		inline DPVISION_EXPORT int getSliderValue(unsigned int pluginId, const char* name) { return getSliderValue(pluginId, QString::fromUtf8(name)); };
 		inline DPVISION_EXPORT int getSliderValue(unsigned int pluginId, const std::string &name) { return getSliderValue(pluginId, QString::fromUtf8(name.c_str())); };
 		inline DPVISION_EXPORT int getSliderValue(unsigned int pluginId, const std::wstring &name) { return getSliderValue(pluginId, QString::fromWCharArray(name.c_str())); };
-
 		DPVISION_EXPORT int setSliderValue(unsigned int pluginId, const QString &name, int value);
 		inline DPVISION_EXPORT int setSliderValue(unsigned int pluginId, const char* name, int value) { return setSliderValue(pluginId, QString::fromUtf8(name), value); };
 		inline DPVISION_EXPORT int setSliderValue(unsigned int pluginId, const std::string &name, int value) { return setSliderValue(pluginId, QString::fromUtf8(name.c_str()), value); };
 		inline DPVISION_EXPORT int setSliderValue(unsigned int pluginId, const std::wstring &name, int value) { return setSliderValue(pluginId, QString::fromWCharArray(name.c_str()), value); };
-
 		DPVISION_EXPORT void setSliderRange(unsigned int pluginId, const QString &name, int min, int max);
 		inline DPVISION_EXPORT void setSliderRange(unsigned int pluginId, const char* name, int min, int max) { setSliderRange(pluginId, QString::fromUtf8(name), min, max); };
-		inline DPVISION_EXPORT void setSliderRange(unsigned int pluginId, const std::string& name, int min, int max) { setSliderRange(pluginId, QString::fromUtf8(name.c_str()), min, max); };
-		inline DPVISION_EXPORT void setSliderRange(unsigned int pluginId, const std::wstring& name, int min, int max) { setSliderRange(pluginId, QString::fromWCharArray(name.c_str()), min, max); };
+		inline DPVISION_EXPORT void setSliderRange(unsigned int pluginId, const std::string &name, int min, int max) { setSliderRange(pluginId, QString::fromUtf8(name.c_str()), min, max); };
+		inline DPVISION_EXPORT void setSliderRange(unsigned int pluginId, const std::wstring &name, int min, int max) { setSliderRange(pluginId, QString::fromWCharArray(name.c_str()), min, max); };
 
 		// EDITBOX
 
@@ -357,50 +359,46 @@ namespace UI
 		inline DPVISION_EXPORT void addEditBox(unsigned int pluginId, const char* name, const char* label, const char* value, int row, int col, int rspan = 0, int cspan = 0) { addEditBox(pluginId, QString::fromUtf8(name), QString::fromUtf8(label), QString::fromUtf8(value), row, col, rspan, cspan); };
 		inline DPVISION_EXPORT void addEditBox(unsigned int pluginId, const std::string& name, const std::string& label, const std::string& value, int row, int col, int rspan = 0, int cspan = 0) { addEditBox(pluginId, QString::fromUtf8(name.c_str()), QString::fromUtf8(label.c_str()), QString::fromUtf8(value.c_str()), row, col, rspan, cspan); };
 		inline DPVISION_EXPORT void addEditBox(unsigned int pluginId, const std::wstring& name, const std::wstring& label, const std::wstring& value, int row, int col, int rspan = 0, int cspan = 0) { addEditBox(pluginId, QString::fromWCharArray(name.c_str()), QString::fromWCharArray(label.c_str()), QString::fromWCharArray(value.c_str()), row, col, rspan, cspan); };
-		
 		DPVISION_EXPORT QString getEditBoxValue(unsigned int pluginId, const QString &name);
-		inline DPVISION_EXPORT char* getEditBoxValue(unsigned int pluginId, const char* name) { return getEditBoxValue(pluginId, QString::fromUtf8(name)).toUtf8().data(); };
 		inline DPVISION_EXPORT std::string getEditBoxValue(unsigned int pluginId, const std::string& name) { return getEditBoxValue(pluginId, QString::fromUtf8(name.c_str())).toUtf8().toStdString(); };
 		inline DPVISION_EXPORT std::wstring getEditBoxValue(unsigned int pluginId, const std::wstring& name) { return getEditBoxValue(pluginId, QString::fromWCharArray(name.c_str())).toStdWString(); };
-		
 		DPVISION_EXPORT void setEditBoxValue(unsigned int pluginId, const QString &name, const QString &value);
 		inline DPVISION_EXPORT void setEditBoxValue(unsigned int pluginId, const char* name, const char* value) { setEditBoxValue(pluginId, QString::fromUtf8(name), QString::fromUtf8(value)); };
 		inline DPVISION_EXPORT void setEditBoxValue(unsigned int pluginId, const std::string& name, const std::string& value) { setEditBoxValue(pluginId, QString::fromUtf8(name.c_str()), QString::fromUtf8(value.c_str())); };
 		inline DPVISION_EXPORT void setEditBoxValue(unsigned int pluginId, const std::wstring& name, const std::wstring& value) { setEditBoxValue(pluginId, QString::fromWCharArray(name.c_str()), QString::fromWCharArray(value.c_str())); };
-
+		
 		// COMBOBOX
 
 		DPVISION_EXPORT void addComboBox(unsigned int pluginId, const QString &name, int row, int col, int rspan = 0, int cspan = 0);
 		inline DPVISION_EXPORT void addComboBox(unsigned int pluginId, const char* name, int row, int col, int rspan = 0, int cspan = 0) { addComboBox(pluginId, QString::fromUtf8(name), row, col, rspan, cspan); }
 		inline DPVISION_EXPORT void addComboBox(unsigned int pluginId, const std::string& name, int row, int col, int rspan = 0, int cspan = 0) { addComboBox(pluginId, QString::fromUtf8(name.c_str()), row, col, rspan, cspan); }
 		inline DPVISION_EXPORT void addComboBox(unsigned int pluginId, const std::wstring& name, int row, int col, int rspan = 0, int cspan = 0) { addComboBox(pluginId, QString::fromWCharArray(name.c_str()), row, col, rspan, cspan); }
-		
 		DPVISION_EXPORT QString getComboBoxCurrentItemText(unsigned int pluginId, const QString &name);
-		inline DPVISION_EXPORT char* getComboBoxCurrentItemText(unsigned int pluginId, const char* name) { return getComboBoxCurrentItemText(pluginId, QString::fromUtf8(name)).toUtf8().data(); }
 		inline DPVISION_EXPORT std::string getComboBoxCurrentItemText(unsigned int pluginId, const std::string& name) { return getComboBoxCurrentItemText(pluginId, QString::fromUtf8(name.c_str())).toUtf8().toStdString(); }
 		inline DPVISION_EXPORT std::wstring getComboBoxCurrentItemText(unsigned int pluginId, const std::wstring& name) { return getComboBoxCurrentItemText(pluginId, QString::fromWCharArray(name.c_str())).toStdWString(); }
-		
 		DPVISION_EXPORT void setComboBoxItems(unsigned int pluginId, const QString &name, QStringList items);
 		DPVISION_EXPORT void setComboBoxItems(unsigned int pluginId, const char* name, std::initializer_list<const char*> items);
 		DPVISION_EXPORT void setComboBoxItems(unsigned int pluginId, const std::string &name, std::vector<std::string> items);
 		DPVISION_EXPORT void setComboBoxItems(unsigned int pluginId, const std::wstring &name, std::vector<std::wstring> items);
-
+		
 		// LABEL
 
 		DPVISION_EXPORT void addLabel(unsigned int pluginId, const QString &name, const QString &text, int row, int col, int rspan = 0, int cspan = 0);
 		inline DPVISION_EXPORT void addLabel(unsigned int pluginId, const char* name, const char* text, int row, int col, int rspan = 0, int cspan = 0) { addLabel(pluginId, QString::fromUtf8(name), QString::fromUtf8(text), row, col, rspan, cspan); }
 		inline DPVISION_EXPORT void addLabel(unsigned int pluginId, const std::string &name, const std::string &text, int row, int col, int rspan = 0, int cspan = 0) { addLabel(pluginId, QString::fromUtf8(name.c_str()), QString::fromUtf8(text.c_str()), row, col, rspan, cspan); }
 		inline DPVISION_EXPORT void addLabel(unsigned int pluginId, const std::wstring &name, const std::wstring &text, int row, int col, int rspan = 0, int cspan = 0) { addLabel(pluginId, QString::fromWCharArray(name.c_str()), QString::fromWCharArray(text.c_str()), row, col, rspan, cspan); }
-
 		DPVISION_EXPORT void setLabel(unsigned int pluginId, const QString &name, const QString &text);
 		inline DPVISION_EXPORT void setLabel(unsigned int pluginId, const char* name, const char* text) { setLabel(pluginId, QString::fromUtf8(name), QString::fromUtf8(text)); }
 		inline DPVISION_EXPORT void setLabel(unsigned int pluginId, const std::string &name, const std::string &text) { setLabel(pluginId, QString::fromUtf8(name.c_str()), QString::fromUtf8(text.c_str())); }
 		inline DPVISION_EXPORT void setLabel(unsigned int pluginId, const std::wstring &name, const std::wstring &text) { setLabel(pluginId, QString::fromWCharArray(name.c_str()), QString::fromWCharArray(text.c_str())); }
+
 	}
 
     /**
      * @namespace PROGRESSBAR
-     * @brief Progress bar functionality namespace
+     * @brief Legacy progress wrapper.
+     *
+     * Prefer `IProgressAPI` for new code.
      */
 	namespace PROGRESSBAR {
         /**
@@ -420,9 +418,12 @@ namespace UI
 
     /**
      * @namespace STATUSBAR
-     * @brief Status bar functionality namespace
+     * @brief Legacy status-bar wrapper.
+     *
+     * Prefer `IStatusBarAPI` for new code.
      */
 	namespace STATUSBAR {
+		// Legacy printf-style overloads. Prefer `setText()` or `IStatusBarAPI`.
 		DPVISION_EXPORT void printf(const char *format, ...);
 		DPVISION_EXPORT void printf(const wchar_t *format, ...);
 
@@ -439,7 +440,9 @@ namespace UI
 #ifndef DISABLE_OLD
     /**
      * @namespace MESSAGEBOX
-     * @brief Message box display functionality namespace
+     * @brief Legacy message-box wrapper.
+     *
+     * Prefer `IMessageBoxAPI` for new code.
      */
 	namespace MESSAGEBOX {
 		DPVISION_EXPORT void information( const QString &msg, const QString &tittle = "");
@@ -467,9 +470,12 @@ namespace UI
 
     /**
      * @namespace FILECHOOSER
-     * @brief File Open/Save window display functionality namespace
+     * @brief Legacy file-dialog wrapper.
+     *
+     * Prefer `IFileDialogAPI` for new code.
      */
 	namespace FILECHOOSER {
+		// Legacy wrappers. Prefer `IFileDialogAPI` in new code.
 		DPVISION_EXPORT QString getOpenFileName(QString title, QString dir, QString filter);
 		DPVISION_EXPORT std::wstring getOpenFileName( std::wstring title, std::wstring dir, std::wstring filter );
 		DPVISION_EXPORT std::string getOpenFileName( std::string title, std::string dir, std::string filter );
@@ -483,9 +489,11 @@ namespace UI
     /**
      * @namespace IMAGEVIEWER
      * @brief ImageViewer box display functionality namespace
+     *
+     * Legacy wrapper. Consider a dedicated image-viewer API if this remains
+     * part of the supported plugin surface.
      */
 	namespace IMAGEVIEWER {
-		DPVISION_EXPORT void setImage(std::string fname, bool show=true);
 	}
 };
 
