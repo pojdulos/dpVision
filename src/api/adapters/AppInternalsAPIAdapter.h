@@ -1,15 +1,17 @@
 #pragma once
 
 #include "../interfaces/IAppInternalsAPI.h"
-#include "../../api/AP.h"
+#include "../../gui/MainApplication.h"
+#include "../../core/Workspace.h"
+#include <QApplication>
 
 class AppInternalsAPIAdapter : public IAppInternalsAPI {
 public:
     CMainApplication& application() override {
-        return AP::mainApp();
+        return *static_cast<CMainApplication*>(QApplication::instance());
     }
 
     CWorkspace* workspace() override {
-        return AP::getWorkspace();
+        return CWorkspace::instance();
     }
 };

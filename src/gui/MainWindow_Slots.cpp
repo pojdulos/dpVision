@@ -627,7 +627,7 @@ void CMainWindow::actionLookDir(int direction, std::shared_ptr<CModel3D> obj)
 	}
 	else
 	{
-		bb = AP::WORKSPACE::instance()->topBB();
+		bb = CWorkspace::instance()->topBB();
 
 		if (bb.isInvalid()) return;
 	}
@@ -858,7 +858,7 @@ void CMainWindow::saveWorkspace()
 
 	QVector<std::shared_ptr<CBaseObject>> objects;
 
-	for (const auto& o : AP::WORKSPACE::instance()->children())
+	for (const auto& o : CWorkspace::instance()->children())
 	{
 		objects << o.second;
 	}

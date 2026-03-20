@@ -9,6 +9,15 @@ class WorkspaceAPIAdapter : public IWorkspaceAPI {
 public:
     WorkspaceAPIAdapter(CWorkspace* ws = nullptr) : ws_(ws ? ws : CWorkspace::instance()) {}
 
+    std::vector<std::pair<int, std::shared_ptr<CModel3D>>> children() override {
+        std::vector<std::pair<int, std::shared_ptr<CModel3D>>> result;
+        result.reserve(ws_->children().size());
+        for (const auto& child : ws_->children()) {
+            result.push_back(child);
+        }
+        return result;
+    }
+
     bool addModel(std::shared_ptr<CModel3D> obj, bool setItCurrent = false) override {
         if (obj == nullptr) return false;
         const auto result = ws_->_objectAdd(obj);

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../interfaces/IPluginPanelAPI.h"
-#include "../../api/AP.h"
 #include "../../gui/MainWindow.h"
 #include "../../gui/DockWidgetPluginPanel.h"
 #include <QString>
@@ -10,7 +9,7 @@
 class GuiPluginPanelAPIAdapter : public IPluginPanelAPI {
     static DockWidgetPluginPanel* pluginPanel()
     {
-        if (auto win = AP::mainWinPtr()) {
+        if (auto win = CMainWindow::instance()) {
             return win->dockPluginPanel;
         }
         return nullptr;

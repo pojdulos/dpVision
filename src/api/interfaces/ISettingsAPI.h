@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QVariant>
+#include <QStringList>
 
 class QString;
 
@@ -11,5 +12,8 @@ public:
     virtual void setValue(const QString& key, const QVariant& value) = 0;
     virtual bool contains(const QString& key) const = 0;
     virtual void remove(const QString& key) = 0;
+    virtual QStringList childGroups() const = 0;
+    virtual void beginGroup(const QString& prefix) = 0;
+    virtual void endGroup() = 0;
     virtual void sync() = 0;
 };

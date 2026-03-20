@@ -747,11 +747,11 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 				}
 			}
 		}
-		AP::leaveSelectionMode();
+		if (auto win = CMainWindow::instance()) win->leaveSelectionMode();
 	}
 	else
 	{
-		AP::leaveSelectionMode();
+		if (auto win = CMainWindow::instance()) win->leaveSelectionMode();
 		win->statusBar()->showMessage("You need first select an object!!!");
 	}
 	this->repaint();

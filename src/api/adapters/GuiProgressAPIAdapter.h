@@ -1,14 +1,13 @@
 #pragma once
 
 #include "../interfaces/IProgressAPI.h"
-#include "../../api/AP.h"
 #include "../../gui/MainWindow.h"
 #include "../../gui/ProgressIndicator.h"
 
 class GuiProgressAPIAdapter : public IProgressAPI {
 public:
     ProgressIndicator* instance() override {
-        if (auto win = AP::mainWinPtr()) {
+        if (auto win = CMainWindow::instance()) {
             return win->progressIndicator;
         }
         return nullptr;

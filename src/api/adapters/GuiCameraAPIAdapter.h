@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../interfaces/ICameraAPI.h"
-#include "../../api/AP.h"
 #include "../../core/Point3.h"
 #include "../../core/Wektor3D.h"
 #include "../../gui/MainWindow.h"
@@ -12,7 +11,7 @@
 class GuiCameraAPIAdapter : public ICameraAPI {
     static GLViewer* currentMdiViewer()
     {
-        if (auto win = AP::mainWinPtr()) {
+        if (auto win = CMainWindow::instance()) {
             QMdiArea* mdiArea = win->ui.mdiArea;
             if (mdiArea != nullptr) {
                 const QList<QMdiSubWindow*> windows = mdiArea->subWindowList();
@@ -83,11 +82,13 @@ public:
     }
 
     void setView(int dir, std::shared_ptr<CModel3D> obj = nullptr) override {
-        AP::mainWin().actionLookDir(dir, obj);
+        if (auto win = CMainWindow::instance()) {
+            win->actionLookDir(dir, obj);
+        }
     }
 
     GLViewer* currentViewer() override {
-        if (auto win = AP::mainWinPtr()) {
+        if (auto win = CMainWindow::instance()) {
             return win->currentViewer();
         }
         return nullptr;

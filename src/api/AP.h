@@ -26,50 +26,10 @@ class QString;
 namespace AP
 {
     /**
-     * @brief Returns reference to the main application instance
-     * @return Reference to CMainApplication
-     * @deprecated Legacy escape hatch. Use IAppInternalsAPI::application() only in privileged plugins.
-     */
-    DPVISION_EXPORT CMainApplication& mainApp();
-
-    /**
-     * @brief Returns reference to the main window instance
-     * @return Reference to CMainWindow
-     * @deprecated Legacy GUI escape hatch. Use IGuiInternalsAPI::mainWindow() only in privileged plugins.
-     */
-    DPVISION_EXPORT CMainWindow& mainWin();
-
-    /**
-     * @brief Returns pointer to the main window instance
-     * @return Pointer to CMainWindow
-     * @deprecated Legacy GUI escape hatch. Use IGuiInternalsAPI::mainWindow() only in privileged plugins.
-     */
-    DPVISION_EXPORT CMainWindow* mainWinPtr();
-
-    /**
-     * @brief Exits the selection mode
-     */
-    DPVISION_EXPORT void leaveSelectionMode();
-
-    /**
-     * @brief Generates and returns a unique identifier
-     * @return Unique integer identifier
-     */
-    DPVISION_EXPORT int getUniqueId();
-
-    /**
      * @brief Processes pending events in the application
      * @param immediate If true, processes events immediately
      */
     DPVISION_EXPORT void processEvents(bool immediate = false);
-
-    /**
-     * @brief Returns pointer to the workspace instance
-     * @warning Use only as a last resort. Prefer AP::WORKSPACE namespace functions
-     * @return Pointer to CWorkspace
-     * @deprecated Legacy escape hatch. Use IAppInternalsAPI::workspace() only in privileged plugins.
-     */
-    DPVISION_EXPORT CWorkspace* getWorkspace(void);
 
     /**
      * @brief Returns the executable file path
@@ -147,12 +107,6 @@ namespace AP
      * @brief Namespace containing workspace management functionality
      */
     namespace WORKSPACE {
-        /**
-         * @brief Returns the workspace instance
-         * @return Pointer to CWorkspace
-         */
-        DPVISION_EXPORT CWorkspace* instance(void);
-
         /**
          * @brief Returns the number of objects in workspace
          * @return Size of workspace

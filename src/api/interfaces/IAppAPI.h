@@ -14,6 +14,7 @@ public:
     virtual IModelAPI& model() = 0;
     virtual IObjectAPI& object() = 0;
     virtual ISettingsAPI& settings() = 0;
+    virtual ISettingsAPI& pluginSettings(const QString& pluginId) = 0;
     virtual int uniqueId() = 0;
     virtual const QString& exeFilePath() = 0;
     virtual void setStatusText(const QString& text) = 0;

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../interfaces/IGuiInternalsAPI.h"
-#include "../../api/AP.h"
 #include "../../gui/MainWindow.h"
 #include "../../gui/DockWidgetPluginPanel.h"
 #include "../../gui/DockWidgetWorkspace.h"
@@ -11,32 +10,32 @@
 class GuiInternalsAPIAdapter : public IGuiInternalsAPI {
 public:
     CMainWindow* mainWindow() override {
-        return AP::mainWinPtr();
+        return CMainWindow::instance();
     }
 
     DockWidgetWorkspace* workspaceDock() override {
-        if (auto win = AP::mainWinPtr()) {
+        if (auto win = CMainWindow::instance()) {
             return win->dockWorkspace;
         }
         return nullptr;
     }
 
     DockWidgetPluginPanel* pluginPanelHost() override {
-        if (auto win = AP::mainWinPtr()) {
+        if (auto win = CMainWindow::instance()) {
             return win->dockPluginPanel;
         }
         return nullptr;
     }
 
     GLViewer* currentViewer() override {
-        if (auto win = AP::mainWinPtr()) {
+        if (auto win = CMainWindow::instance()) {
             return win->currentViewer();
         }
         return nullptr;
     }
 
     ProgressIndicator* progressIndicator() override {
-        if (auto win = AP::mainWinPtr()) {
+        if (auto win = CMainWindow::instance()) {
             return win->progressIndicator;
         }
         return nullptr;
