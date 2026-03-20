@@ -1,6 +1,7 @@
 #include "DockWidgetModel.h"
 
 #include "../api/UI.h"
+#include "../core/AppStateManager.h"
 #include "../api/AP.h"
 
 #include "Transform.h"
@@ -127,7 +128,7 @@ void DockWidgetModel::updateModelRotX( double val )
 
 		rot.X(v);
 
-		UI::updateAllViews();
+		AppStateManager::updateAllViews();
 	}
 }
 
@@ -147,7 +148,7 @@ void DockWidgetModel::updateModelRotY( double val )
 
 		rot.Y(v);
 
-		UI::updateAllViews();
+		AppStateManager::updateAllViews();
 	}
 }
 
@@ -166,7 +167,7 @@ void DockWidgetModel::updateModelRotZ( double val )
 
 		rot.Z(v);
 
-		UI::updateAllViews();
+		AppStateManager::updateAllViews();
 	}
 }
 
@@ -179,7 +180,7 @@ void DockWidgetModel::updateModelTrans( double val )
 
 		tra.Set( ui.spinTransX->value(), ui.spinTransY->value(), ui.spinTransZ->value() );
 
-		UI::updateAllViews();
+		AppStateManager::updateAllViews();
 	}
 }
 
@@ -189,7 +190,7 @@ void DockWidgetModel::updateModelScale( double val )
 	{
 		AP::WORKSPACE::getCurrentModel()->getTransform().setScale( ui.spinScale->value() );
 
-		UI::updateAllViews();
+		AppStateManager::updateAllViews();
 	}
 }
 
@@ -199,7 +200,7 @@ void DockWidgetModel::updateModelCentered( int val )
 	{
 		AP::WORKSPACE::getCurrentModel()->getTransform().moveTheOriginToTheCenterOfRotation( ui.checkCentered->isChecked() );
 
-		UI::updateAllViews();
+		AppStateManager::updateAllViews();
 	}
 }
 

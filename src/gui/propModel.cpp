@@ -1,5 +1,6 @@
 #include "propModel.h"
 #include "../api/UI.h"
+#include "../core/AppStateManager.h"
 #include "../api/AP.h"
 
 #include "Model3D.h"
@@ -146,7 +147,7 @@ void PropModel::changedRotX( double val )
 
 		//updateQuaternion(obj->getTransform().rotation());
 
-		UI::updateAllViews();
+		AppStateManager::updateAllViews();
 	}
 }
 
@@ -180,7 +181,7 @@ void PropModel::changedRotY( double val )
 
 		//updateQuaternion(obj->getTransform().rotation());
 
-		UI::updateAllViews();
+		AppStateManager::updateAllViews();
 	}
 }
 
@@ -214,7 +215,7 @@ void PropModel::changedRotZ( double val )
 
 		//updateQuaternion(obj->getTransform().rotation());
 
-		UI::updateAllViews();
+		AppStateManager::updateAllViews();
 	}
 }
 
@@ -227,7 +228,7 @@ void PropModel::changedTraXYZ( double val )
 
 		tra.Set( ui.spinTransX->value(), ui.spinTransY->value(), ui.spinTransZ->value() );
 
-		UI::updateAllViews();
+		AppStateManager::updateAllViews();
 	}
 }
 
@@ -237,7 +238,7 @@ void PropModel::changedScale( double val )
 	{
 		AP::WORKSPACE::getCurrentModel()->getTransform().setScale( val );
 
-		UI::updateAllViews();
+		AppStateManager::updateAllViews();
 	}
 }
 
@@ -247,7 +248,7 @@ void PropModel::changedCentered( int val )
 	{
 		AP::WORKSPACE::getCurrentModel()->getTransform().moveTheOriginToTheCenterOfRotation( val == Qt::Checked );
 
-		UI::updateAllViews();
+		AppStateManager::updateAllViews();
 	}
 }
 
@@ -257,7 +258,7 @@ void PropModel::changedQX(double x)
 	{
 		((CModel3D*)obj)->getTransform().rotation().setX(x);
 		rot = ((CModel3D*)obj)->getTransform().rotation().eulerAnglesDeg();
-		UI::updateAllViews();
+		AppStateManager::updateAllViews();
 		updateProperties();
 	}
 }
@@ -268,7 +269,7 @@ void PropModel::changedQY(double y)
 	{
 		((CModel3D*)obj)->getTransform().rotation().setY(y);
 		rot = ((CModel3D*)obj)->getTransform().rotation().eulerAnglesDeg();
-		UI::updateAllViews();
+		AppStateManager::updateAllViews();
 		updateProperties();
 	}
 }
@@ -279,7 +280,7 @@ void PropModel::changedQZ(double z)
 	{
 		((CModel3D*)obj)->getTransform().rotation().setZ(z);
 		rot = ((CModel3D*)obj)->getTransform().rotation().eulerAnglesDeg();
-		UI::updateAllViews();
+		AppStateManager::updateAllViews();
 		updateProperties();
 	}
 }
@@ -290,7 +291,7 @@ void PropModel::changedQW(double w)
 	{
 		((CModel3D*)obj)->getTransform().rotation().setW(w);
 		rot = ((CModel3D*)obj)->getTransform().rotation().eulerAnglesDeg();
-		UI::updateAllViews();
+		AppStateManager::updateAllViews();
 		updateProperties();
 	}
 }

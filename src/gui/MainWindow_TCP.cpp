@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 
 #include "../api/AP.h"
+#include "../core/AppStateManager.h"
 #include "MainApplication.h"
 
 #include "../api/UI.h"
@@ -97,7 +98,7 @@ void CMainWindow::proceessData()
 		if (obj != nullptr) {
 			obj->getTransform().rotateAroundAxisDeg(CVector3d::XAxis(), rX);
 			updateAllViews();
-			UI::DOCK::PROPERTIES::updateProperties();
+			AppStateManager::updateProperties();
 			clientSocket->write(QString("Gotowe.\n\r").toLocal8Bit());
 		}
 		else
@@ -110,7 +111,7 @@ void CMainWindow::proceessData()
 		if (obj != nullptr) {
 			CWorkspace::instance()->_objectRemove(id);
 			updateAllViews();
-			UI::DOCK::PROPERTIES::updateProperties();
+			AppStateManager::updateProperties();
 			clientSocket->write(QString("Gotowe.\n\r").toLocal8Bit());
 		}
 		else

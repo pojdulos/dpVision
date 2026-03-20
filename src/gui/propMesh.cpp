@@ -1,6 +1,7 @@
 #include "propMesh.h"
 #include "Mesh.h"
 #include "../api/UI.h"
+#include "../core/AppStateManager.h"
 
 #include <QColorDialog>
 #include <QPushButton>
@@ -90,7 +91,7 @@ void PropMesh::updateProperties()
 //	CRGBA c = ((CMesh*)obj)->getMaterial(0).FrontColor.ambient; 
 //	updateEditBox(c.red(), c.green(), c.blue(), c.alpha());
 //
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}
 //
 //void PropMesh::gValueChanged(int g)
@@ -103,7 +104,7 @@ void PropMesh::updateProperties()
 //	CRGBA c = ((CMesh*)obj)->getMaterial(0).FrontColor.ambient;
 //	updateEditBox(c.red(), c.green(), c.blue(), c.alpha());
 //
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}
 //
 //void PropMesh::bValueChanged(int b)
@@ -116,7 +117,7 @@ void PropMesh::updateProperties()
 //	CRGBA c = ((CMesh*)obj)->getMaterial(0).FrontColor.ambient;
 //	updateEditBox(c.red(), c.green(), c.blue(), c.alpha());
 //
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}
 //
 //void PropMesh::aValueChanged(int a)
@@ -129,7 +130,7 @@ void PropMesh::updateProperties()
 //	CRGBA c = ((CMesh*)obj)->getMaterial(0).FrontColor.ambient;
 //	updateEditBox(c.red(), c.green(), c.blue(), c.alpha());
 //
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}
 //
 //void PropMesh::rgbaTextChanged(QString s)
@@ -143,7 +144,7 @@ void PropMesh::updateProperties()
 //
 //	updateSliders(c.red(), c.green(), c.blue(), c.alpha());
 //
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}
 //
 //void PropMesh::meshColorChanged(QColor c)
@@ -158,7 +159,7 @@ void PropMesh::updateProperties()
 //		updateSliders(c.red(), c.green(), c.blue(), c.alpha());
 //		updateEditBox(c.red(), c.green(), c.blue(), c.alpha());
 //
-//		UI::updateAllViews();
+//		AppStateManager::updateAllViews();
 //	}
 //}
 //

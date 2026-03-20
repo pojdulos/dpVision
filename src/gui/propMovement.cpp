@@ -1,5 +1,6 @@
 #include "propMovement.h"
 #include "../api/UI.h"
+#include "../core/AppStateManager.h"
 #include "../api/AP.h"
 
 #include "Model3D.h"
@@ -92,7 +93,7 @@ void PropMovement::updatePropertiesTree()
 {
 #ifdef EXPERIMENTAL_MOVEMENT_UI
 	QAbstractItemModel* model = ui.treeView->model();
-	QModelIndex index = model->index(m_animation->currentKey(), 0); // 0 oznacza pierwsz� kolumn�
+	QModelIndex index = model->index(m_animation->currentKey(), 0); // 0 oznacza pierwszďż˝ kolumnďż˝
 
 	QItemSelectionModel* selectionModel = ui.treeView->selectionModel();
 //	ui.treeView->blockSignals(true);
@@ -410,15 +411,15 @@ void PropMovement::dataChanged(QStandardItem* item)
 		break;
 	}
 
-	UI::updateAllViews();
-	//UI::DOCK::PROPERTIES::updateProperties();
+	AppStateManager::updateAllViews();
+	//AppStateManager::updateProperties();
 }
 
 void PropMovement::onSliderValueChanged(int val)
 {
 	m_animation->setKey(val);
 	updateProperties();
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 void PropMovement::onPlayButtonClicked()
@@ -478,7 +479,7 @@ void PropMovement::clearMatrix()
 		}
 	m_animation->currentFrame().t.fromGLMatrixD(matrix);
 	updatePropertiesTree();
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 void PropMovement::copyToClipboard()
@@ -528,7 +529,7 @@ void PropMovement::pasteFromClipboard()
 			m_animation->currentFrame().t.fromRowMatrixD(tmpMatrix);
 
 			updatePropertiesTree();
-			UI::updateAllViews();
+			AppStateManager::updateAllViews();
 		}
 	}
 }
@@ -557,7 +558,7 @@ void PropMovement::onCurrentChanged(const QModelIndex& current, const QModelInde
 		m_animation->setKey(key);
 
 		updateGroupFrame();
-		UI::updateAllViews();
+		AppStateManager::updateAllViews();
 	}
 	else
 	{
@@ -582,7 +583,7 @@ void PropMovement::onTreeViewItemClicked(QModelIndex current)
 	//	m_trans->m_currentKey = key;
 
 	//	updateGroupFrame();
-	//	UI::updateAllViews();
+	//	AppStateManager::updateAllViews();
 	//}
 	//else
 	//{

@@ -5,6 +5,7 @@
 
 #include "ImageLabel.h"
 #include "../api/UI.h"
+#include "../core/AppStateManager.h"
 #include <QKeyEvent>
 #include <QPainter>
 
@@ -458,7 +459,7 @@ void VolumetricImageDialog::onImageKeyPressed(QKeyEvent* e)
 			}
 		}
 	}
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 void VolumetricImageDialog::setTreshWidget(bool check, int min, int max, Volumetric::VoxelType low, Volumetric::VoxelType up)
@@ -618,23 +619,23 @@ QImage tesst4(QImage image, uint16_t treshold, uint16_t upTreshold, bool draw_up
 		for (qint32 x = 0; x < width; x++)
 		{
 			uint32_t lightness = 0;
-			if (depth == 16) // grayscale, 16bit�w na piksel
+			if (depth == 16) // grayscale, 16bitďż˝w na piksel
 			{
 				lightness = ((uint16_t*)src)[x];
 			}
-			else if (depth == 8) // grayscale, 8bit�w na piksel
+			else if (depth == 8) // grayscale, 8bitďż˝w na piksel
 			{
 				lightness = src[x];
 			}
-			else if (depth == 32) // ARGB, 8bit�w na kolor
+			else if (depth == 32) // ARGB, 8bitďż˝w na kolor
 			{
 				lightness = src[4 * x];
 			}
-			else if (depth == 24) // RGB, 8bit�w na kolor
+			else if (depth == 24) // RGB, 8bitďż˝w na kolor
 			{
 				lightness = src[3 * x];
 			}
-			else if (depth == 48) // RGB, 16bit�w na kolor
+			else if (depth == 48) // RGB, 16bitďż˝w na kolor
 			{
 				lightness = ((uint16_t*)src)[3 * x];
 			}
@@ -755,15 +756,15 @@ QImage doMedianFilter(QImage srcImg, int size)
 }
 
 
-// Funkcja obliczająca wymiary obrazu rzutowanego oraz jego głębokość
+// Funkcja obliczajÄ…ca wymiary obrazu rzutowanego oraz jego gĹ‚Ä™bokoĹ›Ä‡
 CPoint3f VolumetricImageDialog::calculateProjectionDimensions(const CPoint3f& orig, const CVector3f& norm, const CVector3f& up,
 	float columns, float rows, float layers) {
 	
-	// Wektory pomocnicze do przekształcenia współrzędnych
+	// Wektory pomocnicze do przeksztaĹ‚cenia wspĂłĹ‚rzÄ™dnych
 	CVector3f right = up.crossProduct(norm).getNormalized();
 	CVector3f newUp = norm.crossProduct(right).getNormalized();
 
-	// Współrzędne wierzchołków kostki
+	// WspĂłĹ‚rzÄ™dne wierzchoĹ‚kĂłw kostki
 	std::vector<CPoint3f> vertices = {
 		{0.0f, 0.0f, 0.0f},
 		{columns, 0.0f, 0.0f},
@@ -775,7 +776,7 @@ CPoint3f VolumetricImageDialog::calculateProjectionDimensions(const CPoint3f& or
 		{0.0f, rows, layers}
 	};
 
-	// Transformacja współrzędnych wierzchołków do układu płaszczyzny rzutowania
+	// Transformacja wspĂłĹ‚rzÄ™dnych wierzchoĹ‚kĂłw do ukĹ‚adu pĹ‚aszczyzny rzutowania
 	std::vector<CPoint3f> projectedVertices;
 	for (const auto& vertex : vertices) {
 		CPoint3f translated = { vertex.x - orig.x, vertex.y - orig.y, vertex.z - orig.z };
@@ -785,7 +786,7 @@ CPoint3f VolumetricImageDialog::calculateProjectionDimensions(const CPoint3f& or
 		projectedVertices.push_back({ x, y, z });
 	}
 
-	// Obliczenie rozmiarów obrazu na płaszczyźnie rzutowania
+	// Obliczenie rozmiarĂłw obrazu na pĹ‚aszczyĹşnie rzutowania
 	float minX = std::numeric_limits<float>::max(), maxX = std::numeric_limits<float>::lowest();
 	float minY = std::numeric_limits<float>::max(), maxY = std::numeric_limits<float>::lowest();
 	float minZ = std::numeric_limits<float>::max(), maxZ = std::numeric_limits<float>::lowest();
@@ -826,7 +827,7 @@ void createRotationMatrixX(float phi, float matrix[3][3]) {
 }
 
 CVector3f calculateFreeNorm(float cam_yaw, float cam_pitch) {
-	// Wektor początkowy free_norm
+	// Wektor poczÄ…tkowy free_norm
 	CVector3f free_norm = { 0.0f, 0.0f, 1.0f };
 
 	// Macierze rotacji
@@ -838,30 +839,30 @@ CVector3f calculateFreeNorm(float cam_yaw, float cam_pitch) {
 	createRotationMatrixY(cam_yaw, rotationY);
 	createRotationMatrixX(cam_pitch, rotationX);
 
-	// Rotacja wokół osi Y (yaw)
+	// Rotacja wokĂłĹ‚ osi Y (yaw)
 	CVector3f free_norm_yaw = free_norm.transform(rotationY);
 
 	free_norm_yaw.normalize();
 
-	// Rotacja wokół osi X (pitch)
+	// Rotacja wokĂłĹ‚ osi X (pitch)
 	CVector3f free_norm_pitch = free_norm_yaw.transform(rotationX);
 
 	return free_norm_pitch.getNormalized();
 
 
-	//// Rotacja wokół osi X (pitch)
+	//// Rotacja wokĂłĹ‚ osi X (pitch)
 	//CVector3f free_norm_pitch = free_norm.transform(rotationX);
 
 	//free_norm_pitch.normalize();
 
-	//// Rotacja wokół osi Y (yaw)
+	//// Rotacja wokĂłĹ‚ osi Y (yaw)
 	//CVector3f free_norm_yaw = free_norm_pitch.transform(rotationY);
 
 	//return free_norm_yaw.getNormalized();
 }
 
 CVector3f calculateFreeNorm3(float cam_yaw, float cam_pitch) {
-	// Wektor początkowy free_norm
+	// Wektor poczÄ…tkowy free_norm
 	CVector3f free_norm = { 1.0f, 0.0f, 0.0f };
 
 	// Macierze rotacji
@@ -873,12 +874,12 @@ CVector3f calculateFreeNorm3(float cam_yaw, float cam_pitch) {
 	//createRotationMatrixY(cam_yaw, rotationY);
 	createRotationMatrixY(cam_pitch, rotationY);
 
-	// Rotacja wokół osi Y (yaw)
+	// Rotacja wokĂłĹ‚ osi Y (yaw)
 	CVector3f free_norm_yaw = free_norm.transform(rotationZ);
 
 	free_norm_yaw.normalize();
 
-	// Rotacja wokół osi X (pitch)
+	// Rotacja wokĂłĹ‚ osi X (pitch)
 	CVector3f free_norm_pitch = free_norm_yaw.transform(rotationY);
 
 	return free_norm_pitch.getNormalized();
@@ -886,7 +887,7 @@ CVector3f calculateFreeNorm3(float cam_yaw, float cam_pitch) {
 
 
 CVector3f calculateFreeUp3(float cam_yaw, float cam_pitch) {
-	// Wektor początkowy free_up
+	// Wektor poczÄ…tkowy free_up
 	CVector3f free_up = { 0.0f, 0.0f, -1.0f };
 
 	// Macierze rotacji
@@ -899,7 +900,7 @@ CVector3f calculateFreeUp3(float cam_yaw, float cam_pitch) {
 	//createRotationMatrixX(cam_pitch, rotationX);
 	createRotationMatrixY(cam_pitch, rotationY);
 
-	// Rotacja wokół osi Y (yaw) i następnie wokół osi X (pitch)
+	// Rotacja wokĂłĹ‚ osi Y (yaw) i nastÄ™pnie wokĂłĹ‚ osi X (pitch)
 	//CVector3f free_up_transformed = free_up.transform(rotationY).transform(rotationX);
 	CVector3f free_up_transformed = free_up.transform(rotationY).transform(rotationZ);
 
@@ -908,7 +909,7 @@ CVector3f calculateFreeUp3(float cam_yaw, float cam_pitch) {
 
 
 CVector3f calculateFreeUp(float cam_yaw, float cam_pitch) {
-	// Wektor początkowy free_up
+	// Wektor poczÄ…tkowy free_up
 	CVector3f free_up = { 0.0f, 1.0f, 0.0f };
 
 	// Macierze rotacji
@@ -918,7 +919,7 @@ CVector3f calculateFreeUp(float cam_yaw, float cam_pitch) {
 	createRotationMatrixY(cam_yaw, rotationY);
 	createRotationMatrixX(cam_pitch, rotationX);
 
-	// Rotacja wokół osi Y (yaw) i następnie wokół osi X (pitch)
+	// Rotacja wokĂłĹ‚ osi Y (yaw) i nastÄ™pnie wokĂłĹ‚ osi X (pitch)
 	//CVector3f free_up_transformed = free_up.transform(rotationY).transform(rotationX);
 	CVector3f free_up_transformed = free_up.transform(rotationX).transform(rotationY);
 
@@ -926,10 +927,10 @@ CVector3f calculateFreeUp(float cam_yaw, float cam_pitch) {
 }
 
 CVector3f calculateFreeUp2(const CVector3f& free_norm) {
-	// Zakładamy, że pierwotny wektor up to (0, 1, 0)
+	// ZakĹ‚adamy, ĹĽe pierwotny wektor up to (0, 1, 0)
 	CVector3f world_up = { 0.0f, 1.0f, 0.0f };
 
-	// Jeśli free_norm jest prawie równoległy do world_up, użyj wektora alternatywnego
+	// JeĹ›li free_norm jest prawie rĂłwnolegĹ‚y do world_up, uĹĽyj wektora alternatywnego
 	if (std::abs(free_norm.x) < 1e-6 && std::abs(free_norm.z) < 1e-6) {
 		world_up = { 0.0f, 0.0f, 1.0f };
 	}
@@ -1446,8 +1447,8 @@ void VolumetricImageDialog::on_displ_min_valueChanged(int v)
 	ui.displ_max->setMinimum(v);
 	ui.displ_max->blockSignals(false);
 
-	UI::DOCK::PROPERTIES::updateProperties();
-	UI::updateAllViews();
+	AppStateManager::updateProperties();
+	AppStateManager::updateAllViews();
 }
 
 void VolumetricImageDialog::on_displ_max_valueChanged(int v)
@@ -1465,8 +1466,8 @@ void VolumetricImageDialog::on_displ_max_valueChanged(int v)
 	ui.displ_min->setMaximum(v);
 	ui.displ_min->blockSignals(false);
 
-	UI::DOCK::PROPERTIES::updateProperties();
-	UI::updateAllViews();
+	AppStateManager::updateProperties();
+	AppStateManager::updateAllViews();
 }
 
 

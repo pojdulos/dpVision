@@ -5,7 +5,21 @@
 #include <QBrush>
 #include <QPainter>
 #include "BaseObject.h"
-#include "../api/UI.h"
+#include "../core/AppStateManager.h"
+#include "MainWindow.h"
+#include "DockWidgetWorkspace.h"
+
+namespace
+{
+	DockWidgetWorkspace* workspaceDock()
+	{
+		if (auto win = CMainWindow::instance())
+		{
+			return win->dockWorkspace;
+		}
+		return nullptr;
+	}
+}
 
 GraphNode::GraphNode(qreal x, qreal y, const QString& label, ShapeType shape)
     : QGraphicsTextItem(label), m_shape(shape), m_obj(nullptr)
@@ -18,8 +32,8 @@ GraphNode::GraphNode(qreal x, qreal y, const QString& label, ShapeType shape)
     setFlag(QGraphicsItem::ItemIsMovable, true);
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
 
-    //setTextInteractionFlags(Qt::TextEditorInteraction); // umożliwia edycję tekstu po dwukliku
-    setTextInteractionFlags(Qt::NoTextInteraction); // domyślnie brak edycji
+    //setTextInteractionFlags(Qt::TextEditorInteraction); // umoÄąÄ˝liwia edycjĂ„â„˘ tekstu po dwukliku
+    setTextInteractionFlags(Qt::NoTextInteraction); // domyÄąâ€şlnie brak edycji
 
     setDefaultTextColor(Qt::black);
 }
@@ -38,7 +52,7 @@ GraphNode::GraphNode(qreal x, qreal y, CBaseObject* obj) : QGraphicsTextItem(), 
     setFlag(QGraphicsItem::ItemIsMovable, true);
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
 
-    setTextInteractionFlags(Qt::NoTextInteraction); // domyślnie brak edycji
+    setTextInteractionFlags(Qt::NoTextInteraction); // domyÄąâ€şlnie brak edycji
 
     setDefaultTextColor(Qt::black);
 }
@@ -53,7 +67,7 @@ void GraphNode::setObject(CBaseObject* obj)
 
 void GraphNode::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
-    setTextInteractionFlags(Qt::TextEditorInteraction); // Włącz edycję
+    setTextInteractionFlags(Qt::TextEditorInteraction); // WÄąâ€šĂ„â€¦cz edycjĂ„â„˘
     setFocus(Qt::MouseFocusReason);
     QGraphicsTextItem::mouseDoubleClickEvent(event);
 }
@@ -61,13 +75,16 @@ void GraphNode::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 
 void GraphNode::focusOutEvent(QFocusEvent* event)
 {
-    setTextInteractionFlags(Qt::NoTextInteraction); // Wyłącz edycję
+    setTextInteractionFlags(Qt::NoTextInteraction); // WyÄąâ€šĂ„â€¦cz edycjĂ„â„˘
 
     if (m_obj)
     {
         m_obj->setLabel(this->toPlainText());
-        UI::DOCK::WORKSPACE::setItemLabelById(m_obj->id(), m_obj->getLabel().toStdWString());
-        UI::DOCK::PROPERTIES::updateProperties();
+        if (DockWidgetWorkspace* dock = workspaceDock())
+        {
+            dock->setItemLabelById(m_obj->id(), m_obj->getLabel());
+        }
+        AppStateManager::updateProperties();
         //updateAllViews();
     }
 
@@ -79,11 +96,11 @@ void GraphNode::focusOutEvent(QFocusEvent* event)
 void GraphNode::keyPressEvent(QKeyEvent* event)
 {
     if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
-        clearFocus(); // zakończ edycję i wywołaj focusOutEvent
+        clearFocus(); // zakoÄąâ€žcz edycjĂ„â„˘ i wywoÄąâ€šaj focusOutEvent
     }
     else if (event->key() == Qt::Key_Escape) {
         if (m_obj)
-            setPlainText(m_obj->getLabel()); // anuluj edycję do starej etykiety
+            setPlainText(m_obj->getLabel()); // anuluj edycjĂ„â„˘ do starej etykiety
         clearFocus();
     }
     else {

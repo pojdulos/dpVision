@@ -2,7 +2,7 @@
 
 #include "../api/AP.h"
 
-#include "../api/UI.h"
+#include "../core/AppStateManager.h"
 
 #include "MainWindow.h"
 #include "Workspace.h"
@@ -10,6 +10,18 @@
 #include "Object.h"
 
 #include <QMessageBox>
+
+namespace
+{
+	DockWidgetWorkspace* workspaceDock()
+	{
+		if (auto win = CMainWindow::instance())
+		{
+			return win->dockWorkspace;
+		}
+		return nullptr;
+	}
+}
 
 CContextMenu::CContextMenu(std::shared_ptr<CBaseObject> obj, QWidget *parent) : QMenu(parent), m_obj(obj)
 {
@@ -345,10 +357,10 @@ void reversePath(std::vector<std::shared_ptr<CBaseObject>>& path, std::shared_pt
 		std::shared_ptr<CObject> objD = std::dynamic_pointer_cast<CObject>(revpath[i]);		// dotychczasowy rodzic
 		std::shared_ptr<CObject> objA = std::dynamic_pointer_cast<CObject>(revpath[i + 1]);	// dotychczasowy potomek
 
-		// w najgorszym przypadku trzeba będzie skompensować aż dwie macierze transformacji:
-		// macierz dotychczasowego rodzica - bo dotychczasowy potomek wyjdzie poza jej wpływ więc jego położenie wzgledem rodzica sie zmieni
-		// macierz dotychczasowego potomka - bo dotychczasowy rodzic znajdzie sie teraz pod jej wpływem co zmieni jego położenie
-		// dlatego dopasowanie jest złożeniem dwóch macierzy odwrotnych
+		// w najgorszym przypadku trzeba bĂ„â„˘dzie skompensowaĂ„â€ˇ aÄąÄ˝ dwie macierze transformacji:
+		// macierz dotychczasowego rodzica - bo dotychczasowy potomek wyjdzie poza jej wpÄąâ€šyw wiĂ„â„˘c jego poÄąâ€šoÄąÄ˝enie wzgledem rodzica sie zmieni
+		// macierz dotychczasowego potomka - bo dotychczasowy rodzic znajdzie sie teraz pod jej wpÄąâ€šywem co zmieni jego poÄąâ€šoÄąÄ˝enie
+		// dlatego dopasowanie jest zÄąâ€šoÄąÄ˝eniem dwÄ‚Ĺ‚ch macierzy odwrotnych
 
 		if (objA) {
 			Eigen::Matrix4d mD_inv = Eigen::Matrix4d::Identity();
@@ -396,7 +408,7 @@ void reversePath(std::vector<std::shared_ptr<CBaseObject>>& path, std::shared_pt
 }
 
 
-// 4. Główna funkcja
+// 4. GÄąâ€šÄ‚Ĺ‚wna funkcja
 bool makeObjectRoot(std::shared_ptr<CObject> m_obj)
 {
 	if (m_obj == nullptr)
@@ -406,17 +418,17 @@ bool makeObjectRoot(std::shared_ptr<CObject> m_obj)
 	if (parent == nullptr)
 		return false;
 
-	// Zbuduj ścieżkę do korzenia
+	// Zbuduj Äąâ€şcieÄąÄ˝kĂ„â„˘ do korzenia
 	auto path = CBaseObject::getPathToRoot(m_obj);
 
-	// Znajdź korzeń drzewa
+	// ZnajdÄąĹź korzeÄąâ€ž drzewa
 	if (path.empty()) // already root
 		return true;
 	
 	//CBaseObject* top = path.back();
 
 
-	// Odwróć relacje wzdłuż ścieżki (przebuduj drzewo)
+	// OdwrÄ‚Ĺ‚Ă„â€ˇ relacje wzdÄąâ€šuÄąÄ˝ Äąâ€şcieÄąÄ˝ki (przebuduj drzewo)
 	reversePath(path, m_obj);
 
 	parent->removeChild(m_obj->id());
@@ -468,7 +480,7 @@ void CContextMenu::slot_make_me_root()
 void CContextMenu::slot_test_graph()
 {
 	auto* gv = new GraphViewer(m_obj); // bez parenta!
-	gv->setAttribute(Qt::WA_DeleteOnClose, true); // Qt samo usunie obiekt po zamknięciu okna
+	gv->setAttribute(Qt::WA_DeleteOnClose, true); // Qt samo usunie obiekt po zamkniĂ„â„˘ciu okna
 	gv->show();
 }
 
@@ -504,7 +516,7 @@ void CContextMenu::slot_make_me_root2()
 		if (parent->hasType(CObject::Type::MODEL)) {
 			auto p = std::dynamic_pointer_cast<CModel3D>(parent);
 
-			// tu odwrócenie transformacji
+			// tu odwrÄ‚Ĺ‚cenie transformacji
 			Eigen::Matrix4Xd m = p->transform().toEigenMatrix4d();
 
 			p->transform().reset();
@@ -543,7 +555,13 @@ void CContextMenu::slot_repositioning()
 	if (m_obj == nullptr)
 		return; 	// obiekt nie istnieje
 
-	QStandardItemModel* model = (QStandardItemModel*)UI::DOCK::WORKSPACE::instance()->getTreeView()->model();
+	DockWidgetWorkspace* dock = workspaceDock();
+	if (dock == nullptr || dock->getTreeView() == nullptr)
+	{
+		return;
+	}
+
+	QStandardItemModel* model = (QStandardItemModel*)dock->getTreeView()->model();
 
 	TreeSelectDialog dlg(m_obj);
 	dlg.cloneModelToWidget(model);
@@ -591,7 +609,7 @@ void CContextMenu::slot_repositioning()
 			{
 				if (wybranyObiekt != nullptr)
 				{
-					if (keep_pos && ! m_obj->hasType(CObject::Type::MODEL)) // musze dodać macierz dopasowujacą
+					if (keep_pos && ! m_obj->hasType(CObject::Type::MODEL)) // musze dodaĂ„â€ˇ macierz dopasowujacĂ„â€¦
 					{
 						std::shared_ptr<CModel3D> mdl = std::make_shared<CModel3D>();
 						mdl->addChild(mdl, m_obj);
@@ -625,7 +643,7 @@ void CContextMenu::slot_repositioning()
 void CContextMenu::slot_apply_last_transform()
 {
 	// Kopiujemy obiekt z rodzica do dziadka,
-	// przekształcając go tak by zachował pozycję
+	// przeksztaÄąâ€šcajĂ„â€¦c go tak by zachowaÄąâ€š pozycjĂ„â„˘
 	
 	if (m_obj == nullptr)
 		return; 	// obiekt nie istnieje
@@ -635,14 +653,14 @@ void CContextMenu::slot_apply_last_transform()
 	std::shared_ptr<CBaseObject> parent = m_obj->getParentPtr();
 	
 	if ( (parent == nullptr) || (!parent->hasType(CBaseObject::Type::MODEL)) )
-		return;	// rodzicem obiektu nie jest przekształcenie
+		return;	// rodzicem obiektu nie jest przeksztaÄąâ€šcenie
 
 	CTransform parent_transform = std::static_pointer_cast<CModel3D>(parent)->transform();
 
 	std::shared_ptr<CBaseObject> grandpa = parent->getParentPtr();
 	
-	//CTransform grandpa_transform; // zerowe przekształcenie 
-	CTransform null_transform; // zerowe przekształcenie 
+	//CTransform grandpa_transform; // zerowe przeksztaÄąâ€šcenie 
+	CTransform null_transform; // zerowe przeksztaÄąâ€šcenie 
 
 	//if (grandpa != nullptr)
 	//	grandpa_transform = grandpa->getGlobalTransformationMatrix();
@@ -674,7 +692,7 @@ void CContextMenu::slot_apply_last_transform()
 
 		if (grandpa == nullptr) // workspace root
 		{
-			// na razie jeszcze na najwyższym poziomie drzewa musi byc Model3D
+			// na razie jeszcze na najwyÄąÄ˝szym poziomie drzewa musi byc Model3D
 			grandpa = std::make_shared<CModel3D>();
 			AP::WORKSPACE::addModel(std::static_pointer_cast<CModel3D>(grandpa));
 		}
@@ -748,7 +766,7 @@ void CContextMenu::histogramSave()
 	QString filter("Histogram data (*.csv);;Plot files (*.plt)");
 	QString initial_path("");
 
-	QString path = UI::FILECHOOSER::getSaveFileName(window_title, initial_path, filter);
+	QString path = QFileDialog::getSaveFileName(this, window_title, initial_path, filter);
 
 	if (path == "") return;
 
@@ -838,14 +856,14 @@ void CContextMenu::slot_vol_show_images()
 	if (m_obj->hasType(CBaseObject::VOLUMETRIC_NEW))
 	{
 		auto* dialog = new VolumetricImageDialog((Volumetric*)m_obj.get());
-		dialog->setAttribute(Qt::WA_DeleteOnClose, true); // Qt samo usunie obiekt po zamknięciu okna
+		dialog->setAttribute(Qt::WA_DeleteOnClose, true); // Qt samo usunie obiekt po zamkniĂ„â„˘ciu okna
 		dialog->show();
 	}
 }
 
 void CContextMenu::slot_volumetric_export()
 {
-	QString file_path = UI::FILECHOOSER::getSaveFileName("", "", QString("*.dcm"));
+	QString file_path = QFileDialog::getSaveFileName(this, "", "", QString("*.dcm"));
 	qInfo() << file_path << Qt::endl;
 
 	if (file_path.endsWith(".dcm"))
@@ -1034,19 +1052,19 @@ void CContextMenu::slot_volumetric_set_metadata()
 
 void CContextMenu::slot_volumetric_sift_cloud()
 {
-	// Liczba kluczowych punkt�w do zachowania.Domy�lnie 0, co oznacza, �e nie ma limitu.
+	// Liczba kluczowych punktÄŹĹĽËťw do zachowania.DomyÄŹĹĽËťlnie 0, co oznacza, ÄŹĹĽËťe nie ma limitu.
 	int nfeatures = 0;
 
-	// Liczba warstw w ka�dej oktawie.Domy�lnie 3
+	// Liczba warstw w kaÄŹĹĽËťdej oktawie.DomyÄŹĹĽËťlnie 3
 	int nOctaveLayers = 3;
 
-	// Pr�g eliminacji kluczowych punkt�w o niskim kontra�cie.Domy�lnie 0.04
+	// PrÄŹĹĽËťg eliminacji kluczowych punktÄŹĹĽËťw o niskim kontraÄŹĹĽËťcie.DomyÄŹĹĽËťlnie 0.04
 	double contrastThreshold = 0.04;
 
-	// Pr�g eliminacji kluczowych punkt�w na kraw�dziach.Domy�lnie 10
+	// PrÄŹĹĽËťg eliminacji kluczowych punktÄŹĹĽËťw na krawÄŹĹĽËťdziach.DomyÄŹĹĽËťlnie 10
 	double edgeThreshold = 10.0;
 
-	// Pocz�tkowa sigma dla Gaussowskiego rozmycia.Domy�lnie 1.6
+	// PoczÄŹĹĽËťtkowa sigma dla Gaussowskiego rozmycia.DomyÄŹĹĽËťlnie 1.6
 	double sigma = 1.6;
 
 	int factor = 1;
@@ -1115,7 +1133,7 @@ void CContextMenu::slot_volumetric_sift_cloud()
 
 		AP::OBJECT::addChild(m_obj, cloud);
 
-		UI::updateAllViews();
+		AppStateManager::updateAllViews();
 	}
 
 	delete dlg;
@@ -1155,7 +1173,7 @@ void CContextMenu::slot_volumetric_marching_cube()
 		std::shared_ptr<CMesh> mesh = std::static_pointer_cast<Volumetric>(m_obj)->marching_cube(f);
 		
 		AP::OBJECT::addChild(m_obj, mesh);
-		UI::updateAllViews();
+		AppStateManager::updateAllViews();
 	}
 
 	delete dlg;
@@ -1196,7 +1214,7 @@ void CContextMenu::slot_volumetric_marching_tetra()
 
 		AP::OBJECT::addChild(m_obj, mesh);
 
-		UI::updateAllViews();
+		AppStateManager::updateAllViews();
 	}
 
 	delete dlg;
@@ -1209,7 +1227,7 @@ void CContextMenu::pointHide()
 	m_obj->switchSelfVisibility();
 	//m_obj->setVisible(!m_obj->isVisible());
 	
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 #include "MainWindow.h"
@@ -1225,30 +1243,38 @@ void CContextMenu::newPicWindow()
 #include "DockWidgetWorkspace.h"
 void CContextMenu::slotCollapseAll()
 {
-	DockWidgetWorkspace* dock = UI::DOCK::WORKSPACE::instance();
-	dock->collapseAll();
+	if (DockWidgetWorkspace* dock = workspaceDock())
+	{
+		dock->collapseAll();
+	}
 }
 
 void CContextMenu::slotExpandAll()
 {
-	DockWidgetWorkspace* dock = UI::DOCK::WORKSPACE::instance();
-	dock->expandAll();
+	if (DockWidgetWorkspace* dock = workspaceDock())
+	{
+		dock->expandAll();
+	}
 }
 
 void CContextMenu::slotHideAll()
 {
 	m_obj->showChildren(false, {}, {CBaseObject::Type::MODEL});
-	UI::updateAllViews();
-	DockWidgetWorkspace* dock = UI::DOCK::WORKSPACE::instance();
-	dock->updateVisibilityAll();
+	AppStateManager::updateAllViews();
+	if (DockWidgetWorkspace* dock = workspaceDock())
+	{
+		dock->updateVisibilityAll();
+	}
 }
 
 void CContextMenu::slotShowAll()
 {
 	m_obj->showChildren(true, {}, { CBaseObject::Type::MODEL });
-	UI::updateAllViews();
-	DockWidgetWorkspace* dock = UI::DOCK::WORKSPACE::instance();
-	dock->updateVisibilityAll();
+	AppStateManager::updateAllViews();
+	if (DockWidgetWorkspace* dock = workspaceDock())
+	{
+		dock->updateVisibilityAll();
+	}
 }
 
 

@@ -21,6 +21,8 @@
 #include "FileConnector.h"
 #include "adapters/QtProgressAdapter.h"
 #include "StatusBarManager.h"
+#include "../core/AppStateManager.h"
+#include "../core/WorkspacePanelManager.h"
 #include "../core/PluginRuntimeManager.h"
 
 #include <QMessageBox>
@@ -71,7 +73,7 @@ void CMainWindow::viewerSelected(QMdiSubWindow* window)
 			AP::WORKSPACE::setCurrentModel(((PicViewer*)child->m_widget)->id());
 		}
 
-		UI::DOCK::PROPERTIES::updateProperties();
+		AppStateManager::updateProperties();
 	}
 }
 
@@ -374,7 +376,7 @@ void CMainWindow::projectionOrthogonal()
 		StatusBarManager::setText("Orthogonal projection");
 		updateActiveView();
 	}
-	UI::DOCK::PROPERTIES::updateProperties();
+	AppStateManager::updateProperties();
 }
 
 void CMainWindow::projectionPerspective()
@@ -386,7 +388,7 @@ void CMainWindow::projectionPerspective()
 		StatusBarManager::setText("Perspective projection");
 		updateActiveView();
 	}
-	UI::DOCK::PROPERTIES::updateProperties();
+	AppStateManager::updateProperties();
 }
 
 
@@ -406,8 +408,8 @@ void CMainWindow::modelVisibility( bool vis )
 			StatusBarManager::setText(  "Model visibility: Hide" );
 		}
 		
-		UI::DOCK::WORKSPACE::setItemVisibleById(obj->id(), vis);
-		UI::DOCK::PROPERTIES::updateProperties();
+		WorkspacePanelManager::setWorkspaceItemVisible(obj->id(), vis);
+		AppStateManager::updateProperties();
 		updateAllViews();
 	}
 }
@@ -420,11 +422,11 @@ void CMainWindow::modelInvertNormals()
 		{
 			m->invertNormals();
 			updateAllViews();
-			StatusBarManager::setText("Normalne ścian zostały odwrócone");
+			StatusBarManager::setText("Normalne Ĺ›cian zostaĹ‚y odwrĂłcone");
 		}
 		else
 		{
-			StatusBarManager::setText("Obiekt nie jest siatką...");
+			StatusBarManager::setText("Obiekt nie jest siatkÄ…...");
 		}
 	}
 }
@@ -444,21 +446,21 @@ void CMainWindow::meshApplyTransformations()
 				//((CMesh*)AP::WORKSPACE::getCurrentModel()->getChild())->applyTransformation( trans, CTransform() );
 				//AP::WORKSPACE::getCurrentModel()->setTransform(CTransform());
 
-				StatusBarManager::setText("Współrzędne obiektu zostały przekształcone");
+				StatusBarManager::setText("WspĂłĹ‚rzÄ™dne obiektu zostaĹ‚y przeksztaĹ‚cone");
 
 				updateAllViews();
 			}
 			else
 			{
-				StatusBarManager::setText("Obiekt nie jest chmurą punktów lub siatką...");
+				StatusBarManager::setText("Obiekt nie jest chmurÄ… punktĂłw lub siatkÄ…...");
 			}
 		}
 		else
 		{
-			StatusBarManager::setText("Obiekt nie jest chmurą punktów lub siatką...");
+			StatusBarManager::setText("Obiekt nie jest chmurÄ… punktĂłw lub siatkÄ…...");
 		}
 
-		UI::DOCK::PROPERTIES::updateProperties();
+		AppStateManager::updateProperties();
 	}
 }
 
@@ -543,7 +545,7 @@ void CMainWindow::cameraResetPosition()
 		if (nullptr != view)
 		{
 			view->resetGeometry();
-			UI::DOCK::PROPERTIES::updateProperties();
+			AppStateManager::updateProperties();
 			updateAllViews();
 		}
 }
@@ -562,13 +564,13 @@ double computeCameraDistance(CBoundingBox& bb, double fovY_deg,	double aspect)
 	double halfHeight = (max.y - min.y) * 0.5;
 	double halfDepth = (max.z - min.z) * 0.5;
 
-	// odległość wymagana w pionie i w poziomie
+	// odlegĹ‚oĹ›Ä‡ wymagana w pionie i w poziomie
 	double dY = halfHeight / tan(fovY / 2.0);
 	double dX = halfWidth / tan(fovX / 2.0);
 
 	double dist = std::max(dX, dY);
 
-	// dodajemy głębokość, żeby box się mieścił w Z
+	// dodajemy gĹ‚Ä™bokoĹ›Ä‡, ĹĽeby box siÄ™ mieĹ›ciĹ‚ w Z
 	dist += halfDepth;
 
 	return dist;
@@ -639,7 +641,7 @@ void CMainWindow::actionLookDir(int direction, std::shared_ptr<CModel3D> obj)
 	double fovY = view->getVAngle(); //getFovY(); // np. 45 stopni
 
 
-	Eigen::Matrix4d R = view->transform().toEigenMatrix4d(); // zawiera już obrót
+	Eigen::Matrix4d R = view->transform().toEigenMatrix4d(); // zawiera juĹĽ obrĂłt
 
 	CPoint3d center = bb.getMidpoint();
 	CPoint3d rotatedCenter = R * center;
@@ -653,10 +655,10 @@ void CMainWindow::actionLookDir(int direction, std::shared_ptr<CModel3D> obj)
 	double dist = computeCameraDistance(bb, fovY, aspect);
 	double targetZ = 200.0 - dist;
 
-	// przesunięcie w Z
+	// przesuniÄ™cie w Z
 	view->transform().translate(CVector3d(0.0, 0.0, targetZ - rotatedCenter.z));
 
-	UI::DOCK::PROPERTIES::updateProperties();
+	AppStateManager::updateProperties();
 	updateAllViews();
 }
 
@@ -894,7 +896,7 @@ void CMainWindow::resetAllTransformations()
 	{
 		it->second->transform().reset();
 	}
-	UI::DOCK::PROPERTIES::updateProperties();
+	AppStateManager::updateProperties();
 	updateAllViews();
 }
 
@@ -905,7 +907,7 @@ void CMainWindow::resetSelectedTransformations()
 	{
 		AP::WORKSPACE::getModel(*it)->transform().reset();
 	}
-	UI::DOCK::PROPERTIES::updateProperties();
+	AppStateManager::updateProperties();
 	updateAllViews();
 }
 
@@ -915,10 +917,10 @@ void CMainWindow::lockAllModels()
 	for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = CWorkspace::instance()->begin(); it != CWorkspace::instance()->end(); it++)
 	{
 		it->second->setLocked(true);
-		UI::DOCK::WORKSPACE::setItemLockedById(it->first, true);
+		WorkspacePanelManager::setWorkspaceItemLocked(it->first, true);
 	}
-	UI::changeMenuAfterSelect();
-	UI::DOCK::PROPERTIES::updateProperties();
+	AppStateManager::changeMenuAfterSelect();
+	AppStateManager::updateProperties();
 	updateAllViews();
 }
 
@@ -929,10 +931,10 @@ void CMainWindow::lockSelectedModels()
 	{
 		std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getModel(*it);
 		obj->setLocked(true);
-		UI::DOCK::WORKSPACE::setItemLockedById(*it, true);
+		WorkspacePanelManager::setWorkspaceItemLocked(*it, true);
 	}
-	UI::changeMenuAfterSelect();
-	UI::DOCK::PROPERTIES::updateProperties();
+	AppStateManager::changeMenuAfterSelect();
+	AppStateManager::updateProperties();
 	updateAllViews();
 }
 
@@ -942,10 +944,10 @@ void CMainWindow::unlockAllModels()
 	for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = CWorkspace::instance()->begin(); it != CWorkspace::instance()->end(); it++)
 	{
 		it->second->setLocked(false);
-		UI::DOCK::WORKSPACE::setItemLockedById(it->first, false);
+		WorkspacePanelManager::setWorkspaceItemLocked(it->first, false);
 	}
-	UI::changeMenuAfterSelect();
-	UI::DOCK::PROPERTIES::updateProperties();
+	AppStateManager::changeMenuAfterSelect();
+	AppStateManager::updateProperties();
 	updateAllViews();
 }
 
@@ -956,10 +958,10 @@ void CMainWindow::unlockSelectedModels()
 	{
 		std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getModel(*it);
 		obj->setLocked(false);
-		UI::DOCK::WORKSPACE::setItemLockedById(*it, false);
+		WorkspacePanelManager::setWorkspaceItemLocked(*it, false);
 	}
-	UI::changeMenuAfterSelect();
-	UI::DOCK::PROPERTIES::updateProperties();
+	AppStateManager::changeMenuAfterSelect();
+	AppStateManager::updateProperties();
 	updateAllViews();
 }
 
@@ -1050,7 +1052,7 @@ void CMainWindow::modelInSelection(bool b)
 		{
 			AP::WORKSPACE::SELECTION::unselectModel(obj->id());
 		}
-		UI::DOCK::PROPERTIES::updateProperties();
+		AppStateManager::updateProperties();
 	}
 }
 
@@ -1060,7 +1062,7 @@ void CMainWindow::modelResetTransformations()
 	if (nullptr != obj)
 	{
 		obj->transform().reset();
-		UI::DOCK::PROPERTIES::updateProperties();
+		AppStateManager::updateProperties();
 		updateAllViews();
 	}
 }
@@ -1081,8 +1083,8 @@ void CMainWindow::modelLock( bool b )
 			StatusBarManager::setText(  "Model unlocked" );
 		}
 
-		UI::DOCK::WORKSPACE::setItemLockedById(obj->id(), b);
-		UI::DOCK::PROPERTIES::updateProperties();
+		WorkspacePanelManager::setWorkspaceItemLocked(obj->id(), b);
+		AppStateManager::updateProperties();
 		updateAllViews();
 	}
 }

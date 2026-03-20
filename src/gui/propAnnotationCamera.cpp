@@ -4,6 +4,7 @@
 #include <qclipboard.h>
 
 #include "../api/UI.h"
+#include "../core/AppStateManager.h"
 #include <QVBoxLayout>
 
 PropAnnotationCamera::PropAnnotationCamera(CAnnotationCamera*an, QWidget *parent) : PropWidget( parent )
@@ -56,7 +57,7 @@ void PropAnnotationCamera::clearMatrix()
 				a->matrix()[4 * row + col] = 0.0;
 		}
 	updateSensorProperties();
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 void PropAnnotationCamera::copyToClipboard()
@@ -103,7 +104,7 @@ void PropAnnotationCamera::pasteFromClipboard()
 			a->setMatrix(tmpMatrix);
 
 			updateSensorProperties();
-			UI::updateAllViews();
+			AppStateManager::updateAllViews();
 		}
 	}
 }

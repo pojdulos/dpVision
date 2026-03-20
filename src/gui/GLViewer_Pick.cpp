@@ -577,7 +577,6 @@ void GLViewer::PickPoint(int x, int y)
 		CMainWindow::instance()->statusBar()->showMessage("No objects selected");
 	}
 
-//	UI::getMainWindow().updateListViewSelection( sel );
 }
 
 void GLViewer::PickObject(int x, int y)

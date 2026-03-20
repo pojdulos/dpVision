@@ -32,6 +32,12 @@ public:
         }
     }
 
+    static void setWorkspaceItemLocked(int id, bool locked) {
+        if (listenerRef()) {
+            listenerRef()->setWorkspaceItemLocked(id, locked);
+        }
+    }
+
     static void setWorkspaceItemKidsVisible(int id, bool visible) {
         if (listenerRef()) {
             listenerRef()->setWorkspaceItemKidsVisible(id, visible);

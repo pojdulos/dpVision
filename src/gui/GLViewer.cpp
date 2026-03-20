@@ -650,7 +650,6 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 					//#pragma omp parallel for
 					for (int i = 0; i < size; i++)
 					{
-						//UI::STATUSBAR::printfTimed(500, QString::number(i).toStdString().c_str());
 						//if ((i%10000)==0) printf("Start iteracji %d przez wątek %d\n", i, omp_get_thread_num());
 
 						CPoint3d point = cloud->vertices()[i];
@@ -683,7 +682,6 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 						
 						//#pragma omp atomic
 						//std::cout << i << endl;
-						//UI::STATUSBAR::setText(QString::number(i));
 						if ((i % step) == 0) progress->setValue(i);
 						//printf("Koniec iteracji %d przez wątek %d\n", i, omp_get_thread_num());
 					}
@@ -702,7 +700,7 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 							progress->init(0, mesh->faces().size(), 0);
 							for (int j = 0; j < mesh->faces().size(); j++)
 							{
-								if ((j%1000)==0) //UI::STATUSBAR::setText(QString("Reindexing faces: %1").arg(j));
+								if ((j%1000)==0)
 									progress->setValue(j);
 								CFace f = mesh->faces()[j];
 								
@@ -809,7 +807,6 @@ void GLViewer::mouseReleaseEvent( QMouseEvent* event )
 //			if (((x - pos.x()) * (x - pos.x()) + (y - pos.y()) * (y - pos.y())) <= (m_selSize * m_selSize) )
 //			{
 //				m_selXY.insert(std::pair<int,int>(x, y));
-//				//UI::STATUSBAR::printf(L"CYAN: [%d,%d]", x, y);
 //			}
 //
 //	return false;

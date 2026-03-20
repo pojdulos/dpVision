@@ -42,6 +42,13 @@ public:
         }
     }
 
+    void setWorkspaceItemLocked(int id, bool locked) override
+    {
+        if (window_ != nullptr && window_->dockWorkspace != nullptr) {
+            window_->dockWorkspace->setItemLockedById(id, locked);
+        }
+    }
+
     void setWorkspaceItemKidsVisible(int id, bool visible) override
     {
         if (window_ != nullptr && window_->dockWorkspace != nullptr) {

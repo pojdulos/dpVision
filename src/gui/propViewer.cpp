@@ -1,7 +1,5 @@
 #include "propViewer.h"
 
-#include "../api/UI.h"
-#include "../api/AP.h"
 #include "QPaintEvent"
 
 #include "RGBA.h"
@@ -25,6 +23,14 @@ namespace
 			return win->currentViewer();
 		}
 		return nullptr;
+	}
+
+	void updateCurrentView()
+	{
+		if (auto win = mainWindow())
+		{
+			win->updateView(false, true);
+		}
 	}
 }
 
@@ -138,7 +144,7 @@ void PropViewer::rotXeditingFinished()
 
 		rot = view->transform().rotation().eulerAnglesDeg();
 
-		UI::updateCurrentView();
+		updateCurrentView();
 	}
 }
 void PropViewer::changedRotX( double val )
@@ -156,7 +162,7 @@ void PropViewer::changedRotX( double val )
 
 		rot.X(v);
 
-		UI::updateCurrentView();
+		updateCurrentView();
 	}
 }
 
@@ -175,7 +181,7 @@ void PropViewer::changedRotY( double val )
 
 		rot.Y(v);
 
-		UI::updateCurrentView();
+		updateCurrentView();
 	}
 }
 
@@ -201,7 +207,7 @@ void PropViewer::changedRotZ( double val )
 		ui.spinViewRotZ->setValue(rot.Z( e.z ).z);
 		ui.spinViewRotZ->blockSignals(false);
 
-		UI::updateCurrentView();
+		updateCurrentView();
 	}
 
 	//GLViewer *view = AP::mainWin().currentViewer();
@@ -218,7 +224,7 @@ void PropViewer::changedRotZ( double val )
 
 	//	rot.Z(v);
 
-	//	UI::updateCurrentView();
+	//	updateCurrentView();
 	//}
 }
 
@@ -231,7 +237,7 @@ void PropViewer::changedTraXYZ( double val )
        
 		tra.Set(ui.spinViewTransX->value(), ui.spinViewTransY->value(), ui.spinViewTransZ->value());
 
-		UI::updateCurrentView();
+		updateCurrentView();
 	}
 }
 
@@ -242,7 +248,7 @@ void PropViewer::changedScale( double val )
 	{
 		view->transform().setScale( ui.spinViewScale->value() );
        
-		UI::updateCurrentView();
+		updateCurrentView();
 	}
 }
 
@@ -253,7 +259,7 @@ void PropViewer::changedBGcolor( double val )
 	{
 		view->setBGcolor( ui.spinBG->value() );
        
-		UI::updateCurrentView();
+		updateCurrentView();
 	}
 }
 
@@ -264,7 +270,7 @@ void PropViewer::changedAngle( int val )
 	{
 		view->setVAngle( ui.spinAngleOfView->value() );
 
-		UI::updateCurrentView();
+		updateCurrentView();
 	}
 }
 
@@ -275,7 +281,7 @@ void PropViewer::changedOrthoViewSize(double)
 	{
 		view->setOrthoSize(ui.spinOrthoViewSize->value());
 
-		UI::updateCurrentView();
+		updateCurrentView();
 	}
 }
 

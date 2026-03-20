@@ -1,5 +1,6 @@
 #include "propTransform.h"
 #include "../api/UI.h"
+#include "../core/AppStateManager.h"
 #include "../api/AP.h"
 
 #include "Model3D.h"
@@ -282,8 +283,8 @@ void PropTransform::dataChanged(QStandardItem* item)
 		break;
 	}
 
-	UI::updateAllViews();
-	//UI::DOCK::PROPERTIES::updateProperties();
+	AppStateManager::updateAllViews();
+	//AppStateManager::updateProperties();
 }
 
 void PropTransform::onRotButton()
@@ -306,8 +307,8 @@ void PropTransform::onRotButton()
 	}
 
 	m_trans->rotateAroundAxisDeg(axis, angle, internal);
-	UI::updateAllViews();
-	UI::DOCK::PROPERTIES::updateProperties();
+	AppStateManager::updateAllViews();
+	AppStateManager::updateProperties();
 }
 
 
@@ -464,14 +465,14 @@ void PropTransform::changedEul(double val)
 	updateQua();
 	updateMatrix();
 	
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 void PropTransform::changedQua(double val)
 {
 //	m_trans->rotation().fromEulerAnglesDeg(ui.eulerX->value(), ui.eulerY->value(), ui.eulerZ->value());
 
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 
@@ -481,7 +482,7 @@ void PropTransform::changedTra(double val)
 
 	updateMatrix();
 
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 void PropTransform::changedSca(double val)
@@ -503,7 +504,7 @@ void PropTransform::changedSca(double val)
 
 	updateMatrix();
 
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 void PropTransform::onScaleCheck(int i)
@@ -525,7 +526,7 @@ void PropTransform::onScaleCheck(int i)
 
 	updateMatrix();
 
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 
@@ -575,7 +576,7 @@ void PropTransform::clearMatrix()
 		}
 	m_trans->fromGLMatrixD(matrix);
 	updatePropertiesTree();
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 void PropTransform::copyToClipboard()
@@ -625,7 +626,7 @@ void PropTransform::pasteFromClipboard()
 			m_trans->fromRowMatrixD(tmpMatrix);
 
 			updatePropertiesTree();
-			UI::updateAllViews();
+			AppStateManager::updateAllViews();
 		}
 	}
 }
@@ -637,7 +638,6 @@ void PropTransform::onItemChanged(QStandardItem*)
 
 void PropTransform::onShowScrewCheckBox(bool b)
 {
-	//UI::MESSAGEBOX::information(L"onShowScrewCheckBox(bool)");
 	m_trans->showScrew(b);
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }

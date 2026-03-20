@@ -11,4 +11,8 @@ public:
     void setItemVisibleById(int id, bool visible) override {
         WorkspacePanelManager::setWorkspaceItemVisible(id, visible);
     }
+
+    void setItemLockedById(int id, bool locked) override {
+        WorkspacePanelManager::setWorkspaceItemLocked(id, locked);
+    }
 };

@@ -1,8 +1,5 @@
 #include "DockWidgetViewer.h"
 
-#include "../api/UI.h"
-#include "../api/AP.h"
-
 #include "Quaternion.h"
 #include "MainWindow.h"
 
@@ -17,6 +14,14 @@ namespace
 			return win->currentViewer();
 		}
 		return nullptr;
+	}
+
+	void updateCurrentView()
+	{
+		if (auto win = CMainWindow::instance())
+		{
+			win->updateView(false, true);
+		}
 	}
 }
 
@@ -96,7 +101,7 @@ void DockWidgetViewer::updateRotX( double val )
 
 		rot.X(v);
 
-		UI::updateCurrentView();
+		updateCurrentView();
 	}
 }
 
@@ -115,7 +120,7 @@ void DockWidgetViewer::updateRotY( double val )
 
 		rot.Y(v);
 
-		UI::updateCurrentView();
+		updateCurrentView();
 	}
 }
 
@@ -134,7 +139,7 @@ void DockWidgetViewer::updateRotZ( double val )
 
 		rot.Z(v);
 
-		UI::updateCurrentView();
+		updateCurrentView();
 	}
 }
 
@@ -147,7 +152,7 @@ void DockWidgetViewer::updateTrans( double val )
        
 		tra.Set(ui.spinViewTransX->value(), ui.spinViewTransY->value(), ui.spinViewTransZ->value());
 
-		UI::updateCurrentView();
+		updateCurrentView();
 	}
 }
 
@@ -158,7 +163,7 @@ void DockWidgetViewer::updateScale( double val )
 	{
 		view->transform().setScale( ui.spinViewScale->value() );
        
-		UI::updateCurrentView();
+		updateCurrentView();
 	}
 }
 
@@ -169,7 +174,7 @@ void DockWidgetViewer::updateBGcolor( double val )
 	{
 		view->setBGcolor( ui.spinBG->value() );
        
-		UI::updateCurrentView();
+		updateCurrentView();
 	}
 }
 
@@ -180,6 +185,6 @@ void DockWidgetViewer::updateAngle( int val )
 	{
 		view->setVAngle( ui.spinAngleOfView->value() );
        
-		UI::updateCurrentView();
+		updateCurrentView();
 	}
 }

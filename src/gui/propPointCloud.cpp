@@ -2,6 +2,7 @@
 #include "PointCloud.h"
 #include "Mesh.h"
 #include "../api/UI.h"
+#include "../core/AppStateManager.h"
 
 #include <QColorDialog>
 #include <QPushButton>
@@ -158,7 +159,7 @@ void PropPointCloud::pointSizeChanged(int s)
 {
 	CPointCloud::setPointSize(s);
 
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 
@@ -172,7 +173,7 @@ void PropPointCloud::pointSizeChanged(int s)
 //	CRGBA c = ((CMesh*)obj)->getMaterial(0).FrontColor.ambient; 
 //	updateEditBox(c.red(), c.green(), c.blue(), c.alpha());
 //
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}
 //
 //void PropPointCloud::gValueChanged(int g)
@@ -185,7 +186,7 @@ void PropPointCloud::pointSizeChanged(int s)
 //	CRGBA c = ((CMesh*)obj)->getMaterial(0).FrontColor.ambient;
 //	updateEditBox(c.red(), c.green(), c.blue(), c.alpha());
 //
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}
 //
 //void PropPointCloud::bValueChanged(int b)
@@ -198,7 +199,7 @@ void PropPointCloud::pointSizeChanged(int s)
 //	CRGBA c = ((CMesh*)obj)->getMaterial(0).FrontColor.ambient;
 //	updateEditBox(c.red(), c.green(), c.blue(), c.alpha());
 //
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}
 //
 //void PropPointCloud::aValueChanged(int a)
@@ -211,7 +212,7 @@ void PropPointCloud::pointSizeChanged(int s)
 //	CRGBA c = ((CMesh*)obj)->getMaterial(0).FrontColor.ambient;
 //	updateEditBox(c.red(), c.green(), c.blue(), c.alpha());
 //
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}
 //
 //void PropPointCloud::rgbaTextChanged(QString s)
@@ -225,7 +226,7 @@ void PropPointCloud::pointSizeChanged(int s)
 //
 //	updateSliders(c.red(), c.green(), c.blue(), c.alpha());
 //
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}
 //
 //void PropPointCloud::meshColorChanged(QColor c)
@@ -240,7 +241,7 @@ void PropPointCloud::pointSizeChanged(int s)
 //		updateSliders(c.red(), c.green(), c.blue(), c.alpha());
 //		updateEditBox(c.red(), c.green(), c.blue(), c.alpha());
 //
-//		UI::updateAllViews();
+//		AppStateManager::updateAllViews();
 //	}
 //}
 //
