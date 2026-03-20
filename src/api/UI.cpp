@@ -23,7 +23,9 @@
 #include "GLViewer.h"
 
 #include "../core/AppStateManager.h"
+#include "../core/StatusBarManager.h"
 #include "../core/WorkspacePanelManager.h"
+#include "../core/interfaces/IProgressListener.h"
 
 namespace
 {
@@ -63,6 +65,11 @@ namespace
 			QCoreApplication::processEvents();
 			timer.restart();
 		}
+	}
+
+	std::shared_ptr<IProgressListener> progressListener()
+	{
+		return IProgressListener::getDefault();
 	}
 }
 
@@ -714,9 +721,11 @@ ProgressIndicator* UI::PROGRESSBAR::instance()
 
 void UI::PROGRESSBAR::init( int min, int max, int val )
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr)
+	if (auto listener = progressListener())
+	{
+		listener->init(min, max, val);
+	}
+	else if (CMainWindow* win = mainWindow())
 	{
 		if (nullptr != win->progressIndicator)
 		{
@@ -729,9 +738,11 @@ void UI::PROGRESSBAR::init( int min, int max, int val )
 
 void UI::PROGRESSBAR::setValue( int val )
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr)
+	if (auto listener = progressListener())
+	{
+		listener->setValue(val);
+	}
+	else if (CMainWindow* win = mainWindow())
 	{
 		if (nullptr != win->progressIndicator)
 		{
@@ -744,9 +755,11 @@ void UI::PROGRESSBAR::setValue( int val )
 
 void UI::PROGRESSBAR::setText(const QString text)
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr)
+	if (auto listener = progressListener())
+	{
+		listener->setText(text.toStdString());
+	}
+	else if (CMainWindow* win = mainWindow())
 	{
 		if (nullptr != win->progressIndicator)
 		{
@@ -758,9 +771,11 @@ void UI::PROGRESSBAR::setText(const QString text)
 
 void UI::PROGRESSBAR::hide()
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr)
+	if (auto listener = progressListener())
+	{
+		listener->hide();
+	}
+	else if (CMainWindow* win = mainWindow())
 	{
 		if (nullptr != win->progressIndicator)
 		{
@@ -851,12 +866,7 @@ void UI::STATUSBAR::printfTimed(int mst, const wchar_t* format, ...)
 
 void UI::STATUSBAR::setText(const QString msg)
 {
-	if (auto win = CMainWindow::instance())
-		if (auto sb = win->statusBar())
-		{
-			sb->showMessage( msg );
-		}
-
+	StatusBarManager::setText(msg);
 	processUiEvents(true);
 }
 

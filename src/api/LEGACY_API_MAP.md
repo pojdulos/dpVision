@@ -26,6 +26,10 @@ The goal is:
 - Status: keep during migration
 - New home: workspace/selection-facing API extensions
 
+Current workspace-facing replacements already exposed in the new API:
+- `IWorkspaceAPI::children()`
+- `IWorkspaceAPI::selectedObjects(...)`
+
 `AP::processEvents`
 - Status: legacy helper
 - New home: local Qt/UI helpers where needed
@@ -62,14 +66,21 @@ Privileged replacements:
 `UI::PROGRESSBAR::*`
 - Status: legacy wrapper
 - New home: `IProgressAPI`
+- Implementation note: `UI::PROGRESSBAR::{init,setValue,setText,hide}` now delegate
+  primarily through `IProgressListener::getDefault()`. `instance()` remains a
+  legacy GUI escape hatch.
 
 `UI::STATUSBAR::*`
 - Status: legacy wrapper
 - New home: `IStatusBarAPI`
+- Implementation note: `UI::STATUSBAR::setText()` now delegates through
+  `StatusBarManager`.
 
 `UI::MESSAGEBOX::*`
 - Status: legacy wrapper
 - New home: `IMessageBoxAPI`
+- Note: compatibility overloads remain in `UI` because some external plugins
+  still build against `UI::MESSAGEBOX::*`.
 
 `UI::FILECHOOSER::*`
 - Status: legacy wrapper
@@ -91,6 +102,9 @@ String/path helpers in `UI`
 `UI::DOCK::WORKSPACE::*`
 - Status: mixed; dock commands may survive temporarily, raw getters are legacy
 - New home: dedicated dock APIs or `IGuiInternalsAPI` for privileged code
+- Current safe replacements include:
+  - `IDockWorkspaceAPI::rebuildTree()`
+  - `IDockWorkspaceAPI::setItemVisibleById(...)`
 
 Legacy GUI escape hatches still present in `UI` and intended to shrink:
 - `UI::CAMERA::transform()`
@@ -115,11 +129,13 @@ Already removed as unused or purely local wrappers:
 - `UI::DOCK::HISTOGRAM::setHistogram()`
 - `UI::DOCK::HISTOGRAM::getHistogram()`
 - several unused `UI::PLUGINPANEL::*` setter/getter helpers
-- `UI::MESSAGEBOX::information()`
-- `UI::MESSAGEBOX::warning()`
-- `UI::MESSAGEBOX::question()`
 - `UI::IMAGEVIEWER::setImage()`
 - `UI::PICVIEWER::reloadImage()`
+
+External plugins that previously used removed legacy workspace-dock helpers have
+been migrated to the new API instead of restoring those wrappers:
+- selection access: `IWorkspaceAPI::selectedObjects(...)`
+- workspace tree refresh: `IDockWorkspaceAPI::rebuildTree()`
 
 ## Plugin-facing adapters
 

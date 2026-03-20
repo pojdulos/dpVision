@@ -3,9 +3,15 @@
 #include "../interfaces/IProgressAPI.h"
 #include "../../gui/MainWindow.h"
 #include "../../gui/ProgressIndicator.h"
+#include <QCoreApplication>
 
 class GuiProgressAPIAdapter : public IProgressAPI {
 public:
+    void processEvents()
+    {
+        QCoreApplication::processEvents();
+    }
+
     ProgressIndicator* instance() override {
         if (auto win = CMainWindow::instance()) {
             return win->progressIndicator;
@@ -18,27 +24,27 @@ public:
             progress->init(min, max, val);
             progress->show();
         }
-        AP::processEvents(true);
+        processEvents();
     }
 
     void setValue(int val) override {
         if (auto progress = instance()) {
             progress->setValue(val);
         }
-        AP::processEvents(true);
+        processEvents();
     }
 
     void hide() override {
         if (auto progress = instance()) {
             progress->hide();
         }
-        AP::processEvents(true);
+        processEvents();
     }
 
     void setText(const QString& text) override {
         if (auto progress = instance()) {
             progress->setText(text);
         }
-        AP::processEvents(true);
+        processEvents();
     }
 };
