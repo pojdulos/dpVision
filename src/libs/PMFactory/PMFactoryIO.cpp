@@ -6,9 +6,9 @@ void PMFactory::CMeshToQuadrics( CMesh &src )
 	CFace f;
 	int local_num_vertices = 0;
 
-	size_t matIdx = 0;
+    unsigned int matIdx = 0;
 
-	orgsize = src.vertices().size()+src.vsplits.size();
+	orgsize = static_cast<unsigned int>(src.vertices().size() + src.vsplits.size());
 
 	for (size_t j = 0; j<static_cast<size_t>(src.vsplits.size()); j++)
 	{
@@ -24,15 +24,15 @@ void PMFactory::CMeshToQuadrics( CMesh &src )
 		v.Z( it->Z() );
 		local_num_vertices++;
 		vertices.insert(Vertices::value_type(local_num_vertices, v));
-		weights.insert(LoF::value_type(local_num_vertices,0)); // zamiast 0 wstawiæ wagê, gdzie 0 = dowolny wierzcho³ek, 255 = ca³kowicie zafiksowany;
+		weights.insert(LoF::value_type(local_num_vertices,0)); // zamiast 0 wstawiÄ‡ wagÄ™, gdzie 0 = dowolny wierzchoÅ‚ek, 255 = caÅ‚kowicie zafiksowany;
 	}
 
 	StatusBarManager::setText( "PMFactory: Importing faces..." );
 	for ( CMesh::Faces::iterator itf=src.faces().begin(); itf!=src.faces().end(); itf++ )
 	{
-		f.A( itf->A()+1 );
-		f.B( itf->B()+1 );
-		f.C( itf->C()+1 );
+		f.A( static_cast<INDEX_TYPE>(itf->A() + 1) );
+		f.B( static_cast<INDEX_TYPE>(itf->B() + 1) );
+		f.C( static_cast<INDEX_TYPE>(itf->C() + 1) );
 
 		faces.insert( _faces::value_type( faces.size(), f ) );
 	}
@@ -84,18 +84,18 @@ void PMFactory::CMeshToQuadrics( CMesh &src )
 		for ( _vsplit::Faces::iterator itfc=rit->chgFcs.begin();itfc!=rit->chgFcs.end();itfc++ )
 		{
 			CFace f;
-			f.A( itfc->A()+1 );
-			f.B( itfc->B()+1 );
-			f.C( itfc->C()+1 );
+            f.A( static_cast<INDEX_TYPE>(itfc->A() + 1) );
+            f.B( static_cast<INDEX_TYPE>(itfc->B() + 1) );
+            f.C( static_cast<INDEX_TYPE>(itfc->C() + 1) );
 			vs.chgFcs.push_back( f );
 		}
 
 		for ( _vsplit::Faces::iterator itfd=rit->delFcs.begin();itfd!=rit->delFcs.end();itfd++ )
 		{
 			CFace f;
-			f.A( itfd->A()+1 );
-			f.B( itfd->B()+1 );
-			f.C( itfd->C()+1 );
+            f.A( static_cast<INDEX_TYPE>(itfd->A() + 1) );
+            f.B( static_cast<INDEX_TYPE>(itfd->B() + 1) );
+            f.C( static_cast<INDEX_TYPE>(itfd->C() + 1) );
 			vs.delFcs.push_back( f );
 		}
 
@@ -152,7 +152,7 @@ void PMFactory::QuadricsToCMesh( CMesh &dst )
 	weights.clear();
 
 	//---------------------------------------------------------------------------------
-	size_t matIdx = 0;
+    unsigned int matIdx = 0;
 
 	if ( ! texcoords.empty() )
 	{
@@ -210,7 +210,7 @@ void PMFactory::QuadricsToCMesh( CMesh &dst )
 	idx = 0;
 	for (CPMFfaces::iterator fit=faces.begin(); fit!=faces.end();)
 	{
-		CFace f( mVerticesMap[fit->second.A()], mVerticesMap[fit->second.B()], mVerticesMap[fit->second.C()] );
+		CFace f( static_cast<INDEX_TYPE>(mVerticesMap[fit->second.A()]), static_cast<INDEX_TYPE>(mVerticesMap[fit->second.B()]), static_cast<INDEX_TYPE>(mVerticesMap[fit->second.C()]) );
 
 		dst.faces()[ idx ] = f;
 		dst.fnormals()[ idx ] = f.getNormal( dst.vertices() );
@@ -231,9 +231,9 @@ void PMFactory::QuadricsToCMesh( CMesh &dst )
 		for (TextureIndexes::iterator tit=texidxs.begin(); tit!=texidxs.end();)
 		{
 			CTIndex ti;
-			ti.a = mTindexesMap[ tit->second.a ];
-			ti.b = mTindexesMap[ tit->second.b ];
-			ti.c = mTindexesMap[ tit->second.c ];
+			ti.a = static_cast<INDEX_TYPE>(mTindexesMap[ tit->second.a ]);
+			ti.b = static_cast<INDEX_TYPE>(mTindexesMap[ tit->second.b ]);
+			ti.c = static_cast<INDEX_TYPE>(mTindexesMap[ tit->second.c ]);
 
 			dst.getMaterial(matIdx).texindex[idx] = ti;
 			idx++;

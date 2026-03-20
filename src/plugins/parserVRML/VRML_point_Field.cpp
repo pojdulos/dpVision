@@ -2,15 +2,22 @@
 
 #include "ParserWRL.h"
 
-#include "../api/UI.h"
+#include "../api/adapters/PluginUIAPIAdapter.h"
+
+namespace {
+PluginUIAPIAdapter& uiApi()
+{
+    static PluginUIAPIAdapter api;
+    return api;
+}
+}
 
 size_t CParserWRL::VRML_ParseField_point( FILE *plik )
 {
 	size_t lp=0;
 	double ax, ay, az;
-	char ch;
 
-	UI::STATUSBAR::printf( "Reading point section..." );
+	uiApi().statusBar().setText("Reading point section...");
 
 	fscanf( plik, " , " );
 
