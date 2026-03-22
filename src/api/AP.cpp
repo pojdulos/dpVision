@@ -1,7 +1,5 @@
 #include "../api/AP.h"
 
-#include "MainApplication.h"
-
 #include "DockWidgetWorkspace.h"
 //#include "DockWidgetPluginList.h"
 #include "Annotation.h"
@@ -15,6 +13,7 @@
 #include "MessageBoxManager.h"
 #include "AppStateManager.h"
 #include "WorkspacePanelManager.h"
+#include "adapters/AppAPIAdapter.h"
 #include "adapters/ModelAPIAdapter.h"
 #include "adapters/ModelLoadAPIAdapter.h"
 #include "adapters/ObjectAPIAdapter.h"
@@ -32,11 +31,6 @@
 namespace AP
 {
 	namespace {
-		CMainApplication& mainApplication()
-		{
-			return *static_cast<CMainApplication*>(QApplication::instance());
-		}
-
 		WorkspaceAPIAdapter& workspaceApi()
 		{
 			static WorkspaceAPIAdapter api;
@@ -58,6 +52,12 @@ namespace AP
 		ModelLoadAPIAdapter& modelLoadApi()
 		{
 			static ModelLoadAPIAdapter api;
+			return api;
+		}
+
+		AppAPIAdapter& appApi()
+		{
+			static AppAPIAdapter api;
 			return api;
 		}
 
@@ -187,11 +187,11 @@ namespace AP
 	}
 
 
-	const QString& getExeFilePath(void) { return mainApplication().appExecDir(); }
+	const QString& getExeFilePath(void) { return appApi().exeFilePath(); }
 
 	void adjustForCurrentFile(const QString& filePath)
 	{
-		AppStateManager::adjustForCurrentFile(filePath);
+		appApi().adjustForCurrentFile(filePath);
 	}
 
 
@@ -243,7 +243,7 @@ namespace AP
 
 		std::shared_ptr<CModel3D> loadModel(const std::wstring& path, bool synchronous, bool setItCurrent )
 		{
-			return attachLoadedModel(CModel3D::load(path, synchronous), setItCurrent);
+			return attachLoadedModel(modelLoadApi().load(path, synchronous), setItCurrent);
 		}
 
 		void setAllModelsVisible(bool visibility)

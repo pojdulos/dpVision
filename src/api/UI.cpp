@@ -26,6 +26,7 @@
 #include "../core/MessageBoxManager.h"
 #include "../core/StatusBarManager.h"
 #include "../core/WorkspacePanelManager.h"
+#include "../gui/PluginPanelHostAccess.h"
 #include "../gui/WorkspaceDockHostAccess.h"
 #include "adapters/DockHistogramAPIAdapter.h"
 #include "adapters/DockWorkspaceAPIAdapter.h"
@@ -41,15 +42,6 @@ namespace
 	CMainWindow* mainWindow()
 	{
 		return CMainWindow::instance();
-	}
-
-	DockWidgetPluginPanel* pluginPanel()
-	{
-		if (auto win = mainWindow())
-		{
-			return win->dockPluginPanel;
-		}
-		return nullptr;
 	}
 
 	void processUiEvents(bool immediate = false)
@@ -255,12 +247,7 @@ void UI::DOCK::WORKSPACE::update()
 
 void UI::DOCK::WORKSPACE::selectItem( int id)
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr && win->dockWorkspace != nullptr)
-	{
-		win->dockWorkspace->selectItem(id);
-	}
+	WorkspaceDockHostAccess::selectItem(id);
 }
 
 std::shared_ptr<CBaseObject> UI::DOCK::WORKSPACE::currentItem()
@@ -297,22 +284,12 @@ void UI::DOCK::WORKSPACE::setItemLockedById(int id, bool b)
 
 void UI::DOCK::WORKSPACE::setItemLabelById(int id, std::string s)
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr && win->dockWorkspace != nullptr)
-	{
-		win->dockWorkspace->setItemLabelById(id, QString::fromStdString(s));
-	}
+	WorkspaceDockHostAccess::setItemLabelById(id, QString::fromStdString(s));
 }
 
 void UI::DOCK::WORKSPACE::setItemLabelById(int id, std::wstring s)
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr && win->dockWorkspace != nullptr)
-	{
-		win->dockWorkspace->setItemLabelById(id, QString::fromStdWString(s));
-	}
+	WorkspaceDockHostAccess::setItemLabelById(id, QString::fromStdWString(s));
 }
 
 
@@ -385,6 +362,11 @@ void UI::CAMERA::setView(int dir, std::shared_ptr<CModel3D> obj)
 // PLUGINPANEL
 //#include <QtWidgets/QGroupBox>
 
+DockWidgetPluginPanel* UI::PLUGINPANEL::mainPanel()
+{
+	return PluginPanelHostAccess::host();
+}
+
 QWidget* UI::PLUGINPANEL::instance(unsigned int pluginId)
 {
 	return pluginPanelApi().panel(pluginId);
@@ -413,14 +395,7 @@ void UI::PLUGINPANEL::removeWidget(unsigned int pluginId, const QString &name)
 // PLUGINPANEL - PUSH BUTTON
 QPushButton* UI::PLUGINPANEL::addButton(unsigned int pluginId, QString label, QObject* receiver, const char* slot, int row, int col, int rspan, int cspan)
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr && win->dockPluginPanel != nullptr)
-	{
-		return win->dockPluginPanel->addButton(pluginId, label, receiver, slot, row, col, rspan, cspan);
-	}
-
-	return nullptr;
+	return PluginPanelHostAccess::addButton(pluginId, label, receiver, slot, row, col, rspan, cspan);
 }
 
 QPushButton* UI::PLUGINPANEL::addButton(unsigned int pluginId, std::string buttonName, std::string label, int row, int col, int rspan, int cspan)

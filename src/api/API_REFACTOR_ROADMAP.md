@@ -163,6 +163,13 @@ Exit criteria:
 - `AP::` and `UI::` are thin wrappers
 - new work lands in the real API, not in legacy shims
 
+Current implementation guidance for this phase:
+- prefer extracting host-side helpers in `gui` for legacy-exact behavior
+  (`PluginPanelHostAccess`, `WorkspaceDockHostAccess`, `ImageViewerHost`)
+  instead of re-implementing GUI workflow in `UI.cpp`
+- treat the remaining raw-instance getters in `UI::` as explicit compatibility
+  escape hatches, not as a model for new API work
+
 ## Phase 6: Plugin Migration Pass
 
 Goal:

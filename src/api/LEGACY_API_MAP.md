@@ -89,6 +89,12 @@ Privileged replacements:
 `UI::PLUGINPANEL::*`
 - Status: legacy wrapper
 - New home: `IPluginPanelAPI`
+- Implementation note: most plugin-panel operations now delegate through
+  `GuiPluginPanelAPIAdapter` and `PluginPanelHostAccess`.
+- Remaining special case:
+  - the old `addButton(..., QObject* receiver, const char* slot, ...)`
+    overload is still legacy-only, but now also routes through
+    `PluginPanelHostAccess` instead of calling the dock directly.
 
 `UI::PROGRESSBAR::*`
 - Status: legacy wrapper
@@ -119,6 +125,8 @@ Privileged replacements:
 `UI::FILECHOOSER::*`
 - Status: legacy wrapper
 - New home: `IFileDialogAPI`
+- Implementation note: non-`QString` overloads now delegate to the `QString`
+  path so the legacy namespace has only one real file-dialog execution path.
 
 `UI::FILESYSTEM::*`
 - Status: legacy wrapper
@@ -141,6 +149,7 @@ String/path helpers in `UI`
 - Current safe replacements include:
   - `IDockWorkspaceAPI::rebuildTree()`
   - `IDockWorkspaceAPI::setItemVisibleById(...)`
+  - `WorkspaceDockHostAccess::{selectItem,currentItem,selectedObjects,setItemLabelById}`
 - Compatibility note:
   - `UI::DOCK::WORKSPACE::currentItem()` and
     `UI::DOCK::WORKSPACE::selectedObjects()` are currently kept so privileged
@@ -152,6 +161,11 @@ Legacy GUI escape hatches still present in `UI` and intended to shrink:
 - `UI::DOCK::WORKSPACE::instance()`
 - `UI::PLUGINPANEL::mainPanel()`
 - `UI::PROGRESSBAR::instance()`
+
+Current implementation note:
+- most of `UI::MESSAGEBOX::*`, `UI::FILECHOOSER::*`, `UI::PLUGINPANEL::*`,
+  and `UI::DOCK::WORKSPACE::*` now behave as thin wrappers over adapters or
+  host-side GUI helpers rather than owning separate logic in `UI.cpp`
 
 Already removed as unused or purely local wrappers:
 - `UI::adjustGroupBoxHeight()`

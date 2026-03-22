@@ -74,20 +74,16 @@ These legacy calls already map well to explicit APIs or managers.
   - New home: `IObjectAPI` / `IModelAPI`
   - Status: `Ready`
 
-## Next Interfaces To Introduce
+## Implemented Since The Initial Plan
 
-These capabilities have stable semantics, but the current API shape is too
-legacy-specific or too mixed.
+These capabilities were listed as `Next` when the document was first written.
+They now exist as explicit services and legacy `AP::` wrappers already
+delegate to them.
 
 ### Workspace Activation API
 
 Legacy source:
 - `AP::WORKSPACE::setCurrentModel`
-
-Problem:
-- activation is a first-class workspace capability
-- today it is performed through direct `_objectActivate(...)`
-- there is no explicit plugin-facing activation contract
 
 Proposed new interface:
 - `IWorkspaceActivationAPI`
@@ -96,17 +92,16 @@ Proposed methods:
 - `int setCurrentObject(int id)`
 - `int currentObjectId()`
 
-Status: `Next`
+Current state:
+- implemented
+- `AP::WORKSPACE::setCurrentModel(...)` delegates to `IWorkspaceActivationAPI`
+
+Status: `Ready`
 
 ### Workspace Selection API
 
 Legacy source:
 - `AP::WORKSPACE::SELECTION::*`
-
-Problem:
-- selection is not just read access
-- it has UI synchronization side effects
-- current replacement surface is incomplete
 
 Proposed new interface:
 - `IWorkspaceSelectionAPI`
@@ -120,18 +115,17 @@ Proposed methods:
 - `std::vector<std::shared_ptr<CBaseObject>> objects(...)`
 - `void setSelectedVisible(bool visible)`
 
-Status: `Next`
+Current state:
+- implemented
+- `AP::WORKSPACE::SELECTION::*` delegates to `IWorkspaceSelectionAPI`
+
+Status: `Ready`
 
 ### Workspace Import / Load API
 
 Legacy source:
 - `AP::WORKSPACE::loadModel(...)`
 - `AP::MODEL::load(...)`
-
-Problem:
-- loading currently mixes file parsing and workspace insertion
-- overload set is large and legacy-typed
-- progress handling is folded into overloads instead of an explicit service
 
 Proposed new interface:
 - `IWorkspaceImportAPI`
@@ -141,7 +135,13 @@ Proposed methods:
 - future cleanup:
   - one options struct instead of overloads
 
-Status: `Next`
+Current state:
+- `IWorkspaceImportAPI` is implemented for workspace insertion
+- `IModelLoadAPI` is implemented for raw model loading
+- `AP::WORKSPACE::loadModel(...)` and `AP::MODEL::load(...)` already delegate
+  to these services where the signatures allow it
+
+Status: `Ready`
 
 ### Workspace Bulk Operations API
 
@@ -149,10 +149,6 @@ Legacy source:
 - `AP::WORKSPACE::removeAllModels`
 - `AP::WORKSPACE::removeSelectedModels`
 - `AP::WORKSPACE::setAllModelsVisible`
-
-Problem:
-- these are orchestration-heavy operations
-- they include refresh behavior, not just core mutation
 
 Proposed new interface:
 - `IWorkspaceBulkAPI`
@@ -162,17 +158,17 @@ Proposed methods:
 - `bool removeSelected()`
 - `void setAllVisible(bool visible)`
 
-Status: `Next`
+Current state:
+- implemented
+- matching `AP::WORKSPACE::*` wrappers already delegate to `IWorkspaceBulkAPI`
+
+Status: `Ready`
 
 ### Workspace Duplication API
 
 Legacy source:
 - `AP::WORKSPACE::duplicateModel(...)`
 - `AP::WORKSPACE::duplicateCurrentModel()`
-
-Problem:
-- duplication is not generic add/remove
-- current implementation contains model-copy semantics plus insertion policy
 
 Proposed new interface:
 - `IWorkspaceDuplicationAPI`
@@ -182,7 +178,31 @@ Proposed methods:
 - `std::shared_ptr<CModel3D> duplicateModel(std::shared_ptr<CModel3D> model)`
 - `std::shared_ptr<CModel3D> duplicateCurrentModel()`
 
-Status: `Next`
+Current state:
+- implemented
+- matching `AP::WORKSPACE::*` wrappers already delegate to
+  `IWorkspaceDuplicationAPI`
+
+Status: `Ready`
+
+### Workspace Image API
+
+Legacy source:
+- `AP::WORKSPACE::addImage(...)`
+
+Proposed new interface:
+- `IWorkspaceImageAPI`
+
+Current state:
+- implemented for the workspace/domain part
+- legacy `showViewer` behavior intentionally remains in `AP::` as GUI policy
+
+Status: `Ready`
+
+## Next Interfaces To Introduce
+
+These capabilities still have stable enough semantics to keep improving, but
+the main service split above is already in place.
 
 ## Later: Needs Better Design First
 

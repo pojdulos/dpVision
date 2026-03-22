@@ -402,6 +402,23 @@ These are migration debt and should shrink over time.
 - `ProgressAPIAdapter`: `Split`
 - `FileDialogAPIAdapter`: `Keep temporarily, likely still Qt-backed`
 
+## Host-side GUI helpers
+
+These are not plugin-facing contracts, but they are now an important part of
+the migration strategy because they preserve old behavior without pushing more
+logic back into `UI::` or `AP::`.
+
+- `PluginPanelHostAccess`: `Keep`
+- `WorkspaceDockHostAccess`: `Keep`
+- `ImageViewerHost`: `Keep`
+- `ImageViewerState`: `Keep`
+
+Direction:
+- use these helpers to keep legacy plugin behavior exact
+- prefer them over duplicating logic inside `UI.cpp`
+- keep them on the host side (`gui`) so plugins do not gain new accidental
+  dependencies
+
 ## Privileged GUI adapters
 
 These fit the target architecture if they remain explicit.

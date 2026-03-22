@@ -15,6 +15,11 @@ DockWidgetPluginPanel* pluginPanelHost()
 }
 }
 
+DockWidgetPluginPanel* PluginPanelHostAccess::host()
+{
+    return pluginPanelHost();
+}
+
 QWidget* PluginPanelHostAccess::panel(unsigned int pluginId)
 {
     if (auto panel = pluginPanelHost()) {
@@ -51,6 +56,22 @@ void PluginPanelHostAccess::removeWidget(unsigned int pluginId, const QString& n
     if (auto panel = pluginPanelHost()) {
         panel->removeWidget(pluginId, name);
     }
+}
+
+QPushButton* PluginPanelHostAccess::addButton(
+    unsigned int pluginId,
+    const QString& label,
+    QObject* receiver,
+    const char* slot,
+    int row,
+    int col,
+    int rspan,
+    int cspan)
+{
+    if (auto panel = pluginPanelHost()) {
+        return panel->addButton(pluginId, label, receiver, slot, row, col, rspan, cspan);
+    }
+    return nullptr;
 }
 
 QPushButton* PluginPanelHostAccess::addButton(

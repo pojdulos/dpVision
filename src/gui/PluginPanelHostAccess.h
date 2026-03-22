@@ -4,16 +4,28 @@
 #include <QString>
 #include <QStringList>
 
+class QObject;
+class DockWidgetPluginPanel;
 class QPushButton;
 class QWidget;
 
 class DPVISION_EXPORT PluginPanelHostAccess {
 public:
+    static DockWidgetPluginPanel* host();
     static QWidget* panel(unsigned int pluginId);
     static void create(unsigned int pluginId, const QString& label);
     static void clear(unsigned int pluginId);
     static void setEnabled(unsigned int pluginId, bool enabled);
     static void removeWidget(unsigned int pluginId, const QString& name);
+    static QPushButton* addButton(
+        unsigned int pluginId,
+        const QString& label,
+        QObject* receiver,
+        const char* slot,
+        int row,
+        int col,
+        int rspan = 0,
+        int cspan = 0);
     static QPushButton* addButton(
         unsigned int pluginId,
         const QString& name,
