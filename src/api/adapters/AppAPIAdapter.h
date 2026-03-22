@@ -1,7 +1,9 @@
 // AppAPIAdapter.h
 #pragma once
 #include "../interfaces/IAppAPI.h"
+#include "../adapters/WorkspaceBulkAPIAdapter.h"
 #include "../adapters/WorkspaceAPIAdapter.h"
+#include "../adapters/WorkspaceSelectionAPIAdapter.h"
 #include "../adapters/ModelAPIAdapter.h"
 #include "../adapters/ObjectAPIAdapter.h"
 #include "../adapters/SettingsAPIAdapter.h"
@@ -15,6 +17,8 @@
 
 class AppAPIAdapter : public IAppAPI {
     WorkspaceAPIAdapter workspaceAPI_;
+    WorkspaceBulkAPIAdapter workspaceBulkAPI_;
+    WorkspaceSelectionAPIAdapter workspaceSelectionAPI_;
     ModelAPIAdapter modelAPI_;
     ObjectAPIAdapter objectAPI_;
     SettingsAPIAdapter settingsAPI_;
@@ -22,6 +26,8 @@ class AppAPIAdapter : public IAppAPI {
     SettingsAPIAdapter pluginSettingsAPI_;
 public:
     IWorkspaceAPI& workspace() override { return workspaceAPI_; }
+    IWorkspaceBulkAPI& workspaceBulk() override { return workspaceBulkAPI_; }
+    IWorkspaceSelectionAPI& workspaceSelection() override { return workspaceSelectionAPI_; }
     IModelAPI& model() override { return modelAPI_; }
     IObjectAPI& object() override { return objectAPI_; }
     ISettingsAPI& settings() override { return settingsAPI_; }

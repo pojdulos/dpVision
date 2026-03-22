@@ -58,6 +58,30 @@ Direction:
 - move toward semantic operations
 - keep it backed by `core`, not by legacy APIs
 
+### IWorkspaceSelectionAPI
+
+Status: `Keep`
+
+Why:
+- selection is a stable host capability
+- it deserves an explicit contract instead of living only in `AP::WORKSPACE::SELECTION`
+
+Direction:
+- keep as a separate service instead of overloading `IWorkspaceAPI`
+- hide workspace/UI synchronization behind the adapter
+
+### IWorkspaceBulkAPI
+
+Status: `Keep`
+
+Why:
+- bulk workspace operations are stable host capabilities
+- they should not be hidden in `AP::WORKSPACE::*` forever
+
+Direction:
+- keep as a separate service
+- hide workspace/UI refresh policy behind the adapter
+
 ### IModelAPI
 
 Status: `Keep, clean up`

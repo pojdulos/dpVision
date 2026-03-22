@@ -18,7 +18,9 @@
 #include "WorkspacePanelManager.h"
 #include "adapters/ModelAPIAdapter.h"
 #include "adapters/ObjectAPIAdapter.h"
+#include "adapters/WorkspaceBulkAPIAdapter.h"
 #include "adapters/WorkspaceAPIAdapter.h"
+#include "adapters/WorkspaceSelectionAPIAdapter.h"
 
 #include <QElapsedTimer>
 
@@ -54,6 +56,18 @@ namespace AP
 			return api;
 		}
 
+		WorkspaceSelectionAPIAdapter& workspaceSelectionApi()
+		{
+			static WorkspaceSelectionAPIAdapter api;
+			return api;
+		}
+
+		WorkspaceBulkAPIAdapter& workspaceBulkApi()
+		{
+			static WorkspaceBulkAPIAdapter api;
+			return api;
+		}
+
 		std::shared_ptr<CModel3D> attachLoadedModel(std::shared_ptr<CModel3D> obj, bool setItCurrent)
 		{
 			if (obj != nullptr && workspaceApi().addModel(obj, setItCurrent))
@@ -63,53 +77,11 @@ namespace AP
 			return nullptr;
 		}
 
-		void refreshWorkspaceUiAfterBulkChange()
-		{
-			WorkspacePanelManager::propertiesSelectionChanged(NO_CURRENT_MODEL);
-			WorkspacePanelManager::rebuildWorkspaceTree();
-			AppStateManager::updateProperties();
-			AppStateManager::changeMenuAfterSelect();
-			AppStateManager::updateAllViews();
-		}
-
-		void refreshAppStateAfterVisibilityChange()
-		{
-			AppStateManager::changeMenuAfterSelect();
-			AppStateManager::updateProperties();
-			AppStateManager::updateAllViews();
-		}
-
 		int activateWorkspaceObject(int id)
 		{
 			auto wksp = CWorkspace::instance();
 			wksp->_objectActivate(id);
 			return workspaceApi().getCurrentModelId();
-		}
-
-		void refreshSelectionUi(bool updateMenu = false)
-		{
-			if (updateMenu)
-			{
-				AppStateManager::changeMenuAfterSelect();
-			}
-			AppStateManager::updateProperties();
-			AppStateManager::updateAllViews();
-		}
-
-		void setSelectionState(int id, bool selected)
-		{
-			auto wksp = CWorkspace::instance();
-			if (selected)
-			{
-				wksp->addToSelection(id);
-			}
-			else
-			{
-				wksp->removeFromSelection(id);
-			}
-
-			WorkspacePanelManager::setWorkspaceItemChecked(id, selected);
-			refreshSelectionUi();
 		}
 	}
 
@@ -188,15 +160,7 @@ namespace AP
 
 		void setAllModelsVisible(bool visibility)
 		{
-			for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = CWorkspace::instance()->begin(); it != CWorkspace::instance()->end(); it++)
-			{
-				it->second->setSelfVisibility(visibility);
-				it->second->setKidsVisibility(visibility);
-
-				WorkspacePanelManager::setWorkspaceItemVisible(it->first, visibility);
-				WorkspacePanelManager::setWorkspaceItemKidsVisible(it->first, visibility);
-			}
-			refreshAppStateAfterVisibilityChange();
+			workspaceBulkApi().setAllVisible(visibility);
 		}
 
 		bool addModel(std::shared_ptr<CModel3D> obj, bool setItCurrent)
@@ -236,20 +200,12 @@ namespace AP
 
 		bool removeAllModels()
 		{
-			CWorkspace::instance()->_removeAllModels();
-			refreshWorkspaceUiAfterBulkChange();
-			return true;
+			return workspaceBulkApi().removeAll();
 		}
 
 		bool removeSelectedModels()
 		{
-			auto wksp = CWorkspace::instance();
-			std::list<int> sel = wksp->getSelection();
-			for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
-			{
-				workspaceApi().removeModel(*it);
-			}
-			return true;
+			return workspaceBulkApi().removeSelected();
 		}
 
 		int setCurrentModel( int id )
@@ -337,26 +293,27 @@ namespace AP
 		namespace SELECTION {
 			void selectModel(int id)
 			{
-				setSelectionState(id, true);
+				workspaceSelectionApi().select(id);
 			}
 			void unselectModel(int id)
 			{
-				setSelectionState(id, false);
+				workspaceSelectionApi().unselect(id);
 			}
 
 			bool isModelSelected(int id)
 			{
-				return CWorkspace::instance()->inSelection(id);
+				return workspaceSelectionApi().contains(id);
 			}
 
 			void clear()
 			{
-				CWorkspace::instance()->clearSelection();
+				workspaceSelectionApi().clear();
 			}
 
 			std::list<int> getList()
 			{
-				return CWorkspace::instance()->getSelection();
+				const std::vector<int> ids = workspaceSelectionApi().ids();
+				return std::list<int>(ids.begin(), ids.end());
 			}
 
 			std::list<int> getList(std::set<CBaseObject::Type> types, std::shared_ptr<CObject> obj)
@@ -366,23 +323,13 @@ namespace AP
 
 			std::list<std::shared_ptr<CBaseObject>> getObjList(std::set<CBaseObject::Type> types, std::shared_ptr<CObject> obj)
 			{
-				return CWorkspace::instance()->getSelected(types, obj);
+				const std::vector<std::shared_ptr<CBaseObject>> objects = workspaceSelectionApi().objects(std::move(types), std::move(obj));
+				return std::list<std::shared_ptr<CBaseObject>>(objects.begin(), objects.end());
 			}
 
 			void setModelsVisible(bool visibility)
 			{
-				std::list<int> sel = CWorkspace::instance()->getSelection();
-				for (std::list<int>::iterator it = sel.begin(); it != sel.end(); it++)
-				{
-					std::shared_ptr<CModel3D> m = AP::WORKSPACE::getModel(*it);
-					if (m != nullptr)
-					{
-						m->setSelfVisibility(visibility);
-						WorkspacePanelManager::setWorkspaceItemVisible(*it, visibility);
-					}
-				}
-
-				refreshAppStateAfterVisibilityChange();
+				workspaceSelectionApi().setSelectedVisible(visibility);
 			}
 		}
 	}

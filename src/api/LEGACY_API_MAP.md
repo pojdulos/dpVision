@@ -22,13 +22,18 @@ The goal is:
 - Status: keep during migration
 - New home: `IWorkspaceAPI`
 
+Bulk workspace replacements:
+- `AP::WORKSPACE::{removeAllModels,removeSelectedModels,setAllModelsVisible}`
+- New home: `IWorkspaceBulkAPI`
+
 `AP::WORKSPACE::SELECTION::*`
 - Status: keep during migration
-- New home: workspace/selection-facing API extensions
+- New home: `IWorkspaceSelectionAPI`
 
 Current workspace-facing replacements already exposed in the new API:
 - `IWorkspaceAPI::children()`
 - `IWorkspaceAPI::selectedObjects(...)`
+- `IWorkspaceSelectionAPI::{select,unselect,clear,contains,ids,objects,setSelectedVisible}`
 
 `AP::processEvents`
 - Status: legacy helper
