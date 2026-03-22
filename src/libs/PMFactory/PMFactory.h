@@ -44,7 +44,7 @@ typedef std::map<size_t,CTCoord> TextureCoords;
 
 typedef std::set<CPoint3f> _setOfPoints;
 
-class DPVISION_EXPORT2 PMFactory
+class PMFactory
 {
 public:
 	PMFactory(void);
@@ -90,7 +90,7 @@ private:
 	void CalcPlane( Plane &p, const CFace &f );
 
 	void select_pair();
-	error_type calculate_error(int id_v1, int id_v2, double* vx=0, double* vy=0, double* vz=0);
+	error_type calculate_error(size_t id_v1, size_t id_v2, double* vx=0, double* vy=0, double* vz=0);
 	// inline methods
 	double distance(CVertex v1, CVertex v2);
 	double vertex_error(Matrix q, double vx, double vy, double vz);

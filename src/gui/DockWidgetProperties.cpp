@@ -1,6 +1,7 @@
 #include "DockWidgetProperties.h"
 
 #include "../api/UI.h"
+#include "../api/adapters/AppAPIAdapter.h"
 
 #include "DockWidgetWorkspace.h"
 #include "Annotation.h"
@@ -36,14 +37,30 @@
 #include <QLayout>
 #include <QScrollArea>
 
-#include "../api/AP.h"
-
 #include "Model3D.h"
 
 #include "MainWindow.h"
 #include "Workspace.h"
 
 #include "AppSettings.h"
+
+namespace
+{
+	AppAPIAdapter& appApi()
+	{
+		static AppAPIAdapter api;
+		return api;
+	}
+
+	GLViewer* currentViewer()
+	{
+		if (auto win = CMainWindow::instance())
+		{
+			return win->currentViewer();
+		}
+		return nullptr;
+	}
+}
 
 DockWidgetProperties::DockWidgetProperties(QWidget *parent)	: QDockWidget(parent)
 {
@@ -72,18 +89,18 @@ void DockWidgetProperties::selectionChanged( int id )
 
 	if (id == NO_CURRENT_MODEL)
 	{
-		GLViewer* view = AP::mainWin().currentViewer();
+		GLViewer* view = currentViewer();
 		submodels = PropViewer::create_and_get_subwidgets(view);
 	}
 	else
 	{
-		std::shared_ptr<CBaseObject> currentObjectPtr = AP::WORKSPACE::findId(id);
+		std::shared_ptr<CBaseObject> currentObjectPtr = appApi().workspace().findId(id);
 		
 		CBaseObject* currentObject = currentObjectPtr.get(); //TYMCZASOWO
 		
 		if (currentObject == nullptr)
 		{
-			GLViewer* view = AP::mainWin().currentViewer();
+			GLViewer* view = currentViewer();
 			submodels = PropViewer::create_and_get_subwidgets(view);
 		}
 		else

@@ -1,8 +1,8 @@
 nbproject/private/
 .vscode/
 dpVision.code-workspace
-build/
-buildMS/
+CMakeUserPresets.json
+build*/
 3rdParty/
 zPlugins/
 dPlugins/

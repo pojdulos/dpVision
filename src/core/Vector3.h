@@ -20,7 +20,7 @@
 template<
 	typename _T,
 	typename = typename std::enable_if<std::is_arithmetic<_T>::value, _T>::type >
-class DPVISION_EXPORT CVector3 : public CTriple<_T>
+class CVector3 : public CTriple<_T>
 {
 public:
 	/**

@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 
 #include "../api/AP.h"
+#include "../api/adapters/AppAPIAdapter.h"
 #include "MainApplication.h"
 #include "Model3D.h"
 
@@ -31,9 +32,22 @@
 #include "ProgressIndicator.h"
 #include "StatusBarManager.h"
 #include "MessageBoxManager.h"
+#include "../core/AppStateManager.h"
+#include "../core/WorkspacePanelManager.h"
 #include "adapters/QtStatusBarAdapter.h"
+#include "adapters/QtAppStateAdapter.h"
 #include "adapters/QtMessageBoxAdapter.h"
 #include "adapters/QtProgressAdapter.h"
+#include "adapters/QtWorkspacePanelAdapter.h"
+
+namespace
+{
+	AppAPIAdapter& appApi()
+	{
+		static AppAPIAdapter api;
+		return api;
+	}
+}
 #include "events/QtWorkspaceEvents.h"
 
 void restoreDockGeometry(QDockWidget* dock)
@@ -47,7 +61,7 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
 
-	//// Usuni�cie domy�lnego paska tytu�owego
+	//// Usuniďż˝cie domyďż˝lnego paska tytuďż˝owego
 	//setWindowFlags(Qt::FramelessWindowHint);
 
 	//// Tworzenie niestandardowego TitleBar
@@ -56,21 +70,21 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 	//titleBar->raise();
 	//titleBar->show();
 
-	//// Widget kontenerowy dla ca�ego uk�adu
+	//// Widget kontenerowy dla caďż˝ego ukďż˝adu
 	//QWidget* container = new QWidget();
 
-	//// Nowy uk�ad g��wny okna
+	//// Nowy ukďż˝ad gďż˝ďż˝wny okna
 	//QVBoxLayout* mainLayout = new QVBoxLayout();
 	//mainLayout->setMargin(0);
 	//mainLayout->setSpacing(0);
 
-	//// Dodanie TitleBar na samej g�rze
+	//// Dodanie TitleBar na samej gďż˝rze
 	//mainLayout->addWidget(titleBar);
 
 	//// Dodanie centralnego widgetu z Qt Designer
 	//mainLayout->addWidget(ui.centralWidget);
 
-	//// Ustawienie nowego uk�adu jako uk�ad g��wny
+	//// Ustawienie nowego ukďż˝adu jako ukďż˝ad gďż˝ďż˝wny
 	//container->setLayout(mainLayout);
 	//setCentralWidget(container);
 
@@ -122,6 +136,8 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 
 	StatusBarManager::setListener(new QtStatusBarAdapter(statusBar()));
 	MessageBoxManager::setListener(new QtMessageBoxAdapter());
+	AppStateManager::setListener(new QtAppStateAdapter(this));
+	WorkspacePanelManager::setListener(new QtWorkspacePanelAdapter(this));
 
 	this->progressIndicator = new ProgressIndicator(this->statusBar());
 	//this->progressIndicator->setMaximumHeight(16);
@@ -133,7 +149,7 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 	IProgressListener::setDefault(std::make_shared<QtProgressAdapter>(this->progressIndicator));
 
 	this->dockWorkspace->rebuildTree();
-	this->dockWorkspace->selectItem(NO_CURRENT_MODEL); // -1 = �aden nie zaznaczony
+	this->dockWorkspace->selectItem(NO_CURRENT_MODEL); // -1 = ďż˝aden nie zaznaczony
 
 	createRecentActions();
 	createRecentMenus();
@@ -159,7 +175,7 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 
 	connect(ui.mdiArea, &QMdiArea::subWindowActivated, this, [this](QMdiSubWindow* window) {
 		if (window != nullptr) {
-			lastActiveWindow = window;  // Przechowuj wska�nik jako QPointer
+			lastActiveWindow = window;  // Przechowuj wskaďż˝nik jako QPointer
 		}
 		});
 }
@@ -269,8 +285,7 @@ void CMainWindow::updateView(bool repaintAll, bool buffered)
 		}
 	}
 
-	//QCoreApplication::processEvents();
-	AP::processEvents();
+	QCoreApplication::processEvents();
 }
 
 void CMainWindow::addPluginToListView( int id, QString txt )
@@ -281,7 +296,7 @@ void CMainWindow::addPluginToListView( int id, QString txt )
 
 void CMainWindow::changeMenuAfterSelect()
 {
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
 
 	if ( NULL == obj )
 	{
@@ -419,7 +434,7 @@ void CMainWindow::activatePicViewerInstance(int id)
 	}
 	else
 	{
-		ui.mdiArea->setActiveSubWindow(MdiChild::create((CImage*)AP::WORKSPACE::getModel(id).get(), ui.mdiArea));
+		ui.mdiArea->setActiveSubWindow(MdiChild::create((CImage*)appApi().workspace().getModel(id).get(), ui.mdiArea));
 	}
 }
 

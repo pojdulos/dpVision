@@ -2,6 +2,7 @@
 
 #include "../api/AP.h"
 #include "AppSettings.h"
+#include "../core/PluginRuntimeManager.h"
 
 #include "MainWindow.h"
 #include "PluginManager.h"
@@ -37,6 +38,9 @@ CMainApplication::CMainApplication(int& argc, char** argv) : QApplication(argc, 
 	bPickSnap = false;
 
 	activePlugin = NULL;
+	PluginRuntimeManager::setGlobalPickingEnabled(false);
+	PluginRuntimeManager::setPickSnapEnabled(false);
+	PluginRuntimeManager::setActivePlugin(nullptr);
 
 	m_lastObjectId = MODEL_ID_OFFSET;
 }
@@ -178,6 +182,7 @@ void CMainApplication::unloadPlugin( const unsigned int id )
 		plugins.erase( pit );
 
 		activePlugin = NULL;
+		PluginRuntimeManager::setActivePlugin(nullptr);
 	}
 }
 
@@ -213,6 +218,7 @@ void CMainApplication::UnloadAllPlugins()
 	}
 
 	plugins.clear();
+	PluginRuntimeManager::setActivePlugin(nullptr);
 }
 
 

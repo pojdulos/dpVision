@@ -1,6 +1,5 @@
 #include "Global.h"
 #include "OrderedPointCloud.h"
-#include "GLViewer.h"
 
 #include "../renderers/IPointCloudRenderer.h"
 

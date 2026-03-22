@@ -2,10 +2,36 @@
 #include "PointCloud.h"
 #include "Mesh.h"
 #include "../api/UI.h"
+#include "../core/AppStateManager.h"
 
 #include <QColorDialog>
 #include <QPushButton>
 #include <QVBoxLayout>
+
+namespace
+{
+	void adjustGroupBoxHeight(QGroupBox* groupBox, bool checked)
+	{
+		QCheckBox* checkBox = groupBox->findChild<QCheckBox*>();
+		int checkBoxHeight = checkBox ? checkBox->sizeHint().height() : 0;
+		int titleHeight = groupBox->fontMetrics().height();
+		int heightForUnchecked = std::max(checkBoxHeight, titleHeight);
+
+		if (checked)
+		{
+			groupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+			groupBox->setMinimumHeight(0);
+			groupBox->setMaximumHeight(QWIDGETSIZE_MAX);
+			groupBox->adjustSize();
+		}
+		else
+		{
+			groupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+			groupBox->setMinimumHeight(heightForUnchecked);
+			groupBox->setMaximumHeight(heightForUnchecked);
+		}
+	}
+}
 
 bool PropPointCloud::group_visible = true;
 
@@ -107,7 +133,7 @@ void PropPointCloud::updateProperties()
 	//ui.colorGroupBox->setStyleSheet(s);
 
 	ui.spinPointSize->blockSignals(true);
-	ui.spinPointSize->setValue(CPointCloud::m_pointSize);
+	ui.spinPointSize->setValue(CPointCloud::pointSize());
 	ui.spinPointSize->blockSignals(false);
 
 	QString info = "Vertices: " + QString::number(((CPointCloud*)obj)->vertices().size()) + "\n";
@@ -122,7 +148,7 @@ void PropPointCloud::updateProperties()
 
 void PropPointCloud::adjustGroupHeight(bool checked) {
 	PropPointCloud::group_visible = checked;
-	UI::adjustGroupBoxHeight(ui.cloud, PropPointCloud::group_visible);
+	adjustGroupBoxHeight(ui.cloud, PropPointCloud::group_visible);
 	this->adjustSize();
 	this->parentWidget()->adjustSize();
 }
@@ -131,9 +157,9 @@ void PropPointCloud::adjustGroupHeight(bool checked) {
 
 void PropPointCloud::pointSizeChanged(int s)
 {
-	CPointCloud::m_pointSize = s;
+	CPointCloud::setPointSize(s);
 
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 
@@ -147,7 +173,7 @@ void PropPointCloud::pointSizeChanged(int s)
 //	CRGBA c = ((CMesh*)obj)->getMaterial(0).FrontColor.ambient; 
 //	updateEditBox(c.red(), c.green(), c.blue(), c.alpha());
 //
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}
 //
 //void PropPointCloud::gValueChanged(int g)
@@ -160,7 +186,7 @@ void PropPointCloud::pointSizeChanged(int s)
 //	CRGBA c = ((CMesh*)obj)->getMaterial(0).FrontColor.ambient;
 //	updateEditBox(c.red(), c.green(), c.blue(), c.alpha());
 //
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}
 //
 //void PropPointCloud::bValueChanged(int b)
@@ -173,7 +199,7 @@ void PropPointCloud::pointSizeChanged(int s)
 //	CRGBA c = ((CMesh*)obj)->getMaterial(0).FrontColor.ambient;
 //	updateEditBox(c.red(), c.green(), c.blue(), c.alpha());
 //
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}
 //
 //void PropPointCloud::aValueChanged(int a)
@@ -186,7 +212,7 @@ void PropPointCloud::pointSizeChanged(int s)
 //	CRGBA c = ((CMesh*)obj)->getMaterial(0).FrontColor.ambient;
 //	updateEditBox(c.red(), c.green(), c.blue(), c.alpha());
 //
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}
 //
 //void PropPointCloud::rgbaTextChanged(QString s)
@@ -200,7 +226,7 @@ void PropPointCloud::pointSizeChanged(int s)
 //
 //	updateSliders(c.red(), c.green(), c.blue(), c.alpha());
 //
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}
 //
 //void PropPointCloud::meshColorChanged(QColor c)
@@ -215,7 +241,7 @@ void PropPointCloud::pointSizeChanged(int s)
 //		updateSliders(c.red(), c.green(), c.blue(), c.alpha());
 //		updateEditBox(c.red(), c.green(), c.blue(), c.alpha());
 //
-//		UI::updateAllViews();
+//		AppStateManager::updateAllViews();
 //	}
 //}
 //

@@ -71,16 +71,16 @@ void PMFactory::Renumerate( CMesh &dst )
 
 		for ( _vsplit::Faces::iterator itfc=itvs->chgFcs.begin(); itfc!=itvs->chgFcs.end(); itfc++ )
 		{
-			itfc->A( mVerticesMap[ itfc->A() ] );
-			itfc->B( mVerticesMap[ itfc->B() ] );
-			itfc->C( mVerticesMap[ itfc->C() ] );
+			itfc->A( static_cast<INDEX_TYPE>(mVerticesMap[ itfc->A() ]) );
+			itfc->B( static_cast<INDEX_TYPE>(mVerticesMap[ itfc->B() ]) );
+			itfc->C( static_cast<INDEX_TYPE>(mVerticesMap[ itfc->C() ]) );
 		}
 
 		for ( _vsplit::Faces::iterator itfd=itvs->delFcs.begin(); itfd!=itvs->delFcs.end(); itfd++ )
 		{
-			itfd->A( mVerticesMap[ itfd->A() ] );
-			itfd->B( mVerticesMap[ itfd->B() ] );
-			itfd->C( mVerticesMap[ itfd->C() ] );
+			itfd->A( static_cast<INDEX_TYPE>(mVerticesMap[ itfd->A() ]) );
+			itfd->B( static_cast<INDEX_TYPE>(mVerticesMap[ itfd->B() ]) );
+			itfd->C( static_cast<INDEX_TYPE>(mVerticesMap[ itfd->C() ]) );
 		}
 
 		for ( _vsplit::TextureCoords::iterator it=itvs->delTC.begin(); it!=itvs->delTC.end(); it++ )
@@ -90,9 +90,9 @@ void PMFactory::Renumerate( CMesh &dst )
 
 		for ( _vsplit::TextureIndexes::iterator it=itvs->delTI.begin(); it!=itvs->delTI.end(); it++ )
 		{
-			it->a = mTindexesMap[ it->a ];
-			it->b = mTindexesMap[ it->b ];
-			it->c = mTindexesMap[ it->c ];
+			it->a = static_cast<INDEX_TYPE>(mTindexesMap[ it->a ]);
+			it->b = static_cast<INDEX_TYPE>(mTindexesMap[ it->b ]);
+			it->c = static_cast<INDEX_TYPE>(mTindexesMap[ it->c ]);
 		}
 	}
 
@@ -135,12 +135,12 @@ void PMFactory::Reduction(size_t target_num_vertices)
 	}
 
 	auto progress_ = IProgressListener::getDefault();
-	if (progress_) progress_->init( 0, vertices.size() - target_num_vertices, 0 );
+	if (progress_) progress_->init( 0, static_cast<int>(vertices.size() - target_num_vertices), 0 );
 
 	while (vertices.size() > target_num_vertices)
 	{
-		StatusBarManager::setTextTimed( 500, QString("\r    PMFactory::Reduction(): reduction from %1 to %2 -> current: %3              ").arg(orgsize).arg(target_num_vertices).arg(vertices.size()));
-		if (progress_) progress_->setValue( orgsize - vertices.size() );
+		StatusBarManager::setTextTimed( 500, QString("\r    PMFactory::Reduction(): reduction from %1 to %2 -> current: %3              ").arg(static_cast<qulonglong>(orgsize)).arg(static_cast<qulonglong>(target_num_vertices)).arg(static_cast<qulonglong>(vertices.size())));
+		if (progress_) progress_->setValue( static_cast<int>(orgsize - vertices.size()) );
 
 		CPMFerrors::iterator iter_min_error = errors.GetMinError();
 		
@@ -157,10 +157,10 @@ void PMFactory::Reduction(size_t target_num_vertices)
 		calculate_error(id_v1, id_v2, &vx, &vy, &vz);	// get coordinate of vf
 
 		v.v1 = vertices[id_v1];
-		v.i1 = id_v1;
+		v.i1 = static_cast<INDEX_TYPE>(id_v1);
 		
 		v.v2 = vertices[id_v2];
-		v.i2 = id_v2;
+		v.i2 = static_cast<INDEX_TYPE>(id_v2);
 
 		// modyfikuje wierzcholek id_v1
 		vertices[id_v1] = CVertex( vx, vy, vz );
@@ -182,11 +182,11 @@ void PMFactory::Reduction(size_t target_num_vertices)
 		// szukam scian zawierajacych wierzcholek id_v2 i zamieniam go na nowy id_v1
 		// sciany zawierajace jednoczesnie id_v2 i id_v1 usuwam
 		CPMFfaces::iterator fiter;
-		while ( faces.end() != ( fiter = faces.FindIfV( id_v2 ) ) )
+        while ( faces.end() != ( fiter = faces.FindIfV( static_cast<INDEX_TYPE>(id_v2) ) ) )
 		{
 			size_t fkey = fiter->first;
 
-			if ( -1 != fiter->second.hasVertex( id_v1 ) )
+            if ( -1 != fiter->second.hasVertex( static_cast<INDEX_TYPE>(id_v1) ) )
 			{
 				// jesli sciana zawiera tez id_v1 to KASUJE SCIANE
 				
@@ -244,7 +244,7 @@ void PMFactory::Reduction(size_t target_num_vertices)
 				// dopisuje oryginalna sciane do chgFcs
 				v.chgFcs.push_back( fiter->second );
 				// zamieniam id_v2 na id_v1
-				faces.ChangeValue( fiter->first, id_v2, id_v1 );
+                faces.ChangeValue( fiter->first, static_cast<INDEX_TYPE>(id_v2), static_cast<INDEX_TYPE>(id_v1) );
 			}
 		}
 

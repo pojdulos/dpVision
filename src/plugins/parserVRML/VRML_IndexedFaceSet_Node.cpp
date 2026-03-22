@@ -2,7 +2,15 @@
 
 #include "ParserWRL.h"
 
-#include "../api/UI.h"
+#include "../api/adapters/PluginUIAPIAdapter.h"
+
+namespace {
+PluginUIAPIAdapter& uiApi()
+{
+    static PluginUIAPIAdapter api;
+    return api;
+}
+}
 
 void CParserWRL::VRML_ParseNode_IndexedFaceSet( FILE *plik )
 {
@@ -65,7 +73,7 @@ void CParserWRL::VRML_ParseNode_IndexedFaceSet( FILE *plik )
 
 				CTIndex indeks;
 
-				UI::STATUSBAR::printf( "Reading TexCoordIndex section..." );
+				uiApi().statusBar().setText("Reading TexCoordIndex section...");
 
 				fscanf( plik, " [ " );
 	
@@ -74,13 +82,13 @@ void CParserWRL::VRML_ParseNode_IndexedFaceSet( FILE *plik )
 				{
 					if ( 1 == fscanf( plik, " %d ", &a ) )
 					{
-						fscanf( plik, " , " ); // tu mo�e nie by� przecinka
+						fscanf( plik, " , " ); // tu moďż˝e nie byďż˝ przecinka
 						fscanf( plik, " %d ", &b );
-						fscanf( plik, " , " ); // tu mo�e nie by� przecinka
+						fscanf( plik, " , " ); // tu moďż˝e nie byďż˝ przecinka
 						fscanf( plik, " %d ", &c );
-						fscanf( plik, " , " ); // tu mo�e nie by� przecinka
+						fscanf( plik, " , " ); // tu moďż˝e nie byďż˝ przecinka
 						fscanf( plik, " -1 " );
-						fscanf( plik, " , " ); // tu mo�e nie by� przecinka
+						fscanf( plik, " , " ); // tu moďż˝e nie byďż˝ przecinka
 
 						indeks.a = a;
 						indeks.b = b;

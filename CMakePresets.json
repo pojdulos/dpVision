@@ -1,0 +1,150 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": "windows-vs2022-system",
+      "displayName": "Windows VS2022 (system packages)",
+      "description": "Use Visual Studio 2022 and dependencies visible in the system.",
+      "inherits": "base",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "windows-vs2022-vcpkg",
+      "displayName": "Windows VS2022 + vcpkg",
+      "description": "Use Visual Studio 2022 and dependencies from VCPKG_ROOT.",
+      "inherits": "base",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "condition": {
+        "type": "allOf",
+        "conditions": [
+          {
+            "type": "equals",
+            "lhs": "${hostSystemName}",
+            "rhs": "Windows"
+          },
+          {
+            "type": "notEquals",
+            "lhs": "$env{VCPKG_ROOT}",
+            "rhs": ""
+          }
+        ]
+      },
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      }
+    },
+    {
+      "name": "windows-vs2022-vcpkg-local",
+      "displayName": "Windows VS2022 + local vcpkg",
+      "description": "Use Visual Studio 2022 and dependencies from E:/vcpkg.",
+      "inherits": "base",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "E:/vcpkg/scripts/buildsystems/vcpkg.cmake"
+      }
+    },
+    {
+      "name": "linux-ninja-system",
+      "displayName": "Linux Ninja (system packages)",
+      "description": "Use Ninja and dependencies installed in the system.",
+      "inherits": "base",
+      "generator": "Ninja",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      }
+    },
+    {
+      "name": "linux-ninja-vcpkg",
+      "displayName": "Linux Ninja + vcpkg",
+      "description": "Use Ninja and dependencies from VCPKG_ROOT.",
+      "inherits": "base",
+      "generator": "Ninja",
+      "condition": {
+        "type": "allOf",
+        "conditions": [
+          {
+            "type": "equals",
+            "lhs": "${hostSystemName}",
+            "rhs": "Linux"
+          },
+          {
+            "type": "notEquals",
+            "lhs": "$env{VCPKG_ROOT}",
+            "rhs": ""
+          }
+        ]
+      },
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "windows-vs2022-system-debug",
+      "configurePreset": "windows-vs2022-system",
+      "configuration": "Debug"
+    },
+    {
+      "name": "windows-vs2022-system-release",
+      "configurePreset": "windows-vs2022-system",
+      "configuration": "Release"
+    },
+    {
+      "name": "windows-vs2022-vcpkg-debug",
+      "configurePreset": "windows-vs2022-vcpkg",
+      "configuration": "Debug"
+    },
+    {
+      "name": "windows-vs2022-vcpkg-release",
+      "configurePreset": "windows-vs2022-vcpkg",
+      "configuration": "Release"
+    },
+    {
+      "name": "windows-vs2022-vcpkg-local-debug",
+      "configurePreset": "windows-vs2022-vcpkg-local",
+      "configuration": "Debug"
+    },
+    {
+      "name": "windows-vs2022-vcpkg-local-release",
+      "configurePreset": "windows-vs2022-vcpkg-local",
+      "configuration": "Release"
+    },
+    {
+      "name": "linux-ninja-system",
+      "configurePreset": "linux-ninja-system"
+    },
+    {
+      "name": "linux-ninja-vcpkg",
+      "configurePreset": "linux-ninja-vcpkg"
+    }
+  ]
+}

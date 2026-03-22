@@ -1,9 +1,20 @@
 #include "DockWidgetLights.h"
 
-#include "../api/UI.h"
-#include "../api/AP.h"
-
+#include "../core/AppStateManager.h"
 #include "Workspace.h"
+
+namespace
+{
+	CWorkspace* workspace()
+	{
+		return CWorkspace::instance();
+	}
+
+	_light& lightRef(int source)
+	{
+		return workspace()->getLightRef(source);
+	}
+}
 
 DockWidgetLights::DockWidgetLights(QWidget *parent)
 	: QDockWidget(parent)
@@ -19,7 +30,7 @@ DockWidgetLights::~DockWidgetLights()
 
 void DockWidgetLights::selectSource( int source )
 {
-	_light &src = AP::getWorkspace()->getLightRef(source);
+	_light &src = lightRef(source);
 
 	setValueOf( ui.ambientR, src.ambient[0] );
 	setValueOf( ui.ambientG, src.ambient[1] );
@@ -52,128 +63,128 @@ void DockWidgetLights::selectSource( int source )
 
 void DockWidgetLights::setActive( int val )
 {
-	AP::getWorkspace()->getLightRef( ui.comboLightSource->currentIndex() ).active = ( val != 0 );
-	UI::updateAllViews();
+	lightRef(ui.comboLightSource->currentIndex()).active = ( val != 0 );
+	AppStateManager::updateAllViews();
 }
 
 void DockWidgetLights::setFixed( int val )
 {
-	AP::getWorkspace()->getLightRef( ui.comboLightSource->currentIndex() ).fixed = ( val != 0 );
-	UI::updateAllViews();
+	lightRef(ui.comboLightSource->currentIndex()).fixed = ( val != 0 );
+	AppStateManager::updateAllViews();
 }
 
 void DockWidgetLights::ambientR( double val )
 {
-	AP::getWorkspace()->getLightRef( ui.comboLightSource->currentIndex() ).ambient[0] = val;
-	UI::updateAllViews();
+	lightRef(ui.comboLightSource->currentIndex()).ambient[0] = val;
+	AppStateManager::updateAllViews();
 }
 
 void DockWidgetLights::ambientG( double val )
 {
-	AP::getWorkspace()->getLightRef( ui.comboLightSource->currentIndex() ).ambient[1] = val;
-	UI::updateAllViews();
+	lightRef(ui.comboLightSource->currentIndex()).ambient[1] = val;
+	AppStateManager::updateAllViews();
 }
 
 void DockWidgetLights::ambientB( double val )
 {
-	AP::getWorkspace()->getLightRef( ui.comboLightSource->currentIndex() ).ambient[2] = val;
-	UI::updateAllViews();
+	lightRef(ui.comboLightSource->currentIndex()).ambient[2] = val;
+	AppStateManager::updateAllViews();
 }
 
 void DockWidgetLights::ambientA( double val )
 {
-	AP::getWorkspace()->getLightRef( ui.comboLightSource->currentIndex() ).ambient[3] = val;
-	UI::updateAllViews();
+	lightRef(ui.comboLightSource->currentIndex()).ambient[3] = val;
+	AppStateManager::updateAllViews();
 }
 
 void DockWidgetLights::difuseR( double val )
 {
-	AP::getWorkspace()->getLightRef( ui.comboLightSource->currentIndex() ).diffuse[0] = val;
-	UI::updateAllViews();
+	lightRef(ui.comboLightSource->currentIndex()).diffuse[0] = val;
+	AppStateManager::updateAllViews();
 }
 
 void DockWidgetLights::difuseG( double val )
 {
-	AP::getWorkspace()->getLightRef( ui.comboLightSource->currentIndex() ).diffuse[1] = val;
-	UI::updateAllViews();
+	lightRef(ui.comboLightSource->currentIndex()).diffuse[1] = val;
+	AppStateManager::updateAllViews();
 }
 
 void DockWidgetLights::difuseB( double val )
 {
-	AP::getWorkspace()->getLightRef( ui.comboLightSource->currentIndex() ).diffuse[2] = val;
-	UI::updateAllViews();
+	lightRef(ui.comboLightSource->currentIndex()).diffuse[2] = val;
+	AppStateManager::updateAllViews();
 }
 
 void DockWidgetLights::difuseA( double val )
 {
-	AP::getWorkspace()->getLightRef( ui.comboLightSource->currentIndex() ).diffuse[3] = val;
-	UI::updateAllViews();
+	lightRef(ui.comboLightSource->currentIndex()).diffuse[3] = val;
+	AppStateManager::updateAllViews();
 }
 
 void DockWidgetLights::specularR( double val )
 {
-	AP::getWorkspace()->getLightRef( ui.comboLightSource->currentIndex() ).specular[0] = val;
-	UI::updateAllViews();
+	lightRef(ui.comboLightSource->currentIndex()).specular[0] = val;
+	AppStateManager::updateAllViews();
 }
 
 void DockWidgetLights::specularG( double val )
 {
-	AP::getWorkspace()->getLightRef( ui.comboLightSource->currentIndex() ).specular[1] = val;
-	UI::updateAllViews();
+	lightRef(ui.comboLightSource->currentIndex()).specular[1] = val;
+	AppStateManager::updateAllViews();
 }
 
 void DockWidgetLights::specularB( double val )
 {
-	AP::getWorkspace()->getLightRef( ui.comboLightSource->currentIndex() ).specular[2] = val;
-	UI::updateAllViews();
+	lightRef(ui.comboLightSource->currentIndex()).specular[2] = val;
+	AppStateManager::updateAllViews();
 }
 
 void DockWidgetLights::specularA( double val )
 {
-	AP::getWorkspace()->getLightRef( ui.comboLightSource->currentIndex() ).specular[3] = val;
-	UI::updateAllViews();
+	lightRef(ui.comboLightSource->currentIndex()).specular[3] = val;
+	AppStateManager::updateAllViews();
 }
 
 void DockWidgetLights::positionX( double val )
 {
-	AP::getWorkspace()->getLightRef( ui.comboLightSource->currentIndex() ).position[0] = val;
-	UI::updateAllViews();
+	lightRef(ui.comboLightSource->currentIndex()).position[0] = val;
+	AppStateManager::updateAllViews();
 }
 
 void DockWidgetLights::positionY( double val )
 {
-	AP::getWorkspace()->getLightRef( ui.comboLightSource->currentIndex() ).position[1] = val;
-	UI::updateAllViews();
+	lightRef(ui.comboLightSource->currentIndex()).position[1] = val;
+	AppStateManager::updateAllViews();
 }
 
 void DockWidgetLights::positionZ( double val )
 {
-	AP::getWorkspace()->getLightRef( ui.comboLightSource->currentIndex() ).position[2] = val;
-	UI::updateAllViews();
+	lightRef(ui.comboLightSource->currentIndex()).position[2] = val;
+	AppStateManager::updateAllViews();
 }
 
 void DockWidgetLights::spotDirX( double val )
 {
-	AP::getWorkspace()->getLightRef( ui.comboLightSource->currentIndex() ).spot_direction[0] = val;
-	UI::updateAllViews();
+	lightRef(ui.comboLightSource->currentIndex()).spot_direction[0] = val;
+	AppStateManager::updateAllViews();
 }
 
 void DockWidgetLights::spotDirY( double val )
 {
-	AP::getWorkspace()->getLightRef( ui.comboLightSource->currentIndex() ).spot_direction[1] = val;
-	UI::updateAllViews();
+	lightRef(ui.comboLightSource->currentIndex()).spot_direction[1] = val;
+	AppStateManager::updateAllViews();
 }
 
 void DockWidgetLights::spotDirZ( double val )
 {
-	AP::getWorkspace()->getLightRef( ui.comboLightSource->currentIndex() ).spot_direction[2] = val;
-	UI::updateAllViews();
+	lightRef(ui.comboLightSource->currentIndex()).spot_direction[2] = val;
+	AppStateManager::updateAllViews();
 }
 
 void DockWidgetLights::spotAngle( double val )
 {
-	AP::getWorkspace()->getLightRef( ui.comboLightSource->currentIndex() ).spot_cut_off = val;
-	UI::updateAllViews();
+	lightRef(ui.comboLightSource->currentIndex()).spot_cut_off = val;
+	AppStateManager::updateAllViews();
 }
 
 void DockWidgetLights::setValueOf(QDoubleSpinBox * spin, double value, bool callback)

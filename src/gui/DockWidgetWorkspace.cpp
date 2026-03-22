@@ -1,7 +1,7 @@
 #include "DockWidgetWorkspace.h"
 
 #include "../api/UI.h"
-#include "../api/AP.h"
+#include "../api/adapters/AppAPIAdapter.h"
 
 #include "DockWidgetModel.h"
 #include "Annotation.h"
@@ -14,8 +14,25 @@
 #include "ContextMenu.h"
 
 #include "MainWindow.h"
+#include "MainApplication.h"
+#include "../core/PluginRuntimeManager.h"
 
 #include "dpLog.h"
+
+namespace {
+AppAPIAdapter& appApi()
+{
+	static AppAPIAdapter api;
+	return api;
+}
+
+void notifyWorkspaceTreeClicked(int objId)
+{
+	if (PluginInterface* plugin = PluginRuntimeManager::activePlugin()) {
+		plugin->onModelIndication(objId);
+	}
+}
+}
 
 DockWidgetWorkspace::DockWidgetWorkspace(QWidget *parent) : QDockWidget(parent)
 {
@@ -127,7 +144,7 @@ void DockWidgetWorkspace::rebuildTree()
 		model->removeRows(0, model->rowCount());
 	}
 
-	for (CWorkspace::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
+	for (CWorkspace::iterator it = CWorkspace::instance()->begin(); it != CWorkspace::instance()->end(); it++)
 	{
 		model->addModelWithChildren((*it).second);
 	}
@@ -334,7 +351,7 @@ void DockWidgetWorkspace::setItemCheckedById(int id, bool b)
 void DockWidgetWorkspace::setItemVisibleById(int id, bool b)
 {
 	QModelIndex current = findWorkspaceTreeModelIndex(id);
-	std::shared_ptr<CBaseObject> obj = AP::WORKSPACE::findId(id);
+	std::shared_ptr<CBaseObject> obj = appApi().workspace().findId(id);
 
 	if (current.isValid()) {
 		WorkspaceTreeModel *model = (WorkspaceTreeModel*)ui.treeView->model();
@@ -442,7 +459,7 @@ void DockWidgetWorkspace::addItem(int id, int parentId)
 	if (parentId == -1)
 	{
 		// najwy�szy poziom
-		std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getModel(id);
+		std::shared_ptr<CModel3D> obj = appApi().workspace().getModel(id);
 		if (nullptr != obj)
 		{
 			model->addModelWithChildren(obj);
@@ -456,7 +473,7 @@ void DockWidgetWorkspace::addItem(int id, int parentId)
 		{
 			QStandardItem *i1 = model->itemFromIndex(parentIndex);
 
-			std::shared_ptr<CObject> parent = std::dynamic_pointer_cast<CObject>(AP::WORKSPACE::findId(parentId));
+			std::shared_ptr<CObject> parent = std::dynamic_pointer_cast<CObject>(appApi().workspace().findId(parentId));
 
 			int grandparentId = parent->parentId();
 
@@ -542,19 +559,22 @@ void DockWidgetWorkspace::colNameClicked(std::shared_ptr<CBaseObject> obj, Works
 
 	if (obj->hasType(CBaseObject::MODEL) || obj->hasType(CBaseObject::IMAGE))
 	{
+		CMainWindow* win = CMainWindow::instance();
 		if (obj->hasType(CBaseObject::IMAGE))
 		{
-			//AP::mainWin().activatePicViewerInstance(obj->id());
-			QMdiSubWindow* window = AP::mainWin().getPicViewerInstance(obj->id());
+			QMdiSubWindow* window = win ? win->getPicViewerInstance(obj->id()) : nullptr;
 
 			if (window != nullptr)
 			{
-				AP::mainWin().ui.mdiArea->setActiveSubWindow(window);
+				win->ui.mdiArea->setActiveSubWindow(window);
 			}
 		}
 		else
 		{
-			AP::mainWin().activateGLViewerInstance();
+			if (win != nullptr)
+			{
+				win->activateGLViewerInstance();
+			}
 		}
 
 		bool b = clickedItem->checkState() == Qt::Checked;
@@ -642,13 +662,13 @@ void DockWidgetWorkspace::onTreeViewItemClicked(QModelIndex current)
 
 		wksp->_objectActivate(clickedObject->id());
 		emit(currentObjectChanged(clickedObject->id()));
-		AP::EVENTS::workspaceTreeClicked(clickedObject->id());
+		notifyWorkspaceTreeClicked(clickedObject->id());
 	}
 	else
 	{
 		wksp->_objectActivate(NO_CURRENT_MODEL);
 		emit(currentObjectChanged(NO_CURRENT_MODEL));
-		AP::EVENTS::workspaceTreeClicked(NO_CURRENT_MODEL);
+		notifyWorkspaceTreeClicked(NO_CURRENT_MODEL);
 	}
 }
 

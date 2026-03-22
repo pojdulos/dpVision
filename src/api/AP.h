@@ -11,7 +11,6 @@
 #include "Image.h"
 
 // Forward declarations
-class PluginInterface;
 class CWorkspace;
 class CObject;
 class CModel3D;
@@ -22,57 +21,34 @@ class QString;
 
 /**
  * @namespace AP
- * @brief Main application namespace containing core functionality and utility functions
+ * @brief Legacy application API kept as a compatibility shim.
+ *
+ * New code should prefer the explicit interfaces in `src/api/interfaces` and
+ * their adapters. `AP` remains for source compatibility and for semantic
+ * application operations that have not yet been fully migrated.
  */
 namespace AP
 {
     /**
-     * @brief Returns reference to the main application instance
-     * @return Reference to CMainApplication
-     */
-    DPVISION_EXPORT CMainApplication& mainApp();
-
-    /**
-     * @brief Returns reference to the main window instance
-     * @return Reference to CMainWindow
-     */
-    DPVISION_EXPORT CMainWindow& mainWin();
-
-    /**
-     * @brief Returns pointer to the main window instance
-     * @return Pointer to CMainWindow
-     */
-    DPVISION_EXPORT CMainWindow* mainWinPtr();
-
-    /**
-     * @brief Exits the selection mode
-     */
-    DPVISION_EXPORT void leaveSelectionMode();
-
-    /**
-     * @brief Generates and returns a unique identifier
-     * @return Unique integer identifier
-     */
-    DPVISION_EXPORT int getUniqueId();
-
-    /**
-     * @brief Processes pending events in the application
+     * @brief Legacy compatibility helper for pumping the Qt event loop.
      * @param immediate If true, processes events immediately
+     *
+     * New code should prefer local UI/application helpers instead of reaching
+     * for `AP` as a transport layer to Qt.
      */
     DPVISION_EXPORT void processEvents(bool immediate = false);
 
     /**
-     * @brief Returns pointer to the workspace instance
-     * @warning Use only as a last resort. Prefer AP::WORKSPACE namespace functions
-     * @return Pointer to CWorkspace
-     */
-    DPVISION_EXPORT CWorkspace* getWorkspace(void);
-
-    /**
-     * @brief Returns the executable file path
+     * @brief Legacy compatibility helper returning the executable directory.
      * @return Const reference to QString containing the path
      */
     DPVISION_EXPORT const QString& getExeFilePath(void);
+
+    /**
+     * @brief Semantic application operation kept as part of the legacy API.
+     * @param filePath Path to the file that became current
+     */
+    DPVISION_EXPORT void adjustForCurrentFile(const QString& filePath);
 
     /**
      * @brief Adds annotation to a parent object (OBSOLETE)
@@ -87,41 +63,8 @@ namespace AP
     DPVISION_EXPORT int addAnnotation(std::shared_ptr<CModel3D> obj, std::shared_ptr<CAnnotation> an);
 
     /**
-     * @namespace PLUGIN
-     * @brief Namespace containing plugin management functionality
-     */
-    namespace PLUGIN {
-        /**
-         * @brief Loads a plugin from the specified path
-         * @param pluginPath Path to the plugin file
-         * @return True if loading was successful
-         */
-        DPVISION_EXPORT bool loadPlugin(const QString& pluginPath);
-
-        /**
-         * @brief Unloads a plugin with the specified ID
-         * @param id Plugin identifier
-         */
-        DPVISION_EXPORT void unloadPlugin(const unsigned int id);
-
-        /**
-         * @brief Retrieves a plugin instance by ID
-         * @param id Plugin identifier
-         * @return Pointer to PluginInterface or nullptr if not found
-         */
-        DPVISION_EXPORT PluginInterface* getPlugin(unsigned int id);
-
-        /**
-         * @brief Runs a plugin identified by UUID
-         * @param strUUID Plugin UUID string
-         * @return True if plugin was successfully executed
-         */
-        DPVISION_EXPORT bool runPlugin(const char* strUUID);
-    };
-
-    /**
      * @namespace OBJECT
-     * @brief Namespace containing object management functionality
+     * @brief Semantic object operations. Safe to keep using during migration.
      */
     namespace OBJECT {
         DPVISION_EXPORT bool remove(std::shared_ptr<CBaseObject> obj);
@@ -147,7 +90,7 @@ namespace AP
 
     /**
      * @namespace MODEL
-     * @brief Namespace containing 3D model management functionality
+     * @brief Semantic model operations. Safe to keep using during migration.
      */
     namespace MODEL {
         /**
@@ -168,15 +111,12 @@ namespace AP
 
     /**
      * @namespace WORKSPACE
-     * @brief Namespace containing workspace management functionality
+     * @brief Semantic workspace operations kept as the main legacy contract.
+     *
+     * Avoid adding new raw escape-hatch accessors here. Prefer extending
+     * `IWorkspaceAPI` when plugins need additional read/write capabilities.
      */
     namespace WORKSPACE {
-        /**
-         * @brief Returns the workspace instance
-         * @return Pointer to CWorkspace
-         */
-        DPVISION_EXPORT CWorkspace* instance(void);
-
         /**
          * @brief Returns the number of objects in workspace
          * @return Size of workspace
@@ -370,23 +310,6 @@ namespace AP
         }
     };
 
-    /**
-     * @namespace EVENTS
-     * @brief Namespace containing event handling functionality
-     */
-    namespace EVENTS {
-        /**
-         * @brief Triggers model indication event
-         * @param objId ID of the model being indicated
-         */
-        DPVISION_EXPORT void modelIndicationEvent(int objId);
-
-        /**
-         * @brief Handles workspace tree click event
-         * @param objId ID of the clicked object in workspace tree
-         */
-        DPVISION_EXPORT void workspaceTreeClicked(int objId);
-    };
 };
 
 #endif

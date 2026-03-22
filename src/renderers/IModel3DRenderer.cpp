@@ -4,8 +4,6 @@
 #include "../core/Annotation.h"
 #include "../core/BoundingBox.h"
 
-#include "../api/UI.h"
-
 void IModel3DRenderer::renderTransform(const CBaseObject* _obj)
 {
 	CModel3D* obj = (CModel3D*)_obj;

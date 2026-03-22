@@ -6,8 +6,16 @@
 #include "utils/StringUtils.h"
 #include "StatusBarManager.h"
 
-#include "../api/UI.h"
+#include "../api/adapters/UIAPIAdapter.h"
 #include "dpLog.h"
+
+namespace {
+UIAPIAdapter& uiApi()
+{
+	static UIAPIAdapter api;
+	return api;
+}
+}
 
 CHistogram::CHistogram(std::vector<double> data, int levels) :CAnnotation()
 {
@@ -60,16 +68,16 @@ CHistogram::~CHistogram() {}
 
 
 void CHistogram::setSelfVisibility(bool sel) {
-	if (UI::DOCK::HISTOGRAM::getHistogram() == this) {
-		UI::DOCK::HISTOGRAM::show(sel);
+	if (uiApi().dockHistogram().getHistogram() == this) {
+		uiApi().dockHistogram().show(sel);
 	}
 	else if (sel) {
-		if (NULL != UI::DOCK::HISTOGRAM::getHistogram()) {
-			UI::DOCK::HISTOGRAM::getHistogram()->setSelfVisibility(false);
-			UI::DOCK::WORKSPACE::setItemVisibleById(UI::DOCK::HISTOGRAM::getHistogram()->id(), false);
+		if (nullptr != uiApi().dockHistogram().getHistogram()) {
+			uiApi().dockHistogram().getHistogram()->setSelfVisibility(false);
+			uiApi().dockWorkspace().setItemVisibleById(uiApi().dockHistogram().getHistogram()->id(), false);
 		}
-		UI::DOCK::HISTOGRAM::setHistogram(this);
-		UI::DOCK::HISTOGRAM::show(true);
+		uiApi().dockHistogram().setHistogram(this);
+		uiApi().dockHistogram().show(true);
 	}
 
 	//colorizeParentVertices(sel);
@@ -435,7 +443,7 @@ CRGBA CHistogram::getColorBGR(int i)
 void CHistogram::repaint()
 {
 	colorizeParentVertices(false);
-	UI::DOCK::HISTOGRAM::repaint();
+	uiApi().dockHistogram().repaint();
 	colorizeParentVertices(true);
 }
 

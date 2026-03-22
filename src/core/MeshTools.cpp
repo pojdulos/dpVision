@@ -2,11 +2,18 @@
 
 #include <queue>
 
-#include "../api/AP.h"
-#include "../api/UI.h"
+#include "../api/adapters/AppAPIAdapter.h"
 #include "Mesh.h"
 
 #include "dpLog.h"
+
+namespace {
+AppAPIAdapter& appApi()
+{
+    static AppAPIAdapter api;
+    return api;
+}
+}
 
 void MeshTools::removeInvalidFaces(CMesh& mesh) {
     auto& faces = mesh.faces();
@@ -108,7 +115,7 @@ void MeshTools::buildEdgeToFaces(const CMesh& mesh,
     const auto& faces = mesh.faces();
 
     qInfo() << "buildEdgeToFaces: faces=" << faces.size();
-    UI::STATUSBAR::setText(QString("Building edge map for %1 faces...").arg(faces.size()));
+    appApi().setStatusText(QString("Building edge map for %1 faces...").arg(faces.size()));
 
     if (faces.size() > 5000000) {
         qWarning() << "Mesh is VERY large (" << faces.size()
@@ -122,7 +129,7 @@ void MeshTools::buildEdgeToFaces(const CMesh& mesh,
 
     qInfo() << "Calling CMesh::getEdges()...";
     auto startTime = std::chrono::steady_clock::now();
-    UI::STATUSBAR::setText("Extracting edges (native method)...");
+    appApi().setStatusText("Extracting edges (native method)...");
 
     const_cast<CMesh&>(mesh).getEdges(meshEdges);
 
@@ -131,7 +138,7 @@ void MeshTools::buildEdgeToFaces(const CMesh& mesh,
 
     dpInfo() << "CMesh::getEdges() completed in" << extractTime << "ms ("
         << (extractTime / 1000) << "s), extracted" << meshEdges.size() << "edges";
-    UI::STATUSBAR::setText(QString("Extracted %1 edges, converting...").arg(meshEdges.size()));
+    appApi().setStatusText(QString("Extracted %1 edges, converting...").arg(meshEdges.size()));
 
     // **KONWERSJA: CSetOfEdges -> unordered_map**
     dpInfo() << "Converting to edge-to-faces map...";
@@ -149,7 +156,7 @@ void MeshTools::buildEdgeToFaces(const CMesh& mesh,
             auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(
                 std::chrono::steady_clock::now() - convertStart).count();
 
-            UI::STATUSBAR::setText(
+            appApi().setStatusText(
                 QString("Converting edge %1/%2 (%3%) - %4s")
                 .arg(processed).arg(meshEdges.size()).arg((int)percent).arg((int)elapsed)
             );
@@ -181,7 +188,7 @@ void MeshTools::buildEdgeToFaces(const CMesh& mesh,
     dpInfo() << "Total time:" << totalTime << "ms (" << (totalTime / 1000) << "seconds)";
     dpInfo() << "Built edge-to-faces map:" << edgeToFaces.size() << "unique edges";
 
-    UI::STATUSBAR::setText(
+    appApi().setStatusText(
         QString("Edge map built: %1 edges in %2s")
         .arg(edgeToFaces.size()).arg(totalTime / 1000)
     );
@@ -199,17 +206,17 @@ void MeshTools::fixNonManifoldEdges(CMesh& mesh) {
 
     dpInfo() << "=== FIX NON-MANIFOLD EDGES START ===";
     dpInfo() << "Faces:" << faces.size() << ", Vertices:" << verts.size();
-    //UI::STATUSBAR::setText("Fixing non-manifold edges...");
+    //appApi().setStatusText("Fixing non-manifold edges...");
 
     std::unordered_map<CEdge, std::vector<INDEX_TYPE>, EdgeHasher> edgeToFaces;
 
     dpInfo() << "Calling buildEdgeToFaces..." << endl;
-    //UI::STATUSBAR::setText("Building edge-to-faces map...");
+    //appApi().setStatusText("Building edge-to-faces map...");
 
     MeshTools::buildEdgeToFaces(mesh, edgeToFaces);
 
     dpInfo() << "buildEdgeToFaces returned, map size:" << edgeToFaces.size();
-    UI::STATUSBAR::setText("Identifying non-manifold edges...");
+    appApi().setStatusText("Identifying non-manifold edges...");
 
     // Faza 1: Identyfikacja non-manifold edges
     dpInfo() << "Starting identification phase...";
@@ -228,7 +235,7 @@ void MeshTools::fixNonManifoldEdges(CMesh& mesh) {
 
             double percent = (processed * 100.0) / edgeToFaces.size();
 
-            UI::STATUSBAR::setText(
+            appApi().setStatusText(
                 QString("Scanning edges: %1/%2 (%3%) - found %4 non-manifold")
                 .arg(processed).arg(edgeToFaces.size())
                 .arg((int)percent).arg(nonManifoldEdges.size())
@@ -251,12 +258,12 @@ void MeshTools::fixNonManifoldEdges(CMesh& mesh) {
 
     if (nonManifoldEdges.empty()) {
         dpInfo() << "No non-manifold edges found";
-        UI::STATUSBAR::setText("No non-manifold edges found");
+        appApi().setStatusText("No non-manifold edges found");
         return;
     }
 
     dpInfo() << "Found" << nonManifoldEdges.size() << "non-manifold edges";
-    UI::STATUSBAR::setText(QString("Found %1 non-manifold edges").arg(nonManifoldEdges.size()));
+    appApi().setStatusText(QString("Found %1 non-manifold edges").arg(nonManifoldEdges.size()));
 
     // Faza 2: Przygotowanie zmian (szybkie, bez alokacji)
     dpDebug() << "Preparing vertex duplicates...";
@@ -370,14 +377,14 @@ void MeshTools::fixNonManifoldVertices(CMesh& mesh) {
 
     dpInfo() << "=== FIX NON-MANIFOLD VERTICES START ===";
     dpInfo() << "Vertices:" << verts.size() << ", Faces:" << faces.size();
-    UI::STATUSBAR::setText("Building vertex-to-faces map...");
+    appApi().setStatusText("Building vertex-to-faces map...");
 
     // **U¯YJ NATYWNEJ METODY z CMesh**
     CMesh::V2Fmap vertexFaces;
     const_cast<CMesh&>(mesh).createV2Fmap(vertexFaces);
 
     dpInfo() << "Built V2Fmap for" << vertexFaces.size() << "vertices (only used)";
-    UI::STATUSBAR::setText("Analyzing non-manifold vertices...");
+    appApi().setStatusText("Analyzing non-manifold vertices...");
 
     std::vector<char> visitedFace;
     visitedFace.resize(faces.size());
@@ -403,7 +410,7 @@ void MeshTools::fixNonManifoldVertices(CMesh& mesh) {
 
             double percent = (processedVerts * 100.0) / vertexFaces.size();
 
-            UI::STATUSBAR::setText(
+            appApi().setStatusText(
                 QString("Analyzing vertex %1/%2 (%3%) - found %4 non-manifold - %5s")
                 .arg(processedVerts).arg(vertexFaces.size())
                 .arg((int)percent).arg(nonManifoldVertCount).arg((int)elapsed)
@@ -504,7 +511,7 @@ void MeshTools::fixNonManifoldVertices(CMesh& mesh) {
         dpDebug() << "No non-manifold vertices found (checked in" << totalTime << "s)";
     }
 
-    UI::STATUSBAR::setText("Non-manifold vertices fixed");
+    appApi().setStatusText("Non-manifold vertices fixed");
 }
 
 void MeshTools::removeIsolatedVertices(CMesh& mesh) {
@@ -587,7 +594,7 @@ void MeshTools::subdivideNarrowFaces(std::shared_ptr<CMesh> mesh,
 
     //using Edge = std::pair<INDEX_TYPE, INDEX_TYPE>;
 
-    UI::STATUSBAR::setText("Subdividing narrow faces...");
+    appApi().setStatusText("Subdividing narrow faces...");
     dpInfo() << "=== SUBDIVIDE NARROW FACES: START ===";
     dpInfo() << "Initial faces:" << mesh->faces().size()
         << ", vertices:" << mesh->vertices().size();
@@ -786,7 +793,7 @@ void MeshTools::subdivideNarrowFaces(std::shared_ptr<CMesh> mesh,
     dpInfo() << "Final faces:" << mesh->faces().size()
         << ", vertices:" << mesh->vertices().size();
     dpInfo() << "=== SUBDIVIDE NARROW FACES: END ===";
-    UI::STATUSBAR::setText("Subdivision complete");
+    appApi().setStatusText("Subdivision complete");
 }
 
 
@@ -828,4 +835,5 @@ void MeshTools::repairMesh(CMesh& mesh)
         << finalVerts << " (delta:" << static_cast<int>(finalVerts - initialVerts) << ")";
     dpInfo() << "=== MESH REPAIR: END ===";
 }
+
 

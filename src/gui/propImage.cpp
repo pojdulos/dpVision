@@ -1,11 +1,20 @@
 #include "propImage.h"
-#include "../api/UI.h"
+#include "../core/AppStateManager.h"
+#include "../core/WorkspacePanelManager.h"
 #include "../api/AP.h"
 
 #include "Image.h"
 
 #include "MainWindow.h"
 #include "QScrollArea"
+
+namespace
+{
+	CMainWindow* mainWindow()
+	{
+		return CMainWindow::instance();
+	}
+}
 
 
 PropImage::PropImage(CImage *m, QWidget *parent) : PropWidget( parent )
@@ -24,7 +33,7 @@ PropImage::~PropImage()
 
 void PropImage::updateProperties()
 {
-	QMdiSubWindow* window = AP::mainWinPtr()->getPicViewerInstance(obj->id());
+	QMdiSubWindow* window = mainWindow() ? mainWindow()->getPicViewerInstance(obj->id()) : nullptr;
 	
 	ui.showImageWindow->setChecked(window != nullptr);
 
@@ -84,7 +93,7 @@ void PropImage::scaleChanged(int i)
 		break;
 	}
 
-	QMdiSubWindow* window = AP::mainWinPtr()->getPicViewerInstance(obj->id());
+	QMdiSubWindow* window = mainWindow() ? mainWindow()->getPicViewerInstance(obj->id()) : nullptr;
 	if (window != nullptr)
 	{
 		((PicViewer*)((MdiChild*)window->widget())->m_widget)->reloadImage();
@@ -95,11 +104,17 @@ void PropImage::showWindow(bool b)
 {
 	if (b)
 	{
-		AP::mainWinPtr()->activatePicViewerInstance(obj->id());
+		if (auto win = mainWindow())
+		{
+			win->activatePicViewerInstance(obj->id());
+		}
 	}
 	else
 	{
-		AP::mainWinPtr()->closePicViewers(obj->id());
+		if (auto win = mainWindow())
+		{
+			win->closePicViewers(obj->id());
+		}
 	}
 }
 
@@ -108,20 +123,20 @@ void PropImage::show3d(bool b)
 	if (b)
 	{
 		((CModel3D*)obj)->setLocked(wasLocked);
-		UI::DOCK::WORKSPACE::setItemLockedById(obj->id(), wasLocked);
+		WorkspacePanelManager::setWorkspaceItemLocked(obj->id(), wasLocked);
 	}
 	else
 	{
 		wasLocked = ((CModel3D*)obj)->isLocked();
 		((CModel3D*)obj)->setLocked(true);
-		UI::DOCK::WORKSPACE::setItemLockedById(obj->id(), wasLocked);
+		WorkspacePanelManager::setWorkspaceItemLocked(obj->id(), wasLocked);
 	}
 	
 	emit signalChangedShow3d(b);
 
 	obj->setSelfVisibility(b);
-	UI::DOCK::WORKSPACE::setItemVisibleById(obj->id(), b);
-	UI::updateAllViews();
+	WorkspacePanelManager::setWorkspaceItemVisible(obj->id(), b);
+	AppStateManager::updateAllViews();
 }
 
 void PropImage::slotChangeShow3d(bool v)

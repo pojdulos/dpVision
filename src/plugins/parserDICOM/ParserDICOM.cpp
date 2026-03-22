@@ -148,8 +148,8 @@ size_t CParserDICOM::parse_dicom_file(std::string dicomPath, uint16_t slide, Vol
 			auto imageFrame = dataSet.getImage(frameNumber);
 			imebra::Image image0(imageFrame);
 
-			size_t w = image0.getWidth();
-			size_t h = image0.getHeight();
+			unsigned int w = static_cast<unsigned int>(image0.getWidth());
+			unsigned int h = static_cast<unsigned int>(image0.getHeight());
 			imebra::bitDepth_t d = image0.getDepth();
 
 			auto dataHandler = image0.getReadingDataHandler();
@@ -242,7 +242,7 @@ long CParserDICOM::read_files(std::shared_ptr<Volumetric> volum, int nbOfFiles, 
 		size_t result = parse_dicom_file(currentPath, slide, slice, metadata, false);
 		
 		if (result > 0) {
-			lbv += result;
+			lbv += static_cast<long>(result);
 			volum->push_back(slice);
 			volum->metadata.push_back(metadata);
 		} else {
@@ -337,8 +337,8 @@ long CParserDICOM::read_frames(std::shared_ptr<Volumetric> volum, imebra::DataSe
 
 		UI::PROGRESSBAR::setValue(frameNumber);
 
-		size_t w = image0.getWidth();
-		size_t h = image0.getHeight();
+		unsigned int w = static_cast<unsigned int>(image0.getWidth());
+		unsigned int h = static_cast<unsigned int>(image0.getHeight());
 		imebra::bitDepth_t d = image0.getDepth();
 
 		auto dataHandler = image0.getReadingDataHandler();
@@ -564,7 +564,7 @@ size_t CParserDICOM::Run()
 
 	}
 
-	volum->layers() = volum->size();
+	volum->layers() = static_cast<unsigned int>(volum->size());
 	volum->rows() = rows;
 	volum->columns() = columns;
 
@@ -608,7 +608,7 @@ bool CParserDICOM::_export(std::shared_ptr<Volumetric> volum, QString dir_name, 
 	UI::PROGRESSBAR::init(0, volum->layers(), 0);
 	UI::PROGRESSBAR::setText("Zapisuje pliki: ");
 
-	for (int i = 0; i < volum->layers(); i++)
+	for (unsigned int i = 0; i < volum->layers(); i++)
 	{
 		UI::PROGRESSBAR::setValue(i);
 

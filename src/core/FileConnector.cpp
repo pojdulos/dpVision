@@ -35,16 +35,16 @@ void CFileConnector::SavePMT( CModel3D *m, const char* nazwa )
 	StatusBarManager::setText( "PMFactory::SaveNewFormSMF() is writing to file (ver.5) now, please wait..." );
 
 	CMesh *src = (CMesh*)m->getChild().get();
+	size_t matIdx = 0;
+	const QByteArray texInfo = src->getMaterial(matIdx).TexInfo.toUtf8();
 
 	FILE *plik = fopen( nazwa, "w" );
-	
-	size_t matIdx = 0;
 
 	CVector3d e = m->getTransform().rotation().eulerAnglesDeg();
 
 	fprintf( plik, "# PM wersja pliku 05.14-21.00\n$m 5\n$o %d\n", src->orgsize );
-	fprintf( plik, "$v %zd\n$f %zd\n$s %zd\n", src->vertices().size(), src->faces().size(), src->vsplits.size() );
-	fprintf( plik, "$i %zd\n$c %zd\n$n %s\n", src->getMaterial(matIdx).texindex.size(), src->getMaterial(matIdx).texcoord.size(), src->getMaterial(matIdx).TexInfo );
+	fprintf( plik, "$v %zu\n$f %zu\n$s %zu\n", src->vertices().size(), src->faces().size(), src->vsplits.size() );
+	fprintf( plik, "$i %zu\n$c %zu\n$n %s\n", src->getMaterial(matIdx).texindex.size(), src->getMaterial(matIdx).texcoord.size(), texInfo.constData() );
 	fprintf( plik, "$r %f,%f,%f\n", e.x, e.y, e.z );
 	fprintf( plik, "$t %f,%f,%f\n", m->getTransform().translation().X(), m->getTransform().translation().Y(), m->getTransform().translation().Z() );
 	fprintf( plik, "$p 1.0\n" );
@@ -62,38 +62,44 @@ void CFileConnector::SavePMT( CModel3D *m, const char* nazwa )
 
 	for ( CMaterial::TextureIndexes::iterator iti=src->getMaterial(matIdx).texindex.begin(); iti!=src->getMaterial(matIdx).texindex.end(); iti++ )
 	{
-		fprintf( plik, "i %zd %zd %zd\n", iti->a, iti->b, iti->c );
+		fprintf( plik, "i %u %u %u\n",
+			static_cast<unsigned int>(iti->a),
+			static_cast<unsigned int>(iti->b),
+			static_cast<unsigned int>(iti->c) );
 	}
 
 	for (CMaterial::TextureCoordinates::iterator itc=src->getMaterial(matIdx).texcoord.begin(); itc!=src->getMaterial(matIdx).texcoord.end(); itc++ )
 	{
-		fprintf(plik, "c %f %f\n", itc[0], itc[1]);
+		fprintf(plik, "c %f %f\n", (*itc)[0], (*itc)[1]);
 	}
 
 	for ( CMesh::Vsplits::iterator its=src->vsplits.begin(); its!=src->vsplits.end(); its++ )
 	{
-		fprintf( plik, "s %zd %f %f %f", its->i1, its->v1.X(), its->v1.Y(), its->v1.Z() );
-		fprintf( plik, " %zd %f %f %f %zd", its->i2, its->v2.X(), its->v2.Y(), its->v2.Z(), its->delFcs.size() );
+		fprintf( plik, "s %zu %f %f %f", its->i1, its->v1.X(), its->v1.Y(), its->v1.Z() );
+		fprintf( plik, " %zu %f %f %f %zu", its->i2, its->v2.X(), its->v2.Y(), its->v2.Z(), its->delFcs.size() );
 
 		for ( _vsplit::Faces::iterator itfd=its->delFcs.begin(); itfd!=its->delFcs.end(); itfd++ )
 			fprintf( plik, " %d %d %d", itfd->A(), itfd->B(), itfd->C() );
 
-		fprintf( plik, " %zd", its->chgFcs.size() );
+		fprintf( plik, " %zu", its->chgFcs.size() );
 
 		for ( _vsplit::Faces::iterator itfc=its->chgFcs.begin(); itfc!=its->chgFcs.end(); itfc++ )
 			fprintf( plik, " %d %d %d", itfc->A(), itfc->B(), itfc->C() );
 
-		fprintf( plik, " %zd", its->delTI.size() );
+		fprintf( plik, " %zu", its->delTI.size() );
 		for ( _vsplit::TextureIndexes::iterator itti=its->delTI.begin(); itti!=its->delTI.end(); itti++ )
-			fprintf( plik, " %zd %zd %zd", itti->a, itti->b, itti->c );
+			fprintf( plik, " %u %u %u",
+				static_cast<unsigned int>(itti->a),
+				static_cast<unsigned int>(itti->b),
+				static_cast<unsigned int>(itti->c) );
 
-		fprintf( plik, " %zd", its->delTC.size() );
+		fprintf( plik, " %zu", its->delTC.size() );
 		for ( _vsplit::TextureCoords::iterator ittc=its->delTC.begin(); ittc!=its->delTC.end(); ittc++ )
-			fprintf( plik, " %zd %f %f", ittc->first, ittc->second[0], ittc->second[1]);
+			fprintf( plik, " %zu %f %f", ittc->first, ittc->second[0], ittc->second[1]);
 
-		fprintf( plik, " %zd", its->chgTC.size() );
+		fprintf( plik, " %zu", its->chgTC.size() );
 		for ( _vsplit::TextureCoords::iterator ittc=its->chgTC.begin(); ittc!=its->chgTC.end(); ittc++ )
-			fprintf( plik, " %zd %f %f", ittc->first, ittc->second[0], ittc->second[1]);
+			fprintf( plik, " %zu %f %f", ittc->first, ittc->second[0], ittc->second[1]);
 
 		fprintf( plik, "\n" );
 	}
@@ -106,8 +112,8 @@ void CFileConnector::SaveXML( CModel3D *m, const char* nazwa )
 	StatusBarManager::setText( "PMFactory::SaveXML() is writing to file now, please wait..." );
 	
 	CMesh *src = (CMesh*)m->getChild().get();
-
 	size_t matIdx = 0;
+	const QByteArray texInfo = src->getMaterial(matIdx).TexInfo.toUtf8();
 
 	FILE *plik = fopen( nazwa, "w" );
 	
@@ -120,16 +126,16 @@ void CFileConnector::SaveXML( CModel3D *m, const char* nazwa )
 
 	fprintf( plik, " <basemesh>\n" );
 
-	fprintf( plik, "  <vertices count=\"%zd\">\n", src->vertices().size() );
+	fprintf( plik, "  <vertices count=\"%zu\">\n", src->vertices().size() );
 	size_t j=0;
 	for ( CMesh::Vertices::iterator itv=src->vertices().begin(); itv!=src->vertices().end(); itv++ )
 	{
-		fprintf( plik, "   <vertex id=\"%zd\" x=\"%f\" y=\"%f\" z=\"%f\" />\n", j, itv->X(), itv->Y(), itv->Z() );
+		fprintf( plik, "   <vertex id=\"%zu\" x=\"%f\" y=\"%f\" z=\"%f\" />\n", j, itv->X(), itv->Y(), itv->Z() );
 		j++;
 	}
 	fprintf( plik, "  </vertices>\n" );
 
-	fprintf( plik, "  <faces count=\"%zd\">\n", src->faces().size() );
+	fprintf( plik, "  <faces count=\"%zu\">\n", src->faces().size() );
 	for ( CMesh::Faces::iterator itf=src->faces().begin(); itf!=src->faces().end(); itf++ )
 	{
 		fprintf( plik, "   <face a=\"%d\" b=\"%d\" c=\"%d\" />\n", itf->A(), itf->B(), itf->C() );
@@ -139,40 +145,43 @@ void CFileConnector::SaveXML( CModel3D *m, const char* nazwa )
 	fprintf( plik, " </basemesh>\n" );
 
 	fprintf( plik, " <texture>\n" );
-	fprintf( plik, "  <file>%s</file>\n", src->getMaterial(matIdx).TexInfo );
+	fprintf( plik, "  <file>%s</file>\n", texInfo.constData() );
 
-	fprintf( plik, "  <texindexes count=\"%zd\">\n", src->getMaterial(matIdx).texindex.size() );
+	fprintf( plik, "  <texindexes count=\"%zu\">\n", src->getMaterial(matIdx).texindex.size() );
 	for ( CMaterial::TextureIndexes::iterator iti=src->getMaterial(matIdx).texindex.begin(); iti!=src->getMaterial(matIdx).texindex.end(); iti++ )
 	{
-		fprintf( plik, "   <ti a=\"%zd\" b=\"%zd\" c=\"%zd\" />\n", iti->a, iti->b, iti->c );
+		fprintf( plik, "   <ti a=\"%u\" b=\"%u\" c=\"%u\" />\n",
+			static_cast<unsigned int>(iti->a),
+			static_cast<unsigned int>(iti->b),
+			static_cast<unsigned int>(iti->c) );
 	}
 	fprintf( plik, "  </texindexes>\n" );
 
-	fprintf( plik, "  <texcoords count=\"%zd\">\n", src->getMaterial(matIdx).texcoord.size() );
+	fprintf( plik, "  <texcoords count=\"%zu\">\n", src->getMaterial(matIdx).texcoord.size() );
 	j=0;
 	for ( CMaterial::TextureCoordinates::iterator itc=src->getMaterial(matIdx).texcoord.begin(); itc!=src->getMaterial(matIdx).texcoord.end(); itc++ )
 	{
-		fprintf( plik, "    <tc id=\"%zd\" s=\"%f\" t=\"%f\" />\n", j, itc[0], itc[1]);
+		fprintf( plik, "    <tc id=\"%zu\" s=\"%f\" t=\"%f\" />\n", j, (*itc)[0], (*itc)[1]);
 		j++;
 	}
 	fprintf( plik, "  </texcoords>\n" );
 
 	fprintf( plik, " </texture>\n" );
 
-	fprintf( plik, " <vsplits count=\"%zd\">\n", src->vsplits.size() );
+	fprintf( plik, " <vsplits count=\"%zu\">\n", src->vsplits.size() );
 
 	j=0;
 	for ( CMesh::Vsplits::iterator its=src->vsplits.begin(); its!=src->vsplits.end(); its++ )
 	{
-		fprintf( plik, "  <vsplit id=\"%zd\">\n", j++ );
-		fprintf( plik, "   <v1 id=\"%zd\" x=\"%f\" y=\"%f\" z=\"%f\" />\n", its->i1, its->v1.X(), its->v1.Y(), its->v1.Z() );
-		fprintf( plik, "   <v2 id=\"%zd\" x=\"%f\" y=\"%f\" z=\"%f\" />\n", its->i2, its->v2.X(), its->v2.Y(), its->v2.Z() );
+		fprintf( plik, "  <vsplit id=\"%zu\">\n", j++ );
+		fprintf( plik, "   <v1 id=\"%zu\" x=\"%f\" y=\"%f\" z=\"%f\" />\n", its->i1, its->v1.X(), its->v1.Y(), its->v1.Z() );
+		fprintf( plik, "   <v2 id=\"%zu\" x=\"%f\" y=\"%f\" z=\"%f\" />\n", its->i2, its->v2.X(), its->v2.Y(), its->v2.Z() );
 
 		//---------------------------------
 
 		if ( 0 != its->delFcs.size() )
 		{
-			fprintf( plik, "   <delFcs count=\"%zd\">\n", its->delFcs.size() );
+			fprintf( plik, "   <delFcs count=\"%zu\">\n", its->delFcs.size() );
 
 			for ( _vsplit::Faces::iterator itfd=its->delFcs.begin(); itfd!=its->delFcs.end(); itfd++ )
 				fprintf( plik, "    <face a=\"%d\" b=\"%d\" c=\"%d\" />\n", itfd->A(), itfd->B(), itfd->C() );
@@ -188,7 +197,7 @@ void CFileConnector::SaveXML( CModel3D *m, const char* nazwa )
 
 		if ( 0 != its->chgFcs.size() )
 		{
-			fprintf( plik, "   <chgFcs count=\"%zd\">\n", its->chgFcs.size() );
+			fprintf( plik, "   <chgFcs count=\"%zu\">\n", its->chgFcs.size() );
 
 			for ( _vsplit::Faces::iterator itfc=its->chgFcs.begin(); itfc!=its->chgFcs.end(); itfc++ )
 				fprintf( plik, "    <face a=\"%d\" b=\"%d\" c=\"%d\" />\n", itfc->A(), itfc->B(), itfc->C() );
@@ -204,10 +213,13 @@ void CFileConnector::SaveXML( CModel3D *m, const char* nazwa )
 
 		if ( 0 != its->delTI.size() )
 		{
-			fprintf( plik, "   <delTI count=\"%zd\">\n", its->delTI.size() );
+			fprintf( plik, "   <delTI count=\"%zu\">\n", its->delTI.size() );
 
 			for ( _vsplit::TextureIndexes::iterator itti=its->delTI.begin(); itti!=its->delTI.end(); itti++ )
-				fprintf( plik, "    <ti a=\"%zd\" b=\"%zd\" c=\"%zd\" />\n", itti->a, itti->b, itti->c );
+				fprintf( plik, "    <ti a=\"%u\" b=\"%u\" c=\"%u\" />\n",
+					static_cast<unsigned int>(itti->a),
+					static_cast<unsigned int>(itti->b),
+					static_cast<unsigned int>(itti->c) );
 
 			fprintf( plik, "   </delTI>\n" );
 		}
@@ -220,10 +232,10 @@ void CFileConnector::SaveXML( CModel3D *m, const char* nazwa )
 
 		if ( 0 != its->delTC.size() )
 		{
-			fprintf( plik, "   <delTC count=\"%zd\">\n", its->delTC.size() );
+			fprintf( plik, "   <delTC count=\"%zu\">\n", its->delTC.size() );
 
 			for ( _vsplit::TextureCoords::iterator ittc=its->delTC.begin(); ittc!=its->delTC.end(); ittc++ )
-				fprintf( plik, "    <tc id=\"%zd\" s=\"%f\" t=\"%f\" />\n", ittc->first, ittc->second[0], ittc->second[1]);
+				fprintf( plik, "    <tc id=\"%zu\" s=\"%f\" t=\"%f\" />\n", ittc->first, ittc->second[0], ittc->second[1]);
 
 			fprintf( plik, "   </delTC>\n" );
 		}
@@ -236,10 +248,10 @@ void CFileConnector::SaveXML( CModel3D *m, const char* nazwa )
 
 		if ( 0 != its->chgTC.size() )
 		{
-			fprintf( plik, "   <chgTC count=\"%zd\">\n", its->chgTC.size() );
+			fprintf( plik, "   <chgTC count=\"%zu\">\n", its->chgTC.size() );
 
 			for ( _vsplit::TextureCoords::iterator ittc=its->chgTC.begin(); ittc!=its->chgTC.end(); ittc++ )
-				fprintf( plik, "    <tc id=\"%zd\" s=\"%f\" t=\"%f\" />\n", ittc->first, ittc->second[0], ittc->second[1]);
+				fprintf( plik, "    <tc id=\"%zu\" s=\"%f\" t=\"%f\" />\n", ittc->first, ittc->second[0], ittc->second[1]);
 
 			fprintf( plik, "   </chgTC>\n" );
 		}

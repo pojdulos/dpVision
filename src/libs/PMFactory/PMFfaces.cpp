@@ -12,7 +12,7 @@ std::pair<CPMFfaces::iterator, bool> CPMFfaces::insert( _faces::value_type arg )
 	return result;
 };
 
-int CPMFfaces::fmap_erase( size_t key, size_t value )
+int CPMFfaces::fmap_erase( INDEX_TYPE key, size_t value )
 {
 	int result = 0;
 	std::pair<Fmap::iterator, Fmap::iterator> f_rng = fmap.equal_range( key );
@@ -56,7 +56,7 @@ size_t CPMFfaces::erase( size_t key )
 	return _faces::erase( key );
 };
 
-int CPMFfaces::ChangeValue( size_t key, size_t oldval, size_t newval )
+int CPMFfaces::ChangeValue( size_t key, INDEX_TYPE oldval, INDEX_TYPE newval )
 {
 	CPMFfaces::iterator it = _faces::find( key );
 	
@@ -83,7 +83,7 @@ int CPMFfaces::ChangeValue( size_t key, size_t oldval, size_t newval )
 	return -1;
 }
 
-CPMFfaces::iterator CPMFfaces::FindIfV( size_t v )
+CPMFfaces::iterator CPMFfaces::FindIfV( INDEX_TYPE v )
 {
 	Fmap::iterator fit = fmap.find( v );
 
@@ -93,7 +93,7 @@ CPMFfaces::iterator CPMFfaces::FindIfV( size_t v )
 	return CPMFfaces::iterator( result );
 }
 
-void CPMFfaces::FindAllIfV( size_t v, std::vector<CPMFfaces::iterator> &ret )
+void CPMFfaces::FindAllIfV( INDEX_TYPE v, std::vector<CPMFfaces::iterator> &ret )
 {
 	ret.clear();
 

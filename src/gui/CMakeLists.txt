@@ -16,32 +16,37 @@ qt5_add_resources(QRC_FILE ${CMAKE_CURRENT_SOURCE_DIR}/${EXE_NAME}.qrc)
 set(DPVISION_GUI_SRC
     ${GUI_SRC}
     ${QRC_FILE}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../core/AppSettings.cpp
 )
 
 add_library(dpVisionGui SHARED
     ${DPVISION_GUI_SRC}
 )
 
+target_compile_definitions(dpVisionGui PRIVATE DPVISION_BUILD)
 
-set(AUTOGEN_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/gui/dpVisionGui_autogen/include")
+set(GUI_AUTOGEN_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/dpVisionGui_autogen/include_$<CONFIG>")
 
 target_include_directories(dpVisionGui PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../core
     ${CMAKE_CURRENT_SOURCE_DIR}/../libs/PluginManager
-    ${AUTOGEN_INCLUDE_DIR}
-    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/gui/dpVisionGui_autogen/include>
+    $<BUILD_INTERFACE:${GUI_AUTOGEN_INCLUDE_DIR}>
     $<INSTALL_INTERFACE:include>
 )
 
 target_link_libraries(dpVisionGui
-    OpenGL::GL
-    ${GLU_LIBRARY}
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Widgets
-    Qt5::OpenGL
-    Eigen3::Eigen
+    PUBLIC
+        OpenGL::GL
+        dpVision::GLU
+        dpVision::Core
+        Qt5::Core
+        Qt5::Gui
+        Qt5::Widgets
+        Qt5::OpenGL
+        Eigen3::Eigen
+    PRIVATE
+        dpVision::LegacyApi
 )
 
 add_library(dpVision::Gui ALIAS dpVisionGui)

@@ -3,7 +3,6 @@
 #include "AnnotationPolygon2D.h"
 #include "Model3D.h"
 #include "Mesh.h"
-#include "../api/UI.h"
 
 void IAnnotationPolygon2DRenderer::renderSelf(const CBaseObject* _obj)
 {
@@ -42,12 +41,8 @@ void IAnnotationPolygon2DRenderer::renderSelf(const CBaseObject* _obj)
 			glBegin(GL_POLYGON);
 			for (auto pt2d : obj->m_pairs)
 			{
-
-				CPoint3d MousePt(pt2d.first, pt2d.second, 5);
-				CPoint3d Pt;
-
-				UI::CAMERA::convertWinToWorld(MousePt, Pt);
-				Pt = mdl->getTransform().world2local(Pt);
+				// Renderer fallback: without viewer-space conversion API, skip world projection.
+				CPoint3d Pt(pt2d.first, pt2d.second, 0.0);
 
 				glVertex3dv(Pt.toVector());
 			}

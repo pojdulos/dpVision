@@ -2,10 +2,18 @@
 //#include "WorkspaceXML.h"
 #include "WorkspaceFile.h"
 
-#include "../api/AP.h"
+#include "../api/adapters/AppAPIAdapter.h"
 
 #include "../renderers/IWorkspaceRenderer.h"
 #include "StatusBarManager.h"
+
+namespace {
+AppAPIAdapter& appApi()
+{
+	static AppAPIAdapter api;
+	return api;
+}
+}
 
 CWorkspace::CWorkspace() //: QObject()
 {
@@ -366,9 +374,9 @@ std::vector<CRGBA> CWorkspace::getXRayImage( CPoint3f pkt0, int size )
 
 	result.reserve( size * size );
 
-	if ( -1 != AP::WORKSPACE::getCurrentModelId() )
+	if ( -1 != appApi().workspace().getCurrentModelId() )
 	{
-			std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+			std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
 
 			//pkt0 = PointTransform( pkt0, obj->getRotation(), obj->getTranslation(), obj->getScale(), obj->getCtr(), obj->relocateCtr() );
 			pkt0 = obj->getTransform().world2local( pkt0 );
@@ -474,60 +482,5 @@ CBoundingBox CWorkspace::topBB()
 }
 
 
-#include "ParserDPV.h"
+// #include "ParserDPV.h"
 
-/*
-	Load Workspace from file
-*/
-//void CWorkspace::load(QString path)
-//{
-//	CFileInfo fname;
-//	fname.setPath(path);
-//
-//	if (fname.hasExt("dpvision"))
-//	{
-//		AP::WORKSPACE::removeAllModels();
-//
-//		CParserDPVISION* parser = new CParserDPVISION();
-//
-//		if (NULL != parser)
-//		{
-//			bool result = parser->load(path, true);
-//
-//			delete parser;
-//		}
-//	}
-//}
-
-
-/*
-	Save Workspace to file
-*/
-//bool CWorkspace::save(QString path)
-//{
-//	CFileInfo fname;
-//	fname.setPath(path);
-//
-//	if (fname.hasExt("dpvision"))
-//	{
-//		CParserDPVISION* parser = new CParserDPVISION();
-//
-//		if (NULL != parser)
-//		{
-//			QVector<CBaseObject*> objects;
-//
-//			for (const auto& o : this->m_pairs)
-//			{
-//				objects << (CBaseObject*)o.second;
-//			}
-//
-//			bool result = parser->save(objects, fname.absoluteFilePath());
-//
-//			delete parser;
-//
-//			return result;
-//		}
-//	}
-//
-//	return false;
-//}

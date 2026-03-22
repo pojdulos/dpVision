@@ -5,6 +5,7 @@
 
 #include "ImageLabel.h"
 #include "../api/UI.h"
+#include "../core/AppStateManager.h"
 #include <QKeyEvent>
 #include <QPainter>
 
@@ -458,7 +459,7 @@ void VolumetricImageDialog::onImageKeyPressed(QKeyEvent* e)
 			}
 		}
 	}
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 void VolumetricImageDialog::setTreshWidget(bool check, int min, int max, Volumetric::VoxelType low, Volumetric::VoxelType up)
@@ -618,23 +619,23 @@ QImage tesst4(QImage image, uint16_t treshold, uint16_t upTreshold, bool draw_up
 		for (qint32 x = 0; x < width; x++)
 		{
 			uint32_t lightness = 0;
-			if (depth == 16) // grayscale, 16bit�w na piksel
+			if (depth == 16) // grayscale, 16bitďż˝w na piksel
 			{
 				lightness = ((uint16_t*)src)[x];
 			}
-			else if (depth == 8) // grayscale, 8bit�w na piksel
+			else if (depth == 8) // grayscale, 8bitďż˝w na piksel
 			{
 				lightness = src[x];
 			}
-			else if (depth == 32) // ARGB, 8bit�w na kolor
+			else if (depth == 32) // ARGB, 8bitďż˝w na kolor
 			{
 				lightness = src[4 * x];
 			}
-			else if (depth == 24) // RGB, 8bit�w na kolor
+			else if (depth == 24) // RGB, 8bitďż˝w na kolor
 			{
 				lightness = src[3 * x];
 			}
-			else if (depth == 48) // RGB, 16bit�w na kolor
+			else if (depth == 48) // RGB, 16bitďż˝w na kolor
 			{
 				lightness = ((uint16_t*)src)[3 * x];
 			}
@@ -755,15 +756,15 @@ QImage doMedianFilter(QImage srcImg, int size)
 }
 
 
-// Funkcja obliczająca wymiary obrazu rzutowanego oraz jego głębokość
+// Funkcja obliczajÄ…ca wymiary obrazu rzutowanego oraz jego gĹ‚Ä™bokoĹ›Ä‡
 CPoint3f VolumetricImageDialog::calculateProjectionDimensions(const CPoint3f& orig, const CVector3f& norm, const CVector3f& up,
 	float columns, float rows, float layers) {
 	
-	// Wektory pomocnicze do przekształcenia współrzędnych
+	// Wektory pomocnicze do przeksztaĹ‚cenia wspĂłĹ‚rzÄ™dnych
 	CVector3f right = up.crossProduct(norm).getNormalized();
 	CVector3f newUp = norm.crossProduct(right).getNormalized();
 
-	// Współrzędne wierzchołków kostki
+	// WspĂłĹ‚rzÄ™dne wierzchoĹ‚kĂłw kostki
 	std::vector<CPoint3f> vertices = {
 		{0.0f, 0.0f, 0.0f},
 		{columns, 0.0f, 0.0f},
@@ -775,7 +776,7 @@ CPoint3f VolumetricImageDialog::calculateProjectionDimensions(const CPoint3f& or
 		{0.0f, rows, layers}
 	};
 
-	// Transformacja współrzędnych wierzchołków do układu płaszczyzny rzutowania
+	// Transformacja wspĂłĹ‚rzÄ™dnych wierzchoĹ‚kĂłw do ukĹ‚adu pĹ‚aszczyzny rzutowania
 	std::vector<CPoint3f> projectedVertices;
 	for (const auto& vertex : vertices) {
 		CPoint3f translated = { vertex.x - orig.x, vertex.y - orig.y, vertex.z - orig.z };
@@ -785,7 +786,7 @@ CPoint3f VolumetricImageDialog::calculateProjectionDimensions(const CPoint3f& or
 		projectedVertices.push_back({ x, y, z });
 	}
 
-	// Obliczenie rozmiarów obrazu na płaszczyźnie rzutowania
+	// Obliczenie rozmiarĂłw obrazu na pĹ‚aszczyĹşnie rzutowania
 	float minX = std::numeric_limits<float>::max(), maxX = std::numeric_limits<float>::lowest();
 	float minY = std::numeric_limits<float>::max(), maxY = std::numeric_limits<float>::lowest();
 	float minZ = std::numeric_limits<float>::max(), maxZ = std::numeric_limits<float>::lowest();
@@ -826,7 +827,7 @@ void createRotationMatrixX(float phi, float matrix[3][3]) {
 }
 
 CVector3f calculateFreeNorm(float cam_yaw, float cam_pitch) {
-	// Wektor początkowy free_norm
+	// Wektor poczÄ…tkowy free_norm
 	CVector3f free_norm = { 0.0f, 0.0f, 1.0f };
 
 	// Macierze rotacji
@@ -838,30 +839,30 @@ CVector3f calculateFreeNorm(float cam_yaw, float cam_pitch) {
 	createRotationMatrixY(cam_yaw, rotationY);
 	createRotationMatrixX(cam_pitch, rotationX);
 
-	// Rotacja wokół osi Y (yaw)
+	// Rotacja wokĂłĹ‚ osi Y (yaw)
 	CVector3f free_norm_yaw = free_norm.transform(rotationY);
 
 	free_norm_yaw.normalize();
 
-	// Rotacja wokół osi X (pitch)
+	// Rotacja wokĂłĹ‚ osi X (pitch)
 	CVector3f free_norm_pitch = free_norm_yaw.transform(rotationX);
 
 	return free_norm_pitch.getNormalized();
 
 
-	//// Rotacja wokół osi X (pitch)
+	//// Rotacja wokĂłĹ‚ osi X (pitch)
 	//CVector3f free_norm_pitch = free_norm.transform(rotationX);
 
 	//free_norm_pitch.normalize();
 
-	//// Rotacja wokół osi Y (yaw)
+	//// Rotacja wokĂłĹ‚ osi Y (yaw)
 	//CVector3f free_norm_yaw = free_norm_pitch.transform(rotationY);
 
 	//return free_norm_yaw.getNormalized();
 }
 
 CVector3f calculateFreeNorm3(float cam_yaw, float cam_pitch) {
-	// Wektor początkowy free_norm
+	// Wektor poczÄ…tkowy free_norm
 	CVector3f free_norm = { 1.0f, 0.0f, 0.0f };
 
 	// Macierze rotacji
@@ -873,12 +874,12 @@ CVector3f calculateFreeNorm3(float cam_yaw, float cam_pitch) {
 	//createRotationMatrixY(cam_yaw, rotationY);
 	createRotationMatrixY(cam_pitch, rotationY);
 
-	// Rotacja wokół osi Y (yaw)
+	// Rotacja wokĂłĹ‚ osi Y (yaw)
 	CVector3f free_norm_yaw = free_norm.transform(rotationZ);
 
 	free_norm_yaw.normalize();
 
-	// Rotacja wokół osi X (pitch)
+	// Rotacja wokĂłĹ‚ osi X (pitch)
 	CVector3f free_norm_pitch = free_norm_yaw.transform(rotationY);
 
 	return free_norm_pitch.getNormalized();
@@ -886,7 +887,7 @@ CVector3f calculateFreeNorm3(float cam_yaw, float cam_pitch) {
 
 
 CVector3f calculateFreeUp3(float cam_yaw, float cam_pitch) {
-	// Wektor początkowy free_up
+	// Wektor poczÄ…tkowy free_up
 	CVector3f free_up = { 0.0f, 0.0f, -1.0f };
 
 	// Macierze rotacji
@@ -899,7 +900,7 @@ CVector3f calculateFreeUp3(float cam_yaw, float cam_pitch) {
 	//createRotationMatrixX(cam_pitch, rotationX);
 	createRotationMatrixY(cam_pitch, rotationY);
 
-	// Rotacja wokół osi Y (yaw) i następnie wokół osi X (pitch)
+	// Rotacja wokĂłĹ‚ osi Y (yaw) i nastÄ™pnie wokĂłĹ‚ osi X (pitch)
 	//CVector3f free_up_transformed = free_up.transform(rotationY).transform(rotationX);
 	CVector3f free_up_transformed = free_up.transform(rotationY).transform(rotationZ);
 
@@ -908,7 +909,7 @@ CVector3f calculateFreeUp3(float cam_yaw, float cam_pitch) {
 
 
 CVector3f calculateFreeUp(float cam_yaw, float cam_pitch) {
-	// Wektor początkowy free_up
+	// Wektor poczÄ…tkowy free_up
 	CVector3f free_up = { 0.0f, 1.0f, 0.0f };
 
 	// Macierze rotacji
@@ -918,7 +919,7 @@ CVector3f calculateFreeUp(float cam_yaw, float cam_pitch) {
 	createRotationMatrixY(cam_yaw, rotationY);
 	createRotationMatrixX(cam_pitch, rotationX);
 
-	// Rotacja wokół osi Y (yaw) i następnie wokół osi X (pitch)
+	// Rotacja wokĂłĹ‚ osi Y (yaw) i nastÄ™pnie wokĂłĹ‚ osi X (pitch)
 	//CVector3f free_up_transformed = free_up.transform(rotationY).transform(rotationX);
 	CVector3f free_up_transformed = free_up.transform(rotationX).transform(rotationY);
 
@@ -926,10 +927,10 @@ CVector3f calculateFreeUp(float cam_yaw, float cam_pitch) {
 }
 
 CVector3f calculateFreeUp2(const CVector3f& free_norm) {
-	// Zakładamy, że pierwotny wektor up to (0, 1, 0)
+	// ZakĹ‚adamy, ĹĽe pierwotny wektor up to (0, 1, 0)
 	CVector3f world_up = { 0.0f, 1.0f, 0.0f };
 
-	// Jeśli free_norm jest prawie równoległy do world_up, użyj wektora alternatywnego
+	// JeĹ›li free_norm jest prawie rĂłwnolegĹ‚y do world_up, uĹĽyj wektora alternatywnego
 	if (std::abs(free_norm.x) < 1e-6 && std::abs(free_norm.z) < 1e-6) {
 		world_up = { 0.0f, 0.0f, 1.0f };
 	}
@@ -1446,8 +1447,8 @@ void VolumetricImageDialog::on_displ_min_valueChanged(int v)
 	ui.displ_max->setMinimum(v);
 	ui.displ_max->blockSignals(false);
 
-	UI::DOCK::PROPERTIES::updateProperties();
-	UI::updateAllViews();
+	AppStateManager::updateProperties();
+	AppStateManager::updateAllViews();
 }
 
 void VolumetricImageDialog::on_displ_max_valueChanged(int v)
@@ -1465,8 +1466,8 @@ void VolumetricImageDialog::on_displ_max_valueChanged(int v)
 	ui.displ_min->setMaximum(v);
 	ui.displ_min->blockSignals(false);
 
-	UI::DOCK::PROPERTIES::updateProperties();
-	UI::updateAllViews();
+	AppStateManager::updateProperties();
+	AppStateManager::updateAllViews();
 }
 
 
@@ -1837,146 +1838,3 @@ void VolumetricImageDialog::onImageMouseMoved(QMouseEvent* e)
 }
 
 
-//
-//int mediana(NowaKostka1& kostka, size_t destAdress, size_t cols, int size)
-//{
-//	int halfSize = size / 2;
-//	size_t srcAdress = destAdress - halfSize;
-//
-//	int srcVal[81]; //array for maximal size 9
-//	
-//	size_t srcRowAdress = srcAdress - cols * halfSize;
-//
-//	for (int srow = 0; srow < size; srow++)
-//	{
-//		size_t srcCellAdress = srcRowAdress + srow;
-//		for (int scol = 0; scol < size; scol++)
-//		{
-//			srcVal[srow * size + scol] = ((NowaKostka1&)kostka).get(srcCellAdress);
-//			srcCellAdress++;
-//		}
-//
-//		srcRowAdress += cols;
-//	}
-//	return med(srcVal, size*size);
-//}
-//
-//int VolTKimageDialog::mediana0(NowaKostka1& kostka, size_t dest0adress, int filterSize)
-//{
-//	size_t srcRowAdress = dest0adress;
-//
-//	int* srcVal = new int[filterSize*filterSize]; //array for maximal size 9
-//	int fastIdx = 0;
-//	for (int srow = 0; srow < filterSize; srow++)
-//	{
-//		size_t srcCellAdress = srcRowAdress + srow;
-//		for (int scol = 0; scol < filterSize; scol++)
-//		{
-//			//srcVal[srow * filterSize + scol] = ((NowaKostka1&)kostka).get(srcCellAdress);
-//			srcVal[fastIdx] = kostka.get(srcCellAdress);
-//			fastIdx++;
-//			srcCellAdress++;
-//		}
-//
-//		srcRowAdress += kostka.m_cols;
-//	}
-//
-//	int result = med(srcVal, filterSize * filterSize);
-//	delete[] srcVal;
-//	
-//	return result;
-//}
-//
-//
-//void VolTKimageDialog::do3dMedianFilter(NowaKostka1& src, NowaKostka1&dst, int size)
-//{
-// auto prg_ = IProgressListener::getDefault();
-//	if (prg_) prg_->init(0, src.m_lays, 0, "3d data filtering: ");
-//
-//	size_t destOffset2 = src.m_cols * (size / 2) + (size / 2);
-//	
-//	bool setTresh = ui.treshGroupBox->isChecked();
-//	int lowTresh = ui.treshSlider->value();
-//	int upTresh = ui.upTreshSlider->value();
-//
-//	for (size_t layer = 0; layer < src.m_lays; layer++)
-//	{
-//		if (!(layer%10)) if (prg_) prg_->setValue(layer);
-//		size_t layOffset = src.m_rows * src.m_cols * layer;
-////		#pragma loop(hint_parallel(0))
-//		for (size_t row = 0; row < (src.m_rows - (size - 1)); row++)
-//		{
-//			size_t rowOffset = src.m_cols * row;
-//			for (size_t col = 0; col < (src.m_cols - (size - 1)); col++)
-//			{
-//				size_t currentFilter0adress = layOffset + rowOffset + col;
-//				size_t currentDestAdress = currentFilter0adress + destOffset2;
-//
-//				int newValue = mediana0(src, currentFilter0adress, size);
-//				
-//				//if (setTresh)
-//				//{
-//				//	if (newValue < lowTresh)
-//				//	{
-//				//		newValue = 0;
-//				//	}
-//				//	else if (newValue > upTresh)
-//				//	{
-//				//		newValue = 0;
-//				//	}
-//				//}
-//
-//				//dst.set(currentDestAdress, newValue);
-//				dst.set(col+(size/2),row+(size/2),layer, newValue);
-//			}
-//		}
-//	}
-//	if (prg_) prg_->hide();
-//}
-//
-
-//#include "../api/AP.h"
-
-//void VolTKimageDialog::onCreateVolTKStructureBtn()
-//{
-//	Volumetric* nowy = new Volumetric(*m_VolTK);
-//
-//	if (ui.medianGroupBox->isChecked())
-//	{
-//		nowy->kostka.setAllData(0);
-//		do3dMedianFilter(m_VolTK->kostka, nowy->kostka, ui.medianFilterSizeSpinBox->value());
-//	}
-//
-//	int lowTresh = ui.treshSlider->value();
-//	int upTresh = ui.upTreshSlider->value();
-//
-//	if (ui.treshGroupBox->isChecked())
-//	{
-//		for (size_t l = 0; l < nowy->kostka.m_lays; l++)
-//			for (size_t r = 0; r < nowy->kostka.m_rows; r++)
-//				for (size_t c = 0; c < nowy->kostka.m_cols; c++)
-//				{
-//					int val = nowy->kostka.get(c, r, l);
-//
-//					if (val < lowTresh)
-//					{
-//						nowy->kostka.set(c, r, l, 0);
-//					}
-//					else if (val > upTresh)
-//					{
-//						nowy->kostka.set(c, r, l, 0xffff);
-//					}
-//					else
-//					{
-//						nowy->kostka.set(c, r, l, val);
-//					}
-//				}
-//	}
-//
-//	nowy->createDisplayData();
-//	nowy->setGeometry();
-//
-//	AP::OBJECT::addChild(m_VolTK->getParent(), nowy);
-//
-//	accept();
-//}

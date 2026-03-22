@@ -1,6 +1,8 @@
 #include "MainWindow.h"
 
 #include "../api/AP.h"
+#include "../api/adapters/AppAPIAdapter.h"
+#include "../core/AppStateManager.h"
 #include "MainApplication.h"
 
 #include "../api/UI.h"
@@ -11,6 +13,20 @@
 #include <QtNetwork/QLocalSocket>
 #include <QtNetwork/QTcpSocket>
 #include <QCloseEvent>
+
+namespace
+{
+	AppAPIAdapter& appApi()
+	{
+		static AppAPIAdapter api;
+		return api;
+	}
+
+	CMainApplication* mainApplication()
+	{
+		return static_cast<CMainApplication*>(QApplication::instance());
+	}
+}
 
 void CMainWindow::startServer()
 {
@@ -73,7 +89,7 @@ void CMainWindow::proceessData()
 	}
 	else if (cmd.startsWith("list")) {
 		response = "";
-		for (auto x : *AP::getWorkspace())
+		for (auto x : *CWorkspace::instance())
 		{
 			if (x.second != nullptr) {
 				response = QString::number(x.second->id()) + " " + x.second->getLabel() + " " + x.second->path() + "\n\r";
@@ -85,11 +101,11 @@ void CMainWindow::proceessData()
 		int id = QString(cmdline.at(1)).toInt();
 		double rX = QString(cmdline.at(2)).toDouble();
 
-		std::shared_ptr<CModel3D> obj = std::dynamic_pointer_cast<CModel3D>( AP::WORKSPACE::findId(id) );
+		std::shared_ptr<CModel3D> obj = std::dynamic_pointer_cast<CModel3D>(appApi().workspace().findId(id));
 		if (obj != nullptr) {
 			obj->getTransform().rotateAroundAxisDeg(CVector3d::XAxis(), rX);
 			updateAllViews();
-			UI::DOCK::PROPERTIES::updateProperties();
+			AppStateManager::updateProperties();
 			clientSocket->write(QString("Gotowe.\n\r").toLocal8Bit());
 		}
 		else
@@ -98,11 +114,11 @@ void CMainWindow::proceessData()
 	else if (cmd.startsWith("remove")) {
 		int id = QString(cmdline.at(1)).toInt();
 
-		std::shared_ptr<CModel3D> obj = std::dynamic_pointer_cast<CModel3D>(AP::WORKSPACE::findId(id));
+		std::shared_ptr<CModel3D> obj = std::dynamic_pointer_cast<CModel3D>(appApi().workspace().findId(id));
 		if (obj != nullptr) {
 			CWorkspace::instance()->_objectRemove(id);
 			updateAllViews();
-			UI::DOCK::PROPERTIES::updateProperties();
+			AppStateManager::updateProperties();
 			clientSocket->write(QString("Gotowe.\n\r").toLocal8Bit());
 		}
 		else
@@ -113,7 +129,7 @@ void CMainWindow::proceessData()
 		response = "Niepoprawna sk�adnia polecenia, napisales: %1 \n\r" + recievedData + "\n\r";
 		if (cmdline.at(1).startsWith("run"))
 		{
-			if (AP::PLUGIN::runPlugin(cmdline.at(2)))
+			if (mainApplication() != nullptr && mainApplication()->runPlugin(cmdline.at(2)))
 			{
 				response = "Wtyczka zosta�a uruchomiona.\n\r";
 			}

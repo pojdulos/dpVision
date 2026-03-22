@@ -2,6 +2,7 @@
 #include "AnnotationTriple.h"
 
 #include "../api/UI.h"
+#include "../core/AppStateManager.h"
 #include <QVBoxLayout>
 
 PropAnnotationTriple::PropAnnotationTriple(CAnnotationTriple *an, QWidget *parent) : PropWidget( parent )
@@ -77,35 +78,35 @@ void PropAnnotationTriple::updateProperties()
 void PropAnnotationTriple::changedCtrX(double x)
 {
 	((CAnnotationTriple*)obj)->origin().X(x);
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 void PropAnnotationTriple::changedCtrY(double y)
 {
 	((CAnnotationTriple*)obj)->origin().Y(y);
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 void PropAnnotationTriple::changedCtrZ(double z)
 {
 	((CAnnotationTriple*)obj)->origin().Z(z);
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 void PropAnnotationTriple::changedNormX(double x)
 {
 	((CAnnotationTriple*)obj)->rot().X(x);
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 void PropAnnotationTriple::changedNormY(double y)
 {
 	((CAnnotationTriple*)obj)->rot().Y(y);
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 void PropAnnotationTriple::changedNormZ(double z)
 {
 	((CAnnotationTriple*)obj)->rot().Z(z);
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }

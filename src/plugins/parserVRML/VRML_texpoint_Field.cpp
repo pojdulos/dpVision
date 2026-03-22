@@ -2,7 +2,15 @@
 
 #include "ParserWRL.h"
 
-#include "../api/UI.h"
+#include "../api/adapters/PluginUIAPIAdapter.h"
+
+namespace {
+PluginUIAPIAdapter& uiApi()
+{
+    static PluginUIAPIAdapter api;
+    return api;
+}
+}
 
 size_t CParserWRL::VRML_ParseField_texpoint( FILE *plik )
 {
@@ -11,7 +19,7 @@ size_t CParserWRL::VRML_ParseField_texpoint( FILE *plik )
 
 	CTCoord koord;
 
-	UI::STATUSBAR::printf( "Reading TextPoint section..." );
+	uiApi().statusBar().setText("Reading TextPoint section...");
 
 	while ( fscanf( plik, " %f %f ", &s, &t ) == 2)
 	{
@@ -19,7 +27,7 @@ size_t CParserWRL::VRML_ParseField_texpoint( FILE *plik )
 		koord[1] = t;
 		pMeshData->getMaterial().texcoord.push_back( koord );
 		ltp++;
-		fscanf( plik, " , " ); // uwaga: przecinka mo�e nie by�
+		fscanf( plik, " , " ); // uwaga: przecinka moďż˝e nie byďż˝
 	}
 	fscanf( plik, " ] " );
 

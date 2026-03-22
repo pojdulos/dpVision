@@ -2,6 +2,7 @@
 #include "AnnotationPoint.h"
 
 #include "../api/UI.h"
+#include "../core/AppStateManager.h"
 #include <QVBoxLayout>
 
 PropAnnotationPoint::PropAnnotationPoint(CAnnotationPoint *an, QWidget *parent) : PropWidget( parent )
@@ -90,19 +91,19 @@ void PropAnnotationPoint::updateProperties()
 void PropAnnotationPoint::changedCtrX(double x)
 {
 	obj->x = x;
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 void PropAnnotationPoint::changedCtrY(double y)
 {
 	obj->y = y;
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 void PropAnnotationPoint::changedCtrZ(double z)
 {
 	obj->z = z;
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 void PropAnnotationPoint::changedNormX(double x)
@@ -112,7 +113,7 @@ void PropAnnotationPoint::changedNormX(double x)
 	double len = ui.dirLen->value();
 
 	obj->setDirection(v * len);
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 void PropAnnotationPoint::changedNormY(double y)
@@ -122,7 +123,7 @@ void PropAnnotationPoint::changedNormY(double y)
 	double len = ui.dirLen->value();
 
 	obj->setDirection(v * len);
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 void PropAnnotationPoint::changedNormZ(double z)
@@ -153,7 +154,7 @@ void PropAnnotationPoint::changedNormZ(double z)
 	ui.dirY->blockSignals(false);
 
 	obj->setDirection(CVector3d(x, y, z) * len);
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 void PropAnnotationPoint::changedNormLen(double l)
@@ -162,18 +163,18 @@ void PropAnnotationPoint::changedNormLen(double l)
 	double len = ui.dirLen->value();
 
 	obj->setDirection(v*len);
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 void PropAnnotationPoint::toggledShowNorm(bool b)
 {
 	obj->m_showNorm = b;
-	UI::updateAllViews();
+	AppStateManager::updateAllViews();
 }
 
 //
 //void PropAnnotationPlane::changedSize(int s)
 //{
 //	((CAnnotationPlane*)obj)->setSize(s);
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}

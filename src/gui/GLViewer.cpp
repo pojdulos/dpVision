@@ -3,6 +3,7 @@
 //#include "../api/AP.h"
 
 #include "../api/UI.h"
+#include "../api/adapters/AppAPIAdapter.h"
 
 //#include <QMdiSubWindow>
 //#include <QCloseEvent>
@@ -16,6 +17,15 @@
 
 
 bool mouse_key_pressed;
+
+namespace
+{
+	AppAPIAdapter& appApi()
+	{
+		static AppAPIAdapter api;
+		return api;
+	}
+}
 
 GLViewer::GLViewer(QWidget *parent) : QOpenGLWidget(parent)
 {
@@ -601,7 +611,7 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 	auto win = CMainWindow::instance();
 	auto progress = win->progressIndicator;
 
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
 	if (NULL != obj)
 	{
 		setSelectionMode(99);
@@ -650,7 +660,6 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 					//#pragma omp parallel for
 					for (int i = 0; i < size; i++)
 					{
-						//UI::STATUSBAR::printfTimed(500, QString::number(i).toStdString().c_str());
 						//if ((i%10000)==0) printf("Start iteracji %d przez wątek %d\n", i, omp_get_thread_num());
 
 						CPoint3d point = cloud->vertices()[i];
@@ -683,7 +692,6 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 						
 						//#pragma omp atomic
 						//std::cout << i << endl;
-						//UI::STATUSBAR::setText(QString::number(i));
 						if ((i % step) == 0) progress->setValue(i);
 						//printf("Koniec iteracji %d przez wątek %d\n", i, omp_get_thread_num());
 					}
@@ -702,7 +710,7 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 							progress->init(0, mesh->faces().size(), 0);
 							for (int j = 0; j < mesh->faces().size(); j++)
 							{
-								if ((j%1000)==0) //UI::STATUSBAR::setText(QString("Reindexing faces: %1").arg(j));
+								if ((j%1000)==0)
 									progress->setValue(j);
 								CFace f = mesh->faces()[j];
 								
@@ -747,11 +755,11 @@ void GLViewer::deleteSelectedVertices(bool deleteSelected)
 				}
 			}
 		}
-		AP::leaveSelectionMode();
+		if (auto win = CMainWindow::instance()) win->leaveSelectionMode();
 	}
 	else
 	{
-		AP::leaveSelectionMode();
+		if (auto win = CMainWindow::instance()) win->leaveSelectionMode();
 		win->statusBar()->showMessage("You need first select an object!!!");
 	}
 	this->repaint();
@@ -809,7 +817,6 @@ void GLViewer::mouseReleaseEvent( QMouseEvent* event )
 //			if (((x - pos.x()) * (x - pos.x()) + (y - pos.y()) * (y - pos.y())) <= (m_selSize * m_selSize) )
 //			{
 //				m_selXY.insert(std::pair<int,int>(x, y));
-//				//UI::STATUSBAR::printf(L"CYAN: [%d,%d]", x, y);
 //			}
 //
 //	return false;
@@ -837,7 +844,7 @@ void GLViewer::rotate(double dx, double dy) {
 	CVector3d yAxis = invR * CVector3d::YAxis();
 	//CVector3d zAxis = invR * CVector3d::ZAxis();
 
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
 
 	auto win = CMainWindow::instance();
 
@@ -866,13 +873,14 @@ void GLViewer::rotate(double dx, double dy) {
 void GLViewer::translate(double dx, double dy, double dz) {
 	auto win = CMainWindow::instance();
 
-	if (NULL != AP::WORKSPACE::getCurrentModel())
+	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
+	if (NULL != obj)
 	{
 		CQuaternion invR = m_transform.rotation().inverse();
 
 		CVector3d t = invR * CVector3d(dx, dy, dz);
 
-		AP::WORKSPACE::getCurrentModel()->transform().translate(t);
+		obj->transform().translate(t);
 
 		emit translationChanged(t.X(), t.Y(), t.Z());
 
@@ -896,7 +904,11 @@ void GLViewer::mouseMoveEvent( QMouseEvent* event )
 {
 	auto win = CMainWindow::instance();
 
-	std::shared_ptr<CBaseObject> obj = UI::DOCK::WORKSPACE::getCurrentItemObj();
+	std::shared_ptr<CBaseObject> obj;
+	if (win != nullptr && win->dockWorkspace != nullptr)
+	{
+		obj = win->dockWorkspace->getCurrentItemObj();
+	}
 	if ( obj != nullptr) {
 		if (obj->mouseMoveEvent(event)) return;
 	}
@@ -920,13 +932,15 @@ void GLViewer::mouseMoveEvent( QMouseEvent* event )
 			{
 				if (Qt::ShiftModifier == QApplication::keyboardModifiers())
 				{
-					double factor = (NULL != AP::WORKSPACE::getCurrentModel()) ? AP::WORKSPACE::getCurrentModel()->transform().scale().x : 5.0;
+					std::shared_ptr<CModel3D> currentModel = appApi().workspace().getCurrentModel();
+					double factor = (NULL != currentModel) ? currentModel->transform().scale().x : 5.0;
 
 					this->translate(0.0, 0.0, dy / factor);
 				}
 				else if (Qt::ControlModifier == QApplication::keyboardModifiers())
 				{
-					CPoint3d factor = (NULL != AP::WORKSPACE::getCurrentModel()) ? AP::WORKSPACE::getCurrentModel()->transform().scale() : CPoint3d(5.0, 5.0, 5.0);
+					std::shared_ptr<CModel3D> currentModel = appApi().workspace().getCurrentModel();
+					CPoint3d factor = (NULL != currentModel) ? currentModel->transform().scale() : CPoint3d(5.0, 5.0, 5.0);
 					
 					this->translate(dx / factor.x, -dy / factor.y, 0.0);
 				}
@@ -950,13 +964,15 @@ void GLViewer::mouseMoveEvent( QMouseEvent* event )
 			}
 			else if (event->buttons() & Qt::MouseButton::MiddleButton)
 			{
-				double factor = (NULL != AP::WORKSPACE::getCurrentModel()) ? AP::WORKSPACE::getCurrentModel()->transform().scale().x : 5.0;
+				std::shared_ptr<CModel3D> currentModel = appApi().workspace().getCurrentModel();
+				double factor = (NULL != currentModel) ? currentModel->transform().scale().x : 5.0;
 
 				this->translate(0.0, 0.0, dy / factor);
 			}
 			else if (event->buttons() & Qt::MouseButton::RightButton)
 			{
-				CPoint3d factor = (NULL != AP::WORKSPACE::getCurrentModel()) ? AP::WORKSPACE::getCurrentModel()->transform().scale() : CPoint3d(5.0, 5.0, 5.0);
+				std::shared_ptr<CModel3D> currentModel = appApi().workspace().getCurrentModel();
+				CPoint3d factor = (NULL != currentModel) ? currentModel->transform().scale() : CPoint3d(5.0, 5.0, 5.0);
 
 				this->translate(dx / factor.x, -dy / factor.y, 0.0);
 			}
@@ -988,7 +1004,11 @@ void GLViewer::wheelEvent(QWheelEvent * event)
 {
 	auto win = CMainWindow::instance();
 
-	std::shared_ptr<CBaseObject> obj = UI::DOCK::WORKSPACE::getCurrentItemObj();
+	std::shared_ptr<CBaseObject> obj;
+	if (win != nullptr && win->dockWorkspace != nullptr)
+	{
+		obj = win->dockWorkspace->getCurrentItemObj();
+	}
 	if (obj != nullptr) {
 		if (obj->wheelEvent(event)) return;
 	}
@@ -1000,13 +1020,14 @@ void GLViewer::wheelEvent(QWheelEvent * event)
 
 		double d = -(double)event->angleDelta().y();
 
-		if (NULL != AP::WORKSPACE::getCurrentModel())
+		std::shared_ptr<CModel3D> currentModel = appApi().workspace().getCurrentModel();
+		if (NULL != currentModel)
 		{
-			double factor = 10.0 * AP::WORKSPACE::getCurrentModel()->getTransform().scale().x;
+			double factor = 10.0 * currentModel->getTransform().scale().x;
 
 			CVector3d t = CVector3d(0.0, 0.0, d / factor).transformByMatrixD(matrix);
 
-			AP::WORKSPACE::getCurrentModel()->getTransform().translate(t);
+			currentModel->getTransform().translate(t);
 
 			win->statusBar()->showMessage(QString("translacja obiektu: [%1,%2,%3]").arg(t.x).arg(t.y).arg(t.z));
 		}

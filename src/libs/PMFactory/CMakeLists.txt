@@ -14,6 +14,8 @@ add_library (${_NAME} STATIC
     ${${_NAME}_HDR}
 )
 
+target_compile_definitions(${_NAME} PRIVATE DPVISION_BUILD)
+
 target_link_libraries (${_NAME}
 	Qt5::Core
 	Qt5::OpenGL

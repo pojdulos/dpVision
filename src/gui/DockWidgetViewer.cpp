@@ -1,12 +1,29 @@
 #include "DockWidgetViewer.h"
 
-#include "../api/UI.h"
-#include "../api/AP.h"
-
 #include "Quaternion.h"
 #include "MainWindow.h"
 
 #include "GLViewer.h"
+
+namespace
+{
+	GLViewer* currentViewer()
+	{
+		if (auto win = CMainWindow::instance())
+		{
+			return win->currentViewer();
+		}
+		return nullptr;
+	}
+
+	void updateCurrentView()
+	{
+		if (auto win = CMainWindow::instance())
+		{
+			win->updateView(false, true);
+		}
+	}
+}
 
 DockWidgetViewer::DockWidgetViewer(QWidget *parent)
 	: QDockWidget(parent)
@@ -32,7 +49,7 @@ DockWidgetViewer::~DockWidgetViewer()
 
 void DockWidgetViewer::updateProperties()
 {
-	GLViewer *view = AP::mainWin().currentViewer();
+	GLViewer *view = currentViewer();
 	if (NULL != view)
 	{
 
@@ -71,7 +88,7 @@ void DockWidgetViewer::updateProperties()
 
 void DockWidgetViewer::updateRotX( double val )
 {
-	GLViewer *view = AP::mainWin().currentViewer();
+	GLViewer *view = currentViewer();
 	if (NULL != view)
 	{
 		double v = val;
@@ -84,13 +101,13 @@ void DockWidgetViewer::updateRotX( double val )
 
 		rot.X(v);
 
-		UI::updateCurrentView();
+		updateCurrentView();
 	}
 }
 
 void DockWidgetViewer::updateRotY( double val )
 {
-	GLViewer *view = AP::mainWin().currentViewer();
+	GLViewer *view = currentViewer();
 	if (NULL != view)
 	{
 		double v = val;
@@ -103,13 +120,13 @@ void DockWidgetViewer::updateRotY( double val )
 
 		rot.Y(v);
 
-		UI::updateCurrentView();
+		updateCurrentView();
 	}
 }
 
 void DockWidgetViewer::updateRotZ( double val )
 {
-	GLViewer *view = AP::mainWin().currentViewer();
+	GLViewer *view = currentViewer();
 	if ( NULL != view )
 	{
 		double v = val;
@@ -122,52 +139,52 @@ void DockWidgetViewer::updateRotZ( double val )
 
 		rot.Z(v);
 
-		UI::updateCurrentView();
+		updateCurrentView();
 	}
 }
 
 void DockWidgetViewer::updateTrans( double val )
 {
-	GLViewer *view = AP::mainWin().currentViewer();
+	GLViewer *view = currentViewer();
 	if (NULL != view)
 	{
 		view->transform().translation() = CVector3d( ui.spinViewTransX->value(), ui.spinViewTransY->value(), ui.spinViewTransZ->value() );
        
 		tra.Set(ui.spinViewTransX->value(), ui.spinViewTransY->value(), ui.spinViewTransZ->value());
 
-		UI::updateCurrentView();
+		updateCurrentView();
 	}
 }
 
 void DockWidgetViewer::updateScale( double val )
 {
-	GLViewer *view = AP::mainWin().currentViewer();
+	GLViewer *view = currentViewer();
 	if (NULL != view)
 	{
 		view->transform().setScale( ui.spinViewScale->value() );
        
-		UI::updateCurrentView();
+		updateCurrentView();
 	}
 }
 
 void DockWidgetViewer::updateBGcolor( double val )
 {
-	GLViewer *view = AP::mainWin().currentViewer();
+	GLViewer *view = currentViewer();
 	if (NULL != view)
 	{
 		view->setBGcolor( ui.spinBG->value() );
        
-		UI::updateCurrentView();
+		updateCurrentView();
 	}
 }
 
 void DockWidgetViewer::updateAngle( int val )
 {
-	GLViewer *view = AP::mainWin().currentViewer();
+	GLViewer *view = currentViewer();
 	if (NULL != view)
 	{
 		view->setVAngle( ui.spinAngleOfView->value() );
        
-		UI::updateCurrentView();
+		updateCurrentView();
 	}
 }

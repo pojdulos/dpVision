@@ -2,17 +2,25 @@
 
 #include "ParserWRL.h"
 
-#include "../api/UI.h"
+#include "../api/adapters/PluginUIAPIAdapter.h"
+
+namespace {
+PluginUIAPIAdapter& uiApi()
+{
+    static PluginUIAPIAdapter api;
+    return api;
+}
+}
 
 size_t CParserWRL::VRML_ParseField_coordIndex( FILE *plik )
 {
-	size_t a, b, c;
+	unsigned int a = 0, b = 0, c = 0;
 	size_t lb=0;
 
 	CFace face;
 	CVector3f vn;
 
-	/* moze zawiera�: [ 0 1 2 -1, 3 4 5 -1, 6 7 8 -1, 9 10 11 -1 ] */
+	/* moze zawieraďż˝: [ 0 1 2 -1, 3 4 5 -1, 6 7 8 -1, 9 10 11 -1 ] */
 	/* albo: [ 0, 1, 2, -1, 3, 4, 5, -1, 6, 7, 8, -1, 9, 10, 11, -1 ] */
 
 	fscanf( plik, " [ " );
@@ -20,7 +28,7 @@ size_t CParserWRL::VRML_ParseField_coordIndex( FILE *plik )
 	bool koniec = false;
 //	char bufor[80];
 
-	UI::STATUSBAR::printf( "Reading CoordIndex section..." );
+	uiApi().statusBar().setText("Reading CoordIndex section...");
 
 	while ( ! koniec )
 	{
@@ -29,41 +37,43 @@ size_t CParserWRL::VRML_ParseField_coordIndex( FILE *plik )
 		bool ok;
 
 #ifdef WIN64
-		ok = 1 == fscanf( plik, " %llu ", &a );
+		ok = 1 == fscanf( plik, " %u ", &a );
 #else
-		ok = 1 == fscanf(plik, " %lu ", &a);
+		ok = 1 == fscanf(plik, " %u ", &a);
 #endif
 
-		fscanf( plik, " , " ); // tu mo�e nie by� przecinka
+		fscanf( plik, " , " ); // tu moďż˝e nie byďż˝ przecinka
 
 #ifdef WIN64
-		ok &= 1 == fscanf(plik, " %llu ", &b);
+		ok &= 1 == fscanf(plik, " %u ", &b);
 #else
-		ok &= 1 == fscanf(plik, " %lu ", &b);
+		ok &= 1 == fscanf(plik, " %u ", &b);
 #endif
 
-		fscanf( plik, " , " ); // tu mo�e nie by� przecinka
+		fscanf( plik, " , " ); // tu moďż˝e nie byďż˝ przecinka
 
 #ifdef WIN64
-		ok &= 1 == fscanf(plik, " %llu ", &c);
+		ok &= 1 == fscanf(plik, " %u ", &c);
 #else
-		ok &= 1 == fscanf(plik, " %lu ", &c);
+		ok &= 1 == fscanf(plik, " %u ", &c);
 #endif
 
-		fscanf( plik, " , " ); // tu mo�e nie by� przecinka
+		fscanf( plik, " , " ); // tu moďż˝e nie byďż˝ przecinka
 		fscanf( plik, " -1 " );
 
-		face.Set( a, b, c );
+		face.Set(static_cast<INDEX_TYPE>(a), static_cast<INDEX_TYPE>(b), static_cast<INDEX_TYPE>(c));
 		
 		vn = face.getNormal( pMeshData->vertices() ); //NormalOfFace( face );
 
 		char ch;
 
-		UI::STATUSBAR::printfTimed( 500, "Reading: %d, F[%d,%d,%d]", lb, a, b, c );
+		uiApi().statusBar().setTimedText(
+            500,
+            QString("Reading: %1, F[%2,%3,%4]").arg(lb).arg(a).arg(b).arg(c));
 
 		if ( ok )
 		{
-			size_t m = MAX3( a, b, c );
+			size_t m = MAX3( static_cast<size_t>(a), static_cast<size_t>(b), static_cast<size_t>(c) );
 			if ( pMeshData->vnormals().size() <= m ) pMeshData->vnormals().resize( m+1 );
 
 			pMeshData->vnormals()[a] += vn;

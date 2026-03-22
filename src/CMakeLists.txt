@@ -9,7 +9,7 @@ set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Możliwe konfiguracj
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(EXE_NAME dpVision)
-project(${EXE_NAME})
+project(${EXE_NAME} LANGUAGES C CXX)
 
 # Ustawienia katalogów i opcji CMake
 set(AUTOGEN_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/${EXE_NAME}_autogen/include")
@@ -25,6 +25,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+file(GENERATE
+    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/qt.conf"
+    CONTENT "[Paths]\nPlugins = .\n"
+)
+
+if(MSVC)
+    add_compile_options(/FS)
+endif()
+
 # Dodaj katalogi include dla core i gui
 set(dpVision_INCLUDE_DIR
     ${PROJECT_SOURCE_DIR}/core
@@ -33,25 +42,25 @@ set(dpVision_INCLUDE_DIR
 
 # Znajdowanie pakietów
 find_package(OpenMP REQUIRED)
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Gui REQUIRED)
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5OpenGL REQUIRED)
-find_package(Qt5Xml REQUIRED)
-find_package(Qt5Network REQUIRED)
-find_package(Qt5 COMPONENTS OpenGL REQUIRED)
+find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets OpenGL Xml Network)
 
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS})
-find_library(GLU_LIBRARY NAMES GLU glu)
-if (NOT GLU_LIBRARY)
-    message(FATAL_ERROR "GLU library not found. Please install libglu1-mesa-dev (Ubuntu)")
-endif()
 
+get_target_property(QT5_CORE_IMPORTED_LOCATION Qt5::Core IMPORTED_LOCATION_RELEASE)
+if(NOT QT5_CORE_IMPORTED_LOCATION)
+    get_target_property(QT5_CORE_IMPORTED_LOCATION Qt5::Core IMPORTED_LOCATION)
+endif()
+get_filename_component(QT_RUNTIME_BIN_DIR "${QT5_CORE_IMPORTED_LOCATION}" DIRECTORY)
+get_filename_component(QT_RUNTIME_ROOT "${QT_RUNTIME_BIN_DIR}" DIRECTORY)
+set(QT_PLUGIN_DIR "${QT_RUNTIME_ROOT}/plugins")
+
+qt5_add_resources(DPVISION_EXE_QRC ${PROJECT_SOURCE_DIR}/gui/${EXE_NAME}.qrc)
 
 # === WYKONYWALNY EXE (tylko plik wejściowy, np. WinMain.cpp) ===
 add_executable(${EXE_NAME}
     ${PROJECT_SOURCE_DIR}/gui/WinMain.cpp
+    ${DPVISION_EXE_QRC}
 )
 
 ################################################################
@@ -60,17 +69,15 @@ include(cmake/ArchAndRuntime.cmake)
 include(cmake/getOpenCV.cmake)
 include(cmake/Zlib.cmake)
 include(cmake/QuaZip.cmake)
-include_directories(/usr/include/quazip5)
+include(cmake/GLU.cmake)
 # include_directories(/usr/include/QtQuaZip)  # niektóre wersje
 
 include(cmake/Eigen3.cmake)
 include(cmake/Boost.cmake)
 
-include_directories(/usr/include/quazip5)
 
 
 add_subdirectory(libs/PluginManager)
-#add_library(dpVision::PluginManager ALIAS PluginManager)
 
 add_library(dpVision::PluginManager INTERFACE IMPORTED)
 set_target_properties(dpVision::PluginManager PROPERTIES
@@ -93,9 +100,13 @@ add_subdirectory(libs/PMFactory)
 target_link_libraries(${EXE_NAME} #PRIVATE
     dpVision::Gui
     dpVision::Core
-    #dpVision::Renderers
+    dpVision::LegacyApi
     dpVision::PluginManager
     dpVision::Api
+    Qt5::Core
+    Qt5::Gui
+    Qt5::Widgets
+    Qt5::OpenGL
 )
 
 
@@ -107,6 +118,54 @@ target_include_directories(${EXE_NAME} PUBLIC
     ${PMFactory_INCLUDE_DIR}
 )
 
+if(WIN32)
+    add_custom_command(TARGET ${EXE_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_RUNTIME_DLLS:${EXE_NAME}>
+            $<TARGET_FILE_DIR:${EXE_NAME}>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${CMAKE_CURRENT_BINARY_DIR}/qt.conf"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/qt.conf"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/platforms"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/imageformats"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/styles"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/bearer"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${QT_PLUGIN_DIR}/platforms"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/platforms"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${QT_PLUGIN_DIR}/imageformats"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/imageformats"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${QT_PLUGIN_DIR}/styles"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/styles"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${QT_PLUGIN_DIR}/bearer"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/bearer"
+        COMMAND ${CMAKE_COMMAND} -E rm -f
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/qt.conf"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/Qt5Core.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/Qt5Gui.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/Qt5Widgets.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/Qt5OpenGL.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/Qt5Network.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/Qt5Xml.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/Qt5Svg.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/zlib1.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/pcre2-16.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/double-conversion.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/libEGL.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/libGLESv2.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/opengl32sw.dll"
+            "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/D3Dcompiler_47.dll"
+        COMMAND ${CMAKE_COMMAND} -E remove_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/platforms"
+        COMMAND ${CMAKE_COMMAND} -E remove_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/imageformats"
+        COMMAND ${CMAKE_COMMAND} -E remove_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/styles"
+        COMMAND ${CMAKE_COMMAND} -E remove_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/plugins/bearer"
+        COMMAND_EXPAND_LISTS
+    )
+endif()
+
 add_library(dpVision::Exe INTERFACE IMPORTED)
 
 set_target_properties(dpVision::Exe PROPERTIES
@@ -117,7 +176,7 @@ set_target_properties(dpVision::Exe PROPERTIES
 
 add_library(dpVision::libICP INTERFACE IMPORTED)
 set_target_properties(dpVision::libICP PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/libs/libICP/src
+    INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/libs/libICP/src
     INTERFACE_LINK_LIBRARIES libICP
 )
 
@@ -151,12 +210,9 @@ endforeach()
 set(BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
 install(TARGETS ${EXE_NAME} dpVisionCore DESTINATION ${BINARY_DIR})
 install(TARGETS ${EXE_NAME} dpVisionGui DESTINATION ${BINARY_DIR})
-install(TARGETS ${EXE_NAME} dpVisionApi DESTINATION ${BINARY_DIR})
+install(TARGETS ${EXE_NAME} dpVisionLegacyApi DESTINATION ${BINARY_DIR})
 install(TARGETS ${EXE_NAME} PluginManager DESTINATION ${BINARY_DIR})
 install(TARGETS ${DPV_PLUGINS} DESTINATION ${BINARY_DIR}/plugins)
-if(MSVC)
-    install(TARGETS QuaZip DESTINATION ${BINARY_DIR})
-endif()
 
 if(UNIX OR MINGW)
     file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/run_ldd.sh

@@ -1,31 +1,46 @@
 # api/CMakeLists.txt
 
-file(GLOB API_SRC
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/adapters/*.cpp
+set(DPVISION_LEGACY_API_SRC
+    ${CMAKE_CURRENT_SOURCE_DIR}/AP.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/LegacyApiStatics.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/UI.cpp
 )
-add_library(dpVisionApi SHARED ${API_SRC})
 
-add_library(dpVision::Api ALIAS dpVisionApi)
+add_library(dpVisionLegacyApi STATIC ${DPVISION_LEGACY_API_SRC})
+add_library(dpVision::LegacyApi ALIAS dpVisionLegacyApi)
 
-set(AUTOGEN_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/dpVisionCore_autogen/include")
+target_compile_definitions(dpVisionLegacyApi PRIVATE DPVISION_BUILD)
 
-target_include_directories(dpVisionApi PUBLIC
+set(API_AUTOGEN_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/dpVisionLegacyApi_autogen/include_$<CONFIG>")
+
+target_include_directories(dpVisionLegacyApi PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${dpVision_INCLUDE_DIR}
-    ${AUTOGEN_INCLUDE_DIR}
-    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/core/dpVisionCore_autogen/include>
-    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/gui/dpVisionGui_autogen/include>
-    $<BUILD_INTERFACE:${AUTOGEN_INCLUDE_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/src/core/dpVisionCore_autogen/include_$<CONFIG>>
+    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/src/gui/dpVisionGui_autogen/include_$<CONFIG>>
+    $<BUILD_INTERFACE:${API_AUTOGEN_INCLUDE_DIR}>
     $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(dpVisionApi
-    dpVision::Core
-    dpVision::Gui
-    Qt5::Core
-    Qt5::Gui
-    Qt5::OpenGL
-    Eigen3::Eigen
+target_link_libraries(dpVisionLegacyApi
+    PUBLIC
+        Qt5::Core
+        Qt5::Gui
+        Qt5::Widgets
+        Qt5::OpenGL
+        Eigen3::Eigen
+        OpenGL::GL
+        dpVision::GLU
+        dpVision::Core
+)
+
+add_library(dpVisionApi INTERFACE)
+add_library(dpVision::Api ALIAS dpVisionApi)
+
+target_include_directories(dpVisionApi INTERFACE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${dpVision_INCLUDE_DIR}
+    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/src/core/dpVisionCore_autogen/include_$<CONFIG>>
+    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/src/gui/dpVisionGui_autogen/include_$<CONFIG>>
+    $<INSTALL_INTERFACE:include>
 )
