@@ -13,8 +13,10 @@
 #include "MainWindow.h"
 
 #include "GLViewer.h"
-#include "PicViewer.h"
 #include "MdiChild.h"
+#include "PicViewer.h"
+#include "ImageViewerHost.h"
+#include "ImageViewerState.h"
 
 #include "Image.h"
 #include <chrono>
@@ -741,20 +743,12 @@ void CMainWindow::actionSelectNone()
 	updateActiveView();
 }
 
-#include "PicViewer.h"
-
 void CMainWindow::imageFit(bool fit)
 {
 	std::shared_ptr<CModel3D> im = appApi().workspace().getCurrentModel();
 	if ((im != nullptr) && im->hasType(CObject::IMAGE))
 	{
-		((CImage*)im.get())->fitToWindow = fit;
-	}
-
-	QMdiSubWindow* window = getPicViewerInstance(im->id());
-	if (window != nullptr)
-	{
-		((PicViewer*)((MdiChild*)window->widget())->m_widget)->reloadImage();
+		ImageViewerHost::setFitToWindow(im->id(), fit);
 	}
 }
 

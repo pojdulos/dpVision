@@ -13,6 +13,7 @@
 
 #include "ContextMenu.h"
 
+#include "ImageViewerHost.h"
 #include "MainWindow.h"
 #include "MainApplication.h"
 #include "../core/PluginRuntimeManager.h"
@@ -562,12 +563,7 @@ void DockWidgetWorkspace::colNameClicked(std::shared_ptr<CBaseObject> obj, Works
 		CMainWindow* win = CMainWindow::instance();
 		if (obj->hasType(CBaseObject::IMAGE))
 		{
-			QMdiSubWindow* window = win ? win->getPicViewerInstance(obj->id()) : nullptr;
-
-			if (window != nullptr)
-			{
-				win->ui.mdiArea->setActiveSubWindow(window);
-			}
+			ImageViewerHost::activateOrOpen(obj->id());
 		}
 		else
 		{

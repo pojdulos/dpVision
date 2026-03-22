@@ -1,15 +1,14 @@
 #include "../api/AP.h"
 
 #include "MainApplication.h"
-#include "MainWindow.h"
 
 #include "DockWidgetWorkspace.h"
 //#include "DockWidgetPluginList.h"
 #include "Annotation.h"
-#include "MdiChild.h"
 #include "Image.h"
 #include "Workspace.h"
 #include "Histogram.h"
+#include "../gui/ImageViewerHost.h"
 
 #include <QtCore/QString>
 #include "StatusBarManager.h"
@@ -22,6 +21,7 @@
 #include "adapters/WorkspaceActivationAPIAdapter.h"
 #include "adapters/WorkspaceBulkAPIAdapter.h"
 #include "adapters/WorkspaceDuplicationAPIAdapter.h"
+#include "adapters/WorkspaceImageAPIAdapter.h"
 #include "adapters/WorkspaceImportAPIAdapter.h"
 #include "adapters/WorkspaceAPIAdapter.h"
 #include "adapters/WorkspaceSelectionAPIAdapter.h"
@@ -35,11 +35,6 @@ namespace AP
 		CMainApplication& mainApplication()
 		{
 			return *static_cast<CMainApplication*>(QApplication::instance());
-		}
-
-		CMainWindow* mainWindow()
-		{
-			return CMainWindow::instance();
 		}
 
 		WorkspaceAPIAdapter& workspaceApi()
@@ -93,6 +88,12 @@ namespace AP
 		WorkspaceDuplicationAPIAdapter& workspaceDuplicationApi()
 		{
 			static WorkspaceDuplicationAPIAdapter api;
+			return api;
+		}
+
+		WorkspaceImageAPIAdapter& workspaceImageApi()
+		{
+			static WorkspaceImageAPIAdapter api;
 			return api;
 		}
 
@@ -262,11 +263,12 @@ namespace AP
 
 		bool addImage(std::shared_ptr<CImage> im, bool showViewer, bool show3d)
 		{
-			im->setSelfVisibility(show3d);
+			if (showViewer)
+			{
+				ImageViewerHost::open(im.get());
+			}
 
-			if (showViewer && mainWindow() != nullptr) MdiChild::create(im.get(), mainWindow()->ui.mdiArea);
-
-			return workspaceApi().addObject(im);
+			return workspaceImageApi().addImage(im, show3d);
 		}
 
 

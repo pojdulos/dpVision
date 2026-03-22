@@ -26,6 +26,7 @@
 #include "../core/MessageBoxManager.h"
 #include "../core/StatusBarManager.h"
 #include "../core/WorkspacePanelManager.h"
+#include "../gui/WorkspaceDockHostAccess.h"
 #include "adapters/DockHistogramAPIAdapter.h"
 #include "adapters/DockWorkspaceAPIAdapter.h"
 #include "adapters/FileDialogAPIAdapter.h"
@@ -264,26 +265,12 @@ void UI::DOCK::WORKSPACE::selectItem( int id)
 
 std::shared_ptr<CBaseObject> UI::DOCK::WORKSPACE::currentItem()
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr && win->dockWorkspace != nullptr)
-	{
-		return win->dockWorkspace->getCurrentItemObj();
-	}
-
-	return nullptr;
+	return WorkspaceDockHostAccess::currentItem();
 }
 
 QVector<std::shared_ptr<CBaseObject>> UI::DOCK::WORKSPACE::selectedObjects()
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr && win->dockWorkspace != nullptr)
-	{
-		return win->dockWorkspace->getSelectedObjects();
-	}
-
-	return {};
+	return WorkspaceDockHostAccess::selectedObjects();
 }
 
 
@@ -410,16 +397,7 @@ void UI::PLUGINPANEL::create(unsigned int pluginId, const QString &label)
 
 void UI::PLUGINPANEL::clear(unsigned int pluginId)
 {
-	if (DockWidgetPluginPanel* panel = pluginPanel())
-	{
-		if (QWidget* pluginWidget = panel->getPanel(pluginId))
-		{
-			while (QWidget* w = pluginWidget->findChild<QWidget*>())
-			{
-				delete w;
-			}
-		}
-	}
+	pluginPanelApi().clear(pluginId);
 }
 
 void UI::PLUGINPANEL::setEnabled(unsigned int pluginId, bool b)
@@ -678,24 +656,24 @@ void UI::STATUSBAR::setText(const QString msg)
 // MESSAGEBOX
 
 void UI::MESSAGEBOX::information(const QString &msg, const QString &tittle) { messageBoxApi().information(msg, tittle); }
-void UI::MESSAGEBOX::information(const char* msg, const char* tittle) { MessageBoxManager::information(QString::fromUtf8(msg).toStdString(), QString::fromUtf8(tittle).toStdString(), UserMessageChannel::Modal); }
-void UI::MESSAGEBOX::information(const std::string &msg, const std::string &tittle) { MessageBoxManager::information(msg, tittle, UserMessageChannel::Modal); }
-void UI::MESSAGEBOX::information(const std::wstring &msg, const std::wstring &tittle ) { MessageBoxManager::information(QString::fromWCharArray(msg.c_str()).toStdString(), QString::fromWCharArray(tittle.c_str()).toStdString(), UserMessageChannel::Modal); }
+void UI::MESSAGEBOX::information(const char* msg, const char* tittle) { information(QString::fromUtf8(msg), QString::fromUtf8(tittle)); }
+void UI::MESSAGEBOX::information(const std::string &msg, const std::string &tittle) { information(QString::fromUtf8(msg.c_str()), QString::fromUtf8(tittle.c_str())); }
+void UI::MESSAGEBOX::information(const std::wstring &msg, const std::wstring &tittle ) { information(QString::fromWCharArray(msg.c_str()), QString::fromWCharArray(tittle.c_str())); }
 
 void UI::MESSAGEBOX::warning(const QString &msg, const QString &tittle) { messageBoxApi().warning(msg, tittle); }
-void UI::MESSAGEBOX::warning(const char* msg, const char* tittle) { MessageBoxManager::warning(QString::fromUtf8(msg).toStdString(), QString::fromUtf8(tittle).toStdString(), UserMessageChannel::Modal); }
-void UI::MESSAGEBOX::warning(const std::string &msg, const std::string &tittle) { MessageBoxManager::warning(msg, tittle, UserMessageChannel::Modal); }
-void UI::MESSAGEBOX::warning(const std::wstring &msg, const std::wstring &tittle ) { MessageBoxManager::warning(QString::fromWCharArray(msg.c_str()).toStdString(), QString::fromWCharArray(tittle.c_str()).toStdString(), UserMessageChannel::Modal); }
+void UI::MESSAGEBOX::warning(const char* msg, const char* tittle) { warning(QString::fromUtf8(msg), QString::fromUtf8(tittle)); }
+void UI::MESSAGEBOX::warning(const std::string &msg, const std::string &tittle) { warning(QString::fromUtf8(msg.c_str()), QString::fromUtf8(tittle.c_str())); }
+void UI::MESSAGEBOX::warning(const std::wstring &msg, const std::wstring &tittle ) { warning(QString::fromWCharArray(msg.c_str()), QString::fromWCharArray(tittle.c_str())); }
 
 void UI::MESSAGEBOX::error(const QString &msg, const QString &tittle) { messageBoxApi().error(msg, tittle); }
-void UI::MESSAGEBOX::error(const char* msg, const char* tittle) { MessageBoxManager::error(QString::fromUtf8(msg).toStdString(), QString::fromUtf8(tittle).toStdString(), UserMessageChannel::Modal); }
-void UI::MESSAGEBOX::error(const std::string &msg, const std::string &tittle) { MessageBoxManager::error(msg, tittle, UserMessageChannel::Modal); }
-void UI::MESSAGEBOX::error(const std::wstring &msg, const std::wstring &tittle ) { MessageBoxManager::error(QString::fromWCharArray(msg.c_str()).toStdString(), QString::fromWCharArray(tittle.c_str()).toStdString(), UserMessageChannel::Modal); }
+void UI::MESSAGEBOX::error(const char* msg, const char* tittle) { error(QString::fromUtf8(msg), QString::fromUtf8(tittle)); }
+void UI::MESSAGEBOX::error(const std::string &msg, const std::string &tittle) { error(QString::fromUtf8(msg.c_str()), QString::fromUtf8(tittle.c_str())); }
+void UI::MESSAGEBOX::error(const std::wstring &msg, const std::wstring &tittle ) { error(QString::fromWCharArray(msg.c_str()), QString::fromWCharArray(tittle.c_str())); }
 
 int UI::MESSAGEBOX::question(const QString &msg, const QString &tittle, const QString &b0, const QString &b1, const QString &b2) { return messageBoxApi().question(msg, tittle, b0, b1, b2); }
-int UI::MESSAGEBOX::question(const char* msg, const char* tittle, const char* b0, const char* b1, const char* b2) { return MessageBoxManager::question(QString::fromUtf8(msg).toStdString(), QString::fromUtf8(tittle).toStdString(), QString::fromUtf8(b0).toStdString(), QString::fromUtf8(b1).toStdString(), QString::fromUtf8(b2).toStdString()); }
-int UI::MESSAGEBOX::question(const std::string &msg, const std::string &tittle, const std::string &b0, const std::string &b1, const std::string &b2) { return MessageBoxManager::question(msg, tittle, b0, b1, b2); }
-int UI::MESSAGEBOX::question(const std::wstring &msg, const std::wstring &tittle, const std::wstring &b0, const std::wstring &b1, const std::wstring &b2 ) { return MessageBoxManager::question(QString::fromWCharArray(msg.c_str()).toStdString(), QString::fromWCharArray(tittle.c_str()).toStdString(), QString::fromWCharArray(b0.c_str()).toStdString(), QString::fromWCharArray(b1.c_str()).toStdString(), QString::fromWCharArray(b2.c_str()).toStdString()); }
+int UI::MESSAGEBOX::question(const char* msg, const char* tittle, const char* b0, const char* b1, const char* b2) { return question(QString::fromUtf8(msg), QString::fromUtf8(tittle), QString::fromUtf8(b0), QString::fromUtf8(b1), QString::fromUtf8(b2)); }
+int UI::MESSAGEBOX::question(const std::string &msg, const std::string &tittle, const std::string &b0, const std::string &b1, const std::string &b2) { return question(QString::fromUtf8(msg.c_str()), QString::fromUtf8(tittle.c_str()), QString::fromUtf8(b0.c_str()), QString::fromUtf8(b1.c_str()), QString::fromUtf8(b2.c_str())); }
+int UI::MESSAGEBOX::question(const std::wstring &msg, const std::wstring &tittle, const std::wstring &b0, const std::wstring &b1, const std::wstring &b2 ) { return question(QString::fromWCharArray(msg.c_str()), QString::fromWCharArray(tittle.c_str()), QString::fromWCharArray(b0.c_str()), QString::fromWCharArray(b1.c_str()), QString::fromWCharArray(b2.c_str())); }
 
 
 // FILECHOOSER
@@ -729,22 +707,18 @@ QString UI::FILECHOOSER::getOpenFileName(QString title, QString dir, QString fil
 
 std::wstring UI::FILECHOOSER::getOpenFileName( std::wstring title, std::wstring dir, std::wstring filter )
 {
-	return QDir::toNativeSeparators(
-		QFileDialog::getOpenFileName(
-			0,
-			QString::fromWCharArray(title.c_str()),
-			QString::fromWCharArray(dir.c_str()),
-			QString::fromWCharArray(filter.c_str()) ) ).toStdWString();
+	return getOpenFileName(
+		QString::fromWCharArray(title.c_str()),
+		QString::fromWCharArray(dir.c_str()),
+		QString::fromWCharArray(filter.c_str())).toStdWString();
 }
 
 std::string UI::FILECHOOSER::getOpenFileName( std::string title, std::string dir, std::string filter )
 {
-	return QDir::toNativeSeparators(
-		QFileDialog::getOpenFileName(
-			0,
-			QString::fromStdString(title),
-			QString::fromStdString(dir),
-			QString::fromStdString(filter) ) ).toStdString();
+	return getOpenFileName(
+		QString::fromStdString(title),
+		QString::fromStdString(dir),
+		QString::fromStdString(filter)).toStdString();
 }
 
 QString UI::FILECHOOSER::getSaveFileName(QString title, QString dir, QString filter)
@@ -755,22 +729,18 @@ QString UI::FILECHOOSER::getSaveFileName(QString title, QString dir, QString fil
 
 std::string UI::FILECHOOSER::getSaveFileName( std::string title, std::string dir, std::string filter )
 {
-	return QDir::toNativeSeparators(
-		QFileDialog::getSaveFileName(
-			0,
-			QString::fromStdString(title),
-			QString::fromStdString(dir),
-			QString::fromStdString(filter) ) ).toStdString();
+	return getSaveFileName(
+		QString::fromStdString(title),
+		QString::fromStdString(dir),
+		QString::fromStdString(filter)).toStdString();
 }
 
 std::wstring UI::FILECHOOSER::getSaveFileName( std::wstring title, std::wstring dir, std::wstring filter )
 {
-	return QDir::toNativeSeparators(
-		QFileDialog::getSaveFileName(
-			0,
-			QString::fromWCharArray(title.c_str()),
-			QString::fromWCharArray(dir.c_str()),
-			QString::fromWCharArray(filter.c_str()) ) ).toStdWString();
+	return getSaveFileName(
+		QString::fromWCharArray(title.c_str()),
+		QString::fromWCharArray(dir.c_str()),
+		QString::fromWCharArray(filter.c_str())).toStdWString();
 }
 
 

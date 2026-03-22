@@ -42,6 +42,12 @@ Duplication replacements:
 - `AP::WORKSPACE::{duplicateModel,duplicateCurrentModel}`
 - New home: `IWorkspaceDuplicationAPI`
 
+Image insertion replacement:
+- `AP::WORKSPACE::addImage(...)`
+- New home: `IWorkspaceImageAPI`
+- Compatibility note: legacy `showViewer` behavior remains in `AP::` because it
+  is GUI policy, not default workspace capability
+
 `AP::WORKSPACE::SELECTION::*`
 - Status: keep during migration
 - New home: `IWorkspaceSelectionAPI`

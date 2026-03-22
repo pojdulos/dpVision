@@ -2,6 +2,7 @@
 
 #include "ImageLabel.h"
 #include "Image.h"
+#include "ImageViewerState.h"
 
 #include <QScrollArea>
 #include <QVBoxLayout>
@@ -117,7 +118,7 @@ void PicViewer::reloadImage()
 	int imgW = pic.width();
 	int imgH = pic.height();
 
-	if (m_images[m_current]->fitToWindow)
+	if (ImageViewerState::fitToWindow(m_images[m_current]->id()))
 	{
 		scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
 		scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);

@@ -4,6 +4,8 @@
 #include "../api/AP.h"
 
 #include "Image.h"
+#include "ImageViewerHost.h"
+#include "ImageViewerState.h"
 
 #include "MainWindow.h"
 #include "QScrollArea"
@@ -33,9 +35,7 @@ PropImage::~PropImage()
 
 void PropImage::updateProperties()
 {
-	QMdiSubWindow* window = mainWindow() ? mainWindow()->getPicViewerInstance(obj->id()) : nullptr;
-	
-	ui.showImageWindow->setChecked(window != nullptr);
+	ui.showImageWindow->setChecked(ImageViewerHost::hasOpenViewer(obj->id()));
 
 	ui.show3d->setChecked(((CModel3D*)obj)->getSelfVisibility());
 
@@ -84,19 +84,13 @@ void PropImage::scaleChanged(int i)
 	{
 	case 0:
 	default:
-		obj->fitToWindow = false;
+		ImageViewerHost::setFitToWindow(obj->id(), false);
 		break;
 	case 1:
 	case 2:
 	case 3:
-		obj->fitToWindow = true;
+		ImageViewerHost::setFitToWindow(obj->id(), true);
 		break;
-	}
-
-	QMdiSubWindow* window = mainWindow() ? mainWindow()->getPicViewerInstance(obj->id()) : nullptr;
-	if (window != nullptr)
-	{
-		((PicViewer*)((MdiChild*)window->widget())->m_widget)->reloadImage();
 	}
 }
 
@@ -104,17 +98,11 @@ void PropImage::showWindow(bool b)
 {
 	if (b)
 	{
-		if (auto win = mainWindow())
-		{
-			win->activatePicViewerInstance(obj->id());
-		}
+		ImageViewerHost::activateOrOpen(obj->id());
 	}
 	else
 	{
-		if (auto win = mainWindow())
-		{
-			win->closePicViewers(obj->id());
-		}
+		ImageViewerHost::closeAll(obj->id());
 	}
 }
 

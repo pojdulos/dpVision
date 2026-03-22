@@ -244,6 +244,15 @@ Qt types are acceptable in:
 - privileged GUI APIs
 - host-side implementation details
 
+Temporary compatibility exception:
+- selected Qt-backed data types may remain in `core` when removing them would
+  likely break existing plugins or force large-scale rewrites
+- `CImage` inheriting from `QImage` is currently treated as such an accepted
+  compatibility constraint
+- in such cases, the preferred direction is to move view-only state and viewer
+  orchestration out of `core` into `gui`, not to force an immediate data-model
+  rewrite
+
 ### Keep legacy compatibility outside the core architecture
 
 Compatibility overloads for `char*`, `std::string`, `std::wstring`, and old

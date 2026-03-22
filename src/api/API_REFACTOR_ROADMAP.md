@@ -141,6 +141,9 @@ Tasks:
 Important constraint:
 - do not force opaque handles for everything
 - domain-rich access to `core` objects is allowed
+- when a `core` type still carries a Qt-backed data dependency for plugin
+  compatibility, keep that dependency temporarily and extract only GUI/view
+  state first
 
 Exit criteria:
 - default plugin contracts expose `core` types deliberately

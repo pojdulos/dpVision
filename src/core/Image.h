@@ -10,8 +10,6 @@ public:
 	typedef enum QImage::Format Format;
 	typedef enum Qt::GlobalColor Color;
 
-	bool fitToWindow;
-
 	/*
 	constructor creating an null-size CImage instance, so instance->isNull() returns true.
 	*/

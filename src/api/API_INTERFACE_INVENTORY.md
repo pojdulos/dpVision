@@ -118,6 +118,19 @@ Direction:
 - keep as a separate service
 - keep insertion policy inside the adapter
 
+### IWorkspaceImageAPI
+
+Status: `Keep`
+
+Why:
+- image insertion into workspace is a stable host capability
+- it should not stay bundled with GUI viewer policy
+
+Direction:
+- keep as a separate service
+- keep `showViewer` out of the default API
+- let legacy `AP::WORKSPACE::addImage(...)` orchestrate viewer opening separately
+
 ### IModelLoadAPI
 
 Status: `Keep`

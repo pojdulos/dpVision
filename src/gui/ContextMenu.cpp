@@ -5,6 +5,7 @@
 #include "../core/AppStateManager.h"
 
 #include "MainWindow.h"
+#include "ImageViewerHost.h"
 #include "Workspace.h"
 #include "BaseObject.h"
 #include "Object.h"
@@ -1230,10 +1231,7 @@ void CContextMenu::pointHide()
 
 void CContextMenu::newPicWindow()
 {
-	if (auto win = CMainWindow::instance())
-	{
-		win->createPicViewer((CImage*)m_obj.get());
-	}
+	ImageViewerHost::open((CImage*)m_obj.get());
 }
 
 #include "DockWidgetWorkspace.h"
