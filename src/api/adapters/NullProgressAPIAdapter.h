@@ -1,8 +1,9 @@
 #pragma once
 
+#include "../interfaces/IProgressControlAPI.h"
 #include "../interfaces/IProgressAPI.h"
 
-class NullProgressAPIAdapter : public IProgressAPI {
+class NullProgressAPIAdapter : public IProgressAPI, public IProgressControlAPI {
 public:
     ProgressIndicator* instance() override {
         return nullptr;

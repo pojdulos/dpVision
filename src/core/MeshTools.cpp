@@ -2,18 +2,10 @@
 
 #include <queue>
 
-#include "../api/adapters/AppAPIAdapter.h"
 #include "Mesh.h"
+#include "StatusBarManager.h"
 
 #include "dpLog.h"
-
-namespace {
-AppAPIAdapter& appApi()
-{
-    static AppAPIAdapter api;
-    return api;
-}
-}
 
 void MeshTools::removeInvalidFaces(CMesh& mesh) {
     auto& faces = mesh.faces();
@@ -31,12 +23,12 @@ void MeshTools::removeInvalidFaces(CMesh& mesh) {
 
         if (A >= verts.size() || B >= verts.size() || C >= verts.size()) {
             outOfRangeCount++;
-            continue; // indeks poza zakresem
+            continue; // index out of range
         }
 
         if (A == B || B == C || C == A) {
             duplicateVertexCount++;
-            continue; // sklejone wierzcho³ki
+            continue; // duplicated vertex indices
         }
 
         newFaces.push_back(f);
@@ -70,10 +62,10 @@ void MeshTools::removeDegenerateFaces(CMesh& mesh, float areaEps) {
 
         CVector3d e0(v0, v1);
         CVector3d e1(v0, v2);
-        float area2 = e0.crossProduct(e1).length(); // 2 * pole
+        float area2 = e0.crossProduct(e1).length(); // 2 * area
 
         if (area2 * 0.5f < areaEps)
-            continue; // za ma³e pole -> degenerat
+            continue; // too small area -> degenerate face
 
         newFaces.push_back(f);
     }
@@ -115,7 +107,7 @@ void MeshTools::buildEdgeToFaces(const CMesh& mesh,
     const auto& faces = mesh.faces();
 
     qInfo() << "buildEdgeToFaces: faces=" << faces.size();
-    appApi().setStatusText(QString("Building edge map for %1 faces...").arg(faces.size()));
+    StatusBarManager::setText(QString("Building edge map for %1 faces...").arg(faces.size()));
 
     if (faces.size() > 5000000) {
         qWarning() << "Mesh is VERY large (" << faces.size()
@@ -124,12 +116,12 @@ void MeshTools::buildEdgeToFaces(const CMesh& mesh,
 
     edgeToFaces.clear();
 
-    // **U¯YJ NATYWNEJ METODY - std::set jest DU¯O szybszy dla 7M krawêdzi**
+    // Use the native method: std::set is much faster here for very large meshes.
     CMesh::Edges meshEdges;  // std::set<CEdge>
 
     qInfo() << "Calling CMesh::getEdges()...";
     auto startTime = std::chrono::steady_clock::now();
-    appApi().setStatusText("Extracting edges (native method)...");
+    StatusBarManager::setText("Extracting edges (native method)...");
 
     const_cast<CMesh&>(mesh).getEdges(meshEdges);
 
@@ -138,7 +130,7 @@ void MeshTools::buildEdgeToFaces(const CMesh& mesh,
 
     dpInfo() << "CMesh::getEdges() completed in" << extractTime << "ms ("
         << (extractTime / 1000) << "s), extracted" << meshEdges.size() << "edges";
-    appApi().setStatusText(QString("Extracted %1 edges, converting...").arg(meshEdges.size()));
+    StatusBarManager::setText(QString("Extracted %1 edges, converting...").arg(meshEdges.size()));
 
     // **KONWERSJA: CSetOfEdges -> unordered_map**
     dpInfo() << "Converting to edge-to-faces map...";
@@ -156,7 +148,7 @@ void MeshTools::buildEdgeToFaces(const CMesh& mesh,
             auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(
                 std::chrono::steady_clock::now() - convertStart).count();
 
-            appApi().setStatusText(
+            StatusBarManager::setText(
                 QString("Converting edge %1/%2 (%3%) - %4s")
                 .arg(processed).arg(meshEdges.size()).arg((int)percent).arg((int)elapsed)
             );
@@ -166,10 +158,10 @@ void MeshTools::buildEdgeToFaces(const CMesh& mesh,
         INDEX_TYPE v1 = edge.first;
         INDEX_TYPE v2 = edge.second;
 
-        // Kanoniczna forma (mniejszy indeks pierwszy)
+        // Canonical form: smaller index first.
         CEdge e = std::minmax(v1, v2);
 
-        // CEdge.faces to std::set<INDEX_TYPE> wszystkich œcian tej krawêdzi
+        // `edge.faces` stores all faces incident to this edge.
         std::vector<INDEX_TYPE>& faceList = edgeToFaces[e];
         faceList.reserve(edge.faces.size());
 
@@ -188,7 +180,7 @@ void MeshTools::buildEdgeToFaces(const CMesh& mesh,
     dpInfo() << "Total time:" << totalTime << "ms (" << (totalTime / 1000) << "seconds)";
     dpInfo() << "Built edge-to-faces map:" << edgeToFaces.size() << "unique edges";
 
-    appApi().setStatusText(
+    StatusBarManager::setText(
         QString("Edge map built: %1 edges in %2s")
         .arg(edgeToFaces.size()).arg(totalTime / 1000)
     );
@@ -206,19 +198,19 @@ void MeshTools::fixNonManifoldEdges(CMesh& mesh) {
 
     dpInfo() << "=== FIX NON-MANIFOLD EDGES START ===";
     dpInfo() << "Faces:" << faces.size() << ", Vertices:" << verts.size();
-    //appApi().setStatusText("Fixing non-manifold edges...");
+    // StatusBarManager::setText("Fixing non-manifold edges...");
 
     std::unordered_map<CEdge, std::vector<INDEX_TYPE>, EdgeHasher> edgeToFaces;
 
     dpInfo() << "Calling buildEdgeToFaces..." << endl;
-    //appApi().setStatusText("Building edge-to-faces map...");
+    // StatusBarManager::setText("Building edge-to-faces map...");
 
     MeshTools::buildEdgeToFaces(mesh, edgeToFaces);
 
     dpInfo() << "buildEdgeToFaces returned, map size:" << edgeToFaces.size();
-    appApi().setStatusText("Identifying non-manifold edges...");
+    StatusBarManager::setText("Identifying non-manifold edges...");
 
-    // Faza 1: Identyfikacja non-manifold edges
+    // Phase 1: identify non-manifold edges.
     dpInfo() << "Starting identification phase...";
 
     std::vector<std::pair<CEdge, std::vector<INDEX_TYPE>>> nonManifoldEdges;
@@ -235,7 +227,7 @@ void MeshTools::fixNonManifoldEdges(CMesh& mesh) {
 
             double percent = (processed * 100.0) / edgeToFaces.size();
 
-            appApi().setStatusText(
+            StatusBarManager::setText(
                 QString("Scanning edges: %1/%2 (%3%) - found %4 non-manifold")
                 .arg(processed).arg(edgeToFaces.size())
                 .arg((int)percent).arg(nonManifoldEdges.size())
@@ -258,14 +250,14 @@ void MeshTools::fixNonManifoldEdges(CMesh& mesh) {
 
     if (nonManifoldEdges.empty()) {
         dpInfo() << "No non-manifold edges found";
-        appApi().setStatusText("No non-manifold edges found");
+        StatusBarManager::setText("No non-manifold edges found");
         return;
     }
 
     dpInfo() << "Found" << nonManifoldEdges.size() << "non-manifold edges";
-    appApi().setStatusText(QString("Found %1 non-manifold edges").arg(nonManifoldEdges.size()));
+    StatusBarManager::setText(QString("Found %1 non-manifold edges").arg(nonManifoldEdges.size()));
 
-    // Faza 2: Przygotowanie zmian (szybkie, bez alokacji)
+    // Phase 2: prepare updates without extra heavy allocations.
     dpDebug() << "Preparing vertex duplicates...";
 
     struct FaceUpdate {
@@ -277,7 +269,7 @@ void MeshTools::fixNonManifoldEdges(CMesh& mesh) {
     std::vector<FaceUpdate> allUpdates;
     size_t estimatedUpdates = 0;
 
-    // Policz ile bêdzie update'ów
+    // Count the required updates first.
     for (const auto& pair : nonManifoldEdges) {
         estimatedUpdates += (pair.second.size() - 2);
     }
@@ -287,11 +279,11 @@ void MeshTools::fixNonManifoldEdges(CMesh& mesh) {
 
     dpDebug() << "Allocating" << totalVertsToAdd << "new vertices...";
 
-    // Faza 3: Rezerwacja miejsca dla nowych wierzcho³ków
+    // Phase 3: reserve space for new vertices.
     size_t nextVertIdx = verts.size();
     verts.reserve(verts.size() + totalVertsToAdd);
 
-    // Przygotuj wszystkie update'y
+    // Prepare all face updates.
     for (const auto& pair : nonManifoldEdges) {
         const CEdge& e = pair.first;
         const auto& incidentFaces = pair.second;
@@ -299,7 +291,7 @@ void MeshTools::fixNonManifoldEdges(CMesh& mesh) {
         INDEX_TYPE u = std::min(e.first, e.second);
         INDEX_TYPE v = std::max(e.first, e.second);
 
-        // Ka¿da nadmiarowa œciana (od 3. wzwy¿) potrzebuje nowych wierzcho³ków
+        // Every extra face beyond the first two needs duplicated edge vertices.
         for (size_t i = 2; i < incidentFaces.size(); ++i) {
             FaceUpdate upd;
             upd.faceIdx = incidentFaces[i];
@@ -311,7 +303,7 @@ void MeshTools::fixNonManifoldEdges(CMesh& mesh) {
         }
     }
 
-    // Faza 4: Duplikacja wierzcho³ków (bulk insert)
+    // Phase 4: duplicate vertices in bulk.
     dpDebug() << "Duplicating vertices...";
 
     for (const auto& upd : allUpdates) {
@@ -319,7 +311,7 @@ void MeshTools::fixNonManifoldEdges(CMesh& mesh) {
         verts.push_back(verts[upd.oldV]);
     }
 
-    // Faza 5: Aktualizacja œcian
+    // Phase 5: update face indices.
     dpDebug() << "Updating" << allUpdates.size() << "face indices...";
 
     for (const auto& upd : allUpdates) {
@@ -377,14 +369,14 @@ void MeshTools::fixNonManifoldVertices(CMesh& mesh) {
 
     dpInfo() << "=== FIX NON-MANIFOLD VERTICES START ===";
     dpInfo() << "Vertices:" << verts.size() << ", Faces:" << faces.size();
-    appApi().setStatusText("Building vertex-to-faces map...");
+    StatusBarManager::setText("Building vertex-to-faces map...");
 
-    // **U¯YJ NATYWNEJ METODY z CMesh**
+    // Use the native CMesh helper.
     CMesh::V2Fmap vertexFaces;
     const_cast<CMesh&>(mesh).createV2Fmap(vertexFaces);
 
     dpInfo() << "Built V2Fmap for" << vertexFaces.size() << "vertices (only used)";
-    appApi().setStatusText("Analyzing non-manifold vertices...");
+    StatusBarManager::setText("Analyzing non-manifold vertices...");
 
     std::vector<char> visitedFace;
     visitedFace.resize(faces.size());
@@ -393,24 +385,24 @@ void MeshTools::fixNonManifoldVertices(CMesh& mesh) {
     size_t verticesAdded = 0;
     size_t totalComponents = 0;
 
-    // **PROGRESS REPORTING**
+    // Progress reporting.
     size_t processedVerts = 0;
     size_t progressStep = std::max<size_t>(1000, vertexFaces.size() / 100);
     auto startTime = std::chrono::steady_clock::now();
 
-    // **ITERUJ PO MAPIE zamiast po wszystkich wierzcho³kach**
+    // Iterate only over used vertices in the map.
     for (const auto& vf : vertexFaces) {
         INDEX_TYPE v = vf.first;
         const auto& incFaces = vf.second;  // std::set<INDEX_TYPE>
 
-        // **PROGRESS**
+        // Progress update.
         if (++processedVerts % progressStep == 0) {
             auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(
                 std::chrono::steady_clock::now() - startTime).count();
 
             double percent = (processedVerts * 100.0) / vertexFaces.size();
 
-            appApi().setStatusText(
+            StatusBarManager::setText(
                 QString("Analyzing vertex %1/%2 (%3%) - found %4 non-manifold - %5s")
                 .arg(processedVerts).arg(vertexFaces.size())
                 .arg((int)percent).arg(nonManifoldVertCount).arg((int)elapsed)
@@ -428,7 +420,7 @@ void MeshTools::fixNonManifoldVertices(CMesh& mesh) {
 
         std::vector<std::vector<INDEX_TYPE>> components;
 
-        // ZnajdŸ spójne sk³adowe w 1-ringu tego wierzcho³ka
+        // Find connected components in the one-ring of this vertex.
         for (INDEX_TYPE fi : incFaces) {
             if (visitedFace[fi]) continue;
 
@@ -444,13 +436,13 @@ void MeshTools::fixNonManifoldVertices(CMesh& mesh) {
 
                 const CFace& f = faces[fIdx];
 
-                // Szukaj s¹siadów w incFaces
+                // Search neighbors inside the incident-face set.
                 for (INDEX_TYPE fj : incFaces) {
                     if (visitedFace[fj]) continue;
 
                     const CFace& g = faces[fj];
 
-                    // SprawdŸ czy dziel¹ krawêdŸ (2 wspólne wierzcho³ki)
+                    // Check whether they share an edge (2 common vertices).
                     int common = 0;
                     INDEX_TYPE a1[3] = { f.A(), f.B(), f.C() };
                     INDEX_TYPE a2[3] = { g.A(), g.B(), g.C() };
@@ -464,7 +456,7 @@ void MeshTools::fixNonManifoldVertices(CMesh& mesh) {
                         }
                     }
 
-                    if (common >= 2) { // Wspólna krawêdŸ
+                    if (common >= 2) { // Shared edge
                         visitedFace[fj] = 1;
                         q.push(fj);
                     }
@@ -483,7 +475,7 @@ void MeshTools::fixNonManifoldVertices(CMesh& mesh) {
         dpDebug() << "Non-manifold vertex" << v << "split into"
             << components.size() << "components";
 
-        // Rozdziel v na tyle wierzcho³ków, ile jest komponentów
+        // Split this vertex into as many copies as there are components.
         for (size_t ci = 1; ci < components.size(); ++ci) {
             INDEX_TYPE newV = (INDEX_TYPE)verts.size();
             verts.push_back(verts[v]);
@@ -511,7 +503,7 @@ void MeshTools::fixNonManifoldVertices(CMesh& mesh) {
         dpDebug() << "No non-manifold vertices found (checked in" << totalTime << "s)";
     }
 
-    appApi().setStatusText("Non-manifold vertices fixed");
+    StatusBarManager::setText("Non-manifold vertices fixed");
 }
 
 void MeshTools::removeIsolatedVertices(CMesh& mesh) {
@@ -557,7 +549,7 @@ void MeshTools::removeIsolatedVertices(CMesh& mesh) {
 #include <unordered_set>
 
 
-// Funkcja oblicza aspect ratio trójk¹ta (stosunek najd³u¿szej krawêdzi do wysokoœci)
+// Computes triangle aspect ratio as longest-edge / corresponding height.
 float calculateAspectRatio(const CVertex& v0, const CVertex& v1, const CVertex& v2) {
     CVector3d e0 = CVector3d(v0, v1);
     CVector3d e1 = CVector3d(v1, v2);
@@ -570,13 +562,13 @@ float calculateAspectRatio(const CVertex& v0, const CVertex& v1, const CVertex& 
     float longest = std::max({ len0, len1, len2 });
     float perimeter = len0 + len1 + len2;
 
-    // Pole trójk¹ta za pomoc¹ wzoru Herona
+    // Triangle area via Heron's formula.
     float s = perimeter / 2.0f;
     float area = std::sqrt(s * (s - len0) * (s - len1) * (s - len2));
 
-    if (area < 1e-6f) return 1000.0f; // Zdegenerowany trójk¹t
+    if (area < 1e-6f) return 1000.0f; // Degenerate triangle
 
-    // Wysokoœæ z najd³u¿szej krawêdzi
+    // Height corresponding to the longest edge.
     float height = 2.0f * area / longest;
 
     return longest / height; // Aspect ratio
@@ -594,7 +586,7 @@ void MeshTools::subdivideNarrowFaces(std::shared_ptr<CMesh> mesh,
 
     //using Edge = std::pair<INDEX_TYPE, INDEX_TYPE>;
 
-    appApi().setStatusText("Subdividing narrow faces...");
+    StatusBarManager::setText("Subdividing narrow faces...");
     dpInfo() << "=== SUBDIVIDE NARROW FACES: START ===";
     dpInfo() << "Initial faces:" << mesh->faces().size()
         << ", vertices:" << mesh->vertices().size();
@@ -612,7 +604,7 @@ void MeshTools::subdivideNarrowFaces(std::shared_ptr<CMesh> mesh,
             break;
         }
 
-        // 1) Wyznaczamy zbiór krawêdzi do podzia³u (edge-based)
+        // 1) Build the set of edges to split.
         std::unordered_set<CEdge, EdgeHasher> edgesToSplit;
         edgesToSplit.reserve(faceCount * 2);
 
@@ -635,7 +627,7 @@ void MeshTools::subdivideNarrowFaces(std::shared_ptr<CMesh> mesh,
             CEdge eBC = std::minmax(f.B(), f.C());
             CEdge eCA = std::minmax(f.C(), f.A());
 
-            // Sortuj krawêdzie wg d³ugoœci (malej¹co)
+            // Sort edges by descending length.
             std::vector<std::pair<float, CEdge>> sortedEdges = {
                 {len0, eAB}, {len1, eBC}, {len2, eCA}
             };
@@ -648,7 +640,7 @@ void MeshTools::subdivideNarrowFaces(std::shared_ptr<CMesh> mesh,
             float secondLongest = sortedEdges[1].first;
             float shortest = sortedEdges[2].first;
 
-            // Jeœli 2 d³ugie krawêdzie (ró¿nica > 50%), oznacz obie
+            // If two long edges remain clearly dominant, split both.
             if (secondLongest > shortest * 1.5f) {
                 edgesToSplit.insert(sortedEdges[0].second);
                 edgesToSplit.insert(sortedEdges[1].second);
@@ -665,7 +657,7 @@ void MeshTools::subdivideNarrowFaces(std::shared_ptr<CMesh> mesh,
 
         dpInfo() << "Edges to split:" << edgesToSplit.size();
 
-        // 2) W³aœciwa subdivizja
+        // 2) Perform the subdivision.
         std::unordered_map<CEdge, INDEX_TYPE, EdgeHasher> edgeMidpoints;
         edgeMidpoints.reserve(edgesToSplit.size());
 
@@ -692,7 +684,7 @@ void MeshTools::subdivideNarrowFaces(std::shared_ptr<CMesh> mesh,
             };
 
         int subdivided = 0;
-        int count1 = 0, count2 = 0, count3 = 0; // Statystyki
+        int count1 = 0, count2 = 0, count3 = 0; // Statistics
 
         for (INDEX_TYPE i = 0; i < static_cast<INDEX_TYPE>(faceCount); ++i) {
             const CFace& f = faces[i];
@@ -793,7 +785,7 @@ void MeshTools::subdivideNarrowFaces(std::shared_ptr<CMesh> mesh,
     dpInfo() << "Final faces:" << mesh->faces().size()
         << ", vertices:" << mesh->vertices().size();
     dpInfo() << "=== SUBDIVIDE NARROW FACES: END ===";
-    appApi().setStatusText("Subdivision complete");
+    StatusBarManager::setText("Subdivision complete");
 }
 
 
@@ -835,5 +827,6 @@ void MeshTools::repairMesh(CMesh& mesh)
         << finalVerts << " (delta:" << static_cast<int>(finalVerts - initialVerts) << ")";
     dpInfo() << "=== MESH REPAIR: END ===";
 }
+
 
 

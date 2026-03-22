@@ -105,6 +105,8 @@ String/path helpers in `UI`
 - Status: mixed; keep user-facing operations, avoid raw access
 - New home: `ICameraAPI`
 - Raw internals move to: `IGuiInternalsAPI`
+- Implementation note: current camera adapters no longer call `UI::CAMERA::*`
+  directly; they share host-side camera access helpers with the GUI-aware path
 
 `UI::DOCK::WORKSPACE::*`
 - Status: mixed; dock commands may survive temporarily, raw getters are legacy
@@ -112,6 +114,10 @@ String/path helpers in `UI`
 - Current safe replacements include:
   - `IDockWorkspaceAPI::rebuildTree()`
   - `IDockWorkspaceAPI::setItemVisibleById(...)`
+- Compatibility note:
+  - `UI::DOCK::WORKSPACE::currentItem()` and
+    `UI::DOCK::WORKSPACE::selectedObjects()` are currently kept so privileged
+    plugin adapters can preserve exact pre-refactor behavior on Windows
 
 Legacy GUI escape hatches still present in `UI` and intended to shrink:
 - `UI::CAMERA::transform()`
@@ -130,8 +136,6 @@ Already removed as unused or purely local wrappers:
 - `UI::DOCK::WORKSPACE::rebuildTree()`
 - `UI::DOCK::WORKSPACE::addItem()`
 - `UI::DOCK::WORKSPACE::removeItem()`
-- `UI::DOCK::WORKSPACE::getSelectedObjects()`
-- `UI::DOCK::WORKSPACE::getCurrentItemObj()`
 - `UI::DOCK::HISTOGRAM::show()`
 - `UI::DOCK::HISTOGRAM::setHistogram()`
 - `UI::DOCK::HISTOGRAM::getHistogram()`

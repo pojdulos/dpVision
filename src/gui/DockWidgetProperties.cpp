@@ -1,6 +1,5 @@
 #include "DockWidgetProperties.h"
 
-#include "../api/UI.h"
 #include "../api/adapters/AppAPIAdapter.h"
 
 #include "DockWidgetWorkspace.h"

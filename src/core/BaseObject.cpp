@@ -1,17 +1,18 @@
 #include "BaseObject.h"
-#include "../api/adapters/AppAPIAdapter.h"
+#include "Global.h"
 #include "Workspace.h"
 
 #include <QMetaType>
+#include <atomic>
 
 #include "../renderers/IBaseObjectRenderer.h"
 #include "dpLog.h"
 
 namespace {
-AppAPIAdapter& appApi()
+int nextObjectId()
 {
-	static AppAPIAdapter api;
-	return api;
+	static std::atomic<int> nextId{MODEL_ID_OFFSET};
+	return ++nextId;
 }
 }
 
@@ -28,7 +29,7 @@ static const int _dummy = _registerCBaseObjectPtrMetaType();
 
 CBaseObject::CBaseObject(std::shared_ptr<CBaseObject> p)
 {
-	m_Id = appApi().uniqueId();
+	m_Id = nextObjectId();
 
 	//dpDebug() << "CBaseObject - constructor wit parent ptr = " << (p ? p->id() : -1);
 
@@ -50,7 +51,7 @@ CBaseObject::CBaseObject(std::shared_ptr<CBaseObject> p)
 // konstruktor ze wskazaniem rodzica
 CBaseObject::CBaseObject(int objId)
 {
-	m_Id = appApi().uniqueId();
+	m_Id = nextObjectId();
 	
 	//dpDebug() << "CBaseObject - constructor wit parent id = " << objId;
 
@@ -72,7 +73,7 @@ CBaseObject::CBaseObject(int objId)
 // konstruktor kopiuj�cy
 CBaseObject::CBaseObject(const CBaseObject &b)
 {
-	m_Id = appApi().uniqueId();
+	m_Id = nextObjectId();
 
 	setLabel("* " + b.m_label);
 

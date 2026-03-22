@@ -2,12 +2,12 @@
 
 #include "ParserWRL.h"
 
-#include "../api/adapters/PluginUIAPIAdapter.h"
+#include "../api/adapters/PluginHostAPIAdapter.h"
 
 namespace {
-PluginUIAPIAdapter& uiApi()
+PluginHostAPIAdapter& hostApi()
 {
-    static PluginUIAPIAdapter api;
+    static PluginHostAPIAdapter api;
     return api;
 }
 }
@@ -21,7 +21,7 @@ void CParserWRL::VRML_ParseNode_Color( FILE *plik )
 		long lc=0;
 		float aR, aG, aB;
 
-		uiApi().statusBar().setText("Reading Color section...");
+		hostApi().statusBar().setText("Reading Color section...");
 
 		while ( fscanf( plik, " %f %f %f", &aR, &aG, &aB ) == 3 )
 		{

@@ -6,10 +6,32 @@
 
 #include "Image.h"
 #include "../api/AP.h"
-#include "../api/UI.h"
+#include "../api/adapters/MessageBoxAPIAdapter.h"
+#include "../api/adapters/ProgressAPIAdapter.h"
+#include "../api/adapters/StatusBarAPIAdapter.h"
 
 #include "dpLog.h"
 //#include <QMessageLogger>
+
+namespace {
+StatusBarAPIAdapter& statusBarApi()
+{
+    static StatusBarAPIAdapter api;
+    return api;
+}
+
+ProgressAPIAdapter& progressApi()
+{
+    static ProgressAPIAdapter api;
+    return api;
+}
+
+MessageBoxAPIAdapter& messageBoxApi()
+{
+    static MessageBoxAPIAdapter api;
+    return api;
+}
+}
 
 CParserDICOM::CParserDICOM()
 {
@@ -212,7 +234,7 @@ size_t CParserDICOM::parse_dicom_file(std::string dicomPath, uint16_t slide, Vol
 
 long CParserDICOM::read_files(std::shared_ptr<Volumetric> volum, int nbOfFiles, std::string dirPath, std::string shortName, std::string firstNumber, std::string suffix)
 {
-	UI::STATUSBAR::setText("Please wait. I'm reading .dcm...");
+	statusBarApi().setText("Please wait. I'm reading .dcm...");
 
 	long lbv = 0;
 	int failedFiles = 0;
@@ -220,11 +242,11 @@ long CParserDICOM::read_files(std::shared_ptr<Volumetric> volum, int nbOfFiles, 
 	double sliceLoc = 0.0;
 	double lastsliceLoc = 0.0;
 
-	UI::PROGRESSBAR::init(0, nbOfFiles, 0);
-	UI::PROGRESSBAR::setText("Czytam pliki: ");
+	progressApi().init(0, nbOfFiles, 0);
+	progressApi().setText("Czytam pliki: ");
 	for (int slide = 0; slide < nbOfFiles; slide++)
 	{
-		UI::PROGRESSBAR::setValue(slide);
+		progressApi().setValue(slide);
 
 		std::string currentPath = dirPath + "/" + shortName;
 
@@ -250,7 +272,7 @@ long CParserDICOM::read_files(std::shared_ptr<Volumetric> volum, int nbOfFiles, 
 			qWarning() << "Pominięto plik (slide " << slide << "): " << QString::fromStdString(currentPath);
 		}
 	}
-	UI::PROGRESSBAR::hide();
+	progressApi().hide();
 
 	if (failedFiles > 0) {
 		qWarning() << "Nie udało się wczytać " << failedFiles << " z " << nbOfFiles << " plików DICOM.";
@@ -262,15 +284,15 @@ long CParserDICOM::read_files(std::shared_ptr<Volumetric> volum, int nbOfFiles, 
 
 long CParserDICOM::read_frames(std::shared_ptr<Volumetric> volum, imebra::DataSet& dataSet, int nbOfFrames)
 {
-	UI::STATUSBAR::setText("Please wait. I'm reading .dcm...");
+	statusBarApi().setText("Please wait. I'm reading .dcm...");
 
 	long lbv = 0;
 	double zSize = 1.0;
 	double sliceLoc = 0.0;
 	double lastsliceLoc = 0.0;
 
-	UI::PROGRESSBAR::init(0, nbOfFrames, 0);
-	UI::PROGRESSBAR::setText("Czytam ramki: ");
+	progressApi().init(0, nbOfFrames, 0);
+	progressApi().setText("Czytam ramki: ");
 
 	Volumetric::SliceMetadata metadata;
 
@@ -335,7 +357,7 @@ long CParserDICOM::read_frames(std::shared_ptr<Volumetric> volum, imebra::DataSe
 
 		imebra::Image image0(dataSet.getImage(frameNumber));
 
-		UI::PROGRESSBAR::setValue(frameNumber);
+		progressApi().setValue(frameNumber);
 
 		unsigned int w = static_cast<unsigned int>(image0.getWidth());
 		unsigned int h = static_cast<unsigned int>(image0.getHeight());
@@ -362,7 +384,7 @@ long CParserDICOM::read_frames(std::shared_ptr<Volumetric> volum, imebra::DataSe
 		volum->metadata.push_back(metadata);
 	}
 
-	UI::PROGRESSBAR::hide();
+	progressApi().hide();
 
 	return lbv;
 }
@@ -480,12 +502,12 @@ size_t CParserDICOM::Run()
 
 	if (! photometric.compare("RGB"))
 	{
-		UI::MESSAGEBOX::error("Color space is RGB. This is experimental yet.");
+		messageBoxApi().error("Color space is RGB. This is experimental yet.");
 		m_csp = Volumetric::ColorSpace::RGB;
 	}
 	else if (photometric.compare("MONOCHROME2"))
 	{
-		UI::MESSAGEBOX::error("Sorry. Now I can read monochrome DICOMs only.");
+		messageBoxApi().error("Sorry. Now I can read monochrome DICOMs only.");
 		return 0;
 	}
 
@@ -605,12 +627,12 @@ bool CParserDICOM::_export(std::shared_ptr<Volumetric> volum, QString dir_name, 
 	if (!dir.exists()) dir.mkdir(".");
 
 
-	UI::PROGRESSBAR::init(0, volum->layers(), 0);
-	UI::PROGRESSBAR::setText("Zapisuje pliki: ");
+	progressApi().init(0, volum->layers(), 0);
+	progressApi().setText("Zapisuje pliki: ");
 
 	for (unsigned int i = 0; i < volum->layers(); i++)
 	{
-		UI::PROGRESSBAR::setValue(i);
+		progressApi().setValue(i);
 
 		imebra::MutableDataSet ds("1.2.840.10008.1.2.1");// , "ISO 2022 IR 6");
 
@@ -671,7 +693,7 @@ bool CParserDICOM::_export(std::shared_ptr<Volumetric> volum, QString dir_name, 
 		QString fname(fname_base + QString("%1.dcm").arg(i, 3, 10, QChar('0')));
 		imebra::CodecFactory::save(ds, dir.absoluteFilePath(fname).toStdString(), imebra::codecType_t::dicom);
 	}
-	UI::PROGRESSBAR::hide();
+	progressApi().hide();
 
 	return true;
 }

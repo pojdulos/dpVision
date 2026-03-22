@@ -3,10 +3,10 @@
 #include <QtGui/QKeyEvent>
 #include <QMessageLogger>
 
-#include "../api/AP.h"
+//#include "../api/AP.h"
 #include "../api/adapters/AppAPIAdapter.h"
 
-#include "../api/UI.h"
+//
 
 #include "AppSettings.h"
 #include "MainApplication.h"

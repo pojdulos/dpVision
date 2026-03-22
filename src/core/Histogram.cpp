@@ -3,19 +3,11 @@
 #include "Stat.h"
 #include <algorithm>
 
+#include "HistogramDockManager.h"
+#include "WorkspacePanelManager.h"
 #include "utils/StringUtils.h"
 #include "StatusBarManager.h"
-
-#include "../api/adapters/UIAPIAdapter.h"
 #include "dpLog.h"
-
-namespace {
-UIAPIAdapter& uiApi()
-{
-	static UIAPIAdapter api;
-	return api;
-}
-}
 
 CHistogram::CHistogram(std::vector<double> data, int levels) :CAnnotation()
 {
@@ -68,16 +60,17 @@ CHistogram::~CHistogram() {}
 
 
 void CHistogram::setSelfVisibility(bool sel) {
-	if (uiApi().dockHistogram().getHistogram() == this) {
-		uiApi().dockHistogram().show(sel);
+	if (HistogramDockManager::getHistogram() == this) {
+		HistogramDockManager::show(sel);
 	}
 	else if (sel) {
-		if (nullptr != uiApi().dockHistogram().getHistogram()) {
-			uiApi().dockHistogram().getHistogram()->setSelfVisibility(false);
-			uiApi().dockWorkspace().setItemVisibleById(uiApi().dockHistogram().getHistogram()->id(), false);
+		CHistogram* activeHistogram = HistogramDockManager::getHistogram();
+		if (activeHistogram != nullptr) {
+			activeHistogram->setSelfVisibility(false);
+			WorkspacePanelManager::setWorkspaceItemVisible(activeHistogram->id(), false);
 		}
-		uiApi().dockHistogram().setHistogram(this);
-		uiApi().dockHistogram().show(true);
+		HistogramDockManager::setHistogram(this);
+		HistogramDockManager::show(true);
 	}
 
 	//colorizeParentVertices(sel);
@@ -443,7 +436,7 @@ CRGBA CHistogram::getColorBGR(int i)
 void CHistogram::repaint()
 {
 	colorizeParentVertices(false);
-	uiApi().dockHistogram().repaint();
+	HistogramDockManager::repaint();
 	colorizeParentVertices(true);
 }
 

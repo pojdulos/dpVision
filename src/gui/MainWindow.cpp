@@ -33,9 +33,11 @@
 #include "StatusBarManager.h"
 #include "MessageBoxManager.h"
 #include "../core/AppStateManager.h"
+#include "../core/HistogramDockManager.h"
 #include "../core/WorkspacePanelManager.h"
 #include "adapters/QtStatusBarAdapter.h"
 #include "adapters/QtAppStateAdapter.h"
+#include "adapters/QtHistogramDockAdapter.h"
 #include "adapters/QtMessageBoxAdapter.h"
 #include "adapters/QtProgressAdapter.h"
 #include "adapters/QtWorkspacePanelAdapter.h"
@@ -137,6 +139,7 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 	StatusBarManager::setListener(new QtStatusBarAdapter(statusBar()));
 	MessageBoxManager::setListener(new QtMessageBoxAdapter());
 	AppStateManager::setListener(new QtAppStateAdapter(this));
+	HistogramDockManager::setListener(new QtHistogramDockAdapter(this));
 	WorkspacePanelManager::setListener(new QtWorkspacePanelAdapter(this));
 
 	this->progressIndicator = new ProgressIndicator(this->statusBar());

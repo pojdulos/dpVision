@@ -1,17 +1,9 @@
 #include "WorkspaceFile.h"
 //#include "MainWindow.h"
 //#include "ChildWindow.h"
-#include "../api/adapters/AppAPIAdapter.h"
+#include "Model3D.h"
 #include "StatusBarManager.h"
 #include "utils/StringUtils.h"
-
-namespace {
-AppAPIAdapter& appApi()
-{
-	static AppAPIAdapter api;
-	return api;
-}
-}
 
 
 void CWorkspaceFile::loadFaro(std::wstring p, CWorkspace & wksp)
@@ -61,7 +53,10 @@ void CWorkspaceFile::loadFaro(std::wstring p, CWorkspace & wksp)
 		}
 		else
 		{
-			std::shared_ptr<CModel3D> obj = appApi().workspace().loadModel(fwsname.absoluteFilePath());
+			std::shared_ptr<CModel3D> obj = CModel3D::load(fwsname.absoluteFilePath());
+			if (obj != nullptr) {
+				wksp._objectAdd(obj);
+			}
 			if (NULL != obj)
 			{
 				id = obj->id();

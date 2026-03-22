@@ -1,6 +1,6 @@
 # api/CMakeLists.txt
 
-file(GLOB GUI_SRC
+file(GLOB GUI_SRC CONFIGURE_DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/adapters/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/events/*.cpp

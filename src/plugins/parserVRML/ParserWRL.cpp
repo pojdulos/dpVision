@@ -2,12 +2,12 @@
 
 #include "ParserWRL.h"
 #include "Utilities.h"
-#include "../api/adapters/PluginUIAPIAdapter.h"
+#include "../api/adapters/PluginHostAPIAdapter.h"
 
 namespace {
-PluginUIAPIAdapter& uiApi()
+PluginHostAPIAdapter& hostApi()
 {
-    static PluginUIAPIAdapter api;
+    static PluginHostAPIAdapter api;
     return api;
 }
 }
@@ -162,7 +162,7 @@ size_t CParserWRL::ReadVRML()
 
 	fclose( plik );
 
-	uiApi().statusBar().setText(
+	hostApi().statusBar().setText(
         QString("Ready: F:%1, V:%2").arg(pMeshData->faces().size()).arg(pMeshData->vertices().size()));
 
 	return pMeshData->faces().size(); //faceCount;

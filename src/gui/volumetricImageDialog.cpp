@@ -4,7 +4,7 @@
 //#include <QResizeEvent>
 
 #include "ImageLabel.h"
-#include "../api/UI.h"
+
 #include "../core/AppStateManager.h"
 #include <QKeyEvent>
 #include <QPainter>

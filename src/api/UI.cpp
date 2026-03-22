@@ -26,22 +26,20 @@
 #include "../core/MessageBoxManager.h"
 #include "../core/StatusBarManager.h"
 #include "../core/WorkspacePanelManager.h"
-#include "../core/interfaces/IProgressListener.h"
+#include "adapters/DockHistogramAPIAdapter.h"
+#include "adapters/DockWorkspaceAPIAdapter.h"
+#include "adapters/FileDialogAPIAdapter.h"
+#include "adapters/GuiCameraAPIAdapter.h"
+#include "adapters/GuiPluginPanelAPIAdapter.h"
+#include "adapters/MessageBoxAPIAdapter.h"
+#include "adapters/ProgressAPIAdapter.h"
+#include "adapters/StatusBarAPIAdapter.h"
 
 namespace
 {
 	CMainWindow* mainWindow()
 	{
 		return CMainWindow::instance();
-	}
-
-	GLViewer* currentViewerInstance()
-	{
-		if (auto win = mainWindow())
-		{
-			return win->currentViewer();
-		}
-		return nullptr;
 	}
 
 	DockWidgetPluginPanel* pluginPanel()
@@ -68,9 +66,52 @@ namespace
 		}
 	}
 
-	std::shared_ptr<IProgressListener> progressListener()
+	DockWorkspaceAPIAdapter& dockWorkspaceApi()
 	{
-		return IProgressListener::getDefault();
+		static DockWorkspaceAPIAdapter api;
+		return api;
+	}
+
+	DockHistogramAPIAdapter& dockHistogramApi()
+	{
+		static DockHistogramAPIAdapter api;
+		return api;
+	}
+
+	GuiPluginPanelAPIAdapter& pluginPanelApi()
+	{
+		static GuiPluginPanelAPIAdapter api;
+		return api;
+	}
+
+	GuiCameraAPIAdapter& cameraApi()
+	{
+		static GuiCameraAPIAdapter api;
+		return api;
+	}
+
+	ProgressAPIAdapter& progressApi()
+	{
+		static ProgressAPIAdapter api;
+		return api;
+	}
+
+	StatusBarAPIAdapter& statusBarApi()
+	{
+		static StatusBarAPIAdapter api;
+		return api;
+	}
+
+	MessageBoxAPIAdapter& messageBoxApi()
+	{
+		static MessageBoxAPIAdapter api;
+		return api;
+	}
+
+	FileDialogAPIAdapter& fileDialogApi()
+	{
+		static FileDialogAPIAdapter api;
+		return api;
 	}
 }
 
@@ -208,7 +249,7 @@ DockWidgetWorkspace* UI::DOCK::WORKSPACE::instance()
 
 void UI::DOCK::WORKSPACE::update()
 {
-	WorkspacePanelManager::rebuildWorkspaceTree();
+	dockWorkspaceApi().rebuildTree();
 }
 
 void UI::DOCK::WORKSPACE::selectItem( int id)
@@ -221,6 +262,30 @@ void UI::DOCK::WORKSPACE::selectItem( int id)
 	}
 }
 
+std::shared_ptr<CBaseObject> UI::DOCK::WORKSPACE::currentItem()
+{
+	CMainWindow* win = mainWindow();
+
+	if (win != nullptr && win->dockWorkspace != nullptr)
+	{
+		return win->dockWorkspace->getCurrentItemObj();
+	}
+
+	return nullptr;
+}
+
+QVector<std::shared_ptr<CBaseObject>> UI::DOCK::WORKSPACE::selectedObjects()
+{
+	CMainWindow* win = mainWindow();
+
+	if (win != nullptr && win->dockWorkspace != nullptr)
+	{
+		return win->dockWorkspace->getSelectedObjects();
+	}
+
+	return {};
+}
+
 
 void UI::DOCK::WORKSPACE::setItemCheckedById(int id, bool b)
 {
@@ -229,7 +294,7 @@ void UI::DOCK::WORKSPACE::setItemCheckedById(int id, bool b)
 
 void UI::DOCK::WORKSPACE::setItemVisibleById(int id, bool b)
 {
-	WorkspacePanelManager::setWorkspaceItemVisible(id, b);
+	dockWorkspaceApi().setItemVisibleById(id, b);
 }
 
 void UI::DOCK::WORKSPACE::setItemKidsVisibleById(int id, bool b)
@@ -240,12 +305,7 @@ void UI::DOCK::WORKSPACE::setItemKidsVisibleById(int id, bool b)
 
 void UI::DOCK::WORKSPACE::setItemLockedById(int id, bool b)
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr && win->dockWorkspace != nullptr)
-	{
-		win->dockWorkspace->setItemLockedById(id, b);
-	}
+	dockWorkspaceApi().setItemLockedById(id, b);
 }
 
 void UI::DOCK::WORKSPACE::setItemLabelById(int id, std::string s)
@@ -271,19 +331,14 @@ void UI::DOCK::WORKSPACE::setItemLabelById(int id, std::wstring s)
 
 void UI::DOCK::HISTOGRAM::repaint()
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr && win->dockHisto != nullptr)
-	{
-		win->dockHisto->update();
-	}
+	dockHistogramApi().repaint();
 }
 
 //#include "childwindow.h"
 
 GLViewer * UI::CAMERA::currentViewer()
 {
-	return currentViewerInstance();
+	return cameraApi().currentViewer();
 }
 
 void UI::CAMERA::screenshot(QString path, void *v)
@@ -460,10 +515,7 @@ CTransform* UI::CAMERA::transform()
 
 void UI::CAMERA::setView(int dir, std::shared_ptr<CModel3D> obj)
 {
-	if (auto win = mainWindow())
-	{
-		win->actionLookDir(dir, obj);
-	}
+	cameraApi().setView(dir, std::move(obj));
 }
 
 
@@ -472,21 +524,12 @@ void UI::CAMERA::setView(int dir, std::shared_ptr<CModel3D> obj)
 
 QWidget* UI::PLUGINPANEL::instance(unsigned int pluginId)
 {
-	if (DockWidgetPluginPanel* panel = pluginPanel())
-	{
-		return panel->getPanel(pluginId);
-	}
-	return nullptr;
+	return pluginPanelApi().panel(pluginId);
 }
 
 void UI::PLUGINPANEL::create(unsigned int pluginId, const QString &label)
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr && win->dockPluginPanel != nullptr)
-	{
-		win->dockPluginPanel->addPluginPanel(pluginId, label);
-	}
+	pluginPanelApi().create(pluginId, label);
 }
 
 void UI::PLUGINPANEL::clear(unsigned int pluginId)
@@ -505,21 +548,12 @@ void UI::PLUGINPANEL::clear(unsigned int pluginId)
 
 void UI::PLUGINPANEL::setEnabled(unsigned int pluginId, bool b)
 {
-	if (DockWidgetPluginPanel* panel = pluginPanel())
-	{
-		if (QWidget* pluginWidget = panel->getPanel(pluginId))
-		{
-			pluginWidget->setEnabled(b);
-		}
-	}
+	pluginPanelApi().setEnabled(pluginId, b);
 }
 
 void UI::PLUGINPANEL::removeWidget(unsigned int pluginId, const QString &name)
 {
-	if (DockWidgetPluginPanel* panel = pluginPanel())
-	{
-		panel->removeWidget(pluginId, name);
-	}
+	pluginPanelApi().removeWidget(pluginId, name);
 }
 
 // PLUGINPANEL - PUSH BUTTON
@@ -537,68 +571,37 @@ QPushButton* UI::PLUGINPANEL::addButton(unsigned int pluginId, QString label, QO
 
 QPushButton* UI::PLUGINPANEL::addButton(unsigned int pluginId, std::string buttonName, std::string label, int row, int col, int rspan, int cspan)
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr && win->dockPluginPanel != nullptr)
-	{
-		return win->dockPluginPanel->addButton(pluginId, QString::fromStdString(buttonName), QString::fromUtf8(label.c_str()), row, col, rspan, cspan);
-	}
-	return nullptr;
+	return pluginPanelApi().addButton(pluginId, QString::fromStdString(buttonName), QString::fromUtf8(label.c_str()), row, col, rspan, cspan);
 }
 
 QPushButton* UI::PLUGINPANEL::addButton( unsigned int pluginId, std::wstring buttonName, std::wstring label, int row, int col, int rspan, int cspan )
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr && win->dockPluginPanel != nullptr)
-	{
-		return win->dockPluginPanel->addButton(pluginId, QString::fromStdWString(buttonName), QString::fromStdWString(label), row, col, rspan, cspan);
-	}
-	return nullptr;
+	return pluginPanelApi().addButton(pluginId, QString::fromStdWString(buttonName), QString::fromStdWString(label), row, col, rspan, cspan);
 }
 
 void UI::PLUGINPANEL::setButtonText(unsigned int pluginId, const QString &name, const QString &value)
 {
-	if (DockWidgetPluginPanel* panel = pluginPanel())
-	{
-		panel->setButtonText(pluginId, name, value);
-	}
+	pluginPanelApi().setButtonText(pluginId, name, value);
 }
 
 void UI::PLUGINPANEL::addSlider(unsigned int pluginId, const QString &buttonName, int min, int max, int row, int col, int rspan, int cspan)
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr && win->dockPluginPanel != nullptr)
-	{
-		win->dockPluginPanel->addSlider(pluginId, buttonName, min, max, row, col, rspan, cspan);
-	}
+	pluginPanelApi().addSlider(pluginId, buttonName, min, max, row, col, rspan, cspan);
 }
 
 int UI::PLUGINPANEL::getSliderValue(unsigned int pluginId, const QString &name)
 {
-	if (DockWidgetPluginPanel* panel = pluginPanel())
-	{
-		return panel->getSliderValue(pluginId, name);
-	}
-	return -1;
+	return pluginPanelApi().getSliderValue(pluginId, name);
 }
 
 int UI::PLUGINPANEL::setSliderValue(unsigned int pluginId, const QString &name, int value)
 {
-	if (DockWidgetPluginPanel* panel = pluginPanel())
-	{
-		return panel->setSliderValue(pluginId, name, value);
-	}
-	return -1;
+	return pluginPanelApi().setSliderValue(pluginId, name, value);
 }
 
 void UI::PLUGINPANEL::setSliderRange(unsigned int pluginId, const QString &name, int min, int max)
 {
-	if (DockWidgetPluginPanel* panel = pluginPanel())
-	{
-		panel->setSliderRange(pluginId, name, min, max);
-	}
+	pluginPanelApi().setSliderRange(pluginId, name, min, max);
 }
 
 
@@ -606,56 +609,32 @@ void UI::PLUGINPANEL::setSliderRange(unsigned int pluginId, const QString &name,
 
 void UI::PLUGINPANEL::addEditBox(unsigned int pluginId, const QString &name, const QString &label, const QString &value, int row, int col, int rspan, int cspan)
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr && win->dockPluginPanel != nullptr)
-	{
-		win->dockPluginPanel->addEditBox(pluginId, name, label, value, row, col, rspan, cspan);
-	}
+	pluginPanelApi().addEditBox(pluginId, name, label, value, row, col, rspan, cspan);
 }
 
 QString UI::PLUGINPANEL::getEditBoxValue(unsigned int pluginId, const QString &name)
 {
-	if (DockWidgetPluginPanel* panel = pluginPanel())
-	{
-		return panel->getEditBoxValue(pluginId, name);
-	}
-	return "";
+	return pluginPanelApi().getEditBoxValue(pluginId, name);
 }
 
 void UI::PLUGINPANEL::setEditBoxValue(unsigned int pluginId, const QString &name, const QString &value)
 {
-	if (DockWidgetPluginPanel* panel = pluginPanel())
-	{
-		panel->setEditBoxValue(pluginId, name, value);
-	}
+	pluginPanelApi().setEditBoxValue(pluginId, name, value);
 }
 
 void UI::PLUGINPANEL::addComboBox(unsigned int pluginId, const QString &name, int row, int col, int rspan, int cspan)
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr && win->dockPluginPanel != nullptr)
-	{
-		win->dockPluginPanel->addComboBox(pluginId, name, row, col, rspan, cspan);
-	}
+	pluginPanelApi().addComboBox(pluginId, name, row, col, rspan, cspan);
 }
 
 QString UI::PLUGINPANEL::getComboBoxCurrentItemText(unsigned int pluginId, const QString &name)
 {
-	if (DockWidgetPluginPanel* panel = pluginPanel())
-	{
-		return panel->getComboBoxCurrentItemText(pluginId, name);
-	}
-	return "";
+	return pluginPanelApi().getComboBoxCurrentItemText(pluginId, name);
 }
 
 void UI::PLUGINPANEL::setComboBoxItems(unsigned int pluginId, const QString &name, QStringList items)
 {
-	if (DockWidgetPluginPanel* panel = pluginPanel())
-	{
-		panel->setComboBoxItems(pluginId, name, items);
-	}
+	pluginPanelApi().setComboBoxItems(pluginId, name, items);
 }
 
 void UI::PLUGINPANEL::setComboBoxItems(unsigned int pluginId, const char* name, std::initializer_list<const char*> items)
@@ -693,96 +672,43 @@ void UI::PLUGINPANEL::setComboBoxItems(unsigned int pluginId, const std::wstring
 
 void UI::PLUGINPANEL::addLabel(unsigned int pluginId, const QString &name, const QString &text, int row, int col, int rspan, int cspan)
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr && win->dockPluginPanel != nullptr)
-	{
-		win->dockPluginPanel->addLabel(pluginId, name, text, row, col, rspan, cspan);
-	}
+	pluginPanelApi().addLabel(pluginId, name, text, row, col, rspan, cspan);
 }
 
 void UI::PLUGINPANEL::setLabel(unsigned int pluginId, const QString &name, const QString &text)
 {
-	if (DockWidgetPluginPanel* panel = pluginPanel())
-	{
-		panel->setLabel(pluginId, name, text);
-	}
+	pluginPanelApi().setLabel(pluginId, name, text);
 }
 
 // PROGRESSBAR
 
 ProgressIndicator* UI::PROGRESSBAR::instance()
 {
-	if (CMainWindow* win = mainWindow())
-	{
-		return win->progressIndicator;
-	}
-	return nullptr;
+	return progressApi().instance();
 }
 
 void UI::PROGRESSBAR::init( int min, int max, int val )
 {
-	if (auto listener = progressListener())
-	{
-		listener->init(min, max, val);
-	}
-	else if (CMainWindow* win = mainWindow())
-	{
-		if (nullptr != win->progressIndicator)
-		{
-			win->progressIndicator->init(min, max, val);
-			win->progressIndicator->show();
-		}
-	}
+	progressApi().init(min, max, val);
 	processUiEvents(true);
 }
 
 void UI::PROGRESSBAR::setValue( int val )
 {
-	if (auto listener = progressListener())
-	{
-		listener->setValue(val);
-	}
-	else if (CMainWindow* win = mainWindow())
-	{
-		if (nullptr != win->progressIndicator)
-		{
-			win->progressIndicator->setValue(val);
-		}
-	}
+	progressApi().setValue(val);
 	processUiEvents(true);
 }
 
 
 void UI::PROGRESSBAR::setText(const QString text)
 {
-	if (auto listener = progressListener())
-	{
-		listener->setText(text.toStdString());
-	}
-	else if (CMainWindow* win = mainWindow())
-	{
-		if (nullptr != win->progressIndicator)
-		{
-			win->progressIndicator->setText(text);
-		}
-	}
+	progressApi().setText(text);
 	processUiEvents(true);
 }
 
 void UI::PROGRESSBAR::hide()
 {
-	if (auto listener = progressListener())
-	{
-		listener->hide();
-	}
-	else if (CMainWindow* win = mainWindow())
-	{
-		if (nullptr != win->progressIndicator)
-		{
-			win->progressIndicator->hide();
-		}
-	}
+	progressApi().hide();
 	processUiEvents(true);
 }
 
@@ -867,7 +793,7 @@ void UI::STATUSBAR::printfTimed(int mst, const wchar_t* format, ...)
 
 void UI::STATUSBAR::setText(const QString msg)
 {
-	StatusBarManager::setText(msg);
+	statusBarApi().setText(msg);
 	processUiEvents(true);
 }
 
@@ -875,22 +801,22 @@ void UI::STATUSBAR::setText(const QString msg)
 
 // MESSAGEBOX
 
-void UI::MESSAGEBOX::information(const QString &msg, const QString &tittle) { MessageBoxManager::information(msg.toStdString(), tittle.toStdString(), UserMessageChannel::Modal); }
+void UI::MESSAGEBOX::information(const QString &msg, const QString &tittle) { messageBoxApi().information(msg, tittle); }
 void UI::MESSAGEBOX::information(const char* msg, const char* tittle) { MessageBoxManager::information(QString::fromUtf8(msg).toStdString(), QString::fromUtf8(tittle).toStdString(), UserMessageChannel::Modal); }
 void UI::MESSAGEBOX::information(const std::string &msg, const std::string &tittle) { MessageBoxManager::information(msg, tittle, UserMessageChannel::Modal); }
 void UI::MESSAGEBOX::information(const std::wstring &msg, const std::wstring &tittle ) { MessageBoxManager::information(QString::fromWCharArray(msg.c_str()).toStdString(), QString::fromWCharArray(tittle.c_str()).toStdString(), UserMessageChannel::Modal); }
 
-void UI::MESSAGEBOX::warning(const QString &msg, const QString &tittle) { MessageBoxManager::warning(msg.toStdString(), tittle.toStdString(), UserMessageChannel::Modal); }
+void UI::MESSAGEBOX::warning(const QString &msg, const QString &tittle) { messageBoxApi().warning(msg, tittle); }
 void UI::MESSAGEBOX::warning(const char* msg, const char* tittle) { MessageBoxManager::warning(QString::fromUtf8(msg).toStdString(), QString::fromUtf8(tittle).toStdString(), UserMessageChannel::Modal); }
 void UI::MESSAGEBOX::warning(const std::string &msg, const std::string &tittle) { MessageBoxManager::warning(msg, tittle, UserMessageChannel::Modal); }
 void UI::MESSAGEBOX::warning(const std::wstring &msg, const std::wstring &tittle ) { MessageBoxManager::warning(QString::fromWCharArray(msg.c_str()).toStdString(), QString::fromWCharArray(tittle.c_str()).toStdString(), UserMessageChannel::Modal); }
 
-void UI::MESSAGEBOX::error(const QString &msg, const QString &tittle) { MessageBoxManager::error(msg.toStdString(), tittle.toStdString(), UserMessageChannel::Modal); }
+void UI::MESSAGEBOX::error(const QString &msg, const QString &tittle) { messageBoxApi().error(msg, tittle); }
 void UI::MESSAGEBOX::error(const char* msg, const char* tittle) { MessageBoxManager::error(QString::fromUtf8(msg).toStdString(), QString::fromUtf8(tittle).toStdString(), UserMessageChannel::Modal); }
 void UI::MESSAGEBOX::error(const std::string &msg, const std::string &tittle) { MessageBoxManager::error(msg, tittle, UserMessageChannel::Modal); }
 void UI::MESSAGEBOX::error(const std::wstring &msg, const std::wstring &tittle ) { MessageBoxManager::error(QString::fromWCharArray(msg.c_str()).toStdString(), QString::fromWCharArray(tittle.c_str()).toStdString(), UserMessageChannel::Modal); }
 
-int UI::MESSAGEBOX::question(const QString &msg, const QString &tittle, const QString &b0, const QString &b1, const QString &b2) { return MessageBoxManager::question(msg.toStdString(), tittle.toStdString(), b0.toStdString(), b1.toStdString(), b2.toStdString()); }
+int UI::MESSAGEBOX::question(const QString &msg, const QString &tittle, const QString &b0, const QString &b1, const QString &b2) { return messageBoxApi().question(msg, tittle, b0, b1, b2); }
 int UI::MESSAGEBOX::question(const char* msg, const char* tittle, const char* b0, const char* b1, const char* b2) { return MessageBoxManager::question(QString::fromUtf8(msg).toStdString(), QString::fromUtf8(tittle).toStdString(), QString::fromUtf8(b0).toStdString(), QString::fromUtf8(b1).toStdString(), QString::fromUtf8(b2).toStdString()); }
 int UI::MESSAGEBOX::question(const std::string &msg, const std::string &tittle, const std::string &b0, const std::string &b1, const std::string &b2) { return MessageBoxManager::question(msg, tittle, b0, b1, b2); }
 int UI::MESSAGEBOX::question(const std::wstring &msg, const std::wstring &tittle, const std::wstring &b0, const std::wstring &b1, const std::wstring &b2 ) { return MessageBoxManager::question(QString::fromWCharArray(msg.c_str()).toStdString(), QString::fromWCharArray(tittle.c_str()).toStdString(), QString::fromWCharArray(b0.c_str()).toStdString(), QString::fromWCharArray(b1.c_str()).toStdString(), QString::fromWCharArray(b2.c_str()).toStdString()); }
@@ -922,7 +848,7 @@ bool UI::fileExists(std::wstring path)
 
 QString UI::FILECHOOSER::getOpenFileName(QString title, QString dir, QString filter)
 {
-	return QFileDialog::getOpenFileName( 0, title, dir, filter );
+	return fileDialogApi().getOpenFileName(title, dir, filter);
 }
 
 std::wstring UI::FILECHOOSER::getOpenFileName( std::wstring title, std::wstring dir, std::wstring filter )
@@ -947,7 +873,7 @@ std::string UI::FILECHOOSER::getOpenFileName( std::string title, std::string dir
 
 QString UI::FILECHOOSER::getSaveFileName(QString title, QString dir, QString filter)
 {
-	return QFileDialog::getSaveFileName( 0, title, dir, filter );
+	return fileDialogApi().getSaveFileName(title, dir, filter);
 }
 
 

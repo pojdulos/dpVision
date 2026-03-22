@@ -2,12 +2,12 @@
 
 #include "ParserWRL.h"
 
-#include "../api/adapters/PluginUIAPIAdapter.h"
+#include "../api/adapters/PluginHostAPIAdapter.h"
 
 namespace {
-PluginUIAPIAdapter& uiApi()
+PluginHostAPIAdapter& hostApi()
 {
-    static PluginUIAPIAdapter api;
+    static PluginHostAPIAdapter api;
     return api;
 }
 }
@@ -73,7 +73,7 @@ void CParserWRL::VRML_ParseNode_IndexedFaceSet( FILE *plik )
 
 				CTIndex indeks;
 
-				uiApi().statusBar().setText("Reading TexCoordIndex section...");
+				hostApi().statusBar().setText("Reading TexCoordIndex section...");
 
 				fscanf( plik, " [ " );
 	

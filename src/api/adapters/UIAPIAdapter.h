@@ -1,4 +1,9 @@
 #pragma once
+
+// Transitional null-object aggregate used only to keep older plugin-facing
+// facades source-compatible. New composition should go through PluginHostAPI
+// and PluginGuiAPI instead of this mixed IUIAPI wrapper.
+
 #include "../interfaces/IUIAPI.h"
 #include "../adapters/DockWorkspaceAPIAdapter.h"
 #include "../adapters/DockHistogramAPIAdapter.h"

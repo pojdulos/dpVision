@@ -1,6 +1,5 @@
 #include "DockWidgetModel.h"
 
-#include "../api/UI.h"
 #include "../api/adapters/AppAPIAdapter.h"
 #include "../core/AppStateManager.h"
 

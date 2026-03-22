@@ -1,8 +1,9 @@
 #pragma once
 
+#include "../interfaces/ICameraControlAPI.h"
 #include "../interfaces/ICameraAPI.h"
 
-class NullCameraAPIAdapter : public ICameraAPI {
+class NullCameraAPIAdapter : public ICameraAPI, public ICameraControlAPI {
 public:
     void move(float mx, float my, float mz) override {
         Q_UNUSED(mx);
@@ -51,6 +52,10 @@ public:
     void setView(int dir, std::shared_ptr<CModel3D> obj = nullptr) override {
         Q_UNUSED(dir);
         Q_UNUSED(obj);
+    }
+
+    void screenshot(const QString& path) override {
+        Q_UNUSED(path);
     }
 
     GLViewer* currentViewer() override {

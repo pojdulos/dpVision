@@ -1,50 +1,28 @@
 #pragma once
 
+#include "ProgressHostAccess.h"
+#include "../interfaces/IProgressControlAPI.h"
 #include "../interfaces/IProgressAPI.h"
-#include "../../gui/MainWindow.h"
-#include "../../gui/ProgressIndicator.h"
-#include <QCoreApplication>
 
-class GuiProgressAPIAdapter : public IProgressAPI {
+class GuiProgressAPIAdapter : public IProgressAPI, public IProgressControlAPI {
 public:
-    void processEvents()
-    {
-        QCoreApplication::processEvents();
-    }
-
     ProgressIndicator* instance() override {
-        if (auto win = CMainWindow::instance()) {
-            return win->progressIndicator;
-        }
-        return nullptr;
+        return ProgressHostAccess::instance();
     }
 
     void init(int min, int max, int val) override {
-        if (auto progress = instance()) {
-            progress->init(min, max, val);
-            progress->show();
-        }
-        processEvents();
+        ProgressHostAccess::init(min, max, val);
     }
 
     void setValue(int val) override {
-        if (auto progress = instance()) {
-            progress->setValue(val);
-        }
-        processEvents();
+        ProgressHostAccess::setValue(val);
     }
 
     void hide() override {
-        if (auto progress = instance()) {
-            progress->hide();
-        }
-        processEvents();
+        ProgressHostAccess::hide();
     }
 
     void setText(const QString& text) override {
-        if (auto progress = instance()) {
-            progress->setText(text);
-        }
-        processEvents();
+        ProgressHostAccess::setText(text);
     }
 };

@@ -1,6 +1,6 @@
 #include "DockWidgetWorkspace.h"
 
-#include "../api/UI.h"
+
 #include "../api/adapters/AppAPIAdapter.h"
 
 #include "DockWidgetModel.h"

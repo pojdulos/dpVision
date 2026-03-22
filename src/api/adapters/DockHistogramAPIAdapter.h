@@ -1,32 +1,23 @@
 #pragma once
 
+#include "../../core/HistogramDockManager.h"
 #include "../interfaces/IDockHistogramAPI.h"
 
 class DockHistogramAPIAdapter : public IDockHistogramAPI {
 public:
     void show(bool visible) override {
-        visibleRef() = visible;
+        HistogramDockManager::show(visible);
     }
 
     void setHistogram(CHistogram* histogram) override {
-        histogramRef() = histogram;
+        HistogramDockManager::setHistogram(histogram);
     }
 
     CHistogram* getHistogram() override {
-        return histogramRef();
+        return HistogramDockManager::getHistogram();
     }
 
     void repaint() override {
-    }
-
-private:
-    static CHistogram*& histogramRef() {
-        static CHistogram* histogram = nullptr;
-        return histogram;
-    }
-
-    static bool& visibleRef() {
-        static bool visible = false;
-        return visible;
+        HistogramDockManager::repaint();
     }
 };

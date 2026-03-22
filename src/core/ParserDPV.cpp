@@ -3,8 +3,6 @@
 #include "ParserDPV.h"
 #include "Utilities.h"
 
-#include "../api/adapters/AppAPIAdapter.h"
-
 #include <fstream>
 
 #include "quazip.h"
@@ -12,17 +10,11 @@
 #include "quazipdir.h"
 
 #include "AppSettings.h"
+#include "AppStateManager.h"
+#include "Workspace.h"
 
 #include "StatusBarManager.h"
 #include "interfaces/IProgressListener.h"
-
-namespace {
-AppAPIAdapter& appApi()
-{
-	static AppAPIAdapter api;
-	return api;
-}
-}
 
 CParserDPVISION::CParserDPVISION()
 {
@@ -145,12 +137,12 @@ std::shared_ptr<CModel3D> CParserDPVISION::load(const QString path, bool wait, s
 	for (auto m : modele)
 	{
 		m->importChildrenGeometry();
-		appApi().workspace().addModel(m);
+		CWorkspace::instance()->_objectAdd(m);
 	}
 
 	if (prg_) prg_->hide();
 
-	appApi().adjustForCurrentFile(path);
+	AppStateManager::adjustForCurrentFile(path);
 
 	AppSettings::mainSettings()->setValue("recentFile", path);
 
