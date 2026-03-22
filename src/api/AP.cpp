@@ -18,7 +18,10 @@
 #include "WorkspacePanelManager.h"
 #include "adapters/ModelAPIAdapter.h"
 #include "adapters/ObjectAPIAdapter.h"
+#include "adapters/WorkspaceActivationAPIAdapter.h"
 #include "adapters/WorkspaceBulkAPIAdapter.h"
+#include "adapters/WorkspaceDuplicationAPIAdapter.h"
+#include "adapters/WorkspaceImportAPIAdapter.h"
 #include "adapters/WorkspaceAPIAdapter.h"
 #include "adapters/WorkspaceSelectionAPIAdapter.h"
 
@@ -62,9 +65,27 @@ namespace AP
 			return api;
 		}
 
+		WorkspaceActivationAPIAdapter& workspaceActivationApi()
+		{
+			static WorkspaceActivationAPIAdapter api;
+			return api;
+		}
+
 		WorkspaceBulkAPIAdapter& workspaceBulkApi()
 		{
 			static WorkspaceBulkAPIAdapter api;
+			return api;
+		}
+
+		WorkspaceImportAPIAdapter& workspaceImportApi()
+		{
+			static WorkspaceImportAPIAdapter api;
+			return api;
+		}
+
+		WorkspaceDuplicationAPIAdapter& workspaceDuplicationApi()
+		{
+			static WorkspaceDuplicationAPIAdapter api;
 			return api;
 		}
 
@@ -77,12 +98,6 @@ namespace AP
 			return nullptr;
 		}
 
-		int activateWorkspaceObject(int id)
-		{
-			auto wksp = CWorkspace::instance();
-			wksp->_objectActivate(id);
-			return workspaceApi().getCurrentModelId();
-		}
 	}
 
 	void processEvents(bool immediate)
@@ -145,12 +160,12 @@ namespace AP
 	namespace WORKSPACE {
 		std::shared_ptr<CModel3D> loadModel(const QString fext, const QString& path, bool synchronous, bool setItCurrent)
 		{
-			return attachLoadedModel(CModel3D::load(fext, path, synchronous), setItCurrent);
+			return workspaceImportApi().loadModel(fext, path, synchronous, setItCurrent);
 		}
 
 		std::shared_ptr<CModel3D> loadModel(const QString& path, bool synchronous, bool setItCurrent, std::shared_ptr<IProgressListener> prg)
 		{
-			return attachLoadedModel(CModel3D::load(path, synchronous, prg), setItCurrent);
+			return workspaceImportApi().loadModel(path, synchronous, setItCurrent, prg);
 		}
 
 		std::shared_ptr<CModel3D> loadModel(const std::wstring& path, bool synchronous, bool setItCurrent )
@@ -210,38 +225,22 @@ namespace AP
 
 		int setCurrentModel( int id )
 		{
-			return activateWorkspaceObject(id);
+			return workspaceActivationApi().setCurrentObject(id);
 		}
 
 		std::shared_ptr<CModel3D> duplicateModel(std::shared_ptr<CModel3D> orginal)
 		{
-			if (nullptr != orginal)
-			{
-				std::shared_ptr<CModel3D> kopia = std::dynamic_pointer_cast<CModel3D>(orginal->getCopy());
-
-				if (nullptr != kopia)
-				{
-					if (AP::WORKSPACE::addModel(kopia))
-					{
-						return kopia;
-					}
-					//else
-					//{
-					//	delete kopia;
-					//}
-				}
-			}
-			return nullptr;
+			return workspaceDuplicationApi().duplicateModel(orginal);
 		}
 
 		std::shared_ptr<CModel3D> duplicateModel(int id)
 		{
-			return AP::WORKSPACE::duplicateModel(AP::WORKSPACE::getModel(id));
+			return workspaceDuplicationApi().duplicateModel(id);
 		}
 
 		std::shared_ptr<CModel3D> duplicateCurrentModel()
 		{
-			return AP::WORKSPACE::duplicateModel(AP::WORKSPACE::getCurrentModel());
+			return workspaceDuplicationApi().duplicateCurrentModel();
 		}
 
 		std::shared_ptr<CModel3D> getModel(int id)

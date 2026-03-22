@@ -70,6 +70,18 @@ Direction:
 - keep as a separate service instead of overloading `IWorkspaceAPI`
 - hide workspace/UI synchronization behind the adapter
 
+### IWorkspaceActivationAPI
+
+Status: `Keep`
+
+Why:
+- current-object activation is a stable workspace capability
+- it should not stay embedded only in legacy `AP::WORKSPACE::setCurrentModel`
+
+Direction:
+- keep as a separate service
+- preserve activation event semantics behind the adapter
+
 ### IWorkspaceBulkAPI
 
 Status: `Keep`
@@ -81,6 +93,30 @@ Why:
 Direction:
 - keep as a separate service
 - hide workspace/UI refresh policy behind the adapter
+
+### IWorkspaceImportAPI
+
+Status: `Keep`
+
+Why:
+- loading/importing models is a stable host capability
+- it should not stay hidden as an overload cluster inside `IWorkspaceAPI`
+
+Direction:
+- keep as a separate service
+- let `IWorkspaceAPI::loadModel(...)` remain only as compatibility surface
+
+### IWorkspaceDuplicationAPI
+
+Status: `Keep`
+
+Why:
+- model duplication is a stable host capability
+- it should not stay embedded in legacy workspace wrappers
+
+Direction:
+- keep as a separate service
+- keep insertion policy inside the adapter
 
 ### IModelAPI
 

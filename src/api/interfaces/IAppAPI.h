@@ -1,7 +1,10 @@
 #pragma once
 
 #include "IWorkspaceAPI.h"
+#include "IWorkspaceActivationAPI.h"
 #include "IWorkspaceBulkAPI.h"
+#include "IWorkspaceDuplicationAPI.h"
+#include "IWorkspaceImportAPI.h"
 #include "IWorkspaceSelectionAPI.h"
 #include "IModelAPI.h"
 #include "IObjectAPI.h"
@@ -13,7 +16,10 @@ class IAppAPI {
 public:
     virtual ~IAppAPI() = default;
     virtual IWorkspaceAPI& workspace() = 0;
+    virtual IWorkspaceActivationAPI& workspaceActivation() = 0;
     virtual IWorkspaceBulkAPI& workspaceBulk() = 0;
+    virtual IWorkspaceDuplicationAPI& workspaceDuplication() = 0;
+    virtual IWorkspaceImportAPI& workspaceImport() = 0;
     virtual IWorkspaceSelectionAPI& workspaceSelection() = 0;
     virtual IModelAPI& model() = 0;
     virtual IObjectAPI& object() = 0;

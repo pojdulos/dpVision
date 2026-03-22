@@ -22,9 +22,22 @@ The goal is:
 - Status: keep during migration
 - New home: `IWorkspaceAPI`
 
+Activation replacements:
+- `AP::WORKSPACE::setCurrentModel`
+- New home: `IWorkspaceActivationAPI`
+
 Bulk workspace replacements:
 - `AP::WORKSPACE::{removeAllModels,removeSelectedModels,setAllModelsVisible}`
 - New home: `IWorkspaceBulkAPI`
+
+Import replacements:
+- `AP::WORKSPACE::loadModel(...)`
+- `AP::MODEL::load(...)`
+- New home: `IWorkspaceImportAPI`
+
+Duplication replacements:
+- `AP::WORKSPACE::{duplicateModel,duplicateCurrentModel}`
+- New home: `IWorkspaceDuplicationAPI`
 
 `AP::WORKSPACE::SELECTION::*`
 - Status: keep during migration
