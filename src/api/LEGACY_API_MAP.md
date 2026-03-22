@@ -32,8 +32,11 @@ Bulk workspace replacements:
 
 Import replacements:
 - `AP::WORKSPACE::loadModel(...)`
-- `AP::MODEL::load(...)`
 - New home: `IWorkspaceImportAPI`
+
+Raw model load replacement:
+- `AP::MODEL::load(...)`
+- New home: `IModelLoadAPI`
 
 Duplication replacements:
 - `AP::WORKSPACE::{duplicateModel,duplicateCurrentModel}`

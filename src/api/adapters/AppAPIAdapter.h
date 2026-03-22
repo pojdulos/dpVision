@@ -7,6 +7,7 @@
 #include "../adapters/WorkspaceImportAPIAdapter.h"
 #include "../adapters/WorkspaceAPIAdapter.h"
 #include "../adapters/WorkspaceSelectionAPIAdapter.h"
+#include "../adapters/ModelLoadAPIAdapter.h"
 #include "../adapters/ModelAPIAdapter.h"
 #include "../adapters/ObjectAPIAdapter.h"
 #include "../adapters/SettingsAPIAdapter.h"
@@ -25,6 +26,7 @@ class AppAPIAdapter : public IAppAPI {
     WorkspaceDuplicationAPIAdapter workspaceDuplicationAPI_;
     WorkspaceImportAPIAdapter workspaceImportAPI_;
     WorkspaceSelectionAPIAdapter workspaceSelectionAPI_;
+    ModelLoadAPIAdapter modelLoadAPI_;
     ModelAPIAdapter modelAPI_;
     ObjectAPIAdapter objectAPI_;
     SettingsAPIAdapter settingsAPI_;
@@ -37,6 +39,7 @@ public:
     IWorkspaceDuplicationAPI& workspaceDuplication() override { return workspaceDuplicationAPI_; }
     IWorkspaceImportAPI& workspaceImport() override { return workspaceImportAPI_; }
     IWorkspaceSelectionAPI& workspaceSelection() override { return workspaceSelectionAPI_; }
+    IModelLoadAPI& modelLoad() override { return modelLoadAPI_; }
     IModelAPI& model() override { return modelAPI_; }
     IObjectAPI& object() override { return objectAPI_; }
     ISettingsAPI& settings() override { return settingsAPI_; }

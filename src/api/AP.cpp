@@ -17,6 +17,7 @@
 #include "AppStateManager.h"
 #include "WorkspacePanelManager.h"
 #include "adapters/ModelAPIAdapter.h"
+#include "adapters/ModelLoadAPIAdapter.h"
 #include "adapters/ObjectAPIAdapter.h"
 #include "adapters/WorkspaceActivationAPIAdapter.h"
 #include "adapters/WorkspaceBulkAPIAdapter.h"
@@ -56,6 +57,12 @@ namespace AP
 		ModelAPIAdapter& modelApi()
 		{
 			static ModelAPIAdapter api;
+			return api;
+		}
+
+		ModelLoadAPIAdapter& modelLoadApi()
+		{
+			static ModelLoadAPIAdapter api;
 			return api;
 		}
 
@@ -136,7 +143,7 @@ namespace AP
 	namespace MODEL {
 		std::shared_ptr<CModel3D> load(std::wstring path, bool synchronous)
 		{
-			return CModel3D::load(path, synchronous);
+			return modelLoadApi().load(std::move(path), synchronous);
 		}
 
 		void removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child) { modelApi().removeChild(obj, child); }

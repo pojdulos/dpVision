@@ -6,6 +6,7 @@
 #include "IWorkspaceDuplicationAPI.h"
 #include "IWorkspaceImportAPI.h"
 #include "IWorkspaceSelectionAPI.h"
+#include "IModelLoadAPI.h"
 #include "IModelAPI.h"
 #include "IObjectAPI.h"
 #include "ISettingsAPI.h"
@@ -21,6 +22,7 @@ public:
     virtual IWorkspaceDuplicationAPI& workspaceDuplication() = 0;
     virtual IWorkspaceImportAPI& workspaceImport() = 0;
     virtual IWorkspaceSelectionAPI& workspaceSelection() = 0;
+    virtual IModelLoadAPI& modelLoad() = 0;
     virtual IModelAPI& model() = 0;
     virtual IObjectAPI& object() = 0;
     virtual ISettingsAPI& settings() = 0;

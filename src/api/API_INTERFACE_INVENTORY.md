@@ -118,6 +118,18 @@ Direction:
 - keep as a separate service
 - keep insertion policy inside the adapter
 
+### IModelLoadAPI
+
+Status: `Keep`
+
+Why:
+- raw model loading without workspace insertion is a stable capability
+- it should be distinct from workspace import
+
+Direction:
+- keep as a small dedicated service
+- do not mix it with workspace insertion policy
+
 ### IModelAPI
 
 Status: `Keep, clean up`
