@@ -16,6 +16,9 @@
 #include "MessageBoxManager.h"
 #include "AppStateManager.h"
 #include "WorkspacePanelManager.h"
+#include "adapters/ModelAPIAdapter.h"
+#include "adapters/ObjectAPIAdapter.h"
+#include "adapters/WorkspaceAPIAdapter.h"
 
 #include <QElapsedTimer>
 
@@ -31,6 +34,82 @@ namespace AP
 		CMainWindow* mainWindow()
 		{
 			return CMainWindow::instance();
+		}
+
+		WorkspaceAPIAdapter& workspaceApi()
+		{
+			static WorkspaceAPIAdapter api;
+			return api;
+		}
+
+		ObjectAPIAdapter& objectApi()
+		{
+			static ObjectAPIAdapter api;
+			return api;
+		}
+
+		ModelAPIAdapter& modelApi()
+		{
+			static ModelAPIAdapter api;
+			return api;
+		}
+
+		std::shared_ptr<CModel3D> attachLoadedModel(std::shared_ptr<CModel3D> obj, bool setItCurrent)
+		{
+			if (obj != nullptr && workspaceApi().addModel(obj, setItCurrent))
+			{
+				return obj;
+			}
+			return nullptr;
+		}
+
+		void refreshWorkspaceUiAfterBulkChange()
+		{
+			WorkspacePanelManager::propertiesSelectionChanged(NO_CURRENT_MODEL);
+			WorkspacePanelManager::rebuildWorkspaceTree();
+			AppStateManager::updateProperties();
+			AppStateManager::changeMenuAfterSelect();
+			AppStateManager::updateAllViews();
+		}
+
+		void refreshAppStateAfterVisibilityChange()
+		{
+			AppStateManager::changeMenuAfterSelect();
+			AppStateManager::updateProperties();
+			AppStateManager::updateAllViews();
+		}
+
+		int activateWorkspaceObject(int id)
+		{
+			auto wksp = CWorkspace::instance();
+			wksp->_objectActivate(id);
+			return workspaceApi().getCurrentModelId();
+		}
+
+		void refreshSelectionUi(bool updateMenu = false)
+		{
+			if (updateMenu)
+			{
+				AppStateManager::changeMenuAfterSelect();
+			}
+			AppStateManager::updateProperties();
+			AppStateManager::updateAllViews();
+		}
+
+		void setSelectionState(int id, bool selected)
+		{
+			auto wksp = CWorkspace::instance();
+			if (selected)
+			{
+				wksp->addToSelection(id);
+			}
+			else
+			{
+				wksp->removeFromSelection(id);
+			}
+
+			WorkspacePanelManager::setWorkspaceItemChecked(id, selected);
+			refreshSelectionUi();
 		}
 	}
 
@@ -58,15 +137,13 @@ namespace AP
 
 	int addAnnotation(int parentId, std::shared_ptr<CAnnotation> an)
 	{
-		auto wksp = CWorkspace::instance();
-		return wksp->_objectAdd(an, wksp->getSomethingWithId(parentId));
+		return objectApi().addChild(workspaceApi().findId(parentId), an);
 	}
 
 
 	int addAnnotation(std::shared_ptr<CModel3D> obj, std::shared_ptr<CAnnotation> an)
 	{
-		auto wksp = CWorkspace::instance();
-		return wksp->_objectAdd(an, obj);
+		return modelApi().addAnnotation(obj, an);
 	}
 
 	namespace MODEL {
@@ -75,27 +152,19 @@ namespace AP
 			return CModel3D::load(path, synchronous);
 		}
 
-		void removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child) { CWorkspace::instance()->_objectRemove(child); }
-		void removeChild(int parentid, int childid) { CWorkspace::instance()->_objectRemove(childid); }
-		void removeAnnotation(int parentid, int id) { CWorkspace::instance()->_objectRemove(id); }
+		void removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child) { modelApi().removeChild(obj, child); }
+		void removeChild(int parentid, int childid) { workspaceApi().removeModel(childid); }
+		void removeAnnotation(int parentid, int id) { workspaceApi().removeModel(id); }
 
 
 		int addChild(std::shared_ptr<CModel3D> obj, std::shared_ptr<CBaseObject> child)
 		{
-			if (child == nullptr) return NO_CURRENT_MODEL;
-			if (obj == nullptr) return NO_CURRENT_MODEL;
-
-			auto wksp = CWorkspace::instance();
-			return wksp->_objectAdd(child, obj);
+			return modelApi().addChild(obj, child);
 		}
 	
 		int addAnnotation(std::shared_ptr<CModel3D> obj, std::shared_ptr<CAnnotation> an)
 		{
-			if (an == nullptr) return NO_CURRENT_MODEL;
-			if (obj == nullptr) return NO_CURRENT_MODEL;
-
-			auto wksp = CWorkspace::instance();
-			return wksp->_objectAdd(an, obj);
+			return modelApi().addAnnotation(obj, an);
 		}
 	}
 
@@ -104,44 +173,17 @@ namespace AP
 	namespace WORKSPACE {
 		std::shared_ptr<CModel3D> loadModel(const QString fext, const QString& path, bool synchronous, bool setItCurrent)
 		{
-			std::shared_ptr<CModel3D> obj = CModel3D::load(fext, path, synchronous);
-
-			if (nullptr != obj)
-			{
-				if (AP::WORKSPACE::addModel(obj, setItCurrent))
-				{
-					return obj;
-				}
-			}
-			return nullptr;
+			return attachLoadedModel(CModel3D::load(fext, path, synchronous), setItCurrent);
 		}
 
 		std::shared_ptr<CModel3D> loadModel(const QString& path, bool synchronous, bool setItCurrent, std::shared_ptr<IProgressListener> prg)
 		{
-			std::shared_ptr<CModel3D> obj = CModel3D::load(path, synchronous, prg);
-
-			if (nullptr != obj)
-			{
-				if (AP::WORKSPACE::addModel(obj, setItCurrent))
-				{
-					return obj;
-				}
-			}
-			return nullptr;
+			return attachLoadedModel(CModel3D::load(path, synchronous, prg), setItCurrent);
 		}
 
 		std::shared_ptr<CModel3D> loadModel(const std::wstring& path, bool synchronous, bool setItCurrent )
 		{
-			std::shared_ptr<CModel3D> obj = CModel3D::load(path, synchronous);
-
-			if (nullptr != obj)
-			{
-				if (AP::WORKSPACE::addModel(obj, setItCurrent))
-				{
-					return obj;
-				}
-			}
-			return nullptr;
+			return attachLoadedModel(CModel3D::load(path, synchronous), setItCurrent);
 		}
 
 		void setAllModelsVisible(bool visibility)
@@ -154,25 +196,17 @@ namespace AP
 				WorkspacePanelManager::setWorkspaceItemVisible(it->first, visibility);
 				WorkspacePanelManager::setWorkspaceItemKidsVisible(it->first, visibility);
 			}
-			AppStateManager::changeMenuAfterSelect();
-			AppStateManager::updateProperties();
-			AppStateManager::updateAllViews();
+			refreshAppStateAfterVisibilityChange();
 		}
 
 		bool addModel(std::shared_ptr<CModel3D> obj, bool setItCurrent)
 		{
-			auto wksp = CWorkspace::instance();
-			auto result = wksp->_objectAdd(obj);
-			if (setItCurrent) wksp->_objectActivate(obj->id());
-			return result!=-1;
+			return workspaceApi().addModel(obj, setItCurrent);
 		}
 
 		bool addObject(std::shared_ptr<CBaseObject> obj, bool setItCurrent)
 		{
-			auto wksp = CWorkspace::instance();
-			auto result = wksp->_objectAdd(obj);
-			if (setItCurrent) wksp->_objectActivate(obj->id());
-			return result!=-1;
+			return workspaceApi().addObject(obj, setItCurrent);
 		}
 
 		bool addImage(std::shared_ptr<CImage> im, bool showViewer, bool show3d)
@@ -181,37 +215,29 @@ namespace AP
 
 			if (showViewer && mainWindow() != nullptr) MdiChild::create(im.get(), mainWindow()->ui.mdiArea);
 
-			auto wksp = CWorkspace::instance();
-			auto result = wksp->_objectAdd(im);
-			return result!=-1;
+			return workspaceApi().addObject(im);
 		}
 
 
-		bool removeModel(int id) { return CWorkspace::instance()->_objectRemove(id); };
-		bool removeModel(std::shared_ptr<CModel3D> obj) { return CWorkspace::instance()->_objectRemove(obj); };
+		bool removeModel(int id) { return workspaceApi().removeModel(id); };
+		bool removeModel(std::shared_ptr<CModel3D> obj) { return objectApi().remove(obj); };
 
-		bool removeImage(int id) { return CWorkspace::instance()->_objectRemove(id); }
-		bool removeImage(std::shared_ptr<CImage> im) { return CWorkspace::instance()->_objectRemove(im); };
+		bool removeImage(int id) { return workspaceApi().removeModel(id); }
+		bool removeImage(std::shared_ptr<CImage> im) { return objectApi().remove(im); };
 
 
 		bool removeCurrentModel()
 		{
-			auto wksp = CWorkspace::instance();
-
-			int id = wksp->_getCurrentModelId();
-
+			int id = workspaceApi().getCurrentModelId();
 			if (NO_CURRENT_MODEL == id) return false;
 
-			return wksp->_objectRemove(id);
+			return workspaceApi().removeModel(id);
 		}
 
 		bool removeAllModels()
 		{
-			WorkspacePanelManager::propertiesSelectionChanged(NO_CURRENT_MODEL);
 			CWorkspace::instance()->_removeAllModels();
-			WorkspacePanelManager::rebuildWorkspaceTree();
-			AppStateManager::updateAllViews();
-
+			refreshWorkspaceUiAfterBulkChange();
 			return true;
 		}
 
@@ -221,17 +247,14 @@ namespace AP
 			std::list<int> sel = wksp->getSelection();
 			for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
 			{
-				wksp->_objectRemove(*it);
+				workspaceApi().removeModel(*it);
 			}
 			return true;
 		}
 
 		int setCurrentModel( int id )
 		{
-			auto wksp = CWorkspace::instance();
-			
-			wksp->_objectActivate(id);
-			return wksp->_getCurrentModelId();
+			return activateWorkspaceObject(id);
 		}
 
 		std::shared_ptr<CModel3D> duplicateModel(std::shared_ptr<CModel3D> orginal)
@@ -267,27 +290,27 @@ namespace AP
 
 		std::shared_ptr<CModel3D> getModel(int id)
 		{
-			return CWorkspace::instance()->_getModel(id);
+			return workspaceApi().getModel(id);
 		}
 
 		std::shared_ptr<CModel3D> getCurrentModel()
 		{
-			return CWorkspace::instance()->_getModel( CWorkspace::instance()->_getCurrentModelId() );
+			return workspaceApi().getCurrentModel();
 		}
 
 		int getCurrentModelId()
 		{
-			return CWorkspace::instance()->_getCurrentModelId();
+			return workspaceApi().getCurrentModelId();
 		}
 
 		size_t size()
 		{
-			return CWorkspace::instance()->size();
+			return workspaceApi().size();
 		}
 
 		std::shared_ptr<CBaseObject> findId(int id)
 		{
-			return CWorkspace::instance()->getSomethingWithId(id);
+			return workspaceApi().findId(id);
 		}
 
 		////OBSOLETE FUNCTIONS
@@ -314,21 +337,11 @@ namespace AP
 		namespace SELECTION {
 			void selectModel(int id)
 			{
-				//CModel3D *obj = AP::getWorkspace()->_getModel(id);
-
-				CWorkspace::instance()->addToSelection(id);
-				WorkspacePanelManager::setWorkspaceItemChecked(id, true);
-				AppStateManager::updateProperties();
-				AppStateManager::updateAllViews();
+				setSelectionState(id, true);
 			}
 			void unselectModel(int id)
 			{
-				//CModel3D *obj = AP::getWorkspace()->_getModel(id);
-
-				CWorkspace::instance()->removeFromSelection(id);
-				WorkspacePanelManager::setWorkspaceItemChecked(id, false);
-				AppStateManager::updateProperties();
-				AppStateManager::updateAllViews();
+				setSelectionState(id, false);
 			}
 
 			bool isModelSelected(int id)
@@ -369,25 +382,18 @@ namespace AP
 					}
 				}
 
-				AppStateManager::changeMenuAfterSelect();
-				AppStateManager::updateProperties();
-				AppStateManager::updateAllViews();
+				refreshAppStateAfterVisibilityChange();
 			}
 		}
 	}
 
 	namespace OBJECT {
-		bool remove(std::shared_ptr<CBaseObject> obj) { return CWorkspace::instance()->_objectRemove(obj); };
-		bool removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child) { return CWorkspace::instance()->_objectRemove(child); };
+		bool remove(std::shared_ptr<CBaseObject> obj) { return objectApi().remove(obj); };
+		bool removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child) { return objectApi().removeChild(obj, child); };
 
 		int addChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child)
 		{
-			if (child == nullptr) return NO_CURRENT_MODEL;
-			if (obj == nullptr) return NO_CURRENT_MODEL;
-
-			auto wksp = CWorkspace::instance();
-			auto result = wksp->_objectAdd(child, obj);
-			return result;
+			return objectApi().addChild(obj, child);
 		}
 
 		void moveTo(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> newParent, bool keep_pos)

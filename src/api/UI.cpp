@@ -343,173 +343,49 @@ GLViewer * UI::CAMERA::currentViewer()
 
 void UI::CAMERA::screenshot(QString path, void *v)
 {
-	if (v != nullptr)
-	{
-		((GLViewer*)v)->screenshot(path);
-	}
-	else
-	{
-		CMainWindow* win = mainWindow();
-
-		if (win != nullptr)
-		{
-			GLViewer* view = win->currentViewer();
-
-			if (view != nullptr)
-			{
-				view->screenshot(path);
-			}
-		}
-	}
+	cameraApi().screenshot(path, v);
 }
 
 void UI::CAMERA::move( float mx, float my, float mz )
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr)
-	{
-		QMdiArea* m = win->ui.mdiArea;
-		QList<QMdiSubWindow*> l = m->subWindowList();
-
-		if (!l.empty())
-		{
-			GLViewer* v = (GLViewer*)l[0]->widget();
-
-			CVector3f w(mx, -my, mz);
-
-			v->transform().translate(w);
-
-			v->update();// GL();
-		}
-	}
+	cameraApi().move(mx, my, mz);
 }
 
 void UI::CAMERA::rotate( float ax, float ay, float az )
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr)
-	{
-		QMdiArea* m = win->ui.mdiArea;
-		QList<QMdiSubWindow*> l = m->subWindowList();
-
-		if (!l.empty())
-		{
-			GLViewer* v = (GLViewer*)l[0]->widget();
-
-			CVector3f w(ax, ay, az);
-
-			//w += v->getRotation();
-
-			//v->setRotation( w );
-
-			v->update();// GL();
-		}
-	}
+	cameraApi().rotate(ax, ay, az);
 }
 
 void UI::CAMERA::setFloating( bool f )
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr)
-	{
-		QMdiArea* m = win->ui.mdiArea;
-		QList<QMdiSubWindow*> l = m->subWindowList();
-
-		if (!l.empty())
-		{
-			GLViewer* v = (GLViewer*)l[0]->widget();
-
-			if (v != nullptr)
-			{
-				v->setCameraFloating(f);
-			}
-		}
-	}
+	cameraApi().setFloating(f);
 }
 
 bool UI::CAMERA::convertWinToWorld(CPoint3d winCoords, CPoint3d & worldCoords)
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr)
-	{
-		GLViewer* view = win->currentViewer();
-
-		if (view != nullptr)
-		{
-			return view->convertWinToWorld(winCoords, worldCoords);
-		}
-	}
-	return false;
+	return cameraApi().convertWinToWorld(winCoords, worldCoords);
 }
 
 bool UI::CAMERA::convertWorldToWin(CPoint3d worldCoords, CPoint3d & winCoords)
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr)
-	{
-		GLViewer* view = win->currentViewer();
-
-		if (view != nullptr)
-		{
-			return view->convertWorldToWin(worldCoords, winCoords);
-		}
-	}
-	return false;
+	return cameraApi().convertWorldToWin(worldCoords, winCoords);
 }
 
 bool UI::CAMERA::convertCoords(double winX, double winY, CPoint3d& pkt0, CPoint3d& pkt1)
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr)
-	{
-		GLViewer* view = win->currentViewer();
-
-		if (view != nullptr)
-		{
-			return view->convertCoords(winX, winY, pkt0, pkt1);
-		}
-	}
-	return false;
+	return cameraApi().convertCoords(winX, winY, pkt0, pkt1);
 }
 
 CPoint3d UI::CAMERA::camPos()
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr)
-	{
-		GLViewer* view = win->currentViewer();
-
-		if (view != nullptr)
-		{
-			return view->camPos();
-		}
-	}
-	return CPoint3d(0,0,0);
+	return cameraApi().camPos();
 }
 
 #include "Transform.h"
 
 CTransform* UI::CAMERA::transform()
 {
-	CMainWindow* win = mainWindow();
-
-	if (win != nullptr)
-	{
-		GLViewer* view = win->currentViewer();
-
-		if (view != nullptr)
-		{
-			return &view->transform();
-		}
-	}
-	return nullptr;
+	return cameraApi().transform();
 }
 
 

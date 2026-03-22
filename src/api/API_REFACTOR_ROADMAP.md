@@ -237,6 +237,8 @@ same time, keep behavior stable first and add the missing support layer.
 
 - new implementation logic is no longer anchored in `AP::`/`UI::`
 - legacy namespaces delegate downward
+- `AP::` replacement work follows `AP_ISOLATION_PLAN.md` instead of ad-hoc
+  wrapper rewrites
 
 ## What Not To Do
 
