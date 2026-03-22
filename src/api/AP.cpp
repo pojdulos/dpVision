@@ -105,6 +105,71 @@ namespace AP
 			return nullptr;
 		}
 
+		bool validateObjectTransferTarget(
+			const std::shared_ptr<CBaseObject>& object,
+			const std::shared_ptr<CBaseObject>& newParent,
+			const char* errorMessage)
+		{
+			if (object == nullptr)
+			{
+				return false;
+			}
+
+			if ((newParent != nullptr)
+				&& newParent->hasCategory(CBaseObject::Category::ANNOTATION)
+				&& object->hasCategory(CBaseObject::Category::OBJECT))
+			{
+				MessageBoxManager::error(errorMessage);
+				return false;
+			}
+
+			return true;
+		}
+
+		CTransform parentGlobalTransform(const std::shared_ptr<CBaseObject>& object)
+		{
+			if (object != nullptr && object->getParent() != nullptr)
+			{
+				return CTransform(CBaseObject::getGlobalTransformationMatrix(object->getParentPtr()));
+			}
+			return CTransform();
+		}
+
+		std::shared_ptr<CModel3D> buildTransferWrapper(
+			const std::shared_ptr<CBaseObject>& object,
+			const char* description)
+		{
+			std::shared_ptr<CModel3D> wrapper = std::make_shared<CModel3D>();
+			wrapper->setLabel("<=>");
+			wrapper->setDescr(description);
+
+			if (object->hasCategory(CBaseObject::OBJECT))
+			{
+				wrapper->addChild(wrapper, object);
+				wrapper->importChildrenGeometry();
+			}
+			else if (object->hasCategory(CBaseObject::ANNOTATION))
+			{
+				wrapper->addAnnotation(wrapper, std::dynamic_pointer_cast<CAnnotation>(object));
+			}
+
+			return wrapper;
+		}
+
+		void attachAsRootOrChild(
+			const std::shared_ptr<CBaseObject>& object,
+			const std::shared_ptr<CBaseObject>& newParent)
+		{
+			if (newParent == nullptr)
+			{
+				AP::WORKSPACE::addObject(object);
+			}
+			else
+			{
+				AP::OBJECT::addChild(newParent, object);
+			}
+		}
+
 	}
 
 	void processEvents(bool immediate)
@@ -353,150 +418,107 @@ namespace AP
 		{
 			auto wksp = CWorkspace::instance();
 
-			if (obj != nullptr)
+			if (!validateObjectTransferTarget(
+				obj,
+				newParent,
+				"regular object cannot be moved as a descendant of annotation"))
 			{
-				if ((newParent != nullptr) && newParent->hasCategory(CBaseObject::Category::ANNOTATION) && obj->hasCategory(CBaseObject::Category::OBJECT))
-				{
-					MessageBoxManager::error("regular object cannot be moved as a descendant of annotation");
-					return;
-				}
-
-				std::shared_ptr<CBaseObject> oldParent = obj->getParentPtr();
-
-				CTransform t0;
-
-				if (oldParent != nullptr)
-				{
-					t0 = CTransform(CBaseObject::getGlobalTransformationMatrix(oldParent));
-					AP::OBJECT::removeChild(oldParent, obj);
-				}
-				else
-				{
-					wksp->_objectRemove(obj->id());
-				}
-
-				if (keep_pos)
-				{
-					std::shared_ptr<CModel3D> newmodel = std::make_shared<CModel3D>();
-					newmodel->setLabel("<=>");
-					newmodel->setDescr("Macierz dopasowania, wygenerowana podczas przenoszenia obiektu");
-
-					if (obj->hasCategory(CBaseObject::OBJECT))
-					{
-						newmodel->addChild(newmodel, obj);
-						newmodel->importChildrenGeometry();
-					}
-					else if (obj->hasCategory(CBaseObject::ANNOTATION))
-					{
-						newmodel->addAnnotation(newmodel, std::dynamic_pointer_cast<CAnnotation>(obj));
-					}
-
-					if (newParent == nullptr) // copyToNew
-					{
-						newmodel->setTransform(t0);
-
-						AP::WORKSPACE::addModel(newmodel);
-					}
-					else // copyTo existing
-					{
-						CTransform t1(CBaseObject::getGlobalTransformationMatrix(newParent));
-						CTransform ft = CTransform::fromTo(t0, t1);
-
-						newmodel->setTransform(ft);
-
-						AP::OBJECT::addChild(newParent, newmodel);
-						//((CObject*)newParent)->importChildrenGeometry();
-					}
-				}
-				else
-				{
-					if (newParent == nullptr) // moveToNew
-					{
-						AP::WORKSPACE::addObject(obj);
-					}
-					else // moveTo existing
-					{
-						AP::OBJECT::addChild(newParent, obj);
-					}
-				}
-
-				AppStateManager::updateAllViews();
+				return;
 			}
+
+			const std::shared_ptr<CBaseObject> oldParent = obj->getParentPtr();
+			const CTransform sourceParentTransform = oldParent != nullptr
+				? CTransform(CBaseObject::getGlobalTransformationMatrix(oldParent))
+				: CTransform();
+
+			if (oldParent != nullptr)
+			{
+				AP::OBJECT::removeChild(oldParent, obj);
+			}
+			else
+			{
+				wksp->_objectRemove(obj->id());
+			}
+
+			if (keep_pos)
+			{
+				std::shared_ptr<CModel3D> wrapper = buildTransferWrapper(
+					obj,
+					"Macierz dopasowania, wygenerowana podczas przenoszenia obiektu");
+
+				if (newParent == nullptr)
+				{
+					wrapper->setTransform(sourceParentTransform);
+					AP::WORKSPACE::addModel(wrapper);
+				}
+				else
+				{
+					CTransform targetParentTransform(CBaseObject::getGlobalTransformationMatrix(newParent));
+					CTransform finalTransform = CTransform::fromTo(sourceParentTransform, targetParentTransform);
+					wrapper->setTransform(finalTransform);
+					AP::OBJECT::addChild(newParent, wrapper);
+				}
+			}
+			else
+			{
+				attachAsRootOrChild(obj, newParent);
+			}
+
+			AppStateManager::updateAllViews();
 		}
 
 		void copyTo(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> newParent, bool keep_pos)
 		{
-			if (obj != nullptr)
+			if (!validateObjectTransferTarget(
+				obj,
+				newParent,
+				"regular object cannot be copied as a descendant of annotation"))
 			{
-				if ((newParent != nullptr) && newParent->hasCategory(CBaseObject::Category::ANNOTATION) && obj->hasCategory(CBaseObject::Category::OBJECT))
+				return;
+			}
+
+			std::shared_ptr<CBaseObject> copy = obj->getCopy();
+			if (copy == nullptr)
+			{
+				return;
+			}
+
+			if (keep_pos)
+			{
+				const CTransform sourceParentTransform = parentGlobalTransform(obj);
+
+				if (newParent == nullptr)
 				{
-					MessageBoxManager::error("regular object cannot be copied as a descendant of annotation");
-					return;
-				}
-
-				std::shared_ptr<CBaseObject> kopia = obj->getCopy();
-
-				if (keep_pos)
-				{
-					CTransform t0;
-					if (obj->getParent() != nullptr)
-						t0 = CTransform(CBaseObject::getGlobalTransformationMatrix(obj->getParentPtr()));
-
-					std::shared_ptr<CModel3D> newmodel = std::make_shared<CModel3D>();
-					newmodel->setLabel("<=>");
-					newmodel->setDescr("Macierz dopasowania, wygenerowana podczas kopiowania obiektu");
-
-					if (newParent == nullptr) // copyToNew
-					{
-						if (kopia->hasCategory(CBaseObject::OBJECT))
-						{
-							newmodel->addChild(newmodel, kopia);
-							newmodel->importChildrenGeometry();
-							newmodel->setTransform(t0);
-							AP::WORKSPACE::addModel(newmodel);
-						}
-						else if (kopia->hasCategory(CBaseObject::ANNOTATION))
-						{
-							newmodel->addAnnotation(newmodel, std::dynamic_pointer_cast<CAnnotation>(kopia));
-							newmodel->setTransform(t0);
-							AP::WORKSPACE::addModel(newmodel);
-						}
-					}
-					else // copyTo existing
-					{
-						CTransform t1(CBaseObject::getGlobalTransformationMatrix(newParent));
-						CTransform ft = CTransform::fromTo(t0, t1);
-
-						if (ft.toQMatrix4x4().isIdentity())
-						{
-							AP::OBJECT::addChild(newParent, kopia);
-							//delete newmodel;
-						}
-						else
-						{
-							newmodel->addChild(newmodel, kopia);
-							newmodel->importChildrenGeometry();
-							newmodel->setTransform(ft);
-
-							AP::OBJECT::addChild(newParent, newmodel);
-						}
-
-						//((CObject*)newParent)->importChildrenGeometry();
-					}
+					std::shared_ptr<CModel3D> wrapper = buildTransferWrapper(
+						copy,
+						"Macierz dopasowania, wygenerowana podczas kopiowania obiektu");
+					wrapper->setTransform(sourceParentTransform);
+					AP::WORKSPACE::addModel(wrapper);
 				}
 				else
 				{
-					if (newParent == nullptr) // copyToNew
+					CTransform targetParentTransform(CBaseObject::getGlobalTransformationMatrix(newParent));
+					CTransform finalTransform = CTransform::fromTo(sourceParentTransform, targetParentTransform);
+
+					if (finalTransform.toQMatrix4x4().isIdentity())
 					{
-						AP::WORKSPACE::addObject(kopia);
+						AP::OBJECT::addChild(newParent, copy);
 					}
-					else // copyTo existing
+					else
 					{
-						AP::OBJECT::addChild(newParent, kopia);
+						std::shared_ptr<CModel3D> wrapper = buildTransferWrapper(
+							copy,
+							"Macierz dopasowania, wygenerowana podczas kopiowania obiektu");
+						wrapper->setTransform(finalTransform);
+						AP::OBJECT::addChild(newParent, wrapper);
 					}
 				}
-				AppStateManager::updateAllViews();
 			}
+			else
+			{
+				attachAsRootOrChild(copy, newParent);
+			}
+			AppStateManager::updateAllViews();
 		}
 	}
 }
