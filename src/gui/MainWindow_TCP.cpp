@@ -63,7 +63,7 @@ void CMainWindow::proceessData()
 	{
 		const QString filename(cmdline.at(1));
 
-		std::shared_ptr<CModel3D> obj = AP::WORKSPACE::loadModel("*.dcm", filename);
+		std::shared_ptr<CModel3D> obj = appApi().workspaceImport().loadModel("*.dcm", filename);
 		if (obj != nullptr)
 		{
 			response = QString::number(obj->id()) + "\n\r";
@@ -77,7 +77,7 @@ void CMainWindow::proceessData()
 	else if (cmd.startsWith("load")) {
 		const QString filename(cmdline.at(1));
 
-		std::shared_ptr<CModel3D> obj = AP::WORKSPACE::loadModel(filename);
+		std::shared_ptr<CModel3D> obj = appApi().workspaceImport().loadModel(filename);
 		if (obj != nullptr) {
 			response = QString::number(obj->id()) + "\n\r";
 		}

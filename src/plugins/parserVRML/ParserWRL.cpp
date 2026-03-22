@@ -111,7 +111,7 @@ bool CParserWRL::VRML_GoToNextLine( FILE *plik )
 
 size_t CParserWRL::ReadVRML()
 {
-	//std::string buffer = UI::stream2string( plikSiatki.absoluteFilePathW().c_str() );
+	
 
 #ifdef _WIN32
     FILE* plik = _wfopen(plikSiatki.absoluteFilePathW().c_str(), L"r");

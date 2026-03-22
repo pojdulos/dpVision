@@ -419,12 +419,6 @@ void GLViewer::PickMeshPoint(double xx, double yy, std::shared_ptr<CModel3D> obj
 				unsigned int ptId = wksp->_objectAdd(pt, obj);
 			}
 
-			//tymczasowo !!! -----------------------------------------------------
-			//if ( !usedInPlugin && (NULL != AP::mainApp().activePlugin) )
-			//{
-			//	AP::mainApp().activePlugin->pickSlot(obj->id(), *pt);
-			//}
-			//------------------------------------------------------------------
 
 
 			//ULONGLONG t1 = GetTickCount64();
@@ -467,11 +461,6 @@ void GLViewer::PickCloudPoint(double xx, double yy, std::shared_ptr<CModel3D> ob
 		if (!idxs.empty())
 		{
 
-			//double minDist = DBL_MAX;
-			//INDEX_TYPE minIdx;
-
-			//CModel3D* obj1 = new CModel3D();
-			//AP::WORKSPACE::addModel(obj1);
 
 			for (auto idx : idxs)
 			{
@@ -497,9 +486,6 @@ void GLViewer::PickCloudPoint(double xx, double yy, std::shared_ptr<CModel3D> ob
 				}
 			}
 
-			//CAnnotationVertex* hit = new CAnnotationVertex(obj, minIdx);
-			//hit->setLabel(L"Trafienie");
-			//AP::MODEL::addAnnotation(obj, hit);
 		}
 
 
@@ -593,7 +579,7 @@ void GLViewer::PickObject(int x, int y)
 {
 	int id = readSelectBuffer( x, y );
 
-	AP::WORKSPACE::setCurrentModel(id);
+	appApi().workspaceActivation().setCurrentObject(id);
 }
 
 
