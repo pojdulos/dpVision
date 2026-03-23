@@ -7,7 +7,6 @@
 #include "Global.h"
 #include "DPFileInfo.h"
 
-#include "BackgroundPlane.h"
 #include "Workspace.h"
 
 #include "PluginInterface.h"
