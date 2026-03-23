@@ -119,8 +119,8 @@ namespace UI
      * @namespace CAMERA
      * @brief Legacy camera/UI wrapper.
      *
-     * Prefer `ICameraAPI`, and use `IGuiInternalsAPI` only for privileged
-     * plugins that really need raw viewer access.
+     * Prefer `ICameraControlAPI`, and use `IGuiInternalsAPI` only for
+     * privileged plugins that really need raw viewer access.
      */
     namespace CAMERA {
         /**
@@ -129,7 +129,7 @@ namespace UI
          * @param my Y-axis movement
          * @param mz Z-axis movement
          *
-         * Prefer `ICameraAPI::move()`.
+         * Prefer `ICameraControlAPI::move()`.
          */
         DPVISION_EXPORT void move(float mx, float my, float mz);
 
@@ -139,7 +139,7 @@ namespace UI
          * @param ay Y-axis rotation angle
          * @param az Z-axis rotation angle
          *
-         * Prefer `ICameraAPI::rotate()`.
+         * Prefer `ICameraControlAPI::rotate()`.
          */
         DPVISION_EXPORT void rotate(float ax, float ay, float az);
 
@@ -147,14 +147,14 @@ namespace UI
          * @brief Sets camera floating state
          * @param f Floating state
          *
-         * Prefer `ICameraAPI::setFloating()`.
+         * Prefer `ICameraControlAPI::setFloating()`.
          */
         DPVISION_EXPORT void setFloating(bool f);
 
         /**
          * @brief Coordinate conversion functions
          *
-         * Prefer the corresponding `ICameraAPI` methods.
+         * Prefer the corresponding `ICameraControlAPI` methods.
          */
 		DPVISION_EXPORT bool convertWinToWorld( CPoint3d winCoords, CPoint3d &worldCoords);
 		DPVISION_EXPORT bool convertWorldToWin( CPoint3d worldCoords, CPoint3d &winCoords);
@@ -164,7 +164,7 @@ namespace UI
          * @brief Gets current camera position
          * @return Camera position as CPoint3d
          *
-         * Prefer `ICameraAPI::camPos()`.
+         * Prefer `ICameraControlAPI::camPos()`.
          */
 		DPVISION_EXPORT CPoint3d camPos();
 
@@ -189,7 +189,7 @@ namespace UI
          * @param dir Direction to view from (1-front, 2-back, 3-left, 4-right, 5-top, 6-bottom)
          * @param obj Optional object to center on (nullptr centers on entire scene)
          *
-         * Prefer `ICameraAPI::setView()`.
+         * Prefer `ICameraControlAPI::setView()`.
          */
 		DPVISION_EXPORT void setView(int dir, std::shared_ptr<CModel3D> obj = nullptr);
 
@@ -205,7 +205,7 @@ namespace UI
          * @param path Path to save screenshot
          * @param v Optional viewer pointer (nullptr uses active viewer)
          *
-         * Prefer `ICameraAPI::screenshot()`.
+         * Prefer `ICameraControlAPI::screenshot()`.
          */
 		DPVISION_EXPORT void screenshot(QString path, void* v = nullptr);
 		DPVISION_EXPORT inline void screenshot(const char* path, void* v = nullptr) { screenshot(QString::fromStdString(path), v); };
@@ -264,6 +264,8 @@ namespace UI
 			DPVISION_EXPORT void update();
 			
 			DPVISION_EXPORT void selectItem( int id);
+			DPVISION_EXPORT std::shared_ptr<CBaseObject> currentItem();
+			DPVISION_EXPORT QVector<std::shared_ptr<CBaseObject>> selectedObjects();
 
             /**
              * @brief Item property management functions
@@ -398,7 +400,7 @@ namespace UI
      * @namespace PROGRESSBAR
      * @brief Legacy progress wrapper.
      *
-     * Prefer `IProgressAPI` for new code.
+     * Prefer `IProgressControlAPI` for new code.
      */
 	namespace PROGRESSBAR {
         /**

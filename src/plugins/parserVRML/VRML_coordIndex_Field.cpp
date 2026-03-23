@@ -2,12 +2,12 @@
 
 #include "ParserWRL.h"
 
-#include "../api/adapters/PluginUIAPIAdapter.h"
+#include "../api/adapters/PluginHostAPIAdapter.h"
 
 namespace {
-PluginUIAPIAdapter& uiApi()
+PluginHostAPIAdapter& hostApi()
 {
-    static PluginUIAPIAdapter api;
+    static PluginHostAPIAdapter api;
     return api;
 }
 }
@@ -28,7 +28,7 @@ size_t CParserWRL::VRML_ParseField_coordIndex( FILE *plik )
 	bool koniec = false;
 //	char bufor[80];
 
-	uiApi().statusBar().setText("Reading CoordIndex section...");
+	hostApi().statusBar().setText("Reading CoordIndex section...");
 
 	while ( ! koniec )
 	{
@@ -67,7 +67,7 @@ size_t CParserWRL::VRML_ParseField_coordIndex( FILE *plik )
 
 		char ch;
 
-		uiApi().statusBar().setTimedText(
+		hostApi().statusBar().setTimedText(
             500,
             QString("Reading: %1, F[%2,%3,%4]").arg(lb).arg(a).arg(b).arg(c));
 

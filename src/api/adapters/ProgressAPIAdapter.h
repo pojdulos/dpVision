@@ -1,44 +1,28 @@
 #pragma once
 
+#include "ProgressHostAccess.h"
+#include "../interfaces/IProgressControlAPI.h"
 #include "../interfaces/IProgressAPI.h"
-#include "../UI.h"
-#include "../../core/interfaces/IProgressListener.h"
 
-class ProgressAPIAdapter : public IProgressAPI {
+class ProgressAPIAdapter : public IProgressAPI, public IProgressControlAPI {
 public:
     ProgressIndicator* instance() override {
-        return UI::PROGRESSBAR::instance();
+        return ProgressHostAccess::instance();
     }
 
     void init(int min, int max, int val) override {
-        if (auto listener = IProgressListener::getDefault()) {
-            listener->init(min, max, val);
-        } else {
-            UI::PROGRESSBAR::init(min, max, val);
-        }
+        ProgressHostAccess::init(min, max, val);
     }
 
     void setValue(int val) override {
-        if (auto listener = IProgressListener::getDefault()) {
-            listener->setValue(val);
-        } else {
-            UI::PROGRESSBAR::setValue(val);
-        }
+        ProgressHostAccess::setValue(val);
     }
 
     void hide() override {
-        if (auto listener = IProgressListener::getDefault()) {
-            listener->hide();
-        } else {
-            UI::PROGRESSBAR::hide();
-        }
+        ProgressHostAccess::hide();
     }
 
     void setText(const QString& text) override {
-        if (auto listener = IProgressListener::getDefault()) {
-            listener->setText(text.toStdString());
-        } else {
-            UI::PROGRESSBAR::setText(text);
-        }
+        ProgressHostAccess::setText(text);
     }
 };

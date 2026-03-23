@@ -8,6 +8,9 @@ class CTransform;
 class CModel3D;
 class GLViewer;
 
+// Legacy compatibility contract. New plugin code should prefer
+// ICameraControlAPI for safe camera operations and use IGuiInternalsAPI for
+// raw viewer/transform access.
 class ICameraAPI {
 public:
     virtual ~ICameraAPI() = default;

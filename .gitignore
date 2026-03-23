@@ -3,6 +3,7 @@ nbproject/private/
 dpVision.code-workspace
 CMakeUserPresets.json
 build*/
+*.pdb
 3rdParty/
 zPlugins/
 dPlugins/

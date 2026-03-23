@@ -1,6 +1,6 @@
 #include "DockWidgetWorkspace.h"
 
-#include "../api/UI.h"
+
 #include "../api/adapters/AppAPIAdapter.h"
 
 #include "DockWidgetModel.h"
@@ -13,6 +13,7 @@
 
 #include "ContextMenu.h"
 
+#include "ImageViewerHost.h"
 #include "MainWindow.h"
 #include "MainApplication.h"
 #include "../core/PluginRuntimeManager.h"
@@ -420,7 +421,7 @@ void DockWidgetWorkspace::addItem(std::shared_ptr<CBaseObject> obj)
 
 	if (parent == nullptr)
 	{
-		if (obj->hasType(CBaseObject::MODEL))
+		if (obj->hasType(CBaseObject::MODEL) || obj->hasType(CBaseObject::IMAGE))
 		{
 			model->addModelWithChildren(std::static_pointer_cast<CModel3D>(obj));
 		}
@@ -562,12 +563,7 @@ void DockWidgetWorkspace::colNameClicked(std::shared_ptr<CBaseObject> obj, Works
 		CMainWindow* win = CMainWindow::instance();
 		if (obj->hasType(CBaseObject::IMAGE))
 		{
-			QMdiSubWindow* window = win ? win->getPicViewerInstance(obj->id()) : nullptr;
-
-			if (window != nullptr)
-			{
-				win->ui.mdiArea->setActiveSubWindow(window);
-			}
+			ImageViewerHost::activateOrOpen(obj->id());
 		}
 		else
 		{

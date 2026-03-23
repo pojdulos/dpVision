@@ -2,7 +2,7 @@
 #include "AnnotationSetOfVertices.h"
 #include "propTransform.h"
 
-#include "../api/UI.h"
+//
 #include "../core/AppStateManager.h"
 #include <QVBoxLayout>
 

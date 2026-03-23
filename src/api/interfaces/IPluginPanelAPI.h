@@ -8,6 +8,11 @@
 class QWidget;
 class QPushButton;
 
+// Privileged GUI contract.
+//
+// This interface intentionally exposes Qt widgets and should only be reachable
+// through the explicit GUI-capable plugin path. It is not part of the default
+// plugin host surface.
 class IPluginPanelAPI {
 public:
     virtual ~IPluginPanelAPI() = default;

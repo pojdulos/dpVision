@@ -1,7 +1,7 @@
 #include "propAnnotationTriple.h"
 #include "AnnotationTriple.h"
 
-#include "../api/UI.h"
+//
 #include "../core/AppStateManager.h"
 #include <QVBoxLayout>
 

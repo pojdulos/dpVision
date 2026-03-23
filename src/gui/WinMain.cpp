@@ -17,9 +17,18 @@
 
 #include "AppSettings.h"
 
-#include "../api/AP.h"
+#include "../api/adapters/AppAPIAdapter.h"
 
 #include "StatusBarManager.h"
+
+namespace
+{
+    AppAPIAdapter& appApi()
+    {
+        static AppAPIAdapter api;
+        return api;
+    }
+}
 
 int main(int argc, char* argv[])
 {
@@ -103,7 +112,7 @@ int main(int argc, char* argv[])
         if (QFile(plik).exists())
         {
             StatusBarManager::setText("loading model: " + plik);
-            AP::WORKSPACE::loadModel(plik);
+            appApi().workspaceImport().loadModel(plik);
         }
     }
     

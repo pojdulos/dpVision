@@ -196,7 +196,7 @@ void GLViewer::RenderScene()
 	wsp->renderLights( true );
 
 	// OPCJONALNIE TU MOZNA WYSWIETLAC OBRAZEK TLA
-	// NP. AP::mainApp().GetBGplaneRef().Render( SINGLE_IMAGE ); 
+
 
 	cameraTransformations();
 
@@ -241,7 +241,7 @@ void GLViewer::RenderLeftView()
 					   FStereoMagnitudeAdjustment, FParallaxBalanceAdjustment, 
 					   LEFT_EYE_PROJECTION);
 
-	//AP::mainApp().GetBGplaneRef().Render( LEFT_IMAGE );
+	
 	
 	RenderScene();
 
@@ -262,7 +262,7 @@ void GLViewer::RenderRightView()
                            FStereoMagnitudeAdjustment, FParallaxBalanceAdjustment, 
                            RIGHT_EYE_PROJECTION);
 
-	//AP::mainApp().GetBGplaneRef().Render( RIGHT_IMAGE );
+	
 	
 	RenderScene();
 

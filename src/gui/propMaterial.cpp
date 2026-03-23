@@ -1,6 +1,6 @@
 #include "propMaterial.h"
 #include "PointCloud.h"
-#include "../api/UI.h"
+
 #include "../core/AppStateManager.h"
 
 #include <QColorDialog>

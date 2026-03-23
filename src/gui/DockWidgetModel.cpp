@@ -1,6 +1,5 @@
 #include "DockWidgetModel.h"
 
-#include "../api/UI.h"
 #include "../api/adapters/AppAPIAdapter.h"
 #include "../core/AppStateManager.h"
 
@@ -45,14 +44,6 @@ DockWidgetModel::DockWidgetModel(QWidget *parent)
 
 	QObject::connect( ui.spinScale, SIGNAL(valueChanged(double)), this, SLOT(updateModelScale(double)) );
 	QObject::connect( ui.checkCentered, SIGNAL(stateChanged(int)), this, SLOT(updateModelCentered(int)) );
-
-	//ChildWindow *child = (ChildWindow*)AP::mainWin().ui.mdiArea->activeSubWindow();
-	//if (NULL != child)
-	//{
-	//	GLViewer *v = child->getViewer();
-	//	QObject::connect( v, SLOT(translationChanged(double, double, double)), this, SLOT(updateTranslations(double, double, double)), Qt::DirectConnection );
-	//}
-
 
 }
 

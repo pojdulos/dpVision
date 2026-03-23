@@ -1,6 +1,6 @@
 #include "propMesh.h"
 #include "Mesh.h"
-#include "../api/UI.h"
+
 #include "../core/AppStateManager.h"
 
 #include <QColorDialog>

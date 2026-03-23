@@ -1,12 +1,14 @@
 // WorkspaceAPIAdapter.h
 #pragma once
 #include "../interfaces/IWorkspaceAPI.h"
+#include "WorkspaceImportAPIAdapter.h"
 #include "Workspace.h"
 #include "Object.h"
 #include "Model3D.h"
 
 class WorkspaceAPIAdapter : public IWorkspaceAPI {
     CWorkspace* ws_;
+    WorkspaceImportAPIAdapter importApi_;
 public:
     WorkspaceAPIAdapter(CWorkspace* ws = nullptr) : ws_(ws ? ws : CWorkspace::instance()) {}
 
@@ -59,11 +61,7 @@ public:
         return ws_->_getCurrentModelId();
     }
     std::shared_ptr<CModel3D> loadModel(const QString& path, bool synchronous = true, bool setItCurrent = false) override {
-        auto obj = CModel3D::load(path, synchronous);
-        if (obj != nullptr && addModel(obj, setItCurrent)) {
-            return obj;
-        }
-        return nullptr;
+        return importApi_.loadModel(path, synchronous, setItCurrent);
     }
     size_t size() override {
         return ws_->size();

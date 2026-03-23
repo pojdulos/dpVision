@@ -6,6 +6,7 @@
 #include "../../gui/DockWidgetWorkspace.h"
 #include "../../gui/GLViewer.h"
 #include "../../gui/ProgressIndicator.h"
+#include "../../gui/WorkspaceDockHostAccess.h"
 
 class GuiInternalsAPIAdapter : public IGuiInternalsAPI {
 public:
@@ -49,16 +50,10 @@ public:
     }
 
     QVector<std::shared_ptr<CBaseObject>> selectedWorkspaceObjects() override {
-        if (auto dock = workspaceDock()) {
-            return dock->getSelectedObjects();
-        }
-        return {};
+        return WorkspaceDockHostAccess::selectedObjects();
     }
 
     std::shared_ptr<CBaseObject> currentWorkspaceItem() override {
-        if (auto dock = workspaceDock()) {
-            return dock->getCurrentItemObj();
-        }
-        return nullptr;
+        return WorkspaceDockHostAccess::currentItem();
     }
 };

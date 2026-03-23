@@ -1,7 +1,7 @@
 #include "propAnnotationPoint.h"
 #include "AnnotationPoint.h"
 
-#include "../api/UI.h"
+//
 #include "../core/AppStateManager.h"
 #include <QVBoxLayout>
 

@@ -22,13 +22,40 @@ The goal is:
 - Status: keep during migration
 - New home: `IWorkspaceAPI`
 
+Activation replacements:
+- `AP::WORKSPACE::setCurrentModel`
+- New home: `IWorkspaceActivationAPI`
+
+Bulk workspace replacements:
+- `AP::WORKSPACE::{removeAllModels,removeSelectedModels,setAllModelsVisible}`
+- New home: `IWorkspaceBulkAPI`
+
+Import replacements:
+- `AP::WORKSPACE::loadModel(...)`
+- New home: `IWorkspaceImportAPI`
+
+Raw model load replacement:
+- `AP::MODEL::load(...)`
+- New home: `IModelLoadAPI`
+
+Duplication replacements:
+- `AP::WORKSPACE::{duplicateModel,duplicateCurrentModel}`
+- New home: `IWorkspaceDuplicationAPI`
+
+Image insertion replacement:
+- `AP::WORKSPACE::addImage(...)`
+- New home: `IWorkspaceImageAPI`
+- Compatibility note: legacy `showViewer` behavior remains in `AP::` because it
+  is GUI policy, not default workspace capability
+
 `AP::WORKSPACE::SELECTION::*`
 - Status: keep during migration
-- New home: workspace/selection-facing API extensions
+- New home: `IWorkspaceSelectionAPI`
 
 Current workspace-facing replacements already exposed in the new API:
 - `IWorkspaceAPI::children()`
 - `IWorkspaceAPI::selectedObjects(...)`
+- `IWorkspaceSelectionAPI::{select,unselect,clear,contains,ids,objects,setSelectedVisible}`
 
 `AP::processEvents`
 - Status: legacy helper
@@ -62,6 +89,12 @@ Privileged replacements:
 `UI::PLUGINPANEL::*`
 - Status: legacy wrapper
 - New home: `IPluginPanelAPI`
+- Implementation note: most plugin-panel operations now delegate through
+  `GuiPluginPanelAPIAdapter` and `PluginPanelHostAccess`.
+- Remaining special case:
+  - the old `addButton(..., QObject* receiver, const char* slot, ...)`
+    overload is still legacy-only, but now also routes through
+    `PluginPanelHostAccess` instead of calling the dock directly.
 
 `UI::PROGRESSBAR::*`
 - Status: legacy wrapper
@@ -92,6 +125,8 @@ Privileged replacements:
 `UI::FILECHOOSER::*`
 - Status: legacy wrapper
 - New home: `IFileDialogAPI`
+- Implementation note: non-`QString` overloads now delegate to the `QString`
+  path so the legacy namespace has only one real file-dialog execution path.
 
 `UI::FILESYSTEM::*`
 - Status: legacy wrapper
@@ -105,6 +140,8 @@ String/path helpers in `UI`
 - Status: mixed; keep user-facing operations, avoid raw access
 - New home: `ICameraAPI`
 - Raw internals move to: `IGuiInternalsAPI`
+- Implementation note: current camera adapters no longer call `UI::CAMERA::*`
+  directly; they share host-side camera access helpers with the GUI-aware path
 
 `UI::DOCK::WORKSPACE::*`
 - Status: mixed; dock commands may survive temporarily, raw getters are legacy
@@ -112,6 +149,11 @@ String/path helpers in `UI`
 - Current safe replacements include:
   - `IDockWorkspaceAPI::rebuildTree()`
   - `IDockWorkspaceAPI::setItemVisibleById(...)`
+  - `WorkspaceDockHostAccess::{selectItem,currentItem,selectedObjects,setItemLabelById}`
+- Compatibility note:
+  - `UI::DOCK::WORKSPACE::currentItem()` and
+    `UI::DOCK::WORKSPACE::selectedObjects()` are currently kept so privileged
+    plugin adapters can preserve exact pre-refactor behavior on Windows
 
 Legacy GUI escape hatches still present in `UI` and intended to shrink:
 - `UI::CAMERA::transform()`
@@ -119,6 +161,11 @@ Legacy GUI escape hatches still present in `UI` and intended to shrink:
 - `UI::DOCK::WORKSPACE::instance()`
 - `UI::PLUGINPANEL::mainPanel()`
 - `UI::PROGRESSBAR::instance()`
+
+Current implementation note:
+- most of `UI::MESSAGEBOX::*`, `UI::FILECHOOSER::*`, `UI::PLUGINPANEL::*`,
+  and `UI::DOCK::WORKSPACE::*` now behave as thin wrappers over adapters or
+  host-side GUI helpers rather than owning separate logic in `UI.cpp`
 
 Already removed as unused or purely local wrappers:
 - `UI::adjustGroupBoxHeight()`
@@ -130,8 +177,6 @@ Already removed as unused or purely local wrappers:
 - `UI::DOCK::WORKSPACE::rebuildTree()`
 - `UI::DOCK::WORKSPACE::addItem()`
 - `UI::DOCK::WORKSPACE::removeItem()`
-- `UI::DOCK::WORKSPACE::getSelectedObjects()`
-- `UI::DOCK::WORKSPACE::getCurrentItemObj()`
 - `UI::DOCK::HISTOGRAM::show()`
 - `UI::DOCK::HISTOGRAM::setHistogram()`
 - `UI::DOCK::HISTOGRAM::getHistogram()`

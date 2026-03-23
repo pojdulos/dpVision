@@ -1,7 +1,14 @@
 // AppAPIAdapter.h
 #pragma once
 #include "../interfaces/IAppAPI.h"
+#include "../adapters/WorkspaceActivationAPIAdapter.h"
+#include "../adapters/WorkspaceBulkAPIAdapter.h"
+#include "../adapters/WorkspaceDuplicationAPIAdapter.h"
+#include "../adapters/WorkspaceImageAPIAdapter.h"
+#include "../adapters/WorkspaceImportAPIAdapter.h"
 #include "../adapters/WorkspaceAPIAdapter.h"
+#include "../adapters/WorkspaceSelectionAPIAdapter.h"
+#include "../adapters/ModelLoadAPIAdapter.h"
 #include "../adapters/ModelAPIAdapter.h"
 #include "../adapters/ObjectAPIAdapter.h"
 #include "../adapters/SettingsAPIAdapter.h"
@@ -15,6 +22,13 @@
 
 class AppAPIAdapter : public IAppAPI {
     WorkspaceAPIAdapter workspaceAPI_;
+    WorkspaceActivationAPIAdapter workspaceActivationAPI_;
+    WorkspaceBulkAPIAdapter workspaceBulkAPI_;
+    WorkspaceDuplicationAPIAdapter workspaceDuplicationAPI_;
+    WorkspaceImageAPIAdapter workspaceImageAPI_;
+    WorkspaceImportAPIAdapter workspaceImportAPI_;
+    WorkspaceSelectionAPIAdapter workspaceSelectionAPI_;
+    ModelLoadAPIAdapter modelLoadAPI_;
     ModelAPIAdapter modelAPI_;
     ObjectAPIAdapter objectAPI_;
     SettingsAPIAdapter settingsAPI_;
@@ -22,6 +36,13 @@ class AppAPIAdapter : public IAppAPI {
     SettingsAPIAdapter pluginSettingsAPI_;
 public:
     IWorkspaceAPI& workspace() override { return workspaceAPI_; }
+    IWorkspaceActivationAPI& workspaceActivation() override { return workspaceActivationAPI_; }
+    IWorkspaceBulkAPI& workspaceBulk() override { return workspaceBulkAPI_; }
+    IWorkspaceDuplicationAPI& workspaceDuplication() override { return workspaceDuplicationAPI_; }
+    IWorkspaceImageAPI& workspaceImage() override { return workspaceImageAPI_; }
+    IWorkspaceImportAPI& workspaceImport() override { return workspaceImportAPI_; }
+    IWorkspaceSelectionAPI& workspaceSelection() override { return workspaceSelectionAPI_; }
+    IModelLoadAPI& modelLoad() override { return modelLoadAPI_; }
     IModelAPI& model() override { return modelAPI_; }
     IObjectAPI& object() override { return objectAPI_; }
     ISettingsAPI& settings() override { return settingsAPI_; }

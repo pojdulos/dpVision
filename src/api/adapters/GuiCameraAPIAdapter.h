@@ -1,107 +1,56 @@
 #pragma once
 
+#include "CameraHostAccess.h"
+#include "../interfaces/ICameraControlAPI.h"
 #include "../interfaces/ICameraAPI.h"
-#include "../../core/Point3.h"
-#include "../../core/Wektor3D.h"
-#include "../../gui/MainWindow.h"
-#include "../../gui/GLViewer.h"
-#include <QMdiArea>
-#include <QMdiSubWindow>
 
-class GuiCameraAPIAdapter : public ICameraAPI {
-    static GLViewer* currentMdiViewer()
-    {
-        if (auto win = CMainWindow::instance()) {
-            QMdiArea* mdiArea = win->ui.mdiArea;
-            if (mdiArea != nullptr) {
-                const QList<QMdiSubWindow*> windows = mdiArea->subWindowList();
-                if (!windows.empty()) {
-                    return qobject_cast<GLViewer*>(windows[0]->widget());
-                }
-            }
-        }
-        return nullptr;
-    }
-
+class GuiCameraAPIAdapter : public ICameraAPI, public ICameraControlAPI {
 public:
     void move(float mx, float my, float mz) override {
-        if (auto viewer = currentMdiViewer()) {
-            viewer->transform().translate(CVector3f(mx, -my, mz));
-            viewer->update();
-        }
+        CameraHostAccess::move(mx, my, mz);
     }
 
     void rotate(float ax, float ay, float az) override {
-        if (auto viewer = currentMdiViewer()) {
-            Q_UNUSED(ax);
-            Q_UNUSED(ay);
-            Q_UNUSED(az);
-            viewer->update();
-        }
+        CameraHostAccess::rotate(ax, ay, az);
     }
 
     void setFloating(bool floating) override {
-        if (auto viewer = currentMdiViewer()) {
-            viewer->setCameraFloating(floating);
-        }
+        CameraHostAccess::setFloating(floating);
     }
 
     bool convertWinToWorld(CPoint3d winCoords, CPoint3d& worldCoords) override {
-        if (auto viewer = currentViewer()) {
-            return viewer->convertWinToWorld(winCoords, worldCoords);
-        }
-        return false;
+        return CameraHostAccess::convertWinToWorld(winCoords, worldCoords);
     }
 
     bool convertWorldToWin(CPoint3d worldCoords, CPoint3d& winCoords) override {
-        if (auto viewer = currentViewer()) {
-            return viewer->convertWorldToWin(worldCoords, winCoords);
-        }
-        return false;
+        return CameraHostAccess::convertWorldToWin(worldCoords, winCoords);
     }
 
     bool convertCoords(double winX, double winY, CPoint3d& pkt0, CPoint3d& pkt1) override {
-        if (auto viewer = currentViewer()) {
-            return viewer->convertCoords(winX, winY, pkt0, pkt1);
-        }
-        return false;
+        return CameraHostAccess::convertCoords(winX, winY, pkt0, pkt1);
     }
 
     CPoint3d camPos() override {
-        if (auto viewer = currentViewer()) {
-            return viewer->camPos();
-        }
-        return CPoint3d(0, 0, 0);
+        return CameraHostAccess::camPos();
     }
 
     CTransform* transform() override {
-        if (auto viewer = currentViewer()) {
-            return &viewer->transform();
-        }
-        return nullptr;
+        return CameraHostAccess::transform();
     }
 
     void setView(int dir, std::shared_ptr<CModel3D> obj = nullptr) override {
-        if (auto win = CMainWindow::instance()) {
-            win->actionLookDir(dir, obj);
-        }
+        CameraHostAccess::setView(dir, std::move(obj));
+    }
+
+    void screenshot(const QString& path) override {
+        CameraHostAccess::screenshot(path, nullptr);
     }
 
     GLViewer* currentViewer() override {
-        if (auto win = CMainWindow::instance()) {
-            return win->currentViewer();
-        }
-        return nullptr;
+        return CameraHostAccess::currentViewer();
     }
 
     void screenshot(const QString& path, void* viewer = nullptr) override {
-        if (viewer != nullptr) {
-            static_cast<GLViewer*>(viewer)->screenshot(path);
-            return;
-        }
-
-        if (auto activeViewer = currentViewer()) {
-            activeViewer->screenshot(path);
-        }
+        CameraHostAccess::screenshot(path, viewer);
     }
 };

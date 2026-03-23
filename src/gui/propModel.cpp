@@ -1,5 +1,5 @@
 #include "propModel.h"
-#include "../api/UI.h"
+
 #include "../api/adapters/AppAPIAdapter.h"
 #include "../core/AppStateManager.h"
 
@@ -23,23 +23,7 @@ PropModel::PropModel(CModel3D *m, QWidget *parent) : PropWidget( parent )
 
 	ui.setupUi((QWidget*)this);
 
-	//QObject::connect( ui.spinRotX, SIGNAL(valueChanged(double)), this, SLOT(updateModelRotX(double)) );
-	//QObject::connect( ui.spinRotY, SIGNAL(valueChanged(double)), this, SLOT(updateModelRotY(double)) );
-	//QObject::connect( ui.spinRotZ, SIGNAL(valueChanged(double)), this, SLOT(updateModelRotZ(double)) );
 
-	//QObject::connect( ui.spinTransX, SIGNAL(valueChanged(double)), this, SLOT(updateModelTrans(double)) );
-	//QObject::connect( ui.spinTransY, SIGNAL(valueChanged(double)), this, SLOT(updateModelTrans(double)) );
-	//QObject::connect( ui.spinTransZ, SIGNAL(valueChanged(double)), this, SLOT(updateModelTrans(double)) );
-
-	//QObject::connect( ui.spinScale, SIGNAL(valueChanged(double)), this, SLOT(updateModelScale(double)) );
-	//QObject::connect( ui.checkCentered, SIGNAL(stateChanged(int)), this, SLOT(updateModelCentered(int)) );
-
-	//ChildWindow *child = (ChildWindow*)AP::mainWin().ui.mdiArea->activeSubWindow();
-	//if (NULL != child)
-	//{
-	//	GLViewer *v = child->getViewer();
-	//	QObject::connect( v, SLOT(translationChanged(double, double, double)), this, SLOT(updateTranslations(double, double, double)), Qt::DirectConnection );
-	//}
 
 }
 

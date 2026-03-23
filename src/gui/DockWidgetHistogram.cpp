@@ -1,8 +1,5 @@
 #include "DockWidgetHistogram.h"
 
-#include "../api/UI.h"
-#include "../api/AP.h"
-
 #include "DockWidgetModel.h"
 #include "Annotation.h"
 

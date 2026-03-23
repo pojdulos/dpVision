@@ -21,6 +21,7 @@
 #include "DockWidgetPluginPanel.h"
 #include "DockWidgetHistogram.h"
 #include "DockWidgetImageViewer.h"
+#include "ImageViewerHost.h"
 
 
 #include "GLViewer.h"
@@ -33,9 +34,11 @@
 #include "StatusBarManager.h"
 #include "MessageBoxManager.h"
 #include "../core/AppStateManager.h"
+#include "../core/HistogramDockManager.h"
 #include "../core/WorkspacePanelManager.h"
 #include "adapters/QtStatusBarAdapter.h"
 #include "adapters/QtAppStateAdapter.h"
+#include "adapters/QtHistogramDockAdapter.h"
 #include "adapters/QtMessageBoxAdapter.h"
 #include "adapters/QtProgressAdapter.h"
 #include "adapters/QtWorkspacePanelAdapter.h"
@@ -137,6 +140,7 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 	StatusBarManager::setListener(new QtStatusBarAdapter(statusBar()));
 	MessageBoxManager::setListener(new QtMessageBoxAdapter());
 	AppStateManager::setListener(new QtAppStateAdapter(this));
+	HistogramDockManager::setListener(new QtHistogramDockAdapter(this));
 	WorkspacePanelManager::setListener(new QtWorkspacePanelAdapter(this));
 
 	this->progressIndicator = new ProgressIndicator(this->statusBar());
@@ -309,7 +313,7 @@ void CMainWindow::changeMenuAfterSelect()
 		ui.menuModel->menuAction()->setVisible(false);
 
 		ui.menuImage->menuAction()->setVisible(true);
-		ui.action_ImageFit->setChecked(((CImage*)obj.get())->fitToWindow);
+		ui.action_ImageFit->setChecked(ImageViewerHost::fitToWindow(obj->id()));
 
 		ui.action_File_SaveAs->setEnabled(true);
 	}
@@ -321,7 +325,7 @@ void CMainWindow::changeMenuAfterSelect()
 		ui.action_Model_ShowTexture->setChecked( obj->testOption( CModel3D::optRenderWithTexture ) );
 		ui.action_Model_Lock->setChecked( obj->isLocked() );
 		
-		ui.actionModelInSelection->setChecked( AP::WORKSPACE::SELECTION::isModelSelected(obj->id() ) );
+		ui.actionModelInSelection->setChecked(appApi().workspaceSelection().contains(obj->id()));
 
 		ui.action_Model_ShowBB->setChecked( obj->DrawBB() );
 		
@@ -401,69 +405,22 @@ void CMainWindow::activateGLViewerInstance()
 
 QMdiSubWindow* CMainWindow::getPicViewerInstance(int id)
 {
-	auto lista = ui.mdiArea->subWindowList();
-
-	foreach(QMdiSubWindow * window, lista)
-	{
-		MdiChild* child = (MdiChild*)window->widget();
-
-		if (child != nullptr)
-		{
-			if (child->hasType(MdiChild::Type::Pic))
-			{
-				PicViewer* pic = qobject_cast<PicViewer*>(child->m_widget);
-				if (pic->id() == id)
-				{
-					return window;
-				}
-			}
-		}
-
-	}
-
-	return nullptr;
+	return ImageViewerHost::instance(id);
 }
 
 void CMainWindow::activatePicViewerInstance(int id)
 {
-	QMdiSubWindow* window = getPicViewerInstance(id);
-
-	if (window != nullptr)
-	{
-		ui.mdiArea->setActiveSubWindow(window);
-	}
-	else
-	{
-		ui.mdiArea->setActiveSubWindow(MdiChild::create((CImage*)appApi().workspace().getModel(id).get(), ui.mdiArea));
-	}
+	ImageViewerHost::activateOrOpen(id);
 }
 
 void CMainWindow::closePicViewers(int id)
 {
-		auto lista = ui.mdiArea->subWindowList();
-
-		foreach(QMdiSubWindow * window, lista)
-		{
-			MdiChild* child = (MdiChild*)window->widget();
-
-			if (child != nullptr)
-			{
-				if (child->hasType(MdiChild::Type::Pic))
-				{
-					PicViewer* pic = qobject_cast<PicViewer*>(child->m_widget);
-					if (pic->id() == id)
-					{
-						window->close();
-					}
-				}
-			}
-
-		}
+	ImageViewerHost::closeAll(id);
 }
 
 void CMainWindow::createPicViewer(CImage* im)
 {
-	MdiChild::create(im, ui.mdiArea)->show();
+	ImageViewerHost::open(im);
 }
 
 

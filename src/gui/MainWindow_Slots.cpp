@@ -3,18 +3,20 @@
 #include <QtGui/QKeyEvent>
 #include <QMessageLogger>
 
-#include "../api/AP.h"
+//#include "../api/AP.h"
 #include "../api/adapters/AppAPIAdapter.h"
 
-#include "../api/UI.h"
+//
 
 #include "AppSettings.h"
 #include "MainApplication.h"
 #include "MainWindow.h"
 
 #include "GLViewer.h"
-#include "PicViewer.h"
 #include "MdiChild.h"
+#include "PicViewer.h"
+#include "ImageViewerHost.h"
+#include "ImageViewerState.h"
 
 #include "Image.h"
 #include <chrono>
@@ -80,7 +82,7 @@ void CMainWindow::viewerSelected(QMdiSubWindow* window)
 		MdiChild* child = (MdiChild*)window->widget();
 		if (child->hasType(MdiChild::Type::Pic))
 		{
-			AP::WORKSPACE::setCurrentModel(((PicViewer*)child->m_widget)->id());
+			appApi().workspaceActivation().setCurrentObject(((PicViewer*)child->m_widget)->id());
 		}
 
 		AppStateManager::updateProperties();
@@ -143,7 +145,7 @@ void CMainWindow::viewChildFS()
 void CMainWindow::openRecent() {
 	QAction *action = qobject_cast<QAction *>(sender());
 	if (action)
-		if ( nullptr != AP::WORKSPACE::loadModel(action->data().toString().toStdWString(), false, false ))
+		if ( nullptr != appApi().workspaceImport().loadModel(action->data().toString(), false, false) )
 		{
 			adjustForCurrentFile(action->data().toString());
 			AppSettings::mainSettings()->setValue("recentFile", action->data().toString());
@@ -157,7 +159,7 @@ void CMainWindow::fileOpen()
 	
 	if (!fileName.isEmpty())
 	{
-		if ( nullptr != AP::WORKSPACE::loadModel(fileName, false, false, std::make_shared<QtProgressAdapter>(this->progressIndicator) ))
+		if ( nullptr != appApi().workspaceImport().loadModel(fileName, false, false, std::make_shared<QtProgressAdapter>(this->progressIndicator) ))
 		{
 			adjustForCurrentFile(fileName);
 			AppSettings::mainSettings()->setValue("recentFile", fileName);
@@ -212,13 +214,12 @@ void CMainWindow::importImage()
 
 	if (!fileName.isEmpty())
 	{
+		
+		StatusBarManager::setText("Loading image...");
 		std::shared_ptr<CImage> im = CImage::load( fileName );
 		if (nullptr != im)
 		{
-			AP::WORKSPACE::addImage(im, false);
-			
-			//adjustForCurrentFile(fileName);
-			//AP::mainApp().settings->setValue("recentFile", fileName);
+			appApi().workspaceImage().addImage(im, true);
 		}
 	}
 }
@@ -452,9 +453,7 @@ void CMainWindow::meshApplyTransformations()
 			{
 				obj->applyTransform(CTransform());
 
-				//CTransform trans = AP::WORKSPACE::getCurrentModel()->getTransform();
-				//((CMesh*)AP::WORKSPACE::getCurrentModel()->getChild())->applyTransformation( trans, CTransform() );
-				//AP::WORKSPACE::getCurrentModel()->setTransform(CTransform());
+
 
 				StatusBarManager::setText("WspĂłĹ‚rzÄ™dne obiektu zostaĹ‚y przeksztaĹ‚cone");
 
@@ -534,7 +533,7 @@ void CMainWindow::smoothingOnOff()
 	if (std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel())
 	{
 		obj->calcVN();
-		//StatusBarManager::setText( AP::WORKSPACE::getCurrentModel()->GetMeshInfoText().c_str() );
+
 
 		StatusBarManager::setText( obj->switchOption( CModel3D::Opt::optSmoothVertices, CModel3D::Switch::switchToggle ) ? "Wygladzanie wierzcholkow: wlaczone" : "Wygladzanie wierzcholkow: wylaczone" );
 	}
@@ -546,7 +545,7 @@ void CMainWindow::smoothingOnOff()
 
 void CMainWindow::createNewCopy()
 {
-	AP::WORKSPACE::duplicateCurrentModel();
+	appApi().workspaceDuplication().duplicateCurrentModel();
 }
 
 void CMainWindow::cameraResetPosition()
@@ -741,51 +740,16 @@ void CMainWindow::actionSelectNone()
 	updateActiveView();
 }
 
-#include "PicViewer.h"
-
 void CMainWindow::imageFit(bool fit)
 {
 	std::shared_ptr<CModel3D> im = appApi().workspace().getCurrentModel();
 	if ((im != nullptr) && im->hasType(CObject::IMAGE))
 	{
-		((CImage*)im.get())->fitToWindow = fit;
-	}
-
-	QMdiSubWindow* window = getPicViewerInstance(im->id());
-	if (window != nullptr)
-	{
-		((PicViewer*)((MdiChild*)window->widget())->m_widget)->reloadImage();
+		ImageViewerHost::setFitToWindow(im->id(), fit);
 	}
 }
 
-//void CMainWindow::bbShowHide(bool show)
-//{
-//	if ( NULL != AP::WORKSPACE::getCurrentModel() )
-//	{
-//		while ( show != AP::WORKSPACE::getCurrentModel()->toggleDrawBB() ) {};
-//
-//		if ( show )
-//		{
-//			StatusBarManager::setText(  "Bounding box: on" );
-//		}
-//		else
-//		{
-//			StatusBarManager::setText(  "Bounding box: off" );
-//		}
-//
-//		updateAllViews();
-//	}
-//	else
-//	{
-//		GLViewer *view = this->currentViewer();
-//		if (NULL != view)
-//		{
-//			view->toggleAxesVisibility();
-//
-//			updateActiveView();
-//		}
-//	}
-//}
+
 
 #include "DockWidgetWorkspace.h"
 
@@ -836,14 +800,14 @@ void CMainWindow::openWorkspace()
 	
 	if (0 == reply)
 	{
-		AP::WORKSPACE::removeAllModels();
+		appApi().workspaceBulk().removeAll();
 		//unsigned long t1, t2;
 
 		//t1 = GetTickCount();
 		auto t1 = std::chrono::steady_clock::now();
 
 		//CModel3D* obj = parser->load(path, true);
-		AP::WORKSPACE::loadModel(path, true);
+		appApi().workspaceImport().loadModel(path, true);
 
 		//t2 = GetTickCount();
 		auto t2 = std::chrono::steady_clock::now();
@@ -891,13 +855,13 @@ void CMainWindow::saveWorkspace()
 void CMainWindow::removeAllModels()
 {
 	int reply = QMessageBox::question(0, "You are about to removing all models in your workspace.\nRealy you want to do it?", "Caution!");
-	if ( 0 == reply ) AP::WORKSPACE::removeAllModels();
+	if ( 0 == reply ) appApi().workspaceBulk().removeAll();
 }
 
 void CMainWindow::removeSelectedModels()
 {
 	int reply = QMessageBox::question(0, "You are about to removing all selected (checked) models.\nRealy you want to do it?", "Caution!");
-	if (0 == reply) AP::WORKSPACE::removeSelectedModels();
+	if (0 == reply) appApi().workspaceBulk().removeSelected();
 }
 
 void CMainWindow::resetAllTransformations()
@@ -978,7 +942,7 @@ void CMainWindow::selectAll()
 	CWorkspace::instance()->clearSelection();
 	for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = CWorkspace::instance()->begin(); it != CWorkspace::instance()->end(); it++)
 	{
-		AP::WORKSPACE::SELECTION::selectModel(it->first);
+		appApi().workspaceSelection().select(it->first);
 	}
 }
 
@@ -987,28 +951,28 @@ void CMainWindow::unselectAll()
 	std::list<int> sel = CWorkspace::instance()->getSelection();
 	for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
 	{
-		AP::WORKSPACE::SELECTION::unselectModel(*it);
+		appApi().workspaceSelection().unselect(*it);
 	}
 }
 
 void CMainWindow::hideAllModels()
 {
-	AP::WORKSPACE::setAllModelsVisible(false);
+	appApi().workspaceBulk().setAllVisible(false);
 }
 
 void CMainWindow::hideSelectedModels()
 {
-	AP::WORKSPACE::SELECTION::setModelsVisible(false);
+	appApi().workspaceSelection().setSelectedVisible(false);
 }
 
 void CMainWindow::showAllModels()
 {
-	AP::WORKSPACE::setAllModelsVisible(true);
+	appApi().workspaceBulk().setAllVisible(true);
 }
 
 void CMainWindow::showSelectedModels()
 {
-	AP::WORKSPACE::SELECTION::setModelsVisible(true);
+	appApi().workspaceSelection().setSelectedVisible(true);
 }
 
 void CMainWindow::modelInSelection(bool b)
@@ -1018,11 +982,11 @@ void CMainWindow::modelInSelection(bool b)
 	{
 		if (b)
 		{
-			AP::WORKSPACE::SELECTION::selectModel(obj->id());
+			appApi().workspaceSelection().select(obj->id());
 		}
 		else
 		{
-			AP::WORKSPACE::SELECTION::unselectModel(obj->id());
+			appApi().workspaceSelection().unselect(obj->id());
 		}
 		AppStateManager::updateProperties();
 	}
@@ -1133,7 +1097,7 @@ void CMainWindow::pmEcol()
 
 						obj->setPath( f.absolutePath() + "/" + fname + "." + f.completeSuffix() );
 						
-						AP::WORKSPACE::addModel( obj );
+						appApi().workspace().addModel(obj, false);
 					}
 					else
 					{
@@ -1171,7 +1135,7 @@ void CMainWindow::pmVsplit()
 		{	
 			if ( pmUi.checkBox->isChecked() )
 			{
-				obj = AP::WORKSPACE::duplicateCurrentModel();
+				obj = appApi().workspaceDuplication().duplicateCurrentModel();
 				if (nullptr == obj) return;
 			}
 
