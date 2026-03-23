@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../interfaces/ISettingsAPI.h"
-#include "../../core/AppSettings.h"
+#include "../../gui/AppSettings.h"
 
 class SettingsAPIAdapter : public ISettingsAPI {
     QSettings* settings_ = nullptr;

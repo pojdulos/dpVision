@@ -9,7 +9,6 @@
 #include "quazipfile.h"
 #include "quazipdir.h"
 
-#include "AppSettings.h"
 #include "AppStateManager.h"
 #include "Workspace.h"
 
@@ -143,8 +142,6 @@ std::shared_ptr<CModel3D> CParserDPVISION::load(const QString path, bool wait, s
 	if (prg_) prg_->hide();
 
 	AppStateManager::adjustForCurrentFile(path);
-
-	AppSettings::mainSettings()->setValue("recentFile", path);
 
 	StatusBarManager::setText( QString("GOTOWE, liczba wczytanych modeli: %1").arg(modele.size()));
 	return nullptr;

@@ -13,7 +13,7 @@
 #include "../adapters/ObjectAPIAdapter.h"
 #include "../adapters/SettingsAPIAdapter.h"
 #include "../../core/StatusBarManager.h"
-#include "../../core/AppSettings.h"
+#include "../../gui/AppSettings.h"
 #include "../../core/AppStateManager.h"
 #include "Global.h"
 #include <QtCore/QCoreApplication>
