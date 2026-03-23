@@ -214,11 +214,12 @@ void CMainWindow::importImage()
 
 	if (!fileName.isEmpty())
 	{
+		
+		StatusBarManager::setText("Loading image...");
 		std::shared_ptr<CImage> im = CImage::load( fileName );
 		if (nullptr != im)
 		{
-			appApi().workspaceImage().addImage(im, false);
-			
+			appApi().workspaceImage().addImage(im, true);
 		}
 	}
 }

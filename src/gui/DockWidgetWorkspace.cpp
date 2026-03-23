@@ -421,7 +421,7 @@ void DockWidgetWorkspace::addItem(std::shared_ptr<CBaseObject> obj)
 
 	if (parent == nullptr)
 	{
-		if (obj->hasType(CBaseObject::MODEL))
+		if (obj->hasType(CBaseObject::MODEL) || obj->hasType(CBaseObject::IMAGE))
 		{
 			model->addModelWithChildren(std::static_pointer_cast<CModel3D>(obj));
 		}
