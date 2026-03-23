@@ -184,6 +184,7 @@ public:
 	CPoint3f getCenterOfWeight();
 
 	virtual void applyTransformation(CTransform& from, CTransform& to) override;
+	bool applyParentTransform() override;
 
 	void transformByMatrixF(float matrix[16]);
 	void transformByMatrixD(double matrix[16]);

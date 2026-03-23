@@ -97,3 +97,4 @@ std::shared_ptr<CBaseObject> CAnnotation::getSomethingWithId(int id)
 	}
 	return nullptr;
 }
+

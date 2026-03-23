@@ -18,6 +18,7 @@
 #include "Parser.h"
 
 #include "dpLog.h"
+#include "Workspace.h"
 #include "../renderers/IModel3DRenderer.h"
 #include "StatusBarManager.h"
 
@@ -262,6 +263,25 @@ void CModel3D::applyTransform(CTransform to)
 	m_transform.rotation() = to.rotation();
 	m_transform.scale() = to.scale();
 	m_transform.origin() = to.origin();
+}
+
+bool CModel3D::applyParentTransform()
+{
+	auto parent = getParentPtr();
+	auto parentModel = std::dynamic_pointer_cast<CModel3D>(parent);
+	if (parentModel == nullptr)
+		return false;
+
+	Eigen::Matrix4d transformMatrix = parentModel->transform().toEigenMatrix4d() * transform().toEigenMatrix4d();
+	transform().fromEigenMatrix4d(transformMatrix);
+
+	auto self = shared_from_this();
+	auto grandpa = parent->getParentPtr();
+
+	CWorkspace::instance()->_objectRemove(self);
+	CWorkspace::instance()->_objectAdd(self, grandpa);
+
+	return true;
 }
 
 

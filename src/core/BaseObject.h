@@ -123,6 +123,7 @@ public:
 	virtual const QString xmlInfo() { return QString(); };
 
 	virtual void applyTransformation(CTransform& /*from*/, CTransform& /*to*/) {};
+	virtual bool applyParentTransform();
 
 	//virtual CBaseObject *getCopy() { return new CBaseObject( *this ); }
 

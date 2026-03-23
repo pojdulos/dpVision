@@ -5,5 +5,6 @@ class CAnnotationPlane;
 
 class DPVISION_EXPORT IAnnotationPlaneRenderer : public IAnnotationRenderer {
 public:
+    virtual void renderTransform(const CBaseObject* _obj) override {};
     virtual void renderSelf(const CBaseObject* _obj) override;
 };

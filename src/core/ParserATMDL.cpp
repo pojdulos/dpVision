@@ -338,6 +338,23 @@ CTransform CParserATMDL::parseProperty_translation(QTextStream& in)
 	return t;
 }
 
+CVector3d CParserATMDL::parseProperty_eulerangles(QTextStream& in)
+{
+	QString slowo =	parseType_matrix(in);
+	
+	QStringList axisList = slowo.split(",", Qt::SkipEmptyParts);
+
+	return CVector3d( 
+		axisList[0].toDouble(),
+		axisList[1].toDouble(),
+		axisList[2].toDouble()
+	);
+}
+
+
+
+
+
 CMovement::SeqList CParserATMDL::parseProperty_frameset(QTextStream& in)
 {
 	QString slowo;
@@ -673,8 +690,17 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_transformation(QTextStrea
 	QList<std::shared_ptr<CBaseObject>> kids;
 	//QStringList matrix;
 
+	CVector3d rot_XYZ = {0.0, 0.0, 0.0};
+	bool hasEulerAngles = false;
+	bool hasAxisRotations = false;
+
+	CTransform rotationTransformation;
+	bool hasRotation = false;
+
+	CTransform translationTransformation;
+	bool hasTranslation = false;
+
 	CTransform frameTransformation;
-	bool isTransformDefined = false;
 
 	while (slowo != "}")
 	{
@@ -699,14 +725,40 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_transformation(QTextStrea
 		else if (slowo == "rotation")
 		{
 			CTransform tR = parseProperty_rotation(in);
-			frameTransformation.fromEigenMatrix4d(tR.toEigenMatrix4d() * frameTransformation.toEigenMatrix4d());
-			isTransformDefined = true;
+			rotationTransformation.fromEigenMatrix4d(tR.toEigenMatrix4d() * rotationTransformation.toEigenMatrix4d());
+			hasRotation = true;
+		}
+		else if (slowo == "eulerangles")
+		{
+			rot_XYZ = parseProperty_eulerangles(in);
+			hasEulerAngles = true;
+		}
+		else if (slowo == "rot_X")
+		{
+			QString slowo =	parseType_string(in);
+			double angle = slowo.toDouble();
+			rot_XYZ[0] = angle;
+			hasAxisRotations = true;
+		}
+		else if (slowo == "rot_Y")
+		{
+			QString slowo =	parseType_string(in);
+			double angle = slowo.toDouble();
+			rot_XYZ[1] = angle;
+			hasAxisRotations = true;
+		}
+		else if (slowo == "rot_Z")
+		{
+			QString slowo =	parseType_string(in);
+			double angle = slowo.toDouble();
+			rot_XYZ[2] = angle;
+			hasAxisRotations = true;
 		}
 		else if (slowo == "translation")
 		{
 			CTransform tT = parseProperty_translation(in);
-			frameTransformation.fromEigenMatrix4d(tT.toEigenMatrix4d() * frameTransformation.toEigenMatrix4d());
-			isTransformDefined = true;
+			translationTransformation.fromEigenMatrix4d(tT.toEigenMatrix4d() * translationTransformation.toEigenMatrix4d());
+			hasTranslation = true;
 		}
 		else if (auto tmp = parseObject(in, slowo))
 		{
@@ -736,17 +788,30 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_transformation(QTextStrea
 		if (opis.contains("matrix"))
 		{
 			frameTransformation.fromRowMatrix(opis["matrix"], ",");
-			isTransformDefined = true;
 		}
 
-		if (isTransformDefined)
+		if (!opis.contains("matrix"))
 		{
-			obj->setTransform(frameTransformation);
+			if (hasRotation)
+			{
+				frameTransformation = rotationTransformation;
+			}
+			else if (hasEulerAngles || hasAxisRotations)
+			{
+				frameTransformation.rotateDeg({
+					{CVector3d::XAxis(), rot_XYZ[0]},
+					{CVector3d::YAxis(), rot_XYZ[1]},
+					{CVector3d::ZAxis(), rot_XYZ[2]}
+				});
+			}
+
+			if (hasTranslation)
+			{
+				frameTransformation.fromEigenMatrix4d(translationTransformation.toEigenMatrix4d() * frameTransformation.toEigenMatrix4d());
+			}
 		}
-		else
-		{
-			obj->setTransform(CTransform());
-		}
+
+		obj->setTransform(frameTransformation);
 
 		for (auto kid : kids) add_kid(obj, kid);
 	}

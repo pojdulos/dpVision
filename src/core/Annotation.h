@@ -55,6 +55,7 @@ public:
 	CAnnotation* annotation(int id);
 
 	virtual std::shared_ptr<CBaseObject> getSomethingWithId(int id);
+	//bool applyParentTransform() override;
 
 	virtual void toDomElement(QDomElement& /*child*/) {};
 

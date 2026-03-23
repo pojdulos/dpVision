@@ -160,11 +160,11 @@ QMenu* CContextMenu::createRepositionMenu()
 
 	menu->addAction("move/copy", this, SLOT(slot_repositioning()));
 
-	if (m_obj->hasType(CBaseObject::Type::MODEL) || m_obj && m_obj->hasType(CBaseObject::Type::MESH)
-		|| m_obj && m_obj->hasType(CBaseObject::Type::CLOUD) || m_obj && m_obj->hasType(CBaseObject::Type::ORDEREDCLOUD))
-	{
+	// if (m_obj->hasType(CBaseObject::Type::MODEL) || m_obj && m_obj->hasType(CBaseObject::Type::MESH)
+	// 	|| m_obj && m_obj->hasType(CBaseObject::Type::CLOUD) || m_obj && m_obj->hasType(CBaseObject::Type::ORDEREDCLOUD))
+	// {
 		menu->addAction("apply last transformation and move up", this, SLOT(slot_apply_last_transform()));
-	}
+	// }
 
 	menu->addSeparator();
 	if (m_obj && m_obj->hasCategory(CBaseObject::Category::OBJECT)) {
@@ -646,8 +646,18 @@ void CContextMenu::slot_repositioning()
 
 void CContextMenu::slot_apply_last_transform()
 {
+	if (m_obj == nullptr)
+		return;
+
 	// Kopiujemy obiekt z rodzica do dziadka,
-	// przeksztaÄąâ€šcajĂ„â€¦c go tak by zachowaÄąâ€š pozycjĂ„â„˘
+	// przekształcając go tak by zachował pozycję
+	bool result = m_obj->applyParentTransform();
+	
+	if (!result) {
+		QMessageBox::information(0,"","The object you have choosen can not be repositioned.");
+	}
+
+	return;
 	
 	if (m_obj == nullptr)
 		return; 	// obiekt nie istnieje

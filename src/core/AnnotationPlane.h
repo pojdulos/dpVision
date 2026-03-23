@@ -11,6 +11,10 @@
 class DPVISION_EXPORT CAnnotationPlane : public CAnnotation, public CPlane
 {
 	double m_size;
+	CVector3d m_axisU;
+
+	void ensureAxisU();
+	void setAxisU(const CVector3d& axis);
 
 public:
 	CAnnotationPlane(std::shared_ptr<CBaseObject> m = nullptr);
@@ -32,8 +36,11 @@ public:
 
 	void setSize(double s) { m_size = s; };
 	double getSize() { return m_size; };
+	const CVector3d& axisU();
+	void setNormal(CVector3d n);
 
 	virtual void applyTransformation(CTransform &prevT, CTransform &newT) override;
+	bool applyParentTransform() override;
 
 	virtual std::wstring getInfoRow() override;
 	virtual std::wstring getTypeWSTR() override { return L"plane"; };

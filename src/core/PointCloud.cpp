@@ -1,5 +1,7 @@
 #include "Global.h"
 #include "PointCloud.h"
+#include "Model3D.h"
+#include "Workspace.h"
 
 #include "../renderers/IPointCloudRenderer.h"
 #include "StatusBarManager.h"
@@ -375,6 +377,25 @@ void CPointCloud::applyTransformation(CTransform& from, CTransform& to)
 		m_vertices[j] = t;
 		expandBoundingBox(t);
 	}
+}
+
+bool CPointCloud::applyParentTransform()
+{
+	auto parent = getParentPtr();
+	auto parentModel = std::dynamic_pointer_cast<CModel3D>(parent);
+	if (parentModel == nullptr)
+		return false;
+
+	CTransform nullTransform;
+	applyTransformation(parentModel->transform(), nullTransform);
+
+	auto self = shared_from_this();
+	auto grandpa = parent->getParentPtr();
+
+	CWorkspace::instance()->_objectRemove(self);
+	CWorkspace::instance()->_objectAdd(self, grandpa);
+
+	return true;
 }
 
 void CPointCloud::transformByMatrixF(float matrix[16])
