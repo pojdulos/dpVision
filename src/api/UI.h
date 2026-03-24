@@ -30,6 +30,11 @@ class QGroupBox;
  * `UI::` remains a supported, stable entry point for plugins. The
  * architectural rule is that it should stay a thin wrapper over properly
  * layered host-side services instead of exposing private GUI wiring directly.
+ *
+ * Warning: a small subset of legacy functions in this header are explicit
+ * GUI escape hatches returning raw Qt/dock/viewer objects. Those entry points
+ * are privileged-only, should be treated as unstable, and must not be used as
+ * the default plugin integration path when a typed API exists.
  */
 namespace UI
 {
@@ -171,7 +176,10 @@ namespace UI
         /**
          * @brief Gets camera transform
          * @return Pointer to camera transform
-         * @deprecated Legacy GUI escape hatch. Use IGuiInternalsAPI::currentCameraTransform() in privileged plugins.
+         * @deprecated Legacy GUI escape hatch returning a raw GUI-side object.
+         * Privileged-only. Do not use as the default plugin path; use
+         * IGuiInternalsAPI::currentCameraTransform() only in explicitly
+         * GUI-aware plugins.
          */
 		DPVISION_EXPORT CTransform* transform();
 
@@ -196,7 +204,10 @@ namespace UI
         /**
          * @brief Gets current GLViewer instance
          * @return Pointer to current GLViewer
-         * @deprecated Legacy GUI escape hatch. Use IGuiInternalsAPI::currentViewer() in privileged plugins.
+         * @deprecated Legacy GUI escape hatch returning a raw GUI-side object.
+         * Privileged-only. Do not use as the default plugin path; use
+         * IGuiInternalsAPI::currentViewer() only in explicitly GUI-aware
+         * plugins.
          */
 		DPVISION_EXPORT GLViewer* currentViewer();
 
@@ -256,9 +267,12 @@ namespace UI
          * Prefer `IDockWorkspaceAPI` for safe operations and
          * `IGuiInternalsAPI` only for privileged raw access.
          */
-		namespace WORKSPACE {
+        namespace WORKSPACE {
             /**
-             * @deprecated Legacy GUI escape hatch. Use IGuiInternalsAPI::workspaceDock() in privileged plugins.
+             * @deprecated Legacy GUI escape hatch returning a raw dock widget.
+             * Privileged-only. Do not use as the default plugin path; use
+             * IGuiInternalsAPI::workspaceDock() only in explicitly GUI-aware
+             * plugins.
              */
 			DPVISION_EXPORT DockWidgetWorkspace* instance();
 			DPVISION_EXPORT void update();
@@ -297,12 +311,16 @@ namespace UI
      */
 	namespace PLUGINPANEL {
         /**
-         * @deprecated Legacy GUI escape hatch. Use IGuiInternalsAPI::pluginPanelHost() in privileged plugins.
+         * @deprecated Legacy GUI escape hatch returning a raw dock widget.
+         * Privileged-only. Do not use as the default plugin path; use
+         * IGuiInternalsAPI::pluginPanelHost() only in explicitly GUI-aware
+         * plugins.
          */
 		DPVISION_EXPORT DockWidgetPluginPanel* mainPanel();
         /**
-         * @deprecated Legacy GUI escape hatch. Prefer IPluginPanelAPI and use
-         * raw QWidget access only through GUI-only APIs.
+         * @deprecated Legacy GUI escape hatch returning a raw QWidget.
+         * Privileged-only. Do not use as the default plugin path; prefer
+         * IPluginPanelAPI and reach QWidget only through explicit GUI-only APIs.
          */
 		DPVISION_EXPORT QWidget* instance(unsigned int pluginId);
 		
@@ -325,11 +343,15 @@ namespace UI
 
 		// BUTTON
 
-		// Legacy Qt-signal overload. Prefer the name/label based overloads or
-		// `IPluginPanelAPI` in new code.
+		// Legacy GUI escape hatch returning a raw QPushButton. Privileged-only.
+		// Prefer the name/label based overloads or `IPluginPanelAPI` in new code.
 		DPVISION_EXPORT QPushButton* addButton(unsigned int pluginId, QString label, QObject* receiver,const char* slot, int row, int col, int rspan = 0, int cspan = 0);
 
+		// Legacy GUI escape hatch returning a raw QPushButton. Privileged-only.
+		// Prefer `IPluginPanelAPI` in new code.
 		DPVISION_EXPORT QPushButton* addButton(unsigned int pluginId, std::string buttonName, std::string label, int row, int col, int rspan = 0, int cspan = 0);
+		// Legacy GUI escape hatch returning a raw QPushButton. Privileged-only.
+		// Prefer `IPluginPanelAPI` in new code.
 		DPVISION_EXPORT QPushButton* addButton( unsigned int pluginId, std::wstring buttonName, std::wstring label, int row, int col, int rspan=0, int cspan=0 );
 		DPVISION_EXPORT void setButtonText(unsigned int pluginId, const QString &name, const QString &value);
 		inline DPVISION_EXPORT void setButtonText(unsigned int pluginId, const char* name, const char* value) { setButtonText(pluginId, QString::fromUtf8(name), QString::fromUtf8(value)); };
@@ -404,7 +426,10 @@ namespace UI
      */
 	namespace PROGRESSBAR {
         /**
-         * @deprecated Legacy GUI escape hatch. Use IGuiInternalsAPI::progressIndicator() in privileged plugins.
+         * @deprecated Legacy GUI escape hatch returning a raw QWidget-based
+         * progress object. Privileged-only. Do not use as the default plugin
+         * path; use IGuiInternalsAPI::progressIndicator() only in explicitly
+         * GUI-aware plugins.
          */
 		DPVISION_EXPORT ProgressIndicator* instance();
 

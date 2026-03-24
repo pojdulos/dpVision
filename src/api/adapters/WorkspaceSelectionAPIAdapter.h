@@ -46,6 +46,13 @@ public:
         return std::vector<int>(selection.begin(), selection.end());
     }
 
+    std::list<int> ids(
+        std::set<CBaseObject::Type> types,
+        std::shared_ptr<CObject> parent = nullptr)
+    {
+        return ws_->getSelection(std::move(types), std::move(parent));
+    }
+
     std::vector<std::shared_ptr<CBaseObject>> objects(
         std::set<CBaseObject::Type> types = {},
         std::shared_ptr<CObject> parent = nullptr) override
@@ -57,6 +64,13 @@ public:
             result.push_back(object);
         }
         return result;
+    }
+
+    std::list<std::shared_ptr<CBaseObject>> objectList(
+        std::set<CBaseObject::Type> types,
+        std::shared_ptr<CObject> parent = nullptr)
+    {
+        return ws_->getSelected(std::move(types), std::move(parent));
     }
 
     void setSelectedVisible(bool visible) override
