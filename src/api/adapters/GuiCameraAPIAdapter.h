@@ -1,10 +1,9 @@
 #pragma once
 
-#include "CameraHostAccess.h"
+#include "../../gui/CameraHostAccess.h"
 #include "../interfaces/ICameraControlAPI.h"
-#include "../interfaces/ICameraAPI.h"
 
-class GuiCameraAPIAdapter : public ICameraAPI, public ICameraControlAPI {
+class GuiCameraAPIAdapter : public ICameraControlAPI {
 public:
     void move(float mx, float my, float mz) override {
         CameraHostAccess::move(mx, my, mz);
@@ -34,23 +33,11 @@ public:
         return CameraHostAccess::camPos();
     }
 
-    CTransform* transform() override {
-        return CameraHostAccess::transform();
-    }
-
     void setView(int dir, std::shared_ptr<CModel3D> obj = nullptr) override {
         CameraHostAccess::setView(dir, std::move(obj));
     }
 
     void screenshot(const QString& path) override {
         CameraHostAccess::screenshot(path, nullptr);
-    }
-
-    GLViewer* currentViewer() override {
-        return CameraHostAccess::currentViewer();
-    }
-
-    void screenshot(const QString& path, void* viewer = nullptr) override {
-        CameraHostAccess::screenshot(path, viewer);
     }
 };

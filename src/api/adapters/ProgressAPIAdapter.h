@@ -1,10 +1,9 @@
 #pragma once
 
-#include "ProgressHostAccess.h"
-#include "../interfaces/IProgressControlAPI.h"
+#include "../../gui/ProgressHostAccess.h"
 #include "../interfaces/IProgressAPI.h"
 
-class ProgressAPIAdapter : public IProgressAPI, public IProgressControlAPI {
+class ProgressAPIAdapter : public IProgressAPI {
 public:
     ProgressIndicator* instance() override {
         return ProgressHostAccess::instance();

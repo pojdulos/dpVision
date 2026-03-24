@@ -5,6 +5,7 @@
 #include <QSettings>
 #include <QApplication>
 
+#include "../core/interfaces/ISettingsStorage.h"
 #include "dll_global.h"
 
 class AppSettingsNotifier : public QObject {
@@ -29,6 +30,8 @@ public:
     static QFont getFont();
 
     static QSettings* mainSettings();
+    static ISettingsStorage* mainStorage();
+    static std::unique_ptr<ISettingsStorage> pluginStorage(const QString& pluginId);
     static std::unique_ptr<QSettings> pluginSettings(const QString& pluginId);
 
 private:

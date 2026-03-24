@@ -1,4 +1,4 @@
-#include "../api/adapters/CameraHostAccess.h"
+#include "CameraHostAccess.h"
 
 #include "../core/Wektor3D.h"
 #include "GLViewer.h"

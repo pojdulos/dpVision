@@ -12,15 +12,20 @@
 #include "../adapters/ModelAPIAdapter.h"
 #include "../adapters/ObjectAPIAdapter.h"
 #include "../adapters/SettingsAPIAdapter.h"
+#include "../../core/interfaces/ISettingsStorage.h"
 #include "../../core/StatusBarManager.h"
-#include "../../gui/AppSettings.h"
 #include "../../core/AppStateManager.h"
 #include "Global.h"
 #include <QtCore/QCoreApplication>
 #include <atomic>
+#include <functional>
 #include <memory>
 
 class AppAPIAdapter : public IAppAPI {
+public:
+    using PluginSettingsFactory = std::function<std::unique_ptr<ISettingsStorage>(const QString&)>;
+
+private:
     WorkspaceAPIAdapter workspaceAPI_;
     WorkspaceActivationAPIAdapter workspaceActivationAPI_;
     WorkspaceBulkAPIAdapter workspaceBulkAPI_;
@@ -32,9 +37,39 @@ class AppAPIAdapter : public IAppAPI {
     ModelAPIAdapter modelAPI_;
     ObjectAPIAdapter objectAPI_;
     SettingsAPIAdapter settingsAPI_;
-    std::unique_ptr<QSettings> pluginSettingsStorage_;
+    std::unique_ptr<ISettingsStorage> pluginSettingsStorage_;
     SettingsAPIAdapter pluginSettingsAPI_;
+
+    static ISettingsStorage*& defaultSettingsStorageRef() {
+        static ISettingsStorage* storage = nullptr;
+        return storage;
+    }
+
+    static PluginSettingsFactory& defaultPluginSettingsFactoryRef() {
+        static PluginSettingsFactory factory;
+        return factory;
+    }
+
 public:
+    explicit AppAPIAdapter(
+        ISettingsStorage* settingsStorage = nullptr,
+        PluginSettingsFactory pluginSettingsFactory = {})
+        : settingsAPI_(settingsStorage),
+          pluginSettingsAPI_(nullptr)
+    {
+        if (pluginSettingsFactory) {
+            defaultPluginSettingsFactoryRef() = std::move(pluginSettingsFactory);
+        }
+    }
+
+    static void setDefaultSettingsStorage(ISettingsStorage* storage) {
+        defaultSettingsStorageRef() = storage;
+    }
+
+    static void setDefaultPluginSettingsFactory(PluginSettingsFactory factory) {
+        defaultPluginSettingsFactoryRef() = std::move(factory);
+    }
+
     IWorkspaceAPI& workspace() override { return workspaceAPI_; }
     IWorkspaceActivationAPI& workspaceActivation() override { return workspaceActivationAPI_; }
     IWorkspaceBulkAPI& workspaceBulk() override { return workspaceBulkAPI_; }
@@ -45,9 +80,21 @@ public:
     IModelLoadAPI& modelLoad() override { return modelLoadAPI_; }
     IModelAPI& model() override { return modelAPI_; }
     IObjectAPI& object() override { return objectAPI_; }
-    ISettingsAPI& settings() override { return settingsAPI_; }
+    ISettingsAPI& settings() override {
+        if (defaultSettingsStorageRef() != nullptr) {
+            settingsAPI_.reset(defaultSettingsStorageRef());
+        }
+        return settingsAPI_;
+    }
+
     ISettingsAPI& pluginSettings(const QString& pluginId) override {
-        pluginSettingsStorage_ = AppSettings::pluginSettings(pluginId);
+        if (!defaultPluginSettingsFactoryRef()) {
+            pluginSettingsStorage_.reset();
+            pluginSettingsAPI_.reset(nullptr);
+            return pluginSettingsAPI_;
+        }
+
+        pluginSettingsStorage_ = defaultPluginSettingsFactoryRef()(pluginId);
         pluginSettingsAPI_.reset(pluginSettingsStorage_.get());
         return pluginSettingsAPI_;
     }

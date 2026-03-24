@@ -1,6 +1,140 @@
 #include "AppSettings.h"
 #include <QStyle>
 
+namespace {
+class QSettingsStorage final : public ISettingsStorage {
+public:
+    explicit QSettingsStorage(QSettings* settings)
+        : settings_(settings) {
+    }
+
+    QVariant value(const QString& key, const QVariant& defaultValue = QVariant()) const override
+    {
+        if (settings_ == nullptr) {
+            return defaultValue;
+        }
+        return settings_->value(key, defaultValue);
+    }
+
+    void setValue(const QString& key, const QVariant& value) override
+    {
+        if (settings_ != nullptr) {
+            settings_->setValue(key, value);
+        }
+    }
+
+    bool contains(const QString& key) const override
+    {
+        return settings_ != nullptr && settings_->contains(key);
+    }
+
+    void remove(const QString& key) override
+    {
+        if (settings_ != nullptr) {
+            settings_->remove(key);
+        }
+    }
+
+    QStringList childGroups() const override
+    {
+        if (settings_ == nullptr) {
+            return {};
+        }
+        return settings_->childGroups();
+    }
+
+    void beginGroup(const QString& prefix) override
+    {
+        if (settings_ != nullptr) {
+            settings_->beginGroup(prefix);
+        }
+    }
+
+    void endGroup() override
+    {
+        if (settings_ != nullptr) {
+            settings_->endGroup();
+        }
+    }
+
+    void sync() override
+    {
+        if (settings_ != nullptr) {
+            settings_->sync();
+        }
+    }
+
+private:
+    QSettings* settings_ = nullptr;
+};
+
+class OwnedQSettingsStorage final : public ISettingsStorage {
+public:
+    explicit OwnedQSettingsStorage(std::unique_ptr<QSettings> settings)
+        : settings_(std::move(settings)) {
+    }
+
+    QVariant value(const QString& key, const QVariant& defaultValue = QVariant()) const override
+    {
+        if (settings_ == nullptr) {
+            return defaultValue;
+        }
+        return settings_->value(key, defaultValue);
+    }
+
+    void setValue(const QString& key, const QVariant& value) override
+    {
+        if (settings_ != nullptr) {
+            settings_->setValue(key, value);
+        }
+    }
+
+    bool contains(const QString& key) const override
+    {
+        return settings_ != nullptr && settings_->contains(key);
+    }
+
+    void remove(const QString& key) override
+    {
+        if (settings_ != nullptr) {
+            settings_->remove(key);
+        }
+    }
+
+    QStringList childGroups() const override
+    {
+        if (settings_ == nullptr) {
+            return {};
+        }
+        return settings_->childGroups();
+    }
+
+    void beginGroup(const QString& prefix) override
+    {
+        if (settings_ != nullptr) {
+            settings_->beginGroup(prefix);
+        }
+    }
+
+    void endGroup() override
+    {
+        if (settings_ != nullptr) {
+            settings_->endGroup();
+        }
+    }
+
+    void sync() override
+    {
+        if (settings_ != nullptr) {
+            settings_->sync();
+        }
+    }
+
+private:
+    std::unique_ptr<QSettings> settings_;
+};
+}
+
 
 //bool AppSettings::darkMode = false;
 //QFont AppSettings::appFont = QApplication::font();
@@ -107,6 +241,17 @@ QSettings* AppSettings::mainSettings()
 {
     auto& settings = settingsRef();
     return settings.get();
+}
+
+ISettingsStorage* AppSettings::mainStorage()
+{
+    static QSettingsStorage storage(mainSettings());
+    return &storage;
+}
+
+std::unique_ptr<ISettingsStorage> AppSettings::pluginStorage(const QString& pluginId)
+{
+    return std::make_unique<OwnedQSettingsStorage>(pluginSettings(pluginId));
 }
 
 std::unique_ptr<QSettings> AppSettings::pluginSettings(const QString& pluginId)

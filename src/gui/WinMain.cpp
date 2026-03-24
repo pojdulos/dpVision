@@ -51,6 +51,8 @@ int main(int argc, char* argv[])
     qputenv("QT_QPA_PLATFORM_PLUGIN_PATH", QDir(exeDir).filePath("platforms").toLocal8Bit());
 
     CMainApplication::theApp = new CMainApplication(argc, argv);
+    AppAPIAdapter::setDefaultSettingsStorage(AppSettings::mainStorage());
+    AppAPIAdapter::setDefaultPluginSettingsFactory(&AppSettings::pluginStorage);
 
     QCommandLineParser parser;
     parser.setApplicationDescription("dpVision - eksperymentalne narzędzie do wizualizacji, edycji i integracji wielomodalnych i wielowymiarowych danych.");

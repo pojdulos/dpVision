@@ -1,4 +1,4 @@
-#include "../api/adapters/ProgressHostAccess.h"
+#include "ProgressHostAccess.h"
 
 #include "../core/interfaces/IProgressListener.h"
 #include "MainWindow.h"
@@ -6,6 +6,11 @@
 #include <QCoreApplication>
 
 namespace {
+std::shared_ptr<IProgressListener> defaultProgressListener()
+{
+    return IProgressListener::getDefault();
+}
+
 void processEvents()
 {
     QCoreApplication::processEvents();
@@ -22,41 +27,32 @@ ProgressIndicator* ProgressHostAccess::instance()
 
 void ProgressHostAccess::init(int min, int max, int val)
 {
-    if (auto listener = IProgressListener::getDefault()) {
+    if (auto listener = defaultProgressListener()) {
         listener->init(min, max, val);
-    } else if (auto progress = instance()) {
-        progress->init(min, max, val);
-        progress->show();
     }
     processEvents();
 }
 
 void ProgressHostAccess::setValue(int val)
 {
-    if (auto listener = IProgressListener::getDefault()) {
+    if (auto listener = defaultProgressListener()) {
         listener->setValue(val);
-    } else if (auto progress = instance()) {
-        progress->setValue(val);
     }
     processEvents();
 }
 
 void ProgressHostAccess::hide()
 {
-    if (auto listener = IProgressListener::getDefault()) {
+    if (auto listener = defaultProgressListener()) {
         listener->hide();
-    } else if (auto progress = instance()) {
-        progress->hide();
     }
     processEvents();
 }
 
 void ProgressHostAccess::setText(const QString& text)
 {
-    if (auto listener = IProgressListener::getDefault()) {
+    if (auto listener = defaultProgressListener()) {
         listener->setText(text.toStdString());
-    } else if (auto progress = instance()) {
-        progress->setText(text);
     }
     processEvents();
 }

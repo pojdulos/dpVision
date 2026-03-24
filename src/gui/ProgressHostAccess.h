@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../core/dll_global.h"
+#include "../core/dll_global.h"
 
 class ProgressIndicator;
 class QString;

@@ -21,8 +21,10 @@ public:
     virtual bool convertWorldToWin(CPoint3d worldCoords, CPoint3d& winCoords) = 0;
     virtual bool convertCoords(double winX, double winY, CPoint3d& pkt0, CPoint3d& pkt1) = 0;
     virtual CPoint3d camPos() = 0;
+    [[deprecated("Legacy raw GUI escape hatch. Prefer ICameraControlAPI and only use IGuiInternalsAPI for privileged transform access.")]]
     virtual CTransform* transform() = 0;
     virtual void setView(int dir, std::shared_ptr<CModel3D> obj = nullptr) = 0;
+    [[deprecated("Legacy raw GUI escape hatch. Prefer ICameraControlAPI and only use IGuiInternalsAPI for privileged viewer access.")]]
     virtual GLViewer* currentViewer() = 0;
     virtual void screenshot(const QString& path, void* viewer = nullptr) = 0;
 };

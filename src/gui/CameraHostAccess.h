@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../core/Point3.h"
-#include "../../core/dll_global.h"
+#include "../core/Point3.h"
+#include "../core/dll_global.h"
 #include <memory>
 
 class CModel3D;

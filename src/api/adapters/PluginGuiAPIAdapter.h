@@ -10,6 +10,8 @@
 #include "GuiInternalsAPIAdapter.h"
 #include "MessageBoxAPIAdapter.h"
 #include "StatusBarAPIAdapter.h"
+#include "CameraAPIAdapter.h"
+#include "ProgressAPIAdapter.h"
 #include "GuiCameraAPIAdapter.h"
 #include "GuiProgressAPIAdapter.h"
 #include "PluginHostGuiAPIAdapter.h"
@@ -32,8 +34,8 @@ class PluginGuiAPIAdapter {
     FileDialogAPIAdapter fileDialogAdapter_;
     MessageBoxAPIAdapter messageBoxAdapter_;
     StatusBarAPIAdapter statusBarAdapter_;
-    GuiCameraAPIAdapter cameraAdapter_;
-    GuiProgressAPIAdapter progressAdapter_;
+    CameraAPIAdapter cameraAdapter_;
+    ProgressAPIAdapter progressAdapter_;
     FileSystemAPIAdapter fileSystemAdapter_;
     TextEncodingAPIAdapter textEncodingAdapter_;
 

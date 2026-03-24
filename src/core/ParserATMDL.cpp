@@ -733,21 +733,21 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_transformation(QTextStrea
 			rot_XYZ = parseProperty_eulerangles(in);
 			hasEulerAngles = true;
 		}
-		else if (slowo == "rot_X")
+		else if (slowo == "rot_x")
 		{
 			QString slowo =	parseType_string(in);
 			double angle = slowo.toDouble();
 			rot_XYZ[0] = angle;
 			hasAxisRotations = true;
 		}
-		else if (slowo == "rot_Y")
+		else if (slowo == "rot_y")
 		{
 			QString slowo =	parseType_string(in);
 			double angle = slowo.toDouble();
 			rot_XYZ[1] = angle;
 			hasAxisRotations = true;
 		}
-		else if (slowo == "rot_Z")
+		else if (slowo == "rot_z")
 		{
 			QString slowo =	parseType_string(in);
 			double angle = slowo.toDouble();

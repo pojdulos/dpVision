@@ -31,7 +31,7 @@
 #include "adapters/DockHistogramAPIAdapter.h"
 #include "adapters/DockWorkspaceAPIAdapter.h"
 #include "adapters/FileDialogAPIAdapter.h"
-#include "adapters/GuiCameraAPIAdapter.h"
+#include "adapters/CameraAPIAdapter.h"
 #include "adapters/GuiPluginPanelAPIAdapter.h"
 #include "adapters/MessageBoxAPIAdapter.h"
 #include "adapters/ProgressAPIAdapter.h"
@@ -77,9 +77,9 @@ namespace
 		return api;
 	}
 
-	GuiCameraAPIAdapter& cameraApi()
+	CameraAPIAdapter& cameraApi()
 	{
-		static GuiCameraAPIAdapter api;
+		static CameraAPIAdapter api;
 		return api;
 	}
 

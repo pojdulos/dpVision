@@ -9,6 +9,7 @@ class ProgressIndicator;
 class IProgressAPI {
 public:
     virtual ~IProgressAPI() = default;
+    [[deprecated("Legacy raw GUI escape hatch. Prefer IProgressControlAPI and only use IGuiInternalsAPI for privileged widget access.")]]
     virtual ProgressIndicator* instance() = 0;
     virtual void init(int min, int max, int val) = 0;
     virtual void setValue(int val) = 0;
