@@ -4,7 +4,14 @@
 #include "PluginHostGuiAPIAdapter.h"
 
 // Convenience facade for plugins that intentionally opt into the broader GUI
-// surface. Public default plugin entry points remain AP:: and UI::.
+// surface.
+//
+// This wrapper exists only to shorten calls like `adapter.camera()` instead of
+// `adapter.host().camera()`. It should not be treated as the long-term stable
+// public contract for plugins.
+//
+// Supported public entry points remain AP:: / UI:: for the default path and
+// IPluginGuiAPI / PluginHostGuiAPIAdapter for explicit GUI-aware plugins.
 class PluginGuiAPIAdapter {
     PluginHostGuiAPIAdapter hostApi_;
 

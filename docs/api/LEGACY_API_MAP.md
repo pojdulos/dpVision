@@ -198,8 +198,11 @@ Use for ordinary plugins:
 
 Internal/controlled integration helpers:
 - `AppAPIAdapter`
-- `PluginGuiAPIAdapter`
+- `PluginHostGuiAPIAdapter`
 - explicit host-side interfaces such as `IPluginHostAPI` or `IPluginGuiAPI`
+
+Convenience-only wrapper, not the preferred stable contract:
+- `PluginGuiAPIAdapter`
 
 Do not add new plugin requirements by exposing singleton internals through
 legacy namespaces if they can be expressed through an explicit interface first.

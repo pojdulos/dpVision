@@ -151,9 +151,14 @@ Public entry points:
 Host-side implementation contracts may still exist internally, but plugins do
 not need to include them directly.
 
-Optional wider GUI entry point for deliberate opt-in plugins:
-- `PluginGuiAPIAdapter`
+Supported wider GUI entry point for deliberate opt-in plugins:
 - `IPluginGuiAPI`
+- `PluginHostGuiAPIAdapter`
+
+Convenience-only wrapper:
+- `PluginGuiAPIAdapter`
+- note: this wrapper is intentionally not treated as the stable public
+  contract; it only shortens call sites over `PluginHostGuiAPIAdapter`
 
 ### 2. Privileged GUI API
 
