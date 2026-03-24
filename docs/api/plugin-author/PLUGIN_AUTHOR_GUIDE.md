@@ -131,3 +131,23 @@ Jeśli potrzebujesz szerszego GUI API, wybieraj raczej:
    użyj `PluginHostGuiAPIAdapter` / `IPluginGuiAPI`
 4. Jeśli masz wątpliwość:
    zostań przy `AP::` / `UI::`
+
+## Przykładowy plugin
+
+W repozytorium dostępny jest w pełni działający przykład:
+
+- `src/plugins/example/SamplePlugin.cpp`
+
+Pokazuje on:
+- jak zarejestrować plugin i obsługiwać zdarzenia (`onLoad`, `onButton`)
+- jak używać `AP::WORKSPACE` i `AP::OBJECT` do operacji na danych hosta
+- jak używać `PluginHostGuiAPIAdapter` do panelu pluginu, dialogów i komunikatów
+- jak połączyć publiczną ścieżkę danych z jawnie GUI-aware hostem
+
+Uwaga:
+
+- ten przykład pokazuje działający wzorzec dla pluginu in-tree, który używa
+  danych hosta przez `AP::` i operacji GUI przez `PluginHostGuiAPIAdapter`
+- dla prostszego pluginu nadal preferowanym punktem startowym są `AP::` i `UI::`
+- jeśli potrzebujesz szerszego GUI-aware hosta, przejdź na
+  `PluginHostGuiAPIAdapter` / `IPluginGuiAPI`

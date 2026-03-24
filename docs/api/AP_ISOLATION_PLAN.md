@@ -1,5 +1,10 @@
 # AP Isolation Plan
 
+> **Uwaga historyczna:** Ten dokument powstał jako plan migracji przed
+> refaktoryzacją warstwy API. Większość opisanych tu kroków została już
+> wykonana lub jest nieaktualna w świetle uproszczeń z marca 2026.
+> Dokument zachowany jako zapis procesu decyzyjnego, nie jako aktywny plan.
+
 This document classifies the legacy `AP::` functionality by how cleanly it can
 be replaced with explicit, isolating interfaces.
 
