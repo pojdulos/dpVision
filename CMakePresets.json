@@ -146,5 +146,40 @@
       "name": "linux-ninja-vcpkg",
       "configurePreset": "linux-ninja-vcpkg"
     }
+  ],
+  "testPresets": [
+    {
+      "name": "windows-vs2022-vcpkg-local-debug-tests",
+      "configurePreset": "windows-vs2022-vcpkg-local",
+      "configuration": "Debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": false
+      }
+    },
+    {
+      "name": "windows-vs2022-vcpkg-local-debug-api-tests",
+      "inherits": "windows-vs2022-vcpkg-local-debug-tests",
+      "filter": {
+        "include": {
+          "name": "dpVisionApiTests"
+        }
+      }
+    },
+    {
+      "name": "windows-vs2022-vcpkg-local-release-tests",
+      "configurePreset": "windows-vs2022-vcpkg-local",
+      "configuration": "Release",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": false
+      }
+    }
   ]
 }

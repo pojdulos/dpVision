@@ -97,6 +97,8 @@ in the related commit or PR description.
 - [x] legacy wrappers compile and delegate correctly
 - [ ] in-tree example plugins still build
 - [x] architecture docs still match reality after each phase
+- [x] starter CTest target exists (dpVisionApiTests)
+- [x] starter tests cover API boundary contracts and StatusBarManager behavior
 
 ## Per-Change Mini Checklist
 
@@ -108,3 +110,4 @@ Use this before finalizing any API-related patch.
 - [ ] The change preserves plugin access to required `core` data
 - [ ] The change does not deepen dependence on `AP::` or `UI::`
 - [ ] The change updates docs if it alters the intended migration order
+
