@@ -4,9 +4,10 @@ This document defines the target architecture for the plugin-facing API and is
 meant to be the reference point for further refactoring in `src/api`.
 
 It complements `LEGACY_API_MAP.md`:
-- `LEGACY_API_MAP.md` explains how old `AP::` and `UI::` names map to the new
-  world during migration.
-- this document defines what the new world should look like.
+- `LEGACY_API_MAP.md` explains how the supported `AP::` and `UI::` plugin
+  surface maps to the host-side implementation.
+- this document defines what the layered mechanism behind that surface should
+  look like.
 
 Working documents related to this one:
 - `API_INTERFACE_INVENTORY.md` classifies current interfaces and adapters
@@ -35,7 +36,7 @@ The intended high-level structure is:
 3. `gui` knows `core`
 4. `gui` does not depend on `api`
 5. `api` exposes host capabilities to plugins
-6. `AP::` and `UI::` remain only as compatibility shims over the real API
+6. `AP::` and `UI::` remain the supported public surface for plugins
 7. access to raw GUI internals is possible, but only through an explicit,
    privileged plugin path
 
@@ -63,7 +64,7 @@ The following dependencies are not allowed in the target state:
 - `core -> api`
 - `core -> gui`
 - `gui -> api`
-- `plugins -> AP::/UI::` for new code
+- `plugins -> internal adapters or privileged headers by accident`
 
 ## Architectural Roles
 
@@ -104,28 +105,28 @@ live in `gui` or in a lower-level host/service layer, not in `src/api`.
 ### API
 
 `api` owns:
-- stable plugin-facing contracts
+- the public `AP::` / `UI::` plugin surface
+- stable host-side contracts used to implement that surface
 - default host implementations backed by `core`
-- optional service composition for plugins
-- migration path away from `AP::` and `UI::`
+- optional service composition for controlled integrations
 
 The API should describe capabilities, not expose random singleton entry points.
 Its job is to isolate plugins from host wiring decisions.
 
 ### Legacy API
 
-`AP::` and `UI::` stay available for compatibility, but their role is narrow:
-- preserve source compatibility for existing plugins
-- forward to the real API implementation
-- gradually shrink
+`AP::` and `UI::` are the supported plugin-facing facade:
+- keep plugin call sites short and easy to learn
+- forward to the real host-side implementation
+- hide architectural refactors behind a stable namespace API
 
-They are not the foundation of the new architecture.
+They are allowed as the public entry point, but they should stay thin.
 
 ## Two Plugin Access Levels
 
 The target model has two explicit plugin access levels.
 
-### 1. Default plugin API
+### 1. Default plugin surface
 
 This is the normal path and should cover the majority of plugin use cases.
 
@@ -143,8 +144,16 @@ Examples:
 - settings
 - import/export actions
 
-Current transition entry point:
-- `IPluginHostAPI`
+Public entry points:
+- `AP::`
+- `UI::`
+
+Host-side implementation contracts may still exist internally, but plugins do
+not need to include them directly.
+
+Optional wider GUI entry point for deliberate opt-in plugins:
+- `PluginGuiAPIAdapter`
+- `IPluginGuiAPI`
 
 ### 2. Privileged GUI API
 
@@ -168,19 +177,21 @@ Current transition entry point:
 The distinction must be obvious in code. A plugin author should not gain raw GUI
 access by accident through the default API.
 
-Current split for camera/progress responsibilities:
+Current split for camera/progress responsibilities behind `UI::`:
 - safe camera operations belong to `ICameraControlAPI`
 - safe progress reporting belongs to `IProgressControlAPI`
 - raw viewer/camera/progress widget access belongs to `IGuiInternalsAPI`
 
 Current classification for plugin panels:
-- `IPluginPanelAPI` is treated as privileged GUI API
-- `IUIAPI::pluginPanel()` remains only as a transitional compatibility path
+- `UI::PLUGINPANEL::*` is supported plugin API
+- `IPluginPanelAPI` remains an internal/service contract used to implement that
+  surface and controlled GUI-aware integrations
 
 Current classification for dock access:
 - `IDockWorkspaceAPI` and `IDockHistogramAPI` are treated as privileged GUI
   capabilities
-- `IUIAPI` may still expose them temporarily as a compatibility aggregate
+- `UI::DOCK::*` remains the supported plugin-facing facade for legacy dock
+  operations, backed by host-side GUI services
 
 ## What Isolation Means Here
 
@@ -260,8 +271,9 @@ namespace shapes are acceptable in `AP::`/`UI::` and migration helpers.
 
 They should not dictate the shape of the real plugin-facing architecture.
 
-The same rule applies to mixed aggregate facades such as `IUIAPI`: they may
-remain temporarily, but should not be treated as the target composition model.
+The same rule applies to mixed aggregate facades: they may remain temporarily
+inside the implementation, but should not be treated as the target composition
+model.
 
 ## Current Problems To Eliminate
 

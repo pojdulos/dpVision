@@ -6,8 +6,8 @@
 
 #include "Image.h"
 #include "../api/AP.h"
+#include "../api/adapters/GuiProgressAPIAdapter.h"
 #include "../api/adapters/MessageBoxAPIAdapter.h"
-#include "../api/adapters/ProgressAPIAdapter.h"
 #include "../api/adapters/StatusBarAPIAdapter.h"
 
 #include "dpLog.h"
@@ -20,9 +20,9 @@ StatusBarAPIAdapter& statusBarApi()
     return api;
 }
 
-ProgressAPIAdapter& progressApi()
+GuiProgressAPIAdapter& progressApi()
 {
-    static ProgressAPIAdapter api;
+    static GuiProgressAPIAdapter api;
     return api;
 }
 

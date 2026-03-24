@@ -10,8 +10,7 @@ in the related commit or PR description.
 - [x] Phase 1: remove `core -> api`
 - [~] Phase 2: split default API from privileged GUI API
       default and privileged roots exist, and camera/progress have safe
-      control contracts; plugin-panel and `IUIAPI` cleanup are still in
-      progress
+      control contracts; plugin-panel cleanup is still in progress
 
 ## Migration Rule
 
@@ -30,13 +29,12 @@ in the related commit or PR description.
 ## Interface Split
 
 - [ ] Classify every interface as default, privileged, transitional, or legacy
-- [x] Split `ICameraAPI` into safe camera operations vs raw GUI internals
-- [x] Split `IProgressAPI` into progress reporting vs widget internals
+- [x] Split camera access into safe operations vs raw GUI internals
+- [x] Split progress access into progress reporting vs widget internals
 - [ ] Move or split `IPluginPanelAPI` out of the default path
-- [x] Classify `IPluginPanelAPI` as privileged-only and keep `IUIAPI::pluginPanel()`
-      only as a compatibility path
+- [x] Classify `IPluginPanelAPI` as privileged-only while keeping
+      `UI::PLUGINPANEL::*` as the public plugin facade
 - [ ] Confirm dock-related APIs are privileged-only or host-internal
-- [ ] Decide whether `IUIAPI` is deprecated or replaced immediately
 
 ## Contract Cleanup
 
@@ -75,7 +73,8 @@ in the related commit or PR description.
 - [~] Update in-tree plugin examples to demonstrate the intended path
       bundled plugins now use `PluginHostAPIAdapter` / `PluginHostGuiAPIAdapter`
       directly; more examples can still be cleaned up if new ones appear
-- [ ] Avoid teaching `AP::`/`UI::` as preferred extension points
+- [x] Treat `AP::` / `UI::` as the supported public plugin surface while
+      keeping them thin
 
 ## Verification
 

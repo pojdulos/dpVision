@@ -1,11 +1,12 @@
 # Legacy API Map
 
-This file records the intended migration path from the legacy `AP` / `UI`
-namespaces to the newer interface-based API under `src/api/interfaces`.
+This file records how the public `AP` / `UI` namespaces map to the layered
+host-side implementation under `src/api/interfaces`, `src/api/adapters`, and
+host access helpers.
 
 The goal is:
-- keep `AP` and `UI` as compatibility shims,
-- move new functionality into explicit interfaces/adapters,
+- keep `AP` and `UI` as the supported plugin-facing surface,
+- implement them through explicit host-side services,
 - avoid adding new escape hatches to singleton GUI/application objects.
 
 ## AP
@@ -87,8 +88,8 @@ Privileged replacements:
 ## UI
 
 `UI::PLUGINPANEL::*`
-- Status: legacy wrapper
-- New home: `IPluginPanelAPI`
+- Status: supported plugin surface
+- Host-side contract: `IPluginPanelAPI`
 - Implementation note: most plugin-panel operations now delegate through
   `GuiPluginPanelAPIAdapter` and `PluginPanelHostAccess`.
 - Remaining special case:
@@ -97,8 +98,8 @@ Privileged replacements:
     `PluginPanelHostAccess` instead of calling the dock directly.
 
 `UI::PROGRESSBAR::*`
-- Status: legacy wrapper
-- New home: `IProgressAPI`
+- Status: supported plugin surface
+- Host-side contract: `IProgressControlAPI`
 - Implementation note: `UI::PROGRESSBAR::{init,setValue,setText,hide}` now delegate
   primarily through `IProgressListener::getDefault()`. `instance()` remains a
   legacy GUI escape hatch.
@@ -137,8 +138,8 @@ String/path helpers in `UI`
 - New home: `ITextEncodingAPI` and `IFileSystemAPI`
 
 `UI::CAMERA::*`
-- Status: mixed; keep user-facing operations, avoid raw access
-- New home: `ICameraAPI`
+- Status: supported plugin surface for camera operations; avoid raw access
+- Host-side contract: `ICameraControlAPI`
 - Raw internals move to: `IGuiInternalsAPI`
 - Implementation note: current camera adapters no longer call `UI::CAMERA::*`
   directly; they share host-side camera access helpers with the GUI-aware path
@@ -189,14 +190,16 @@ been migrated to the new API instead of restoring those wrappers:
 - selection access: `IWorkspaceAPI::selectedObjects(...)`
 - workspace tree refresh: `IDockWorkspaceAPI::rebuildTree()`
 
-## Plugin-facing adapters
+## Plugin-facing headers
 
 Use for ordinary plugins:
-- `AppAPIAdapter`
-- `PluginUIAPIAdapter`
+- `AP.h`
+- `UI.h`
 
-Use for privileged GUI-heavy plugins:
+Internal/controlled integration helpers:
+- `AppAPIAdapter`
 - `PluginGuiAPIAdapter`
+- explicit host-side interfaces such as `IPluginHostAPI` or `IPluginGuiAPI`
 
 Do not add new plugin requirements by exposing singleton internals through
 legacy namespaces if they can be expressed through an explicit interface first.

@@ -26,15 +26,15 @@
 #include "../core/MessageBoxManager.h"
 #include "../core/StatusBarManager.h"
 #include "../core/WorkspacePanelManager.h"
+#include "../gui/CameraHostAccess.h"
 #include "../gui/PluginPanelHostAccess.h"
+#include "../gui/ProgressHostAccess.h"
 #include "../gui/WorkspaceDockHostAccess.h"
 #include "adapters/DockHistogramAPIAdapter.h"
 #include "adapters/DockWorkspaceAPIAdapter.h"
 #include "adapters/FileDialogAPIAdapter.h"
-#include "adapters/CameraAPIAdapter.h"
 #include "adapters/GuiPluginPanelAPIAdapter.h"
 #include "adapters/MessageBoxAPIAdapter.h"
-#include "adapters/ProgressAPIAdapter.h"
 #include "adapters/StatusBarAPIAdapter.h"
 
 namespace
@@ -74,18 +74,6 @@ namespace
 	GuiPluginPanelAPIAdapter& pluginPanelApi()
 	{
 		static GuiPluginPanelAPIAdapter api;
-		return api;
-	}
-
-	CameraAPIAdapter& cameraApi()
-	{
-		static CameraAPIAdapter api;
-		return api;
-	}
-
-	ProgressAPIAdapter& progressApi()
-	{
-		static ProgressAPIAdapter api;
 		return api;
 	}
 
@@ -302,60 +290,60 @@ void UI::DOCK::HISTOGRAM::repaint()
 
 GLViewer * UI::CAMERA::currentViewer()
 {
-	return cameraApi().currentViewer();
+	return CameraHostAccess::currentViewer();
 }
 
 void UI::CAMERA::screenshot(QString path, void *v)
 {
-	cameraApi().screenshot(path, v);
+	CameraHostAccess::screenshot(path, v);
 }
 
 void UI::CAMERA::move( float mx, float my, float mz )
 {
-	cameraApi().move(mx, my, mz);
+	CameraHostAccess::move(mx, my, mz);
 }
 
 void UI::CAMERA::rotate( float ax, float ay, float az )
 {
-	cameraApi().rotate(ax, ay, az);
+	CameraHostAccess::rotate(ax, ay, az);
 }
 
 void UI::CAMERA::setFloating( bool f )
 {
-	cameraApi().setFloating(f);
+	CameraHostAccess::setFloating(f);
 }
 
 bool UI::CAMERA::convertWinToWorld(CPoint3d winCoords, CPoint3d & worldCoords)
 {
-	return cameraApi().convertWinToWorld(winCoords, worldCoords);
+	return CameraHostAccess::convertWinToWorld(winCoords, worldCoords);
 }
 
 bool UI::CAMERA::convertWorldToWin(CPoint3d worldCoords, CPoint3d & winCoords)
 {
-	return cameraApi().convertWorldToWin(worldCoords, winCoords);
+	return CameraHostAccess::convertWorldToWin(worldCoords, winCoords);
 }
 
 bool UI::CAMERA::convertCoords(double winX, double winY, CPoint3d& pkt0, CPoint3d& pkt1)
 {
-	return cameraApi().convertCoords(winX, winY, pkt0, pkt1);
+	return CameraHostAccess::convertCoords(winX, winY, pkt0, pkt1);
 }
 
 CPoint3d UI::CAMERA::camPos()
 {
-	return cameraApi().camPos();
+	return CameraHostAccess::camPos();
 }
 
 #include "Transform.h"
 
 CTransform* UI::CAMERA::transform()
 {
-	return cameraApi().transform();
+	return CameraHostAccess::transform();
 }
 
 
 void UI::CAMERA::setView(int dir, std::shared_ptr<CModel3D> obj)
 {
-	cameraApi().setView(dir, std::move(obj));
+	CameraHostAccess::setView(dir, std::move(obj));
 }
 
 
@@ -513,31 +501,31 @@ void UI::PLUGINPANEL::setLabel(unsigned int pluginId, const QString &name, const
 
 ProgressIndicator* UI::PROGRESSBAR::instance()
 {
-	return progressApi().instance();
+	return ProgressHostAccess::instance();
 }
 
 void UI::PROGRESSBAR::init( int min, int max, int val )
 {
-	progressApi().init(min, max, val);
+	ProgressHostAccess::init(min, max, val);
 	processUiEvents(true);
 }
 
 void UI::PROGRESSBAR::setValue( int val )
 {
-	progressApi().setValue(val);
+	ProgressHostAccess::setValue(val);
 	processUiEvents(true);
 }
 
 
 void UI::PROGRESSBAR::setText(const QString text)
 {
-	progressApi().setText(text);
+	ProgressHostAccess::setText(text);
 	processUiEvents(true);
 }
 
 void UI::PROGRESSBAR::hide()
 {
-	progressApi().hide();
+	ProgressHostAccess::hide();
 	processUiEvents(true);
 }
 

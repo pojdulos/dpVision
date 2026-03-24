@@ -3,6 +3,8 @@
 #include "../../gui/ProgressHostAccess.h"
 #include "../interfaces/IProgressControlAPI.h"
 
+// Narrow progress contract used by explicit GUI-capable host APIs.
+// Public plugin compatibility should go through UI::PROGRESSBAR.
 class GuiProgressAPIAdapter : public IProgressControlAPI {
 public:
     void init(int min, int max, int val) override {

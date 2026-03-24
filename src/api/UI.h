@@ -25,11 +25,11 @@ class QGroupBox;
 
 /**
  * @namespace UI
- * @brief Legacy UI API kept as a compatibility shim.
+ * @brief Public plugin UI facade.
  *
- * New code should prefer the explicit interfaces in `src/api/interfaces` and
- * the adapters in `src/api/adapters`. `UI` stays available for source
- * compatibility and should gradually shrink to thin wrappers over the new API.
+ * `UI::` remains a supported, stable entry point for plugins. The
+ * architectural rule is that it should stay a thin wrapper over properly
+ * layered host-side services instead of exposing private GUI wiring directly.
  */
 namespace UI
 {

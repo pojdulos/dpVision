@@ -210,25 +210,17 @@ Direction:
 - keep
 - prefer standard string types in public signatures
 
-### IProgressAPI
+### IProgressControlAPI
 
-Status: `Split`
+Status: `Keep`
 
 Why:
-- progress reporting is valid in the default API
-- raw progress widget access is not
-
-Current issues:
-- `ProgressIndicator* instance()` leaks GUI implementation
-- `QString` in the default contract
+- progress reporting is valid in the plugin-facing surface
+- the host-side contract is narrow and does not expose the raw widget
 
 Direction:
-- keep progress operations in the default API
-- move raw widget access to privileged GUI internals
-
-Current transition:
-- `IProgressControlAPI` is the safe contract
-- `IProgressAPI` remains as a compatibility interface for older code
+- keep as the host-side progress contract behind `UI::PROGRESSBAR`
+- keep raw progress widget access only in privileged GUI internals
 
 ### IFileSystemAPI
 
@@ -308,21 +300,17 @@ Direction:
 Short-term recommended move:
 - classify the current interface as privileged
 
-### ICameraAPI
+### ICameraControlAPI
 
-Status: `Split`
+Status: `Keep`
 
 Why:
 - camera/view operations are reasonable for plugins
-- raw access to `CTransform*`, `GLViewer*`, `QString`, `void* viewer` is not
+- the host-side contract excludes raw viewer/transform access
 
 Direction:
-- keep safe camera/view actions in default API
-- move raw viewer and transform access to `IGuiInternalsAPI`
-
-Current transition:
-- `ICameraControlAPI` is the safe contract
-- `ICameraAPI` remains as a compatibility interface for older code
+- keep as the host-side camera contract behind `UI::CAMERA`
+- keep raw viewer and transform access in `IGuiInternalsAPI`
 
 ### IDockWorkspaceAPI
 
@@ -337,7 +325,6 @@ Direction:
 
 Current transition:
 - reachable through `IPluginGuiAPI`
-- still present in `IUIAPI` only for compatibility
 
 ### IDockHistogramAPI
 
@@ -351,30 +338,6 @@ Direction:
 
 Current transition:
 - reachable through `IPluginGuiAPI`
-- still present in `IUIAPI` only for compatibility
-
-## Cross-Cutting Problem Interfaces
-
-### IUIAPI
-
-Status: `Replace`
-
-Why:
-- it aggregates mixed concerns
-- current implementation uses `Null*` placeholders, which means it does not
-  describe a real capability boundary
-
-Direction:
-- replace with clearer service composition
-- ordinary plugins should use a default service root
-- privileged plugins should use a separate GUI service root
-- keep `IUIAPI` only as a compatibility object returned by transitional
-  facades, not as the backing implementation for ordinary services
-
-Recommended replacement shape:
-- one default plugin host facade
-- one privileged GUI facade
-- no mixed null-object aggregate pretending to be a complete UI contract
 
 ## Adapter Classification
 
@@ -398,8 +361,6 @@ or GUI details where possible.
 These are migration debt and should shrink over time.
 
 - `PluginPanelAPIAdapter`: `Legacy only`
-- `CameraAPIAdapter`: `Legacy only`
-- `ProgressAPIAdapter`: `Split`
 - `FileDialogAPIAdapter`: `Keep temporarily, likely still Qt-backed`
 
 ## Host-side GUI helpers
@@ -429,14 +390,6 @@ These fit the target architecture if they remain explicit.
 - `GuiProgressAPIAdapter`: `Keep`
 - `AppInternalsAPIAdapter`: `Keep, clean up`
 
-## Transitional composition facades
-
-These should survive conceptually, but likely in a different shape.
-
-- `PluginUIAPIAdapter`: `Replace`
-- `PluginGuiAPIAdapter`: `Keep, clean up`
-- `UIAPIAdapter`: `Replace`
-
 ## Immediate Refactoring Priorities
 
 Priority 1:
@@ -445,15 +398,13 @@ Priority 1:
 
 Priority 2:
 - split default API from privileged GUI API
-- reclassify `IPluginPanelAPI`, `ICameraAPI`, and `IProgressAPI`
+- reclassify `IPluginPanelAPI` and keep raw GUI access out of the default path
 
 Priority 3:
-- retire `IUIAPI` as the main abstraction
-- replace it with explicit default and privileged service roots
+- keep `UI::` / `AP::` thin and backed by explicit host-side services
 
 Priority 4:
-- make `AP::` and `UI::` delegate to the real APIs rather than anchoring
-  implementations
+- continue deleting dead transitional facades and compatibility-only adapters
 
 ## Decision Notes
 
