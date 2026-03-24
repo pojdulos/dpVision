@@ -123,8 +123,8 @@ Suggested target:
 The exact names are not important. The split is.
 
 Exit criteria:
-- there is no need for `NullPluginPanelAPIAdapter`, `NullCameraAPIAdapter`, or
-  `NullProgressAPIAdapter` in the main composition model
+- there is no need for null-object compatibility adapters in the main
+  composition model
 - service composition reflects real capabilities
 
 ## Phase 4: Clean Default Contracts

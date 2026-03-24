@@ -91,7 +91,7 @@ Privileged replacements:
 - Status: supported plugin surface
 - Host-side contract: `IPluginPanelAPI`
 - Implementation note: most plugin-panel operations now delegate through
-  `GuiPluginPanelAPIAdapter` and `PluginPanelHostAccess`.
+  `PluginPanelAPIAdapter` and `PluginPanelHostAccess`.
 - Remaining special case:
   - the old `addButton(..., QObject* receiver, const char* slot, ...)`
     overload is still legacy-only, but now also routes through

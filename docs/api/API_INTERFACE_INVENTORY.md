@@ -385,7 +385,7 @@ Direction:
 These fit the target architecture if they remain explicit.
 
 - `GuiInternalsAPIAdapter`: `Keep`
-- `GuiPluginPanelAPIAdapter`: `Keep`
+- `PluginPanelAPIAdapter`: `Keep`
 - `GuiCameraAPIAdapter`: `Keep`
 - `GuiProgressAPIAdapter`: `Keep`
 - `AppInternalsAPIAdapter`: `Keep, clean up`

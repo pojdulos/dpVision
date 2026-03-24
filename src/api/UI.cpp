@@ -33,7 +33,7 @@
 #include "adapters/DockHistogramAPIAdapter.h"
 #include "adapters/DockWorkspaceAPIAdapter.h"
 #include "adapters/FileDialogAPIAdapter.h"
-#include "adapters/GuiPluginPanelAPIAdapter.h"
+#include "adapters/PluginPanelAPIAdapter.h"
 #include "adapters/MessageBoxAPIAdapter.h"
 #include "adapters/StatusBarAPIAdapter.h"
 
@@ -71,9 +71,9 @@ namespace
 		return api;
 	}
 
-	GuiPluginPanelAPIAdapter& pluginPanelApi()
+	PluginPanelAPIAdapter& pluginPanelApi()
 	{
-		static GuiPluginPanelAPIAdapter api;
+		static PluginPanelAPIAdapter api;
 		return api;
 	}
 
