@@ -167,8 +167,14 @@ Current implementation guidance for this phase:
 - prefer extracting host-side helpers in `gui` for legacy-exact behavior
   (`PluginPanelHostAccess`, `WorkspaceDockHostAccess`, `ImageViewerHost`)
   instead of re-implementing GUI workflow in `UI.cpp`
+- prefer extracting shared non-GUI legacy runtime and orchestration helpers
+  into `core` when they are used by both `AP::` and `UI::`
+  (`LegacyAppRuntime`, object-transfer services, manager-level formatting)
 - treat the remaining raw-instance getters in `UI::` as explicit compatibility
   escape hatches, not as a model for new API work
+- keep default-vs-privileged boundary checks enforced in code where practical
+  (for example compile-time checks in `BoundaryContractChecks.cpp`), not only
+  in documentation
 
 ## Phase 6: Plugin Migration Pass
 

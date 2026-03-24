@@ -1,6 +1,7 @@
 #include "../api/UI.h"
 
 #include "MainWindow.h"
+#include "../core/LegacyAppRuntime.h"
 
 //#include <Windows.h> // definiuje GetTickCount()
 
@@ -16,9 +17,7 @@
 
 #include "ProgressIndicator.h"
 
-#include <QElapsedTimer>
 #include <QtWidgets>
-#include <QCoreApplication>
 
 #include "GLViewer.h"
 
@@ -42,21 +41,6 @@ namespace
 	CMainWindow* mainWindow()
 	{
 		return CMainWindow::instance();
-	}
-
-	void processUiEvents(bool immediate = false)
-	{
-		static QElapsedTimer timer;
-		if (!timer.isValid())
-		{
-			timer.start();
-		}
-
-		if (immediate || timer.elapsed() > 1000)
-		{
-			QCoreApplication::processEvents();
-			timer.restart();
-		}
 	}
 
 	DockWorkspaceAPIAdapter& dockWorkspaceApi()
@@ -507,26 +491,26 @@ ProgressIndicator* UI::PROGRESSBAR::instance()
 void UI::PROGRESSBAR::init( int min, int max, int val )
 {
 	ProgressHostAccess::init(min, max, val);
-	processUiEvents(true);
+	LegacyAppRuntime::processEvents(true);
 }
 
 void UI::PROGRESSBAR::setValue( int val )
 {
 	ProgressHostAccess::setValue(val);
-	processUiEvents(true);
+	LegacyAppRuntime::processEvents(true);
 }
 
 
 void UI::PROGRESSBAR::setText(const QString text)
 {
 	ProgressHostAccess::setText(text);
-	processUiEvents(true);
+	LegacyAppRuntime::processEvents(true);
 }
 
 void UI::PROGRESSBAR::hide()
 {
 	ProgressHostAccess::hide();
-	processUiEvents(true);
+	LegacyAppRuntime::processEvents(true);
 }
 
 
@@ -535,83 +519,47 @@ void UI::PROGRESSBAR::hide()
 
 void UI::STATUSBAR::printf(const char *format, ...)
 {
-	va_list paramList;
-	va_start(paramList, format);
-
-	char formatBuf[1024];
-	// vsprintf_s(formatBuf, _countof(formatBuf), format, paramList);
-	vsnprintf(formatBuf, sizeof(formatBuf), format, paramList);
-
-	setText(formatBuf); 
-
-	va_end(paramList);
+    va_list paramList;
+    va_start(paramList, format);
+    StatusBarManager::vprintf(format, paramList);
+    va_end(paramList);
+    LegacyAppRuntime::processEvents(true);
 }
 
 void UI::STATUSBAR::printf(const wchar_t *format, ...)
 {
-	va_list paramList;
-	va_start(paramList, format);
-
-	wchar_t formatBuf[1024];
-	// vswprintf_s(formatBuf, _countof(formatBuf), format, paramList);
-	vswprintf(formatBuf, sizeof(formatBuf) / sizeof(formatBuf[0]), format, paramList);
-
-	setText(formatBuf); 
-
-	va_end(paramList);
+    va_list paramList;
+    va_start(paramList, format);
+    StatusBarManager::vprintf(format, paramList);
+    va_end(paramList);
+    LegacyAppRuntime::processEvents(true);
 }
 
 
-#include <QElapsedTimer>
-
 void UI::STATUSBAR::printfTimed(int mst, const char* format, ...)
 {
-    static QElapsedTimer timer;
-    if (!timer.isValid())
-        timer.start();
-
-    if (timer.elapsed() > mst)
-    {
-        va_list paramList;
-        va_start(paramList, format);
-
-        char formatBuf[1024];
-        vsnprintf(formatBuf, sizeof(formatBuf), format, paramList);
-
-        va_end(paramList);
-
-        setText(formatBuf);
-        timer.restart();
-    }
+    va_list paramList;
+    va_start(paramList, format);
+    StatusBarManager::vprintfTimed(mst, format, paramList);
+    va_end(paramList);
+    LegacyAppRuntime::processEvents(true);
 }
 
 
 
 void UI::STATUSBAR::printfTimed(int mst, const wchar_t* format, ...)
 {
-    static QElapsedTimer timer;
-    if (!timer.isValid())
-        timer.start();
-
-    if (timer.elapsed() > mst)
-    {
-        va_list paramList;
-        va_start(paramList, format);
-
-        wchar_t formatBuf[1024];
-        vswprintf(formatBuf, sizeof(formatBuf), format, paramList);
-
-        va_end(paramList);
-
-        setText(formatBuf);
-        timer.restart();
-    }
+    va_list paramList;
+    va_start(paramList, format);
+    StatusBarManager::vprintfTimed(mst, format, paramList);
+    va_end(paramList);
+    LegacyAppRuntime::processEvents(true);
 }
 
 void UI::STATUSBAR::setText(const QString msg)
 {
 	statusBarApi().setText(msg);
-	processUiEvents(true);
+	LegacyAppRuntime::processEvents(true);
 }
 
 
