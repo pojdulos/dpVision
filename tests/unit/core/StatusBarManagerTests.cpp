@@ -1,6 +1,6 @@
-#include "TestFramework.h"
+#include "../../support/TestFramework.h"
 
-#include "../src/core/StatusBarManager.h"
+#include "../../../src/core/StatusBarManager.h"
 
 #include <QString>
 #include <string>

@@ -111,3 +111,4 @@ Use this before finalizing any API-related patch.
 - [ ] The change does not deepen dependence on `AP::` or `UI::`
 - [ ] The change updates docs if it alters the intended migration order
 
+- [x] test hierarchy and priorities are documented in `docs/TESTING_STRATEGY.md`

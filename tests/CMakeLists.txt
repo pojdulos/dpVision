@@ -1,12 +1,14 @@
 set(DPVISION_TESTS_SRC
-    ${CMAKE_CURRENT_SOURCE_DIR}/TestMain.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/ApiBoundaryTests.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/StatusBarManagerTests.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/support/TestMain.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/unit/api/ApiBoundaryTests.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/unit/core/BoundingBoxTests.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/unit/core/StatusBarManagerTests.cpp
 )
 
 add_executable(dpVisionApiTests ${DPVISION_TESTS_SRC})
 
 target_include_directories(dpVisionApiTests PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/support
     ${CMAKE_SOURCE_DIR}/src/api
     ${CMAKE_SOURCE_DIR}/src/core
 )

@@ -1,9 +1,9 @@
-#include "TestFramework.h"
+#include "../../support/TestFramework.h"
 
-#include "../src/api/interfaces/IGuiInternalsAPI.h"
-#include "../src/api/interfaces/IPluginGuiAPI.h"
-#include "../src/api/interfaces/IPluginHostAPI.h"
-#include "../src/api/interfaces/IPluginPanelAPI.h"
+#include "../../../src/api/interfaces/IGuiInternalsAPI.h"
+#include "../../../src/api/interfaces/IPluginGuiAPI.h"
+#include "../../../src/api/interfaces/IPluginHostAPI.h"
+#include "../../../src/api/interfaces/IPluginPanelAPI.h"
 
 #include <type_traits>
 #include <utility>

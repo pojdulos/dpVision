@@ -58,3 +58,7 @@ efficient multimodal image processing and algorithm testing, addressing the limi
 
 
 
+
+## Testing
+
+Test hierarchy and initial coverage priorities are documented in docs/TESTING_STRATEGY.md.
