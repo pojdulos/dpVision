@@ -68,7 +68,8 @@ namespace UI
      * @brief Updates the menu after selection change
      *
      * Legacy application-state hook. New code should avoid driving menu state
-     * directly from plugins.
+     * directly from plugins. Prefer semantic host APIs such as
+     * `IPluginHostAPI::updateProperties()` and explicit workspace/view updates.
      */
     DPVISION_EXPORT void changeMenuAfterSelect();
 
@@ -76,7 +77,9 @@ namespace UI
      * @brief Updates the selection state for specified ID
      * @param id Object identifier
      *
-     * Legacy application-state hook. Prefer semantic selection APIs.
+     * Legacy application-state hook. Prefer `IDockWorkspaceAPI` for dock-safe
+     * selection operations and explicit host/view update calls instead of this
+     * bundled workflow helper.
      */
     DPVISION_EXPORT void updateSelection(int id);
 
@@ -181,6 +184,7 @@ namespace UI
          * IGuiInternalsAPI::currentCameraTransform() only in explicitly
          * GUI-aware plugins.
          */
+		[[deprecated("Legacy GUI escape hatch. Prefer ICameraControlAPI or IGuiInternalsAPI::currentCameraTransform() in explicit GUI-aware plugins.")]]
 		DPVISION_EXPORT CTransform* transform();
 
 		/* odpowiednik sekwencji klawiszy ctrl+L ctrl+.. 
@@ -209,6 +213,7 @@ namespace UI
          * IGuiInternalsAPI::currentViewer() only in explicitly GUI-aware
          * plugins.
          */
+		[[deprecated("Legacy GUI escape hatch. Prefer ICameraControlAPI or IGuiInternalsAPI::currentViewer() in explicit GUI-aware plugins.")]]
 		DPVISION_EXPORT GLViewer* currentViewer();
 
         /**
@@ -255,7 +260,10 @@ namespace UI
          * Prefer dedicated state/property APIs instead of driving this dock
          * directly from new code.
          */
-		namespace PROPERTIES {
+        namespace PROPERTIES {
+            // Legacy dock-driving hooks. Prefer IPluginHostAPI::updateProperties()
+            // and higher-level host operations instead of manipulating the
+            // properties dock through UI::.
 			DPVISION_EXPORT void selectionChanged( int id );
 			DPVISION_EXPORT void updateProperties();
 		}
@@ -274,9 +282,13 @@ namespace UI
              * IGuiInternalsAPI::workspaceDock() only in explicitly GUI-aware
              * plugins.
              */
+			[[deprecated("Legacy GUI escape hatch. Prefer IDockWorkspaceAPI or IGuiInternalsAPI::workspaceDock() in explicit GUI-aware plugins.")]]
 			DPVISION_EXPORT DockWidgetWorkspace* instance();
+            // Legacy wrapper. Prefer IDockWorkspaceAPI::rebuildTree() or
+            // higher-level workspace operations from the host API.
 			DPVISION_EXPORT void update();
 			
+            // Legacy wrappers. Prefer IDockWorkspaceAPI for dock-safe access.
 			DPVISION_EXPORT void selectItem( int id);
 			DPVISION_EXPORT std::shared_ptr<CBaseObject> currentItem();
 			DPVISION_EXPORT QVector<std::shared_ptr<CBaseObject>> selectedObjects();
@@ -316,12 +328,14 @@ namespace UI
          * IGuiInternalsAPI::pluginPanelHost() only in explicitly GUI-aware
          * plugins.
          */
+		[[deprecated("Legacy GUI escape hatch. Prefer IPluginPanelAPI or IGuiInternalsAPI::pluginPanelHost() in explicit GUI-aware plugins.")]]
 		DPVISION_EXPORT DockWidgetPluginPanel* mainPanel();
         /**
          * @deprecated Legacy GUI escape hatch returning a raw QWidget.
          * Privileged-only. Do not use as the default plugin path; prefer
          * IPluginPanelAPI and reach QWidget only through explicit GUI-only APIs.
          */
+		[[deprecated("Legacy GUI escape hatch. Prefer IPluginPanelAPI and only use raw QWidget access through explicit GUI-only APIs.")]]
 		DPVISION_EXPORT QWidget* instance(unsigned int pluginId);
 		
         /**
@@ -422,7 +436,7 @@ namespace UI
      * @namespace PROGRESSBAR
      * @brief Legacy progress wrapper.
      *
-     * Prefer `IProgressControlAPI` for new code.
+     * Prefer `IPluginGuiAPI::progress()` / `IProgressControlAPI` for new code.
      */
 	namespace PROGRESSBAR {
         /**
@@ -431,8 +445,10 @@ namespace UI
          * path; use IGuiInternalsAPI::progressIndicator() only in explicitly
          * GUI-aware plugins.
          */
+		[[deprecated("Legacy GUI escape hatch. Prefer IProgressControlAPI and only use IGuiInternalsAPI::progressIndicator() in explicit GUI-aware plugins.")]]
 		DPVISION_EXPORT ProgressIndicator* instance();
 
+        // Legacy wrappers. Prefer IPluginGuiAPI::progress().
 		DPVISION_EXPORT void init( int min, int max, int val );
 		DPVISION_EXPORT void setValue( int val );
 		DPVISION_EXPORT void hide();
@@ -447,16 +463,18 @@ namespace UI
      * @namespace STATUSBAR
      * @brief Legacy status-bar wrapper.
      *
-     * Prefer `IStatusBarAPI` for new code.
+     * Prefer `IPluginHostAPI::statusBar()` / `IStatusBarAPI` for new code.
      */
 	namespace STATUSBAR {
-		// Legacy printf-style overloads. Prefer `setText()` or `IStatusBarAPI`.
+		// Legacy printf-style overloads. Prefer `setText()` or
+		// `IPluginHostAPI::statusBar()`.
 		DPVISION_EXPORT void printf(const char *format, ...);
 		DPVISION_EXPORT void printf(const wchar_t *format, ...);
 
 		DPVISION_EXPORT void printfTimed( int mst, const char *format, ...);
 		DPVISION_EXPORT void printfTimed( int mst, const wchar_t *format, ...);
 
+		// Legacy wrapper. Prefer IPluginHostAPI::statusBar().
 		DPVISION_EXPORT void setText(const QString msg);
 		inline DPVISION_EXPORT void setText(const char* msg) { setText(QString::fromUtf8(msg)); }
 		inline DPVISION_EXPORT void setText(const std::string msg) { setText(QString::fromUtf8(msg.c_str())); }

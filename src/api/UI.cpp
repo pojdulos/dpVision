@@ -1,6 +1,7 @@
 #include "../api/UI.h"
 
 #include "MainWindow.h"
+#include "../core/LegacyUiSelectionWorkflow.h"
 #include "../core/LegacyAppRuntime.h"
 
 //#include <Windows.h> // definiuje GetTickCount()
@@ -21,7 +22,6 @@
 
 #include "GLViewer.h"
 
-#include "../core/AppStateManager.h"
 #include "../core/MessageBoxManager.h"
 #include "../core/StatusBarManager.h"
 #include "../core/WorkspacePanelManager.h"
@@ -32,6 +32,7 @@
 #include "adapters/DockHistogramAPIAdapter.h"
 #include "adapters/DockWorkspaceAPIAdapter.h"
 #include "adapters/FileDialogAPIAdapter.h"
+#include "adapters/GuiProgressAPIAdapter.h"
 #include "adapters/PluginPanelAPIAdapter.h"
 #include "adapters/MessageBoxAPIAdapter.h"
 #include "adapters/StatusBarAPIAdapter.h"
@@ -76,6 +77,12 @@ namespace
 	FileDialogAPIAdapter& fileDialogApi()
 	{
 		static FileDialogAPIAdapter api;
+		return api;
+	}
+
+	GuiProgressAPIAdapter& progressApi()
+	{
+		static GuiProgressAPIAdapter api;
 		return api;
 	}
 }
@@ -177,7 +184,7 @@ void UI::updateCurrentView(bool buffered)
 
 void UI::changeMenuAfterSelect()
 {
-	AppStateManager::changeMenuAfterSelect();
+	LegacyUiSelectionWorkflow::changeMenuAfterSelect();
 }
 
 
@@ -186,21 +193,17 @@ void UI::changeMenuAfterSelect()
 void UI::updateSelection(int id)
 {
 	UI::DOCK::WORKSPACE::selectItem(id);
-
-	UI::DOCK::PROPERTIES::selectionChanged(id);
-
-	UI::changeMenuAfterSelect();
-	UI::updateAllViews();
+	LegacyUiSelectionWorkflow::updateSelection(id);
 }
 
 void UI::DOCK::PROPERTIES::selectionChanged( int id )
 {
-	WorkspacePanelManager::propertiesSelectionChanged(id);
+	LegacyUiSelectionWorkflow::propertiesSelectionChanged(id);
 }
 
 void UI::DOCK::PROPERTIES::updateProperties()
 {
-	AppStateManager::updateProperties();
+	LegacyUiSelectionWorkflow::updateProperties();
 }
 
 DockWidgetWorkspace* UI::DOCK::WORKSPACE::instance()
@@ -490,27 +493,23 @@ ProgressIndicator* UI::PROGRESSBAR::instance()
 
 void UI::PROGRESSBAR::init( int min, int max, int val )
 {
-	ProgressHostAccess::init(min, max, val);
-	LegacyAppRuntime::processEvents(true);
+	progressApi().init(min, max, val);
 }
 
 void UI::PROGRESSBAR::setValue( int val )
 {
-	ProgressHostAccess::setValue(val);
-	LegacyAppRuntime::processEvents(true);
+	progressApi().setValue(val);
 }
 
 
 void UI::PROGRESSBAR::setText(const QString text)
 {
-	ProgressHostAccess::setText(text);
-	LegacyAppRuntime::processEvents(true);
+	progressApi().setText(text);
 }
 
 void UI::PROGRESSBAR::hide()
 {
-	ProgressHostAccess::hide();
-	LegacyAppRuntime::processEvents(true);
+	progressApi().hide();
 }
 
 

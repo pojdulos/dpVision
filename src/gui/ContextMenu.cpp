@@ -1,9 +1,7 @@
 #include "ContextMenu.h"
 
-#include "../api/AP.h"
-#include "../api/adapters/AppAPIAdapter.h"
-
 #include "../core/AppStateManager.h"
+#include "../core/LegacyObjectTransferService.h"
 
 #include "MainWindow.h"
 #include "ImageViewerHost.h"
@@ -15,12 +13,6 @@
 
 namespace
 {
-	AppAPIAdapter& appApi()
-	{
-		static AppAPIAdapter api;
-		return api;
-	}
-
 	DockWidgetWorkspace* workspaceDock()
 	{
 		if (auto win = CMainWindow::instance())
@@ -86,7 +78,7 @@ CContextMenu::CContextMenu(std::shared_ptr<CBaseObject> obj, QWidget *parent) : 
 			switch (m_obj->type())
 			{
 			case CBaseObject::Type::MODEL:
-				appApi().workspaceActivation().setCurrentObject(m_obj->id());
+				CWorkspace::instance()->_objectActivate(m_obj->id());
 				addAction(QIcon(":/icons/Save.ico"), "Save as...", this, SLOT(saveObjAs()));
 				addSeparator();
 				addMenu(main_window->ui.menuModel);
@@ -94,7 +86,7 @@ CContextMenu::CContextMenu(std::shared_ptr<CBaseObject> obj, QWidget *parent) : 
 				addAction("create inversed transformation", this, SLOT(slot_create_inversed_transform()));
 				break;
 			case CBaseObject::Type::IMAGE:
-				appApi().workspaceActivation().setCurrentObject(m_obj->id());
+				CWorkspace::instance()->_objectActivate(m_obj->id());
 				addMenu(main_window->ui.menuImage);
 				break;
 			case CBaseObject::Type::MOVEMENT:
@@ -300,7 +292,7 @@ void CContextMenu::moveTo()
 
 	std::shared_ptr<CBaseObject> newParent = action->data().value<std::shared_ptr<CBaseObject>>();
 
-	AP::OBJECT::moveTo(m_obj, newParent);
+	LegacyObjectTransferService::moveTo(m_obj, newParent);
 }
 
 
@@ -310,7 +302,7 @@ void CContextMenu::copyTo()
 
 	std::shared_ptr<CBaseObject> newParent = action->data().value<std::shared_ptr<CBaseObject>>();
 
-	AP::OBJECT::copyTo(m_obj, newParent);
+	LegacyObjectTransferService::copyTo(m_obj, newParent);
 }
 
 
@@ -467,7 +459,7 @@ void CContextMenu::slot_make_me_root()
 
 	if (makeObjectRoot(std::static_pointer_cast<CObject>(m_obj)))
 	{
-		appApi().workspace().addObject(m_obj, false);
+		CWorkspace::instance()->_objectAdd(m_obj);
 
 		if (m_obj->hasType(CObject::Type::MODEL))
 			std::static_pointer_cast<CModel3D>(m_obj)->transform().fromEigenMatrix4d(globalM);
@@ -541,7 +533,7 @@ void CContextMenu::slot_make_me_root2()
 		parent = grandpa;
 	}
 
-	appApi().workspace().addObject(m_obj, false);
+	CWorkspace::instance()->_objectAdd(m_obj);
 
 	if (m_obj->hasType(CObject::Type::MODEL))
 		std::static_pointer_cast<CModel3D>(m_obj)->transform().fromEigenMatrix4d(globalM);
@@ -577,11 +569,11 @@ void CContextMenu::slot_repositioning()
 
 		if (action == "copy")
 		{
-			AP::OBJECT::copyTo(m_obj, wybranyObiekt, keep_pos);
+			LegacyObjectTransferService::copyTo(m_obj, wybranyObiekt, keep_pos);
 		}
 		else if (action == "move")
 		{
-			AP::OBJECT::moveTo(m_obj, wybranyObiekt, keep_pos);
+			LegacyObjectTransferService::moveTo(m_obj, wybranyObiekt, keep_pos);
 		}
 		else if (action == "rearrange")
 		{
@@ -619,16 +611,16 @@ void CContextMenu::slot_repositioning()
 						mdl->addChild(mdl, m_obj);
 						mdl->setLabel("<**>");
 						mdl->importChildrenGeometry();
-						appApi().object().addChild(wybranyObiekt, mdl);
+						CWorkspace::instance()->_objectAdd(mdl, wybranyObiekt);
 					}
 					else
 					{
-						appApi().object().addChild(wybranyObiekt, m_obj);
+						CWorkspace::instance()->_objectAdd(m_obj, wybranyObiekt);
 					}
 				}
 				else
 				{
-					appApi().workspace().addObject(m_obj, false);
+					CWorkspace::instance()->_objectAdd(m_obj);
 				}
 
 				if (keep_pos)
@@ -693,11 +685,11 @@ void CContextMenu::slot_apply_last_transform()
 
 		if (grandpa == nullptr)
 		{
-			appApi().workspace().addModel(mdl, false);
+			wksp->_objectAdd(mdl);
 		}
 		else
 		{
-			appApi().object().addChild(grandpa, mdl);
+			wksp->_objectAdd(mdl, grandpa);
 		}
 	}
 	else if (m_obj->hasType(CBaseObject::Type::MESH) || m_obj->hasType(CBaseObject::Type::CLOUD) || m_obj->hasType(CBaseObject::Type::ORDEREDCLOUD))
@@ -708,11 +700,11 @@ void CContextMenu::slot_apply_last_transform()
 		{
 			// na razie jeszcze na najwyÄąÄ˝szym poziomie drzewa musi byc Model3D
 			grandpa = std::make_shared<CModel3D>();
-			appApi().workspace().addModel(std::static_pointer_cast<CModel3D>(grandpa), false);
+			wksp->_objectAdd(std::static_pointer_cast<CModel3D>(grandpa));
 		}
 
 		wksp->_objectRemove(m_obj);
-		appApi().object().addChild(grandpa, m_obj);
+		wksp->_objectAdd(m_obj, grandpa);
 	}
 }
 
@@ -729,7 +721,7 @@ void CContextMenu::slot_delete_and_keep_children()
 			{
 				std::shared_ptr<CBaseObject> c = d.second;
 				wksp->_objectRemove(c);
-			appApi().object().addChild(p, c);
+			wksp->_objectAdd(c, p);
 			}
 //			((CObject*)m_obj)->children().clear();
 
@@ -737,7 +729,7 @@ void CContextMenu::slot_delete_and_keep_children()
 			for (auto d : anno)
 			{
 				wksp->_objectRemove(d.second);
-				appApi().object().addChild(p, std::static_pointer_cast<CBaseObject>(d.second));
+				wksp->_objectAdd(std::static_pointer_cast<CBaseObject>(d.second), p);
 			}
 //			((CObject*)m_obj)->annotations().clear();
 			
@@ -762,11 +754,11 @@ void CContextMenu::slot_create_inversed_transform()
 		std::shared_ptr<CBaseObject> p = m_obj->getParentPtr();
 		if (p == nullptr)
 		{
-			appApi().workspace().addModel(obj, false);
+			CWorkspace::instance()->_objectAdd(obj);
 		}
 		else
 		{
-			appApi().object().addChild(p, obj);
+			CWorkspace::instance()->_objectAdd(obj, p);
 		}
 	}
 
@@ -802,7 +794,7 @@ void CContextMenu::setOfFacesToMesh()
 		std::shared_ptr<CModel3D> obj = std::make_shared<CModel3D>();
 		obj->addChild(obj, mesh);
 		obj->importChildrenGeometry();
-		appApi().workspace().addModel(obj, false);
+		CWorkspace::instance()->_objectAdd(obj);
 	}
 }
 
@@ -818,18 +810,18 @@ void CContextMenu::slotCreateEmptyModel()
 	m->reset(CBoundingBox::InitialValues::NullBB);
 
 	if (m_obj && m_obj->hasCategory(CBaseObject::Category::OBJECT) ) {
-		appApi().object().addChild(m_obj, m);
+		CWorkspace::instance()->_objectAdd(m, m_obj);
 	}
 	else {
 
-		appApi().workspace().addModel(m, false);
+		CWorkspace::instance()->_objectAdd(m);
 	}
 }
 
 void CContextMenu::slot_mesh_create()
 {
 	std::shared_ptr<CMesh> m = std::make_shared<CMesh>();
-	if (m != nullptr) appApi().object().addChild(m_obj, m);
+	if (m != nullptr) CWorkspace::instance()->_objectAdd(m, m_obj);
 }
 
 /*********************************************************************************************/
@@ -839,7 +831,7 @@ void CContextMenu::slot_mesh_create()
 void CContextMenu::slot_volum_create()
 {
 	std::shared_ptr<Volumetric> m = Volumetric::create();
-	if (m != nullptr) appApi().object().addChild(m_obj, m);
+	if (m != nullptr) CWorkspace::instance()->_objectAdd(m, m_obj);
 }
 
 QMenu* CContextMenu::createVolumetricMenu()
@@ -914,9 +906,9 @@ void CContextMenu::slot_copy_frames_as_models()
 
 			std::shared_ptr<CObject> p = std::dynamic_pointer_cast<CObject>(r->getParentPtr());
 			if (p)
-				appApi().object().addChild(p, mdl);
+				CWorkspace::instance()->_objectAdd(mdl, p);
 			else
-				appApi().workspace().addModel(mdl, false);
+				CWorkspace::instance()->_objectAdd(mdl);
 		}
 	}
 }
@@ -1145,7 +1137,7 @@ void CContextMenu::slot_volumetric_sift_cloud()
 
 		std::shared_ptr<CPointCloud> cloud = std::static_pointer_cast<Volumetric>(m_obj)->sift_cloud(nfeatures, nOctaveLayers, contrastThreshold, edgeThreshold, sigma, factor);
 
-		appApi().object().addChild(m_obj, cloud);
+		CWorkspace::instance()->_objectAdd(cloud, m_obj);
 
 		AppStateManager::updateAllViews();
 	}
@@ -1186,7 +1178,7 @@ void CContextMenu::slot_volumetric_marching_cube()
 
 		std::shared_ptr<CMesh> mesh = std::static_pointer_cast<Volumetric>(m_obj)->marching_cube(f);
 		
-		appApi().object().addChild(m_obj, mesh);
+		CWorkspace::instance()->_objectAdd(mesh, m_obj);
 		AppStateManager::updateAllViews();
 	}
 
@@ -1226,7 +1218,7 @@ void CContextMenu::slot_volumetric_marching_tetra()
 
 		std::shared_ptr<CMesh> mesh = std::static_pointer_cast<Volumetric>(m_obj)->marching_tetrahedron(f);
 
-		appApi().object().addChild(m_obj, mesh);
+		CWorkspace::instance()->_objectAdd(mesh, m_obj);
 
 		AppStateManager::updateAllViews();
 	}
@@ -1302,15 +1294,15 @@ void CContextMenu::slotAddAnnotation()
 	switch (type)
 	{
 	case CBaseObject::Type::POINT:
-		appApi().object().addChild(m_obj, std::make_shared<CAnnotationPoint>());
+		CWorkspace::instance()->_objectAdd(std::make_shared<CAnnotationPoint>(), m_obj);
 		break;
 
 	case CBaseObject::Type::PLANE:
-		appApi().object().addChild(m_obj, std::make_shared<CAnnotationPlane>());
+		CWorkspace::instance()->_objectAdd(std::make_shared<CAnnotationPlane>(), m_obj);
 		break;
 
 	case CBaseObject::Type::SPHERE:
-		appApi().object().addChild(m_obj, std::make_shared<CAnnotationSphere>());
+		CWorkspace::instance()->_objectAdd(std::make_shared<CAnnotationSphere>(), m_obj);
 		break;
 	}
 }
@@ -1319,7 +1311,7 @@ void CContextMenu::slotAddAnnotation()
 void CContextMenu::slotPlaneToMesh()
 {
 	std::shared_ptr<CMesh> plane = std::static_pointer_cast<CAnnotationPlane>(m_obj)->getMesh(100.0, 100, 100);
-	appApi().object().addChild(m_obj->getParentPtr(), plane);
+	CWorkspace::instance()->_objectAdd(plane, m_obj->getParentPtr());
 }
 
 //CTransform globalTransformation(CBaseObject* obj)
@@ -1335,5 +1327,5 @@ void CContextMenu::slotTriangleToPlane()
 	std::shared_ptr<CAnnotationPlane> plane = std::make_shared<CAnnotationPlane>(CPlane(tri->A(), tri->B(), tri->C()));
 	std::shared_ptr<CBaseObject> p = m_obj->getParentPtr();
 	if (p != nullptr)
-		appApi().object().addChild(p, plane);
+		CWorkspace::instance()->_objectAdd(plane, p);
 }

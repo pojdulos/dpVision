@@ -7,7 +7,6 @@
 #include "AnnotationPlane.h"
 #include "FileConnector.h"
 
-#include "../api/AP.h"
 #include "../api/adapters/PluginHostGuiAPIAdapter.h"
 
 #include <QPushButton>
@@ -17,6 +16,11 @@ PluginHostGuiAPIAdapter& guiApi()
 {
     static PluginHostGuiAPIAdapter api;
     return api;
+}
+
+CWorkspace* workspace()
+{
+    return guiApi().appInternals().workspace();
 }
 }
 
@@ -80,7 +84,15 @@ void SamplePlugin::loadObject(const QString &path)
 	{
 		if (QFileInfo(fileName).exists())
 		{
-			AP::WORKSPACE::loadModel(fileName);
+			if (auto obj = CModel3D::load(fileName))
+			{
+				workspace()->_objectAdd(obj);
+				guiApi().updateAllViews();
+			}
+			else
+			{
+				guiApi().messageBox().error("Something went wrong", "Can't read file");
+			}
 		}
 		else // this should not have happened
 		{
@@ -132,7 +144,9 @@ void SamplePlugin::createBox()
 
 	// this command causes the object to be displayed
 	// and visible in the scene tree
-	AP::WORKSPACE::addModel(obj, true);
+	workspace()->_objectAdd(obj);
+	workspace()->_objectActivate(obj->id());
+	guiApi().updateAllViews();
 }
 
 
@@ -196,7 +210,11 @@ void SamplePlugin::cutMesh() {
 		{
 			// load the model and if exists add it to workspace
 			// using AP namespace is good choise because it automaticaly refreshes viewer
-			obj = AP::WORKSPACE::loadModel(fileName);
+			obj = CModel3D::load(fileName);
+			if (obj != nullptr)
+			{
+				workspace()->_objectAdd(obj);
+			}
 
 			if (obj == nullptr)
 			{
@@ -224,7 +242,7 @@ void SamplePlugin::cutMesh() {
 
 		// add plane to workspace
 		// using AP namespace is good choise because it automaticaly refreshes viewer
-		AP::OBJECT::addChild(obj, plane);
+		workspace()->_objectAdd(plane, obj);
 
 		if (child->hasType(CObject::MESH))
 		{
@@ -258,7 +276,7 @@ void SamplePlugin::cutMesh() {
 			obj1->setLabel("upper part");
 			
 			// add to workspace for display it in viewer and in workspace tree dialog
-			AP::WORKSPACE::addObject(obj1);
+			workspace()->_objectAdd(obj1);
 
 			// create deep copy of original mesh
 			std::shared_ptr<CMesh> mesh2 = std::dynamic_pointer_cast<CMesh>(mesh->getCopy());
@@ -275,7 +293,7 @@ void SamplePlugin::cutMesh() {
 			obj2->importChildrenGeometry();
 			obj2->setLabel("bottom part");
 
-			AP::WORKSPACE::addObject(obj2);
+			workspace()->_objectAdd(obj2);
 		}
 		else
 		{

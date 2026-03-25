@@ -20,6 +20,7 @@ class DockWidgetImageViewer;
 
 #include <QtCore/QList>
 
+#include "ProgressIndicator.h"
 #include "ui_mainWindow.h"
 #include <QMdiSubWindow>
 #include <QPointer>
