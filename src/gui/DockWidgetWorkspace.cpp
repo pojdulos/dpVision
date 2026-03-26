@@ -596,9 +596,62 @@ void DockWidgetWorkspace::colNameClicked(std::shared_ptr<CBaseObject> obj, Works
 	}
 }
 
+bool DockWidgetWorkspace::refreshItemById(int id)
+{
+	if (id == NO_CURRENT_MODEL)
+	{
+		return false;
+	}
+
+	auto obj = CWorkspace::instance()->getSomethingWithId(id);
+	if (obj == nullptr)
+	{
+		return false;
+	}
+
+	QModelIndex current = findWorkspaceTreeModelIndex(id);
+	if (!current.isValid())
+	{
+		return false;
+	}
+
+	WorkspaceTreeModel* model = (WorkspaceTreeModel*)ui.treeView->model();
+	WorkspaceTreeItem* item = (WorkspaceTreeItem*)model->itemFromIndex(current);
+	if (item == nullptr)
+	{
+		return false;
+	}
+
+	item->setObject(obj);
+	item->setText(obj->getLabel());
+	item->setCheckState(obj->isChecked() ? Qt::Checked : Qt::Unchecked);
+	item->setToolTip(QString::fromStdWString(obj->infoRow()));
+	item->changeIcon(WorkspaceTreeItem::Column::colSelfVisibility, obj->getSelfVisibility());
+	item->changeIcon(WorkspaceTreeItem::Column::colKidsVisibility, obj->getKidsVisibility());
+
+	if (item->getField(WorkspaceTreeItem::Column::colLock) != nullptr)
+	{
+		if (auto modelObject = std::dynamic_pointer_cast<CModel3D>(obj))
+		{
+			item->changeIcon(WorkspaceTreeItem::Column::colLock, modelObject->isLocked());
+		}
+	}
+
+	return true;
+}
+
 void DockWidgetWorkspace::onWorkspaceObjectActivated(int i)
 {
 	selectItem(i);
+}
+
+void DockWidgetWorkspace::onWorkspaceObjectStateChanged(int id)
+{
+	if (!refreshItemById(id))
+	{
+		rebuildTree();
+	}
+	selectItem(CWorkspace::instance()->_getCurrentModelId());
 }
 
 //void DockWidgetWorkspace::onCurrentObjectChanged(std::shared_ptr<CBaseObject> obj)
@@ -622,6 +675,12 @@ void DockWidgetWorkspace::onWorkspaceObjectRemoved(int id) {
 	//dpDebug() << "DockWidgetWorkspace::onWorkspaceObjectRemoved() id=" << id;
 	selectItem(CWorkspace::instance()->_getCurrentModelId());
 	removeItem(id);
+}
+
+void DockWidgetWorkspace::onWorkspaceStructureChanged()
+{
+	rebuildTree();
+	selectItem(CWorkspace::instance()->_getCurrentModelId());
 }
 
 void DockWidgetWorkspace::onTreeViewItemClicked(QModelIndex current)

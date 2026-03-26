@@ -60,8 +60,10 @@ public:
 	// Listener notifiers:
 
 	void notifyObjectActivated(int id);
+	void notifyObjectStateChanged(int id);
 	void notifyObjectAdded(int id);
 	void notifyObjectRemoved(int id, CBaseObject::Type tp = CBaseObject::Type::GENERIC);
+	void notifyStructureChanged();
 
 	// API interfaces for windows and user code:
 

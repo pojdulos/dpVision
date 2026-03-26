@@ -1,11 +1,9 @@
 #include "propTransform.h"
 
 #include "../core/AppStateManager.h"
-#include "../api/AP.h"
+#include "../core/Workspace.h"
 
 #include "Model3D.h"
-
-#include "MainWindow.h"
 
 #include <QStandardItemModel>
 #include <qclipboard.h>
@@ -283,8 +281,7 @@ void PropTransform::dataChanged(QStandardItem* item)
 		break;
 	}
 
-	AppStateManager::updateAllViews();
-	//AppStateManager::updateProperties();
+	notifyTransformChanged();
 }
 
 void PropTransform::onRotButton()
@@ -307,14 +304,14 @@ void PropTransform::onRotButton()
 	}
 
 	m_trans->rotateAroundAxisDeg(axis, angle, internal);
-	AppStateManager::updateAllViews();
-	AppStateManager::updateProperties();
+	notifyTransformChanged(true);
 }
 
 
-PropTransform::PropTransform(CTransform *m, QWidget *parent, bool isCameraTransform) : PropWidget( parent )
+PropTransform::PropTransform(CTransform *m, QWidget *parent, bool isCameraTransform, CBaseObject* owner) : PropWidget( parent )
 {
 	m_trans = m; // &m->getTransform();
+	m_owner = owner;
 
 	treeItemLabel = "Transformation properties";
 
@@ -449,14 +446,14 @@ void PropTransform::changedEul(double val)
 	updateQua();
 	updateMatrix();
 	
-	AppStateManager::updateAllViews();
+	notifyTransformChanged();
 }
 
 void PropTransform::changedQua(double val)
 {
 //	m_trans->rotation().fromEulerAnglesDeg(ui.eulerX->value(), ui.eulerY->value(), ui.eulerZ->value());
 
-	AppStateManager::updateAllViews();
+	notifyTransformChanged();
 }
 
 
@@ -466,7 +463,7 @@ void PropTransform::changedTra(double val)
 
 	updateMatrix();
 
-	AppStateManager::updateAllViews();
+	notifyTransformChanged();
 }
 
 void PropTransform::changedSca(double val)
@@ -488,7 +485,7 @@ void PropTransform::changedSca(double val)
 
 	updateMatrix();
 
-	AppStateManager::updateAllViews();
+	notifyTransformChanged();
 }
 
 void PropTransform::onScaleCheck(int i)
@@ -510,7 +507,7 @@ void PropTransform::onScaleCheck(int i)
 
 	updateMatrix();
 
-	AppStateManager::updateAllViews();
+	notifyTransformChanged();
 }
 
 
@@ -532,6 +529,21 @@ void PropTransform::updateMatrix()
 			ui.matrixTable->model()->setData(index, val);
 		}
 		ui.matrixTable->blockSignals(false);
+	}
+}
+
+void PropTransform::notifyTransformChanged(bool refreshProperties)
+{
+	if (m_owner != nullptr)
+	{
+		CWorkspace::instance()->notifyObjectStateChanged(m_owner->id());
+		return;
+	}
+
+	AppStateManager::updateAllViews();
+	if (refreshProperties)
+	{
+		AppStateManager::updateProperties();
 	}
 }
 
@@ -557,10 +569,10 @@ void PropTransform::clearMatrix()
 				matrix[4 * row + col] = 1.0;
 			else
 				matrix[4 * row + col] = 0.0;
-		}
+	}
 	m_trans->fromGLMatrixD(matrix);
 	updatePropertiesTree();
-	AppStateManager::updateAllViews();
+	notifyTransformChanged();
 }
 
 void PropTransform::copyToClipboard()
@@ -610,7 +622,7 @@ void PropTransform::pasteFromClipboard()
 			m_trans->fromRowMatrixD(tmpMatrix);
 
 			updatePropertiesTree();
-			AppStateManager::updateAllViews();
+			notifyTransformChanged();
 		}
 	}
 }
@@ -623,5 +635,5 @@ void PropTransform::onItemChanged(QStandardItem*)
 void PropTransform::onShowScrewCheckBox(bool b)
 {
 	m_trans->showScrew(b);
-	AppStateManager::updateAllViews();
+	notifyTransformChanged();
 }

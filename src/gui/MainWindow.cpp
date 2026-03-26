@@ -169,12 +169,20 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 	connect(wkspEvents.get(), SIGNAL(objectActivatedSignal(int)), dockWorkspace, SLOT(onWorkspaceObjectActivated(int)));
 	connect(wkspEvents.get(), SIGNAL(objectActivatedSignal(int)), dockProperties, SLOT(onWorkspaceObjectActivated(int)));
 
+	connect(wkspEvents.get(), SIGNAL(objectStateChangedSignal(int)), this, SLOT(onWorkspaceObjectStateChanged(int)));
+	connect(wkspEvents.get(), SIGNAL(objectStateChangedSignal(int)), dockWorkspace, SLOT(onWorkspaceObjectStateChanged(int)));
+	connect(wkspEvents.get(), SIGNAL(objectStateChangedSignal(int)), dockProperties, SLOT(onWorkspaceObjectStateChanged(int)));
+
 	connect(wkspEvents.get(), SIGNAL(objectRemovedSignal(int)), this, SLOT(onWorkspaceObjectRemoved(int)));
 	connect(wkspEvents.get(), SIGNAL(objectRemovedSignal(int)), dockWorkspace, SLOT(onWorkspaceObjectRemoved(int)));
 	connect(wkspEvents.get(), SIGNAL(objectRemovedSignal(int)), dockProperties, SLOT(onWorkspaceObjectRemoved(int)));
 
 	connect(wkspEvents.get(), SIGNAL(objectAddedSignal(int)), this, SLOT(onWorkspaceObjectAdded(int)));
 	connect(wkspEvents.get(), SIGNAL(objectAddedSignal(int)), dockWorkspace, SLOT(onWorkspaceObjectAdded(int)));
+
+	connect(wkspEvents.get(), SIGNAL(structureChangedSignal()), this, SLOT(onWorkspaceStructureChanged()));
+	connect(wkspEvents.get(), SIGNAL(structureChangedSignal()), dockWorkspace, SLOT(onWorkspaceStructureChanged()));
+	connect(wkspEvents.get(), SIGNAL(structureChangedSignal()), dockProperties, SLOT(onWorkspaceStructureChanged()));
 
 
 	connect(ui.mdiArea, &QMdiArea::subWindowActivated, this, [this](QMdiSubWindow* window) {

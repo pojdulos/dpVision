@@ -2,8 +2,19 @@
 #include "AnnotationPlane.h"
 
 //
-#include "../core/AppStateManager.h"
+#include "../core/Workspace.h"
 #include <QVBoxLayout>
+
+namespace
+{
+	void notifyAnnotationPlaneChanged(CBaseObject* obj)
+	{
+		if (obj != nullptr)
+		{
+			CWorkspace::instance()->notifyObjectStateChanged(obj->id());
+		}
+	}
+}
 
 PropAnnotationPlane::PropAnnotationPlane(CAnnotationPlane *an, QWidget *parent) : PropWidget( parent )
 {
@@ -85,7 +96,7 @@ void PropAnnotationPlane::changedCtrX(double x)
 	CPoint3d c = ((CAnnotationPlane*)obj)->getCenter();
 	c.X(x);
 	((CAnnotationPlane*)obj)->setCenter(c);
-	AppStateManager::updateAllViews();
+	notifyAnnotationPlaneChanged(obj);
 }
 
 void PropAnnotationPlane::changedCtrY(double y)
@@ -93,7 +104,7 @@ void PropAnnotationPlane::changedCtrY(double y)
 	CPoint3d c = ((CAnnotationPlane*)obj)->getCenter();
 	c.Y(y);
 	((CAnnotationPlane*)obj)->setCenter(c);
-	AppStateManager::updateAllViews();
+	notifyAnnotationPlaneChanged(obj);
 }
 
 void PropAnnotationPlane::changedCtrZ(double z)
@@ -101,7 +112,7 @@ void PropAnnotationPlane::changedCtrZ(double z)
 	CPoint3d c = ((CAnnotationPlane*)obj)->getCenter();
 	c.Z(z);
 	((CAnnotationPlane*)obj)->setCenter(c);
-	AppStateManager::updateAllViews();
+	notifyAnnotationPlaneChanged(obj);
 }
 
 void PropAnnotationPlane::changedNormX(double x)
@@ -109,7 +120,7 @@ void PropAnnotationPlane::changedNormX(double x)
 	CVector3d n = ((CAnnotationPlane*)obj)->getNormal();
 	n.X(x);
 	((CAnnotationPlane*)obj)->setNormal(n);
-	AppStateManager::updateAllViews();
+	notifyAnnotationPlaneChanged(obj);
 }
 
 void PropAnnotationPlane::changedNormY(double y)
@@ -117,7 +128,7 @@ void PropAnnotationPlane::changedNormY(double y)
 	CVector3d n = ((CAnnotationPlane*)obj)->getNormal();
 	n.Y(y);
 	((CAnnotationPlane*)obj)->setNormal(n);
-	AppStateManager::updateAllViews();
+	notifyAnnotationPlaneChanged(obj);
 }
 
 void PropAnnotationPlane::changedNormZ(double z)
@@ -125,11 +136,11 @@ void PropAnnotationPlane::changedNormZ(double z)
 	CVector3d n = ((CAnnotationPlane*)obj)->getNormal();
 	n.Z(z);
 	((CAnnotationPlane*)obj)->setNormal(n);
-	AppStateManager::updateAllViews();
+	notifyAnnotationPlaneChanged(obj);
 }
 
 void PropAnnotationPlane::changedSize(int s)
 {
 	((CAnnotationPlane*)obj)->setSize(s);
-	AppStateManager::updateAllViews();
+	notifyAnnotationPlaneChanged(obj);
 }

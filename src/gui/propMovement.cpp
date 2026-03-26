@@ -1,11 +1,8 @@
 #include "propMovement.h"
 
-#include "../core/AppStateManager.h"
-#include "../api/AP.h"
+#include "../core/Workspace.h"
 
 #include "Model3D.h"
-
-#include "MainWindow.h"
 
 #include <QStandardItemModel>
 #include <qclipboard.h>
@@ -395,15 +392,14 @@ void PropMovement::dataChanged(QStandardItem* item)
 		break;
 	}
 
-	AppStateManager::updateAllViews();
-	//AppStateManager::updateProperties();
+	CWorkspace::instance()->notifyObjectStateChanged(m_animation->id());
 }
 
 void PropMovement::onSliderValueChanged(int val)
 {
 	m_animation->setKey(val);
 	updateProperties();
-	AppStateManager::updateAllViews();
+	CWorkspace::instance()->notifyObjectStateChanged(m_animation->id());
 }
 
 void PropMovement::onPlayButtonClicked()
@@ -460,10 +456,10 @@ void PropMovement::clearMatrix()
 				matrix[4 * row + col] = 1.0;
 			else
 				matrix[4 * row + col] = 0.0;
-		}
+	}
 	m_animation->currentFrame().t.fromGLMatrixD(matrix);
 	updatePropertiesTree();
-	AppStateManager::updateAllViews();
+	CWorkspace::instance()->notifyObjectStateChanged(m_animation->id());
 }
 
 void PropMovement::copyToClipboard()
@@ -513,7 +509,7 @@ void PropMovement::pasteFromClipboard()
 			m_animation->currentFrame().t.fromRowMatrixD(tmpMatrix);
 
 			updatePropertiesTree();
-			AppStateManager::updateAllViews();
+			CWorkspace::instance()->notifyObjectStateChanged(m_animation->id());
 		}
 	}
 }
@@ -542,7 +538,7 @@ void PropMovement::onCurrentChanged(const QModelIndex& current, const QModelInde
 		m_animation->setKey(key);
 
 		updateGroupFrame();
-		AppStateManager::updateAllViews();
+		CWorkspace::instance()->notifyObjectStateChanged(m_animation->id());
 	}
 	else
 	{

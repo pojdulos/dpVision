@@ -4,6 +4,8 @@ This document turns the target architecture into a practical execution plan.
 
 Use it together with:
 - `API_ARCHITECTURE.md` for principles
+- `GUI_COORDINATION_RULES.md` for deciding between workspace events,
+  `AppStateManager`, and direct GUI orchestration
 - `API_INTERFACE_INVENTORY.md` for current classification
 - `LEGACY_API_MAP.md` for compatibility mapping
 
@@ -175,6 +177,29 @@ Current implementation guidance for this phase:
 - keep default-vs-privileged boundary checks enforced in code where practical
   (for example compile-time checks in `BoundaryContractChecks.cpp`), not only
   in documentation
+- keep legacy GUI refresh semantics moving toward workspace events for
+  workspace/object mutations, not toward more `AppStateManager` or direct GUI
+  patchwork
+
+## Phase 5a: Stabilize Host Refresh Semantics
+
+Goal:
+- make workspace/object mutations refresh GUI through one host-side mechanism
+
+Tasks:
+- extend `CWorkspace` eventing where needed
+- route workspace/object mutation consequences through workspace events
+- keep `AppStateManager` only for `core/api/plugin -> gui` bridging
+- simplify local `gui -> gui` orchestration instead of wrapping it in new
+  global helpers
+- keep transitional legacy wrappers in `AP::WORKSPACE` for direct
+  `notifyObjectStateChanged(...)` and `notifyStructureChanged()`
+
+Exit criteria:
+- new workspace/object mutation code does not call GUI refresh directly
+- legacy direct object mutations can notify workspace without touching GUI
+- `AppStateManager` is no longer treated as the default answer for every
+  refresh path
 
 ## Phase 6: Plugin Migration Pass
 

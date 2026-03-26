@@ -1,8 +1,6 @@
 #include "propMesh.h"
 #include "Mesh.h"
 
-#include "../core/AppStateManager.h"
-
 #include <QColorDialog>
 #include <QPushButton>
 #include <QVBoxLayout>

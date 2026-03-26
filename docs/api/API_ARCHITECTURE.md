@@ -13,6 +13,8 @@ Working documents related to this one:
 - `API_INTERFACE_INVENTORY.md` classifies current interfaces and adapters
 - `API_REFACTOR_ROADMAP.md` defines the execution order for the refactor
 - `API_REFACTOR_CHECKLIST.md` is the operational checklist used during changes
+- `GUI_COORDINATION_RULES.md` defines when to use workspace events,
+  `AppStateManager`, or direct `gui -> gui` orchestration
 
 ## Goals
 
@@ -101,6 +103,11 @@ boundaries, not about artificially hiding all domain types.
 `gui` should not depend on the plugin-facing API contracts just to call into the
 application itself. If `gui` needs a helper abstraction, that abstraction should
 live in `gui` or in a lower-level host/service layer, not in `src/api`.
+
+Local `gui -> gui` orchestration is allowed and often preferable to routing
+everything through a global bridge. The main window already owns its dock
+widgets and viewers; that ownership should not be hidden behind extra layers
+unless a real boundary is being crossed.
 
 ### API
 
@@ -226,6 +233,24 @@ But it should not, by default, expose:
 Those belong in the privileged GUI API only.
 
 ## API Design Principles
+
+### Do not use one mechanism for every refresh problem
+
+There are three different coordination cases:
+
+- `workspace/object mutation -> gui reaction`
+- `core/api/plugin -> gui bridge`
+- local `gui -> gui` orchestration
+
+They should stay separate.
+
+Use:
+
+- `CWorkspace` events for workspace/object mutation consequences
+- `AppStateManager` only as a bridge from non-GUI callers into GUI
+- direct GUI calls for local main-window/dock/view coordination
+
+See `GUI_COORDINATION_RULES.md` for the operational rule set.
 
 ### Prefer capability-oriented services
 

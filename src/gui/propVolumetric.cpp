@@ -1,7 +1,7 @@
 #include "propVolumetric.h"
 #include "Mesh.h"
 
-#include "../core/AppStateManager.h"
+#include "../core/Workspace.h"
 
 #include <QColorDialog>
 #include <QPushButton>
@@ -11,6 +11,17 @@
 //#include "volTKcolorWidget.h"
 
 #include "RangeSlider.h"
+
+namespace
+{
+	void notifyVolumetricChanged(CBaseObject* obj)
+	{
+		if (obj != nullptr)
+		{
+			CWorkspace::instance()->notifyObjectStateChanged(obj->id());
+		}
+	}
+}
 
 PropVolumetric::PropVolumetric(Volumetric *voltk, QWidget *parent) : PropWidget( parent )
 {
@@ -213,7 +224,7 @@ void PropVolumetric::winMinValueChanged(double i)
 	ui.spinWinMax->blockSignals(false);
 
 	updateInfo();
-	AppStateManager::updateAllViews();
+	notifyVolumetricChanged(obj);
 }
 
 void PropVolumetric::winMaxValueChanged(double i)
@@ -231,7 +242,7 @@ void PropVolumetric::winMaxValueChanged(double i)
 	ui.spinWinMin->blockSignals(false);
 
 	updateInfo();
-	AppStateManager::updateAllViews();
+	notifyVolumetricChanged(obj);
 }
 
 //void PropVolumetric::updateColorFilters()
@@ -281,7 +292,7 @@ void PropVolumetric::xBchanged(int v)
 	ui.xEspin->blockSignals(true);
 	ui.xEspin->setMinimum(val);
 	ui.xEspin->blockSignals(false);
-	AppStateManager::updateAllViews();
+	notifyVolumetricChanged(obj);
 }
 
 void PropVolumetric::xEchanged(int v)
@@ -297,7 +308,7 @@ void PropVolumetric::xEchanged(int v)
 	ui.xBspin->blockSignals(true);
 	ui.xBspin->setMaximum(val);
 	ui.xBspin->blockSignals(false);
-	AppStateManager::updateAllViews();
+	notifyVolumetricChanged(obj);
 }
 
 void PropVolumetric::yBchanged(int v)
@@ -313,7 +324,7 @@ void PropVolumetric::yBchanged(int v)
 	ui.yEspin->blockSignals(true);
 	ui.yEspin->setMinimum(val);
 	ui.yEspin->blockSignals(false);
-	AppStateManager::updateAllViews();
+	notifyVolumetricChanged(obj);
 }
 
 void PropVolumetric::yEchanged(int v)
@@ -329,7 +340,7 @@ void PropVolumetric::yEchanged(int v)
 	ui.yBspin->blockSignals(true);
 	ui.yBspin->setMaximum(val);
 	ui.yBspin->blockSignals(false);
-	AppStateManager::updateAllViews();
+	notifyVolumetricChanged(obj);
 }
 
 void PropVolumetric::zBchanged(int v)
@@ -345,7 +356,7 @@ void PropVolumetric::zBchanged(int v)
 	ui.zEspin->blockSignals(true);
 	ui.zEspin->setMinimum(val);
 	ui.zEspin->blockSignals(false);
-	AppStateManager::updateAllViews();
+	notifyVolumetricChanged(obj);
 }
 
 void PropVolumetric::zEchanged(int v)
@@ -361,19 +372,19 @@ void PropVolumetric::zEchanged(int v)
 	ui.zBspin->blockSignals(true);
 	ui.zBspin->setMaximum(val);
 	ui.zBspin->blockSignals(false);
-	AppStateManager::updateAllViews();
+	notifyVolumetricChanged(obj);
 }
 
 void PropVolumetric::on_fast_draw_checkbox(bool b)
 {
 	this->obj->m_fastDraw = b;
-	AppStateManager::updateAllViews();
+	notifyVolumetricChanged(obj);
 }
 
 void PropVolumetric::on_render_boxes_checkbox(bool b)
 {
 	this->obj->switch_renderBoxes(b);
-	AppStateManager::updateAllViews();
+	notifyVolumetricChanged(obj);
 }
 
 
@@ -389,7 +400,7 @@ void PropVolumetric::change_filter_min(int idx, double d) {
 	this->spin_max[idx]->blockSignals(true);
 	this->spin_max[idx]->setMinimum(val);
 	this->spin_max[idx]->blockSignals(false);
-	AppStateManager::updateAllViews();
+	notifyVolumetricChanged(obj);
 }
 
 void PropVolumetric::change_filter_max(int idx, double d) {
@@ -404,7 +415,7 @@ void PropVolumetric::change_filter_max(int idx, double d) {
 	this->spin_min[idx]->blockSignals(true);
 	this->spin_min[idx]->setMaximum(val);
 	this->spin_min[idx]->blockSignals(false);
-	AppStateManager::updateAllViews();
+	notifyVolumetricChanged(obj);
 }
 
 void PropVolumetric::on_f0_min_changed(double d) { change_filter_min(0, d); }
@@ -423,11 +434,11 @@ void PropVolumetric::on_f4_max_changed(double d) { change_filter_max(4, d); }
 void PropVolumetric::on_f5_max_changed(double d) { change_filter_max(5, d); }
 void PropVolumetric::on_f6_max_changed(double d) { change_filter_max(6, d); }
 
-void PropVolumetric::on_f0_checkbox(bool b) { this->obj->m_filters[0][0] = b ? 1 : 0; AppStateManager::updateAllViews(); }
-void PropVolumetric::on_f1_checkbox(bool b) { this->obj->m_filters[1][0] = b ? 1 : 0; AppStateManager::updateAllViews(); }
-void PropVolumetric::on_f2_checkbox(bool b) { this->obj->m_filters[2][0] = b ? 1 : 0; AppStateManager::updateAllViews(); }
-void PropVolumetric::on_f3_checkbox(bool b) { this->obj->m_filters[3][0] = b ? 1 : 0; AppStateManager::updateAllViews(); }
-void PropVolumetric::on_f4_checkbox(bool b) { this->obj->m_filters[4][0] = b ? 1 : 0; AppStateManager::updateAllViews(); }
-void PropVolumetric::on_f5_checkbox(bool b) { this->obj->m_filters[5][0] = b ? 1 : 0; AppStateManager::updateAllViews(); }
-void PropVolumetric::on_f6_checkbox(bool b) { this->obj->m_filters[6][0] = b ? 1 : 0; AppStateManager::updateAllViews(); }
+void PropVolumetric::on_f0_checkbox(bool b) { this->obj->m_filters[0][0] = b ? 1 : 0; notifyVolumetricChanged(obj); }
+void PropVolumetric::on_f1_checkbox(bool b) { this->obj->m_filters[1][0] = b ? 1 : 0; notifyVolumetricChanged(obj); }
+void PropVolumetric::on_f2_checkbox(bool b) { this->obj->m_filters[2][0] = b ? 1 : 0; notifyVolumetricChanged(obj); }
+void PropVolumetric::on_f3_checkbox(bool b) { this->obj->m_filters[3][0] = b ? 1 : 0; notifyVolumetricChanged(obj); }
+void PropVolumetric::on_f4_checkbox(bool b) { this->obj->m_filters[4][0] = b ? 1 : 0; notifyVolumetricChanged(obj); }
+void PropVolumetric::on_f5_checkbox(bool b) { this->obj->m_filters[5][0] = b ? 1 : 0; notifyVolumetricChanged(obj); }
+void PropVolumetric::on_f6_checkbox(bool b) { this->obj->m_filters[6][0] = b ? 1 : 0; notifyVolumetricChanged(obj); }
 

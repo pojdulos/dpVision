@@ -32,8 +32,10 @@ public:
 public slots:
 	void onWorkspaceObjectActivated(int);
 	void onWorkspaceObjectActivated(CBaseObject*);
+	void onWorkspaceObjectStateChanged(int);
 
 	void onWorkspaceObjectRemoved(int);
+	void onWorkspaceStructureChanged();
 
 
 	void onDarkModeChanged(bool);

@@ -25,6 +25,13 @@
 		for (auto l : listeners_) l->emitWorkspaceEvent(e);
 	}
 
+	void CWorkspace::notifyObjectStateChanged(int id) {
+		WorkspaceEvent e;
+		e.type = WorkspaceEventType::ObjectStateChanged;
+		e.objectId = id;
+		for (auto l : listeners_) l->emitWorkspaceEvent(e);
+	}
+
 	void CWorkspace::notifyObjectAdded(int id) {
 		WorkspaceEvent e;
 		e.type = WorkspaceEventType::ObjectAdded;
@@ -37,6 +44,12 @@
 		e.type = WorkspaceEventType::ObjectRemoved;
 		e.objectId = id;
 		e.objectType = tp;
+		for (auto l : listeners_) l->emitWorkspaceEvent(e);
+	}
+
+	void CWorkspace::notifyStructureChanged() {
+		WorkspaceEvent e;
+		e.type = WorkspaceEventType::StructureChanged;
 		for (auto l : listeners_) l->emitWorkspaceEvent(e);
 	}
 

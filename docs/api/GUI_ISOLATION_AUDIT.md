@@ -19,7 +19,7 @@ Goal:
 
 | GUI actor / subsystem | Needed communication | Existing contract / mechanism | Status | Notes / gaps | Recommended next step |
 | --- | --- | --- | --- | --- | --- |
-| `CMainWindow` | app state refresh, global view refresh, menu refresh, file-context refresh | `IAppStateListener`, `AppStateManager`, `QtAppStateAdapter` | `OK` | Main window is still the concrete GUI owner, but the command surface is already listener-based | Keep using `AppStateManager` as the host-side bridge; avoid routing new main-window operations through `UI::` |
+| `CMainWindow` | app state refresh, global view refresh, menu refresh, file-context refresh | `IAppStateListener`, `AppStateManager`, `QtAppStateAdapter`, direct main-window ownership of docks/views | `Partial` | `AppStateManager` is valid as a bridge from `core/api/plugin -> gui`, but local `gui -> gui` orchestration should not be pushed through extra global layers by default | Keep `AppStateManager` only as the host-side bridge; prefer direct `MainWindow -> dock/view` orchestration inside GUI and use workspace events for workspace/object mutation consequences |
 | Status bar | set text, timed text, clear | `IStatusListener`, `StatusBarManager`, `QtStatusBarAdapter`, `IStatusBarAPI` | `OK` | Legacy `UI::STATUSBAR` still exists, but the underlying path is isolated | Keep `StatusBarManager`; do not add a second message/status path |
 | Progress indicator | init, set value, set text, hide, cancel callback | `IProgressListener`, `QtProgressAdapter`, `IProgressControlAPI` | `OK` | Raw `ProgressIndicator*` still exists as privileged access only | Keep safe progress on `IProgressListener`; keep raw progress widget behind privileged GUI internals only |
 | User messages / message boxes | information, warning, error, question, status-channel routing | `IMessageListener`, `UserMessageManager`, `MessageBoxManager`, `QtMessageBoxAdapter`, `IMessageBoxAPI` | `OK` | Legacy wrapper still exists, but the host-side mechanism is already unified | Continue moving callers toward `UserMessageManager` / `IMessageBoxAPI` |
@@ -45,6 +45,12 @@ The strongest isolation story already exists for:
 - user messages
 - histogram dock
 - app-state refresh hooks
+
+Important refinement:
+
+- `AppStateManager` should not be treated as the answer to every refresh path
+- workspace/object mutation consequences should move toward workspace events
+- local `gui -> gui` coordination should often stay direct
 
 These areas already follow the preferred pattern:
 
@@ -118,6 +124,10 @@ issue, but it is one of the highest-value cleanup targets.
 
 5. Continue treating `IGuiInternalsAPI` as a privileged escape hatch, not as the
    default model for new plugin-facing work.
+
+6. Apply `GUI_COORDINATION_RULES.md` when deciding whether a refresh path should
+   stay on `AppStateManager`, move to workspace events, or become direct
+   `gui -> gui` orchestration.
 
 ## Short Version
 

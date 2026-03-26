@@ -166,6 +166,19 @@ namespace AP
 			return workspaceApi().addObject(obj, setItCurrent);
 		}
 
+		void notifyObjectStateChanged(int id)
+		{
+			if (id != NO_CURRENT_MODEL)
+			{
+				CWorkspace::instance()->notifyObjectStateChanged(id);
+			}
+		}
+
+		void notifyStructureChanged()
+		{
+			CWorkspace::instance()->notifyStructureChanged();
+		}
+
 		bool addImage(std::shared_ptr<CImage> im, bool showViewer, bool show3d)
 		{
 			return workspaceImageApi().addImage(std::move(im), showViewer, show3d);

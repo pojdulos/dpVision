@@ -1138,8 +1138,6 @@ void CContextMenu::slot_volumetric_sift_cloud()
 		std::shared_ptr<CPointCloud> cloud = std::static_pointer_cast<Volumetric>(m_obj)->sift_cloud(nfeatures, nOctaveLayers, contrastThreshold, edgeThreshold, sigma, factor);
 
 		CWorkspace::instance()->_objectAdd(cloud, m_obj);
-
-		AppStateManager::updateAllViews();
 	}
 
 	delete dlg;
@@ -1179,7 +1177,6 @@ void CContextMenu::slot_volumetric_marching_cube()
 		std::shared_ptr<CMesh> mesh = std::static_pointer_cast<Volumetric>(m_obj)->marching_cube(f);
 		
 		CWorkspace::instance()->_objectAdd(mesh, m_obj);
-		AppStateManager::updateAllViews();
 	}
 
 	delete dlg;
@@ -1219,8 +1216,6 @@ void CContextMenu::slot_volumetric_marching_tetra()
 		std::shared_ptr<CMesh> mesh = std::static_pointer_cast<Volumetric>(m_obj)->marching_tetrahedron(f);
 
 		CWorkspace::instance()->_objectAdd(mesh, m_obj);
-
-		AppStateManager::updateAllViews();
 	}
 
 	delete dlg;
@@ -1231,9 +1226,7 @@ void CContextMenu::slot_volumetric_marching_tetra()
 void CContextMenu::pointHide()
 {
 	m_obj->switchSelfVisibility();
-	//m_obj->setVisible(!m_obj->isVisible());
-	
-	AppStateManager::updateAllViews();
+	CWorkspace::instance()->notifyObjectStateChanged(m_obj->id());
 }
 
 #include "MainWindow.h"
@@ -1263,21 +1256,13 @@ void CContextMenu::slotExpandAll()
 void CContextMenu::slotHideAll()
 {
 	m_obj->showChildren(false, {}, {CBaseObject::Type::MODEL});
-	AppStateManager::updateAllViews();
-	if (DockWidgetWorkspace* dock = workspaceDock())
-	{
-		dock->updateVisibilityAll();
-	}
+	CWorkspace::instance()->notifyStructureChanged();
 }
 
 void CContextMenu::slotShowAll()
 {
 	m_obj->showChildren(true, {}, { CBaseObject::Type::MODEL });
-	AppStateManager::updateAllViews();
-	if (DockWidgetWorkspace* dock = workspaceDock())
-	{
-		dock->updateVisibilityAll();
-	}
+	CWorkspace::instance()->notifyStructureChanged();
 }
 
 

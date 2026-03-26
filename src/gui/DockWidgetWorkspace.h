@@ -95,6 +95,7 @@ private:
 	void colSelfVisibilityClicked(std::shared_ptr<CBaseObject> obj, WorkspaceTreeItem* clickedItem);
 	void colKidsVisibilityClicked(std::shared_ptr<CBaseObject> obj, WorkspaceTreeItem* clickedItem);
 	void colNameClicked(std::shared_ptr<CBaseObject> obj, WorkspaceTreeItem* clickedItem);
+	bool refreshItemById(int id);
 
 signals:
 	//void currentObjectChanged(std::shared_ptr<CBaseObject>);
@@ -102,8 +103,10 @@ signals:
 
 public slots:
 	void onWorkspaceObjectActivated(int);
+	void onWorkspaceObjectStateChanged(int);
 	void onWorkspaceObjectAdded(int);
 	void onWorkspaceObjectRemoved(int);
+	void onWorkspaceStructureChanged();
 
 	void onTreeViewItemClicked(QModelIndex);
 

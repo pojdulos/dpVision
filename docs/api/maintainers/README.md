@@ -1,15 +1,18 @@
 # Maintainers Index
 
-Ten podzbiór dokumentacji jest dla osób utrzymujących API i jego architekturę.
+This documentation subset is for people maintaining the API and its
+architecture.
 
-## Główne dokumenty
+## Core Documents
 
 - [API Architecture Direction](../API_ARCHITECTURE.md)
+- [GUI Coordination Rules](../GUI_COORDINATION_RULES.md)
 - [Legacy API Map](../LEGACY_API_MAP.md)
 - [API Interface Inventory](../API_INTERFACE_INVENTORY.md)
 
-## Dokumenty planistyczne i migracyjne
+## Planning And Migration
 
 - [API Refactor Roadmap](../API_REFACTOR_ROADMAP.md)
 - [API Refactor Checklist](../API_REFACTOR_CHECKLIST.md)
 - [AP Isolation Plan](../AP_ISOLATION_PLAN.md)
+- [GUI Isolation Audit](../GUI_ISOLATION_AUDIT.md)

@@ -1,13 +1,21 @@
 #include "propHistogram.h"
 #include "Histogram.h"
 
-#include "../core/AppStateManager.h"
+#include "../core/Workspace.h"
 #include "MainWindow.h"
 #include "DockWidgetHistogram.h"
 #include <QVBoxLayout>
 
 namespace
 {
+	void notifyHistogramChanged(CBaseObject* obj)
+	{
+		if (obj != nullptr)
+		{
+			CWorkspace::instance()->notifyObjectStateChanged(obj->id());
+		}
+	}
+
 	void repaintHistogramDock()
 	{
 		if (auto win = CMainWindow::instance())
@@ -125,14 +133,14 @@ void PropHistogram::changedLevels(int x)
 {
 	((CHistogram*)obj)->setLevels(x);
 	((CHistogram*)obj)->repaint();
-	AppStateManager::updateAllViews();
+	notifyHistogramChanged(obj);
 }
 
 void PropHistogram::changedABS(int x)
 {
 	((CHistogram*)obj)->setAbsValues(x!=0);
 	((CHistogram*)obj)->repaint();
-	AppStateManager::updateAllViews();
+	notifyHistogramChanged(obj);
 	updateProperties();
 }
 
@@ -151,7 +159,7 @@ void PropHistogram::changedLowerLimit(double y)
 
 	((CHistogram*)obj)->repaint();
 	showAdditionalInfo();
-	AppStateManager::updateAllViews();
+	notifyHistogramChanged(obj);
 }
 
 void PropHistogram::changedUpperLimit(double z)
@@ -168,7 +176,7 @@ void PropHistogram::changedUpperLimit(double z)
 
 	((CHistogram*)obj)->repaint();
 	showAdditionalInfo();
-	AppStateManager::updateAllViews();
+	notifyHistogramChanged(obj);
 }
 
 void PropHistogram::colorSchemeChanged(int i)
@@ -176,7 +184,7 @@ void PropHistogram::colorSchemeChanged(int i)
 	((CHistogram*)obj)->setColorMode( (CHistogram::ColorMode) i );
 	((CHistogram*)obj)->repaint();
 	showAdditionalInfo();
-	AppStateManager::updateAllViews();
+	notifyHistogramChanged(obj);
 }
 
 void PropHistogram::lblBoxChanged(bool b)

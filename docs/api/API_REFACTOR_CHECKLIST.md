@@ -15,6 +15,10 @@ in the related commit or PR description.
 - [~] Phase 5: invert legacy implementation
       `AP.cpp` is now wrapper-oriented and `UI.cpp` has been partially thinned;
       some legacy helper logic still remains in `UI.cpp`
+- [~] Phase 5a: stabilize host refresh semantics
+      workspace event infrastructure now includes `ObjectStateChanged` and
+      `StructureChanged`, and legacy `AP::WORKSPACE` wrappers exist; migration
+      of callers is still in progress
 
 ## Migration Rule
 
@@ -65,6 +69,21 @@ in the related commit or PR description.
 - [ ] Eliminate fake capability composition through null adapters
 - [ ] Remove duplication between default and legacy paths
 
+## Host Refresh Semantics
+
+- [x] Add workspace event hooks for object-state and structure refresh
+- [x] Connect GUI listeners to the new workspace event types
+- [x] Provide legacy `AP::WORKSPACE` wrappers for direct workspace notify calls
+- [~] Move workspace/object mutation refresh off direct GUI calls
+      `ContextMenu.cpp` and selected `MainWindow_Slots.cpp` paths now use
+      workspace notifications
+- [ ] Review remaining `AppStateManager` usage and classify each call as:
+      boundary bridge, workspace event candidate, or direct `gui -> gui`
+- [ ] Remove direct GUI refresh calls after object-state mutations in property
+      editors and similar GUI tools
+- [ ] Decide whether batch workspace/object-state updates need a dedicated
+      event, or whether one final `notifyStructureChanged()` remains sufficient
+
 ## Legacy Inversion
 
 - [~] Make `AP::` call the real API
@@ -97,6 +116,7 @@ in the related commit or PR description.
 - [x] legacy wrappers compile and delegate correctly
 - [ ] in-tree example plugins still build
 - [x] architecture docs still match reality after each phase
+- [ ] `GUI_COORDINATION_RULES.md` still matches reality after each phase
 - [x] starter CTest target exists (dpVisionApiTests)
 - [x] starter tests cover API boundary contracts and StatusBarManager behavior
 

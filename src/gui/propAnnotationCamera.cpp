@@ -4,7 +4,7 @@
 #include <qclipboard.h>
 
 //
-#include "../core/AppStateManager.h"
+#include "../core/Workspace.h"
 #include <QVBoxLayout>
 
 PropAnnotationCamera::PropAnnotationCamera(CAnnotationCamera*an, QWidget *parent) : PropWidget( parent )
@@ -56,7 +56,7 @@ void PropAnnotationCamera::clearMatrix()
 				a->matrix()[4 * row + col] = 0.0;
 		}
 	updateSensorProperties();
-	AppStateManager::updateAllViews();
+	CWorkspace::instance()->notifyObjectStateChanged(obj->id());
 }
 
 void PropAnnotationCamera::copyToClipboard()
@@ -103,7 +103,7 @@ void PropAnnotationCamera::pasteFromClipboard()
 			a->setMatrix(tmpMatrix);
 
 			updateSensorProperties();
-			AppStateManager::updateAllViews();
+			CWorkspace::instance()->notifyObjectStateChanged(obj->id());
 		}
 	}
 }

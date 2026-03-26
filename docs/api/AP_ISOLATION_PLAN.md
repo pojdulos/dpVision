@@ -18,6 +18,15 @@ The main rule remains:
 - introduce explicit interfaces only where the semantics are stable enough,
 - keep `AP::` as a compatibility shim over those interfaces.
 
+Additional rule introduced during the March 2026 cleanup:
+
+- legacy code should not notify GUI directly after workspace/object mutations
+- if the mutation already goes through semantic workspace/object helpers, those
+  helpers should own the refresh semantics
+- if legacy code mutates objects directly, it may temporarily use
+  `AP::WORKSPACE::notifyObjectStateChanged(...)` or
+  `AP::WORKSPACE::notifyStructureChanged()` as a transition path
+
 ## Classification
 
 Status labels:
@@ -243,6 +252,26 @@ Possible direction:
 - keep host-side synchronization hidden
 
 Status: `Later`
+
+### Legacy Direct Notify Hooks
+
+Legacy source:
+
+- `AP::WORKSPACE::notifyObjectStateChanged(...)`
+- `AP::WORKSPACE::notifyStructureChanged()`
+
+Why they exist:
+
+- legacy code still sometimes mutates object state or tree structure directly
+- those callers need a host-facing notification path without reaching into GUI
+
+Direction:
+
+- keep as transitional compatibility hooks
+- do not treat them as the preferred path for new code
+- prefer semantic workspace/object operations that emit events automatically
+
+Status: `Ready`
 
 ## Legacy Orchestration: Keep As Wrapper Logic
 

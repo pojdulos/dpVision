@@ -135,6 +135,34 @@ namespace AP
         DPVISION_EXPORT bool addObject(std::shared_ptr<CBaseObject> obj, bool setItCurrent = false);
 
         /**
+         * @brief Notify the host that one existing object's state changed, but
+         * the workspace tree structure did not.
+         *
+         * Use this after direct object mutations such as visibility, label,
+         * lock state, transform or geometry changes, when the object keeps the
+         * same parent and stays in the same place in the workspace tree.
+         *
+         * Do not use this for add/remove/reparent operations. Those should go
+         * through semantic workspace/object operations, or fall back to
+         * `notifyStructureChanged()` if legacy code already changed the tree.
+         */
+        DPVISION_EXPORT void notifyObjectStateChanged(int id);
+
+        /**
+         * @brief Notify the host that the workspace tree structure changed.
+         *
+         * Use this after direct structural mutations such as reparenting,
+         * moving an object under a different parent, rebuilding a subtree or
+         * changing visibility recursively in a way that effectively requires a
+         * workspace tree refresh.
+         *
+         * This is broader and heavier than `notifyObjectStateChanged()`. Prefer
+         * `notifyObjectStateChanged()` when only one object's internal state
+         * changed and the tree topology stayed the same.
+         */
+        DPVISION_EXPORT void notifyStructureChanged();
+
+        /**
          * @brief Loads a model from file with extension
          * @param fext File extension
          * @param path File path

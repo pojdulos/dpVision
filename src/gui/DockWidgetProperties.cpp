@@ -240,7 +240,27 @@ void DockWidgetProperties::onWorkspaceObjectActivated(CBaseObject* obj)
 	update();
 }
 
+void DockWidgetProperties::onWorkspaceObjectStateChanged(int)
+{
+	const int currentId = CWorkspace::instance()->_getCurrentModelId();
+	if (currentId != NO_CURRENT_MODEL && ui.tree->topLevelItemCount() > 0)
+	{
+		updateProperties();
+	}
+	else
+	{
+		selectionChanged(currentId);
+	}
+	update();
+}
+
 void DockWidgetProperties::onWorkspaceObjectRemoved(int) {
+	selectionChanged(CWorkspace::instance()->_getCurrentModelId());
+	update();
+}
+
+void DockWidgetProperties::onWorkspaceStructureChanged()
+{
 	selectionChanged(CWorkspace::instance()->_getCurrentModelId());
 	update();
 }

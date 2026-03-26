@@ -21,9 +21,6 @@ public:
 
 	virtual void updateProperties() override;
 
-public slots:
-	void pointSizeChanged(int);
-
 private:
 	Ui::propAnnotationSetOfFaces ui;
 };

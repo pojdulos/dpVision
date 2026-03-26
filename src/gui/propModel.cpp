@@ -1,21 +1,9 @@
 #include "propModel.h"
 
-#include "../api/adapters/AppAPIAdapter.h"
-#include "../core/AppStateManager.h"
+#include "../core/Workspace.h"
 
 #include "Model3D.h"
-
-#include "MainWindow.h"
 #include "QScrollArea"
-
-namespace
-{
-	AppAPIAdapter& appApi()
-	{
-		static AppAPIAdapter api;
-		return api;
-	}
-}
 
 PropModel::PropModel(CModel3D *m, QWidget *parent) : PropWidget( parent )
 {
@@ -105,16 +93,24 @@ QVector<PropWidget*> PropModel::create_and_get_subwidgets(CBaseObject *obj)
 	CModel3D* m = (CModel3D*)obj;
 	return QVector<PropWidget*>({
 			new PropBaseObject(m, nullptr), //, false),
-			new PropTransform(&m->getTransform(), nullptr)
+			new PropTransform(&m->getTransform(), nullptr, false, m)
 		});
 }
 
+namespace
+{
+	void notifyModelChanged(CModel3D* model)
+	{
+		if (model != nullptr)
+		{
+			CWorkspace::instance()->notifyObjectStateChanged(model->id());
+		}
+	}
+}
 
 void PropModel::changedRotX( double val )
 {
-	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
-
-	if ( NULL != obj )
+	if (obj != nullptr)
 	{
 		double v = val;
 		if (v > 180.000000)
@@ -140,15 +136,13 @@ void PropModel::changedRotX( double val )
 
 		//updateQuaternion(obj->getTransform().rotation());
 
-		AppStateManager::updateAllViews();
+		notifyModelChanged(obj);
 	}
 }
 
 void PropModel::changedRotY( double val )
 {
-	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
-
-	if (NULL != obj)
+	if (obj != nullptr)
 	{
 		double v = val;
 		if (v > 180.000000)
@@ -174,15 +168,13 @@ void PropModel::changedRotY( double val )
 
 		//updateQuaternion(obj->getTransform().rotation());
 
-		AppStateManager::updateAllViews();
+		notifyModelChanged(obj);
 	}
 }
 
 void PropModel::changedRotZ( double val )
 {
-	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
-
-	if (NULL != obj)
+	if (obj != nullptr)
 	{
 		double v = val;
 		if (v > 180.000000)
@@ -208,84 +200,80 @@ void PropModel::changedRotZ( double val )
 
 		//updateQuaternion(obj->getTransform().rotation());
 
-		AppStateManager::updateAllViews();
+		notifyModelChanged(obj);
 	}
 }
 
 
 void PropModel::changedTraXYZ( double val )
 {
-	if (std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel())
+	if (obj != nullptr)
 	{
 		obj->getTransform().translation().Set(ui.spinTransX->value(), ui.spinTransY->value(), ui.spinTransZ->value());
 
 		tra.Set( ui.spinTransX->value(), ui.spinTransY->value(), ui.spinTransZ->value() );
 
-		AppStateManager::updateAllViews();
+		notifyModelChanged(obj);
 	}
 }
 
 void PropModel::changedScale( double val )
 {
-	if (std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel())
+	if (obj != nullptr)
 	{
 		obj->getTransform().setScale( val );
 
-		AppStateManager::updateAllViews();
+		notifyModelChanged(obj);
 	}
 }
 
 void PropModel::changedCentered( int val )
 {
-	if (std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel())
+	if (obj != nullptr)
 	{
 		obj->getTransform().moveTheOriginToTheCenterOfRotation( val == Qt::Checked );
 
-		AppStateManager::updateAllViews();
+		notifyModelChanged(obj);
 	}
 }
 
 void PropModel::changedQX(double x)
 {
-	if (NULL != obj)
+	if (obj != nullptr)
 	{
-		((CModel3D*)obj)->getTransform().rotation().setX(x);
-		rot = ((CModel3D*)obj)->getTransform().rotation().eulerAnglesDeg();
-		AppStateManager::updateAllViews();
-		updateProperties();
+		obj->getTransform().rotation().setX(x);
+		rot = obj->getTransform().rotation().eulerAnglesDeg();
+		notifyModelChanged(obj);
 	}
 }
 
 void PropModel::changedQY(double y)
 {
-	if (NULL != obj)
+	if (obj != nullptr)
 	{
-		((CModel3D*)obj)->getTransform().rotation().setY(y);
-		rot = ((CModel3D*)obj)->getTransform().rotation().eulerAnglesDeg();
-		AppStateManager::updateAllViews();
-		updateProperties();
+		obj->getTransform().rotation().setY(y);
+		rot = obj->getTransform().rotation().eulerAnglesDeg();
+		notifyModelChanged(obj);
 	}
 }
 
 void PropModel::changedQZ(double z)
 {
-	if (NULL != obj)
+	if (obj != nullptr)
 	{
-		((CModel3D*)obj)->getTransform().rotation().setZ(z);
-		rot = ((CModel3D*)obj)->getTransform().rotation().eulerAnglesDeg();
-		AppStateManager::updateAllViews();
-		updateProperties();
+		obj->getTransform().rotation().setZ(z);
+		rot = obj->getTransform().rotation().eulerAnglesDeg();
+		notifyModelChanged(obj);
 	}
 }
 
 void PropModel::changedQW(double w)
 {
-	if (NULL != obj)
+	if (obj != nullptr)
 	{
-		((CModel3D*)obj)->getTransform().rotation().setW(w);
-		rot = ((CModel3D*)obj)->getTransform().rotation().eulerAnglesDeg();
-		AppStateManager::updateAllViews();
-		updateProperties();
+		obj->getTransform().rotation().setW(w);
+		rot = obj->getTransform().rotation().eulerAnglesDeg();
+		notifyModelChanged(obj);
 	}
 }
 
