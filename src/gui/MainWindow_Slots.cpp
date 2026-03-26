@@ -83,7 +83,7 @@ void CMainWindow::viewerSelected(QMdiSubWindow* window)
 		MdiChild* child = (MdiChild*)window->widget();
 		if (child->hasType(MdiChild::Type::Pic))
 		{
-			appApi().workspaceActivation().setCurrentObject(((PicViewer*)child->m_widget)->id());
+			CWorkspace::instance()->_objectActivate(((PicViewer*)child->m_widget)->id());
 		}
 	}
 }
@@ -181,7 +181,8 @@ void CMainWindow::fileOpen()
 
 void CMainWindow::fileSave()
 {
-	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
+	CWorkspace* wksp = CWorkspace::instance();
+	std::shared_ptr<CModel3D> obj = wksp->_getModel(wksp->_getCurrentModelId());
 
 	if ( NULL != obj )
 	{
@@ -417,7 +418,8 @@ void CMainWindow::projectionPerspective()
 
 void CMainWindow::modelVisibility( bool vis )
 {
-	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
+	CWorkspace* wksp = CWorkspace::instance();
+	std::shared_ptr<CModel3D> obj = wksp->_getModel(wksp->_getCurrentModelId());
 	if ( nullptr != obj )
 	{
 		if ( vis )
@@ -437,7 +439,7 @@ void CMainWindow::modelVisibility( bool vis )
 
 void CMainWindow::modelInvertNormals()
 {
-	if (std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel())
+	if (std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId()))
 	{
 		if (auto m = std::dynamic_pointer_cast<CMesh>(obj->getChild()))
 		{
@@ -454,7 +456,8 @@ void CMainWindow::modelInvertNormals()
 
 void CMainWindow::meshApplyTransformations()
 {
-	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
+	CWorkspace* wksp = CWorkspace::instance();
+	std::shared_ptr<CModel3D> obj = wksp->_getModel(wksp->_getCurrentModelId());
 	if (NULL != obj)
 	{
 		if ( auto o = std::dynamic_pointer_cast<CObject>(obj->getChild()) )
@@ -484,7 +487,7 @@ void CMainWindow::meshApplyTransformations()
 
 void CMainWindow::renderAsFaces()
 {
-	if (std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel())
+	if (std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId()))
 	{
 		obj->switchOption( CModel3D::Opt::optRenderAsPoints, CModel3D::Switch::switchOff );
 		obj->switchOption( CModel3D::Opt::optRenderAsEdges, CModel3D::Switch::switchOff );
@@ -496,7 +499,7 @@ void CMainWindow::renderAsFaces()
 
 void CMainWindow::renderAsEdges()
 {
-	if (std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel())
+	if (std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId()))
 	{
 		obj->switchOption( CModel3D::Opt::optRenderAsPoints, CModel3D::Switch::switchOff );
 		obj->switchOption( CModel3D::Opt::optRenderAsEdges, CModel3D::Switch::switchOn );
@@ -508,7 +511,7 @@ void CMainWindow::renderAsEdges()
 
 void CMainWindow::renderAsVertices()
 {
-	if (std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel())
+	if (std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId()))
 	{
 		obj->switchOption( CModel3D::Opt::optRenderAsEdges, CModel3D::Switch::switchOff );
 		obj->switchOption( CModel3D::Opt::optRenderAsPoints, CModel3D::Switch::switchOn );
@@ -520,7 +523,7 @@ void CMainWindow::renderAsVertices()
 
 void CMainWindow::textureOnOff()
 {
-	if (std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel())
+	if (std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId()))
 	{
 		if ( obj->switchOption( CModel3D::Opt::optRenderWithTexture, CModel3D::Switch::switchToggle ) )
 		{
@@ -539,7 +542,7 @@ void CMainWindow::textureOnOff()
 
 void CMainWindow::smoothingOnOff()
 {
-	if (std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel())
+	if (std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId()))
 	{
 		obj->calcVN();
 		StatusBarManager::setText( obj->switchOption( CModel3D::Opt::optSmoothVertices, CModel3D::Switch::switchToggle ) ? "Wygladzanie wierzcholkow: wlaczone" : "Wygladzanie wierzcholkow: wylaczone" );
@@ -551,7 +554,7 @@ void CMainWindow::smoothingOnOff()
 
 void CMainWindow::createNewCopy()
 {
-	appApi().workspaceDuplication().duplicateCurrentModel();
+	CWorkspace::instance()->duplicateCurrentModel();
 }
 
 void CMainWindow::cameraResetPosition()
@@ -706,7 +709,7 @@ void CMainWindow::actionLookDir()
 		dir = 6;
 	}
 
-	actionLookDir(dir, appApi().workspace().getCurrentModel());
+	actionLookDir(dir, CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId()));
 }
 
 void CMainWindow::actionSelectSelectionDelete()
@@ -748,7 +751,7 @@ void CMainWindow::actionSelectNone()
 
 void CMainWindow::imageFit(bool fit)
 {
-	std::shared_ptr<CModel3D> im = appApi().workspace().getCurrentModel();
+	std::shared_ptr<CModel3D> im = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId());
 	if ((im != nullptr) && im->hasType(CObject::IMAGE))
 	{
 		ImageViewerHost::setFitToWindow(im->id(), fit);
@@ -806,7 +809,7 @@ void CMainWindow::openWorkspace()
 	
 	if (0 == reply)
 	{
-		appApi().workspaceBulk().removeAll();
+		CWorkspace::instance()->removeAll();
 		//unsigned long t1, t2;
 
 		//t1 = GetTickCount();
@@ -861,13 +864,13 @@ void CMainWindow::saveWorkspace()
 void CMainWindow::removeAllModels()
 {
 	int reply = QMessageBox::question(0, "You are about to removing all models in your workspace.\nRealy you want to do it?", "Caution!");
-	if ( 0 == reply ) appApi().workspaceBulk().removeAll();
+	if ( 0 == reply ) CWorkspace::instance()->removeAll();
 }
 
 void CMainWindow::removeSelectedModels()
 {
 	int reply = QMessageBox::question(0, "You are about to removing all selected (checked) models.\nRealy you want to do it?", "Caution!");
-	if (0 == reply) appApi().workspaceBulk().removeSelected();
+	if (0 == reply) CWorkspace::instance()->removeSelected();
 }
 
 void CMainWindow::resetAllTransformations()
@@ -884,7 +887,10 @@ void CMainWindow::resetSelectedTransformations()
 	std::list<int> sel = CWorkspace::instance()->getSelection();
 	for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
 	{
-		appApi().workspace().getModel(*it)->transform().reset();
+		if (std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(*it))
+		{
+			obj->transform().reset();
+		}
 	}
 	CWorkspace::instance()->notifyStructureChanged();
 }
@@ -903,8 +909,10 @@ void CMainWindow::lockSelectedModels()
 	std::list<int> sel = CWorkspace::instance()->getSelection();
 	for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
 	{
-		std::shared_ptr<CModel3D> obj = appApi().workspace().getModel(*it);
-		obj->setLocked(true);
+		if (std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(*it))
+		{
+			obj->setLocked(true);
+		}
 	}
 	CWorkspace::instance()->notifyStructureChanged();
 }
@@ -923,62 +931,57 @@ void CMainWindow::unlockSelectedModels()
 	std::list<int> sel = CWorkspace::instance()->getSelection();
 	for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
 	{
-		std::shared_ptr<CModel3D> obj = appApi().workspace().getModel(*it);
-		obj->setLocked(false);
+		if (std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(*it))
+		{
+			obj->setLocked(false);
+		}
 	}
 	CWorkspace::instance()->notifyStructureChanged();
 }
 
 void CMainWindow::selectAll()
 {
-	CWorkspace::instance()->clearSelection();
-	for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = CWorkspace::instance()->begin(); it != CWorkspace::instance()->end(); it++)
-	{
-		appApi().workspaceSelection().select(it->first);
-	}
+	CWorkspace::instance()->selectAll();
 }
 
 void CMainWindow::unselectAll()
 {
-	std::list<int> sel = CWorkspace::instance()->getSelection();
-	for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
-	{
-		appApi().workspaceSelection().unselect(*it);
-	}
+	CWorkspace::instance()->clearSelection();
+	CWorkspace::instance()->notifyStructureChanged();
 }
 
 void CMainWindow::hideAllModels()
 {
-	appApi().workspaceBulk().setAllVisible(false);
+	CWorkspace::instance()->setAllVisible(false);
 }
 
 void CMainWindow::hideSelectedModels()
 {
-	appApi().workspaceSelection().setSelectedVisible(false);
+	CWorkspace::instance()->setSelectedVisible(false);
 }
 
 void CMainWindow::showAllModels()
 {
-	appApi().workspaceBulk().setAllVisible(true);
+	CWorkspace::instance()->setAllVisible(true);
 }
 
 void CMainWindow::showSelectedModels()
 {
-	appApi().workspaceSelection().setSelectedVisible(true);
+	CWorkspace::instance()->setSelectedVisible(true);
 }
 
 void CMainWindow::modelInSelection(bool b)
 {
-	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
+	std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId());
 	if (nullptr != obj)
 	{
 		if (b)
 		{
-			appApi().workspaceSelection().select(obj->id());
+			CWorkspace::instance()->addToSelection(obj->id());
 		}
 		else
 		{
-			appApi().workspaceSelection().unselect(obj->id());
+			CWorkspace::instance()->removeFromSelection(obj->id());
 		}
 		CWorkspace::instance()->notifyObjectStateChanged(obj->id());
 	}
@@ -986,7 +989,7 @@ void CMainWindow::modelInSelection(bool b)
 
 void CMainWindow::modelResetTransformations()
 {
-	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
+	std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId());
 	if (nullptr != obj)
 	{
 		obj->transform().reset();
@@ -998,7 +1001,7 @@ void CMainWindow::modelResetTransformations()
 
 void CMainWindow::modelLock( bool b )
 {
-	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
+	std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId());
 	if ( nullptr != obj )
 	{
 		if ( obj->setLocked( b ) )
@@ -1033,8 +1036,7 @@ void CMainWindow::modelClose()
 	}
 
 	auto wksp = CWorkspace::instance();
-
-	auto obj = appApi().workspace().getCurrentModel();
+	auto obj = wksp->_getModel(wksp->_getCurrentModelId());
 
 	if (obj != nullptr)
 	{
@@ -1045,7 +1047,7 @@ void CMainWindow::modelClose()
 		}
 		else
 		{
-			if (wksp->_objectRemove(obj))
+			if (wksp->removeCurrent())
 				StatusBarManager::setText("Current model has been removed...");
 		}
 	}
@@ -1057,7 +1059,7 @@ void CMainWindow::modelClose()
 
 void CMainWindow::pmEcol()
 {
-	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
+	std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId());
 
 	if ( NULL != obj )
 	{
@@ -1071,7 +1073,7 @@ void CMainWindow::pmEcol()
 		if ( pmD->exec() )
 		{	
 			try {
-				std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
+				std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId());
 				if ( NULL != obj )
 				{
 					QFileInfo f( obj->path() );
@@ -1086,7 +1088,7 @@ void CMainWindow::pmEcol()
 
 						obj->setPath( f.absolutePath() + "/" + fname + "." + f.completeSuffix() );
 						
-						appApi().workspace().addModel(obj, false);
+						CWorkspace::instance()->_objectAdd(obj);
 					}
 					else
 					{
@@ -1109,7 +1111,7 @@ void CMainWindow::pmEcol()
 
 void CMainWindow::pmVsplit()
 {
-	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
+	std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId());
 
 	if ( NULL != obj )
 	{
@@ -1124,7 +1126,7 @@ void CMainWindow::pmVsplit()
 		{	
 			if ( pmUi.checkBox->isChecked() )
 			{
-				obj = appApi().workspaceDuplication().duplicateCurrentModel();
+				obj = CWorkspace::instance()->duplicateCurrentModel();
 				if (nullptr == obj) return;
 			}
 

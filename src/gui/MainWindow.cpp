@@ -1,9 +1,9 @@
 #include "MainWindow.h"
 
 #include "../api/AP.h"
-#include "../api/adapters/AppAPIAdapter.h"
 #include "MainApplication.h"
 #include "Model3D.h"
+#include "../core/Workspace.h"
 
 //#include <QtWidgets/QMainWindow>
 //#include <QtWidgets/QProgressBar>
@@ -43,14 +43,6 @@
 #include "adapters/QtProgressAdapter.h"
 #include "adapters/QtWorkspacePanelAdapter.h"
 
-namespace
-{
-	AppAPIAdapter& appApi()
-	{
-		static AppAPIAdapter api;
-		return api;
-	}
-}
 #include "events/QtWorkspaceEvents.h"
 
 void restoreDockGeometry(QDockWidget* dock)
@@ -308,7 +300,8 @@ void CMainWindow::addPluginToListView( int id, QString txt )
 
 void CMainWindow::changeMenuAfterSelect()
 {
-	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
+	CWorkspace* wksp = CWorkspace::instance();
+	std::shared_ptr<CModel3D> obj = wksp->_getModel(wksp->_getCurrentModelId());
 
 	if ( NULL == obj )
 	{
@@ -333,7 +326,7 @@ void CMainWindow::changeMenuAfterSelect()
 		ui.action_Model_ShowTexture->setChecked( obj->testOption( CModel3D::optRenderWithTexture ) );
 		ui.action_Model_Lock->setChecked( obj->isLocked() );
 		
-		ui.actionModelInSelection->setChecked(appApi().workspaceSelection().contains(obj->id()));
+		ui.actionModelInSelection->setChecked(wksp->inSelection(obj->id()));
 
 		ui.action_Model_ShowBB->setChecked( obj->DrawBB() );
 		

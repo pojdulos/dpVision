@@ -1,25 +1,13 @@
 #include "GraphNode.h"
 #include "GraphEdge.h"
 
-#include <QDebug>
 #include <QBrush>
+#include <QDebug>
+#include <QKeyEvent>
 #include <QPainter>
-#include "BaseObject.h"
-#include "../core/AppStateManager.h"
-#include "MainWindow.h"
-#include "DockWidgetWorkspace.h"
 
-namespace
-{
-	DockWidgetWorkspace* workspaceDock()
-	{
-		if (auto win = CMainWindow::instance())
-		{
-			return win->dockWorkspace;
-		}
-		return nullptr;
-	}
-}
+#include "BaseObject.h"
+#include "Workspace.h"
 
 GraphNode::GraphNode(qreal x, qreal y, const QString& label, ShapeType shape)
     : QGraphicsTextItem(label), m_shape(shape), m_obj(nullptr)
@@ -32,8 +20,8 @@ GraphNode::GraphNode(qreal x, qreal y, const QString& label, ShapeType shape)
     setFlag(QGraphicsItem::ItemIsMovable, true);
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
 
-    //setTextInteractionFlags(Qt::TextEditorInteraction); // umoÄąÄ˝liwia edycjĂ„â„˘ tekstu po dwukliku
-    setTextInteractionFlags(Qt::NoTextInteraction); // domyÄąâ€şlnie brak edycji
+    // setTextInteractionFlags(Qt::TextEditorInteraction); // enables editing on double click
+    setTextInteractionFlags(Qt::NoTextInteraction); // editing disabled by default
 
     setDefaultTextColor(Qt::black);
 }
@@ -43,143 +31,145 @@ GraphNode::GraphNode(qreal x, qreal y, CBaseObject* obj) : QGraphicsTextItem(), 
     setPos(x, y);
     setZValue(10);
 
-    this->setPlainText((m_obj) ? m_obj->getLabel() : "nullptr");
+    setPlainText((m_obj != nullptr) ? m_obj->getLabel() : "nullptr");
 
-    auto sc = (m_obj) ? obj2shape2(m_obj) : std::pair<GraphNode::ShapeType, QColor>(ShapeType::Triangle, Qt::gray);
+    auto sc = (m_obj != nullptr)
+        ? obj2shape2(m_obj)
+        : std::pair<GraphNode::ShapeType, QColor>(ShapeType::Triangle, Qt::gray);
     m_shape = sc.first;
     m_color = sc.second;
 
     setFlag(QGraphicsItem::ItemIsMovable, true);
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
 
-    setTextInteractionFlags(Qt::NoTextInteraction); // domyÄąâ€şlnie brak edycji
+    setTextInteractionFlags(Qt::NoTextInteraction); // editing disabled by default
 
     setDefaultTextColor(Qt::black);
 }
-
 
 void GraphNode::setObject(CBaseObject* obj)
 {
     m_obj = obj;
 
-    if (m_obj) this->setPlainText(m_obj->getLabel());
+    if (m_obj != nullptr)
+    {
+        setPlainText(m_obj->getLabel());
+    }
 }
 
 void GraphNode::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
-    setTextInteractionFlags(Qt::TextEditorInteraction); // WÄąâ€šĂ„â€¦cz edycjĂ„â„˘
+    setTextInteractionFlags(Qt::TextEditorInteraction); // enable editing
     setFocus(Qt::MouseFocusReason);
     QGraphicsTextItem::mouseDoubleClickEvent(event);
 }
 
-
 void GraphNode::focusOutEvent(QFocusEvent* event)
 {
-    setTextInteractionFlags(Qt::NoTextInteraction); // WyÄąâ€šĂ„â€¦cz edycjĂ„â„˘
+    setTextInteractionFlags(Qt::NoTextInteraction); // disable editing
 
-    if (m_obj)
+    if (m_obj != nullptr)
     {
-        m_obj->setLabel(this->toPlainText());
-        if (DockWidgetWorkspace* dock = workspaceDock())
-        {
-            dock->setItemLabelById(m_obj->id(), m_obj->getLabel());
-        }
-        AppStateManager::updateProperties();
-        //updateAllViews();
+        m_obj->setLabel(toPlainText());
+        CWorkspace::instance()->notifyObjectStateChanged(m_obj->id());
     }
 
     QGraphicsTextItem::focusOutEvent(event);
 }
 
-#include <QKeyEvent>
-
 void GraphNode::keyPressEvent(QKeyEvent* event)
 {
-    if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
-        clearFocus(); // zakoÄąâ€žcz edycjĂ„â„˘ i wywoÄąâ€šaj focusOutEvent
+    if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
+    {
+        clearFocus(); // finish editing and trigger focusOutEvent
     }
-    else if (event->key() == Qt::Key_Escape) {
-        if (m_obj)
-            setPlainText(m_obj->getLabel()); // anuluj edycjĂ„â„˘ do starej etykiety
+    else if (event->key() == Qt::Key_Escape)
+    {
+        if (m_obj != nullptr)
+        {
+            setPlainText(m_obj->getLabel()); // restore previous label
+        }
         clearFocus();
     }
-    else {
+    else
+    {
         QGraphicsTextItem::keyPressEvent(event);
     }
 }
 
-
-void GraphNode::addEdge(GraphEdge* e) {
+void GraphNode::addEdge(GraphEdge* e)
+{
     m_edges.push_back(e);
 }
 
-QRectF GraphNode::boundingRect() const {
+QRectF GraphNode::boundingRect() const
+{
     QRectF textRect = QGraphicsTextItem::boundingRect();
     return textRect.marginsAdded(QMarginsF(m_margin, m_margin, m_margin, m_margin));
 }
 
-QPainterPath GraphNode::shapePath() const {
+QPainterPath GraphNode::shapePath() const
+{
     QRectF r = boundingRect();
     QPainterPath path;
 
-    auto addDiamond = [&path](const QRectF& r) {
+    auto addDiamond = [&path](const QRectF& rect) {
         QPolygonF diamond;
-        diamond << r.center() + QPointF(0, -r.height() / 2)
-            << r.center() + QPointF(r.width() / 2, 0)
-            << r.center() + QPointF(0, r.height() / 2)
-            << r.center() + QPointF(-r.width() / 2, 0)
-            << r.center() + QPointF(0, -r.height() / 2);
+        diamond << rect.center() + QPointF(0, -rect.height() / 2)
+                << rect.center() + QPointF(rect.width() / 2, 0)
+                << rect.center() + QPointF(0, rect.height() / 2)
+                << rect.center() + QPointF(-rect.width() / 2, 0)
+                << rect.center() + QPointF(0, -rect.height() / 2);
         path.addPolygon(diamond);
-        };
+    };
 
-    auto addTriangle = [&path](const QRectF& r) {
+    auto addTriangle = [&path](const QRectF& rect) {
         QPolygonF tri;
-        tri << r.center() + QPointF(0, -r.height() / 2)
-            << r.center() + QPointF(r.width() / 2, r.height() / 2)
-            << r.center() + QPointF(-r.width() / 2, r.height() / 2)
-            << r.center() + QPointF(0, -r.height() / 2);
+        tri << rect.center() + QPointF(0, -rect.height() / 2)
+            << rect.center() + QPointF(rect.width() / 2, rect.height() / 2)
+            << rect.center() + QPointF(-rect.width() / 2, rect.height() / 2)
+            << rect.center() + QPointF(0, -rect.height() / 2);
         path.addPolygon(tri);
-        };
+    };
 
-    switch (m_shape) {
-        case ShapeType::Ellipse:
-            path.addEllipse(r);
-            break;
-        case ShapeType::Rectangle:
-            path.addRect(r);
-            break;
-        case ShapeType::Diamond:
-            addDiamond(r);
-            break;
-        case ShapeType::Triangle:
-            addTriangle(r);
-            break;
+    switch (m_shape)
+    {
+    case ShapeType::Ellipse:
+        path.addEllipse(r);
+        break;
+    case ShapeType::Rectangle:
+        path.addRect(r);
+        break;
+    case ShapeType::Diamond:
+        addDiamond(r);
+        break;
+    case ShapeType::Triangle:
+        addTriangle(r);
+        break;
     }
     return path;
 }
 
-QPainterPath GraphNode::shape() const {
+QPainterPath GraphNode::shape() const
+{
     return shapePath();
 }
 
-QColor GraphNode::getShapeColor(GraphNode::ShapeType shape) {
-    switch (shape) {
+QColor GraphNode::getShapeColor(GraphNode::ShapeType shape)
+{
+    switch (shape)
+    {
     case ShapeType::Ellipse:
         return Qt::yellow;
-        break;
     case ShapeType::Rectangle:
         return Qt::cyan;
-        break;
     case ShapeType::Diamond:
         return Qt::green;
-        break;
     case ShapeType::Triangle:
     default:
         return Qt::gray;
-        break;
     }
 }
-
 
 std::pair<GraphNode::ShapeType, QColor> GraphNode::obj2shape2(CBaseObject* obj)
 {
@@ -188,7 +178,8 @@ std::pair<GraphNode::ShapeType, QColor> GraphNode::obj2shape2(CBaseObject* obj)
 
     if (obj->hasCategory(CBaseObject::Category::OBJECT))
     {
-        switch (obj->type()) {
+        switch (obj->type())
+        {
         case CBaseObject::Type::MODEL:
             shape = GraphNode::ShapeType::Rectangle;
             color = QColor(Qt::cyan);
@@ -196,6 +187,8 @@ std::pair<GraphNode::ShapeType, QColor> GraphNode::obj2shape2(CBaseObject* obj)
         case CBaseObject::Type::MOVEMENT:
             shape = GraphNode::ShapeType::Diamond;
             color = QColor(Qt::green);
+            break;
+        default:
             break;
         }
     }
@@ -208,22 +201,23 @@ std::pair<GraphNode::ShapeType, QColor> GraphNode::obj2shape2(CBaseObject* obj)
     return { shape, color };
 }
 
-
 GraphNode::ShapeType GraphNode::obj2shape(CBaseObject* obj)
 {
     GraphNode::ShapeType shape = GraphNode::ShapeType::Ellipse;
     if (obj->hasType(CBaseObject::Type::MODEL))
+    {
         shape = GraphNode::ShapeType::Rectangle;
+    }
     else if (obj->hasType(CBaseObject::Type::MOVEMENT))
+    {
         shape = GraphNode::ShapeType::Diamond;
+    }
 
     return shape;
 }
 
-
-void GraphNode::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
-    QRectF r = boundingRect();                    // boundingRect z marginesami
-    QRectF textRect = QGraphicsTextItem::boundingRect(); // rect tekstu
+void GraphNode::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
+{
     painter->setPen(Qt::black);
 
     painter->save();
@@ -231,29 +225,33 @@ void GraphNode::paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
     painter->drawPath(shapePath());
     painter->restore();
 
-    // ... tekst bez zmian
-    QPointF textOffset = (boundingRect().center() - QGraphicsTextItem::boundingRect().center());
+    QPointF textOffset = boundingRect().center() - QGraphicsTextItem::boundingRect().center();
     painter->save();
     painter->translate(textOffset);
     QGraphicsTextItem::paint(painter, option, widget);
     painter->restore();
 }
 
-QPointF GraphNode::in_pos() const {
+QPointF GraphNode::in_pos() const
+{
     QRectF r = boundingRect();
     return pos() + QPointF(r.width() / 2.0 - m_margin, 0.0);
 }
 
-QPointF GraphNode::out_pos() const {
+QPointF GraphNode::out_pos() const
+{
     QRectF r = boundingRect();
     return pos() + QPointF(r.width() / 2.0 - m_margin, r.height() / 2.0 - m_margin);
 }
 
-
-QVariant GraphNode::itemChange(GraphicsItemChange change, const QVariant& value) {
-    if (change == ItemPositionHasChanged) {
+QVariant GraphNode::itemChange(GraphicsItemChange change, const QVariant& value)
+{
+    if (change == ItemPositionHasChanged)
+    {
         for (auto edge : m_edges)
+        {
             edge->updatePosition();
+        }
     }
     return QGraphicsTextItem::itemChange(change, value);
 }

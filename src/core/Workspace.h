@@ -81,6 +81,15 @@ public:
 	// remove object from workspace
 	bool _objectRemove(int id);
 
+	bool removeAll();
+	bool removeSelected();
+	bool removeCurrent();
+	void setAllVisible(bool visible);
+	void setSelectedVisible(bool visible);
+	void selectAll();
+	std::shared_ptr<CModel3D> duplicateModel(int id);
+	std::shared_ptr<CModel3D> duplicateCurrentModel();
+
 
 	typedef CModel3D ChildType;
 	//typedef std::map<int, ChildType*> Children;

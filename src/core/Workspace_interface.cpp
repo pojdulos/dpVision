@@ -168,3 +168,85 @@
 			return false;
 	}
 
+	bool CWorkspace::removeAll()
+	{
+		const bool result = _removeAllModels();
+		notifyStructureChanged();
+		return result;
+	}
+
+	bool CWorkspace::removeSelected()
+	{
+		const std::list<int> selection = getSelection();
+		bool removed = false;
+		for (std::list<int>::const_reverse_iterator it = selection.rbegin(); it != selection.rend(); ++it)
+		{
+			removed = _objectRemove(*it) || removed;
+		}
+		return removed;
+	}
+
+	bool CWorkspace::removeCurrent()
+	{
+		if (m_idOfCurrentModel == NO_CURRENT_MODEL)
+		{
+			return false;
+		}
+		return _objectRemove(m_idOfCurrentModel);
+	}
+
+	void CWorkspace::setAllVisible(bool visible)
+	{
+		for (CWorkspace::iterator it = begin(); it != end(); ++it)
+		{
+			it->second->setSelfVisibility(visible);
+			it->second->setKidsVisibility(visible);
+		}
+		notifyStructureChanged();
+	}
+
+	void CWorkspace::setSelectedVisible(bool visible)
+	{
+		const std::list<int> selection = getSelection();
+		for (int id : selection)
+		{
+			if (std::shared_ptr<CModel3D> model = _getModel(id))
+			{
+				model->setSelfVisibility(visible);
+			}
+		}
+		notifyStructureChanged();
+	}
+
+	void CWorkspace::selectAll()
+	{
+		clearSelection();
+		for (CWorkspace::iterator it = begin(); it != end(); ++it)
+		{
+			addToSelection(it->first);
+		}
+		notifyStructureChanged();
+	}
+
+	std::shared_ptr<CModel3D> CWorkspace::duplicateModel(int id)
+	{
+		std::shared_ptr<CModel3D> original = _getModel(id);
+		if (original == nullptr)
+		{
+			return nullptr;
+		}
+
+		std::shared_ptr<CModel3D> copy = std::dynamic_pointer_cast<CModel3D>(original->getCopy());
+		if (copy != nullptr && _objectAdd(copy) != -1)
+		{
+			return copy;
+		}
+
+		return nullptr;
+	}
+
+	std::shared_ptr<CModel3D> CWorkspace::duplicateCurrentModel()
+	{
+		return duplicateModel(_getCurrentModelId());
+	}
+

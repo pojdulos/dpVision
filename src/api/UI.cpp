@@ -8,8 +8,6 @@
 
 #include "DockWidgetWorkspace.h"
 #include "DockWidgetProperties.h"
-#include "DockWidgetModel.h"
-#include "DockWidgetViewer.h"
 #include "DockWidgetLights.h"
 #include "DockWidgetPluginList.h"
 #include "DockWidgetPluginPanel.h"

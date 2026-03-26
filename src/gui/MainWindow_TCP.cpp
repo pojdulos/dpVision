@@ -2,7 +2,6 @@
 
 #include "../api/AP.h"
 #include "../api/adapters/AppAPIAdapter.h"
-#include "../core/AppStateManager.h"
 #include "MainApplication.h"
 
 //
@@ -101,11 +100,10 @@ void CMainWindow::proceessData()
 		int id = QString(cmdline.at(1)).toInt();
 		double rX = QString(cmdline.at(2)).toDouble();
 
-		std::shared_ptr<CModel3D> obj = std::dynamic_pointer_cast<CModel3D>(appApi().workspace().findId(id));
+		std::shared_ptr<CModel3D> obj = std::dynamic_pointer_cast<CModel3D>(CWorkspace::instance()->getSomethingWithId(id));
 		if (obj != nullptr) {
 			obj->getTransform().rotateAroundAxisDeg(CVector3d::XAxis(), rX);
-			updateAllViews();
-			AppStateManager::updateProperties();
+			CWorkspace::instance()->notifyObjectStateChanged(obj->id());
 			clientSocket->write(QString("Gotowe.\n\r").toLocal8Bit());
 		}
 		else
@@ -114,11 +112,9 @@ void CMainWindow::proceessData()
 	else if (cmd.startsWith("remove")) {
 		int id = QString(cmdline.at(1)).toInt();
 
-		std::shared_ptr<CModel3D> obj = std::dynamic_pointer_cast<CModel3D>(appApi().workspace().findId(id));
+		std::shared_ptr<CModel3D> obj = std::dynamic_pointer_cast<CModel3D>(CWorkspace::instance()->getSomethingWithId(id));
 		if (obj != nullptr) {
 			CWorkspace::instance()->_objectRemove(id);
-			updateAllViews();
-			AppStateManager::updateProperties();
 			clientSocket->write(QString("Gotowe.\n\r").toLocal8Bit());
 		}
 		else

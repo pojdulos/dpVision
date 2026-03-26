@@ -1,6 +1,5 @@
 #include "DockWidgetHistogram.h"
 
-#include "DockWidgetModel.h"
 #include "Annotation.h"
 
 #include "Workspace.h"
