@@ -33,26 +33,35 @@ void IMovementRenderer::renderFrame(CMovement* obj) const
 	glPushMatrix();
 	frame.t.render();
 
-	for (const auto& child : obj->children())
+	for (int id : obj->orderedChildIds())
 	{
-		switch (child.second->type())
+		std::shared_ptr<CBaseObject> child = obj->getChild(id);
+		if (child == nullptr)
+		{
+			continue;
+		}
+
+		switch (child->type())
 		{
 		case CObject::MODEL:
-			child.second->render();
+			child->render();
 			break;
 		default:
 			glLoadName(obj->id());
 			glPushName(obj->id());
-			child.second->render();
+			child->render();
 			glPopName();
 			glLoadName(0);
 			break;
 		}
 	}
 
-	for (const auto& annotation : obj->annotations())
+	for (int id : obj->orderedAnnotationIds())
 	{
-		annotation.second->render();
+		if (CAnnotation* annotation = obj->annotation(id))
+		{
+			annotation->render();
+		}
 	}
 
 	glPopMatrix();

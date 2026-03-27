@@ -51,14 +51,13 @@ std::shared_ptr<CObject> CParserATMDL::clean_model(std::shared_ptr<CModel3D> obj
 
 		if (!obj->annotations().empty())
 		{
-			CObject::Annotations::iterator it = obj->annotations().begin();
-
-			while (it != obj->annotations().end())
+			std::vector<int> annotationIds(obj->orderedAnnotationIds().begin(), obj->orderedAnnotationIds().end());
+			for (int id : annotationIds)
 			{
-				std::shared_ptr<CAnnotation> an = (*it).second;
-				it = obj->annotations().erase(it);
-
-				c->addAnnotation(c, an);
+				if (std::shared_ptr<CAnnotation> an = obj->removeAnnotation(id))
+				{
+					c->addAnnotation(c, an);
+				}
 			}
 		}
 
@@ -1351,11 +1350,11 @@ std::shared_ptr<CModel3D> CParserATMDL::load(const QString path, bool wait, std:
 
 	if (root->children().size() == 1)
 	{
-		std::shared_ptr<CBaseObject> tmp = (*root->children().begin()).second;
+		std::shared_ptr<CBaseObject> tmp = root->getChild();
 
 		if (tmp->hasType(CBaseObject::Type::MODEL))
 		{
-			root->children().clear();
+			root->removeChild(tmp->id());
 			//delete root;
 			return std::dynamic_pointer_cast<CModel3D>(tmp);
 		}

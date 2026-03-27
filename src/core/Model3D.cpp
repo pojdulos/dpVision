@@ -28,8 +28,6 @@ CModel3D::CModel3D(std::shared_ptr<CBaseObject> p) : CObject(p)
 
 	m_bOK = true;
 
-	m_annotations.clear();
-
 	bDrawBB = false;
 
 	//m_fastmeshData.iMeshType = CMesh::MESHTYPE_NONE;
@@ -88,11 +86,14 @@ void CModel3D::PMeshEcoll( GLuint rzm, bool checkPoints )
 
 	if ( checkPoints )
 	{
-		for ( CModel3D::Annotations::iterator it = m_annotations.begin(); it != m_annotations.end(); it++ )
+		for (int id : orderedAnnotationIds())
 		{
-			if ( it->second->type() == CAnnotation::POINT )
+			if (CAnnotation* annotation = this->annotation(id))
 			{
-				pmf.mSolidPoints.insert( ((CAnnotationPoint*)it->second.get())->getPoint());
+				if (annotation->type() == CAnnotation::POINT)
+				{
+					pmf.mSolidPoints.insert(((CAnnotationPoint*)annotation)->getPoint());
+				}
 			}
 		}
 	}
@@ -195,12 +196,15 @@ void CModel3D::PMeshVsplit( GLuint rzm )
 void CModel3D::importChildrenGeometry()
 {
 	resetBoundingBox();
-	for (auto child : m_data)
+	for (int id : orderedChildIds())
 	{
-		if (child.second->hasCategory(CBaseObject::Category::OBJECT))
+		if (std::shared_ptr<CBaseObject> child = getChild(id))
 		{
-			CObject* obj = (CObject*)child.second.get();
-			expand(*obj);
+			if (child->hasCategory(CBaseObject::Category::OBJECT))
+			{
+				CObject* obj = (CObject*)child.get();
+				expand(*obj);
+			}
 		}
 	}
 
@@ -246,9 +250,12 @@ void CModel3D::applyTransform(CTransform to)
 	CObject::applyTransformation(m_transform, to);
 
 	//transform all annotations
-	for (auto &a : m_annotations)
+	for (int id : orderedAnnotationIds())
 	{
-		a.second->applyTransformation(m_transform, to);
+		if (CAnnotation* ann = annotation(id))
+		{
+			ann->applyTransformation(m_transform, to);
+		}
 	}
 	
 	//CModel3D::Annotations::iterator it;
@@ -295,7 +302,13 @@ bool CModel3D::applyParentTransform()
 
 void CModel3D::prepare()
 {
-	for (auto& c:m_data) c.second->prepare();
+	for (int id : orderedChildIds())
+	{
+		if (std::shared_ptr<CBaseObject> child = getChild(id))
+		{
+			child->prepare();
+		}
+	}
 }
 
 
@@ -409,8 +422,8 @@ bool CModel3D::testOption( CModel3D::Opt iOption )
 
 std::wstring CModel3D::infoRow()
 {
-	size_t n = m_data.size();
-	size_t np = m_annotations.size();
+	size_t n = children().size();
+	size_t np = annotations().size();
 	std::wstring ret = L"Model3D (id:"+ std::to_wstring(m_Id) + L"). Has ";
 	
 	if ( n+np == 0 )

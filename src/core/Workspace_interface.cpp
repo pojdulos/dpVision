@@ -4,7 +4,45 @@
 #include "Image.h"
 #include "dpLog.h"
 
+#include <algorithm>
+
 namespace {
+	int parentIdOf(const std::shared_ptr<CBaseObject>& obj)
+	{
+		if (obj == nullptr)
+		{
+			return NO_CURRENT_MODEL;
+		}
+
+		std::shared_ptr<CBaseObject> parent = obj->getParentPtr();
+		return parent != nullptr ? parent->id() : NO_CURRENT_MODEL;
+	}
+
+	bool isAnnotationObject(const std::shared_ptr<CBaseObject>& obj)
+	{
+		return obj != nullptr && obj->hasCategory(CBaseObject::Category::ANNOTATION);
+	}
+
+	bool isAncestorOf(const std::shared_ptr<CBaseObject>& maybeAncestor, const std::shared_ptr<CBaseObject>& obj)
+	{
+		if ((maybeAncestor == nullptr) || (obj == nullptr))
+		{
+			return false;
+		}
+
+		std::shared_ptr<CBaseObject> current = obj->getParentPtr();
+		while (current != nullptr)
+		{
+			if (current->id() == maybeAncestor->id())
+			{
+				return true;
+			}
+			current = current->getParentPtr();
+		}
+
+		return false;
+	}
+
 	void syncCheckedStateOnAdd(CWorkspace* workspace, const std::shared_ptr<CBaseObject>& obj)
 	{
 		if (obj == nullptr)
@@ -170,6 +208,8 @@ namespace {
 				id = tmp->id();
                 m_data[id] = tmp;
 			}
+
+			m_orderedIds.append(id);
 		}
 	
 		//auto parentId = obj->getParentPtr() ? obj->getParentPtr()->id() : -1;
@@ -211,6 +251,7 @@ namespace {
 			auto found = m_data.find(id);
 			if (found != m_data.end()) {//it is Workspace TopModel Id
 				m_data.erase(found);
+				m_orderedIds.remove(id);
 			}
 			else {
 				return false;
@@ -292,6 +333,151 @@ namespace {
 			addChecked(it->first);
 		}
 		notifyStructureChanged();
+	}
+
+	bool CWorkspace::moveTopLevelObjectBefore(int movedId, int anchorId)
+	{
+		if ((movedId == anchorId) || (_getModel(movedId) == nullptr) || (_getModel(anchorId) == nullptr))
+		{
+			return false;
+		}
+
+		if (!m_orderedIds.moveBefore(movedId, anchorId))
+		{
+			return false;
+		}
+		notifyStructureChanged();
+		return true;
+	}
+
+	bool CWorkspace::moveTopLevelObjectAfter(int movedId, int anchorId)
+	{
+		if ((movedId == anchorId) || (_getModel(movedId) == nullptr) || (_getModel(anchorId) == nullptr))
+		{
+			return false;
+		}
+
+		if (!m_orderedIds.moveAfter(movedId, anchorId))
+		{
+			return false;
+		}
+		notifyStructureChanged();
+		return true;
+	}
+
+	WorkspaceMoveResolution CWorkspace::resolveMove(int movedId, int targetId, WorkspaceDropMode mode) const
+	{
+		WorkspaceMoveResolution result;
+		result.movedId = movedId;
+		result.targetId = targetId;
+		result.dropMode = mode;
+
+		if ((movedId == NO_CURRENT_MODEL) || (targetId == NO_CURRENT_MODEL))
+		{
+			result.reason = "invalid id";
+			return result;
+		}
+
+		if (movedId == targetId)
+		{
+			result.reason = "source and target are identical";
+			return result;
+		}
+
+		std::shared_ptr<CBaseObject> moved = getSomethingWithId(movedId);
+		std::shared_ptr<CBaseObject> target = getSomethingWithId(targetId);
+		if ((moved == nullptr) || (target == nullptr))
+		{
+			result.reason = "source or target not found";
+			return result;
+		}
+
+		result.sourceParentId = parentIdOf(moved);
+		result.targetParentId = parentIdOf(target);
+
+		if ((mode == WorkspaceDropMode::Before) || (mode == WorkspaceDropMode::After))
+		{
+			if (result.sourceParentId != result.targetParentId)
+			{
+				result.reason = "reorder requires the same parent";
+				return result;
+			}
+
+			if (result.sourceParentId == NO_CURRENT_MODEL)
+			{
+				result.allowed = true;
+				result.kind = WorkspaceMoveKind::ReorderTopLevel;
+				return result;
+			}
+
+			std::shared_ptr<CBaseObject> parent = moved->getParentPtr();
+			if (std::dynamic_pointer_cast<CObject>(parent))
+			{
+				if (isAnnotationObject(moved) != isAnnotationObject(target))
+				{
+					result.reason = "cannot reorder objects and annotations together";
+					return result;
+				}
+
+				result.allowed = true;
+				result.kind = isAnnotationObject(moved)
+					? WorkspaceMoveKind::ReorderObjectAnnotations
+					: WorkspaceMoveKind::ReorderObjectChildren;
+				return result;
+			}
+
+			if (std::dynamic_pointer_cast<CAnnotation>(parent))
+			{
+				if (!isAnnotationObject(moved) || !isAnnotationObject(target))
+				{
+					result.reason = "annotation parent accepts only annotation reorder";
+					return result;
+				}
+
+				result.allowed = true;
+				result.kind = WorkspaceMoveKind::ReorderAnnotationChildren;
+				return result;
+			}
+
+			result.reason = "unsupported reorder parent type";
+			return result;
+		}
+
+		if (isAncestorOf(moved, target))
+		{
+			result.reason = "cannot move object into its own descendant";
+			return result;
+		}
+
+		if (target->hasCategory(CBaseObject::Category::ANNOTATION) && moved->hasCategory(CBaseObject::Category::OBJECT))
+		{
+			result.reason = "regular object cannot be moved under annotation";
+			return result;
+		}
+
+		if (target->hasCategory(CBaseObject::Category::OBJECT))
+		{
+			result.allowed = true;
+			result.kind = moved->hasCategory(CBaseObject::Category::ANNOTATION)
+				? WorkspaceMoveKind::ReparentAnnotationToObject
+				: WorkspaceMoveKind::ReparentObjectToObject;
+			return result;
+		}
+
+		if (target->hasCategory(CBaseObject::Category::ANNOTATION) && moved->hasCategory(CBaseObject::Category::ANNOTATION))
+		{
+			result.allowed = true;
+			result.kind = WorkspaceMoveKind::ReparentAnnotationToAnnotation;
+			return result;
+		}
+
+		result.reason = "unsupported move";
+		return result;
+	}
+
+	bool CWorkspace::isMoveAllowed(int movedId, int targetId, WorkspaceDropMode mode) const
+	{
+		return resolveMove(movedId, targetId, mode).allowed;
 	}
 
 	std::shared_ptr<CModel3D> CWorkspace::duplicateModel(int id)

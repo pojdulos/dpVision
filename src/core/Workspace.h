@@ -8,9 +8,11 @@
 //#include "Utilities.h"
 
 #include "Annotation.h"
+#include "OrderedIdList.h"
 
 #include <vector>
 #include <memory>
+#include <string>
 
 struct _light
 {
@@ -47,6 +49,37 @@ struct _light
 #include "events/IWorkspaceEvents.h"
 
 class IWorkspaceRenderer;
+
+enum class WorkspaceDropMode
+{
+	Before,
+	After,
+	On
+};
+
+enum class WorkspaceMoveKind
+{
+	Forbidden,
+	ReorderTopLevel,
+	ReorderObjectChildren,
+	ReorderObjectAnnotations,
+	ReorderAnnotationChildren,
+	ReparentObjectToObject,
+	ReparentAnnotationToObject,
+	ReparentAnnotationToAnnotation
+};
+
+struct WorkspaceMoveResolution
+{
+	bool allowed = false;
+	WorkspaceDropMode dropMode = WorkspaceDropMode::Before;
+	WorkspaceMoveKind kind = WorkspaceMoveKind::Forbidden;
+	int movedId = NO_CURRENT_MODEL;
+	int targetId = NO_CURRENT_MODEL;
+	int sourceParentId = NO_CURRENT_MODEL;
+	int targetParentId = NO_CURRENT_MODEL;
+	std::string reason;
+};
 
 class DPVISION_EXPORT CWorkspace
 {
@@ -87,6 +120,10 @@ public:
 	void setAllVisible(bool visible);
 	void setCheckedVisible(bool visible);
 	void checkAll();
+	bool moveTopLevelObjectBefore(int movedId, int anchorId);
+	bool moveTopLevelObjectAfter(int movedId, int anchorId);
+	WorkspaceMoveResolution resolveMove(int movedId, int targetId, WorkspaceDropMode mode) const;
+	bool isMoveAllowed(int movedId, int targetId, WorkspaceDropMode mode) const;
 	std::shared_ptr<CModel3D> duplicateModel(int id);
 	std::shared_ptr<CModel3D> duplicateCurrentModel();
 
@@ -103,6 +140,7 @@ protected:
 
 private:
 	Children m_data;
+	OrderedIdList m_orderedIds;
 
 	std::list<int> m_checkedIds;
 
@@ -119,6 +157,7 @@ public:
 	static CWorkspace* instance();
 
 	Children& children() { return m_data; }
+	const std::vector<int>& orderedIds() const { return m_orderedIds.ids(); }
 	
 	//ChildType*& operator[](int i)
 	//{
@@ -126,8 +165,8 @@ public:
 	//	return m_pairs[i].get();
 	//}
 
-	std::shared_ptr<ChildType> first() { if (m_data.empty()) return nullptr; return m_data.begin()->second; };
-	std::shared_ptr<ChildType> last() { if (m_data.empty()) return nullptr; return m_data.rbegin()->second; };
+	std::shared_ptr<ChildType> first();
+	std::shared_ptr<ChildType> last();
 
 	CWorkspace::iterator begin() { return m_data.begin(); }
 	CWorkspace::iterator end() { return m_data.end(); }

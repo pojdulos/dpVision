@@ -12,8 +12,11 @@ void IAnnotationRenderer::renderTransform(const CBaseObject* _obj)
 void IAnnotationRenderer::renderKids(const CBaseObject* _obj) {
 	CAnnotation* obj = (CAnnotation*)_obj;
 
-	for (const auto& it : obj->annotations())
+	for (int id : obj->orderedAnnotationIds())
 	{
-		it.second->render();
+		if (CAnnotation* annotation = obj->annotation(id))
+		{
+			annotation->render();
+		}
 	}
 }

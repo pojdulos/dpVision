@@ -15,6 +15,7 @@ CWorkspace::CWorkspace() //: QObject()
 
 	renderer_ = std::make_shared<IWorkspaceRenderer>();
 
+	m_orderedIds.clear();
 	m_checkedIds.clear();
 
 	InitLights();
@@ -28,6 +29,7 @@ CWorkspace* CWorkspace::instance()
 
 void CWorkspace::clear()
 {
+	m_orderedIds.clear();
 	m_checkedIds.clear();
 	m_data.clear();
 
@@ -44,6 +46,7 @@ bool CWorkspace::_addModel(std::shared_ptr<CModel3D> pMdlR)
 	try {
 		this->m_data.insert(CWorkspace::value_type(pMdlR->id(), pMdlR));
 		pMdlR->setParent(nullptr);
+		m_orderedIds.append(pMdlR->id());
 	}
 	catch (std::bad_alloc& e) {
 		return false;
@@ -56,6 +59,7 @@ bool CWorkspace::_addModel(std::shared_ptr<CModel3D> pMdlR)
 
 bool CWorkspace::_removeAllModels()
 {
+	m_orderedIds.clear();
 	for (Children::iterator it = m_data.begin(); it != m_data.end();)
 	{
 		it = m_data.erase(it);
@@ -76,6 +80,32 @@ std::shared_ptr<CWorkspace::ChildType> CWorkspace::_getModel(int i)
 	if (it == m_data.end()) return nullptr;
 
 	return m_data[i];
+}
+
+std::shared_ptr<CWorkspace::ChildType> CWorkspace::first()
+{
+	for (int id : m_orderedIds.ids())
+	{
+		if (auto obj = _getModel(id))
+		{
+			return obj;
+		}
+	}
+
+	return nullptr;
+}
+
+std::shared_ptr<CWorkspace::ChildType> CWorkspace::last()
+{
+	for (std::vector<int>::const_reverse_iterator it = m_orderedIds.ids().rbegin(); it != m_orderedIds.ids().rend(); ++it)
+	{
+		if (auto obj = _getModel(*it))
+		{
+			return obj;
+		}
+	}
+
+	return nullptr;
 }
 
 bool CWorkspace::isChecked(int id) const
@@ -260,53 +290,44 @@ void CWorkspace::InitLights()
 
 int CWorkspace::_setNextModelCurrent()
 {
-	CWorkspace::iterator it = m_data.find(m_idOfCurrentModel);
-	int i;
-
-	if (it == m_data.end())
+	int nextId = -1;
+	auto current = std::find(m_orderedIds.ids().begin(), m_orderedIds.ids().end(), m_idOfCurrentModel);
+	if (current != m_orderedIds.ids().end())
 	{
-		i = -1;
-	}
-	else
-	{
-		it++;
-		if (it != m_data.end())
+		++current;
+		while (current != m_orderedIds.ids().end())
 		{
-			i = (*it).first;
-		}
-		else
-		{
-			i = -1;
+			if (_getModel(*current) != nullptr)
+			{
+				nextId = *current;
+				break;
+			}
+			++current;
 		}
 	}
 
-	_objectActivate(i);
+	_objectActivate(nextId);
 	return m_idOfCurrentModel;
 }
 
 int CWorkspace::_setPreviousModelCurrent()
 {
-	CWorkspace::iterator it = m_data.find(m_idOfCurrentModel);
-	int i;
-
-	if (it == m_data.end())
+	int previousId = -1;
+	auto current = std::find(m_orderedIds.ids().begin(), m_orderedIds.ids().end(), m_idOfCurrentModel);
+	if (current != m_orderedIds.ids().begin() && current != m_orderedIds.ids().end())
 	{
-		i = -1;
-	}
-	else
-	{
-		it--;
-		if (it != m_data.end())
+		do
 		{
-			i = (*it).first;
-		}
-		else
-		{
-			i = -1;
-		}
+			--current;
+			if (_getModel(*current) != nullptr)
+			{
+				previousId = *current;
+				break;
+			}
+		} while (current != m_orderedIds.ids().begin());
 	}
 
-	_objectActivate(i);
+	_objectActivate(previousId);
 	return m_idOfCurrentModel;
 }
 
@@ -405,12 +426,18 @@ CBoundingBox CWorkspace::topBB()
 {
 	CBoundingBox bb;
 
-	for (auto& m : m_data)
+	for (int id : m_orderedIds.ids())
 	{
-		CPoint3d min = m.second->getMin();
-		CPoint3d max = m.second->getMax();
+		std::shared_ptr<CModel3D> model = _getModel(id);
+		if (model == nullptr)
+		{
+			continue;
+		}
 
-		Eigen::Matrix4d T = CBaseObject::getGlobalTransformationMatrix(m.second);
+		CPoint3d min = model->getMin();
+		CPoint3d max = model->getMax();
+
+		Eigen::Matrix4d T = CBaseObject::getGlobalTransformationMatrix(model);
 
 		CPoint3d m1 = T * min;
 		CPoint3d m2 = T * CPoint3d(min.x, min.y, max.z);

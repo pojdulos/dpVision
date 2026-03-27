@@ -6,6 +6,7 @@
 
 #include "Object.h"
 #include "Transform.h"
+#include "OrderedIdList.h"
 
 #include "QColor"
 
@@ -16,12 +17,15 @@ class QDomElement;
 class DPVISION_EXPORT CAnnotation : public CBaseObject
 {
 public:
+	typedef std::map<int, std::shared_ptr<CAnnotation>> Annotations;
+private:
+	Annotations m_annotations;
+	mutable OrderedIdList m_annotationOrder;
+public:
 	CRGBA m_color;
 	CRGBA m_selcolor;
 
-	typedef std::map<int, std::shared_ptr<CAnnotation>> Annotations;
 	//unused, always empty, may be used in inheriting class for subAnnotations
-	Annotations m_annotations; 
 	CTransform m_transform;
 
 	CAnnotation( std::shared_ptr<CBaseObject> parent = nullptr);
@@ -46,11 +50,14 @@ public:
 	/*deprecated*/ inline CTransform& getTransform() { return m_transform; };
 	inline CTransform& transform() { return m_transform; };
 
-	inline Annotations& annotations() { return m_annotations; };
+	const Annotations& annotations() const { return m_annotations; };
+	const std::vector<int>& orderedAnnotationIds();
 
 	static int addAnnotation(std::shared_ptr<CAnnotation> parent, std::shared_ptr<CAnnotation> ad);
 
 	std::shared_ptr<CAnnotation> removeAnnotation(int id);
+	bool moveAnnotationBefore(int movedId, int anchorId);
+	bool moveAnnotationAfter(int movedId, int anchorId);
 
 	CAnnotation* annotation(int id);
 
@@ -61,10 +68,13 @@ public:
 
 	std::wstring infoRow() override { return getInfoRow(); };
 
-	virtual inline void clear() override { m_annotations.clear(); }
+	virtual inline void clear() override { m_annotations.clear(); m_annotationOrder.clear(); }
 
 	virtual std::wstring getInfoRow() { return m_label.toStdWString(); };
 	virtual std::wstring getTypeWSTR() { return L"annotation"; };
+
+private:
+	void ensureAnnotationOrder();
 };
 
 typedef CAnnotation* PtrAnnotation;
