@@ -82,11 +82,11 @@ public:
 	bool _objectRemove(int id);
 
 	bool removeAll();
-	bool removeSelected();
+	bool removeChecked();
 	bool removeCurrent();
 	void setAllVisible(bool visible);
-	void setSelectedVisible(bool visible);
-	void selectAll();
+	void setCheckedVisible(bool visible);
+	void checkAll();
 	std::shared_ptr<CModel3D> duplicateModel(int id);
 	std::shared_ptr<CModel3D> duplicateCurrentModel();
 
@@ -104,7 +104,7 @@ protected:
 private:
 	Children m_data;
 
-	std::list<int> m_selection;
+	std::list<int> m_checkedIds;
 
 	int m_idOfCurrentModel;
 
@@ -132,7 +132,7 @@ public:
 	CWorkspace::iterator begin() { return m_data.begin(); }
 	CWorkspace::iterator end() { return m_data.end(); }
 
-	std::shared_ptr<CBaseObject> getSomethingWithId(int id);
+	std::shared_ptr<CBaseObject> getSomethingWithId(int id) const;
 
 	bool isOK() const { return m_bOK; }
 	const std::string &lastError() const { return m_sError; }
@@ -174,16 +174,16 @@ public:
 	int	_setNextModelCurrent();
 	int	_setPreviousModelCurrent();
 
-	bool inSelection(int id);
-	int getNumberInSelection(int id);
-	void addToSelection(int id);
-	void removeFromSelection(int id);
-	bool changeSelection(int id, bool b);
+	bool isChecked(int id) const;
+	int checkedIndex(int id) const;
+	void addChecked(int id);
+	void removeChecked(int id);
+	bool setChecked(int id, bool checked);
 
-	std::list<int> getSelection();
-	std::list<int> getSelection(std::set<CBaseObject::Type> type, std::shared_ptr<CObject> obj = nullptr);
-	std::list<std::shared_ptr<CBaseObject>> getSelected(std::set<CBaseObject::Type> types, std::shared_ptr<CObject> dad);
-	void clearSelection() { m_selection.clear(); };
+	std::list<int> checkedIds() const;
+	std::list<int> checkedIds(std::set<CBaseObject::Type> type, std::shared_ptr<CObject> obj = nullptr) const;
+	std::list<std::shared_ptr<CBaseObject>> checkedObjects(std::set<CBaseObject::Type> types, std::shared_ptr<CObject> dad) const;
+	void clearChecked();
 
 	CBoundingBox topBB();
 

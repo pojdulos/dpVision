@@ -1,6 +1,6 @@
 # core/CMakeLists.txt
 
-file(GLOB CORE_SRC
+file(GLOB CORE_SRC CONFIGURE_DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/tinyspline.c
     ${CMAKE_CURRENT_SOURCE_DIR}/*.h

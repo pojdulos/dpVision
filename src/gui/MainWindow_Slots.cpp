@@ -870,7 +870,7 @@ void CMainWindow::removeAllModels()
 void CMainWindow::removeSelectedModels()
 {
 	int reply = QMessageBox::question(0, "You are about to removing all selected (checked) models.\nRealy you want to do it?", "Caution!");
-	if (0 == reply) CWorkspace::instance()->removeSelected();
+	if (0 == reply) CWorkspace::instance()->removeChecked();
 }
 
 void CMainWindow::resetAllTransformations()
@@ -884,7 +884,7 @@ void CMainWindow::resetAllTransformations()
 
 void CMainWindow::resetSelectedTransformations()
 {
-	std::list<int> sel = CWorkspace::instance()->getSelection();
+	std::list<int> sel = CWorkspace::instance()->checkedIds();
 	for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
 	{
 		if (std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(*it))
@@ -906,7 +906,7 @@ void CMainWindow::lockAllModels()
 
 void CMainWindow::lockSelectedModels()
 {
-	std::list<int> sel = CWorkspace::instance()->getSelection();
+	std::list<int> sel = CWorkspace::instance()->checkedIds();
 	for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
 	{
 		if (std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(*it))
@@ -928,7 +928,7 @@ void CMainWindow::unlockAllModels()
 
 void CMainWindow::unlockSelectedModels()
 {
-	std::list<int> sel = CWorkspace::instance()->getSelection();
+	std::list<int> sel = CWorkspace::instance()->checkedIds();
 	for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
 	{
 		if (std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(*it))
@@ -941,12 +941,12 @@ void CMainWindow::unlockSelectedModels()
 
 void CMainWindow::selectAll()
 {
-	CWorkspace::instance()->selectAll();
+	CWorkspace::instance()->checkAll();
 }
 
 void CMainWindow::unselectAll()
 {
-	CWorkspace::instance()->clearSelection();
+	CWorkspace::instance()->clearChecked();
 	CWorkspace::instance()->notifyStructureChanged();
 }
 
@@ -957,7 +957,7 @@ void CMainWindow::hideAllModels()
 
 void CMainWindow::hideSelectedModels()
 {
-	CWorkspace::instance()->setSelectedVisible(false);
+	CWorkspace::instance()->setCheckedVisible(false);
 }
 
 void CMainWindow::showAllModels()
@@ -967,7 +967,7 @@ void CMainWindow::showAllModels()
 
 void CMainWindow::showSelectedModels()
 {
-	CWorkspace::instance()->setSelectedVisible(true);
+	CWorkspace::instance()->setCheckedVisible(true);
 }
 
 void CMainWindow::modelInSelection(bool b)
@@ -975,15 +975,7 @@ void CMainWindow::modelInSelection(bool b)
 	std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId());
 	if (nullptr != obj)
 	{
-		if (b)
-		{
-			CWorkspace::instance()->addToSelection(obj->id());
-		}
-		else
-		{
-			CWorkspace::instance()->removeFromSelection(obj->id());
-		}
-		CWorkspace::instance()->notifyObjectStateChanged(obj->id());
+		CWorkspace::instance()->setChecked(obj->id(), b);
 	}
 }
 

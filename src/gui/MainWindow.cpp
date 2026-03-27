@@ -326,7 +326,7 @@ void CMainWindow::changeMenuAfterSelect()
 		ui.action_Model_ShowTexture->setChecked( obj->testOption( CModel3D::optRenderWithTexture ) );
 		ui.action_Model_Lock->setChecked( obj->isLocked() );
 		
-		ui.actionModelInSelection->setChecked(wksp->inSelection(obj->id()));
+		ui.actionModelInSelection->setChecked(wksp->isChecked(obj->id()));
 
 		ui.action_Model_ShowBB->setChecked( obj->DrawBB() );
 		

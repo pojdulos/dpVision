@@ -1,9 +1,7 @@
 #pragma once
 
 #include "../interfaces/IWorkspaceSelectionAPI.h"
-#include "../../core/AppStateManager.h"
 #include "../../core/Workspace.h"
-#include "../../core/WorkspacePanelManager.h"
 
 class WorkspaceSelectionAPIAdapter : public IWorkspaceSelectionAPI {
     CWorkspace* ws_;
@@ -16,33 +14,28 @@ public:
 
     void select(int id) override
     {
-        ws_->addToSelection(id);
-        WorkspacePanelManager::setWorkspaceItemChecked(id, true);
-        AppStateManager::updateProperties();
-        AppStateManager::updateAllViews();
+        ws_->setChecked(id, true);
     }
 
     void unselect(int id) override
     {
-        ws_->removeFromSelection(id);
-        WorkspacePanelManager::setWorkspaceItemChecked(id, false);
-        AppStateManager::updateProperties();
-        AppStateManager::updateAllViews();
+        ws_->setChecked(id, false);
     }
 
     void clear() override
     {
-        ws_->clearSelection();
+        ws_->clearChecked();
+        ws_->notifyStructureChanged();
     }
 
     bool contains(int id) override
     {
-        return ws_->inSelection(id);
+        return ws_->isChecked(id);
     }
 
     std::vector<int> ids() override
     {
-        const std::list<int> selection = ws_->getSelection();
+        const std::list<int> selection = ws_->checkedIds();
         return std::vector<int>(selection.begin(), selection.end());
     }
 
@@ -50,7 +43,7 @@ public:
         std::set<CBaseObject::Type> types,
         std::shared_ptr<CObject> parent = nullptr)
     {
-        return ws_->getSelection(std::move(types), std::move(parent));
+        return ws_->checkedIds(std::move(types), std::move(parent));
     }
 
     std::vector<std::shared_ptr<CBaseObject>> objects(
@@ -58,7 +51,7 @@ public:
         std::shared_ptr<CObject> parent = nullptr) override
     {
         std::vector<std::shared_ptr<CBaseObject>> result;
-        auto selected = ws_->getSelected(std::move(types), std::move(parent));
+        auto selected = ws_->checkedObjects(std::move(types), std::move(parent));
         result.reserve(selected.size());
         for (const auto& object : selected) {
             result.push_back(object);
@@ -70,21 +63,11 @@ public:
         std::set<CBaseObject::Type> types,
         std::shared_ptr<CObject> parent = nullptr)
     {
-        return ws_->getSelected(std::move(types), std::move(parent));
+        return ws_->checkedObjects(std::move(types), std::move(parent));
     }
 
     void setSelectedVisible(bool visible) override
     {
-        const std::list<int> selection = ws_->getSelection();
-        for (int id : selection) {
-            if (std::shared_ptr<CModel3D> model = ws_->_getModel(id)) {
-                model->setSelfVisibility(visible);
-                WorkspacePanelManager::setWorkspaceItemVisible(id, visible);
-            }
-        }
-
-        AppStateManager::changeMenuAfterSelect();
-        AppStateManager::updateProperties();
-        AppStateManager::updateAllViews();
+        ws_->setCheckedVisible(visible);
     }
 };

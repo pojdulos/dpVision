@@ -1,5 +1,7 @@
 #pragma once
 
+#include "dll_global.h"
+
 #include <memory>
 
 #include <QByteArray>
@@ -7,7 +9,7 @@
 
 class CModel3D;
 
-class IRemoteCommandHost
+class DPVISION_EXPORT IRemoteCommandHost
 {
 public:
     virtual ~IRemoteCommandHost() = default;
@@ -17,13 +19,13 @@ public:
     virtual bool runPlugin(const QString& uuid) = 0;
 };
 
-struct RemoteCommandResult
+struct DPVISION_EXPORT RemoteCommandResult
 {
     QString response;
     bool quitRequested = false;
 };
 
-class RemoteCommandDispatcher
+class DPVISION_EXPORT RemoteCommandDispatcher
 {
 public:
     explicit RemoteCommandDispatcher(std::shared_ptr<IRemoteCommandHost> host);

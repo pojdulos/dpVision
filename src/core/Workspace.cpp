@@ -5,6 +5,9 @@
 #include "../renderers/IWorkspaceRenderer.h"
 #include "StatusBarManager.h"
 
+#include <algorithm>
+#include <chrono>
+
 CWorkspace::CWorkspace() //: QObject()
 {
 	m_bOK = true;
@@ -12,7 +15,7 @@ CWorkspace::CWorkspace() //: QObject()
 
 	renderer_ = std::make_shared<IWorkspaceRenderer>();
 
-	m_selection.clear();
+	m_checkedIds.clear();
 
 	InitLights();
 }
@@ -23,33 +26,26 @@ CWorkspace* CWorkspace::instance()
 	return &instance;
 }
 
-
-
-
 void CWorkspace::clear()
 {
-	m_selection.clear();
+	m_checkedIds.clear();
 	m_data.clear();
 
 	_objectActivate(NO_CURRENT_MODEL);
 }
 
-
-
-
-
 /*
 	Add an existing Model to the Workspace
 */
-bool CWorkspace::_addModel( std::shared_ptr<CModel3D> pMdlR )
+bool CWorkspace::_addModel(std::shared_ptr<CModel3D> pMdlR)
 {
 	if (nullptr == pMdlR) return false;
 
 	try {
-		this->m_data.insert( CWorkspace::value_type( pMdlR->id(), pMdlR ) );
+		this->m_data.insert(CWorkspace::value_type(pMdlR->id(), pMdlR));
 		pMdlR->setParent(nullptr);
 	}
-	catch ( std::bad_alloc &e ) {
+	catch (std::bad_alloc& e) {
 		return false;
 	}
 
@@ -60,108 +56,106 @@ bool CWorkspace::_addModel( std::shared_ptr<CModel3D> pMdlR )
 
 bool CWorkspace::_removeAllModels()
 {
-	for (Children::iterator it = m_data.begin(); it != m_data.end(); )
+	for (Children::iterator it = m_data.begin(); it != m_data.end();)
 	{
-		//delete it->second;
 		it = m_data.erase(it);
 	}
-	m_selection.clear();
+	m_checkedIds.clear();
 
 	_objectActivate(NO_CURRENT_MODEL);
 
 	return true;
 }
 
-std::shared_ptr<CWorkspace::ChildType> CWorkspace::_getModel( int i )
+std::shared_ptr<CWorkspace::ChildType> CWorkspace::_getModel(int i)
 {
 	if (NO_CURRENT_MODEL == i) return nullptr;
 
-	Children::iterator it = m_data.find( i );
+	Children::iterator it = m_data.find(i);
 
-	if ( it == m_data.end() ) return nullptr;
+	if (it == m_data.end()) return nullptr;
 
-	return m_data[ i ];
+	return m_data[i];
 }
 
-
-//int CWorkspace::_setCurrentModel( int i )
-//{
-//	if (i != m_idOfCurrentModel)
-//	{
-//		onCurrentObjectChanged(i);
-//
-//		this->_objectActivate(m_idOfCurrentModel);
-//	}
-//
-//	return m_idOfCurrentModel;
-//}
-
-
-
-void CWorkspace::addToSelection(int id)
+bool CWorkspace::isChecked(int id) const
 {
-	if (!inSelection(id))
+	return m_checkedIds.end() != std::find(m_checkedIds.begin(), m_checkedIds.end(), id);
+}
+
+int CWorkspace::checkedIndex(int id) const
+{
+	std::list<int>::const_iterator it = std::find(m_checkedIds.begin(), m_checkedIds.end(), id);
+	if (it != m_checkedIds.end())
 	{
-		m_selection.push_back(id);
-		StatusBarManager::setText( QString("Object selected (pos.: %1)").arg(getNumberInSelection(id)));
-	}
-	//m_pairs[id]->setSelected(true);
-}
-
-void CWorkspace::removeFromSelection(int id)
-{
-	if (inSelection(id))
-	{
-		StatusBarManager::setText(QString("Object at pos.: %1 unselected").arg(getNumberInSelection(id)));
-		m_selection.remove(id);
-	}
-	//m_pairs[id]->setSelected(false);
-}
-
-bool CWorkspace::inSelection(int id)
-{
-	return ( m_selection.end() != std::find(m_selection.begin(), m_selection.end(), id ) );
-}
-
-int CWorkspace::getNumberInSelection(int id)
-{
-	std::list<int>::iterator it = std::find(m_selection.begin(), m_selection.end(), id);
-
-	if (it != m_selection.end())
-	{
-		return std::distance( m_selection.begin(), it );
+		return (int)std::distance(m_checkedIds.begin(), it);
 	}
 
 	return -1;
 }
 
-bool CWorkspace::changeSelection(int id, bool bb)
+void CWorkspace::addChecked(int id)
 {
-	bool s = inSelection( id );
-	bool b = bb;
-
-	if ( s != b )
+	if (isChecked(id))
 	{
-		if (b)
-		{
-			addToSelection(id);
-		}
-		else
-		{
-			removeFromSelection(id);
-		}
-		return true;
+		return;
 	}
-	return false;
+
+	auto obj = getSomethingWithId(id);
+	if (obj == nullptr)
+	{
+		return;
+	}
+
+	m_checkedIds.push_back(id);
+	obj->setChecked(true);
+
+	StatusBarManager::setText(QString("Object checked (pos.: %1)").arg(checkedIndex(id)));
 }
 
-std::list<int> CWorkspace::getSelection()
+void CWorkspace::removeChecked(int id)
+{
+	if (!isChecked(id))
+	{
+		return;
+	}
+
+	StatusBarManager::setText(QString("Object at pos.: %1 unchecked").arg(checkedIndex(id)));
+	m_checkedIds.remove(id);
+
+	if (auto obj = getSomethingWithId(id))
+	{
+		obj->setChecked(false);
+	}
+}
+
+bool CWorkspace::setChecked(int id, bool checked)
+{
+	if (checked == isChecked(id))
+	{
+		return false;
+	}
+
+	if (checked)
+	{
+		addChecked(id);
+	}
+	else
+	{
+		removeChecked(id);
+	}
+
+	notifyObjectStateChanged(id);
+	return true;
+}
+
+std::list<int> CWorkspace::checkedIds() const
 {
 	std::list<int> result;
-	for (auto id : m_selection)
+	for (auto id : m_checkedIds)
 	{
-		CWorkspace::iterator it = m_data.find(id); // szukam tylko w�r�d obiekt�w z pierwszego poziomu
-		if ((it != m_data.end()) && (it->second->hasType(CObject::MODEL))) // i jeszcze si� upewniam �e to jest CModel3D
+		Children::const_iterator it = m_data.find(id);
+		if ((it != m_data.end()) && (it->second->hasType(CObject::MODEL)))
 		{
 			result.push_back(id);
 		}
@@ -170,44 +164,44 @@ std::list<int> CWorkspace::getSelection()
 	return result;
 }
 
-std::list<int> CWorkspace::getSelection(std::set<CBaseObject::Type> types, std::shared_ptr<CObject> dad)
+std::list<int> CWorkspace::checkedIds(std::set<CBaseObject::Type> types, std::shared_ptr<CObject> dad) const
 {
 	std::list<int> result;
-	for (auto id : m_selection)
+	for (auto id : m_checkedIds)
 	{
 		std::shared_ptr<CBaseObject> kid;
-		
+
 		if (dad == nullptr)
 			kid = getSomethingWithId(id);
 		else if (dad->id() == id)
 			kid = dad;
 		else
-			kid = dad->getSomethingWithId(id); // szukam w�r�d wszystkich obiekt�w w scenie lub w obiekcie (jest to wolniejsze)
+			kid = dad->getSomethingWithId(id);
 
-		if ((kid != nullptr) && (types.empty() || types.find((CBaseObject::Type)kid->type()) != types.end())) // i sprawdzam czy typ jest na li�cie
+		if ((kid != nullptr) && (types.empty() || types.find((CBaseObject::Type)kid->type()) != types.end()))
 		{
 			result.push_back(id);
 		}
 	}
-	
+
 	return result;
 }
 
-std::list<std::shared_ptr<CBaseObject>> CWorkspace::getSelected(std::set<CBaseObject::Type> types, std::shared_ptr<CObject> dad)
+std::list<std::shared_ptr<CBaseObject>> CWorkspace::checkedObjects(std::set<CBaseObject::Type> types, std::shared_ptr<CObject> dad) const
 {
 	std::list<std::shared_ptr<CBaseObject>> result;
-	for (auto id : m_selection)
+	for (auto id : m_checkedIds)
 	{
 		std::shared_ptr<CBaseObject> kid;
-		
+
 		if (dad == nullptr)
 			kid = getSomethingWithId(id);
 		else if (dad->id() == id)
 			kid = dad;
 		else
-			kid = dad->getSomethingWithId(id); // szukam w�r�d wszystkich obiekt�w w scenie lub w obiekcie (jest to wolniejsze)
-		
-		if ((kid != nullptr) && (types.empty() || types.find((CBaseObject::Type)kid->type()) != types.end())) // i sprawdzam czy typ jest na li�cie
+			kid = dad->getSomethingWithId(id);
+
+		if ((kid != nullptr) && (types.empty() || types.find((CBaseObject::Type)kid->type()) != types.end()))
 		{
 			result.push_back(kid);
 		}
@@ -216,6 +210,23 @@ std::list<std::shared_ptr<CBaseObject>> CWorkspace::getSelected(std::set<CBaseOb
 	return result;
 }
 
+void CWorkspace::clearChecked()
+{
+	if (m_checkedIds.empty())
+	{
+		return;
+	}
+
+	for (auto id : m_checkedIds)
+	{
+		if (auto obj = getSomethingWithId(id))
+		{
+			obj->setChecked(false);
+		}
+	}
+
+	m_checkedIds.clear();
+}
 
 void CWorkspace::InitLights()
 {
@@ -228,40 +239,38 @@ void CWorkspace::InitLights()
 	m_lights[6].light = GL_LIGHT6;
 	m_lights[7].light = GL_LIGHT7;
 
-	m_lights[0].setAmbient( 0.6f, 0.6f, 0.6f, 1.0f );
-	m_lights[0].setDiffuse( 0.6f, 0.6f, 0.6f, 1.0f );
-	m_lights[0].setSpecular( 0.0f, 0.0f, 0.0f, 1.0f );
-	//m_lights[0].setPosition( 5.0f, 20.0f, -100.0f, 0.0f );
-	m_lights[0].setPosition( 0.0f, 0.0f, 1000.0f, 0.0f );
-	m_lights[0].setSpot( -5000.0f, -20000.0f, -100000.0f, 180.0f );
+	m_lights[0].setAmbient(0.6f, 0.6f, 0.6f, 1.0f);
+	m_lights[0].setDiffuse(0.6f, 0.6f, 0.6f, 1.0f);
+	m_lights[0].setSpecular(0.0f, 0.0f, 0.0f, 1.0f);
+	m_lights[0].setPosition(0.0f, 0.0f, 1000.0f, 0.0f);
+	m_lights[0].setSpot(-5000.0f, -20000.0f, -100000.0f, 180.0f);
 
-	m_lights[0].fixed = true; //true;
-	m_lights[0].active = true; //true;
+	m_lights[0].fixed = true;
+	m_lights[0].active = true;
 
-	m_lights[1].setAmbient( 0.2f, 0.2f, 0.2f, 1.0f );
-	m_lights[1].setDiffuse( 0.4f, 0.4f, 0.4f, 1.0f );
-	m_lights[1].setSpecular( 0.6f, 0.6f, 0.6f, 1.0f );
-	m_lights[1].setPosition( 20000.0f, 0.0f, -20000.0f, 1.0f );
-	m_lights[1].setSpot( -20000.0f, 0.0f, 20000.0f, 60.0f );
+	m_lights[1].setAmbient(0.2f, 0.2f, 0.2f, 1.0f);
+	m_lights[1].setDiffuse(0.4f, 0.4f, 0.4f, 1.0f);
+	m_lights[1].setSpecular(0.6f, 0.6f, 0.6f, 1.0f);
+	m_lights[1].setPosition(20000.0f, 0.0f, -20000.0f, 1.0f);
+	m_lights[1].setSpot(-20000.0f, 0.0f, 20000.0f, 60.0f);
 
 	m_lights[1].fixed = false;
 	m_lights[1].active = false;
 }
 
-
 int CWorkspace::_setNextModelCurrent()
 {
 	CWorkspace::iterator it = m_data.find(m_idOfCurrentModel);
 	int i;
-	
-	if ( it == m_data.end() )
+
+	if (it == m_data.end())
 	{
 		i = -1;
 	}
 	else
 	{
 		it++;
-		if ( it != m_data.end() )
+		if (it != m_data.end())
 		{
 			i = (*it).first;
 		}
@@ -270,25 +279,24 @@ int CWorkspace::_setNextModelCurrent()
 			i = -1;
 		}
 	}
-	
+
 	_objectActivate(i);
 	return m_idOfCurrentModel;
 }
-
 
 int CWorkspace::_setPreviousModelCurrent()
 {
 	CWorkspace::iterator it = m_data.find(m_idOfCurrentModel);
 	int i;
-	
-	if ( it == m_data.end() )
+
+	if (it == m_data.end())
 	{
 		i = -1;
 	}
 	else
 	{
 		it--;
-		if ( it != m_data.end() )
+		if (it != m_data.end())
 		{
 			i = (*it).first;
 		}
@@ -297,13 +305,12 @@ int CWorkspace::_setPreviousModelCurrent()
 			i = -1;
 		}
 	}
-	
+
 	_objectActivate(i);
 	return m_idOfCurrentModel;
 }
 
-
-std::shared_ptr<CBaseObject> CWorkspace::getSomethingWithId(int id)
+std::shared_ptr<CBaseObject> CWorkspace::getSomethingWithId(int id) const
 {
 	for (const auto& d : m_data)
 	{
@@ -313,140 +320,96 @@ std::shared_ptr<CBaseObject> CWorkspace::getSomethingWithId(int id)
 	return nullptr;
 }
 
-
 void CWorkspace::render()
 {
 	if (renderer_) renderer_->render(this);
 }
 
-void CWorkspace::renderLights( bool perm )
+void CWorkspace::renderLights(bool perm)
 {
 	if (renderer_) renderer_->renderLights(this, perm);
 }
 
-
 void CWorkspace::reset()
 {
-	if (this->m_idOfCurrentModel <0)
+	if (this->m_idOfCurrentModel < 0)
 	{
 		CWorkspace::iterator siatka;
-		for ( auto &siatka : this->m_data )
+		for (auto& siatka : this->m_data)
 		{
 			if (siatka.second->hasTransformation()) siatka.second->transform().reset();
 		}
 	}
-	else if (! this->m_data.empty())
+	else if (!this->m_data.empty())
 	{
 		this->m_data[this->m_idOfCurrentModel]->transform().reset();
 	}
 }
 
-//int CWorkspace::getNewId()
-//{
-//	// prawid�owo, ale na razie musi by� inaczej
-//	//int newId = MODEL_ID_OFFSET;
-//	//while ( m_pairs.find( newId ) != m_pairs.end() )
-//	//{
-//	//	newId += 1000;
-//	//}
-//	//return newId;
-//
-//	if ( m_pairs.empty() )
-//		return MODEL_ID_OFFSET;
-//	else
-//		return last()->id()+MODEL_DATA_SPACE;
-//}
-//
-
-std::vector<CRGBA> CWorkspace::getXRayImage( CPoint3f pkt0, int size )
+std::vector<CRGBA> CWorkspace::getXRayImage(CPoint3f pkt0, int size)
 {
 	std::vector<CRGBA> result;
 
-	result.reserve( size * size );
+	result.reserve(size * size);
 
 	if (m_idOfCurrentModel != NO_CURRENT_MODEL)
 	{
-			std::shared_ptr<CModel3D> obj = _getModel(m_idOfCurrentModel);
-			if (obj == nullptr) return result;
+		std::shared_ptr<CModel3D> obj = _getModel(m_idOfCurrentModel);
+		if (obj == nullptr) return result;
 
-			//pkt0 = PointTransform( pkt0, obj->getRotation(), obj->getTranslation(), obj->getScale(), obj->getCtr(), obj->relocateCtr() );
-			pkt0 = obj->getTransform().world2local( pkt0 );
+		pkt0 = obj->getTransform().world2local(pkt0);
 
-			std::shared_ptr<CMesh> mesh = std::dynamic_pointer_cast<CMesh>(obj->getChild());
-			
-			std::vector<CVector3f> x = mesh->getVectors( pkt0 );
+		std::shared_ptr<CMesh> mesh = std::dynamic_pointer_cast<CMesh>(obj->getChild());
 
-			//ULONGLONG t0=GetTickCount64();
-			auto t0 = std::chrono::steady_clock::now();
+		std::vector<CVector3f> x = mesh->getVectors(pkt0);
 
-			for ( int x=0; x<size; x++ )
+		auto t0 = std::chrono::steady_clock::now();
+
+		for (int x = 0; x < size; x++)
+		{
+			for (int y = 0; y < size; y++)
 			{
-				for  ( int y=0; y<size; y++ )
+				float maxLen;
+
+				float dx = ((float)(x - size / 2)) / 100;
+				float dy = ((float)(y - size / 2)) / 100;
+
+				CPoint3f pkt1 = obj->getTransform().origin() + CPoint3f(CTriple<float>(dx, dy, 0.0f));
+
+				CVector3f vRay(pkt0, pkt1);
+				vRay.normalize();
+
+				float iL = mesh->getInteriorLength(pkt0, vRay, maxLen);
+
+				CRGBA col(0.0f, 0.0f, 0.0f, 0.0f);
+
+				if (iL > 0)
 				{
-					float maxLen;
-
-					float dx = ( (float) (x - size/2) ) / 100;
-					float dy = ( (float) (y - size/2) ) / 100;
-
-					CPoint3f pkt1 = obj->getTransform().origin() + CPoint3f( CTriple<float>( dx, dy, 0.0f) );
-
-					CVector3f vRay( pkt0, pkt1 );
-					vRay.normalize();
-
-					float iL = mesh->getInteriorLength( pkt0, vRay, maxLen );
-
-					CRGBA col( 0.0f, 0.0f, 0.0f, 0.0f );
-
-					if ( iL > 0 ) 
-					{
-						col.SetFloat ( iL/maxLen, iL/maxLen, iL/maxLen, 1.0f );
-					}
-
-					result.push_back( col );
-
-					// ULONGLONG t1=GetTickCount64();
-					auto t1 = std::chrono::steady_clock::now();
-					auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
-
-					StatusBarManager::setText( QString("Tested point [%1,%2] iL=%3, maxLen=%4 (time:%5)").arg(x).arg(y).arg(iL).arg(maxLen).arg(duration));
+					col.SetFloat(iL / maxLen, iL / maxLen, iL / maxLen, 1.0f);
 				}
-			}
 
+				result.push_back(col);
+
+				auto t1 = std::chrono::steady_clock::now();
+				auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
+
+				StatusBarManager::setText(QString("Tested point [%1,%2] iL=%3, maxLen=%4 (time:%5)").arg(x).arg(y).arg(iL).arg(maxLen).arg(duration));
+			}
+		}
 	}
 
 	return result;
 }
 
-
-
-
-//void CWorkspace::onCurrentObjectChanged(CBaseObject* obj)
-//{
-//	if (obj != nullptr)
-//		onCurrentObjectChanged(obj->id());
-//}
-
-//void CWorkspace::onCurrentObjectChanged(int i)
-//{
-//	if ((i == NO_CURRENT_MODEL) || (m_pairs.find(i) == m_pairs.end()))
-//	{
-//		m_idOfCurrentModel = NO_CURRENT_MODEL;
-//	}
-//	else
-//	{
-//		m_idOfCurrentModel = i;
-//	}
-//}
-
 CBoundingBox CWorkspace::topBB()
 {
 	CBoundingBox bb;
 
-	for (auto &m : m_data)
+	for (auto& m : m_data)
 	{
 		CPoint3d min = m.second->getMin();
 		CPoint3d max = m.second->getMax();
-		
+
 		Eigen::Matrix4d T = CBaseObject::getGlobalTransformationMatrix(m.second);
 
 		CPoint3d m1 = T * min;
@@ -466,12 +429,7 @@ CBoundingBox CWorkspace::topBB()
 		bb.expand(m6);
 		bb.expand(m7);
 		bb.expand(m8);
-
 	}
 
 	return bb;
 }
-
-
-// #include "ParserDPV.h"
-

@@ -25,7 +25,7 @@ public:
         std::set<CBaseObject::Type> types = {},
         std::shared_ptr<CObject> parent = nullptr) override {
         std::vector<std::shared_ptr<CBaseObject>> result;
-        auto selected = ws_->getSelected(std::move(types), std::move(parent));
+        auto selected = ws_->checkedObjects(std::move(types), std::move(parent));
         result.reserve(selected.size());
         for (const auto& object : selected) {
             result.push_back(object);

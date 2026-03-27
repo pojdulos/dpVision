@@ -4,6 +4,71 @@
 #include "Image.h"
 #include "dpLog.h"
 
+namespace {
+	void syncCheckedStateOnAdd(CWorkspace* workspace, const std::shared_ptr<CBaseObject>& obj)
+	{
+		if (obj == nullptr)
+		{
+			return;
+		}
+
+		if (obj->isChecked())
+		{
+			workspace->addChecked(obj->id());
+		}
+
+		if (auto object = std::dynamic_pointer_cast<CObject>(obj))
+		{
+			for (const auto& child : object->children())
+			{
+				syncCheckedStateOnAdd(workspace, child.second);
+			}
+
+			for (const auto& annotation : object->annotations())
+			{
+				syncCheckedStateOnAdd(workspace, annotation.second);
+			}
+		}
+		else if (auto annotation = std::dynamic_pointer_cast<CAnnotation>(obj))
+		{
+			for (const auto& child : annotation->annotations())
+			{
+				syncCheckedStateOnAdd(workspace, child.second);
+			}
+		}
+	}
+
+	void clearCheckedStateOnRemove(CWorkspace* workspace, const std::shared_ptr<CBaseObject>& obj)
+	{
+		if (obj == nullptr)
+		{
+			return;
+		}
+
+		workspace->removeChecked(obj->id());
+
+		if (auto object = std::dynamic_pointer_cast<CObject>(obj))
+		{
+			for (const auto& child : object->children())
+			{
+				clearCheckedStateOnRemove(workspace, child.second);
+			}
+
+			for (const auto& annotation : object->annotations())
+			{
+				clearCheckedStateOnRemove(workspace, annotation.second);
+			}
+		}
+		else if (auto annotation = std::dynamic_pointer_cast<CAnnotation>(obj))
+		{
+			for (const auto& child : annotation->annotations())
+			{
+				clearCheckedStateOnRemove(workspace, child.second);
+			}
+		}
+	}
+}
+
 
 	void CWorkspace::addListener(std::shared_ptr<IWorkspaceEvents> l) {
 		if (std::find(listeners_.begin(), listeners_.end(), l) == listeners_.end())
@@ -110,6 +175,7 @@
 		//auto parentId = obj->getParentPtr() ? obj->getParentPtr()->id() : -1;
 		//dpInfo() << "CWorkspace::_objectAdd() id=" << obj->id() << " (id = " << id << ") parentId= " << parentId;
 
+		syncCheckedStateOnAdd(this, obj);
 		notifyObjectAdded(id);
 
         return id;
@@ -151,7 +217,7 @@
 			}
 		}
 
-		if (inSelection(id)) removeFromSelection(id);
+		clearCheckedStateOnRemove(this, obj);
 		if (id == m_idOfCurrentModel) _objectActivate(NO_CURRENT_MODEL);
 
 		notifyObjectRemoved(id, (CBaseObject::Type)obj->type());
@@ -175,9 +241,9 @@
 		return result;
 	}
 
-	bool CWorkspace::removeSelected()
+	bool CWorkspace::removeChecked()
 	{
-		const std::list<int> selection = getSelection();
+		const std::list<int> selection = checkedIds();
 		bool removed = false;
 		for (std::list<int>::const_reverse_iterator it = selection.rbegin(); it != selection.rend(); ++it)
 		{
@@ -205,9 +271,9 @@
 		notifyStructureChanged();
 	}
 
-	void CWorkspace::setSelectedVisible(bool visible)
+	void CWorkspace::setCheckedVisible(bool visible)
 	{
-		const std::list<int> selection = getSelection();
+		const std::list<int> selection = checkedIds();
 		for (int id : selection)
 		{
 			if (std::shared_ptr<CModel3D> model = _getModel(id))
@@ -218,12 +284,12 @@
 		notifyStructureChanged();
 	}
 
-	void CWorkspace::selectAll()
+	void CWorkspace::checkAll()
 	{
-		clearSelection();
+		clearChecked();
 		for (CWorkspace::iterator it = begin(); it != end(); ++it)
 		{
-			addToSelection(it->first);
+			addChecked(it->first);
 		}
 		notifyStructureChanged();
 	}

@@ -166,15 +166,7 @@ void PropBaseObject::onAddKeywordButtonClick()
 void PropBaseObject::changedSelection(int checkState)
 {
 	bool b = (checkState == Qt::Checked);
-	if (obj->hasType(CBaseObject::MODEL))
-	{
-		CWorkspace::instance()->changeSelection(obj->id(), b );
-	}
-	else
-	{
-		obj->setChecked( b );
-	}
-	CWorkspace::instance()->notifyObjectStateChanged(obj->id());
+	CWorkspace::instance()->setChecked(obj->id(), b);
 }
 
 void PropBaseObject::changedVisibility(int b)
