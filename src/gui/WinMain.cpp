@@ -124,7 +124,7 @@ int main(int argc, char* argv[])
 
     StatusBarManager::setText("starting tcp server...");
 
-    CMainWindow::instance()->startServer();
+    CMainApplication::theApp->startRemoteCommandServer();
 
     //FreeConsole();
     //AllocConsole();

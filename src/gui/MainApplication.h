@@ -41,6 +41,7 @@ public:
 
 	CPlugins plugins;
 	PluginInterface *activePlugin;
+	QObject* remoteCommandServer;
 
 	//QSettings *settings;
 	bool verbose_mode;
@@ -63,6 +64,7 @@ public:
 	void LoadAllPlugins();
 	void RunPlugin( const unsigned int id );
 	bool runPlugin(const char* strUUID);
+	void startRemoteCommandServer();
 
 	int getUniqueId();
 };

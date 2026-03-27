@@ -34,8 +34,6 @@ class CImage;
 class CModel3D;
 class QLocalServer;
 class QLocalSocket;
-class QTcpServer;
-class QTcpSocket;
 
 
 //#include <QWidget>
@@ -151,8 +149,6 @@ public:
 	void closePicViewers(int id);
 	void createPicViewer(CImage* im);
 
-	void startServer();
-
 protected:
 	virtual void closeEvent(QCloseEvent *event);
 	virtual void keyPressEvent(QKeyEvent *e);
@@ -176,11 +172,6 @@ private:
 	//GLViewer * createMdiChild();
 	//GLViewer * activeMdiChild() const;
 	
-	//QLocalServer* server;
-	//QLocalSocket* clientConnection;
-	QTcpServer* server;
-	QTcpSocket* clientConnection;
-
 	void createRecentActions();
 	void createRecentMenus();
 	void updateRecentActionList();
@@ -193,8 +184,6 @@ private:
 
 private slots:
 	void openRecent();
-	void processNewConnection();
-	void proceessData();
 	void openSettingsDialog();
 
 public slots:

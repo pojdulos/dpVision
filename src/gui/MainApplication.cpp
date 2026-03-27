@@ -43,6 +43,7 @@ CMainApplication::CMainApplication(int& argc, char** argv) : QApplication(argc, 
 	PluginRuntimeManager::setActivePlugin(nullptr);
 
 	m_lastObjectId = MODEL_ID_OFFSET;
+	remoteCommandServer = nullptr;
 }
 
 
