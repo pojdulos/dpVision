@@ -97,35 +97,65 @@ That is the area still needing an explicit decision:
 - internal GUI subsystem only, or
 - a real plugin-facing capability
 
-### 5. A separate problem remains: `gui -> api` dependencies
+### 5. The direct `gui -> api` cleanup pass is largely complete
 
-Even where `core` contracts exist, some GUI code still reaches into `src/api`
-adapters directly. That weakens the dependency direction even if the individual
-contracts are reasonable.
+The original high-priority cleanup target was direct GUI dependence on
+plugin-facing API adapters and legacy namespaces.
 
-This is not captured by a single row in the table because it is a cross-cutting
-issue, but it is one of the highest-value cleanup targets.
+That pass is now largely complete:
+
+- `src/gui/WinMain.cpp` no longer uses `AppAPIAdapter` for startup model import
+- `src/gui/MainWindow_Slots.cpp` now uses GUI-owned workspace import/image
+  helpers for local file I/O flows
+- `src/gui/ContextMenu.cpp` and `src/gui/propModel.cpp` use workspace
+  notifications rather than API wrappers for local mutation refresh
+- stale legacy `AP.h` includes were removed from the reviewed GUI files
+- the `dpVisionGui` target no longer needs to link `dpVision::LegacyApi`
+
+The remaining GUI-side work is no longer primarily about `gui -> api`
+dependencies. It is mostly about:
+
+- separating safe vs raw GUI capabilities
+- keeping `AppStateManager` limited to true boundary bridging
+- deciding which GUI areas should remain internal-only versus become explicit
+  plugin-facing capabilities
 
 ## Recommended Refactor Order
 
-1. Reduce `gui -> api` dependencies in concrete GUI files using API adapters only
-   as internal convenience wrappers.
-   Start with:
-   - `src/gui/ContextMenu.cpp`
-   - `src/gui/propModel.cpp`
-   - `src/gui/WinMain.cpp`
+Completed cleanup notes:
+- `src/gui/WinMain.cpp` no longer uses `AppAPIAdapter` for startup model import;
+  startup and TCP model loading now go through the GUI-owned
+  `WorkspaceImportHost`
+- `src/gui/propModel.cpp` is already aligned with the target direction: it does
+  not depend on `src/api` and uses `CWorkspace::notifyObjectStateChanged(...)`
+  as the transition-path refresh mechanism after direct model mutations
+- `src/gui/ContextMenu.cpp` now relies on workspace notifications for
+  workspace/object mutation refresh and no longer carries the stale
+  `AppStateManager` include
+- `src/gui/MainWindow_Slots.cpp` now uses GUI-owned workspace import/image
+  helpers for local file I/O flows instead of a local `AppAPIAdapter`
+  singleton
+- `src/gui/GLViewer.h`, `src/gui/MainWindow.cpp`, `src/gui/PicViewer.cpp`,
+  `src/gui/propDataChild.cpp`, and `src/gui/WorkspaceTreeItem.cpp` no longer
+  carry unused legacy `AP.h` includes
+- settings bootstrap now registers storage in `core` via
+  `SettingsStorageRegistry`, so `src/gui/AppSettings.cpp` no longer depends on
+  `AppAPIAdapter`
+- `dpVisionGui` builds without linking `dpVision::LegacyApi`
 
-2. Cleanly separate safe plugin-panel operations from raw widget escape hatches.
+Remaining priorities:
 
-3. Keep the current properties-widget mechanism as a privileged GUI extension
+1. Cleanly separate safe plugin-panel operations from raw widget escape hatches.
+
+2. Keep the current properties-widget mechanism as a privileged GUI extension
    path and avoid forcing it into the default-safe plugin API.
 
-4. Make an explicit decision for image-viewer operations.
+3. Make an explicit decision for image-viewer operations.
 
-5. Continue treating `IGuiInternalsAPI` as a privileged escape hatch, not as the
+4. Continue treating `IGuiInternalsAPI` as a privileged escape hatch, not as the
    default model for new plugin-facing work.
 
-6. Apply `GUI_COORDINATION_RULES.md` when deciding whether a refresh path should
+5. Apply `GUI_COORDINATION_RULES.md` when deciding whether a refresh path should
    stay on `AppStateManager`, move to workspace events, or become direct
    `gui -> gui` orchestration.
 

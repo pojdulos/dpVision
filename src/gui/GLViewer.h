@@ -5,8 +5,6 @@
 
 //#include "Global.h"
 //
-#include "../api/AP.h"
-
 //#include <QTGui/QMatrix4x4>
 #include <QMatrix4x4>
 

@@ -57,7 +57,9 @@ efficient multimodal image processing and algorithm testing, addressing the limi
 ``make bin``
 
 
+## API documentation
 
+The API documentation is located in the /docs/api folder
 
 ## Testing
 

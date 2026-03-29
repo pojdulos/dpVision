@@ -1,7 +1,6 @@
 #include "Global.h"
 #include "AnnotationPolygon.h"
 
-#include "../api/AP.h"
 
 #include "../renderers/IAnnotationPolygonRenderer.h"
 

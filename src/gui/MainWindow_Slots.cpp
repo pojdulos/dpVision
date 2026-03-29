@@ -4,7 +4,6 @@
 #include <QMessageLogger>
 
 //#include "../api/AP.h"
-#include "../api/adapters/AppAPIAdapter.h"
 
 //
 
@@ -25,6 +24,8 @@
 #include "FileConnector.h"
 #include "adapters/QtProgressAdapter.h"
 #include "StatusBarManager.h"
+#include "WorkspaceImageHost.h"
+#include "WorkspaceImportHost.h"
 #include "../core/AppStateManager.h"
 #include "../core/Workspace.h"
 #include "../core/PluginRuntimeManager.h"
@@ -41,15 +42,6 @@ void CMainWindow::actionScreenshot() {
 };
 
 #include "DockWidgetWorkspace.h"
-
-namespace
-{
-	AppAPIAdapter& appApi()
-	{
-		static AppAPIAdapter api;
-		return api;
-	}
-}
 
 void saveDockGeometry(QDockWidget* dock)
 {
@@ -157,7 +149,7 @@ void CMainWindow::viewChildFS()
 void CMainWindow::openRecent() {
 	QAction *action = qobject_cast<QAction *>(sender());
 	if (action)
-		if ( nullptr != appApi().workspaceImport().loadModel(action->data().toString(), false, false) )
+		if ( nullptr != WorkspaceImportHost::loadModel(action->data().toString(), false, false) )
 		{
 			adjustForCurrentFile(action->data().toString());
 			AppSettings::mainSettings()->setValue("recentFile", action->data().toString());
@@ -171,7 +163,7 @@ void CMainWindow::fileOpen()
 	
 	if (!fileName.isEmpty())
 	{
-		if ( nullptr != appApi().workspaceImport().loadModel(fileName, false, false, std::make_shared<QtProgressAdapter>(this->progressIndicator) ))
+		if ( nullptr != WorkspaceImportHost::loadModel(fileName, false, false, std::make_shared<QtProgressAdapter>(this->progressIndicator)) )
 		{
 			adjustForCurrentFile(fileName);
 			AppSettings::mainSettings()->setValue("recentFile", fileName);
@@ -232,7 +224,7 @@ void CMainWindow::importImage()
 		std::shared_ptr<CImage> im = CImage::load( fileName );
 		if (nullptr != im)
 		{
-			appApi().workspaceImage().addImage(im, true);
+			WorkspaceImageHost::addImage(im, true);
 		}
 	}
 }
@@ -816,7 +808,7 @@ void CMainWindow::openWorkspace()
 		auto t1 = std::chrono::steady_clock::now();
 
 		//CModel3D* obj = parser->load(path, true);
-		appApi().workspaceImport().loadModel(path, true);
+		WorkspaceImportHost::loadModel(path, true);
 
 		//t2 = GetTickCount();
 		auto t2 = std::chrono::steady_clock::now();

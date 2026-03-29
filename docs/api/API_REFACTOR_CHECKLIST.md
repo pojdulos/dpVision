@@ -8,10 +8,13 @@ in the related commit or PR description.
 ## Current Status
 
 - [x] Phase 1: remove `core -> api`
+      direct source-level `core -> api` includes used by normal compilation
+      were removed; only commented historical include traces remain
 - [~] Phase 2: split default API from privileged GUI API
       default and privileged roots exist, compile-time boundary checks are in
-      place, and dock/camera/progress/plugin-panel GUI access is explicit;
-      remaining work is mostly legacy-surface cleanup in `UI::`
+      place, dock/camera/progress/plugin-panel GUI access is explicit, and
+      `dpVisionGui` no longer links `dpVision::LegacyApi`; remaining work is
+      mostly legacy-surface cleanup in `UI::` and API-side GUI separation
 - [~] Phase 5: invert legacy implementation
       `AP.cpp` is now wrapper-oriented and `UI.cpp` has been partially thinned;
       some legacy helper logic still remains in `UI.cpp`
@@ -36,6 +39,7 @@ in the related commit or PR description.
 - [~] Confirm no new code in `gui` is built on `AP::` or `UI::`
       `gui` now uses host-access helpers for the reviewed paths; keep checking
       this rule on new changes
+- [x] Keep `dpVisionGui` independent from `dpVision::LegacyApi`
 
 ## Interface Split
 
@@ -110,8 +114,9 @@ in the related commit or PR description.
 
 ## Verification
 
-- [ ] `core` compiles without `api`
+- [x] `core` target compiles without active source-level `api` includes
 - [ ] default plugin API compiles without `gui`
+- [x] `dpVisionGui` target compiles without `dpVision::LegacyApi`
 - [ ] privileged GUI API compiles with `gui`
 - [x] legacy wrappers compile and delegate correctly
 - [ ] in-tree example plugins still build

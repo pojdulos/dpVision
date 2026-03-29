@@ -44,8 +44,6 @@ target_link_libraries(dpVisionGui
         Qt5::Widgets
         Qt5::OpenGL
         Eigen3::Eigen
-    PRIVATE
-        dpVision::LegacyApi
 )
 
 add_library(dpVision::Gui ALIAS dpVisionGui)

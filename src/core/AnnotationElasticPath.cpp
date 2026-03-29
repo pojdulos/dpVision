@@ -1,7 +1,6 @@
 #include "Global.h"
 #include "AnnotationElasticPath.h"
 
-#include "../api/AP.h"
 
 #include "../renderers/IAnnotationElasticPathRenderer.h"
 

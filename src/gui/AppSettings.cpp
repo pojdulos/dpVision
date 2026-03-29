@@ -1,4 +1,5 @@
 #include "AppSettings.h"
+#include "../core/SettingsStorageRegistry.h"
 #include <QStyle>
 
 namespace {
@@ -184,6 +185,12 @@ void AppSettings::apply()
     else {
         QApplication::setPalette(QApplication::style()->standardPalette());
     }
+}
+
+void AppSettings::configureApiDefaults()
+{
+    SettingsStorageRegistry::setDefaultStorage(mainStorage());
+    SettingsStorageRegistry::setPluginSettingsFactory(&AppSettings::pluginStorage);
 }
 
 void AppSettings::setDarkMode(bool enable)

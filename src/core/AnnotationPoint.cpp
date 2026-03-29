@@ -1,7 +1,6 @@
 #include "Global.h"
 #include "AnnotationPoint.h"
 
-#include "../api/AP.h"
 
 #include "MainApplication.h"
 

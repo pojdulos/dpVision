@@ -1,5 +1,4 @@
 #include "Image.h"
-#include "../api/AP.h"
 //#include "MainWindow.h"
 
 #include "../renderers/IImageRenderer.h"

@@ -1,6 +1,5 @@
 #include "ContextMenu.h"
 
-#include "../core/AppStateManager.h"
 #include "../core/LegacyObjectTransferService.h"
 
 #include "MainWindow.h"

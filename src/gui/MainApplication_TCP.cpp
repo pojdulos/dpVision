@@ -1,8 +1,8 @@
 #include "MainApplication.h"
 
-#include "../api/adapters/AppAPIAdapter.h"
 #include "../core/RemoteCommandDispatcher.h"
 #include "TcpCommandServer.h"
+#include "WorkspaceImportHost.h"
 
 namespace
 {
@@ -11,14 +11,12 @@ namespace
     public:
         std::shared_ptr<CModel3D> loadModel(const QString& filename) override
         {
-            static AppAPIAdapter api;
-            return api.workspaceImport().loadModel(filename);
+            return WorkspaceImportHost::loadModel(filename);
         }
 
         std::shared_ptr<CModel3D> loadDicom(const QString& filename) override
         {
-            static AppAPIAdapter api;
-            return api.workspaceImport().loadModel("*.dcm", filename);
+            return WorkspaceImportHost::loadModel("*.dcm", filename);
         }
 
         bool runPlugin(const QString& uuid) override

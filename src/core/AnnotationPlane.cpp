@@ -3,7 +3,6 @@
 #include "Model3D.h"
 #include "Workspace.h"
 
-#include "../api/AP.h"
 
 #include "../renderers/IAnnotationPlaneRenderer.h"
 

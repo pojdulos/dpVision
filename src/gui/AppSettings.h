@@ -22,6 +22,7 @@ class DPVISION_EXPORT AppSettings {
 public:
     static void init();
     static void apply();  // apply font and palette
+    static void configureApiDefaults();
 
     static void setDarkMode(bool enable);
     static bool isDarkMode();

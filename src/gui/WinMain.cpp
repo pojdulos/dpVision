@@ -16,19 +16,8 @@
 #include <QWidget>
 
 #include "AppSettings.h"
-
-#include "../api/adapters/AppAPIAdapter.h"
-
 #include "StatusBarManager.h"
-
-namespace
-{
-    AppAPIAdapter& appApi()
-    {
-        static AppAPIAdapter api;
-        return api;
-    }
-}
+#include "WorkspaceImportHost.h"
 
 int main(int argc, char* argv[])
 {
@@ -51,8 +40,7 @@ int main(int argc, char* argv[])
     qputenv("QT_QPA_PLATFORM_PLUGIN_PATH", QDir(exeDir).filePath("platforms").toLocal8Bit());
 
     CMainApplication::theApp = new CMainApplication(argc, argv);
-    AppAPIAdapter::setDefaultSettingsStorage(AppSettings::mainStorage());
-    AppAPIAdapter::setDefaultPluginSettingsFactory(&AppSettings::pluginStorage);
+    AppSettings::configureApiDefaults();
 
     QCommandLineParser parser;
     parser.setApplicationDescription("dpVision - eksperymentalne narzędzie do wizualizacji, edycji i integracji wielomodalnych i wielowymiarowych danych.");
@@ -114,7 +102,7 @@ int main(int argc, char* argv[])
         if (QFile(plik).exists())
         {
             StatusBarManager::setText("loading model: " + plik);
-            appApi().workspaceImport().loadModel(plik);
+            WorkspaceImportHost::loadModel(plik);
         }
     }
     
