@@ -104,10 +104,18 @@ Privileged replacements:
 - Host-side contract: `IProgressControlAPI`
 - Implementation note: `UI::PROGRESSBAR::{init,setValue,setText,hide}` now delegate
   through `GuiProgressAPIAdapter` / `IProgressControlAPI`.
-- Remaining privileged escape hatch:
-  - `UI::PROGRESSBAR::instance()` is intentionally kept for existing
-    GUI-aware plugins that still connect Qt signals directly to the host
-    progress widget
+- Plugin migration note:
+  - in-tree plugins should prefer `UI::PROGRESSBAR::{init,setValue,setText,hide}`
+    for normal updates
+  - when a plugin needs cancel handling, prefer `IProgressListener::useCancelButton(...)`
+    over direct `ProgressIndicator` wiring
+- Current in-tree status:
+  - `parserDP` and `splint-maker` were migrated off `UI::PROGRESSBAR::instance()`
+  - they still use other privileged `UI` surfaces, so this does not yet mean
+    that the whole plugin can stop linking GUI-related host code
+- Legacy escape hatch status:
+  - `UI::PROGRESSBAR::instance()` is no longer used by the in-tree plugins and
+    is currently disabled in `UI`
 
 `UI::STATUSBAR::*`
 - Status: legacy wrapper

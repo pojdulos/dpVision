@@ -448,7 +448,7 @@ namespace UI
          * progress operations.
          */
 		[[deprecated("Legacy GUI escape hatch. Keep only for existing GUI-aware plugins that need the raw progress widget; prefer host-supplied GUI API access or IPluginGuiAPI::progress() for safe operations.")]]
-		DPVISION_LEGACY_API_EXPORT ProgressIndicator* instance();
+		// DPVISION_LEGACY_API_EXPORT ProgressIndicator* instance();
 
         // Legacy wrappers. Prefer IPluginGuiAPI::progress().
 		DPVISION_LEGACY_API_EXPORT void init( int min, int max, int val );

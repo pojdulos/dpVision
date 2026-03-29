@@ -459,10 +459,10 @@ void UI::PLUGINPANEL::setLabel(unsigned int pluginId, const QString &name, const
 
 // PROGRESSBAR
 
-ProgressIndicator* UI::PROGRESSBAR::instance()
-{
-	return GuiInternalsManager::progressIndicator();
-}
+// ProgressIndicator* UI::PROGRESSBAR::instance()
+// {
+// 	return GuiInternalsManager::progressIndicator();
+// }
 
 void UI::PROGRESSBAR::init( int min, int max, int val )
 {

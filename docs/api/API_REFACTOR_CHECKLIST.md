@@ -125,7 +125,9 @@ in the related commit or PR description.
 - [x] Ensure privileged GUI access is opt-in by header/type choice
 - [~] Update in-tree plugin examples to demonstrate the intended path
       bundled plugins now use `PluginHostAPIAdapter` / `PluginHostGuiAPIAdapter`
-      directly; more examples can still be cleaned up if new ones appear
+      directly; `parserDP` and `splint-maker` no longer depend on
+      `UI::PROGRESSBAR::instance()`;
+      more examples can still be cleaned up if new ones appear
 - [x] Treat `AP::` / `UI::` as the supported public plugin surface while
       keeping them thin
 
