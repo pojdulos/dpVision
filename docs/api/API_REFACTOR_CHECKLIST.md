@@ -67,8 +67,15 @@ in the related commit or PR description.
 - [ ] Identify adapters that only forward to `AP::` or `UI::`
 - [~] Rebuild default adapters directly over `core` where possible
       camera/progress adapters now use shared host-side helpers instead of
-      calling `UI::` directly, and selected legacy runtime/status logic was
-      moved below `UI.cpp`
+      calling `UI::` directly, selected legacy runtime/status logic was moved
+      below `UI.cpp`, and `WorkspaceImageAPIAdapter` now keeps only the
+      workspace/domain part while legacy viewer policy stays outside the
+      default adapter; `PluginPanelAPIAdapter` now goes through
+      `PluginPanelManager` instead of including GUI host access directly, and
+      `GuiCameraAPIAdapter` now goes through `CameraControlManager` with a GUI
+      listener supplied by `gui`; `AppInternalsAPIAdapter` now resolves the
+      privileged application handle through `AppInternalsManager` instead of
+      including `MainApplication.h`
 - [x] Keep privileged GUI adapters explicit and separate
 - [ ] Eliminate fake capability composition through null adapters
 - [ ] Remove duplication between default and legacy paths
@@ -117,7 +124,7 @@ in the related commit or PR description.
 - [x] `core` target compiles without active source-level `api` includes
 - [ ] default plugin API compiles without `gui`
 - [x] `dpVisionGui` target compiles without `dpVision::LegacyApi`
-- [ ] privileged GUI API compiles with `gui`
+- [x] privileged GUI API compiles with `gui`
 - [x] legacy wrappers compile and delegate correctly
 - [ ] in-tree example plugins still build
 - [x] architecture docs still match reality after each phase

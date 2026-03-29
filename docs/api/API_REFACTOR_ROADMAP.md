@@ -8,6 +8,8 @@ Use it together with:
   `AppStateManager`, and direct GUI orchestration
 - `API_INTERFACE_INVENTORY.md` for current classification
 - `LEGACY_API_MAP.md` for compatibility mapping
+- `CAMERA_VIEW_MODEL_NOTES.md` for the deferred future model where cameras may
+  exist independently of concrete viewers
 
 ## Primary Outcome
 

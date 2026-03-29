@@ -3,7 +3,6 @@
 #include "../interfaces/IWorkspaceImageAPI.h"
 #include "../../core/Workspace.h"
 #include "../../core/Image.h"
-#include "../../gui/ImageViewerHost.h"
 
 class WorkspaceImageAPIAdapter : public IWorkspaceImageAPI {
     CWorkspace* ws_;
@@ -22,14 +21,5 @@ public:
 
         image->setSelfVisibility(show3d);
         return ws_->_objectAdd(image) != -1;
-    }
-
-    bool addImage(std::shared_ptr<CImage> image, bool showViewer, bool show3d)
-    {
-        if (showViewer && image != nullptr) {
-            ImageViewerHost::open(image.get());
-        }
-
-        return addImage(std::move(image), show3d);
     }
 };

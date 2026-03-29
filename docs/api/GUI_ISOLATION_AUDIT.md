@@ -27,7 +27,7 @@ Goal:
 | Properties dock | refresh shown properties, react to selection change, host GUI-aware property widgets supplied by selected-object implementations | `IAppStateListener::updateProperties`, `WorkspacePanelManager::propertiesSelectionChanged`, object-level `has_prop_widget()` / `prop_widget()` / `prop_widget_update()` | `Partial` | The mechanism already works for deliberately GUI-aware plugins. The dock itself should remain GUI-owned. This is not a default plugin capability and does not need to be forced into legacy/default-safe API shape | Document and preserve the current mechanism as a privileged GUI extension path; avoid redesign unless a real limitation appears |
 | Histogram dock | repaint / show histogram content | `IHistogramDockListener`, `HistogramDockManager`, `IDockHistogramAPI`, `QtHistogramDockAdapter` | `OK` | The contract is narrow but clear | Keep this shape; use it as a reference for other dock capabilities |
 | Plugin panel host | create panel, add/remove widgets, read/edit control values | `IPluginPanelAPI`, `PluginPanelAPIAdapter`, `PluginPanelHostAccess` | `Partial` | Safe operations and raw widget access are mixed in one area; `QWidget*` / `QPushButton*` remain exposed | Split conceptually into safe panel operations vs privileged raw widget escape hatches |
-| Camera / viewer control | move, rotate, set view, coordinate transforms, screenshot | `ICameraControlAPI`, `GuiCameraAPIAdapter`, `CameraHostAccess` | `Partial` | Safe camera operations exist, but some plugin flows still rely on raw viewer or transform access | Keep extending `ICameraControlAPI`; avoid adding new `GLViewer*`-based call paths |
+| Camera / viewer control | move, rotate, set view, coordinate transforms, screenshot | `ICameraControlAPI`, `GuiCameraAPIAdapter`, `CameraControlManager`, `QtCameraControlAdapter`, `CameraHostAccess` | `Partial` | Safe camera operations now flow through a `core` listener/manager bridge; some plugin flows still rely on raw viewer or transform access through privileged APIs | Keep extending `ICameraControlAPI`; avoid adding new `GLViewer*`-based call paths |
 | Raw viewer internals (`GLViewer`) | direct viewer pointer, camera transform, OpenGL-local behavior | `IGuiInternalsAPI`, `CameraHostAccess` | `Partial` | Privileged boundary exists, but this remains a large raw escape hatch rather than a capability API | Only use for explicit privileged access; move commonly-needed safe behaviors into typed APIs |
 | Image viewer / image dock | open viewer, reload, fit-to-window, internal dock state | `ImageViewerHost`, `ImageViewerState`, legacy `UI::PICVIEWER` | `Missing` | Host helper exists, but there is no equally clear `core/api` contract like progress/status/histogram | Decide whether image viewer is internal GUI only or needs an explicit plugin-facing capability |
 | Volumetric image dialog / analysis dialogs | modal interaction, user input, image/volume previews | mostly direct GUI logic | `Missing` | These are still plain GUI workflows without a general non-GUI capability layer | Leave as GUI-local unless a real plugin-facing capability emerges |
@@ -142,6 +142,18 @@ Completed cleanup notes:
   `SettingsStorageRegistry`, so `src/gui/AppSettings.cpp` no longer depends on
   `AppAPIAdapter`
 - `dpVisionGui` builds without linking `dpVision::LegacyApi`
+- `WorkspaceImageAPIAdapter` no longer opens image viewers directly; the
+  viewer-opening policy now stays on GUI/legacy-owned paths instead of the
+  default workspace-image adapter
+- `PluginPanelAPIAdapter` now talks to `core` through `PluginPanelManager`
+  with a Qt listener supplied by `gui`, instead of including GUI host access
+  directly
+- `GuiCameraAPIAdapter` now talks to `core` through `CameraControlManager`
+  with a Qt listener supplied by `gui`, instead of including
+  `CameraHostAccess` directly
+- `AppInternalsAPIAdapter` now resolves the privileged application instance
+  through `AppInternalsManager`, so the adapter no longer includes
+  `MainApplication.h` or depends on `QApplication`
 
 Remaining priorities:
 

@@ -2,6 +2,7 @@
 
 #include "../core/LegacyAppRuntime.h"
 #include "../core/LegacyObjectTransferService.h"
+#include "../gui/WorkspaceImageHost.h"
 
 #include "adapters/AppAPIAdapter.h"
 #include "adapters/ModelAPIAdapter.h"
@@ -181,7 +182,7 @@ namespace AP
 
 		bool addImage(std::shared_ptr<CImage> im, bool showViewer, bool show3d)
 		{
-			return workspaceImageApi().addImage(std::move(im), showViewer, show3d);
+			return WorkspaceImageHost::addImage(std::move(im), showViewer, show3d);
 		}
 
 
