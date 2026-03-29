@@ -24,7 +24,7 @@ PropImage::~PropImage()
 
 void PropImage::updateProperties()
 {
-	ui.showImageWindow->setChecked(ImageViewerHost::hasOpenViewer(obj->id()));
+	ui.showImageWindow->setChecked(obj->getShowViewer());
 
 	ui.show3d->setChecked(((CModel3D*)obj)->getSelfVisibility());
 
@@ -85,14 +85,8 @@ void PropImage::scaleChanged(int i)
 
 void PropImage::showWindow(bool b)
 {
-	if (b)
-	{
-		ImageViewerHost::activateOrOpen(obj->id());
-	}
-	else
-	{
-		ImageViewerHost::closeAll(obj->id());
-	}
+	obj->setShowViewer(b);
+	CWorkspace::instance()->notifyObjectStateChanged(obj->id());
 }
 
 void PropImage::show3d(bool b)

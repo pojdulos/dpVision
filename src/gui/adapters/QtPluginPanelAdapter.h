@@ -48,6 +48,21 @@ public:
         }
     }
 
+    QPushButton* addButton(
+        unsigned int pluginId,
+        const QString& label,
+        QObject* receiver,
+        const char* slot,
+        int row,
+        int col,
+        int rspan,
+        int cspan) override
+    {
+        return (window_ != nullptr && window_->dockPluginPanel != nullptr)
+            ? window_->dockPluginPanel->addButton(pluginId, label, receiver, slot, row, col, rspan, cspan)
+            : nullptr;
+    }
+
     QPushButton* addButton(unsigned int pluginId, const QString& name, const QString& label, int row, int col, int rspan, int cspan) override
     {
         return (window_ != nullptr && window_->dockPluginPanel != nullptr)

@@ -9,6 +9,7 @@
 
 #include "ContextMenu.h"
 
+#include "Image.h"
 #include "ImageViewerHost.h"
 #include "MainWindow.h"
 #include "MainApplication.h"
@@ -998,7 +999,11 @@ void DockWidgetWorkspace::colNameClicked(std::shared_ptr<CBaseObject> obj, Works
 		CMainWindow* win = CMainWindow::instance();
 		if (obj->hasType(CBaseObject::IMAGE))
 		{
-			ImageViewerHost::activateOrOpen(obj->id());
+			if (auto image = std::dynamic_pointer_cast<CImage>(obj))
+			{
+				image->setShowViewer(true);
+				CWorkspace::instance()->notifyObjectStateChanged(obj->id());
+			}
 		}
 		else
 		{

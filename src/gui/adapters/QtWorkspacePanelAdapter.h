@@ -28,6 +28,13 @@ public:
         }
     }
 
+    void selectWorkspaceItem(int id) override
+    {
+        if (window_ != nullptr && window_->dockWorkspace != nullptr) {
+            window_->dockWorkspace->selectItem(id);
+        }
+    }
+
     void setWorkspaceItemChecked(int id, bool checked) override
     {
         if (window_ != nullptr && window_->dockWorkspace != nullptr) {
@@ -53,6 +60,13 @@ public:
     {
         if (window_ != nullptr && window_->dockWorkspace != nullptr) {
             window_->dockWorkspace->setItemKidsVisibleById(id, visible);
+        }
+    }
+
+    void setWorkspaceItemLabel(int id, const QString& label) override
+    {
+        if (window_ != nullptr && window_->dockWorkspace != nullptr) {
+            window_->dockWorkspace->setItemLabelById(id, label);
         }
     }
 

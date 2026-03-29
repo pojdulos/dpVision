@@ -34,10 +34,12 @@
 #include "MessageBoxManager.h"
 #include "../core/AppStateManager.h"
 #include "../core/CameraControlManager.h"
+#include "../core/GuiInternalsManager.h"
 #include "../core/HistogramDockManager.h"
 #include "../core/PluginPanelManager.h"
 #include "../core/WorkspacePanelManager.h"
 #include "adapters/QtCameraControlAdapter.h"
+#include "adapters/QtGuiInternalsAdapter.h"
 #include "adapters/QtStatusBarAdapter.h"
 #include "adapters/QtAppStateAdapter.h"
 #include "adapters/QtHistogramDockAdapter.h"
@@ -136,6 +138,7 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 	MessageBoxManager::setListener(new QtMessageBoxAdapter());
 	AppStateManager::setListener(new QtAppStateAdapter(this));
 	CameraControlManager::setListener(new QtCameraControlAdapter());
+	GuiInternalsManager::setListener(new QtGuiInternalsAdapter());
 	HistogramDockManager::setListener(new QtHistogramDockAdapter(this));
 	PluginPanelManager::setListener(new QtPluginPanelAdapter(this));
 	WorkspacePanelManager::setListener(new QtWorkspacePanelAdapter(this));

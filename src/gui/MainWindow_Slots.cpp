@@ -94,6 +94,11 @@ void CMainWindow::onWorkspaceObjectActivated(CBaseObject* obj)
 
 void CMainWindow::onWorkspaceObjectStateChanged(int i)
 {
+	if (auto image = std::dynamic_pointer_cast<CImage>(CWorkspace::instance()->getSomethingWithId(i)))
+	{
+		Q_UNUSED(image);
+		WorkspaceImageHost::syncViewerState(i, true);
+	}
 	Q_UNUSED(i);
 	changeMenuAfterSelect();
 	updateView(true, true);
@@ -101,6 +106,11 @@ void CMainWindow::onWorkspaceObjectStateChanged(int i)
 
 void CMainWindow::onWorkspaceObjectAdded(int i)
 {
+	if (auto image = std::dynamic_pointer_cast<CImage>(CWorkspace::instance()->getSomethingWithId(i)))
+	{
+		Q_UNUSED(image);
+		WorkspaceImageHost::syncViewerState(i, false);
+	}
 	changeMenuAfterSelect();
 	updateView(true, true);
 }
@@ -1026,6 +1036,7 @@ void CMainWindow::modelClose()
 	{
 		if (auto im = std::dynamic_pointer_cast<CImage>(obj))
 		{
+			im->setShowViewer(false);
 			if (wksp->_objectRemove(im))
 				StatusBarManager::setText("Current image has been removed...");
 		}

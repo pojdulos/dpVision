@@ -16,6 +16,12 @@ public:
         }
     }
 
+    static void updateView(bool repaintAll = true, bool buffered = true) {
+        if (listenerRef()) {
+            listenerRef()->updateView(repaintAll, buffered);
+        }
+    }
+
     static void updateAllViews(bool buffered = true) {
         if (listenerRef()) {
             listenerRef()->updateAllViews(buffered);

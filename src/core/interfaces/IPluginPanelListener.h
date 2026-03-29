@@ -3,6 +3,7 @@
 #include <QString>
 #include <QStringList>
 
+class QObject;
 class QWidget;
 class QPushButton;
 
@@ -15,6 +16,15 @@ public:
     virtual void clear(unsigned int pluginId) = 0;
     virtual void setEnabled(unsigned int pluginId, bool enabled) = 0;
     virtual void removeWidget(unsigned int pluginId, const QString& name) = 0;
+    virtual QPushButton* addButton(
+        unsigned int pluginId,
+        const QString& label,
+        QObject* receiver,
+        const char* slot,
+        int row,
+        int col,
+        int rspan = 0,
+        int cspan = 0) = 0;
     virtual QPushButton* addButton(
         unsigned int pluginId,
         const QString& name,

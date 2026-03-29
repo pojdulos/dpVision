@@ -4,7 +4,6 @@
 #include "../adapters/WorkspaceActivationAPIAdapter.h"
 #include "../adapters/WorkspaceBulkAPIAdapter.h"
 #include "../adapters/WorkspaceDuplicationAPIAdapter.h"
-#include "../adapters/WorkspaceImageAPIAdapter.h"
 #include "../adapters/WorkspaceImportAPIAdapter.h"
 #include "../adapters/WorkspaceAPIAdapter.h"
 #include "../adapters/WorkspaceSelectionAPIAdapter.h"
@@ -29,7 +28,6 @@ private:
     WorkspaceActivationAPIAdapter workspaceActivationAPI_;
     WorkspaceBulkAPIAdapter workspaceBulkAPI_;
     WorkspaceDuplicationAPIAdapter workspaceDuplicationAPI_;
-    WorkspaceImageAPIAdapter workspaceImageAPI_;
     WorkspaceImportAPIAdapter workspaceImportAPI_;
     WorkspaceSelectionAPIAdapter workspaceSelectionAPI_;
     ModelLoadAPIAdapter modelLoadAPI_;
@@ -63,7 +61,6 @@ public:
     IWorkspaceActivationAPI& workspaceActivation() override { return workspaceActivationAPI_; }
     IWorkspaceBulkAPI& workspaceBulk() override { return workspaceBulkAPI_; }
     IWorkspaceDuplicationAPI& workspaceDuplication() override { return workspaceDuplicationAPI_; }
-    IWorkspaceImageAPI& workspaceImage() override { return workspaceImageAPI_; }
     IWorkspaceImportAPI& workspaceImport() override { return workspaceImportAPI_; }
     IWorkspaceSelectionAPI& workspaceSelection() override { return workspaceSelectionAPI_; }
     IModelLoadAPI& modelLoad() override { return modelLoadAPI_; }

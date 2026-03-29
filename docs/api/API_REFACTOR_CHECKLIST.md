@@ -14,7 +14,8 @@ in the related commit or PR description.
       default and privileged roots exist, compile-time boundary checks are in
       place, dock/camera/progress/plugin-panel GUI access is explicit, and
       `dpVisionGui` no longer links `dpVision::LegacyApi`; remaining work is
-      mostly legacy-surface cleanup in `UI::` and API-side GUI separation
+      mostly privileged legacy-surface cleanup in `UI::` and API-side GUI
+      separation
 - [~] Phase 5: invert legacy implementation
       `AP.cpp` is now wrapper-oriented and `UI.cpp` has been partially thinned;
       some legacy helper logic still remains in `UI.cpp`
@@ -68,14 +69,15 @@ in the related commit or PR description.
 - [~] Rebuild default adapters directly over `core` where possible
       camera/progress adapters now use shared host-side helpers instead of
       calling `UI::` directly, selected legacy runtime/status logic was moved
-      below `UI.cpp`, and `WorkspaceImageAPIAdapter` now keeps only the
-      workspace/domain part while legacy viewer policy stays outside the
-      default adapter; `PluginPanelAPIAdapter` now goes through
+      below `UI.cpp`; legacy image insertion now goes through
+      `WorkspaceAPIAdapter::addModel(...)` with viewer policy stored on
+      `CImage`; `PluginPanelAPIAdapter` now goes through
       `PluginPanelManager` instead of including GUI host access directly, and
       `GuiCameraAPIAdapter` now goes through `CameraControlManager` with a GUI
       listener supplied by `gui`; `AppInternalsAPIAdapter` now resolves the
       privileged application handle through `AppInternalsManager` instead of
-      including `MainApplication.h`
+      including `MainApplication.h`; `GuiInternalsAPIAdapter` now goes through
+      `GuiInternalsManager` with a GUI listener supplied by `gui`
 - [x] Keep privileged GUI adapters explicit and separate
 - [ ] Eliminate fake capability composition through null adapters
 - [ ] Remove duplication between default and legacy paths
@@ -87,7 +89,9 @@ in the related commit or PR description.
 - [x] Provide legacy `AP::WORKSPACE` wrappers for direct workspace notify calls
 - [~] Move workspace/object mutation refresh off direct GUI calls
       `ContextMenu.cpp` and selected `MainWindow_Slots.cpp` paths now use
-      workspace notifications
+      workspace notifications; image-viewer open/close now also syncs from
+      workspace notifications plus `CImage` state instead of imperative
+      `AP.cpp -> gui` calls
 - [ ] Review remaining `AppStateManager` usage and classify each call as:
       boundary bridge, workspace event candidate, or direct `gui -> gui`
 - [ ] Remove direct GUI refresh calls after object-state mutations in property
@@ -99,13 +103,19 @@ in the related commit or PR description.
 
 - [~] Make `AP::` call the real API
       `AP.cpp` now delegates to adapters/services with business logic extracted
-      out of the file
+      out of the file; legacy image insertion now sets object state and uses
+      workspace insertion instead of calling GUI image-viewer helpers directly
 - [~] Make `UI::` call the real API
-      progress/status/runtime paths are thinner, but some legacy helper logic
-      still remains in `UI.cpp`
+      progress/status/runtime paths are thinner, camera/workspace/plugin-panel
+      wrappers in `UI.cpp` now route through `core` managers instead of direct
+      GUI host-access helpers; `dpVisionLegacyApi` no longer needs the
+      `dpVisionGui` autogen include path, but some raw GUI escape hatches
+      still remain in `UI.cpp`, including the consciously preserved legacy
+      `UI::PROGRESSBAR::instance()`
 - [ ] Keep compatibility overloads in the legacy layer only
 - [~] Stop adding new business logic to `AP.cpp` and `UI.cpp`
-      `AP.cpp` is in good shape; continue reducing helper logic in `UI.cpp`
+      `AP.cpp` is in good shape; continue reducing helper logic and raw
+      privileged access in `UI.cpp`
 - [ ] Update `LEGACY_API_MAP.md` when a migration step is completed
 
 ## Plugin Path Cleanup
@@ -126,6 +136,9 @@ in the related commit or PR description.
 - [x] `dpVisionGui` target compiles without `dpVision::LegacyApi`
 - [x] privileged GUI API compiles with `gui`
 - [x] legacy wrappers compile and delegate correctly
+- [x] `dpVisionLegacyApi` compiles without the `dpVisionGui` autogen include path
+- [x] in-tree legacy plugins may consume `dpVisionLegacyApi` statically without
+      redefining `DPVISION_BUILD` (use `DPVISION_LEGACY_API_STATIC`)
 - [ ] in-tree example plugins still build
 - [x] architecture docs still match reality after each phase
 - [ ] `GUI_COORDINATION_RULES.md` still matches reality after each phase

@@ -199,20 +199,6 @@ Current state:
 
 Status: `Ready`
 
-### Workspace Image API
-
-Legacy source:
-- `AP::WORKSPACE::addImage(...)`
-
-Proposed new interface:
-- `IWorkspaceImageAPI`
-
-Current state:
-- implemented for the workspace/domain part
-- legacy `showViewer` behavior intentionally remains in `AP::` as GUI policy
-
-Status: `Ready`
-
 ## Next Interfaces To Introduce
 
 These capabilities still have stable enough semantics to keep improving, but

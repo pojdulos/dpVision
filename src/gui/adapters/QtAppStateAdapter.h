@@ -20,6 +20,13 @@ public:
         }
     }
 
+    void updateView(bool repaintAll = true, bool buffered = true) override
+    {
+        if (window_ != nullptr) {
+            window_->updateView(repaintAll, buffered);
+        }
+    }
+
     void updateAllViews(bool buffered = true) override
     {
         if (window_ != nullptr) {

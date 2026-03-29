@@ -1,32 +1,21 @@
 #include "../api/UI.h"
 
-#include "MainWindow.h"
+#include "../core/AppStateManager.h"
+#include "../core/CameraControlManager.h"
+#include "../core/GuiInternalsManager.h"
 #include "../core/LegacyUiSelectionWorkflow.h"
 #include "../core/LegacyAppRuntime.h"
 
 //#include <Windows.h> // definiuje GetTickCount()
-
-#include "DockWidgetWorkspace.h"
-#include "DockWidgetProperties.h"
-#include "DockWidgetLights.h"
-#include "DockWidgetPluginList.h"
-#include "DockWidgetPluginPanel.h"
-#include "DockWidgetHistogram.h"
-#include "DockWidgetImageViewer.h"
-
-#include "ProgressIndicator.h"
 
 #include <QtWidgets>
 
 #include "GLViewer.h"
 
 #include "../core/MessageBoxManager.h"
+#include "../core/PluginPanelManager.h"
 #include "../core/StatusBarManager.h"
 #include "../core/WorkspacePanelManager.h"
-#include "../gui/CameraHostAccess.h"
-#include "../gui/PluginPanelHostAccess.h"
-#include "../gui/ProgressHostAccess.h"
-#include "../gui/WorkspaceDockHostAccess.h"
 #include "adapters/DockHistogramAPIAdapter.h"
 #include "adapters/DockWorkspaceAPIAdapter.h"
 #include "adapters/FileDialogAPIAdapter.h"
@@ -37,11 +26,6 @@
 
 namespace
 {
-	CMainWindow* mainWindow()
-	{
-		return CMainWindow::instance();
-	}
-
 	DockWorkspaceAPIAdapter& dockWorkspaceApi()
 	{
 		static DockWorkspaceAPIAdapter api;
@@ -146,8 +130,6 @@ namespace
 #endif
 
 
-#include "MainWindow.h"
-
 //void UI::show()
 //{
 //	if (auto win = CMainWindow::instance())
@@ -158,26 +140,17 @@ namespace
 
 void UI::updateView(bool repaintAll, bool buffered)
 {
-	if (auto win = CMainWindow::instance())
-	{
-		win->updateView(repaintAll, buffered);
-	}
+	AppStateManager::updateView(repaintAll, buffered);
 }
 
 void UI::updateAllViews(bool buffered)
 {
-	if (auto win = CMainWindow::instance())
-	{
-		win->updateView(true, buffered);
-	}
+	AppStateManager::updateAllViews(buffered);
 }
 
 void UI::updateCurrentView(bool buffered)
 {
-	if (auto win = CMainWindow::instance())
-	{
-		win->updateView(false, buffered);
-	}
+	AppStateManager::updateView(false, buffered);
 }
 
 void UI::changeMenuAfterSelect()
@@ -206,11 +179,7 @@ void UI::DOCK::PROPERTIES::updateProperties()
 
 DockWidgetWorkspace* UI::DOCK::WORKSPACE::instance()
 {
-	if (auto win = mainWindow())
-	{
-		return win->dockWorkspace;
-	}
-	return nullptr;
+	return GuiInternalsManager::workspaceDock();
 }
 
 void UI::DOCK::WORKSPACE::update()
@@ -220,17 +189,17 @@ void UI::DOCK::WORKSPACE::update()
 
 void UI::DOCK::WORKSPACE::selectItem( int id)
 {
-	WorkspaceDockHostAccess::selectItem(id);
+	WorkspacePanelManager::selectWorkspaceItem(id);
 }
 
 std::shared_ptr<CBaseObject> UI::DOCK::WORKSPACE::currentItem()
 {
-	return WorkspaceDockHostAccess::currentItem();
+	return GuiInternalsManager::currentWorkspaceItem();
 }
 
 QVector<std::shared_ptr<CBaseObject>> UI::DOCK::WORKSPACE::selectedObjects()
 {
-	return WorkspaceDockHostAccess::selectedObjects();
+	return GuiInternalsManager::selectedWorkspaceObjects();
 }
 
 
@@ -257,12 +226,12 @@ void UI::DOCK::WORKSPACE::setItemLockedById(int id, bool b)
 
 void UI::DOCK::WORKSPACE::setItemLabelById(int id, std::string s)
 {
-	WorkspaceDockHostAccess::setItemLabelById(id, QString::fromStdString(s));
+	WorkspacePanelManager::setWorkspaceItemLabel(id, QString::fromStdString(s));
 }
 
 void UI::DOCK::WORKSPACE::setItemLabelById(int id, std::wstring s)
 {
-	WorkspaceDockHostAccess::setItemLabelById(id, QString::fromStdWString(s));
+	WorkspacePanelManager::setWorkspaceItemLabel(id, QString::fromStdWString(s));
 }
 
 
@@ -275,60 +244,66 @@ void UI::DOCK::HISTOGRAM::repaint()
 
 GLViewer * UI::CAMERA::currentViewer()
 {
-	return CameraHostAccess::currentViewer();
+	return GuiInternalsManager::currentViewer();
 }
 
 void UI::CAMERA::screenshot(QString path, void *v)
 {
-	CameraHostAccess::screenshot(path, v);
+	if (v != nullptr)
+	{
+		static_cast<GLViewer*>(v)->screenshot(path);
+		return;
+	}
+
+	CameraControlManager::screenshot(path);
 }
 
 void UI::CAMERA::move( float mx, float my, float mz )
 {
-	CameraHostAccess::move(mx, my, mz);
+	CameraControlManager::move(mx, my, mz);
 }
 
 void UI::CAMERA::rotate( float ax, float ay, float az )
 {
-	CameraHostAccess::rotate(ax, ay, az);
+	CameraControlManager::rotate(ax, ay, az);
 }
 
 void UI::CAMERA::setFloating( bool f )
 {
-	CameraHostAccess::setFloating(f);
+	CameraControlManager::setFloating(f);
 }
 
 bool UI::CAMERA::convertWinToWorld(CPoint3d winCoords, CPoint3d & worldCoords)
 {
-	return CameraHostAccess::convertWinToWorld(winCoords, worldCoords);
+	return CameraControlManager::convertWinToWorld(winCoords, worldCoords);
 }
 
 bool UI::CAMERA::convertWorldToWin(CPoint3d worldCoords, CPoint3d & winCoords)
 {
-	return CameraHostAccess::convertWorldToWin(worldCoords, winCoords);
+	return CameraControlManager::convertWorldToWin(worldCoords, winCoords);
 }
 
 bool UI::CAMERA::convertCoords(double winX, double winY, CPoint3d& pkt0, CPoint3d& pkt1)
 {
-	return CameraHostAccess::convertCoords(winX, winY, pkt0, pkt1);
+	return CameraControlManager::convertCoords(winX, winY, pkt0, pkt1);
 }
 
 CPoint3d UI::CAMERA::camPos()
 {
-	return CameraHostAccess::camPos();
+	return CameraControlManager::camPos();
 }
 
 #include "Transform.h"
 
 CTransform* UI::CAMERA::transform()
 {
-	return CameraHostAccess::transform();
+	return GuiInternalsManager::currentCameraTransform();
 }
 
 
 void UI::CAMERA::setView(int dir, std::shared_ptr<CModel3D> obj)
 {
-	CameraHostAccess::setView(dir, std::move(obj));
+	CameraControlManager::setView(dir, std::move(obj));
 }
 
 
@@ -337,7 +312,7 @@ void UI::CAMERA::setView(int dir, std::shared_ptr<CModel3D> obj)
 
 DockWidgetPluginPanel* UI::PLUGINPANEL::mainPanel()
 {
-	return PluginPanelHostAccess::host();
+	return GuiInternalsManager::pluginPanelHost();
 }
 
 QWidget* UI::PLUGINPANEL::instance(unsigned int pluginId)
@@ -368,7 +343,7 @@ void UI::PLUGINPANEL::removeWidget(unsigned int pluginId, const QString &name)
 // PLUGINPANEL - PUSH BUTTON
 QPushButton* UI::PLUGINPANEL::addButton(unsigned int pluginId, QString label, QObject* receiver, const char* slot, int row, int col, int rspan, int cspan)
 {
-	return PluginPanelHostAccess::addButton(pluginId, label, receiver, slot, row, col, rspan, cspan);
+	return PluginPanelManager::addButton(pluginId, label, receiver, slot, row, col, rspan, cspan);
 }
 
 QPushButton* UI::PLUGINPANEL::addButton(unsigned int pluginId, std::string buttonName, std::string label, int row, int col, int rspan, int cspan)
@@ -486,7 +461,7 @@ void UI::PLUGINPANEL::setLabel(unsigned int pluginId, const QString &name, const
 
 ProgressIndicator* UI::PROGRESSBAR::instance()
 {
-	return ProgressHostAccess::instance();
+	return GuiInternalsManager::progressIndicator();
 }
 
 void UI::PROGRESSBAR::init( int min, int max, int val )

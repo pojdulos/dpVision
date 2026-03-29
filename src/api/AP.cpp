@@ -2,7 +2,6 @@
 
 #include "../core/LegacyAppRuntime.h"
 #include "../core/LegacyObjectTransferService.h"
-#include "../gui/WorkspaceImageHost.h"
 
 #include "adapters/AppAPIAdapter.h"
 #include "adapters/ModelAPIAdapter.h"
@@ -11,7 +10,6 @@
 #include "adapters/WorkspaceActivationAPIAdapter.h"
 #include "adapters/WorkspaceBulkAPIAdapter.h"
 #include "adapters/WorkspaceDuplicationAPIAdapter.h"
-#include "adapters/WorkspaceImageAPIAdapter.h"
 #include "adapters/WorkspaceImportAPIAdapter.h"
 #include "adapters/WorkspaceAPIAdapter.h"
 #include "adapters/WorkspaceSelectionAPIAdapter.h"
@@ -77,12 +75,6 @@ namespace AP
 		WorkspaceDuplicationAPIAdapter& workspaceDuplicationApi()
 		{
 			static WorkspaceDuplicationAPIAdapter api;
-			return api;
-		}
-
-		WorkspaceImageAPIAdapter& workspaceImageApi()
-		{
-			static WorkspaceImageAPIAdapter api;
 			return api;
 		}
 	}
@@ -182,7 +174,14 @@ namespace AP
 
 		bool addImage(std::shared_ptr<CImage> im, bool showViewer, bool show3d)
 		{
-			return WorkspaceImageHost::addImage(std::move(im), showViewer, show3d);
+			if (im == nullptr)
+			{
+				return false;
+			}
+
+			im->setSelfVisibility(show3d);
+			im->setShowViewer(showViewer);
+			return workspaceApi().addModel(im, false);
 		}
 
 

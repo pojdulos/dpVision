@@ -38,6 +38,18 @@ public:
 
     static QPushButton* addButton(
         unsigned int pluginId,
+        const QString& label,
+        QObject* receiver,
+        const char* slot,
+        int row,
+        int col,
+        int rspan = 0,
+        int cspan = 0) {
+        return listenerRef() ? listenerRef()->addButton(pluginId, label, receiver, slot, row, col, rspan, cspan) : nullptr;
+    }
+
+    static QPushButton* addButton(
+        unsigned int pluginId,
         const QString& name,
         const QString& label,
         int row,

@@ -20,6 +20,12 @@ public:
         }
     }
 
+    static void selectWorkspaceItem(int id) {
+        if (listenerRef()) {
+            listenerRef()->selectWorkspaceItem(id);
+        }
+    }
+
     static void setWorkspaceItemChecked(int id, bool checked) {
         if (listenerRef()) {
             listenerRef()->setWorkspaceItemChecked(id, checked);
@@ -41,6 +47,12 @@ public:
     static void setWorkspaceItemKidsVisible(int id, bool visible) {
         if (listenerRef()) {
             listenerRef()->setWorkspaceItemKidsVisible(id, visible);
+        }
+    }
+
+    static void setWorkspaceItemLabel(int id, const QString& label) {
+        if (listenerRef()) {
+            listenerRef()->setWorkspaceItemLabel(id, label);
         }
     }
 

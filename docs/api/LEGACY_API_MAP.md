@@ -45,9 +45,11 @@ Duplication replacements:
 
 Image insertion replacement:
 - `AP::WORKSPACE::addImage(...)`
-- New home: `IWorkspaceImageAPI`
-- Compatibility note: legacy `showViewer` behavior remains in `AP::` because it
-  is GUI policy, not default workspace capability
+- New home: `IWorkspaceAPI::addModel(...)` plus `CImage` state setup in the
+  legacy wrapper
+- Compatibility note: legacy `showViewer` remains part of the public wrapper,
+  but it is now stored as `CImage` state and respected by GUI reaction to
+  workspace notifications rather than by a direct GUI call from `AP.cpp`
 
 `AP::WORKSPACE::SELECTION::*`
 - Status: keep during migration
@@ -91,18 +93,21 @@ Privileged replacements:
 - Status: supported plugin surface
 - Host-side contract: `IPluginPanelAPI`
 - Implementation note: most plugin-panel operations now delegate through
-  `PluginPanelAPIAdapter` and `PluginPanelHostAccess`.
+  `PluginPanelAPIAdapter` and `PluginPanelManager`.
 - Remaining special case:
   - the old `addButton(..., QObject* receiver, const char* slot, ...)`
     overload is still legacy-only, but now also routes through
-    `PluginPanelHostAccess` instead of calling the dock directly.
+    `PluginPanelManager` instead of calling the dock directly.
 
 `UI::PROGRESSBAR::*`
 - Status: supported plugin surface
 - Host-side contract: `IProgressControlAPI`
 - Implementation note: `UI::PROGRESSBAR::{init,setValue,setText,hide}` now delegate
-  primarily through `IProgressListener::getDefault()`. `instance()` remains a
-  legacy GUI escape hatch.
+  through `GuiProgressAPIAdapter` / `IProgressControlAPI`.
+- Remaining privileged escape hatch:
+  - `UI::PROGRESSBAR::instance()` is intentionally kept for existing
+    GUI-aware plugins that still connect Qt signals directly to the host
+    progress widget
 
 `UI::STATUSBAR::*`
 - Status: legacy wrapper
@@ -142,7 +147,8 @@ String/path helpers in `UI`
 - Host-side contract: `ICameraControlAPI`
 - Raw internals move to: `IGuiInternalsAPI`
 - Implementation note: current camera adapters no longer call `UI::CAMERA::*`
-  directly; they share host-side camera access helpers with the GUI-aware path
+  directly; legacy `UI::CAMERA::*` wrappers now route safe operations through
+  `CameraControlManager`, while raw getters still use privileged GUI internals
 
 `UI::DOCK::WORKSPACE::*`
 - Status: mixed; dock commands may survive temporarily, raw getters are legacy
@@ -150,23 +156,33 @@ String/path helpers in `UI`
 - Current safe replacements include:
   - `IDockWorkspaceAPI::rebuildTree()`
   - `IDockWorkspaceAPI::setItemVisibleById(...)`
-  - `WorkspaceDockHostAccess::{selectItem,currentItem,selectedObjects,setItemLabelById}`
+  - `WorkspacePanelManager::{selectWorkspaceItem,setWorkspaceItemLabel}`
 - Compatibility note:
   - `UI::DOCK::WORKSPACE::currentItem()` and
     `UI::DOCK::WORKSPACE::selectedObjects()` are currently kept so privileged
     plugin adapters can preserve exact pre-refactor behavior on Windows
+ - Implementation note:
+   - legacy workspace-dock wrappers now route through `WorkspacePanelManager`,
+     `DockWorkspaceAPIAdapter`, or `GuiInternalsManager` instead of direct
+     GUI host-access helpers
 
 Legacy GUI escape hatches still present in `UI` and intended to shrink:
 - `UI::CAMERA::transform()`
 - `UI::CAMERA::currentViewer()`
 - `UI::DOCK::WORKSPACE::instance()`
 - `UI::PLUGINPANEL::mainPanel()`
-- `UI::PROGRESSBAR::instance()`
 
 Current implementation note:
 - most of `UI::MESSAGEBOX::*`, `UI::FILECHOOSER::*`, `UI::PLUGINPANEL::*`,
   and `UI::DOCK::WORKSPACE::*` now behave as thin wrappers over adapters or
-  host-side GUI helpers rather than owning separate logic in `UI.cpp`
+  `core` managers / adapters rather than owning separate logic in `UI.cpp`
+
+Image-viewer state note:
+- `CImage` now carries a dedicated `showViewer` state separate from
+  `CBaseObject::m_showSelf`
+- `m_showSelf` remains the 3D-scene visibility flag
+- GUI opens or closes image viewers in response to workspace notifications and
+  the `CImage` viewer flag
 
 Already removed as unused or purely local wrappers:
 - `UI::adjustGroupBoxHeight()`
@@ -195,6 +211,11 @@ been migrated to the new API instead of restoring those wrappers:
 Use for ordinary plugins:
 - `AP.h`
 - `UI.h`
+
+Build note for in-tree CMake plugins:
+- when a plugin links the static `dpVision::LegacyApi` target directly, define
+  `DPVISION_LEGACY_API_STATIC` for that plugin target so `AP` / `UI` symbols
+  are treated as normal static-link symbols rather than `dllimport`
 
 Internal/controlled integration helpers:
 - `AppAPIAdapter`

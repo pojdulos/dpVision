@@ -29,7 +29,7 @@ Goal:
 | Plugin panel host | create panel, add/remove widgets, read/edit control values | `IPluginPanelAPI`, `PluginPanelAPIAdapter`, `PluginPanelHostAccess` | `Partial` | Safe operations and raw widget access are mixed in one area; `QWidget*` / `QPushButton*` remain exposed | Split conceptually into safe panel operations vs privileged raw widget escape hatches |
 | Camera / viewer control | move, rotate, set view, coordinate transforms, screenshot | `ICameraControlAPI`, `GuiCameraAPIAdapter`, `CameraControlManager`, `QtCameraControlAdapter`, `CameraHostAccess` | `Partial` | Safe camera operations now flow through a `core` listener/manager bridge; some plugin flows still rely on raw viewer or transform access through privileged APIs | Keep extending `ICameraControlAPI`; avoid adding new `GLViewer*`-based call paths |
 | Raw viewer internals (`GLViewer`) | direct viewer pointer, camera transform, OpenGL-local behavior | `IGuiInternalsAPI`, `CameraHostAccess` | `Partial` | Privileged boundary exists, but this remains a large raw escape hatch rather than a capability API | Only use for explicit privileged access; move commonly-needed safe behaviors into typed APIs |
-| Image viewer / image dock | open viewer, reload, fit-to-window, internal dock state | `ImageViewerHost`, `ImageViewerState`, legacy `UI::PICVIEWER` | `Missing` | Host helper exists, but there is no equally clear `core/api` contract like progress/status/histogram | Decide whether image viewer is internal GUI only or needs an explicit plugin-facing capability |
+| Image viewer / image dock | open viewer, reload, fit-to-window, internal dock state | `ImageViewerHost`, `ImageViewerState`, `WorkspaceImageHost`, image viewer state on `CImage`, legacy `AP::WORKSPACE::addImage(...)` / `UI::PICVIEWER` | `Partial` | Image-viewer visibility is now driven by explicit `CImage` state and workspace notifications, but the capability is still legacy-heavy and not yet modeled as a dedicated typed API | Keep viewer policy on the host side; decide later whether this remains GUI-internal or becomes an explicit plugin-facing capability |
 | Volumetric image dialog / analysis dialogs | modal interaction, user input, image/volume previews | mostly direct GUI logic | `Missing` | These are still plain GUI workflows without a general non-GUI capability layer | Leave as GUI-local unless a real plugin-facing capability emerges |
 | Settings dialog | show/edit app settings | `ISettingsStorage`, `SettingsAPIAdapter` for storage, but dialog itself is GUI-local | `Partial` | Storage is isolated, but the dialog interaction is not modeled as a host capability | Keep dialog GUI-local; expose settings data/services, not the dialog itself |
 | Tree select / filter / utility dialogs | modal selection / filter input | mostly direct GUI logic | `Missing` | No dedicated non-GUI contract, and likely not worth one unless plugins need those interactions directly | Keep GUI-local unless a repeated plugin-facing pattern appears |
@@ -142,9 +142,9 @@ Completed cleanup notes:
   `SettingsStorageRegistry`, so `src/gui/AppSettings.cpp` no longer depends on
   `AppAPIAdapter`
 - `dpVisionGui` builds without linking `dpVision::LegacyApi`
-- `WorkspaceImageAPIAdapter` no longer opens image viewers directly; the
-  viewer-opening policy now stays on GUI/legacy-owned paths instead of the
-  default workspace-image adapter
+- legacy image insertion no longer needs a dedicated workspace-image adapter;
+  `AP::WORKSPACE::addImage(...)` now sets `CImage` state and uses ordinary
+  workspace insertion, while viewer policy stays on GUI/workspace-event paths
 - `PluginPanelAPIAdapter` now talks to `core` through `PluginPanelManager`
   with a Qt listener supplied by `gui`, instead of including GUI host access
   directly
@@ -154,6 +154,16 @@ Completed cleanup notes:
 - `AppInternalsAPIAdapter` now resolves the privileged application instance
   through `AppInternalsManager`, so the adapter no longer includes
   `MainApplication.h` or depends on `QApplication`
+- `GuiInternalsAPIAdapter` now talks to `core` through `GuiInternalsManager`
+  with a Qt listener supplied by `gui`, instead of including `MainWindow`,
+  dock, viewer, progress, and workspace host headers directly
+- legacy image insertion no longer opens viewers directly from `AP.cpp`; the
+  `showViewer` decision now lives on `CImage`, and GUI opens/closes viewers in
+  response to workspace notifications and object state
+- `UI.cpp` legacy wrappers now route `updateView`, workspace item select/label,
+  and the legacy plugin-panel receiver/slot button overload through `core`
+  managers; `dpVisionLegacyApi` also builds without the `dpVisionGui` autogen
+  include path
 
 Remaining priorities:
 
