@@ -33,6 +33,7 @@
 
 #include <QLayout>
 #include <QScrollArea>
+#include <QAbstractSpinBox>
 
 #include "Model3D.h"
 
@@ -50,6 +51,28 @@ namespace
 			return win->currentViewer();
 		}
 		return nullptr;
+	}
+
+	void configureSpinBoxesForManualEditing(QWidget* root)
+	{
+		if (root == nullptr)
+		{
+			return;
+		}
+
+		if (auto* spinBox = qobject_cast<QAbstractSpinBox*>(root))
+		{
+			spinBox->setKeyboardTracking(false);
+		}
+
+		const auto spinBoxes = root->findChildren<QAbstractSpinBox*>();
+		for (QAbstractSpinBox* spinBox : spinBoxes)
+		{
+			if (spinBox != nullptr)
+			{
+				spinBox->setKeyboardTracking(false);
+			}
+		}
 	}
 }
 
@@ -86,6 +109,7 @@ DockWidgetProperties::~DockWidgetProperties() {}
 
 void DockWidgetProperties::selectionChanged( int id )
 {
+	currentSelectionId_ = id;
 	rememberExpandedState();
 	ui.tree->clear();
 
@@ -222,6 +246,7 @@ void DockWidgetProperties::addExpandableItem(QString title, PropWidget* contentW
 	QTreeWidgetItem* childItem = new QTreeWidgetItem();
 	item->addChild(childItem);
 	ui.tree->setItemWidget(childItem, 0, contentWidget);
+	configureSpinBoxesForManualEditing(contentWidget);
 
 	item->setExpanded(expandedState_.value(title, true));
 }
@@ -259,26 +284,49 @@ void DockWidgetProperties::onWorkspaceObjectActivated(CBaseObject* obj)
 
 void DockWidgetProperties::onWorkspaceObjectStateChanged(int)
 {
-	const int currentId = CWorkspace::instance()->_getCurrentModelId();
-	if (currentId != NO_CURRENT_MODEL && ui.tree->topLevelItemCount() > 0)
+	CWorkspace* workspace = CWorkspace::instance();
+	if (ui.tree->topLevelItemCount() > 0)
 	{
-		updateProperties();
+		if (currentSelectionId_ == NO_CURRENT_MODEL || workspace->getSomethingWithId(currentSelectionId_) != nullptr)
+		{
+			updateProperties();
+		}
+		else
+		{
+			selectionChanged(workspace->_getCurrentModelId());
+		}
 	}
 	else
 	{
-		selectionChanged(currentId);
+		selectionChanged(currentSelectionId_);
 	}
 	update();
 }
 
 void DockWidgetProperties::onWorkspaceObjectRemoved(int) {
-	selectionChanged(CWorkspace::instance()->_getCurrentModelId());
+	CWorkspace* workspace = CWorkspace::instance();
+	if (currentSelectionId_ != NO_CURRENT_MODEL && workspace->getSomethingWithId(currentSelectionId_) != nullptr)
+	{
+		selectionChanged(currentSelectionId_);
+	}
+	else
+	{
+		selectionChanged(workspace->_getCurrentModelId());
+	}
 	update();
 }
 
 void DockWidgetProperties::onWorkspaceStructureChanged()
 {
-	selectionChanged(CWorkspace::instance()->_getCurrentModelId());
+	CWorkspace* workspace = CWorkspace::instance();
+	if (currentSelectionId_ != NO_CURRENT_MODEL && workspace->getSomethingWithId(currentSelectionId_) != nullptr)
+	{
+		selectionChanged(currentSelectionId_);
+	}
+	else
+	{
+		selectionChanged(workspace->_getCurrentModelId());
+	}
 	update();
 }
 

@@ -4,6 +4,7 @@ set(DPVISION_LEGACY_API_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/AP.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/BoundaryContractChecks.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/LegacyApiStatics.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/LegacyUiPrivilegedAccess.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/UI.cpp
 )
 

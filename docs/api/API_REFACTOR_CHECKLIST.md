@@ -108,7 +108,11 @@ in the related commit or PR description.
 - [~] Make `UI::` call the real API
       progress/status/runtime paths are thinner, camera/workspace/plugin-panel
       wrappers in `UI.cpp` now route through `core` managers instead of direct
-      GUI host-access helpers; `dpVisionLegacyApi` no longer needs the
+      GUI host-access helpers; message-box/progress/status/file-dialog wrappers
+      in `UI.cpp` now also call `UserMessageManager`, `IProgressListener`,
+      `StatusBarManager`, or `QFileDialog` directly instead of creating local
+      adapter singleton layers; remaining privileged raw GUI calls used by
+      `UI.cpp` are now centralized in `LegacyUiPrivilegedAccess.*`; `dpVisionLegacyApi` no longer needs the
       `dpVisionGui` autogen include path, but some raw GUI escape hatches
       still remain in `UI.cpp`, including the consciously preserved legacy
       `UI::PROGRESSBAR::instance()`

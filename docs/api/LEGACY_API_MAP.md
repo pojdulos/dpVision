@@ -93,7 +93,9 @@ Privileged replacements:
 - Status: supported plugin surface
 - Host-side contract: `IPluginPanelAPI`
 - Implementation note: most plugin-panel operations now delegate through
-  `PluginPanelAPIAdapter` and `PluginPanelManager`.
+  `PluginPanelManager`; `PluginPanelAPIAdapter` uses the same manager for the
+  typed host path, while legacy `UI.cpp` no longer instantiates its own local
+  plugin-panel adapter layer.
 - Remaining special case:
   - the old `addButton(..., QObject* receiver, const char* slot, ...)`
     overload is still legacy-only, but now also routes through
@@ -103,7 +105,8 @@ Privileged replacements:
 - Status: supported plugin surface
 - Host-side contract: `IProgressControlAPI`
 - Implementation note: `UI::PROGRESSBAR::{init,setValue,setText,hide}` now delegate
-  through `GuiProgressAPIAdapter` / `IProgressControlAPI`.
+  straight to the registered `IProgressListener`; `GuiProgressAPIAdapter`
+  remains the typed host-side path for `IProgressControlAPI`.
 - Plugin migration note:
   - in-tree plugins should prefer `UI::PROGRESSBAR::{init,setValue,setText,hide}`
     for normal updates
@@ -120,18 +123,19 @@ Privileged replacements:
 `UI::STATUSBAR::*`
 - Status: legacy wrapper
 - New home: `IStatusBarAPI`
-- Implementation note: `UI::STATUSBAR::setText()` now delegates through
-  `StatusBarManager`.
+- Implementation note: `UI::STATUSBAR::setText()` now delegates directly
+  through `StatusBarManager`; `UI.cpp` no longer instantiates a local status
+  adapter.
 
 `UI::MESSAGEBOX::*`
 - Status: legacy wrapper
 - New home: `IMessageBoxAPI`
 - Note: compatibility overloads remain in `UI` because some external plugins
   still build against `UI::MESSAGEBOX::*`.
-- Implementation note: legacy calls now route through `MessageBoxManager`,
-  which in turn delegates to the newer `UserMessageManager` / `IMessageListener`
-  mechanism. This is the basis for policy-based routing to message box, status
-  bar, or log without changing call sites in core/plugins.
+- Implementation note: legacy calls now route directly through
+  `UserMessageManager` with `Modal` policy; the typed `IMessageBoxAPI` path
+  remains available separately. This keeps the legacy wrapper thin without
+  changing plugin-visible behavior.
 - Current policy: direct `MessageBoxManager::{information,warning,error}` calls
   default to `Log`, while legacy `UI::MESSAGEBOX::*` and `IMessageBoxAPI`
   force `Modal` and are additionally logged by the Qt adapter.
@@ -139,8 +143,9 @@ Privileged replacements:
 `UI::FILECHOOSER::*`
 - Status: legacy wrapper
 - New home: `IFileDialogAPI`
-- Implementation note: non-`QString` overloads now delegate to the `QString`
-  path so the legacy namespace has only one real file-dialog execution path.
+- Implementation note: non-`QString` overloads delegate to the `QString`
+  path, and the `QString` path now calls `QFileDialog` directly; the typed
+  `IFileDialogAPI` adapter remains the parallel host-side path.
 
 `UI::FILESYSTEM::*`
 - Status: legacy wrapper
@@ -182,8 +187,12 @@ Legacy GUI escape hatches still present in `UI` and intended to shrink:
 
 Current implementation note:
 - most of `UI::MESSAGEBOX::*`, `UI::FILECHOOSER::*`, `UI::PLUGINPANEL::*`,
-  and `UI::DOCK::WORKSPACE::*` now behave as thin wrappers over adapters or
-  `core` managers / adapters rather than owning separate logic in `UI.cpp`
+  `UI::PROGRESSBAR::*`, `UI::STATUSBAR::*`, and `UI::DOCK::WORKSPACE::*`
+  now behave as thin wrappers over `core` managers, listeners, Qt dialog
+  calls, or dedicated adapters rather than owning separate logic in `UI.cpp`
+- the remaining raw GUI escape hatches used by `UI.cpp` are now centralized in
+  `LegacyUiPrivilegedAccess.*`, so the legacy facade has one explicit place
+  where privileged GUI calls are gathered for future cleanup or replacement
 
 Image-viewer state note:
 - `CImage` now carries a dedicated `showViewer` state separate from

@@ -80,6 +80,9 @@ The current model is:
   `has_prop_widget()`, `prop_widget()`, and `prop_widget_update()`
 - this is suitable for plugins that consciously opt into GUI access
 - this does not need to be exposed through the default or legacy-safe plugin path
+- the dock now keeps its own selected-object context across object-state
+  refreshes, so child/custom property widgets do not fall back to viewer
+  properties just because `_getCurrentModelId()` tracks only top-level models
 
 The main architectural point is classification, not replacement:
 
@@ -164,6 +167,9 @@ Completed cleanup notes:
   and the legacy plugin-panel receiver/slot button overload through `core`
   managers; `dpVisionLegacyApi` also builds without the `dpVisionGui` autogen
   include path
+- `UI.cpp` no longer owns the remaining privileged raw GUI wiring directly;
+  those escape hatches are centralized in `LegacyUiPrivilegedAccess.*` so
+  future migration away from legacy raw access can be done in one place
 
 Remaining priorities:
 

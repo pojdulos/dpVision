@@ -5,6 +5,7 @@
 #include <QHash>
 #include "ui_dockWidgetProperties.h"
 
+#include "../core/Global.h"
 #include "Wektor3D.h"
 
 class PropWidget;
@@ -45,6 +46,7 @@ public slots:
 private:
 	Ui::DockWidgetProperties ui;
 	QHash<QString, bool> expandedState_;
+	int currentSelectionId_ = NO_CURRENT_MODEL;
 };
 
 #endif // DOCKWIDGETPROPERTIES_H
