@@ -206,6 +206,11 @@ foreach(SUBDIR ${SUBDIRS})
     endif()
 endforeach()
 
+set(EXTERNAL_PLUGINS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../plugins")
+if(EXISTS "${EXTERNAL_PLUGINS_DIR}/CMakeLists.txt")
+    add_subdirectory("${EXTERNAL_PLUGINS_DIR}" "${CMAKE_CURRENT_BINARY_DIR}/plugins-root")
+endif()
+
 # Skrypty instalacyjne
 set(BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
 install(TARGETS ${EXE_NAME} dpVisionCore DESTINATION ${BINARY_DIR})
