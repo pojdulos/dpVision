@@ -6,7 +6,6 @@
 #include "Objects"
 #include "AnnotationSetOfVertices.h"
 #include "AnnotationSetOfFaces.h"
-#include "../api/AP.h"
 
 #include "StatusBarManager.h"
 

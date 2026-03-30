@@ -1,18 +1,8 @@
 #include "../api/AP.h"
 
-#include "DockWidgetWorkspace.h"
-//#include "DockWidgetPluginList.h"
-#include "Annotation.h"
-#include "Image.h"
-#include "Workspace.h"
-#include "Histogram.h"
-#include "../gui/ImageViewerHost.h"
+#include "../core/LegacyAppRuntime.h"
+#include "../core/LegacyObjectTransferService.h"
 
-#include <QtCore/QString>
-#include "StatusBarManager.h"
-#include "MessageBoxManager.h"
-#include "AppStateManager.h"
-#include "WorkspacePanelManager.h"
 #include "adapters/AppAPIAdapter.h"
 #include "adapters/ModelAPIAdapter.h"
 #include "adapters/ModelLoadAPIAdapter.h"
@@ -20,12 +10,9 @@
 #include "adapters/WorkspaceActivationAPIAdapter.h"
 #include "adapters/WorkspaceBulkAPIAdapter.h"
 #include "adapters/WorkspaceDuplicationAPIAdapter.h"
-#include "adapters/WorkspaceImageAPIAdapter.h"
 #include "adapters/WorkspaceImportAPIAdapter.h"
 #include "adapters/WorkspaceAPIAdapter.h"
 #include "adapters/WorkspaceSelectionAPIAdapter.h"
-
-#include <QElapsedTimer>
 
 
 namespace AP
@@ -90,100 +77,11 @@ namespace AP
 			static WorkspaceDuplicationAPIAdapter api;
 			return api;
 		}
-
-		WorkspaceImageAPIAdapter& workspaceImageApi()
-		{
-			static WorkspaceImageAPIAdapter api;
-			return api;
-		}
-
-		std::shared_ptr<CModel3D> attachLoadedModel(std::shared_ptr<CModel3D> obj, bool setItCurrent)
-		{
-			if (obj != nullptr && workspaceApi().addModel(obj, setItCurrent))
-			{
-				return obj;
-			}
-			return nullptr;
-		}
-
-		bool validateObjectTransferTarget(
-			const std::shared_ptr<CBaseObject>& object,
-			const std::shared_ptr<CBaseObject>& newParent,
-			const char* errorMessage)
-		{
-			if (object == nullptr)
-			{
-				return false;
-			}
-
-			if ((newParent != nullptr)
-				&& newParent->hasCategory(CBaseObject::Category::ANNOTATION)
-				&& object->hasCategory(CBaseObject::Category::OBJECT))
-			{
-				MessageBoxManager::error(errorMessage);
-				return false;
-			}
-
-			return true;
-		}
-
-		CTransform parentGlobalTransform(const std::shared_ptr<CBaseObject>& object)
-		{
-			if (object != nullptr && object->getParent() != nullptr)
-			{
-				return CTransform(CBaseObject::getGlobalTransformationMatrix(object->getParentPtr()));
-			}
-			return CTransform();
-		}
-
-		std::shared_ptr<CModel3D> buildTransferWrapper(
-			const std::shared_ptr<CBaseObject>& object,
-			const char* description)
-		{
-			std::shared_ptr<CModel3D> wrapper = std::make_shared<CModel3D>();
-			wrapper->setLabel("<=>");
-			wrapper->setDescr(description);
-
-			if (object->hasCategory(CBaseObject::OBJECT))
-			{
-				wrapper->addChild(wrapper, object);
-				wrapper->importChildrenGeometry();
-			}
-			else if (object->hasCategory(CBaseObject::ANNOTATION))
-			{
-				wrapper->addAnnotation(wrapper, std::dynamic_pointer_cast<CAnnotation>(object));
-			}
-
-			return wrapper;
-		}
-
-		void attachAsRootOrChild(
-			const std::shared_ptr<CBaseObject>& object,
-			const std::shared_ptr<CBaseObject>& newParent)
-		{
-			if (newParent == nullptr)
-			{
-				AP::WORKSPACE::addObject(object);
-			}
-			else
-			{
-				AP::OBJECT::addChild(newParent, object);
-			}
-		}
-
 	}
 
 	void processEvents(bool immediate)
 	{
-		static QElapsedTimer timer;
-		if (!timer.isValid())
-			timer.start();
-
-		if (immediate || timer.elapsed() > 1000)
-		{
-			QCoreApplication::processEvents();
-			timer.restart();
-		}
+		LegacyAppRuntime::processEvents(immediate);
 	}
 
 
@@ -243,7 +141,7 @@ namespace AP
 
 		std::shared_ptr<CModel3D> loadModel(const std::wstring& path, bool synchronous, bool setItCurrent )
 		{
-			return attachLoadedModel(modelLoadApi().load(path, synchronous), setItCurrent);
+			return workspaceImportApi().attachLoadedModel(modelLoadApi().load(path, synchronous), setItCurrent);
 		}
 
 		void setAllModelsVisible(bool visibility)
@@ -261,14 +159,29 @@ namespace AP
 			return workspaceApi().addObject(obj, setItCurrent);
 		}
 
+		void notifyObjectStateChanged(int id)
+		{
+			if (id != NO_CURRENT_MODEL)
+			{
+				CWorkspace::instance()->notifyObjectStateChanged(id);
+			}
+		}
+
+		void notifyStructureChanged()
+		{
+			CWorkspace::instance()->notifyStructureChanged();
+		}
+
 		bool addImage(std::shared_ptr<CImage> im, bool showViewer, bool show3d)
 		{
-			if (showViewer)
+			if (im == nullptr)
 			{
-				ImageViewerHost::open(im.get());
+				return false;
 			}
 
-			return workspaceImageApi().addImage(im, show3d);
+			im->setSelfVisibility(show3d);
+			im->setShowViewer(showViewer);
+			return workspaceApi().addModel(im, false);
 		}
 
 
@@ -391,13 +304,12 @@ namespace AP
 
 			std::list<int> getList(std::set<CBaseObject::Type> types, std::shared_ptr<CObject> obj)
 			{
-				return CWorkspace::instance()->getSelection(types, obj);
+				return workspaceSelectionApi().ids(std::move(types), std::move(obj));
 			}
 
 			std::list<std::shared_ptr<CBaseObject>> getObjList(std::set<CBaseObject::Type> types, std::shared_ptr<CObject> obj)
 			{
-				const std::vector<std::shared_ptr<CBaseObject>> objects = workspaceSelectionApi().objects(std::move(types), std::move(obj));
-				return std::list<std::shared_ptr<CBaseObject>>(objects.begin(), objects.end());
+				return workspaceSelectionApi().objectList(std::move(types), std::move(obj));
 			}
 
 			void setModelsVisible(bool visibility)
@@ -418,109 +330,12 @@ namespace AP
 
 		void moveTo(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> newParent, bool keep_pos)
 		{
-			auto wksp = CWorkspace::instance();
-
-			if (!validateObjectTransferTarget(
-				obj,
-				newParent,
-				"regular object cannot be moved as a descendant of annotation"))
-			{
-				return;
-			}
-
-			const std::shared_ptr<CBaseObject> oldParent = obj->getParentPtr();
-			const CTransform sourceParentTransform = oldParent != nullptr
-				? CTransform(CBaseObject::getGlobalTransformationMatrix(oldParent))
-				: CTransform();
-
-			if (oldParent != nullptr)
-			{
-				AP::OBJECT::removeChild(oldParent, obj);
-			}
-			else
-			{
-				wksp->_objectRemove(obj->id());
-			}
-
-			if (keep_pos)
-			{
-				std::shared_ptr<CModel3D> wrapper = buildTransferWrapper(
-					obj,
-					"Macierz dopasowania, wygenerowana podczas przenoszenia obiektu");
-
-				if (newParent == nullptr)
-				{
-					wrapper->setTransform(sourceParentTransform);
-					AP::WORKSPACE::addModel(wrapper);
-				}
-				else
-				{
-					CTransform targetParentTransform(CBaseObject::getGlobalTransformationMatrix(newParent));
-					CTransform finalTransform = CTransform::fromTo(sourceParentTransform, targetParentTransform);
-					wrapper->setTransform(finalTransform);
-					AP::OBJECT::addChild(newParent, wrapper);
-				}
-			}
-			else
-			{
-				attachAsRootOrChild(obj, newParent);
-			}
-
-			AppStateManager::updateAllViews();
+			LegacyObjectTransferService::moveTo(obj, newParent, keep_pos);
 		}
 
 		void copyTo(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> newParent, bool keep_pos)
 		{
-			if (!validateObjectTransferTarget(
-				obj,
-				newParent,
-				"regular object cannot be copied as a descendant of annotation"))
-			{
-				return;
-			}
-
-			std::shared_ptr<CBaseObject> copy = obj->getCopy();
-			if (copy == nullptr)
-			{
-				return;
-			}
-
-			if (keep_pos)
-			{
-				const CTransform sourceParentTransform = parentGlobalTransform(obj);
-
-				if (newParent == nullptr)
-				{
-					std::shared_ptr<CModel3D> wrapper = buildTransferWrapper(
-						copy,
-						"Macierz dopasowania, wygenerowana podczas kopiowania obiektu");
-					wrapper->setTransform(sourceParentTransform);
-					AP::WORKSPACE::addModel(wrapper);
-				}
-				else
-				{
-					CTransform targetParentTransform(CBaseObject::getGlobalTransformationMatrix(newParent));
-					CTransform finalTransform = CTransform::fromTo(sourceParentTransform, targetParentTransform);
-
-					if (finalTransform.toQMatrix4x4().isIdentity())
-					{
-						AP::OBJECT::addChild(newParent, copy);
-					}
-					else
-					{
-						std::shared_ptr<CModel3D> wrapper = buildTransferWrapper(
-							copy,
-							"Macierz dopasowania, wygenerowana podczas kopiowania obiektu");
-						wrapper->setTransform(finalTransform);
-						AP::OBJECT::addChild(newParent, wrapper);
-					}
-				}
-			}
-			else
-			{
-				attachAsRootOrChild(copy, newParent);
-			}
-			AppStateManager::updateAllViews();
+			LegacyObjectTransferService::copyTo(obj, newParent, keep_pos);
 		}
 	}
 }

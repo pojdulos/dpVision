@@ -1,21 +1,10 @@
 #include "GLViewer.h"
 
-#include "../api/adapters/AppAPIAdapter.h"
 #include "Workspace.h"
 #include "BoundVector.h"
 
 
 #include <GL/glu.h>
-
-namespace
-{
-	AppAPIAdapter& appApi()
-	{
-		static AppAPIAdapter api;
-		return api;
-	}
-}
-
 
 void GLViewer::cameraTransformations()
 {
@@ -604,7 +593,8 @@ void GLViewer::toolBar(void)
 void GLViewer::objectTriad(void)
 {
 
-	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
+	CWorkspace* wksp = CWorkspace::instance();
+	std::shared_ptr<CModel3D> obj = wksp->_getModel(wksp->_getCurrentModelId());
 
 	if (obj != NULL)
 	{
@@ -761,11 +751,11 @@ void GLViewer::rysujOsie()
 
 	if (m_drawAxes == AxesStyle_ARROWS)
 	{
-		triad3D( 0.1, 45.0, 0.4, 5.0, (appApi().workspace().getCurrentModelId() < 0) );
+		triad3D( 0.1, 45.0, 0.4, 5.0, (CWorkspace::instance()->_getCurrentModelId() < 0) );
 	}
 	else if (m_drawAxes == AxesStyle_PLANES)
 	{
-		bool active = (appApi().workspace().getCurrentModelId() < 0);
+		bool active = (CWorkspace::instance()->_getCurrentModelId() < 0);
 
 		glColor3f(0.2f, 0.2f, 0.2f);
 
@@ -812,7 +802,7 @@ void GLViewer::rysujOsie()
 	}
 	else if (m_drawAxes == AxesStyle_LINES)
 	{
-		bool active = (appApi().workspace().getCurrentModelId() < 0);
+		bool active = (CWorkspace::instance()->_getCurrentModelId() < 0);
 
 		glColor3f(0.2f, 0.2f, 0.2f);
 		glLineWidth(1);

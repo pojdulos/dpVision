@@ -1,7 +1,6 @@
 #include "Global.h"
 #include "AnnotationEdges.h"
 
-#include "../api/AP.h"
 
 #include "../renderers/IAnnotationEdgesRenderer.h"
 

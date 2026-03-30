@@ -2,8 +2,19 @@
 #include "AnnotationPoint.h"
 
 //
-#include "../core/AppStateManager.h"
+#include "../core/Workspace.h"
 #include <QVBoxLayout>
+
+namespace
+{
+	void notifyAnnotationPointChanged(CBaseObject* obj)
+	{
+		if (obj != nullptr)
+		{
+			CWorkspace::instance()->notifyObjectStateChanged(obj->id());
+		}
+	}
+}
 
 PropAnnotationPoint::PropAnnotationPoint(CAnnotationPoint *an, QWidget *parent) : PropWidget( parent )
 {
@@ -91,19 +102,19 @@ void PropAnnotationPoint::updateProperties()
 void PropAnnotationPoint::changedCtrX(double x)
 {
 	obj->x = x;
-	AppStateManager::updateAllViews();
+	notifyAnnotationPointChanged(obj);
 }
 
 void PropAnnotationPoint::changedCtrY(double y)
 {
 	obj->y = y;
-	AppStateManager::updateAllViews();
+	notifyAnnotationPointChanged(obj);
 }
 
 void PropAnnotationPoint::changedCtrZ(double z)
 {
 	obj->z = z;
-	AppStateManager::updateAllViews();
+	notifyAnnotationPointChanged(obj);
 }
 
 void PropAnnotationPoint::changedNormX(double x)
@@ -113,7 +124,7 @@ void PropAnnotationPoint::changedNormX(double x)
 	double len = ui.dirLen->value();
 
 	obj->setDirection(v * len);
-	AppStateManager::updateAllViews();
+	notifyAnnotationPointChanged(obj);
 }
 
 void PropAnnotationPoint::changedNormY(double y)
@@ -123,7 +134,7 @@ void PropAnnotationPoint::changedNormY(double y)
 	double len = ui.dirLen->value();
 
 	obj->setDirection(v * len);
-	AppStateManager::updateAllViews();
+	notifyAnnotationPointChanged(obj);
 }
 
 void PropAnnotationPoint::changedNormZ(double z)
@@ -154,7 +165,7 @@ void PropAnnotationPoint::changedNormZ(double z)
 	ui.dirY->blockSignals(false);
 
 	obj->setDirection(CVector3d(x, y, z) * len);
-	AppStateManager::updateAllViews();
+	notifyAnnotationPointChanged(obj);
 }
 
 void PropAnnotationPoint::changedNormLen(double l)
@@ -163,13 +174,13 @@ void PropAnnotationPoint::changedNormLen(double l)
 	double len = ui.dirLen->value();
 
 	obj->setDirection(v*len);
-	AppStateManager::updateAllViews();
+	notifyAnnotationPointChanged(obj);
 }
 
 void PropAnnotationPoint::toggledShowNorm(bool b)
 {
 	obj->m_showNorm = b;
-	AppStateManager::updateAllViews();
+	notifyAnnotationPointChanged(obj);
 }
 
 //

@@ -1,20 +1,16 @@
 #pragma once
 
 #include "../interfaces/ISettingsAPI.h"
-#include "../../core/AppSettings.h"
+#include "../../core/interfaces/ISettingsStorage.h"
 
 class SettingsAPIAdapter : public ISettingsAPI {
-    QSettings* settings_ = nullptr;
+    ISettingsStorage* settings_ = nullptr;
 public:
-    SettingsAPIAdapter()
-        : settings_(AppSettings::mainSettings()) {
-    }
-
-    explicit SettingsAPIAdapter(QSettings* settings)
+    explicit SettingsAPIAdapter(ISettingsStorage* settings = nullptr)
         : settings_(settings) {
     }
 
-    void reset(QSettings* settings) {
+    void reset(ISettingsStorage* settings) {
         settings_ = settings;
     }
 

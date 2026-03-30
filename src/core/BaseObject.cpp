@@ -97,6 +97,11 @@ void CBaseObject::render() {
 	if (renderer_) renderer_->render(this);
 }
 
+bool CBaseObject::applyParentTransform()
+{
+	return false;
+}
+
 
 
 //void setParent(CBaseObject *p) { m_parent = p; };

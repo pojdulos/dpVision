@@ -2,7 +2,6 @@
 #include "AnnotationVertex.h"
 #include "Mesh.h"
 
-#include "../api/AP.h"
 
 #include "../renderers/IAnnotationVertexRenderer.h"
 

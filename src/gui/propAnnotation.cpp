@@ -1,8 +1,19 @@
 #include "propAnnotation.h"
 #include "Annotation.h"
 //
-#include "../core/AppStateManager.h"
+#include "../core/Workspace.h"
 #include <QVBoxLayout>
+
+namespace
+{
+	void notifyAnnotationChanged(CBaseObject* obj)
+	{
+		if (obj != nullptr)
+		{
+			CWorkspace::instance()->notifyObjectStateChanged(obj->id());
+		}
+	}
+}
 
 PropAnnotation::PropAnnotation(CAnnotation *a, QWidget *parent) : PropWidget( parent )
 {
@@ -147,7 +158,7 @@ void PropAnnotation::colorButtonPressed()
 	if (color.isValid())
 	{
 		updateColorButton(col = fromQColor(color));
-		AppStateManager::updateAllViews();
+		notifyAnnotationChanged(obj);
 	}
 }
 
@@ -159,7 +170,7 @@ void PropAnnotation::selcolorButtonPressed()
 	if (color.isValid())
 	{
 		updateSelColorButton(col = fromQColor(color));
-		AppStateManager::updateAllViews();
+		notifyAnnotationChanged(obj);
 	}
 }
 

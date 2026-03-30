@@ -1,28 +1,34 @@
 #pragma once
 
-#include "ProgressHostAccess.h"
+#include "../../core/interfaces/IProgressListener.h"
 #include "../interfaces/IProgressControlAPI.h"
-#include "../interfaces/IProgressAPI.h"
 
-class GuiProgressAPIAdapter : public IProgressAPI, public IProgressControlAPI {
+// Narrow progress contract used by plugin-facing APIs.
+// The actual host implementation comes from the currently registered
+// IProgressListener so the safe progress path does not depend on raw GUI types.
+class GuiProgressAPIAdapter : public IProgressControlAPI {
 public:
-    ProgressIndicator* instance() override {
-        return ProgressHostAccess::instance();
-    }
-
     void init(int min, int max, int val) override {
-        ProgressHostAccess::init(min, max, val);
+        if (auto listener = IProgressListener::getDefault()) {
+            listener->init(min, max, val);
+        }
     }
 
     void setValue(int val) override {
-        ProgressHostAccess::setValue(val);
+        if (auto listener = IProgressListener::getDefault()) {
+            listener->setValue(val);
+        }
     }
 
     void hide() override {
-        ProgressHostAccess::hide();
+        if (auto listener = IProgressListener::getDefault()) {
+            listener->hide();
+        }
     }
 
     void setText(const QString& text) override {
-        ProgressHostAccess::setText(text);
+        if (auto listener = IProgressListener::getDefault()) {
+            listener->setText(text.toStdString());
+        }
     }
 };

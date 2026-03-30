@@ -3,8 +3,7 @@
 #include "BoundingBox.h"
 
 #include "BoundVector.h"
-
-#include <QtOpenGL>
+#include "../renderers/IBoundingBoxRenderer.h"
 
 CBoundingBox::CBoundingBox(InitialValues v)
 {
@@ -39,68 +38,8 @@ CBoundingBox::~CBoundingBox()
 }
 void CBoundingBox::draw( Style style, bool checked)
 {
-	if ( isInvalid() || (style == DontRender) ) return;
-
-	glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-	glDisable(GL_TEXTURE_2D);
-
-	glEnable(GL_COLOR_MATERIAL);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-
-	glLineWidth(1.0);
-
-	if ( style == NotSelected )
-		glColor3f(0.2f, 0.2f, 0.2f);
-	else
-		if ( style == Locked )
-			glColor3f(1.0f, 0.0f, 0.0f);
-		else
-			glColor3f(0.0f, 0.5f, 0.0f);
-
-	drawBox();
-
-	if ( checked )
-	{
-		glLineWidth(3.0);
-		glColor4f(0.5f, 0.5f, 0.0f, 0.5f);
-		drawBox(true);
-	}
-
-	glDisable(GL_COLOR_MATERIAL);
-
-	glPopAttrib();
-}
-
-void CBoundingBox::drawBox(bool dashed)
-{
-	if (dashed)
-	{
-		glLineStipple(3, 0x00FF);
-		glEnable(GL_LINE_STIPPLE);
-	}
-
-	glPushAttrib(GL_ENABLE_BIT);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	glBegin(GL_QUAD_STRIP);
-	glVertex3d(m_max.X(), m_min.Y(), m_min.Z());
-	glVertex3d(m_max.X(), m_min.Y(), m_max.Z());
-
-	glVertex3d(m_min.X(), m_min.Y(), m_min.Z());
-	glVertex3d(m_min.X(), m_min.Y(), m_max.Z());
-
-	glVertex3d(m_min.X(), m_max.Y(), m_min.Z());
-	glVertex3d(m_min.X(), m_max.Y(), m_max.Z());
-
-	glVertex3d(m_max.X(), m_max.Y(), m_min.Z());
-	glVertex3d(m_max.X(), m_max.Y(), m_max.Z());
-
-	glVertex3d(m_max.X(), m_min.Y(), m_min.Z());
-	glVertex3d(m_max.X(), m_min.Y(), m_max.Z());
-	glEnd();
-
-	glPopAttrib();
+	static const IBoundingBoxRenderer renderer;
+	renderer.render(*this, style, checked);
 }
 
 QVector<CPoint3d> CBoundingBox::getCorners()

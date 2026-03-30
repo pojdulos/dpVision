@@ -7,22 +7,20 @@
 #include "AnnotationPlane.h"
 #include "FileConnector.h"
 
-#include "../api/adapters/AppAPIAdapter.h"
 #include "../api/adapters/PluginHostGuiAPIAdapter.h"
 
 #include <QPushButton>
 
 namespace {
-AppAPIAdapter& appApi()
-{
-	static AppAPIAdapter api;
-	return api;
-}
-
 PluginHostGuiAPIAdapter& guiApi()
 {
     static PluginHostGuiAPIAdapter api;
     return api;
+}
+
+CWorkspace* workspace()
+{
+    return guiApi().appInternals().workspace();
 }
 }
 
@@ -78,7 +76,7 @@ void SamplePlugin::loadObject(const QString &path)
 	if (!QFileInfo(fileName).exists()) {
 		fileName = guiApi().fileDialog().getOpenFileName(
             tr("Open File"),
-            appApi().settings().value("recentFile").toString(),
+            QString(),
             CFileConnector::getLoadExts());
 	}
 	
@@ -86,7 +84,15 @@ void SamplePlugin::loadObject(const QString &path)
 	{
 		if (QFileInfo(fileName).exists())
 		{
-			appApi().workspace().loadModel(fileName);
+			if (auto obj = CModel3D::load(fileName))
+			{
+				workspace()->_objectAdd(obj);
+				guiApi().updateAllViews();
+			}
+			else
+			{
+				guiApi().messageBox().error("Something went wrong", "Can't read file");
+			}
 		}
 		else // this should not have happened
 		{
@@ -138,7 +144,9 @@ void SamplePlugin::createBox()
 
 	// this command causes the object to be displayed
 	// and visible in the scene tree
-	appApi().workspace().addModel(obj, true);
+	workspace()->_objectAdd(obj);
+	workspace()->_objectActivate(obj->id());
+	guiApi().updateAllViews();
 }
 
 
@@ -192,7 +200,7 @@ static void DivideMesh(std::shared_ptr<CMesh> mesh, const CPoint3d& centroid, co
 void SamplePlugin::cutMesh() {
 	QString fileName = guiApi().fileDialog().getOpenFileName(
 		tr("Open File"),
-		appApi().settings().value("recentFile").toString(),
+		QString(),
 		CFileConnector::getLoadExts());
 
 	std::shared_ptr<CModel3D> obj = nullptr;
@@ -202,7 +210,11 @@ void SamplePlugin::cutMesh() {
 		{
 			// load the model and if exists add it to workspace
 			// using AP namespace is good choise because it automaticaly refreshes viewer
-			obj = appApi().workspace().loadModel(fileName);
+			obj = CModel3D::load(fileName);
+			if (obj != nullptr)
+			{
+				workspace()->_objectAdd(obj);
+			}
 
 			if (obj == nullptr)
 			{
@@ -230,7 +242,7 @@ void SamplePlugin::cutMesh() {
 
 		// add plane to workspace
 		// using AP namespace is good choise because it automaticaly refreshes viewer
-		appApi().object().addChild(obj, plane);
+		workspace()->_objectAdd(plane, obj);
 
 		if (child->hasType(CObject::MESH))
 		{
@@ -264,7 +276,7 @@ void SamplePlugin::cutMesh() {
 			obj1->setLabel("upper part");
 			
 			// add to workspace for display it in viewer and in workspace tree dialog
-			appApi().workspace().addObject(obj1);
+			workspace()->_objectAdd(obj1);
 
 			// create deep copy of original mesh
 			std::shared_ptr<CMesh> mesh2 = std::dynamic_pointer_cast<CMesh>(mesh->getCopy());
@@ -281,7 +293,7 @@ void SamplePlugin::cutMesh() {
 			obj2->importChildrenGeometry();
 			obj2->setLabel("bottom part");
 
-			appApi().workspace().addObject(obj2);
+			workspace()->_objectAdd(obj2);
 		}
 		else
 		{

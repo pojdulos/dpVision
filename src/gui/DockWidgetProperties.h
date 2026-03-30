@@ -2,6 +2,7 @@
 #define DOCKWIDGETPROPERTIES_H
 
 #include <QtWidgets/QDockWidget>
+#include <QHash>
 #include "ui_dockWidgetProperties.h"
 
 #include "Wektor3D.h"
@@ -28,18 +29,22 @@ public:
 	void addExpandableItems(QVector<PropWidget*> submodels);
 
 	void addExpandableItem(QString title, PropWidget* contentWidget);
+	void rememberExpandedState();
 
 public slots:
 	void onWorkspaceObjectActivated(int);
 	void onWorkspaceObjectActivated(CBaseObject*);
+	void onWorkspaceObjectStateChanged(int);
 
 	void onWorkspaceObjectRemoved(int);
+	void onWorkspaceStructureChanged();
 
 
 	void onDarkModeChanged(bool);
 
 private:
 	Ui::DockWidgetProperties ui;
+	QHash<QString, bool> expandedState_;
 };
 
 #endif // DOCKWIDGETPROPERTIES_H

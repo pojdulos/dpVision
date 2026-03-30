@@ -14,9 +14,11 @@ public:
 
     std::vector<std::pair<int, std::shared_ptr<CModel3D>>> children() override {
         std::vector<std::pair<int, std::shared_ptr<CModel3D>>> result;
-        result.reserve(ws_->children().size());
-        for (const auto& child : ws_->children()) {
-            result.push_back(child);
+        result.reserve(ws_->orderedIds().size());
+        for (int id : ws_->orderedIds()) {
+            if (auto child = ws_->_getModel(id)) {
+                result.push_back({ id, child });
+            }
         }
         return result;
     }
@@ -25,7 +27,7 @@ public:
         std::set<CBaseObject::Type> types = {},
         std::shared_ptr<CObject> parent = nullptr) override {
         std::vector<std::shared_ptr<CBaseObject>> result;
-        auto selected = ws_->getSelected(std::move(types), std::move(parent));
+        auto selected = ws_->checkedObjects(std::move(types), std::move(parent));
         result.reserve(selected.size());
         for (const auto& object : selected) {
             result.push_back(object);

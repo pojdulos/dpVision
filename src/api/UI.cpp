@@ -1,64 +1,31 @@
 #include "../api/UI.h"
 
-#include "MainWindow.h"
+#include "../core/AppStateManager.h"
+#include "../core/CameraControlManager.h"
+#include "../core/GuiInternalsManager.h"
+#include "../core/LegacyUiSelectionWorkflow.h"
+#include "../core/LegacyAppRuntime.h"
 
 //#include <Windows.h> // definiuje GetTickCount()
 
-#include "DockWidgetWorkspace.h"
-#include "DockWidgetProperties.h"
-#include "DockWidgetModel.h"
-#include "DockWidgetViewer.h"
-#include "DockWidgetLights.h"
-#include "DockWidgetPluginList.h"
-#include "DockWidgetPluginPanel.h"
-#include "DockWidgetHistogram.h"
-#include "DockWidgetImageViewer.h"
-
-#include "ProgressIndicator.h"
-
-#include <QElapsedTimer>
 #include <QtWidgets>
-#include <QCoreApplication>
 
 #include "GLViewer.h"
 
-#include "../core/AppStateManager.h"
 #include "../core/MessageBoxManager.h"
+#include "../core/PluginPanelManager.h"
 #include "../core/StatusBarManager.h"
 #include "../core/WorkspacePanelManager.h"
-#include "../gui/PluginPanelHostAccess.h"
-#include "../gui/WorkspaceDockHostAccess.h"
 #include "adapters/DockHistogramAPIAdapter.h"
 #include "adapters/DockWorkspaceAPIAdapter.h"
 #include "adapters/FileDialogAPIAdapter.h"
-#include "adapters/GuiCameraAPIAdapter.h"
-#include "adapters/GuiPluginPanelAPIAdapter.h"
+#include "adapters/GuiProgressAPIAdapter.h"
+#include "adapters/PluginPanelAPIAdapter.h"
 #include "adapters/MessageBoxAPIAdapter.h"
-#include "adapters/ProgressAPIAdapter.h"
 #include "adapters/StatusBarAPIAdapter.h"
 
 namespace
 {
-	CMainWindow* mainWindow()
-	{
-		return CMainWindow::instance();
-	}
-
-	void processUiEvents(bool immediate = false)
-	{
-		static QElapsedTimer timer;
-		if (!timer.isValid())
-		{
-			timer.start();
-		}
-
-		if (immediate || timer.elapsed() > 1000)
-		{
-			QCoreApplication::processEvents();
-			timer.restart();
-		}
-	}
-
 	DockWorkspaceAPIAdapter& dockWorkspaceApi()
 	{
 		static DockWorkspaceAPIAdapter api;
@@ -71,21 +38,9 @@ namespace
 		return api;
 	}
 
-	GuiPluginPanelAPIAdapter& pluginPanelApi()
+	PluginPanelAPIAdapter& pluginPanelApi()
 	{
-		static GuiPluginPanelAPIAdapter api;
-		return api;
-	}
-
-	GuiCameraAPIAdapter& cameraApi()
-	{
-		static GuiCameraAPIAdapter api;
-		return api;
-	}
-
-	ProgressAPIAdapter& progressApi()
-	{
-		static ProgressAPIAdapter api;
+		static PluginPanelAPIAdapter api;
 		return api;
 	}
 
@@ -104,6 +59,12 @@ namespace
 	FileDialogAPIAdapter& fileDialogApi()
 	{
 		static FileDialogAPIAdapter api;
+		return api;
+	}
+
+	GuiProgressAPIAdapter& progressApi()
+	{
+		static GuiProgressAPIAdapter api;
 		return api;
 	}
 }
@@ -169,8 +130,6 @@ namespace
 #endif
 
 
-#include "MainWindow.h"
-
 //void UI::show()
 //{
 //	if (auto win = CMainWindow::instance())
@@ -181,31 +140,22 @@ namespace
 
 void UI::updateView(bool repaintAll, bool buffered)
 {
-	if (auto win = CMainWindow::instance())
-	{
-		win->updateView(repaintAll, buffered);
-	}
+	AppStateManager::updateView(repaintAll, buffered);
 }
 
 void UI::updateAllViews(bool buffered)
 {
-	if (auto win = CMainWindow::instance())
-	{
-		win->updateView(true, buffered);
-	}
+	AppStateManager::updateAllViews(buffered);
 }
 
 void UI::updateCurrentView(bool buffered)
 {
-	if (auto win = CMainWindow::instance())
-	{
-		win->updateView(false, buffered);
-	}
+	AppStateManager::updateView(false, buffered);
 }
 
 void UI::changeMenuAfterSelect()
 {
-	AppStateManager::changeMenuAfterSelect();
+	LegacyUiSelectionWorkflow::changeMenuAfterSelect();
 }
 
 
@@ -214,30 +164,22 @@ void UI::changeMenuAfterSelect()
 void UI::updateSelection(int id)
 {
 	UI::DOCK::WORKSPACE::selectItem(id);
-
-	UI::DOCK::PROPERTIES::selectionChanged(id);
-
-	UI::changeMenuAfterSelect();
-	UI::updateAllViews();
+	LegacyUiSelectionWorkflow::updateSelection(id);
 }
 
 void UI::DOCK::PROPERTIES::selectionChanged( int id )
 {
-	WorkspacePanelManager::propertiesSelectionChanged(id);
+	LegacyUiSelectionWorkflow::propertiesSelectionChanged(id);
 }
 
 void UI::DOCK::PROPERTIES::updateProperties()
 {
-	AppStateManager::updateProperties();
+	LegacyUiSelectionWorkflow::updateProperties();
 }
 
 DockWidgetWorkspace* UI::DOCK::WORKSPACE::instance()
 {
-	if (auto win = mainWindow())
-	{
-		return win->dockWorkspace;
-	}
-	return nullptr;
+	return GuiInternalsManager::workspaceDock();
 }
 
 void UI::DOCK::WORKSPACE::update()
@@ -247,17 +189,17 @@ void UI::DOCK::WORKSPACE::update()
 
 void UI::DOCK::WORKSPACE::selectItem( int id)
 {
-	WorkspaceDockHostAccess::selectItem(id);
+	WorkspacePanelManager::selectWorkspaceItem(id);
 }
 
 std::shared_ptr<CBaseObject> UI::DOCK::WORKSPACE::currentItem()
 {
-	return WorkspaceDockHostAccess::currentItem();
+	return GuiInternalsManager::currentWorkspaceItem();
 }
 
 QVector<std::shared_ptr<CBaseObject>> UI::DOCK::WORKSPACE::selectedObjects()
 {
-	return WorkspaceDockHostAccess::selectedObjects();
+	return GuiInternalsManager::selectedWorkspaceObjects();
 }
 
 
@@ -284,12 +226,12 @@ void UI::DOCK::WORKSPACE::setItemLockedById(int id, bool b)
 
 void UI::DOCK::WORKSPACE::setItemLabelById(int id, std::string s)
 {
-	WorkspaceDockHostAccess::setItemLabelById(id, QString::fromStdString(s));
+	WorkspacePanelManager::setWorkspaceItemLabel(id, QString::fromStdString(s));
 }
 
 void UI::DOCK::WORKSPACE::setItemLabelById(int id, std::wstring s)
 {
-	WorkspaceDockHostAccess::setItemLabelById(id, QString::fromStdWString(s));
+	WorkspacePanelManager::setWorkspaceItemLabel(id, QString::fromStdWString(s));
 }
 
 
@@ -302,60 +244,66 @@ void UI::DOCK::HISTOGRAM::repaint()
 
 GLViewer * UI::CAMERA::currentViewer()
 {
-	return cameraApi().currentViewer();
+	return GuiInternalsManager::currentViewer();
 }
 
 void UI::CAMERA::screenshot(QString path, void *v)
 {
-	cameraApi().screenshot(path, v);
+	if (v != nullptr)
+	{
+		static_cast<GLViewer*>(v)->screenshot(path);
+		return;
+	}
+
+	CameraControlManager::screenshot(path);
 }
 
 void UI::CAMERA::move( float mx, float my, float mz )
 {
-	cameraApi().move(mx, my, mz);
+	CameraControlManager::move(mx, my, mz);
 }
 
 void UI::CAMERA::rotate( float ax, float ay, float az )
 {
-	cameraApi().rotate(ax, ay, az);
+	CameraControlManager::rotate(ax, ay, az);
 }
 
 void UI::CAMERA::setFloating( bool f )
 {
-	cameraApi().setFloating(f);
+	CameraControlManager::setFloating(f);
 }
 
 bool UI::CAMERA::convertWinToWorld(CPoint3d winCoords, CPoint3d & worldCoords)
 {
-	return cameraApi().convertWinToWorld(winCoords, worldCoords);
+	return CameraControlManager::convertWinToWorld(winCoords, worldCoords);
 }
 
 bool UI::CAMERA::convertWorldToWin(CPoint3d worldCoords, CPoint3d & winCoords)
 {
-	return cameraApi().convertWorldToWin(worldCoords, winCoords);
+	return CameraControlManager::convertWorldToWin(worldCoords, winCoords);
 }
 
 bool UI::CAMERA::convertCoords(double winX, double winY, CPoint3d& pkt0, CPoint3d& pkt1)
 {
-	return cameraApi().convertCoords(winX, winY, pkt0, pkt1);
+	return CameraControlManager::convertCoords(winX, winY, pkt0, pkt1);
 }
 
 CPoint3d UI::CAMERA::camPos()
 {
-	return cameraApi().camPos();
+	return CameraControlManager::camPos();
 }
 
 #include "Transform.h"
 
 CTransform* UI::CAMERA::transform()
 {
-	return cameraApi().transform();
+	return GuiInternalsManager::currentCameraTransform();
 }
 
 
 void UI::CAMERA::setView(int dir, std::shared_ptr<CModel3D> obj)
 {
-	cameraApi().setView(dir, std::move(obj));
+	CameraControlManager::setView(dir, std::move(obj));
 }
 
 
@@ -364,7 +312,7 @@ void UI::CAMERA::setView(int dir, std::shared_ptr<CModel3D> obj)
 
 DockWidgetPluginPanel* UI::PLUGINPANEL::mainPanel()
 {
-	return PluginPanelHostAccess::host();
+	return GuiInternalsManager::pluginPanelHost();
 }
 
 QWidget* UI::PLUGINPANEL::instance(unsigned int pluginId)
@@ -395,7 +343,7 @@ void UI::PLUGINPANEL::removeWidget(unsigned int pluginId, const QString &name)
 // PLUGINPANEL - PUSH BUTTON
 QPushButton* UI::PLUGINPANEL::addButton(unsigned int pluginId, QString label, QObject* receiver, const char* slot, int row, int col, int rspan, int cspan)
 {
-	return PluginPanelHostAccess::addButton(pluginId, label, receiver, slot, row, col, rspan, cspan);
+	return PluginPanelManager::addButton(pluginId, label, receiver, slot, row, col, rspan, cspan);
 }
 
 QPushButton* UI::PLUGINPANEL::addButton(unsigned int pluginId, std::string buttonName, std::string label, int row, int col, int rspan, int cspan)
@@ -511,34 +459,30 @@ void UI::PLUGINPANEL::setLabel(unsigned int pluginId, const QString &name, const
 
 // PROGRESSBAR
 
-ProgressIndicator* UI::PROGRESSBAR::instance()
-{
-	return progressApi().instance();
-}
+// ProgressIndicator* UI::PROGRESSBAR::instance()
+// {
+// 	return GuiInternalsManager::progressIndicator();
+// }
 
 void UI::PROGRESSBAR::init( int min, int max, int val )
 {
 	progressApi().init(min, max, val);
-	processUiEvents(true);
 }
 
 void UI::PROGRESSBAR::setValue( int val )
 {
 	progressApi().setValue(val);
-	processUiEvents(true);
 }
 
 
 void UI::PROGRESSBAR::setText(const QString text)
 {
 	progressApi().setText(text);
-	processUiEvents(true);
 }
 
 void UI::PROGRESSBAR::hide()
 {
 	progressApi().hide();
-	processUiEvents(true);
 }
 
 
@@ -547,83 +491,47 @@ void UI::PROGRESSBAR::hide()
 
 void UI::STATUSBAR::printf(const char *format, ...)
 {
-	va_list paramList;
-	va_start(paramList, format);
-
-	char formatBuf[1024];
-	// vsprintf_s(formatBuf, _countof(formatBuf), format, paramList);
-	vsnprintf(formatBuf, sizeof(formatBuf), format, paramList);
-
-	setText(formatBuf); 
-
-	va_end(paramList);
+    va_list paramList;
+    va_start(paramList, format);
+    StatusBarManager::vprintf(format, paramList);
+    va_end(paramList);
+    LegacyAppRuntime::processEvents(true);
 }
 
 void UI::STATUSBAR::printf(const wchar_t *format, ...)
 {
-	va_list paramList;
-	va_start(paramList, format);
-
-	wchar_t formatBuf[1024];
-	// vswprintf_s(formatBuf, _countof(formatBuf), format, paramList);
-	vswprintf(formatBuf, sizeof(formatBuf) / sizeof(formatBuf[0]), format, paramList);
-
-	setText(formatBuf); 
-
-	va_end(paramList);
+    va_list paramList;
+    va_start(paramList, format);
+    StatusBarManager::vprintf(format, paramList);
+    va_end(paramList);
+    LegacyAppRuntime::processEvents(true);
 }
 
 
-#include <QElapsedTimer>
-
 void UI::STATUSBAR::printfTimed(int mst, const char* format, ...)
 {
-    static QElapsedTimer timer;
-    if (!timer.isValid())
-        timer.start();
-
-    if (timer.elapsed() > mst)
-    {
-        va_list paramList;
-        va_start(paramList, format);
-
-        char formatBuf[1024];
-        vsnprintf(formatBuf, sizeof(formatBuf), format, paramList);
-
-        va_end(paramList);
-
-        setText(formatBuf);
-        timer.restart();
-    }
+    va_list paramList;
+    va_start(paramList, format);
+    StatusBarManager::vprintfTimed(mst, format, paramList);
+    va_end(paramList);
+    LegacyAppRuntime::processEvents(true);
 }
 
 
 
 void UI::STATUSBAR::printfTimed(int mst, const wchar_t* format, ...)
 {
-    static QElapsedTimer timer;
-    if (!timer.isValid())
-        timer.start();
-
-    if (timer.elapsed() > mst)
-    {
-        va_list paramList;
-        va_start(paramList, format);
-
-        wchar_t formatBuf[1024];
-        vswprintf(formatBuf, sizeof(formatBuf), format, paramList);
-
-        va_end(paramList);
-
-        setText(formatBuf);
-        timer.restart();
-    }
+    va_list paramList;
+    va_start(paramList, format);
+    StatusBarManager::vprintfTimed(mst, format, paramList);
+    va_end(paramList);
+    LegacyAppRuntime::processEvents(true);
 }
 
 void UI::STATUSBAR::setText(const QString msg)
 {
 	statusBarApi().setText(msg);
-	processUiEvents(true);
+	LegacyAppRuntime::processEvents(true);
 }
 
 

@@ -1,6 +1,6 @@
 # core/CMakeLists.txt
 
-file(GLOB CORE_SRC
+file(GLOB CORE_SRC CONFIGURE_DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/tinyspline.c
     ${CMAKE_CURRENT_SOURCE_DIR}/*.h
@@ -22,9 +22,6 @@ target_compile_definitions(dpVisionCore PRIVATE DPVISION_BUILD)
 
 target_include_directories(dpVisionCore PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/../gui
-    ${dpVision_INCLUDE_DIR}
-    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/src/gui/dpVisionGui_autogen/include_$<CONFIG>>
     $<INSTALL_INTERFACE:include>
 )
 

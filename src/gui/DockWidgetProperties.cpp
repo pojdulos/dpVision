@@ -1,7 +1,5 @@
 #include "DockWidgetProperties.h"
 
-#include "../api/adapters/AppAPIAdapter.h"
-
 #include "DockWidgetWorkspace.h"
 #include "Annotation.h"
 
@@ -45,12 +43,6 @@
 
 namespace
 {
-	AppAPIAdapter& appApi()
-	{
-		static AppAPIAdapter api;
-		return api;
-	}
-
 	GLViewer* currentViewer()
 	{
 		if (auto win = CMainWindow::instance())
@@ -71,6 +63,18 @@ DockWidgetProperties::DockWidgetProperties(QWidget *parent)	: QDockWidget(parent
 	ui.tree->setIndentation(0);
 
 	connect(AppSettingsNotifier::instance(), SIGNAL(darkModeChanged(bool)), this, SLOT(onDarkModeChanged(bool)));
+	connect(ui.tree, &QTreeWidget::itemExpanded, this, [this](QTreeWidgetItem* item) {
+		if (item != nullptr)
+		{
+			expandedState_[item->text(0)] = true;
+		}
+	});
+	connect(ui.tree, &QTreeWidget::itemCollapsed, this, [this](QTreeWidgetItem* item) {
+		if (item != nullptr)
+		{
+			expandedState_[item->text(0)] = false;
+		}
+	});
 }
 
 DockWidgetProperties::~DockWidgetProperties() {}
@@ -82,6 +86,7 @@ DockWidgetProperties::~DockWidgetProperties() {}
 
 void DockWidgetProperties::selectionChanged( int id )
 {
+	rememberExpandedState();
 	ui.tree->clear();
 
 	QVector<PropWidget*> submodels = QVector<PropWidget*>(0);
@@ -93,7 +98,7 @@ void DockWidgetProperties::selectionChanged( int id )
 	}
 	else
 	{
-		std::shared_ptr<CBaseObject> currentObjectPtr = appApi().workspace().findId(id);
+		std::shared_ptr<CBaseObject> currentObjectPtr = CWorkspace::instance()->getSomethingWithId(id);
 		
 		CBaseObject* currentObject = currentObjectPtr.get(); //TYMCZASOWO
 		
@@ -218,7 +223,19 @@ void DockWidgetProperties::addExpandableItem(QString title, PropWidget* contentW
 	item->addChild(childItem);
 	ui.tree->setItemWidget(childItem, 0, contentWidget);
 
-	item->setExpanded(true);
+	item->setExpanded(expandedState_.value(title, true));
+}
+
+void DockWidgetProperties::rememberExpandedState()
+{
+	for (int i = 0; i < ui.tree->topLevelItemCount(); ++i)
+	{
+		QTreeWidgetItem* item = ui.tree->topLevelItem(i);
+		if (item != nullptr)
+		{
+			expandedState_[item->text(0)] = item->isExpanded();
+		}
+	}
 }
 
 void DockWidgetProperties::onWorkspaceObjectActivated(int i)
@@ -240,7 +257,27 @@ void DockWidgetProperties::onWorkspaceObjectActivated(CBaseObject* obj)
 	update();
 }
 
+void DockWidgetProperties::onWorkspaceObjectStateChanged(int)
+{
+	const int currentId = CWorkspace::instance()->_getCurrentModelId();
+	if (currentId != NO_CURRENT_MODEL && ui.tree->topLevelItemCount() > 0)
+	{
+		updateProperties();
+	}
+	else
+	{
+		selectionChanged(currentId);
+	}
+	update();
+}
+
 void DockWidgetProperties::onWorkspaceObjectRemoved(int) {
+	selectionChanged(CWorkspace::instance()->_getCurrentModelId());
+	update();
+}
+
+void DockWidgetProperties::onWorkspaceStructureChanged()
+{
 	selectionChanged(CWorkspace::instance()->_getCurrentModelId());
 	update();
 }

@@ -6,7 +6,7 @@
 #include "DockWorkspaceAPIAdapter.h"
 #include "GuiCameraAPIAdapter.h"
 #include "GuiInternalsAPIAdapter.h"
-#include "GuiPluginPanelAPIAdapter.h"
+#include "PluginPanelAPIAdapter.h"
 #include "GuiProgressAPIAdapter.h"
 #include "PluginHostAPIAdapter.h"
 
@@ -16,7 +16,7 @@ class PluginHostGuiAPIAdapter : public IPluginGuiAPI {
     GuiInternalsAPIAdapter guiInternalsAdapter_;
     DockWorkspaceAPIAdapter dockWorkspaceAdapter_;
     DockHistogramAPIAdapter dockHistogramAdapter_;
-    GuiPluginPanelAPIAdapter pluginPanelAdapter_;
+    PluginPanelAPIAdapter pluginPanelAdapter_;
     GuiCameraAPIAdapter cameraAdapter_;
     GuiProgressAPIAdapter progressAdapter_;
 

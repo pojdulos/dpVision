@@ -2,8 +2,19 @@
 #include "AnnotationSphere.h"
 
 //
-#include "../core/AppStateManager.h"
+#include "../core/Workspace.h"
 #include <QVBoxLayout>
+
+namespace
+{
+	void notifyAnnotationSphereChanged(CBaseObject* obj)
+	{
+		if (obj != nullptr)
+		{
+			CWorkspace::instance()->notifyObjectStateChanged(obj->id());
+		}
+	}
+}
 
 PropAnnotationSphere::PropAnnotationSphere(CAnnotationSphere *an, QWidget *parent) : PropWidget( parent )
 {
@@ -70,23 +81,23 @@ void PropAnnotationSphere::updateProperties()
 void PropAnnotationSphere::changedCtrX(double x)
 {
 	((CAnnotationSphere*)obj)->center().x = x;
-	AppStateManager::updateAllViews();
+	notifyAnnotationSphereChanged(obj);
 }
 
 void PropAnnotationSphere::changedCtrY(double y)
 {
 	((CAnnotationSphere*)obj)->center().y = y;
-	AppStateManager::updateAllViews();
+	notifyAnnotationSphereChanged(obj);
 }
 
 void PropAnnotationSphere::changedCtrZ(double z)
 {
 	((CAnnotationSphere*)obj)->center().z = z;
-	AppStateManager::updateAllViews();
+	notifyAnnotationSphereChanged(obj);
 }
 
 void PropAnnotationSphere::changedRadius(double x)
 {
 	((CAnnotationSphere*)obj)->radius() = x;
-	AppStateManager::updateAllViews();
+	notifyAnnotationSphereChanged(obj);
 }

@@ -1,66 +1,37 @@
 #pragma once
 
 #include "../interfaces/IPluginGuiAPI.h"
-#include "AppInternalsAPIAdapter.h"
-#include "DockHistogramAPIAdapter.h"
-#include "DockWorkspaceAPIAdapter.h"
-#include "GuiPluginPanelAPIAdapter.h"
-#include "FileDialogAPIAdapter.h"
-#include "FileSystemAPIAdapter.h"
-#include "GuiInternalsAPIAdapter.h"
-#include "MessageBoxAPIAdapter.h"
-#include "StatusBarAPIAdapter.h"
-#include "GuiCameraAPIAdapter.h"
-#include "GuiProgressAPIAdapter.h"
 #include "PluginHostGuiAPIAdapter.h"
-#include "TextEncodingAPIAdapter.h"
-#include "UIAPIAdapter.h"
-#include "../../core/AppStateManager.h"
 
-// Transitional facade for GUI-aware plugins.
+// Convenience facade for plugins that intentionally opt into the broader GUI
+// surface.
 //
-// New code should prefer host() so the explicit GUI-capable root is visible at
-// the call site. The direct methods stay for compatibility with older plugins.
+// This wrapper exists only to shorten calls like `adapter.camera()` instead of
+// `adapter.host().camera()`. It should not be treated as the long-term stable
+// public contract for plugins.
+//
+// Supported public entry points remain AP:: / UI:: for the default path and
+// IPluginGuiAPI / PluginHostGuiAPIAdapter for explicit GUI-aware plugins.
 class PluginGuiAPIAdapter {
     PluginHostGuiAPIAdapter hostApi_;
-    UIAPIAdapter uiApi_;
-    AppInternalsAPIAdapter appInternalsAdapter_;
-    GuiInternalsAPIAdapter guiInternalsAdapter_;
-    DockWorkspaceAPIAdapter dockWorkspaceAdapter_;
-    DockHistogramAPIAdapter dockHistogramAdapter_;
-    GuiPluginPanelAPIAdapter pluginPanelAdapter_;
-    FileDialogAPIAdapter fileDialogAdapter_;
-    MessageBoxAPIAdapter messageBoxAdapter_;
-    StatusBarAPIAdapter statusBarAdapter_;
-    GuiCameraAPIAdapter cameraAdapter_;
-    GuiProgressAPIAdapter progressAdapter_;
-    FileSystemAPIAdapter fileSystemAdapter_;
-    TextEncodingAPIAdapter textEncodingAdapter_;
 
 public:
     IPluginGuiAPI& host() { return hostApi_; }
 
-    // Legacy compatibility methods. New plugin code should prefer host().
-    IAppInternalsAPI& appInternals() { return appInternalsAdapter_; }
-    IGuiInternalsAPI& guiInternals() { return guiInternalsAdapter_; }
-    IDockWorkspaceAPI& dockWorkspace() { return dockWorkspaceAdapter_; }
-    IDockHistogramAPI& dockHistogram() { return dockHistogramAdapter_; }
-    IPluginPanelAPI& pluginPanel() { return pluginPanelAdapter_; }
-    IFileDialogAPI& fileDialog() { return fileDialogAdapter_; }
-    IMessageBoxAPI& messageBox() { return messageBoxAdapter_; }
-    IStatusBarAPI& statusBar() { return statusBarAdapter_; }
-    ICameraAPI& camera() { return cameraAdapter_; }
-    IProgressAPI& progress() { return progressAdapter_; }
-    IFileSystemAPI& fileSystem() { return fileSystemAdapter_; }
-    ITextEncodingAPI& textEncoding() { return textEncodingAdapter_; }
-    // Mixed compatibility aggregate. Prefer host() or explicit GUI methods.
-    IUIAPI& ui() { return uiApi_; }
+    IFileDialogAPI& fileDialog() { return hostApi_.fileDialog(); }
+    IMessageBoxAPI& messageBox() { return hostApi_.messageBox(); }
+    IStatusBarAPI& statusBar() { return hostApi_.statusBar(); }
+    IFileSystemAPI& fileSystem() { return hostApi_.fileSystem(); }
+    ITextEncodingAPI& textEncoding() { return hostApi_.textEncoding(); }
 
-    void updateAllViews(bool buffered = true) {
-        AppStateManager::updateAllViews(buffered);
-    }
+    void updateAllViews(bool buffered = true) { hostApi_.updateAllViews(buffered); }
+    void updateProperties() { hostApi_.updateProperties(); }
 
-    void updateProperties() {
-        AppStateManager::updateProperties();
-    }
+    IAppInternalsAPI& appInternals() { return hostApi_.appInternals(); }
+    IGuiInternalsAPI& guiInternals() { return hostApi_.guiInternals(); }
+    IDockWorkspaceAPI& dockWorkspace() { return hostApi_.dockWorkspace(); }
+    IDockHistogramAPI& dockHistogram() { return hostApi_.dockHistogram(); }
+    IPluginPanelAPI& pluginPanel() { return hostApi_.pluginPanel(); }
+    ICameraControlAPI& camera() { return hostApi_.camera(); }
+    IProgressControlAPI& progress() { return hostApi_.progress(); }
 };

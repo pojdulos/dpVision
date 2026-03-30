@@ -1,9 +1,5 @@
 #include "DockWidgetWorkspace.h"
 
-
-#include "../api/adapters/AppAPIAdapter.h"
-
-#include "DockWidgetModel.h"
 #include "Annotation.h"
 
 #include "Workspace.h"
@@ -13,6 +9,7 @@
 
 #include "ContextMenu.h"
 
+#include "Image.h"
 #include "ImageViewerHost.h"
 #include "MainWindow.h"
 #include "MainApplication.h"
@@ -21,16 +18,133 @@
 #include "dpLog.h"
 
 namespace {
-AppAPIAdapter& appApi()
-{
-	static AppAPIAdapter api;
-	return api;
-}
-
 void notifyWorkspaceTreeClicked(int objId)
 {
 	if (PluginInterface* plugin = PluginRuntimeManager::activePlugin()) {
 		plugin->onModelIndication(objId);
+	}
+}
+
+int itemIdFromIndex(const QModelIndex& index)
+{
+	return index.data(Qt::UserRole + 1).toInt();
+}
+
+int parentIdFromIndex(const QModelIndex& index)
+{
+	if (!index.isValid() || !index.parent().isValid())
+	{
+		return NO_CURRENT_MODEL;
+	}
+
+	return itemIdFromIndex(index.parent());
+}
+
+QModelIndex findTreeIndexById(const QAbstractItemModel* model, int id)
+{
+	if ((model == nullptr) || (id == NO_CURRENT_MODEL))
+	{
+		return QModelIndex();
+	}
+
+	const QModelIndexList items = model->match(
+		model->index(0, 0),
+		Qt::UserRole + 1,
+		QVariant::fromValue(id),
+		1,
+		Qt::MatchRecursive);
+
+	return items.empty() ? QModelIndex() : items.first();
+}
+
+QModelIndex lastVisibleIndexInSubtree(const QTreeView* treeView, const QModelIndex& rootIndex)
+{
+	if ((treeView == nullptr) || !rootIndex.isValid())
+	{
+		return QModelIndex();
+	}
+
+	QModelIndex lastVisible = rootIndex;
+	if (!treeView->isExpanded(rootIndex) || treeView->model() == nullptr)
+	{
+		return lastVisible;
+	}
+
+	const QAbstractItemModel* model = treeView->model();
+	const int rowCount = model->rowCount(rootIndex);
+	for (int row = rowCount - 1; row >= 0; --row)
+	{
+		const QModelIndex childIndex = model->index(row, 0, rootIndex);
+		if (!childIndex.isValid())
+		{
+			continue;
+		}
+
+		lastVisible = lastVisibleIndexInSubtree(treeView, childIndex);
+		if (lastVisible.isValid())
+		{
+			return lastVisible;
+		}
+	}
+
+	return rootIndex;
+}
+
+void collectExpandedIds(QTreeView* treeView, const QModelIndex& parentIndex, QSet<int>& expandedIds)
+{
+	if (treeView == nullptr || treeView->model() == nullptr)
+	{
+		return;
+	}
+
+	const QAbstractItemModel* model = treeView->model();
+	const int rowCount = model->rowCount(parentIndex);
+	for (int row = 0; row < rowCount; ++row)
+	{
+		const QModelIndex index = model->index(row, 0, parentIndex);
+		if (!index.isValid())
+		{
+			continue;
+		}
+
+		const int id = itemIdFromIndex(index);
+		if (treeView->isExpanded(index))
+		{
+			expandedIds.insert(id);
+		}
+
+		collectExpandedIds(treeView, index, expandedIds);
+	}
+}
+
+std::shared_ptr<CBaseObject> parentObjectOf(int id)
+{
+	if (id == NO_CURRENT_MODEL)
+	{
+		return nullptr;
+	}
+
+	if (std::shared_ptr<CBaseObject> obj = CWorkspace::instance()->getSomethingWithId(id))
+	{
+		return obj->getParentPtr();
+	}
+
+	return nullptr;
+}
+
+const char* moveKindName(WorkspaceMoveKind kind)
+{
+	switch (kind)
+	{
+	case WorkspaceMoveKind::Forbidden: return "Forbidden";
+	case WorkspaceMoveKind::ReorderTopLevel: return "ReorderTopLevel";
+	case WorkspaceMoveKind::ReorderObjectChildren: return "ReorderObjectChildren";
+	case WorkspaceMoveKind::ReorderObjectAnnotations: return "ReorderObjectAnnotations";
+	case WorkspaceMoveKind::ReorderAnnotationChildren: return "ReorderAnnotationChildren";
+	case WorkspaceMoveKind::ReparentObjectToObject: return "ReparentObjectToObject";
+	case WorkspaceMoveKind::ReparentAnnotationToObject: return "ReparentAnnotationToObject";
+	case WorkspaceMoveKind::ReparentAnnotationToAnnotation: return "ReparentAnnotationToAnnotation";
+	default: return "Unknown";
 	}
 }
 }
@@ -47,11 +161,22 @@ DockWidgetWorkspace::DockWidgetWorkspace(QWidget *parent) : QDockWidget(parent)
 	//------------------------------------------------------------------------------------------------
 
 	QObject::connect(ui.treeView, SIGNAL(clicked(QModelIndex)), this, SLOT(onTreeViewItemClicked(QModelIndex)));
+	QObject::connect(
+		ui.treeView,
+		SIGNAL(itemOrderMoveRequested(int,int,bool)),
+		this,
+		SLOT(onItemOrderMoveRequested(int,int,bool)),
+		Qt::QueuedConnection);
 
 	//connect(model, SIGNAL(itemChanged(QStandardItem*)), SLOT(onItemChanged(QStandardItem*)));
 	//ui.treeView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
 	ui.treeView->setSelectionBehavior( QAbstractItemView::SelectionBehavior::SelectRows );
+	ui.treeView->setDragEnabled(true);
+	ui.treeView->viewport()->setAcceptDrops(true);
+	ui.treeView->setDropIndicatorShown(true);
+	ui.treeView->setDragDropMode(QAbstractItemView::DragDrop);
+	ui.treeView->setDefaultDropAction(Qt::MoveAction);
 
 	ui.treeView->setContextMenuPolicy( Qt::ContextMenuPolicy::CustomContextMenu );
 	connect(ui.treeView, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
@@ -68,6 +193,221 @@ DockWidgetWorkspace::DockWidgetWorkspace(QWidget *parent) : QDockWidget(parent)
 	ui.treeView->header()->setStretchLastSection(false);
 
 	ui.treeView->setHeaderHidden(true);
+}
+
+void DeselectableTreeView::dragEnterEvent(QDragEnterEvent* event)
+{
+	if ((event->source() == this) && (draggedItemId_ != NO_CURRENT_MODEL))
+	{
+		dpInfo() << "[DND] dragEnter accept draggedItemId=" << draggedItemId_;
+		event->acceptProposedAction();
+		return;
+	}
+
+	dpInfo() << "[DND] dragEnter fallback draggedItemId=" << draggedItemId_;
+	QTreeView::dragEnterEvent(event);
+}
+
+void DeselectableTreeView::dragMoveEvent(QDragMoveEvent* event)
+{
+	if (draggedItemId_ == NO_CURRENT_MODEL)
+	{
+		dpWarn() << "[DND] dragMove ignore reason=no dragged item";
+		event->ignore();
+		return;
+	}
+
+	const QAbstractItemModel* model = this->model();
+	const QModelIndex sourceParentIndex = findTreeIndexById(model, draggedParentId_);
+	const QModelIndex targetIndex = indexAt(event->pos());
+	if (!targetIndex.isValid())
+	{
+		if (model != nullptr)
+		{
+			const int rowCount = model->rowCount(sourceParentIndex);
+			if (rowCount > 0)
+			{
+				const QModelIndex lastIndex = model->index(rowCount - 1, 0, sourceParentIndex);
+				const QModelIndex lastVisibleIndex = lastVisibleIndexInSubtree(this, lastIndex);
+				const QRect lastRect = visualRect(lastVisibleIndex);
+				if (lastRect.isValid() && (event->pos().y() >= lastRect.bottom()))
+				{
+					dpInfo() << "[DND] dragMove accept append-to-end draggedItemId=" << draggedItemId_
+						<< " draggedParentId=" << draggedParentId_;
+					QTreeView::dragMoveEvent(event);
+					return;
+				}
+			}
+		}
+
+		dpWarn() << "[DND] dragMove ignore reason=invalid target outside append zone"
+			<< " draggedItemId=" << draggedItemId_
+			<< " draggedParentId=" << draggedParentId_;
+		event->ignore();
+		return;
+	}
+
+	if (parentIdFromIndex(targetIndex) != draggedParentId_)
+	{
+		dpWarn() << "[DND] dragMove ignore reason=different parent"
+			<< " draggedParentId=" << draggedParentId_
+			<< " targetParentId=" << parentIdFromIndex(targetIndex)
+			<< " targetId=" << itemIdFromIndex(targetIndex);
+		event->ignore();
+		return;
+	}
+
+	const QRect targetRect = visualRect(targetIndex);
+	if (!targetRect.isValid())
+	{
+		dpWarn() << "[DND] dragMove ignore reason=invalid target rect"
+			<< " targetId=" << itemIdFromIndex(targetIndex);
+		event->ignore();
+		return;
+	}
+
+	const int relativeY = event->pos().y() - targetRect.top();
+	const int margin = std::max(4, targetRect.height() / 4);
+	const bool droppingAbove = relativeY <= margin;
+	const bool droppingBelow = relativeY >= (targetRect.height() - margin);
+
+	if (droppingAbove || droppingBelow)
+	{
+		dpInfo() << "[DND] dragMove accept targetId=" << itemIdFromIndex(targetIndex)
+			<< " droppingAbove=" << droppingAbove
+			<< " droppingBelow=" << droppingBelow;
+		QTreeView::dragMoveEvent(event);
+		return;
+	}
+
+	dpWarn() << "[DND] dragMove ignore reason=cursor in middle zone"
+		<< " targetId=" << itemIdFromIndex(targetIndex)
+		<< " relativeY=" << relativeY
+		<< " height=" << targetRect.height();
+	event->ignore();
+}
+
+void DeselectableTreeView::dropEvent(QDropEvent* event)
+{
+	if (draggedItemId_ == NO_CURRENT_MODEL)
+	{
+		dpWarn() << "[DND] drop ignore reason=no dragged item";
+		event->ignore();
+		return;
+	}
+
+	const QAbstractItemModel* model = this->model();
+	const QModelIndex sourceParentIndex = findTreeIndexById(model, draggedParentId_);
+	const QModelIndex targetIndex = indexAt(event->pos());
+	QModelIndex anchorIndex = targetIndex;
+	bool after = false;
+
+	if (!targetIndex.isValid())
+	{
+		if (model == nullptr)
+		{
+			dpWarn() << "[DND] drop ignore reason=no model";
+			event->ignore();
+			return;
+		}
+
+		const int rowCount = model->rowCount(sourceParentIndex);
+		if (rowCount <= 0)
+		{
+			dpWarn() << "[DND] drop ignore reason=no siblings for append";
+			event->ignore();
+			return;
+		}
+
+		const QModelIndex lastIndex = model->index(rowCount - 1, 0, sourceParentIndex);
+		const QModelIndex lastVisibleIndex = lastVisibleIndexInSubtree(this, lastIndex);
+		const QRect lastRect = visualRect(lastVisibleIndex);
+		if (!lastRect.isValid() || (event->pos().y() < lastRect.bottom()))
+		{
+			dpWarn() << "[DND] drop ignore reason=outside append zone";
+			event->ignore();
+			return;
+		}
+
+		anchorIndex = lastIndex;
+		after = true;
+	}
+	else if (parentIdFromIndex(targetIndex) != draggedParentId_)
+	{
+		dpWarn() << "[DND] drop ignore reason=different parent"
+			<< " draggedParentId=" << draggedParentId_
+			<< " targetParentId=" << parentIdFromIndex(targetIndex)
+			<< " targetId=" << itemIdFromIndex(targetIndex);
+		event->ignore();
+		return;
+	}
+
+	const int movedId = draggedItemId_;
+	const int anchorId = anchorIndex.data(Qt::UserRole + 1).toInt();
+	if ((movedId == 0) || (anchorId == 0) || (movedId == anchorId))
+	{
+		dpWarn() << "[DND] drop ignore reason=invalid moved/anchor"
+			<< " movedId=" << movedId
+			<< " anchorId=" << anchorId;
+		event->ignore();
+		return;
+	}
+
+	if (!targetIndex.isValid())
+	{
+		dpInfo() << "[DND] drop emit append-to-end movedId=" << movedId
+			<< " anchorId=" << anchorId;
+		emit itemOrderMoveRequested(movedId, anchorId, after);
+		event->acceptProposedAction();
+		return;
+	}
+
+	const QRect targetRect = visualRect(anchorIndex);
+	if (!targetRect.isValid())
+	{
+		dpWarn() << "[DND] drop ignore reason=invalid target rect"
+			<< " anchorId=" << anchorId;
+		event->ignore();
+		return;
+	}
+
+	const int relativeY = event->pos().y() - targetRect.top();
+	const int margin = std::max(4, targetRect.height() / 4);
+	const bool droppingAbove = relativeY <= margin;
+	const bool droppingBelow = relativeY >= (targetRect.height() - margin);
+
+	if (!droppingAbove && !droppingBelow)
+	{
+		dpWarn() << "[DND] drop ignore reason=cursor in middle zone"
+			<< " anchorId=" << anchorId
+			<< " relativeY=" << relativeY
+			<< " height=" << targetRect.height();
+		event->ignore();
+		return;
+	}
+
+	after = droppingBelow;
+	dpInfo() << "[DND] drop emit movedId=" << movedId
+		<< " anchorId=" << anchorId
+		<< " after=" << after;
+	emit itemOrderMoveRequested(movedId, anchorId, after);
+	event->acceptProposedAction();
+}
+
+void DeselectableTreeView::startDrag(Qt::DropActions supportedActions)
+{
+	const QModelIndex index = currentIndex();
+	draggedItemId_ = itemIdFromIndex(index);
+	draggedParentId_ = parentIdFromIndex(index);
+	dpInfo() << "[DND] startDrag draggedItemId=" << draggedItemId_
+		<< " draggedParentId=" << draggedParentId_;
+
+	QTreeView::startDrag(supportedActions);
+
+	dpInfo() << "[DND] endDrag draggedItemId=" << draggedItemId_
+		<< " draggedParentId=" << draggedParentId_;
+	draggedItemId_ = NO_CURRENT_MODEL;
+	draggedParentId_ = NO_CURRENT_MODEL;
 }
 
 //#include <QtWidgets/QMessageBox>
@@ -133,6 +473,9 @@ void DockWidgetWorkspace::updateVisibilityAll(QStandardItem* parent)
 
 void DockWidgetWorkspace::rebuildTree()
 {
+	QSet<int> expandedIds;
+	collectExpandedIds(ui.treeView, QModelIndex(), expandedIds);
+
 	ui.treeView->blockSignals(true);
 	ui.treeView->reset();
 
@@ -145,9 +488,21 @@ void DockWidgetWorkspace::rebuildTree()
 		model->removeRows(0, model->rowCount());
 	}
 
-	for (CWorkspace::iterator it = CWorkspace::instance()->begin(); it != CWorkspace::instance()->end(); it++)
+	for (int id : CWorkspace::instance()->orderedIds())
 	{
-		model->addModelWithChildren((*it).second);
+		if (std::shared_ptr<CModel3D> topLevel = CWorkspace::instance()->_getModel(id))
+		{
+			model->addModelWithChildren(topLevel);
+		}
+	}
+
+	for (int id : expandedIds)
+	{
+		QModelIndex index = findWorkspaceTreeModelIndex(id);
+		if (index.isValid())
+		{
+			ui.treeView->expand(index);
+		}
 	}
 
 	ui.treeView->blockSignals(false);
@@ -352,7 +707,6 @@ void DockWidgetWorkspace::setItemCheckedById(int id, bool b)
 void DockWidgetWorkspace::setItemVisibleById(int id, bool b)
 {
 	QModelIndex current = findWorkspaceTreeModelIndex(id);
-	std::shared_ptr<CBaseObject> obj = appApi().workspace().findId(id);
 
 	if (current.isValid()) {
 		WorkspaceTreeModel *model = (WorkspaceTreeModel*)ui.treeView->model();
@@ -411,6 +765,83 @@ void DockWidgetWorkspace::collapseAll()
 	ui.treeView->collapseAll();
 }
 
+void DockWidgetWorkspace::onItemOrderMoveRequested(int movedId, int anchorId, bool after)
+{
+	const WorkspaceDropMode mode = after ? WorkspaceDropMode::After : WorkspaceDropMode::Before;
+	dpInfo() << "[DND] request movedId=" << movedId << " anchorId=" << anchorId << " mode=" << (after ? "After" : "Before");
+
+	WorkspaceMoveResolution resolution;
+	int candidateTargetId = anchorId;
+	while (candidateTargetId != NO_CURRENT_MODEL)
+	{
+		resolution = CWorkspace::instance()->resolveMove(movedId, candidateTargetId, mode);
+		dpInfo() << "[DND] resolve candidateTargetId=" << candidateTargetId
+			<< " allowed=" << resolution.allowed
+			<< " kind=" << moveKindName(resolution.kind)
+			<< " reason=" << QString::fromStdString(resolution.reason);
+		if (resolution.allowed)
+		{
+			break;
+		}
+
+		std::shared_ptr<CBaseObject> parent = parentObjectOf(candidateTargetId);
+		candidateTargetId = parent != nullptr ? parent->id() : NO_CURRENT_MODEL;
+	}
+
+	if (!resolution.allowed)
+	{
+		dpWarn() << "[DND] rejected movedId=" << movedId
+			<< " anchorId=" << anchorId
+			<< " reason=" << QString::fromStdString(resolution.reason);
+		return;
+	}
+
+	bool changed = false;
+	switch (resolution.kind)
+	{
+	case WorkspaceMoveKind::ReorderTopLevel:
+		changed = after
+			? CWorkspace::instance()->moveTopLevelObjectAfter(movedId, resolution.targetId)
+			: CWorkspace::instance()->moveTopLevelObjectBefore(movedId, resolution.targetId);
+		break;
+	case WorkspaceMoveKind::ReorderObjectAnnotations:
+		if (std::shared_ptr<CObject> parentObject = std::dynamic_pointer_cast<CObject>(parentObjectOf(resolution.targetId)))
+		{
+			changed = after
+				? parentObject->moveAnnotationAfter(movedId, resolution.targetId)
+				: parentObject->moveAnnotationBefore(movedId, resolution.targetId);
+		}
+		break;
+	case WorkspaceMoveKind::ReorderObjectChildren:
+		if (std::shared_ptr<CObject> parentObject = std::dynamic_pointer_cast<CObject>(parentObjectOf(resolution.targetId)))
+		{
+			changed = after
+				? parentObject->moveChildAfter(movedId, resolution.targetId)
+				: parentObject->moveChildBefore(movedId, resolution.targetId);
+		}
+		break;
+	case WorkspaceMoveKind::ReorderAnnotationChildren:
+		if (std::shared_ptr<CAnnotation> parentAnnotation = std::dynamic_pointer_cast<CAnnotation>(parentObjectOf(resolution.targetId)))
+		{
+			changed = after
+				? parentAnnotation->moveAnnotationAfter(movedId, resolution.targetId)
+				: parentAnnotation->moveAnnotationBefore(movedId, resolution.targetId);
+		}
+		break;
+	default:
+		break;
+	}
+
+	dpInfo() << "[DND] execute kind=" << moveKindName(resolution.kind)
+		<< " targetId=" << resolution.targetId
+		<< " changed=" << changed;
+
+	if (changed)
+	{
+		CWorkspace::instance()->notifyStructureChanged();
+	}
+}
+
 void DockWidgetWorkspace::addItem(std::shared_ptr<CBaseObject> obj)
 {
 	if (obj == nullptr) return;
@@ -460,7 +891,7 @@ void DockWidgetWorkspace::addItem(int id, int parentId)
 	if (parentId == -1)
 	{
 		// najwy�szy poziom
-		std::shared_ptr<CModel3D> obj = appApi().workspace().getModel(id);
+		std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(id);
 		if (nullptr != obj)
 		{
 			model->addModelWithChildren(obj);
@@ -474,7 +905,12 @@ void DockWidgetWorkspace::addItem(int id, int parentId)
 		{
 			QStandardItem *i1 = model->itemFromIndex(parentIndex);
 
-			std::shared_ptr<CObject> parent = std::dynamic_pointer_cast<CObject>(appApi().workspace().findId(parentId));
+			std::shared_ptr<CObject> parent = std::dynamic_pointer_cast<CObject>(CWorkspace::instance()->getSomethingWithId(parentId));
+			if (parent == nullptr)
+			{
+				ui.treeView->blockSignals(false);
+				return;
+			}
 
 			int grandparentId = parent->parentId();
 
@@ -563,7 +999,11 @@ void DockWidgetWorkspace::colNameClicked(std::shared_ptr<CBaseObject> obj, Works
 		CMainWindow* win = CMainWindow::instance();
 		if (obj->hasType(CBaseObject::IMAGE))
 		{
-			ImageViewerHost::activateOrOpen(obj->id());
+			if (auto image = std::dynamic_pointer_cast<CImage>(obj))
+			{
+				image->setShowViewer(true);
+				CWorkspace::instance()->notifyObjectStateChanged(obj->id());
+			}
 		}
 		else
 		{
@@ -575,8 +1015,7 @@ void DockWidgetWorkspace::colNameClicked(std::shared_ptr<CBaseObject> obj, Works
 
 		bool b = clickedItem->checkState() == Qt::Checked;
 
-		obj->setChecked(b);
-		if (!wksp->changeSelection(obj->id(), b))
+		if (!wksp->setChecked(obj->id(), b))
 		{
 			wksp->_objectActivate(obj->id());
 			//emit currentObjectChanged(obj->id());
@@ -585,8 +1024,7 @@ void DockWidgetWorkspace::colNameClicked(std::shared_ptr<CBaseObject> obj, Works
 	else
 	{
 		bool b = clickedItem->checkState() == Qt::Checked;
-		obj->setChecked(b);
-		wksp->changeSelection(obj->id(), b);
+		wksp->setChecked(obj->id(), b);
 
 		//Qt::CheckState state = clickedItem->checkState();
 		//if (state == Qt::Checked || state == Qt::Unchecked)
@@ -596,9 +1034,62 @@ void DockWidgetWorkspace::colNameClicked(std::shared_ptr<CBaseObject> obj, Works
 	}
 }
 
+bool DockWidgetWorkspace::refreshItemById(int id)
+{
+	if (id == NO_CURRENT_MODEL)
+	{
+		return false;
+	}
+
+	auto obj = CWorkspace::instance()->getSomethingWithId(id);
+	if (obj == nullptr)
+	{
+		return false;
+	}
+
+	QModelIndex current = findWorkspaceTreeModelIndex(id);
+	if (!current.isValid())
+	{
+		return false;
+	}
+
+	WorkspaceTreeModel* model = (WorkspaceTreeModel*)ui.treeView->model();
+	WorkspaceTreeItem* item = (WorkspaceTreeItem*)model->itemFromIndex(current);
+	if (item == nullptr)
+	{
+		return false;
+	}
+
+	item->setObject(obj);
+	item->setText(obj->getLabel());
+	item->setCheckState(obj->isChecked() ? Qt::Checked : Qt::Unchecked);
+	item->setToolTip(QString::fromStdWString(obj->infoRow()));
+	item->changeIcon(WorkspaceTreeItem::Column::colSelfVisibility, obj->getSelfVisibility());
+	item->changeIcon(WorkspaceTreeItem::Column::colKidsVisibility, obj->getKidsVisibility());
+
+	if (item->getField(WorkspaceTreeItem::Column::colLock) != nullptr)
+	{
+		if (auto modelObject = std::dynamic_pointer_cast<CModel3D>(obj))
+		{
+			item->changeIcon(WorkspaceTreeItem::Column::colLock, modelObject->isLocked());
+		}
+	}
+
+	return true;
+}
+
 void DockWidgetWorkspace::onWorkspaceObjectActivated(int i)
 {
 	selectItem(i);
+}
+
+void DockWidgetWorkspace::onWorkspaceObjectStateChanged(int id)
+{
+	if (!refreshItemById(id))
+	{
+		rebuildTree();
+	}
+	selectItem(CWorkspace::instance()->_getCurrentModelId());
 }
 
 //void DockWidgetWorkspace::onCurrentObjectChanged(std::shared_ptr<CBaseObject> obj)
@@ -622,6 +1113,12 @@ void DockWidgetWorkspace::onWorkspaceObjectRemoved(int id) {
 	//dpDebug() << "DockWidgetWorkspace::onWorkspaceObjectRemoved() id=" << id;
 	selectItem(CWorkspace::instance()->_getCurrentModelId());
 	removeItem(id);
+}
+
+void DockWidgetWorkspace::onWorkspaceStructureChanged()
+{
+	rebuildTree();
+	selectItem(CWorkspace::instance()->_getCurrentModelId());
 }
 
 void DockWidgetWorkspace::onTreeViewItemClicked(QModelIndex current)

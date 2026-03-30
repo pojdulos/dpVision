@@ -52,106 +52,6 @@ CMovement::FrameVal& CMovement::frame(int k)
 }
 
 
-void CMovement::renderRotationAxe(CTransform curr, CTransform prev)
-{
-	CQuaternion prevQ = prev.rotation();
-	CQuaternion currQ = curr.rotation();
-
-	CQuaternion relQ = prevQ.inverse() * currQ;
-
-	CVector3d prevT = prev.translation();
-	CVector3d currT = curr.translation();
-
-	CVector3d relT = currT - prevT;
-
-	Eigen::AngleAxisd absAA(currQ.toEigen().toRotationMatrix());
-	Eigen::Vector3d absAxis = absAA.axis();
-	double absAngle = absAA.angle(); // K�t w radianach
-	double absLen = 200.0;// 1000.0 * absAngle;
-
-	Eigen::AngleAxisd relAA(relQ.toEigen().toRotationMatrix());
-	Eigen::Vector3d relAxis = relAA.axis();
-	double relAngle = relAA.angle(); // K�t w radianach
-	double relLen = 200.0;// 10000.0 * relAngle;
-
-	dpInfo() << "-------------------------------------------------------------" << Qt::endl;
-	dpInfo() << "ABS angle: " << rad2deg(absAngle) << "° translation: " << currT.length() << "mm" << Qt::endl;
-	dpInfo() << "REL angle: " << rad2deg(relAngle) << "° translation: " << relT.length() << "mm" << Qt::endl;
-
-	glPushMatrix();
-	glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-	glDisable(GL_TEXTURE_2D);
-	glEnable(GL_COLOR_MATERIAL);
-
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-
-
-	glColor3f(1.0, 0.0, 1.0);
-
-	glLineWidth(3.0f);
-	glBegin(GL_LINES);
-	glVertex3f(absAxis.x() * -absLen, absAxis.y() * -absLen, absAxis.z() * -absLen);
-	glVertex3f(absAxis.x() * absLen, absAxis.y() * absLen, absAxis.z() * absLen);
-	glEnd();
-
-	glColor3f(1.0, 0.7, 0.0);
-
-	glLineWidth(3.0f);
-	glBegin(GL_LINES);
-	glVertex3f(relAxis.x() * -relLen, relAxis.y() * -relLen, relAxis.z() * -relLen);
-	glVertex3f(relAxis.x() * relLen, relAxis.y() * relLen, relAxis.z() * relLen);
-	glEnd();
-
-
-	glPopAttrib();
-	glPopMatrix();
-}
-
-void CMovement::renderFrame()
-{
-	FrameVal frame = m_seqlist[m_currentKey];
-	//for (FrameVal frame : m_seqlist)
-	{
-		if (m_currentKey>0) 
-			renderRotationAxe(frame.t, m_seqlist[m_currentKey-1].t);
-		else
-			renderRotationAxe(frame.t);
-
-		glPushMatrix();
-		frame.t.render();
-
-
-		for (const auto& itd : m_data)
-		{
-			switch (itd.second->type())
-			{
-			case CObject::MODEL:
-				itd.second->render();
-				break;
-			default:
-				glLoadName(m_Id);
-				glPushName(m_Id);
-
-				itd.second->render();
-
-				glPopName();
-				glLoadName(0);
-				break;
-			}
-		}
-
-		for (const auto& it : m_annotations)
-		{
-			it.second->render();
-		}
-
-		glPopMatrix();
-
-	}
-}
-
-
 void CMovement::setTimer()
 {
 	m_animationTimer.setSingleShot(true);
@@ -232,4 +132,5 @@ void CMovement::info(std::wstring i[4])
 	i[2] = L"Movement";
 	i[3] = infoRow();
 }
+
 

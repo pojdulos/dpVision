@@ -8,9 +8,11 @@
 //#include "Utilities.h"
 
 #include "Annotation.h"
+#include "OrderedIdList.h"
 
 #include <vector>
 #include <memory>
+#include <string>
 
 struct _light
 {
@@ -48,6 +50,37 @@ struct _light
 
 class IWorkspaceRenderer;
 
+enum class WorkspaceDropMode
+{
+	Before,
+	After,
+	On
+};
+
+enum class WorkspaceMoveKind
+{
+	Forbidden,
+	ReorderTopLevel,
+	ReorderObjectChildren,
+	ReorderObjectAnnotations,
+	ReorderAnnotationChildren,
+	ReparentObjectToObject,
+	ReparentAnnotationToObject,
+	ReparentAnnotationToAnnotation
+};
+
+struct WorkspaceMoveResolution
+{
+	bool allowed = false;
+	WorkspaceDropMode dropMode = WorkspaceDropMode::Before;
+	WorkspaceMoveKind kind = WorkspaceMoveKind::Forbidden;
+	int movedId = NO_CURRENT_MODEL;
+	int targetId = NO_CURRENT_MODEL;
+	int sourceParentId = NO_CURRENT_MODEL;
+	int targetParentId = NO_CURRENT_MODEL;
+	std::string reason;
+};
+
 class DPVISION_EXPORT CWorkspace
 {
 	std::shared_ptr<IWorkspaceRenderer> renderer_ = nullptr;
@@ -60,8 +93,10 @@ public:
 	// Listener notifiers:
 
 	void notifyObjectActivated(int id);
+	void notifyObjectStateChanged(int id);
 	void notifyObjectAdded(int id);
 	void notifyObjectRemoved(int id, CBaseObject::Type tp = CBaseObject::Type::GENERIC);
+	void notifyStructureChanged();
 
 	// API interfaces for windows and user code:
 
@@ -79,6 +114,19 @@ public:
 	// remove object from workspace
 	bool _objectRemove(int id);
 
+	bool removeAll();
+	bool removeChecked();
+	bool removeCurrent();
+	void setAllVisible(bool visible);
+	void setCheckedVisible(bool visible);
+	void checkAll();
+	bool moveTopLevelObjectBefore(int movedId, int anchorId);
+	bool moveTopLevelObjectAfter(int movedId, int anchorId);
+	WorkspaceMoveResolution resolveMove(int movedId, int targetId, WorkspaceDropMode mode) const;
+	bool isMoveAllowed(int movedId, int targetId, WorkspaceDropMode mode) const;
+	std::shared_ptr<CModel3D> duplicateModel(int id);
+	std::shared_ptr<CModel3D> duplicateCurrentModel();
+
 
 	typedef CModel3D ChildType;
 	//typedef std::map<int, ChildType*> Children;
@@ -92,8 +140,9 @@ protected:
 
 private:
 	Children m_data;
+	OrderedIdList m_orderedIds;
 
-	std::list<int> m_selection;
+	std::list<int> m_checkedIds;
 
 	int m_idOfCurrentModel;
 
@@ -108,6 +157,7 @@ public:
 	static CWorkspace* instance();
 
 	Children& children() { return m_data; }
+	const std::vector<int>& orderedIds() const { return m_orderedIds.ids(); }
 	
 	//ChildType*& operator[](int i)
 	//{
@@ -115,13 +165,13 @@ public:
 	//	return m_pairs[i].get();
 	//}
 
-	std::shared_ptr<ChildType> first() { if (m_data.empty()) return nullptr; return m_data.begin()->second; };
-	std::shared_ptr<ChildType> last() { if (m_data.empty()) return nullptr; return m_data.rbegin()->second; };
+	std::shared_ptr<ChildType> first();
+	std::shared_ptr<ChildType> last();
 
 	CWorkspace::iterator begin() { return m_data.begin(); }
 	CWorkspace::iterator end() { return m_data.end(); }
 
-	std::shared_ptr<CBaseObject> getSomethingWithId(int id);
+	std::shared_ptr<CBaseObject> getSomethingWithId(int id) const;
 
 	bool isOK() const { return m_bOK; }
 	const std::string &lastError() const { return m_sError; }
@@ -163,16 +213,16 @@ public:
 	int	_setNextModelCurrent();
 	int	_setPreviousModelCurrent();
 
-	bool inSelection(int id);
-	int getNumberInSelection(int id);
-	void addToSelection(int id);
-	void removeFromSelection(int id);
-	bool changeSelection(int id, bool b);
+	bool isChecked(int id) const;
+	int checkedIndex(int id) const;
+	void addChecked(int id);
+	void removeChecked(int id);
+	bool setChecked(int id, bool checked);
 
-	std::list<int> getSelection();
-	std::list<int> getSelection(std::set<CBaseObject::Type> type, std::shared_ptr<CObject> obj = nullptr);
-	std::list<std::shared_ptr<CBaseObject>> getSelected(std::set<CBaseObject::Type> types, std::shared_ptr<CObject> dad);
-	void clearSelection() { m_selection.clear(); };
+	std::list<int> checkedIds() const;
+	std::list<int> checkedIds(std::set<CBaseObject::Type> type, std::shared_ptr<CObject> obj = nullptr) const;
+	std::list<std::shared_ptr<CBaseObject>> checkedObjects(std::set<CBaseObject::Type> types, std::shared_ptr<CObject> dad) const;
+	void clearChecked();
 
 	CBoundingBox topBB();
 

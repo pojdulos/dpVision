@@ -1,9 +1,9 @@
 #include "GLViewer.h"
 
 #include "MainApplication.h"
-#include "../api/adapters/AppAPIAdapter.h"
 #include "../core/PluginRuntimeManager.h"
 #include "AnnotationPoint.h"
+#include "Workspace.h"
 
 //#include "../api/AP.h"
 #include "GroupObject.h"
@@ -18,15 +18,6 @@
 #include "AnnotationPoints.h"
 
 #include <QMessageBox>
-
-namespace
-{
-	AppAPIAdapter& appApi()
-	{
-		static AppAPIAdapter api;
-		return api;
-	}
-}
 
 bool GLViewer::screen2obj(double xx, double yy, CModel3D *obj, CPoint3d &in, CPoint3d &out, CVector3d &dir)
 {
@@ -542,7 +533,8 @@ void GLViewer::PickPoint(int x, int y)
 	double xx = 0.5 + x;
 	double yy = 0.5 + y;
 
-	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
+	CWorkspace* wksp = CWorkspace::instance();
+	std::shared_ptr<CModel3D> obj = wksp->_getModel(wksp->_getCurrentModelId());
 
 	if ( obj != nullptr )
 	{
@@ -579,7 +571,7 @@ void GLViewer::PickObject(int x, int y)
 {
 	int id = readSelectBuffer( x, y );
 
-	appApi().workspaceActivation().setCurrentObject(id);
+	CWorkspace::instance()->_objectActivate(id);
 }
 
 

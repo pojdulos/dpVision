@@ -33,6 +33,7 @@ class DPVISION_EXPORT PropTransform : public PropWidget
 {
 	Q_OBJECT
 	CTransform* m_trans;
+	CBaseObject* m_owner;
 
 	static bool group_visible;
 
@@ -46,7 +47,7 @@ public:
 	QStandardItem* addDouble(QStandardItem* parent, double v, const QString& title, double min, double max, double step, bool loop = false);
 	QStandardItem* addBool(const QString& title, QStandardItemModel* model, bool b);
 	void setTreeView();
-	explicit PropTransform(CTransform *m, QWidget *parent = 0, bool isCameraTransform = false);
+	explicit PropTransform(CTransform *m, QWidget *parent = 0, bool isCameraTransform = false, CBaseObject* owner = nullptr);
 	~PropTransform();
 
 	//virtual void paintEvent(QPaintEvent * event) override;
@@ -84,6 +85,7 @@ public slots:
 private:
 	Ui::propTransform ui;
 
+	void notifyTransformChanged(bool refreshProperties = false);
 	void updateMatrix();
 	void updatePropertiesTree();
 

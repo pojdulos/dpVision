@@ -1,22 +1,11 @@
 #include "propImage.h"
-#include "../core/AppStateManager.h"
-#include "../core/WorkspacePanelManager.h"
-#include "../api/AP.h"
+#include "../core/Workspace.h"
 
 #include "Image.h"
 #include "ImageViewerHost.h"
 #include "ImageViewerState.h"
 
-#include "MainWindow.h"
 #include "QScrollArea"
-
-namespace
-{
-	CMainWindow* mainWindow()
-	{
-		return CMainWindow::instance();
-	}
-}
 
 
 PropImage::PropImage(CImage *m, QWidget *parent) : PropWidget( parent )
@@ -35,7 +24,7 @@ PropImage::~PropImage()
 
 void PropImage::updateProperties()
 {
-	ui.showImageWindow->setChecked(ImageViewerHost::hasOpenViewer(obj->id()));
+	ui.showImageWindow->setChecked(obj->getShowViewer());
 
 	ui.show3d->setChecked(((CModel3D*)obj)->getSelfVisibility());
 
@@ -50,7 +39,7 @@ PropWidget* PropImage::create(CImage* m, QWidget* parent)
 	layout->addWidget(bo);
 
 	PropImage* pI = new PropImage(m, widget);
-	pI->getUI()->show3d->layout()->addWidget(new PropTransform(&m->getTransform(), pI));
+	pI->getUI()->show3d->layout()->addWidget(new PropTransform(&m->getTransform(), pI, false, m));
 
 	layout->addWidget(pI);
 
@@ -96,14 +85,8 @@ void PropImage::scaleChanged(int i)
 
 void PropImage::showWindow(bool b)
 {
-	if (b)
-	{
-		ImageViewerHost::activateOrOpen(obj->id());
-	}
-	else
-	{
-		ImageViewerHost::closeAll(obj->id());
-	}
+	obj->setShowViewer(b);
+	CWorkspace::instance()->notifyObjectStateChanged(obj->id());
 }
 
 void PropImage::show3d(bool b)
@@ -111,20 +94,17 @@ void PropImage::show3d(bool b)
 	if (b)
 	{
 		((CModel3D*)obj)->setLocked(wasLocked);
-		WorkspacePanelManager::setWorkspaceItemLocked(obj->id(), wasLocked);
 	}
 	else
 	{
 		wasLocked = ((CModel3D*)obj)->isLocked();
 		((CModel3D*)obj)->setLocked(true);
-		WorkspacePanelManager::setWorkspaceItemLocked(obj->id(), wasLocked);
 	}
 	
 	emit signalChangedShow3d(b);
 
 	obj->setSelfVisibility(b);
-	WorkspacePanelManager::setWorkspaceItemVisible(obj->id(), b);
-	AppStateManager::updateAllViews();
+	CWorkspace::instance()->notifyObjectStateChanged(obj->id());
 }
 
 void PropImage::slotChangeShow3d(bool v)

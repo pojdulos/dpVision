@@ -1,23 +1,8 @@
 #include "propBaseObject.h"
 #include "BaseObject.h"
-#include "../core/AppStateManager.h"
-#include "../core/WorkspacePanelManager.h"
-#include "MainWindow.h"
-#include "DockWidgetWorkspace.h"
+#include "Workspace.h"
 
 bool PropBaseObject::group_visible = true;
-
-namespace
-{
-	DockWidgetWorkspace* workspaceDock()
-	{
-		if (auto win = CMainWindow::instance())
-		{
-			return win->dockWorkspace;
-		}
-		return nullptr;
-	}
-}
 
 
 //PropBaseObject::PropBaseObject(CBaseObject *o, QWidget *parent, bool vis3) : PropWidget(parent)
@@ -122,17 +107,10 @@ void PropBaseObject::updateKeywords()
 	ui.keywordsAreaContents->update();
 }
 
-#include "../api/AP.h"
-#include "Workspace.h"
-
 void PropBaseObject::changedLabel(QString s)
 {
 	((CBaseObject*)obj)->setLabel(s.toStdWString());
-	AppStateManager::updateAllViews();
-	if (DockWidgetWorkspace* dock = workspaceDock())
-	{
-		dock->setItemLabelById(obj->id(), s);
-	}
+	CWorkspace::instance()->notifyObjectStateChanged(obj->id());
 }
 
 QVector<PropWidget*> PropBaseObject::create_and_get_subwidgets(CBaseObject* obj)
@@ -188,16 +166,7 @@ void PropBaseObject::onAddKeywordButtonClick()
 void PropBaseObject::changedSelection(int checkState)
 {
 	bool b = (checkState == Qt::Checked);
-	if (obj->hasType(CBaseObject::MODEL))
-	{
-		CWorkspace::instance()->changeSelection(obj->id(), b );
-	}
-	else
-	{
-		obj->setChecked( b );
-	}
-	WorkspacePanelManager::setWorkspaceItemChecked(obj->id(), b);
-	AppStateManager::updateAllViews();
+	CWorkspace::instance()->setChecked(obj->id(), b);
 }
 
 void PropBaseObject::changedVisibility(int b)
@@ -205,9 +174,7 @@ void PropBaseObject::changedVisibility(int b)
 	bool vis = (b == Qt::CheckState::Checked);
 
 	obj->setSelfVisibility(vis);
-
-	AppStateManager::updateAllViews();
-	WorkspacePanelManager::setWorkspaceItemVisible(obj->id(), vis);
+	CWorkspace::instance()->notifyObjectStateChanged(obj->id());
 
 	//emit signalChangedVisibility(vis);
 }
@@ -215,9 +182,7 @@ void PropBaseObject::changedVisibility(int b)
 void PropBaseObject::changedKidsVisibility(bool b)
 {
 	obj->setKidsVisibility(b);
-
-	AppStateManager::updateAllViews();
-	WorkspacePanelManager::setWorkspaceItemKidsVisible(obj->id(), b);
+	CWorkspace::instance()->notifyStructureChanged();
 
 	//emit signalChangedVisibility(vis);
 }

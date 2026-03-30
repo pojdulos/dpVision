@@ -26,7 +26,9 @@ class CParserATMDL :public CParser
 	CTransform parseProperty_rotation(QTextStream& in);
 	CTransform parseProperty_translation(QTextStream& in);
 
-	CMovement::FrameVal parseProperty_frame(QTextStream& in);
+    CVector3d parseProperty_eulerangles(QTextStream &in);
+
+    CMovement::FrameVal parseProperty_frame(QTextStream& in);
 	CMovement::SeqList parseProperty_frameset(QTextStream& in);
 	CMovement::SeqList parseProperty_sequence(QTextStream& in);
 

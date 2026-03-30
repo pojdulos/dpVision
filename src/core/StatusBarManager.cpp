@@ -21,32 +21,79 @@ void StatusBarManager::setTextTimed(int mst, const QString& txt) {
 }
 
 void StatusBarManager::printfTimed(int mst, const char* format, ...) {
-   static QElapsedTimer timer;
-   if (!timer.isValid())
-       timer.start();
+    va_list paramList;
+    va_start(paramList, format);
+    vprintfTimed(mst, format, paramList);
+    va_end(paramList);
+}
 
-   if (timer.elapsed() > mst) {
-       char formatBuf[1024];
-
-       va_list paramList;
-       va_start(paramList, format);
-
-       vsnprintf(formatBuf, sizeof(formatBuf), format, paramList);
-       va_end(paramList);
-
-       setText(formatBuf);
-       timer.restart();
-   }
+void StatusBarManager::vprintf(const char* format, va_list args) {
+    char formatBuf[1024];
+    va_list argsCopy;
+    va_copy(argsCopy, args);
+    vsnprintf(formatBuf, sizeof(formatBuf), format, argsCopy);
+    va_end(argsCopy);
+    setText(formatBuf);
 }
 
 void StatusBarManager::printf(const char* format, ...) {
-    char formatBuf[1024];
-
     va_list paramList;
     va_start(paramList, format);
-
-    vsnprintf(formatBuf, sizeof(formatBuf), format, paramList);
+    vprintf(format, paramList);
     va_end(paramList);
+}
 
-    setText(formatBuf);
+void StatusBarManager::vprintf(const wchar_t* format, va_list args) {
+    wchar_t formatBuf[1024];
+    va_list argsCopy;
+    va_copy(argsCopy, args);
+    vswprintf(formatBuf, sizeof(formatBuf) / sizeof(formatBuf[0]), format, argsCopy);
+    va_end(argsCopy);
+    setText(QString::fromWCharArray(formatBuf));
+}
+
+void StatusBarManager::printf(const wchar_t* format, ...) {
+    va_list paramList;
+    va_start(paramList, format);
+    vprintf(format, paramList);
+    va_end(paramList);
+}
+
+void StatusBarManager::vprintfTimed(int mst, const char* format, va_list args) {
+    static QElapsedTimer timer;
+    if (!timer.isValid())
+        timer.start();
+
+    if (timer.elapsed() > mst) {
+        char formatBuf[1024];
+        va_list argsCopy;
+        va_copy(argsCopy, args);
+        vsnprintf(formatBuf, sizeof(formatBuf), format, argsCopy);
+        va_end(argsCopy);
+        setText(formatBuf);
+        timer.restart();
+    }
+}
+
+void StatusBarManager::printfTimed(int mst, const wchar_t* format, ...) {
+    va_list paramList;
+    va_start(paramList, format);
+    vprintfTimed(mst, format, paramList);
+    va_end(paramList);
+}
+
+void StatusBarManager::vprintfTimed(int mst, const wchar_t* format, va_list args) {
+    static QElapsedTimer timer;
+    if (!timer.isValid())
+        timer.start();
+
+    if (timer.elapsed() > mst) {
+        wchar_t formatBuf[1024];
+        va_list argsCopy;
+        va_copy(argsCopy, args);
+        vswprintf(formatBuf, sizeof(formatBuf) / sizeof(formatBuf[0]), format, argsCopy);
+        va_end(argsCopy);
+        setText(QString::fromWCharArray(formatBuf));
+        timer.restart();
+    }
 }

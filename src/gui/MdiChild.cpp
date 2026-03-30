@@ -7,6 +7,9 @@
 #include "MainWindow.h"
 
 #include "StatusBarManager.h"
+#include "../core/Workspace.h"
+
+#include <QTimer>
 
 MdiChild::MdiChild(Type t) : QWidget(), m_type( t )
 {
@@ -80,6 +83,32 @@ void MdiChild::keyPressEvent(QKeyEvent* e)
 	{
 		fullScreen();
 	}
+}
+
+void MdiChild::closeEvent(QCloseEvent* event)
+{
+	if (hasType(MdiChild::Type::Pic))
+	{
+		if (PicViewer* viewer = qobject_cast<PicViewer*>(m_widget))
+		{
+			const int imageId = viewer->id();
+			if (imageId != NO_CURRENT_MODEL)
+			{
+				if (auto image = std::dynamic_pointer_cast<CImage>(CWorkspace::instance()->getSomethingWithId(imageId)))
+				{
+					if (image->getShowViewer())
+					{
+						image->setShowViewer(false);
+						QTimer::singleShot(0, [imageId]() {
+							CWorkspace::instance()->notifyObjectStateChanged(imageId);
+						});
+					}
+				}
+			}
+		}
+	}
+
+	QWidget::closeEvent(event);
 }
 
 void MdiChild::resizeEvent(QResizeEvent* e)

@@ -2,7 +2,7 @@
 #include "PointCloud.h"
 #include "Mesh.h"
 
-#include "../core/AppStateManager.h"
+#include "../core/Workspace.h"
 
 #include <QColorDialog>
 #include <QPushButton>
@@ -159,7 +159,7 @@ void PropPointCloud::pointSizeChanged(int s)
 {
 	CPointCloud::setPointSize(s);
 
-	AppStateManager::updateAllViews();
+	CWorkspace::instance()->notifyStructureChanged();
 }
 
 

@@ -23,18 +23,24 @@ void IObjectRenderer::renderTransform(const CBaseObject* _obj)
 void IObjectRenderer::renderKids(const CBaseObject* _obj) {
 	CObject* obj = (CObject*)_obj;
 
-	for (const auto& itd : obj->children())
+	for (int id : obj->orderedChildIds())
 	{
-		switch (itd.second->type())
+		std::shared_ptr<CBaseObject> child = obj->getChild(id);
+		if (child == nullptr)
+		{
+			continue;
+		}
+
+		switch (child->type())
 		{
 		case CObject::MODEL:
-			itd.second->render();
+			child->render();
 			break;
 		default:
-			glLoadName(itd.second->id());
-			glPushName(itd.second->id());
+			glLoadName(child->id());
+			glPushName(child->id());
 
-			itd.second->render();
+			child->render();
 
 			glPopName();
 			glLoadName(0);
@@ -42,8 +48,11 @@ void IObjectRenderer::renderKids(const CBaseObject* _obj) {
 		}
 	}
 
-	for (const auto& it : obj->annotations())
+	for (int id : obj->orderedAnnotationIds())
 	{
-		it.second->render();
+		if (CAnnotation* annotation = obj->annotation(id))
+		{
+			annotation->render();
+		}
 	}
 }

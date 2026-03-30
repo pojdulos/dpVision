@@ -5,35 +5,19 @@
 
 class CMesh;
 
-// **ULEPSZONA WERSJA EdgeHasher - uwzglêdnia kanoniczn¹ formê**
+// **ULEPSZONA WERSJA EdgeHasher - uwzglednia kanoniczna forme**
 struct EdgeHasher {
     std::size_t operator()(const CEdge& e) const {
-        // **KLUCZOWE: Normalizuj kolejnoœæ przed hashowaniem**
+        // Normalize edge orientation before hashing.
         INDEX_TYPE a = std::min(e.first, e.second);
         INDEX_TYPE b = std::max(e.first, e.second);
 
-        // FNV-1a hash z unormalizowanych wartoœci
+        // Hash the canonicalized vertex pair.
         std::size_t h1 = std::hash<INDEX_TYPE>{}(a);
         std::size_t h2 = std::hash<INDEX_TYPE>{}(b);
         return h1 ^ (h2 << 1);
     }
 };
-
-// **OPCJONALNIE: Dodaj operator== dla CEdge jeœli go nie ma**
-// To zapewni poprawne dzia³anie w unordered_map/set
-namespace std {
-    template<>
-    struct equal_to<CEdge> {
-        bool operator()(const CEdge& a, const CEdge& b) const {
-            // Porównuj w kanonicznej formie
-            INDEX_TYPE a1 = std::min(a.first, a.second);
-            INDEX_TYPE a2 = std::max(a.first, a.second);
-            INDEX_TYPE b1 = std::min(b.first, b.second);
-            INDEX_TYPE b2 = std::max(b.first, b.second);
-            return (a1 == b1) && (a2 == b2);
-        }
-    };
-}
 
 class DPVISION_EXPORT  MeshTools
 {

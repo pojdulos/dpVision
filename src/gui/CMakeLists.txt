@@ -16,7 +16,6 @@ qt5_add_resources(QRC_FILE ${CMAKE_CURRENT_SOURCE_DIR}/${EXE_NAME}.qrc)
 set(DPVISION_GUI_SRC
     ${GUI_SRC}
     ${QRC_FILE}
-    ${CMAKE_CURRENT_SOURCE_DIR}/../core/AppSettings.cpp
 )
 
 add_library(dpVisionGui SHARED
@@ -45,8 +44,6 @@ target_link_libraries(dpVisionGui
         Qt5::Widgets
         Qt5::OpenGL
         Eigen3::Eigen
-    PRIVATE
-        dpVision::LegacyApi
 )
 
 add_library(dpVision::Gui ALIAS dpVisionGui)

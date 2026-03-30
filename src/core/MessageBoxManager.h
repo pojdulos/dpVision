@@ -6,7 +6,7 @@
 #include <cstdarg>
 #include <string>
 
-class DPVISION_EXPORT MessageBoxManager {
+class [[deprecated("Use UserMessageManager directly.")]] DPVISION_EXPORT MessageBoxManager {
 public:
     static void setListener(IMessageListener* l) { UserMessageManager::setListener(l); }
     static IMessageListener* listener() { return UserMessageManager::listener(); }

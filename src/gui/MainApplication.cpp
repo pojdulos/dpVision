@@ -2,6 +2,7 @@
 
 //#include "../api/AP.h"
 #include "AppSettings.h"
+#include "../core/AppInternalsManager.h"
 #include "../core/PluginRuntimeManager.h"
 
 #include "MainWindow.h"
@@ -13,6 +14,8 @@ DPVISION_EXPORT CMainApplication * CMainApplication::theApp = nullptr;
 
 CMainApplication::CMainApplication(int& argc, char** argv) : QApplication(argc, argv)
 {
+	AppInternalsManager::setApplication(this);
+
 	isInitialised = false;
 	verbose_mode = false;
 
@@ -43,6 +46,7 @@ CMainApplication::CMainApplication(int& argc, char** argv) : QApplication(argc, 
 	PluginRuntimeManager::setActivePlugin(nullptr);
 
 	m_lastObjectId = MODEL_ID_OFFSET;
+	remoteCommandServer = nullptr;
 }
 
 

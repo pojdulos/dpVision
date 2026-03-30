@@ -1,9 +1,8 @@
 #include "MainWindow.h"
 
-#include "../api/AP.h"
-#include "../api/adapters/AppAPIAdapter.h"
 #include "MainApplication.h"
 #include "Model3D.h"
+#include "../core/Workspace.h"
 
 //#include <QtWidgets/QMainWindow>
 //#include <QtWidgets/QProgressBar>
@@ -34,23 +33,21 @@
 #include "StatusBarManager.h"
 #include "MessageBoxManager.h"
 #include "../core/AppStateManager.h"
+#include "../core/CameraControlManager.h"
+#include "../core/GuiInternalsManager.h"
 #include "../core/HistogramDockManager.h"
+#include "../core/PluginPanelManager.h"
 #include "../core/WorkspacePanelManager.h"
+#include "adapters/QtCameraControlAdapter.h"
+#include "adapters/QtGuiInternalsAdapter.h"
 #include "adapters/QtStatusBarAdapter.h"
 #include "adapters/QtAppStateAdapter.h"
 #include "adapters/QtHistogramDockAdapter.h"
 #include "adapters/QtMessageBoxAdapter.h"
+#include "adapters/QtPluginPanelAdapter.h"
 #include "adapters/QtProgressAdapter.h"
 #include "adapters/QtWorkspacePanelAdapter.h"
 
-namespace
-{
-	AppAPIAdapter& appApi()
-	{
-		static AppAPIAdapter api;
-		return api;
-	}
-}
 #include "events/QtWorkspaceEvents.h"
 
 void restoreDockGeometry(QDockWidget* dock)
@@ -140,7 +137,10 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 	StatusBarManager::setListener(new QtStatusBarAdapter(statusBar()));
 	MessageBoxManager::setListener(new QtMessageBoxAdapter());
 	AppStateManager::setListener(new QtAppStateAdapter(this));
+	CameraControlManager::setListener(new QtCameraControlAdapter());
+	GuiInternalsManager::setListener(new QtGuiInternalsAdapter());
 	HistogramDockManager::setListener(new QtHistogramDockAdapter(this));
+	PluginPanelManager::setListener(new QtPluginPanelAdapter(this));
 	WorkspacePanelManager::setListener(new QtWorkspacePanelAdapter(this));
 
 	this->progressIndicator = new ProgressIndicator(this->statusBar());
@@ -169,12 +169,20 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 	connect(wkspEvents.get(), SIGNAL(objectActivatedSignal(int)), dockWorkspace, SLOT(onWorkspaceObjectActivated(int)));
 	connect(wkspEvents.get(), SIGNAL(objectActivatedSignal(int)), dockProperties, SLOT(onWorkspaceObjectActivated(int)));
 
+	connect(wkspEvents.get(), SIGNAL(objectStateChangedSignal(int)), this, SLOT(onWorkspaceObjectStateChanged(int)));
+	connect(wkspEvents.get(), SIGNAL(objectStateChangedSignal(int)), dockWorkspace, SLOT(onWorkspaceObjectStateChanged(int)));
+	connect(wkspEvents.get(), SIGNAL(objectStateChangedSignal(int)), dockProperties, SLOT(onWorkspaceObjectStateChanged(int)));
+
 	connect(wkspEvents.get(), SIGNAL(objectRemovedSignal(int)), this, SLOT(onWorkspaceObjectRemoved(int)));
 	connect(wkspEvents.get(), SIGNAL(objectRemovedSignal(int)), dockWorkspace, SLOT(onWorkspaceObjectRemoved(int)));
 	connect(wkspEvents.get(), SIGNAL(objectRemovedSignal(int)), dockProperties, SLOT(onWorkspaceObjectRemoved(int)));
 
 	connect(wkspEvents.get(), SIGNAL(objectAddedSignal(int)), this, SLOT(onWorkspaceObjectAdded(int)));
 	connect(wkspEvents.get(), SIGNAL(objectAddedSignal(int)), dockWorkspace, SLOT(onWorkspaceObjectAdded(int)));
+
+	connect(wkspEvents.get(), SIGNAL(structureChangedSignal()), this, SLOT(onWorkspaceStructureChanged()));
+	connect(wkspEvents.get(), SIGNAL(structureChangedSignal()), dockWorkspace, SLOT(onWorkspaceStructureChanged()));
+	connect(wkspEvents.get(), SIGNAL(structureChangedSignal()), dockProperties, SLOT(onWorkspaceStructureChanged()));
 
 
 	connect(ui.mdiArea, &QMdiArea::subWindowActivated, this, [this](QMdiSubWindow* window) {
@@ -300,7 +308,8 @@ void CMainWindow::addPluginToListView( int id, QString txt )
 
 void CMainWindow::changeMenuAfterSelect()
 {
-	std::shared_ptr<CModel3D> obj = appApi().workspace().getCurrentModel();
+	CWorkspace* wksp = CWorkspace::instance();
+	std::shared_ptr<CModel3D> obj = wksp->_getModel(wksp->_getCurrentModelId());
 
 	if ( NULL == obj )
 	{
@@ -325,7 +334,7 @@ void CMainWindow::changeMenuAfterSelect()
 		ui.action_Model_ShowTexture->setChecked( obj->testOption( CModel3D::optRenderWithTexture ) );
 		ui.action_Model_Lock->setChecked( obj->isLocked() );
 		
-		ui.actionModelInSelection->setChecked(appApi().workspaceSelection().contains(obj->id()));
+		ui.actionModelInSelection->setChecked(wksp->isChecked(obj->id()));
 
 		ui.action_Model_ShowBB->setChecked( obj->DrawBB() );
 		

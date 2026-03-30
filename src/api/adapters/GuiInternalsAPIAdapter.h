@@ -1,59 +1,39 @@
 #pragma once
 
 #include "../interfaces/IGuiInternalsAPI.h"
-#include "../../gui/MainWindow.h"
-#include "../../gui/DockWidgetPluginPanel.h"
-#include "../../gui/DockWidgetWorkspace.h"
-#include "../../gui/GLViewer.h"
-#include "../../gui/ProgressIndicator.h"
-#include "../../gui/WorkspaceDockHostAccess.h"
+#include "../../core/GuiInternalsManager.h"
 
 class GuiInternalsAPIAdapter : public IGuiInternalsAPI {
 public:
     CMainWindow* mainWindow() override {
-        return CMainWindow::instance();
+        return GuiInternalsManager::mainWindow();
     }
 
     DockWidgetWorkspace* workspaceDock() override {
-        if (auto win = CMainWindow::instance()) {
-            return win->dockWorkspace;
-        }
-        return nullptr;
+        return GuiInternalsManager::workspaceDock();
     }
 
     DockWidgetPluginPanel* pluginPanelHost() override {
-        if (auto win = CMainWindow::instance()) {
-            return win->dockPluginPanel;
-        }
-        return nullptr;
+        return GuiInternalsManager::pluginPanelHost();
     }
 
     GLViewer* currentViewer() override {
-        if (auto win = CMainWindow::instance()) {
-            return win->currentViewer();
-        }
-        return nullptr;
+        return GuiInternalsManager::currentViewer();
     }
 
     ProgressIndicator* progressIndicator() override {
-        if (auto win = CMainWindow::instance()) {
-            return win->progressIndicator;
-        }
-        return nullptr;
+        return GuiInternalsManager::progressIndicator();
     }
 
     CTransform* currentCameraTransform() override {
-        if (auto viewer = currentViewer()) {
-            return &viewer->transform();
-        }
-        return nullptr;
+        return GuiInternalsManager::currentCameraTransform();
     }
 
     QVector<std::shared_ptr<CBaseObject>> selectedWorkspaceObjects() override {
-        return WorkspaceDockHostAccess::selectedObjects();
+        return GuiInternalsManager::selectedWorkspaceObjects();
     }
 
     std::shared_ptr<CBaseObject> currentWorkspaceItem() override {
-        return WorkspaceDockHostAccess::currentItem();
+        return GuiInternalsManager::currentWorkspaceItem();
     }
 };
