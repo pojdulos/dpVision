@@ -16,3 +16,4 @@ architecture.
 - [API Refactor Checklist](../API_REFACTOR_CHECKLIST.md)
 - [AP Isolation Plan](../AP_ISOLATION_PLAN.md)
 - [GUI Isolation Audit](../GUI_ISOLATION_AUDIT.md)
+- [Workspace Event Origin Proposal](../WORKSPACE_EVENT_ORIGIN_PROPOSAL.md)
