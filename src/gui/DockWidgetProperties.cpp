@@ -34,6 +34,8 @@
 #include <QLayout>
 #include <QScrollArea>
 #include <QAbstractSpinBox>
+#include <QApplication>
+#include <QLineEdit>
 
 #include "Model3D.h"
 
@@ -71,6 +73,57 @@ namespace
 			if (spinBox != nullptr)
 			{
 				spinBox->setKeyboardTracking(false);
+			}
+		}
+	}
+
+	struct FocusRestoreState
+	{
+		QPointer<QWidget> widget;
+		int cursorPosition = -1;
+		int selectionStart = -1;
+		int selectionLength = 0;
+	};
+
+	FocusRestoreState captureFocusState(QWidget* scope)
+	{
+		FocusRestoreState state;
+		QWidget* focused = QApplication::focusWidget();
+		if (focused == nullptr || scope == nullptr || !scope->isAncestorOf(focused))
+		{
+			return state;
+		}
+
+		state.widget = focused;
+
+		if (auto* lineEdit = qobject_cast<QLineEdit*>(focused))
+		{
+			state.cursorPosition = lineEdit->cursorPosition();
+			state.selectionStart = lineEdit->selectionStart();
+			state.selectionLength = lineEdit->selectedText().size();
+		}
+
+		return state;
+	}
+
+	void restoreFocusState(const FocusRestoreState& state)
+	{
+		if (state.widget == nullptr || !state.widget->isVisible() || !state.widget->isEnabled())
+		{
+			return;
+		}
+
+		state.widget->setFocus(Qt::OtherFocusReason);
+
+		if (auto* lineEdit = qobject_cast<QLineEdit*>(state.widget.data()))
+		{
+			if (state.selectionStart >= 0 && state.selectionLength > 0)
+			{
+				lineEdit->setSelection(state.selectionStart, state.selectionLength);
+			}
+			else if (state.cursorPosition >= 0)
+			{
+				lineEdit->setCursorPosition(state.cursorPosition);
 			}
 		}
 	}
@@ -217,6 +270,7 @@ void DockWidgetProperties::selectionChanged( int id )
 
 void DockWidgetProperties::updateProperties()
 {
+	const FocusRestoreState focusState = captureFocusState(ui.tree);
 	QRegularExpression rx("prop");
 	QWidgetList children = ui.tree->findChildren<QWidget*>(rx);// , Qt::FindDirectChildrenOnly);
 
@@ -224,6 +278,7 @@ void DockWidgetProperties::updateProperties()
 	{
 		((PropWidget*)kid)->updateProperties();
 	}
+	restoreFocusState(focusState);
 }
 
 #include <QTreeWidget>

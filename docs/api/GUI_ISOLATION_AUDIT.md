@@ -83,6 +83,9 @@ The current model is:
 - the dock now keeps its own selected-object context across object-state
   refreshes, so child/custom property widgets do not fall back to viewer
   properties just because `_getCurrentModelId()` tracks only top-level models
+- object-state refreshes in the dock now preserve the active editor focus
+  inside the existing widget tree instead of treating each workspace feedback
+  event as a reason to drop the current property edit session
 
 The main architectural point is classification, not replacement:
 
