@@ -120,6 +120,8 @@ Use `sample_data/` and keep fixtures versioned:
 3. save-load-save roundtrip for supported workspace formats does not lose
    critical metadata
 4. invalid or truncated sample files fail with controlled error handling
+5. oversized DICOM stacks fail with a controlled error instead of process
+   termination caused by memory pressure
 
 ### `tests/integration/plugins`
 

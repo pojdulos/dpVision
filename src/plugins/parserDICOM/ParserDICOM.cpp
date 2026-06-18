@@ -1,7 +1,10 @@
 #include "ParserDICOM.h"
 #include "Utilities.h"
 
+#include <cmath>
 #include <fstream>
+#include <iomanip>
+#include <limits>
 #include <sstream>
 
 #include "Image.h"
@@ -14,6 +17,13 @@
 //#include <QMessageLogger>
 
 namespace {
+/**
+ * Safety cap for the in-memory voxel buffer built by the current importer.
+ * The current Volumetric representation stores one 32-bit value per voxel,
+ * so large DICOM series can terminate the process due to memory pressure.
+ */
+constexpr std::uint64_t kMaxImportedVolumeBytes = 1536ull * 1024ull * 1024ull;
+
 StatusBarAPIAdapter& statusBarApi()
 {
     static StatusBarAPIAdapter api;
@@ -30,6 +40,130 @@ MessageBoxAPIAdapter& messageBoxApi()
 {
     static MessageBoxAPIAdapter api;
     return api;
+}
+
+/**
+ * Enables verbose DICOM tag tracing only when explicitly requested.
+ */
+bool shouldTraceDicomTags()
+{
+	return qEnvironmentVariableIsSet("DPVISION_DICOM_TRACE_TAGS");
+}
+
+/**
+ * Emits a consistent diagnostic marker for the DICOM import pipeline.
+ */
+void logDicomRunPhase(const QString& phase)
+{
+	qInfo() << "[DICOM][Run]" << phase;
+}
+
+/**
+ * Formats a byte count into a short human-readable string.
+ */
+std::string formatBytes(std::uint64_t bytes)
+{
+	constexpr std::uint64_t kib = 1024ull;
+	constexpr std::uint64_t mib = kib * 1024ull;
+	constexpr std::uint64_t gib = mib * 1024ull;
+
+	std::ostringstream stream;
+	stream << std::fixed << std::setprecision(2);
+
+	if (bytes >= gib) {
+		stream << (static_cast<double>(bytes) / static_cast<double>(gib)) << " GiB";
+	}
+	else if (bytes >= mib) {
+		stream << (static_cast<double>(bytes) / static_cast<double>(mib)) << " MiB";
+	}
+	else if (bytes >= kib) {
+		stream << (static_cast<double>(bytes) / static_cast<double>(kib)) << " KiB";
+	}
+	else {
+		stream << bytes << " B";
+	}
+
+	return stream.str();
+}
+
+/**
+ * Estimates the persistent voxel buffer size for the imported volume.
+ */
+std::uint64_t estimateImportedVolumeBytes(std::uint64_t rows, std::uint64_t columns, std::uint64_t layers)
+{
+	return rows * columns * layers * sizeof(Volumetric::VoxelType);
+}
+
+/**
+ * Prevents imports that are larger than the current in-memory representation
+ * can safely handle.
+ */
+bool validateImportFootprint(std::uint64_t rows, std::uint64_t columns, std::uint64_t layers)
+{
+	if (rows == 0 || columns == 0 || layers == 0) {
+		messageBoxApi().error("DICOM import aborted: invalid volume dimensions.");
+		return false;
+	}
+
+	const std::uint64_t maxVoxelCount = std::numeric_limits<std::uint64_t>::max() / sizeof(Volumetric::VoxelType);
+	if (rows > maxVoxelCount / columns || rows * columns > maxVoxelCount / layers) {
+		messageBoxApi().error("DICOM import aborted: volume dimensions overflow.");
+		return false;
+	}
+
+	const std::uint64_t estimatedBytes = estimateImportedVolumeBytes(rows, columns, layers);
+	if (estimatedBytes > kMaxImportedVolumeBytes) {
+		const std::string details =
+			"DICOM import warning: estimated in-memory volume size is " + formatBytes(estimatedBytes) +
+			", which exceeds the current safety threshold of " + formatBytes(kMaxImportedVolumeBytes) +
+			". Import will continue.";
+		qWarning() << QString::fromStdString(details);
+	}
+
+	return true;
+}
+
+/**
+ * Backfills slice spacing from ImagePositionPatient when SliceThickness is
+ * missing in a multi-file series.
+ */
+void inferSliceSpacingFromImagePosition(std::shared_ptr<Volumetric> volum)
+{
+	if (volum == nullptr || volum->metadata.size() < 2) {
+		return;
+	}
+
+	bool inferredAnySpacing = false;
+
+	for (size_t index = 1; index < volum->metadata.size(); ++index) {
+		const float previousZ = volum->metadata[index - 1].image_position_patient[2];
+		const float currentZ = volum->metadata[index].image_position_patient[2];
+		const float inferredSpacing = std::abs(currentZ - previousZ);
+
+		if (inferredSpacing <= 0.0f) {
+			continue;
+		}
+
+		if (volum->metadata[index - 1].slice_distance == 1.0f) {
+			volum->metadata[index - 1].slice_distance = inferredSpacing;
+			if (volum->metadata[index - 1].slice_thickness == 1.0f) {
+				volum->metadata[index - 1].slice_thickness = inferredSpacing;
+			}
+			inferredAnySpacing = true;
+		}
+
+		if (volum->metadata[index].slice_distance == 1.0f) {
+			volum->metadata[index].slice_distance = inferredSpacing;
+			if (volum->metadata[index].slice_thickness == 1.0f) {
+				volum->metadata[index].slice_thickness = inferredSpacing;
+			}
+			inferredAnySpacing = true;
+		}
+	}
+
+	if (inferredAnySpacing) {
+		qInfo() << "[DICOM] UzupeĹ‚niono slice_distance/slice_thickness z ImagePositionPatient[2].";
+	}
 }
 }
 
@@ -156,7 +290,7 @@ size_t CParserDICOM::parse_dicom_file(std::string dicomPath, uint16_t slide, Vol
 
 		try {
 			metadata.rescale_intercept = dataSet.getDouble(imebra::TagId(imebra::tagId_t::RescaleIntercept_0028_1052), 0);
-			metadata.rescale_slope = dataSet.getDouble(imebra::TagId(imebra::tagId_t::RescaleSlope_0028_1053), 1);
+			metadata.rescale_slope = dataSet.getDouble(imebra::TagId(imebra::tagId_t::RescaleSlope_0028_1053), 0);
 		}
 		catch (...)
 		{
@@ -273,6 +407,7 @@ long CParserDICOM::read_files(std::shared_ptr<Volumetric> volum, int nbOfFiles, 
 		}
 	}
 	progressApi().hide();
+	inferSliceSpacingFromImagePosition(volum);
 
 	if (failedFiles > 0) {
 		qWarning() << "Nie udało się wczytać " << failedFiles << " z " << nbOfFiles << " plików DICOM.";
@@ -343,7 +478,7 @@ long CParserDICOM::read_frames(std::shared_ptr<Volumetric> volum, imebra::DataSe
 
 	try {
 		metadata.rescale_intercept = dataSet.getDouble(imebra::TagId(imebra::tagId_t::RescaleIntercept_0028_1052), 0);
-		metadata.rescale_slope = dataSet.getDouble(imebra::TagId(imebra::tagId_t::RescaleSlope_0028_1053), 1);
+		metadata.rescale_slope = dataSet.getDouble(imebra::TagId(imebra::tagId_t::RescaleSlope_0028_1053), 0);
 	}
 	catch (...)
 	{
@@ -389,8 +524,11 @@ long CParserDICOM::read_frames(std::shared_ptr<Volumetric> volum, imebra::DataSe
 	return lbv;
 }
 
-#include <iomanip> // For std::setw, std::setfill
-
+/**
+ * Dumps DICOM tags for diagnostics while skipping large binary payloads.
+ * Value decoding is intentionally best-effort only because some datasets
+ * expose library-level issues when every tag is converted to text.
+ */
 void printTags(imebra::DataSet& dataSet0)
 {
 	auto tags0 = dataSet0.getTags();
@@ -404,19 +542,10 @@ void printTags(imebra::DataSet& dataSet0)
 			<< std::setw(4) << std::setfill('0') << t.getTagId()
 			<< std::dec << "): ";
 
-		std::string value = dataSet0.getString(t, 0, "{unknown value}");
-		int i = 1;
-		do
-		{
-			if (i > 9) break;
-			try {
-				value += ", " + dataSet0.getString(t, i++);
-			}
-			catch (...) {
-				break;
-			}
-		} while (true);
-
+		if (t.getGroupId() == 0x7fe0 && t.getTagId() == 0x0010) {
+			std::cout << "Pixel Data: [binary payload omitted]" << std::endl;
+			continue;
+		}
 
 		try {
 			name = imebra::DicomDictionary::getTagDescription(t);
@@ -425,7 +554,36 @@ void printTags(imebra::DataSet& dataSet0)
 			;
 		};
 
-		std::cout << name << ": " << value << std::endl;
+		std::cout << name;
+
+		try {
+			std::string value = dataSet0.getString(t, 0, "{unknown value}");
+			int i = 1;
+			do
+			{
+				if (i > 9) break;
+				try {
+					value += ", " + dataSet0.getString(t, i++);
+				}
+				catch (...) {
+					break;
+				}
+			} while (true);
+
+			if (value.size() > 256) {
+				value = value.substr(0, 256) + "...";
+			}
+
+			std::cout << ": " << value;
+		}
+		catch (const std::exception& e) {
+			std::cout << ": [value decode failed: " << e.what() << "]";
+		}
+		catch (...) {
+			std::cout << ": [value decode failed]";
+		}
+
+		std::cout << std::endl;
 	}
 }
 
@@ -472,6 +630,7 @@ int CParserDICOM::similarFilesExists(QString& first_file_path, QString& short_na
 size_t CParserDICOM::Run()
 {
 	if (this->bIsNotSet) return 0;
+	logDicomRunPhase("Start");
 
 	QString first_file = plikSiatki.absoluteFilePath();
 	QString last_file = plikSiatki.absoluteFilePath();
@@ -480,6 +639,7 @@ size_t CParserDICOM::Run()
 	QString short_name = "";
 
 	int nbOfFiles = similarFilesExists(first_file, short_name, last_file, first_number, last_number);
+	logDicomRunPhase("similarFilesExists returned");
 
 	qInfo() << "Liczba znalezionych plików: " << nbOfFiles;
 
@@ -491,12 +651,20 @@ size_t CParserDICOM::Run()
 	std::string shortName = short_name.toStdString();
 
 	std::cout << "czytam tagi z pierwszego pliku: " << plikSiatki.absoluteFilePathA() << std::endl;
+	logDicomRunPhase("Loading first dataset");
 	imebra::DataSet dataSet0 = imebra::CodecFactory::load(plikSiatki.absoluteFilePathA());
+	logDicomRunPhase("First dataset loaded");
 
-	printTags(dataSet0);
+	if (shouldTraceDicomTags()) {
+		logDicomRunPhase("Verbose tag trace enabled");
+		printTags(dataSet0);
+		logDicomRunPhase("Verbose tag trace finished");
+	}
 
 
+	logDicomRunPhase("Reading PhotometricInterpretation");
 	std::string photometric = dataSet0.getString(imebra::TagId(imebra::tagId_t::PhotometricInterpretation_0028_0004), 0);
+	qInfo() << "[DICOM][Run] PhotometricInterpretation =" << QString::fromStdString(photometric);
 
 	m_csp = Volumetric::ColorSpace::MONOCHROME2;
 
@@ -511,14 +679,19 @@ size_t CParserDICOM::Run()
 		return 0;
 	}
 
+	logDicomRunPhase("Reading PixelRepresentation");
 	int pixelRepresentation = dataSet0.getUnsignedLong(imebra::TagId(imebra::tagId_t::PixelRepresentation_0028_0103), 0);
+	logDicomRunPhase("Reading BitsAllocated");
 	int depth = dataSet0.getUnsignedLong(imebra::TagId(imebra::tagId_t::BitsAllocated_0028_0100), 0);
 
 	qInfo() << "pixelRepresentation: " << pixelRepresentation << " depth: " << depth;
 
 	/* ROZMIAR POJEDYNCZEGO PLASTRA */
+	logDicomRunPhase("Reading Rows");
 	int rows = dataSet0.getUnsignedLong(imebra::TagId(imebra::tagId_t::Rows_0028_0010), 0);
+	logDicomRunPhase("Reading Columns");
 	int columns = dataSet0.getUnsignedLong(imebra::TagId(imebra::tagId_t::Columns_0028_0011), 0);
+	qInfo() << "[DICOM][Run] Rows =" << rows << "Columns =" << columns;
 
 
 	/* SPRAWDZAM KOLEJNOŚĆ PLASTRÓW */
@@ -526,19 +699,25 @@ size_t CParserDICOM::Run()
 	double sliceLocation0 = 0.0;
 
 	try {
+		logDicomRunPhase("Reading first slice ImagePositionPatient");
 		sliceLocation0 = dataSet0.getDouble(imebra::TagId(imebra::tagId_t::ImagePositionPatient_0020_0032), 2);
+		qInfo() << "[DICOM][Run] First slice location from ImagePositionPatient =" << sliceLocation0;
 	}
 	catch (...)
 	{
 		try {
+			logDicomRunPhase("Reading first slice SliceLocation fallback");
 			sliceLocation0 = dataSet0.getDouble(imebra::TagId(imebra::tagId_t::SliceLocation_0020_1041), 0);
+			qInfo() << "[DICOM][Run] First slice location from SliceLocation =" << sliceLocation0;
 		}
 		catch (...) {}
 	}
 
 
+	logDicomRunPhase("Allocating Volumetric wrapper");
 	std::shared_ptr<Volumetric> volum = std::make_shared<Volumetric>(m_csp);
 	volum->setLabel("dicom file");
+	logDicomRunPhase("Volumetric wrapper ready");
 
 	if (singleFile)
 	{
@@ -546,13 +725,20 @@ size_t CParserDICOM::Run()
 
 		uint32_t nbOfFrames = 1;
 		try {
+			logDicomRunPhase("Reading NumberOfFrames");
 			nbOfFrames = dataSet0.getUnsignedLong(imebra::TagId(imebra::tagId_t::NumberOfFrames_0028_0008), 0);
 
 			qInfo() << "-- Liczba warstw: " << nbOfFrames << Qt::endl;
 		}
 		catch (...) {};
 
+		if (!validateImportFootprint(static_cast<std::uint64_t>(rows), static_cast<std::uint64_t>(columns), static_cast<std::uint64_t>(nbOfFrames))) {
+			return 0;
+		}
+
+		logDicomRunPhase("Calling read_frames");
 		read_frames(volum, dataSet0, nbOfFrames);
+		logDicomRunPhase("read_frames finished");
 	}
 	else
 	{
@@ -560,23 +746,36 @@ size_t CParserDICOM::Run()
 
 		std::cout << "czytam tagi z ostatniego pliku: " << lastPath << std::endl;
 
+		logDicomRunPhase("Loading last dataset");
 		imebra::DataSet dataSet1 = imebra::CodecFactory::load(lastPath);
+		logDicomRunPhase("Last dataset loaded");
 		auto tags1 = dataSet1.getTags();
+		qInfo() << "[DICOM][Run] Last dataset tag count =" << static_cast<int>(tags1.size());
 
 		double sliceLocation1 = std::stoi(lastNumber);
 		try {
+			logDicomRunPhase("Reading last slice ImagePositionPatient");
 			sliceLocation1 = dataSet1.getDouble(imebra::TagId(imebra::tagId_t::ImagePositionPatient_0020_0032), 2);
+			qInfo() << "[DICOM][Run] Last slice location from ImagePositionPatient =" << sliceLocation1;
 		}
 		catch (...)
 		{
 			try {
+				logDicomRunPhase("Reading last slice SliceLocation fallback");
 				sliceLocation1 = dataSet1.getDouble(imebra::TagId(imebra::tagId_t::SliceLocation_0020_1041), 0);
+				qInfo() << "[DICOM][Run] Last slice location from SliceLocation =" << sliceLocation1;
 			}
 			catch (...) {}
 		}
 
 		/* DOPIERO TU NAST�PI W�A�CIWE ODCZYTYWANIE DANYCH */
+		if (!validateImportFootprint(static_cast<std::uint64_t>(rows), static_cast<std::uint64_t>(columns), static_cast<std::uint64_t>(nbOfFiles))) {
+			return 0;
+		}
+
+		logDicomRunPhase("Calling read_files");
 		read_files(volum, nbOfFiles, plikSiatki.absolutePathA(), shortName, firstNumber, plikSiatki.suffixA());
+		logDicomRunPhase("read_files finished");
 
 		if (sliceLocation0 > sliceLocation1)
 		{
@@ -591,11 +790,13 @@ size_t CParserDICOM::Run()
 	volum->columns() = columns;
 
 	volum->adjustMinMax();
+	logDicomRunPhase("adjustMinMax finished");
 
 	//volum->m_minDisplWin = 600.0f;
 
 	m_model->addChild(m_model, volum);
 	m_model->importChildrenGeometry();
+	logDicomRunPhase("Import finished");
 
 	return volum->layers() * volum->rows() * volum->columns();
 }
