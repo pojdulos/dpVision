@@ -15,12 +15,10 @@
       }
     },
     {
-      "name": "windows-vs2022-system",
-      "displayName": "Windows VS2022 (system packages)",
-      "description": "Use Visual Studio 2022 and dependencies visible in the system.",
+      "name": "windows-system",
+      "displayName": "Windows (system packages)",
+      "description": "Use the default Windows generator and dependencies visible in the system.",
       "inherits": "base",
-      "generator": "Visual Studio 17 2022",
-      "architecture": "x64",
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
@@ -28,12 +26,10 @@
       }
     },
     {
-      "name": "windows-vs2022-vcpkg",
-      "displayName": "Windows VS2022 + vcpkg",
-      "description": "Use Visual Studio 2022 and dependencies from VCPKG_ROOT.",
+      "name": "windows-vcpkg",
+      "displayName": "Windows + vcpkg",
+      "description": "Use the default Windows generator and dependencies from VCPKG_ROOT.",
       "inherits": "base",
-      "generator": "Visual Studio 17 2022",
-      "architecture": "x64",
       "condition": {
         "type": "allOf",
         "conditions": [
@@ -54,12 +50,10 @@
       }
     },
     {
-      "name": "windows-vs2022-vcpkg-local",
-      "displayName": "Windows VS2022 + local vcpkg",
-      "description": "Use Visual Studio 2022 and dependencies from E:/vcpkg.",
+      "name": "windows-vcpkg-local",
+      "displayName": "Windows + local vcpkg",
+      "description": "Use the default Windows generator and dependencies from E:/vcpkg.",
       "inherits": "base",
-      "generator": "Visual Studio 17 2022",
-      "architecture": "x64",
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
@@ -109,34 +103,40 @@
   ],
   "buildPresets": [
     {
-      "name": "windows-vs2022-system-debug",
-      "configurePreset": "windows-vs2022-system",
-      "configuration": "Debug"
+      "name": "windows-system-debug",
+      "configurePreset": "windows-system",
+      "configuration": "Debug",
+      "jobs": 8
     },
     {
-      "name": "windows-vs2022-system-release",
-      "configurePreset": "windows-vs2022-system",
-      "configuration": "Release"
+      "name": "windows-system-release",
+      "configurePreset": "windows-system",
+      "configuration": "Release",
+      "jobs": 8
     },
     {
-      "name": "windows-vs2022-vcpkg-debug",
-      "configurePreset": "windows-vs2022-vcpkg",
-      "configuration": "Debug"
+      "name": "windows-vcpkg-debug",
+      "configurePreset": "windows-vcpkg",
+      "configuration": "Debug",
+      "jobs": 8
     },
     {
-      "name": "windows-vs2022-vcpkg-release",
-      "configurePreset": "windows-vs2022-vcpkg",
-      "configuration": "Release"
+      "name": "windows-vcpkg-release",
+      "configurePreset": "windows-vcpkg",
+      "configuration": "Release",
+      "jobs": 8
     },
     {
-      "name": "windows-vs2022-vcpkg-local-debug",
-      "configurePreset": "windows-vs2022-vcpkg-local",
-      "configuration": "Debug"
+      "name": "windows-vcpkg-local-debug",
+      "configurePreset": "windows-vcpkg-local",
+      "configuration": "Debug",
+      "jobs": 8
     },
     {
-      "name": "windows-vs2022-vcpkg-local-release",
-      "configurePreset": "windows-vs2022-vcpkg-local",
-      "configuration": "Release"
+      "name": "windows-vcpkg-local-release",
+      "configurePreset": "windows-vcpkg-local",
+      "configuration": "Release",
+      "jobs": 8
     },
     {
       "name": "linux-ninja-system",
@@ -149,8 +149,8 @@
   ],
   "testPresets": [
     {
-      "name": "windows-vs2022-vcpkg-local-debug-tests",
-      "configurePreset": "windows-vs2022-vcpkg-local",
+      "name": "windows-vcpkg-local-debug-tests",
+      "configurePreset": "windows-vcpkg-local",
       "configuration": "Debug",
       "output": {
         "outputOnFailure": true
@@ -161,8 +161,8 @@
       }
     },
     {
-      "name": "windows-vs2022-vcpkg-local-debug-api-tests",
-      "inherits": "windows-vs2022-vcpkg-local-debug-tests",
+      "name": "windows-vcpkg-local-debug-api-tests",
+      "inherits": "windows-vcpkg-local-debug-tests",
       "filter": {
         "include": {
           "name": "dpVisionApiTests"
@@ -170,8 +170,8 @@
       }
     },
     {
-      "name": "windows-vs2022-vcpkg-local-release-tests",
-      "configurePreset": "windows-vs2022-vcpkg-local",
+      "name": "windows-vcpkg-local-release-tests",
+      "configurePreset": "windows-vcpkg-local",
       "configuration": "Release",
       "output": {
         "outputOnFailure": true

@@ -47,13 +47,24 @@ find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets OpenGL Xml Network)
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS})
 
-get_target_property(QT5_CORE_IMPORTED_LOCATION Qt5::Core IMPORTED_LOCATION_RELEASE)
-if(NOT QT5_CORE_IMPORTED_LOCATION)
-    get_target_property(QT5_CORE_IMPORTED_LOCATION Qt5::Core IMPORTED_LOCATION)
+get_target_property(QT5_CORE_IMPORTED_LOCATION_RELEASE Qt5::Core IMPORTED_LOCATION_RELEASE)
+if(NOT QT5_CORE_IMPORTED_LOCATION_RELEASE)
+    get_target_property(QT5_CORE_IMPORTED_LOCATION_RELEASE Qt5::Core IMPORTED_LOCATION)
 endif()
-get_filename_component(QT_RUNTIME_BIN_DIR "${QT5_CORE_IMPORTED_LOCATION}" DIRECTORY)
-get_filename_component(QT_RUNTIME_ROOT "${QT_RUNTIME_BIN_DIR}" DIRECTORY)
-set(QT_PLUGIN_DIR "${QT_RUNTIME_ROOT}/plugins")
+get_target_property(QT5_CORE_IMPORTED_LOCATION_DEBUG Qt5::Core IMPORTED_LOCATION_DEBUG)
+if(NOT QT5_CORE_IMPORTED_LOCATION_DEBUG)
+    set(QT5_CORE_IMPORTED_LOCATION_DEBUG "${QT5_CORE_IMPORTED_LOCATION_RELEASE}")
+endif()
+
+get_filename_component(QT_RELEASE_RUNTIME_BIN_DIR "${QT5_CORE_IMPORTED_LOCATION_RELEASE}" DIRECTORY)
+get_filename_component(QT_RELEASE_RUNTIME_ROOT "${QT_RELEASE_RUNTIME_BIN_DIR}" DIRECTORY)
+get_filename_component(QT_DEBUG_RUNTIME_BIN_DIR "${QT5_CORE_IMPORTED_LOCATION_DEBUG}" DIRECTORY)
+get_filename_component(QT_DEBUG_RUNTIME_ROOT "${QT_DEBUG_RUNTIME_BIN_DIR}" DIRECTORY)
+
+# vcpkg keeps debug Qt plugins below debug/plugins and release plugins below plugins.
+set(QT_PLUGIN_DIR
+    "$<IF:$<CONFIG:Debug>,${QT_DEBUG_RUNTIME_ROOT}/plugins,${QT_RELEASE_RUNTIME_ROOT}/plugins>"
+)
 
 qt5_add_resources(DPVISION_EXE_QRC ${PROJECT_SOURCE_DIR}/gui/${EXE_NAME}.qrc)
 
@@ -126,6 +137,10 @@ if(WIN32)
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${CMAKE_CURRENT_BINARY_DIR}/qt.conf"
             "$<TARGET_FILE_DIR:${EXE_NAME}>/qt.conf"
+        COMMAND ${CMAKE_COMMAND} -E remove_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/platforms"
+        COMMAND ${CMAKE_COMMAND} -E remove_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/imageformats"
+        COMMAND ${CMAKE_COMMAND} -E remove_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/styles"
+        COMMAND ${CMAKE_COMMAND} -E remove_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/bearer"
         COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/platforms"
         COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/imageformats"
         COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${EXE_NAME}>/styles"
