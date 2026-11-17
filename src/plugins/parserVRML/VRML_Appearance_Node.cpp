@@ -36,13 +36,13 @@ void CParserWRL::VRML_ParseNode_Appearance( FILE *plik )
 				fscanf( plik, " %s { ", bufor );
 				if ( strstr( bufor, "ImageTexture" ) )
 				{
-					fscanf( plik, " url ", bufor );
+					fscanf( plik, " url " );
 
 					// uwaga - nawias prostok�tny czasem jest a czasem go nie ma !!!
-					fscanf( plik, " [ ", bufor );
+					fscanf( plik, " [ " );
 					
 					// cudzys��w raczej zawsze jest
-					fscanf( plik, " \" ", bufor );
+					fscanf( plik, " \" " );
 					
 					int i = -1;
 					do
@@ -57,7 +57,7 @@ void CParserWRL::VRML_ParseNode_Appearance( FILE *plik )
 					pMeshData->getMaterial().TexInfo = QString( bufor );
 
 					// uwaga - nawias prostok�tny czasem jest a czasem go nie ma !!!
-					fscanf( plik, " ] ", bufor );
+					fscanf( plik, " ] " );
 					VRML_IgnoreNode( plik, '{', '}' );
 				}
 			}

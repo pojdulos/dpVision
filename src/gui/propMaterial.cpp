@@ -1,12 +1,24 @@
 #include "propMaterial.h"
 #include "PointCloud.h"
-#include "../api/UI.h"
+
+#include "../core/Workspace.h"
 
 #include <QColorDialog>
 #include <QPushButton>
 #include <QVBoxLayout>
 
 bool PropMaterial::group_visible = true;
+
+namespace
+{
+	void notifyMaterialChanged(CBaseObject* obj)
+	{
+		if (obj != nullptr)
+		{
+			CWorkspace::instance()->notifyObjectStateChanged(obj->id());
+		}
+	}
+}
 
 PropMaterial::PropMaterial(CBaseObject *mesh, QWidget *parent) : PropWidget( parent )
 {
@@ -78,7 +90,6 @@ void PropMaterial::updateProperties()
 
 		ui.checkShow->setEnabled(((CPointCloud*)obj)->hasVertexColors());
 		ui.checkShow->setToolTip("Use this checkbox to hide original vertex colors and use selected material.\nIf your model has a texture instead of vertex colors, the checkbox is grayed.\nYou should to hide the texture (menu or key \"T\") to use the material.");
-		//ui.checkShow->setToolTip(AP::::GetResourceString(IDS_PROP_MATERIAL_CHECK));
 		
 		ui.checkShow->blockSignals(false);
 }
@@ -97,7 +108,7 @@ void PropMaterial::rValueChanged(int r)
 	ui.colorButton->setStyleSheet("background-color: " + cs + ";");
 	ui.colorButton->setText(cs);
 
-	UI::updateAllViews();
+	notifyMaterialChanged(obj);
 }
 
 void PropMaterial::gValueChanged(int g)
@@ -115,7 +126,7 @@ void PropMaterial::gValueChanged(int g)
 	ui.colorButton->setText(cs);
 
 
-	UI::updateAllViews();
+	notifyMaterialChanged(obj);
 }
 
 void PropMaterial::bValueChanged(int b)
@@ -132,7 +143,7 @@ void PropMaterial::bValueChanged(int b)
 	ui.colorButton->setStyleSheet("background-color: " + cs + ";");
 	ui.colorButton->setText(cs);
 
-	UI::updateAllViews();
+	notifyMaterialChanged(obj);
 }
 
 void PropMaterial::aValueChanged(int a)
@@ -150,7 +161,7 @@ void PropMaterial::aValueChanged(int a)
 	ui.colorButton->setText(cs);
 	//ui.colorButton->setStyleSheet("background-color: " + cs + ";");
 
-	UI::updateAllViews();
+	notifyMaterialChanged(obj);
 }
 
 void PropMaterial::rgbaTextChanged(QString s)
@@ -162,7 +173,7 @@ void PropMaterial::rgbaTextChanged(QString s)
 
 	updateSliders(c.red(), c.green(), c.blue(), c.alpha());
 
-	UI::updateAllViews();
+	notifyMaterialChanged(obj);
 }
 
 void PropMaterial::meshColorChanged(QColor c)
@@ -175,7 +186,7 @@ void PropMaterial::meshColorChanged(QColor c)
 		updateSliders(c.red(), c.green(), c.blue(), c.alpha());
 		updateEditBox(c.red(), c.green(), c.blue(), c.alpha());
 
-		UI::updateAllViews();
+		notifyMaterialChanged(obj);
 	}
 }
 
@@ -206,6 +217,6 @@ void PropMaterial::onColorButton()
 void PropMaterial::checkShowClicked(int i)
 {
 	((CPointCloud*)obj)->getMaterial(0).m_force = i!=0;
-	UI::updateAllViews();
+	notifyMaterialChanged(obj);
 }
 

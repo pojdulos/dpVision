@@ -1,8 +1,8 @@
 #include "MainWindow.h"
 
-#include "../api/AP.h"
 #include "MainApplication.h"
 #include "Model3D.h"
+#include "../core/Workspace.h"
 
 //#include <QtWidgets/QMainWindow>
 //#include <QtWidgets/QProgressBar>
@@ -20,6 +20,7 @@
 #include "DockWidgetPluginPanel.h"
 #include "DockWidgetHistogram.h"
 #include "DockWidgetImageViewer.h"
+#include "ImageViewerHost.h"
 
 
 #include "GLViewer.h"
@@ -31,9 +32,22 @@
 #include "ProgressIndicator.h"
 #include "StatusBarManager.h"
 #include "MessageBoxManager.h"
+#include "../core/AppStateManager.h"
+#include "../core/CameraControlManager.h"
+#include "../core/GuiInternalsManager.h"
+#include "../core/HistogramDockManager.h"
+#include "../core/PluginPanelManager.h"
+#include "../core/WorkspacePanelManager.h"
+#include "adapters/QtCameraControlAdapter.h"
+#include "adapters/QtGuiInternalsAdapter.h"
 #include "adapters/QtStatusBarAdapter.h"
+#include "adapters/QtAppStateAdapter.h"
+#include "adapters/QtHistogramDockAdapter.h"
 #include "adapters/QtMessageBoxAdapter.h"
+#include "adapters/QtPluginPanelAdapter.h"
 #include "adapters/QtProgressAdapter.h"
+#include "adapters/QtWorkspacePanelAdapter.h"
+
 #include "events/QtWorkspaceEvents.h"
 
 void restoreDockGeometry(QDockWidget* dock)
@@ -47,7 +61,7 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
 
-	//// Usuni�cie domy�lnego paska tytu�owego
+	//// Usuniďż˝cie domyďż˝lnego paska tytuďż˝owego
 	//setWindowFlags(Qt::FramelessWindowHint);
 
 	//// Tworzenie niestandardowego TitleBar
@@ -56,21 +70,21 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 	//titleBar->raise();
 	//titleBar->show();
 
-	//// Widget kontenerowy dla ca�ego uk�adu
+	//// Widget kontenerowy dla caďż˝ego ukďż˝adu
 	//QWidget* container = new QWidget();
 
-	//// Nowy uk�ad g��wny okna
+	//// Nowy ukďż˝ad gďż˝ďż˝wny okna
 	//QVBoxLayout* mainLayout = new QVBoxLayout();
 	//mainLayout->setMargin(0);
 	//mainLayout->setSpacing(0);
 
-	//// Dodanie TitleBar na samej g�rze
+	//// Dodanie TitleBar na samej gďż˝rze
 	//mainLayout->addWidget(titleBar);
 
 	//// Dodanie centralnego widgetu z Qt Designer
 	//mainLayout->addWidget(ui.centralWidget);
 
-	//// Ustawienie nowego uk�adu jako uk�ad g��wny
+	//// Ustawienie nowego ukďż˝adu jako ukďż˝ad gďż˝ďż˝wny
 	//container->setLayout(mainLayout);
 	//setCentralWidget(container);
 
@@ -122,6 +136,12 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 
 	StatusBarManager::setListener(new QtStatusBarAdapter(statusBar()));
 	MessageBoxManager::setListener(new QtMessageBoxAdapter());
+	AppStateManager::setListener(new QtAppStateAdapter(this));
+	CameraControlManager::setListener(new QtCameraControlAdapter());
+	GuiInternalsManager::setListener(new QtGuiInternalsAdapter());
+	HistogramDockManager::setListener(new QtHistogramDockAdapter(this));
+	PluginPanelManager::setListener(new QtPluginPanelAdapter(this));
+	WorkspacePanelManager::setListener(new QtWorkspacePanelAdapter(this));
 
 	this->progressIndicator = new ProgressIndicator(this->statusBar());
 	//this->progressIndicator->setMaximumHeight(16);
@@ -133,7 +153,7 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 	IProgressListener::setDefault(std::make_shared<QtProgressAdapter>(this->progressIndicator));
 
 	this->dockWorkspace->rebuildTree();
-	this->dockWorkspace->selectItem(NO_CURRENT_MODEL); // -1 = �aden nie zaznaczony
+	this->dockWorkspace->selectItem(NO_CURRENT_MODEL); // -1 = ďż˝aden nie zaznaczony
 
 	createRecentActions();
 	createRecentMenus();
@@ -149,6 +169,10 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 	connect(wkspEvents.get(), SIGNAL(objectActivatedSignal(int)), dockWorkspace, SLOT(onWorkspaceObjectActivated(int)));
 	connect(wkspEvents.get(), SIGNAL(objectActivatedSignal(int)), dockProperties, SLOT(onWorkspaceObjectActivated(int)));
 
+	connect(wkspEvents.get(), SIGNAL(objectStateChangedSignal(int)), this, SLOT(onWorkspaceObjectStateChanged(int)));
+	connect(wkspEvents.get(), SIGNAL(objectStateChangedSignal(int)), dockWorkspace, SLOT(onWorkspaceObjectStateChanged(int)));
+	connect(wkspEvents.get(), SIGNAL(objectStateChangedSignal(int)), dockProperties, SLOT(onWorkspaceObjectStateChanged(int)));
+
 	connect(wkspEvents.get(), SIGNAL(objectRemovedSignal(int)), this, SLOT(onWorkspaceObjectRemoved(int)));
 	connect(wkspEvents.get(), SIGNAL(objectRemovedSignal(int)), dockWorkspace, SLOT(onWorkspaceObjectRemoved(int)));
 	connect(wkspEvents.get(), SIGNAL(objectRemovedSignal(int)), dockProperties, SLOT(onWorkspaceObjectRemoved(int)));
@@ -156,10 +180,14 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)
 	connect(wkspEvents.get(), SIGNAL(objectAddedSignal(int)), this, SLOT(onWorkspaceObjectAdded(int)));
 	connect(wkspEvents.get(), SIGNAL(objectAddedSignal(int)), dockWorkspace, SLOT(onWorkspaceObjectAdded(int)));
 
+	connect(wkspEvents.get(), SIGNAL(structureChangedSignal()), this, SLOT(onWorkspaceStructureChanged()));
+	connect(wkspEvents.get(), SIGNAL(structureChangedSignal()), dockWorkspace, SLOT(onWorkspaceStructureChanged()));
+	connect(wkspEvents.get(), SIGNAL(structureChangedSignal()), dockProperties, SLOT(onWorkspaceStructureChanged()));
+
 
 	connect(ui.mdiArea, &QMdiArea::subWindowActivated, this, [this](QMdiSubWindow* window) {
 		if (window != nullptr) {
-			lastActiveWindow = window;  // Przechowuj wska�nik jako QPointer
+			lastActiveWindow = window;  // Przechowuj wskaďż˝nik jako QPointer
 		}
 		});
 }
@@ -269,8 +297,7 @@ void CMainWindow::updateView(bool repaintAll, bool buffered)
 		}
 	}
 
-	//QCoreApplication::processEvents();
-	AP::processEvents();
+	QCoreApplication::processEvents();
 }
 
 void CMainWindow::addPluginToListView( int id, QString txt )
@@ -281,7 +308,8 @@ void CMainWindow::addPluginToListView( int id, QString txt )
 
 void CMainWindow::changeMenuAfterSelect()
 {
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	CWorkspace* wksp = CWorkspace::instance();
+	std::shared_ptr<CModel3D> obj = wksp->_getModel(wksp->_getCurrentModelId());
 
 	if ( NULL == obj )
 	{
@@ -294,7 +322,7 @@ void CMainWindow::changeMenuAfterSelect()
 		ui.menuModel->menuAction()->setVisible(false);
 
 		ui.menuImage->menuAction()->setVisible(true);
-		ui.action_ImageFit->setChecked(((CImage*)obj.get())->fitToWindow);
+		ui.action_ImageFit->setChecked(ImageViewerHost::fitToWindow(obj->id()));
 
 		ui.action_File_SaveAs->setEnabled(true);
 	}
@@ -306,7 +334,7 @@ void CMainWindow::changeMenuAfterSelect()
 		ui.action_Model_ShowTexture->setChecked( obj->testOption( CModel3D::optRenderWithTexture ) );
 		ui.action_Model_Lock->setChecked( obj->isLocked() );
 		
-		ui.actionModelInSelection->setChecked( AP::WORKSPACE::SELECTION::isModelSelected(obj->id() ) );
+		ui.actionModelInSelection->setChecked(wksp->isChecked(obj->id()));
 
 		ui.action_Model_ShowBB->setChecked( obj->DrawBB() );
 		
@@ -386,69 +414,22 @@ void CMainWindow::activateGLViewerInstance()
 
 QMdiSubWindow* CMainWindow::getPicViewerInstance(int id)
 {
-	auto lista = ui.mdiArea->subWindowList();
-
-	foreach(QMdiSubWindow * window, lista)
-	{
-		MdiChild* child = (MdiChild*)window->widget();
-
-		if (child != nullptr)
-		{
-			if (child->hasType(MdiChild::Type::Pic))
-			{
-				PicViewer* pic = qobject_cast<PicViewer*>(child->m_widget);
-				if (pic->id() == id)
-				{
-					return window;
-				}
-			}
-		}
-
-	}
-
-	return nullptr;
+	return ImageViewerHost::instance(id);
 }
 
 void CMainWindow::activatePicViewerInstance(int id)
 {
-	QMdiSubWindow* window = getPicViewerInstance(id);
-
-	if (window != nullptr)
-	{
-		ui.mdiArea->setActiveSubWindow(window);
-	}
-	else
-	{
-		ui.mdiArea->setActiveSubWindow(MdiChild::create((CImage*)AP::WORKSPACE::getModel(id).get(), ui.mdiArea));
-	}
+	ImageViewerHost::activateOrOpen(id);
 }
 
 void CMainWindow::closePicViewers(int id)
 {
-		auto lista = ui.mdiArea->subWindowList();
-
-		foreach(QMdiSubWindow * window, lista)
-		{
-			MdiChild* child = (MdiChild*)window->widget();
-
-			if (child != nullptr)
-			{
-				if (child->hasType(MdiChild::Type::Pic))
-				{
-					PicViewer* pic = qobject_cast<PicViewer*>(child->m_widget);
-					if (pic->id() == id)
-					{
-						window->close();
-					}
-				}
-			}
-
-		}
+	ImageViewerHost::closeAll(id);
 }
 
 void CMainWindow::createPicViewer(CImage* im)
 {
-	MdiChild::create(im, ui.mdiArea)->show();
+	ImageViewerHost::open(im);
 }
 
 

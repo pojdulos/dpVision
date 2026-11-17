@@ -83,9 +83,9 @@ private:
 
 public:
 	// tu inkrenentacja licznika klatek;
-	void renderFrame(); // rysowanie bie¿¹cej klatki
-	void renderRotationAxe(CTransform t, CTransform prev = CTransform());
 };
 
 
 #endif /* _MOVEMENT_H_BY_DP_INCLUDED_ */
+
+

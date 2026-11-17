@@ -3,7 +3,7 @@
 #include <memory>
 #include "dll_global.h"
 
-class DPVISION_EXPORT IProgressListener {
+class IProgressListener {
 public:
     virtual ~IProgressListener() = default;
     virtual void init(int min, int max, int val, std::string text = "") = 0;
@@ -13,9 +13,9 @@ public:
 
     virtual void useCancelButton(std::function<void()> onCancel) {}
 
-    static void setDefault(std::shared_ptr<IProgressListener> l) { defaultListener_ = l; }
-    static std::shared_ptr<IProgressListener> getDefault() { return defaultListener_; }
+    static void setDefault(std::shared_ptr<IProgressListener> l) { defaultListenerRef() = std::move(l); }
+    static std::shared_ptr<IProgressListener> getDefault() { return defaultListenerRef(); }
 
 private:
-    static std::shared_ptr<IProgressListener> defaultListener_;
+    static DPVISION_EXPORT std::shared_ptr<IProgressListener>& defaultListenerRef();
 };

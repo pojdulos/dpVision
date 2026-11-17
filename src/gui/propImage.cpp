@@ -1,10 +1,10 @@
 #include "propImage.h"
-#include "../api/UI.h"
-#include "../api/AP.h"
+#include "../core/Workspace.h"
 
 #include "Image.h"
+#include "ImageViewerHost.h"
+#include "ImageViewerState.h"
 
-#include "MainWindow.h"
 #include "QScrollArea"
 
 
@@ -24,9 +24,7 @@ PropImage::~PropImage()
 
 void PropImage::updateProperties()
 {
-	QMdiSubWindow* window = AP::mainWinPtr()->getPicViewerInstance(obj->id());
-	
-	ui.showImageWindow->setChecked(window != nullptr);
+	ui.showImageWindow->setChecked(obj->getShowViewer());
 
 	ui.show3d->setChecked(((CModel3D*)obj)->getSelfVisibility());
 
@@ -41,7 +39,7 @@ PropWidget* PropImage::create(CImage* m, QWidget* parent)
 	layout->addWidget(bo);
 
 	PropImage* pI = new PropImage(m, widget);
-	pI->getUI()->show3d->layout()->addWidget(new PropTransform(&m->getTransform(), pI));
+	pI->getUI()->show3d->layout()->addWidget(new PropTransform(&m->getTransform(), pI, false, m));
 
 	layout->addWidget(pI);
 
@@ -75,32 +73,20 @@ void PropImage::scaleChanged(int i)
 	{
 	case 0:
 	default:
-		obj->fitToWindow = false;
+		ImageViewerHost::setFitToWindow(obj->id(), false);
 		break;
 	case 1:
 	case 2:
 	case 3:
-		obj->fitToWindow = true;
+		ImageViewerHost::setFitToWindow(obj->id(), true);
 		break;
-	}
-
-	QMdiSubWindow* window = AP::mainWinPtr()->getPicViewerInstance(obj->id());
-	if (window != nullptr)
-	{
-		((PicViewer*)((MdiChild*)window->widget())->m_widget)->reloadImage();
 	}
 }
 
 void PropImage::showWindow(bool b)
 {
-	if (b)
-	{
-		AP::mainWinPtr()->activatePicViewerInstance(obj->id());
-	}
-	else
-	{
-		AP::mainWinPtr()->closePicViewers(obj->id());
-	}
+	obj->setShowViewer(b);
+	CWorkspace::instance()->notifyObjectStateChanged(obj->id());
 }
 
 void PropImage::show3d(bool b)
@@ -108,20 +94,17 @@ void PropImage::show3d(bool b)
 	if (b)
 	{
 		((CModel3D*)obj)->setLocked(wasLocked);
-		UI::DOCK::WORKSPACE::setItemLockedById(obj->id(), wasLocked);
 	}
 	else
 	{
 		wasLocked = ((CModel3D*)obj)->isLocked();
 		((CModel3D*)obj)->setLocked(true);
-		UI::DOCK::WORKSPACE::setItemLockedById(obj->id(), wasLocked);
 	}
 	
 	emit signalChangedShow3d(b);
 
 	obj->setSelfVisibility(b);
-	UI::DOCK::WORKSPACE::setItemVisibleById(obj->id(), b);
-	UI::updateAllViews();
+	CWorkspace::instance()->notifyObjectStateChanged(obj->id());
 }
 
 void PropImage::slotChangeShow3d(bool v)

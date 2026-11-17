@@ -3,14 +3,14 @@
 #include "Point3.h"
 #include "Vector3.h"
 
-class  DPVISION_EXPORT  CBoundVector	: public std::pair<CPoint3d,CPoint3d>
+class CBoundVector : public std::pair<CPoint3d,CPoint3d>
 {
 
 public:
 	CBoundVector() { first = CPoint3d(); second = CPoint3d(); };
-	CBoundVector( CPoint3d origin, CVector3d direction );
-	CBoundVector( CPoint3d p0, CPoint3d p1 );
-	~CBoundVector();
+	DPVISION_EXPORT CBoundVector( CPoint3d origin, CVector3d direction );
+	DPVISION_EXPORT CBoundVector( CPoint3d p0, CPoint3d p1 );
+	DPVISION_EXPORT ~CBoundVector();
 
 	CPoint3d origin() const { return first; };
 	CVector3d direction() const { return CVector3d(first, second); };

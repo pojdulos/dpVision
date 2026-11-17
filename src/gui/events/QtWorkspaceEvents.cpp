@@ -1,5 +1,7 @@
 #include "QtWorkspaceEvents.h"
 
+#include "ImageViewerHost.h"
+#include "ImageViewerState.h"
 #include "MainWindow.h"
 #include "DockWidgetHistogram.h"
 
@@ -29,7 +31,8 @@ void QtWorkspaceEvents::emitWorkspaceEvent(const WorkspaceEvent& event) {
         }
         else if (event.objectType == CBaseObject::Type::IMAGE)
         {
-            CMainWindow::instance()->closePicViewers(event.objectId);
+            ImageViewerState::clear(event.objectId);
+            ImageViewerHost::closeAll(event.objectId);
         }
         emit objectRemovedSignal(event.objectId);
         break;

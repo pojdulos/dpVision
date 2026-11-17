@@ -1,7 +1,6 @@
 #include "Global.h"
 #include "AnnotationCylinder.h"
 
-#include "../api/AP.h"
 
 #include "../renderers/IAnnotationCylinderRenderer.h"
 

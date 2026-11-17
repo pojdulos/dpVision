@@ -51,14 +51,13 @@ std::shared_ptr<CObject> CParserATMDL::clean_model(std::shared_ptr<CModel3D> obj
 
 		if (!obj->annotations().empty())
 		{
-			CObject::Annotations::iterator it = obj->annotations().begin();
-
-			while (it != obj->annotations().end())
+			std::vector<int> annotationIds(obj->orderedAnnotationIds().begin(), obj->orderedAnnotationIds().end());
+			for (int id : annotationIds)
 			{
-				std::shared_ptr<CAnnotation> an = (*it).second;
-				it = obj->annotations().erase(it);
-
-				c->addAnnotation(c, an);
+				if (std::shared_ptr<CAnnotation> an = obj->removeAnnotation(id))
+				{
+					c->addAnnotation(c, an);
+				}
 			}
 		}
 
@@ -337,6 +336,23 @@ CTransform CParserATMDL::parseProperty_translation(QTextStream& in)
 
 	return t;
 }
+
+CVector3d CParserATMDL::parseProperty_eulerangles(QTextStream& in)
+{
+	QString slowo =	parseType_matrix(in);
+	
+	QStringList axisList = slowo.split(",", Qt::SkipEmptyParts);
+
+	return CVector3d( 
+		axisList[0].toDouble(),
+		axisList[1].toDouble(),
+		axisList[2].toDouble()
+	);
+}
+
+
+
+
 
 CMovement::SeqList CParserATMDL::parseProperty_frameset(QTextStream& in)
 {
@@ -619,20 +635,19 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_shell(QTextStream& in)
 		{
 			opis["file"] = parseType_string(in);
 		}
-		else if (auto tmp = parseObject(in, slowo))
-		{
-			kids.append(tmp);
-		}
 		else if (slowo == "}")
 		{
-			dpInfo() << "znaleziono klamre zamykajaca" ; //<< Qt::endl;
+			dpInfo() << "znaleziono klamre zamykajaca";
+		}
+		else if (peekNextNonSpace(in, '{'))
+		{
+			if (auto tmp = parseObject(in, slowo))
+				kids.append(tmp);
 		}
 		else
 		{
-			dpError() << QString::fromUtf8("BLAD. Nierozpoznany symbol ") << slowo ; //<< Qt::endl;
-			return nullptr;
+			skipSimpleValue(in);
 		}
-
 	}
 
 	std::shared_ptr<CObject> obj = nullptr;
@@ -643,10 +658,14 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_shell(QTextStream& in)
 		if (obj==nullptr)
 		{
 			obj = std::make_shared<CObject>();
+			obj->setDescr(QString::fromUtf8("Unable to read the file: ") + opis["file"] + QString::fromUtf8("\nA generic placeholder object was created to preserve the scene hierarchy."));
+		}
+		else
+		{
+			if (opis.contains("descr")) obj->setDescr(opis["descr"]);
 		}
 
 		if (opis.contains("label")) obj->setLabel(opis["label"]);
-		if (opis.contains("descr")) obj->setDescr(opis["descr"]);
 
 		if (opis.contains("keywords")) obj->keywords() = parseProperty_keywords_v1(opis["keywords"]);
 
@@ -673,8 +692,17 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_transformation(QTextStrea
 	QList<std::shared_ptr<CBaseObject>> kids;
 	//QStringList matrix;
 
+	CVector3d rot_XYZ = {0.0, 0.0, 0.0};
+	bool hasEulerAngles = false;
+	bool hasAxisRotations = false;
+
+	CTransform rotationTransformation;
+	bool hasRotation = false;
+
+	CTransform translationTransformation;
+	bool hasTranslation = false;
+
 	CTransform frameTransformation;
-	bool isTransformDefined = false;
 
 	while (slowo != "}")
 	{
@@ -699,29 +727,54 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_transformation(QTextStrea
 		else if (slowo == "rotation")
 		{
 			CTransform tR = parseProperty_rotation(in);
-			frameTransformation.fromEigenMatrix4d(tR.toEigenMatrix4d() * frameTransformation.toEigenMatrix4d());
-			isTransformDefined = true;
+			rotationTransformation.fromEigenMatrix4d(tR.toEigenMatrix4d() * rotationTransformation.toEigenMatrix4d());
+			hasRotation = true;
+		}
+		else if (slowo == "eulerangles")
+		{
+			rot_XYZ = parseProperty_eulerangles(in);
+			hasEulerAngles = true;
+		}
+		else if (slowo == "rot_x")
+		{
+			QString slowo =	parseType_string(in);
+			double angle = slowo.toDouble();
+			rot_XYZ[0] = angle;
+			hasAxisRotations = true;
+		}
+		else if (slowo == "rot_y")
+		{
+			QString slowo =	parseType_string(in);
+			double angle = slowo.toDouble();
+			rot_XYZ[1] = angle;
+			hasAxisRotations = true;
+		}
+		else if (slowo == "rot_z")
+		{
+			QString slowo =	parseType_string(in);
+			double angle = slowo.toDouble();
+			rot_XYZ[2] = angle;
+			hasAxisRotations = true;
 		}
 		else if (slowo == "translation")
 		{
 			CTransform tT = parseProperty_translation(in);
-			frameTransformation.fromEigenMatrix4d(tT.toEigenMatrix4d() * frameTransformation.toEigenMatrix4d());
-			isTransformDefined = true;
-		}
-		else if (auto tmp = parseObject(in, slowo))
-		{
-			kids.append(tmp);
+			translationTransformation.fromEigenMatrix4d(tT.toEigenMatrix4d() * translationTransformation.toEigenMatrix4d());
+			hasTranslation = true;
 		}
 		else if (slowo == "}")
 		{
-			dpInfo() << QString::fromUtf8("Poprawnie odczytano transformację").toStdU16String() ; //<< Qt::endl;
+			dpInfo() << QString::fromUtf8("Poprawnie odczytano transformację").toStdU16String();
+		}
+		else if (peekNextNonSpace(in, '{'))
+		{
+			if (auto tmp = parseObject(in, slowo))
+				kids.append(tmp);
 		}
 		else
 		{
-			dpError() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo ; //<< Qt::endl;
-			return nullptr;
+			skipSimpleValue(in);
 		}
-
 	}
 
 	std::shared_ptr<CModel3D> obj = std::make_shared<CModel3D>();
@@ -736,17 +789,30 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_transformation(QTextStrea
 		if (opis.contains("matrix"))
 		{
 			frameTransformation.fromRowMatrix(opis["matrix"], ",");
-			isTransformDefined = true;
 		}
 
-		if (isTransformDefined)
+		if (!opis.contains("matrix"))
 		{
-			obj->setTransform(frameTransformation);
+			if (hasRotation)
+			{
+				frameTransformation = rotationTransformation;
+			}
+			else if (hasEulerAngles || hasAxisRotations)
+			{
+				frameTransformation.rotateDeg({
+					{CVector3d::XAxis(), rot_XYZ[0]},
+					{CVector3d::YAxis(), rot_XYZ[1]},
+					{CVector3d::ZAxis(), rot_XYZ[2]}
+				});
+			}
+
+			if (hasTranslation)
+			{
+				frameTransformation.fromEigenMatrix4d(translationTransformation.toEigenMatrix4d() * frameTransformation.toEigenMatrix4d());
+			}
 		}
-		else
-		{
-			obj->setTransform(CTransform());
-		}
+
+		obj->setTransform(frameTransformation);
 
 		for (auto kid : kids) add_kid(obj, kid);
 	}
@@ -1149,20 +1215,19 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_animation(QTextStream& in
 		{
 			seq = parseProperty_sequence(in);
 		}
-		else if (auto tmp = parseObject(in, slowo))
-		{
-			kids.append(tmp);
-		}
 		else if (slowo == "}")
 		{
-			dpInfo() << QString::fromUtf8("Poprawnie odczytano ruch") ; //<< Qt::endl;
+			dpInfo() << QString::fromUtf8("Poprawnie odczytano ruch");
+		}
+		else if (peekNextNonSpace(in, '{'))
+		{
+			if (auto tmp = parseObject(in, slowo))
+				kids.append(tmp);
 		}
 		else
 		{
-			dpError() << QString::fromUtf8("BŁĄD. Nierozpoznany symbol ") << slowo ; //<< Qt::endl;
-			return nullptr;
+			skipSimpleValue(in);
 		}
-
 	}
 
 	std::shared_ptr<CMovement> obj = std::make_shared<CMovement>(seq);
@@ -1180,13 +1245,254 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject_animation(QTextStream& in
 	return obj;
 }
 
+bool CParserATMDL::peekNextNonSpace(QTextStream& in, QChar expected)
+{
+	qint64 pos = in.pos();
+
+	while (!in.atEnd())
+	{
+		QString s = in.read(1);
+		if (s.isEmpty())
+			break;
+
+		QChar c = s[0];
+
+		if (c.isSpace())
+			continue;
+
+		in.seek(pos);
+		return c == expected;
+	}
+
+	in.seek(pos);
+	return false;
+}
+
+bool CParserATMDL::consumeNextNonSpace(QTextStream& in, QChar expected)
+{
+	while (!in.atEnd())
+	{
+		QString s = in.read(1);
+		if (s.isEmpty())
+			return false;
+
+		QChar c = s[0];
+
+		if (c.isSpace())
+			continue;
+
+		return c == expected;
+	}
+
+	return false;
+}
+
+QString CParserATMDL::readToken(QTextStream& in)
+{
+	QString token;
+
+	while (!in.atEnd())
+	{
+		QString s = in.read(1);
+		if (s.isEmpty())
+			return token;
+
+		QChar c = s[0];
+
+		if (c.isSpace())
+		{
+			if (token.isEmpty())
+				continue;
+
+			return token;
+		}
+
+		if (c == '{' || c == '}' || c == '[' || c == ']' || c == '"' || c == ';')
+		{
+			if (token.isEmpty())
+				return QString(c);
+
+			in.seek(in.pos() - 1);
+			return token;
+		}
+
+		token += c;
+	}
+
+	return token;
+}
+
+void CParserATMDL::skipQuotedString(QTextStream& in)
+{
+	bool escaped = false;
+
+	while (!in.atEnd())
+	{
+		QString s = in.read(1);
+		if (s.isEmpty())
+			return;
+
+		QChar c = s[0];
+
+		if (escaped)
+		{
+			escaped = false;
+			continue;
+		}
+
+		if (c == '\\')
+		{
+			escaped = true;
+			continue;
+		}
+
+		if (c == '"')
+			return;
+	}
+}
+
+void CParserATMDL::skipBalanced(QTextStream& in, QChar openChar, QChar closeChar)
+{
+	int depth = 1;
+
+	while (!in.atEnd() && depth > 0)
+	{
+		QString token = readToken(in);
+
+		if (token.isEmpty())
+			return;
+
+		if (token == "\"")
+		{
+			skipQuotedString(in);
+		}
+		else if (token.length() == 1 && token[0] == openChar)
+		{
+			++depth;
+		}
+		else if (token.length() == 1 && token[0] == closeChar)
+		{
+			--depth;
+		}
+	}
+}
+
+void CParserATMDL::skipSimpleValue(QTextStream& in)
+{
+	while (!in.atEnd())
+	{
+		QString s = in.read(1);
+		if (s.isEmpty())
+			return;
+
+		QChar c = s[0];
+
+		if (c == '\n' || c == ';')
+			return;
+
+		if (c == '"')
+		{
+			skipQuotedString(in);
+		}
+		else if (c == '[')
+		{
+			skipBalanced(in, '[', ']');
+		}
+		else if (c == '{')
+		{
+			skipBalanced(in, '{', '}');
+		}
+	}
+}
+
+QList<std::shared_ptr<CBaseObject>> CParserATMDL::parseUnknownBlock(QTextStream& in)
+{
+	if (!consumeNextNonSpace(in, '{'))
+	{
+		skipSimpleValue(in);
+		return QList<std::shared_ptr<CBaseObject>>();
+	}
+
+	auto kids = QList<std::shared_ptr<CBaseObject>>();
+
+	while (!in.atEnd())
+	{
+		QString token = readToken(in);
+
+		if (token.isEmpty())
+			return kids;
+
+		if (token == "}")
+			return kids;
+
+		if (token == "\"")
+		{
+			skipQuotedString(in);
+			continue;
+		}
+
+		if (token == "[")
+		{
+			skipBalanced(in, '[', ']');
+			continue;
+		}
+
+		if (token == "{")
+		{
+			skipBalanced(in, '{', '}');
+			continue;
+		}
+
+		if (token == ";")
+			continue;
+
+		if (peekNextNonSpace(in, '{'))
+		{
+			auto kid = parseObject(in, token);
+			if (kid) kids.append(kid);
+		}
+		else
+		{
+			skipSimpleValue(in);
+		}
+	}
+	return kids;
+}
+
+std::shared_ptr<CBaseObject> CParserATMDL::parseObject_unknown(QTextStream& in, const QString& name)
+{
+	auto kids = parseUnknownBlock(in);
+
+	if (kids.isEmpty())
+	{
+		dpDebug() << QString::fromUtf8("Nieznany obiekt nie zawiera dzieci. Pomijam.");
+		return nullptr;
+	}
+
+	auto obj = std::make_shared<CObject>();
+
+	obj->setLabel(name);
+	obj->setDescr(
+		QString::fromUtf8("Object type ") + name +
+		QString::fromUtf8(" is not supported by this version of the application. "
+			"A generic placeholder object was created to preserve the scene hierarchy.")
+	);
+
+	for (auto kid : kids)
+		add_kid(obj, kid);
+
+	return obj;
+}
+
 std::shared_ptr<CBaseObject> CParserATMDL::parseObject(QTextStream& in, QString slowo)
 {
-	//QMap<QString, std::function<CBaseObject* (QTextStream&)>> mapa;
+	slowo = slowo.trimmed();
 
-	//mapa["shell"] = [this](QTextStream& in) -> CBaseObject* { return this->parseObject_shell(in); };
+	if (slowo.isEmpty())
+		return nullptr;
 
-	//if (mapa.contains(slowo)) return mapa[slowo](in);
+	if (slowo == "}" || slowo == "{" || slowo == ";" || slowo == "]" || slowo == "[")
+		return nullptr;
 
 	if (slowo == "shell")
 	{
@@ -1215,6 +1521,11 @@ std::shared_ptr<CBaseObject> CParserATMDL::parseObject(QTextStream& in, QString 
 	else if ((slowo == "animation") || (slowo == "motion") || (slowo == "movement"))
 	{
 		return parseObject_animation(in);
+	}
+	else
+	{
+		dpDebug() << QString::fromUtf8("Nieznany obiekt: ") << slowo << QString::fromUtf8(" - proba odczytu");
+		return parseObject_unknown(in, slowo);
 	}
 
 	return nullptr;
@@ -1286,11 +1597,11 @@ std::shared_ptr<CModel3D> CParserATMDL::load(const QString path, bool wait, std:
 
 	if (root->children().size() == 1)
 	{
-		std::shared_ptr<CBaseObject> tmp = (*root->children().begin()).second;
+		std::shared_ptr<CBaseObject> tmp = root->getChild();
 
 		if (tmp->hasType(CBaseObject::Type::MODEL))
 		{
-			root->children().clear();
+			root->removeChild(tmp->id());
 			//delete root;
 			return std::dynamic_pointer_cast<CModel3D>(tmp);
 		}

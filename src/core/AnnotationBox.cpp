@@ -1,7 +1,6 @@
 #include "Global.h"
 #include "AnnotationBox.h"
 
-#include "../api/AP.h"
 
 
 #include "../renderers/IAnnotationBoxRenderer.h"

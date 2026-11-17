@@ -22,10 +22,11 @@ class CMesh;
  * and various utility methods for plane manipulation and queries.
  */
 class DPVISION_EXPORT CPlane {
-public:
+protected:
 	CPoint3d m_center;   ///< A point on the plane (center)
 	CVector3d m_normal;  ///< Normal vector of the plane (normalized)
 	double m_d;          ///< Plane equation parameter D (Ax + By + Cz + D = 0)
+public:
 
 	/**
 	 * @brief Default constructor. Initializes the plane as y = 0.

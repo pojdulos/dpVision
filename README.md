@@ -57,4 +57,10 @@ efficient multimodal image processing and algorithm testing, addressing the limi
 ``make bin``
 
 
+## API documentation
 
+The API documentation is located in the /docs/api folder
+
+## Testing
+
+Test hierarchy and initial coverage priorities are documented in docs/TESTING_STRATEGY.md.

@@ -3,17 +3,14 @@
 #include "ParserDPV.h"
 #include "Utilities.h"
 
-#include "../api/AP.h"
-
 #include <fstream>
 
 #include "quazip.h"
 #include "quazipfile.h"
 #include "quazipdir.h"
 
-#include "AppSettings.h"
-#include "MainApplication.h"
-#include "MainWindow.h"
+#include "AppStateManager.h"
+#include "Workspace.h"
 
 #include "StatusBarManager.h"
 #include "interfaces/IProgressListener.h"
@@ -139,14 +136,12 @@ std::shared_ptr<CModel3D> CParserDPVISION::load(const QString path, bool wait, s
 	for (auto m : modele)
 	{
 		m->importChildrenGeometry();
-		AP::WORKSPACE::addModel(m);
+		CWorkspace::instance()->_objectAdd(m);
 	}
 
 	if (prg_) prg_->hide();
 
-	AP::mainWin().adjustForCurrentFile(path);
-
-	AppSettings::mainSettings()->setValue("recentFile", path);
+	AppStateManager::adjustForCurrentFile(path);
 
 	StatusBarManager::setText( QString("GOTOWE, liczba wczytanych modeli: %1").arg(modele.size()));
 	return nullptr;

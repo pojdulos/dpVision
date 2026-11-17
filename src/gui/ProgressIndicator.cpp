@@ -10,7 +10,6 @@ ProgressIndicator::ProgressIndicator(QWidget* parent) : QWidget(parent)
 void ProgressIndicator::setValue(int value)
 {
 	ui.progressBar->setValue(value);
-	QCoreApplication::removePostedEvents(this);
 }
 
 void ProgressIndicator::setText(QString text)

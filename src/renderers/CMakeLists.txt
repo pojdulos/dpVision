@@ -5,6 +5,8 @@ file(GLOB RENDERERS_SRC
 )
 add_library(dpVisionRenderers STATIC ${RENDERERS_SRC})
 
+target_compile_definitions(dpVisionRenderers PRIVATE DPVISION_BUILD)
+
 add_library(dpVision::Renderers ALIAS dpVisionRenderers)
 
 target_include_directories(dpVisionRenderers

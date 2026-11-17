@@ -14,8 +14,13 @@ void IWorkspaceRenderer::renderKids(const CWorkspace* _obj)
 {
     CWorkspace* obj = (CWorkspace*)_obj;
 
-    for (auto &model : obj->children() )
-		if (model.second) model.second->render();
+    for (int id : obj->orderedIds())
+	{
+		if (std::shared_ptr<CModel3D> model = obj->_getModel(id))
+		{
+			model->render();
+		}
+	}
 }
 
 void IWorkspaceRenderer::renderLights(const CWorkspace* _obj, bool perm)

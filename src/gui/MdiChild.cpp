@@ -7,6 +7,9 @@
 #include "MainWindow.h"
 
 #include "StatusBarManager.h"
+#include "../core/Workspace.h"
+
+#include <QTimer>
 
 MdiChild::MdiChild(Type t) : QWidget(), m_type( t )
 {
@@ -46,27 +49,6 @@ void MdiChild::mouseMoveEvent(QMouseEvent* event)
 	StatusBarManager::setText(QString("(MdiChild) pozycja kursora: " + QString::number(event->pos().x()) + " " + QString::number(event->pos().y())));
 }
 
-//void MdiChild::closeAllPic(int id)
-//{
-//	for ( QMdiSubWindow* window : AP::mainWin().ui.mdiArea->subWindowList() )
-//	{
-//		MdiChild* child = (MdiChild*)window;
-//
-//		if (child != nullptr)
-//		{
-//			if (child->hasType(MdiChild::Type::Pic))
-//			{
-//				PicViewer* pic = qobject_cast<PicViewer*>(child->widget());
-//				if (pic->id() == id)
-//				{
-//					child->close();
-//				}
-//			}
-//		}
-//
-//	}
-//}
-
 
 void MdiChild::fullScreen()
 {
@@ -94,13 +76,39 @@ void MdiChild::fullScreen()
 
 void MdiChild::keyPressEvent(QKeyEvent* e)
 {
-	// To dzia³a tylko w trybie pe³nego ekranu
+	// To dziaÅ‚a tylko w trybie peÅ‚nego ekranu
 
 	StatusBarManager::setText(QString::number(e->key()));
 	if (e->key() == Qt::Key_F11)
 	{
 		fullScreen();
 	}
+}
+
+void MdiChild::closeEvent(QCloseEvent* event)
+{
+	if (hasType(MdiChild::Type::Pic))
+	{
+		if (PicViewer* viewer = qobject_cast<PicViewer*>(m_widget))
+		{
+			const int imageId = viewer->id();
+			if (imageId != NO_CURRENT_MODEL)
+			{
+				if (auto image = std::dynamic_pointer_cast<CImage>(CWorkspace::instance()->getSomethingWithId(imageId)))
+				{
+					if (image->getShowViewer())
+					{
+						image->setShowViewer(false);
+						QTimer::singleShot(0, [imageId]() {
+							CWorkspace::instance()->notifyObjectStateChanged(imageId);
+						});
+					}
+				}
+			}
+		}
+	}
+
+	QWidget::closeEvent(event);
 }
 
 void MdiChild::resizeEvent(QResizeEvent* e)

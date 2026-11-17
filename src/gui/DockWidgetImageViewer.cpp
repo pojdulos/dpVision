@@ -1,8 +1,5 @@
 #include "DockWidgetImageViewer.h"
 
-#include "../api/UI.h"
-#include "../api/AP.h"
-
 #include "Quaternion.h"
 #include "MainWindow.h"
 

@@ -19,7 +19,7 @@
 template<
 	typename _T,
 	typename = typename std::enable_if<std::is_arithmetic<_T>::value, _T>::type >
-class DPVISION_EXPORT CTriple
+class CTriple
 {
 	static_assert(std::is_arithmetic<_T>::value, "CTriple<> type must be numeric");
 public:

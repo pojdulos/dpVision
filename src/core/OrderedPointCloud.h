@@ -30,7 +30,7 @@ public:
 	//virtual void renderSelf() override;
 private:
 
-	void renderAsMesh();
+	// void renderAsMesh();
 };
 
 typedef COrderedPointCloud* PtrOrderedPointCloud;

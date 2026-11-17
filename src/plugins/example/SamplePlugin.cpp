@@ -7,12 +7,22 @@
 #include "AnnotationPlane.h"
 #include "FileConnector.h"
 
-#include "../api/AP.h"
-#include "../api/UI.h"
-
-#include "AppSettings.h"
+#include "../api/adapters/PluginHostGuiAPIAdapter.h"
 
 #include <QPushButton>
+
+namespace {
+PluginHostGuiAPIAdapter& guiApi()
+{
+    static PluginHostGuiAPIAdapter api;
+    return api;
+}
+
+CWorkspace* workspace()
+{
+    return guiApi().appInternals().workspace();
+}
+}
 
 /**
  * @brief Called when button on PluginPanel is pressed
@@ -40,19 +50,19 @@ void SamplePlugin::onButton(const QString &name)
  */
 void SamplePlugin::onLoad()
 {
-	UI::PLUGINPANEL::create( m_ID, "Working example" );
+	guiApi().pluginPanel().create(m_ID, "Working example");
 
-	UI::PLUGINPANEL::clear(m_ID);
+	guiApi().pluginPanel().clear(m_ID);
 
 	int nextPos = 0;
 	
-	UI::PLUGINPANEL::addButton(m_ID, "createBox", "Create box", nextPos++, 0);
-	UI::PLUGINPANEL::addButton(m_ID, "loadObject", "Load object", nextPos++, 0);
-	UI::PLUGINPANEL::addButton(m_ID, "cutMesh", "Cut mesh", nextPos++, 0);
+	guiApi().pluginPanel().addButton(m_ID, QString("createBox"), "Create box", nextPos++, 0);
+	guiApi().pluginPanel().addButton(m_ID, QString("loadObject"), "Load object", nextPos++, 0);
+	guiApi().pluginPanel().addButton(m_ID, QString("cutMesh"), "Cut mesh", nextPos++, 0);
 
 	//QObject::connect(UI::PLUGINPANEL::addButton(m_ID, "create box", "createBox", nextPos++, 0), SIGNAL(clicked()), SLOT(createBox()));
 
-	UI::PLUGINPANEL::setEnabled(m_ID, true);
+	guiApi().pluginPanel().setEnabled(m_ID, true);
 }
 
 /**
@@ -64,18 +74,29 @@ void SamplePlugin::loadObject(const QString &path)
 	QString fileName = path;
 	
 	if (!QFileInfo(fileName).exists()) {
-		fileName = UI::FILECHOOSER::getOpenFileName(tr("Open File"), AppSettings::mainSettings()->value("recentFile").toString(), CFileConnector::getLoadExts());
+		fileName = guiApi().fileDialog().getOpenFileName(
+            tr("Open File"),
+            QString(),
+            CFileConnector::getLoadExts());
 	}
 	
 	if (!fileName.isEmpty()) // if empty: you pressed Cancel 
 	{
 		if (QFileInfo(fileName).exists())
 		{
-			AP::WORKSPACE::loadModel(fileName);
+			if (auto obj = CModel3D::load(fileName))
+			{
+				workspace()->_objectAdd(obj);
+				guiApi().updateAllViews();
+			}
+			else
+			{
+				guiApi().messageBox().error("Something went wrong", "Can't read file");
+			}
 		}
 		else // this should not have happened
 		{
-			UI::MESSAGEBOX::error("Something went wrong", "File doesn't exists");
+			guiApi().messageBox().error("Something went wrong", "File doesn't exists");
 		}
 	}
 }
@@ -123,7 +144,9 @@ void SamplePlugin::createBox()
 
 	// this command causes the object to be displayed
 	// and visible in the scene tree
-	AP::WORKSPACE::addModel(obj, true);
+	workspace()->_objectAdd(obj);
+	workspace()->_objectActivate(obj->id());
+	guiApi().updateAllViews();
 }
 
 
@@ -175,9 +198,9 @@ static void DivideMesh(std::shared_ptr<CMesh> mesh, const CPoint3d& centroid, co
 
 
 void SamplePlugin::cutMesh() {
-	QString fileName = UI::FILECHOOSER::getOpenFileName(
+	QString fileName = guiApi().fileDialog().getOpenFileName(
 		tr("Open File"),
-		AppSettings::mainSettings()->value("recentFile").toString(),
+		QString(),
 		CFileConnector::getLoadExts());
 
 	std::shared_ptr<CModel3D> obj = nullptr;
@@ -187,17 +210,21 @@ void SamplePlugin::cutMesh() {
 		{
 			// load the model and if exists add it to workspace
 			// using AP namespace is good choise because it automaticaly refreshes viewer
-			obj = AP::WORKSPACE::loadModel(fileName);
+			obj = CModel3D::load(fileName);
+			if (obj != nullptr)
+			{
+				workspace()->_objectAdd(obj);
+			}
 
 			if (obj == nullptr)
 			{
-				UI::MESSAGEBOX::error("Something went wrong", "Can't read file");
+				guiApi().messageBox().error("Something went wrong", "Can't read file");
 				return;
 			}
 		}
 		else // this should not have happened
 		{
-			UI::MESSAGEBOX::error("Something went wrong", "File doesn't exists");
+			guiApi().messageBox().error("Something went wrong", "File doesn't exists");
 			return;
 		}
 
@@ -215,7 +242,7 @@ void SamplePlugin::cutMesh() {
 
 		// add plane to workspace
 		// using AP namespace is good choise because it automaticaly refreshes viewer
-		AP::OBJECT::addChild(obj, plane);
+		workspace()->_objectAdd(plane, obj);
 
 		if (child->hasType(CObject::MESH))
 		{
@@ -249,7 +276,7 @@ void SamplePlugin::cutMesh() {
 			obj1->setLabel("upper part");
 			
 			// add to workspace for display it in viewer and in workspace tree dialog
-			AP::WORKSPACE::addObject(obj1);
+			workspace()->_objectAdd(obj1);
 
 			// create deep copy of original mesh
 			std::shared_ptr<CMesh> mesh2 = std::dynamic_pointer_cast<CMesh>(mesh->getCopy());
@@ -266,16 +293,16 @@ void SamplePlugin::cutMesh() {
 			obj2->importChildrenGeometry();
 			obj2->setLabel("bottom part");
 
-			AP::WORKSPACE::addObject(obj2);
+			workspace()->_objectAdd(obj2);
 		}
 		else
 		{
-			UI::MESSAGEBOX::error("Something went wrong", "Object is not mesh");
+			guiApi().messageBox().error("Something went wrong", "Object is not mesh");
 			return;
 		}
 
 		// refresh viewers, probably it is not needed
-		UI::updateAllViews();
+		guiApi().updateAllViews();
 	}
 
 }

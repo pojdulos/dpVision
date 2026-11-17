@@ -10,7 +10,6 @@ set (LIBICP_SRC_DIR src)
 # include directory
 include_directories(
 	${LIBICP_SRC_DIR}
-	${Boost_INCLUDE_DIRS}
 )
 
 # determine if OpenMP can/should be used

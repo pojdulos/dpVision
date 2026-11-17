@@ -3,17 +3,20 @@
 #include <QtGui/QKeyEvent>
 #include <QMessageLogger>
 
-#include "../api/AP.h"
+//#include "../api/AP.h"
 
-#include "../api/UI.h"
+//
 
 #include "AppSettings.h"
 #include "MainApplication.h"
 #include "MainWindow.h"
 
 #include "GLViewer.h"
-#include "PicViewer.h"
+#include "DockWidgetProperties.h"
 #include "MdiChild.h"
+#include "PicViewer.h"
+#include "ImageViewerHost.h"
+#include "ImageViewerState.h"
 
 #include "Image.h"
 #include <chrono>
@@ -21,6 +24,11 @@
 #include "FileConnector.h"
 #include "adapters/QtProgressAdapter.h"
 #include "StatusBarManager.h"
+#include "WorkspaceImageHost.h"
+#include "WorkspaceImportHost.h"
+#include "../core/AppStateManager.h"
+#include "../core/Workspace.h"
+#include "../core/PluginRuntimeManager.h"
 
 #include <QMessageBox>
 
@@ -67,10 +75,8 @@ void CMainWindow::viewerSelected(QMdiSubWindow* window)
 		MdiChild* child = (MdiChild*)window->widget();
 		if (child->hasType(MdiChild::Type::Pic))
 		{
-			AP::WORKSPACE::setCurrentModel(((PicViewer*)child->m_widget)->id());
+			CWorkspace::instance()->_objectActivate(((PicViewer*)child->m_widget)->id());
 		}
-
-		UI::DOCK::PROPERTIES::updateProperties();
 	}
 }
 
@@ -86,13 +92,36 @@ void CMainWindow::onWorkspaceObjectActivated(CBaseObject* obj)
 	updateView(true, true);
 }
 
+void CMainWindow::onWorkspaceObjectStateChanged(int i)
+{
+	if (auto image = std::dynamic_pointer_cast<CImage>(CWorkspace::instance()->getSomethingWithId(i)))
+	{
+		Q_UNUSED(image);
+		WorkspaceImageHost::syncViewerState(i, true);
+	}
+	Q_UNUSED(i);
+	changeMenuAfterSelect();
+	updateView(true, true);
+}
+
 void CMainWindow::onWorkspaceObjectAdded(int i)
 {
+	if (auto image = std::dynamic_pointer_cast<CImage>(CWorkspace::instance()->getSomethingWithId(i)))
+	{
+		Q_UNUSED(image);
+		WorkspaceImageHost::syncViewerState(i, false);
+	}
 	changeMenuAfterSelect();
 	updateView(true, true);
 }
 
 void CMainWindow::onWorkspaceObjectRemoved(int i)
+{
+	changeMenuAfterSelect();
+	updateView(true, true);
+}
+
+void CMainWindow::onWorkspaceStructureChanged()
 {
 	changeMenuAfterSelect();
 	updateView(true, true);
@@ -130,7 +159,7 @@ void CMainWindow::viewChildFS()
 void CMainWindow::openRecent() {
 	QAction *action = qobject_cast<QAction *>(sender());
 	if (action)
-		if ( nullptr != AP::WORKSPACE::loadModel(action->data().toString().toStdWString(), false, false ))
+		if ( nullptr != WorkspaceImportHost::loadModel(action->data().toString(), false, false) )
 		{
 			adjustForCurrentFile(action->data().toString());
 			AppSettings::mainSettings()->setValue("recentFile", action->data().toString());
@@ -144,7 +173,7 @@ void CMainWindow::fileOpen()
 	
 	if (!fileName.isEmpty())
 	{
-		if ( nullptr != AP::WORKSPACE::loadModel(fileName, false, false, std::make_shared<QtProgressAdapter>(this->progressIndicator) ))
+		if ( nullptr != WorkspaceImportHost::loadModel(fileName, false, false, std::make_shared<QtProgressAdapter>(this->progressIndicator)) )
 		{
 			adjustForCurrentFile(fileName);
 			AppSettings::mainSettings()->setValue("recentFile", fileName);
@@ -154,13 +183,14 @@ void CMainWindow::fileOpen()
 
 void CMainWindow::fileSave()
 {
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	CWorkspace* wksp = CWorkspace::instance();
+	std::shared_ptr<CModel3D> obj = wksp->_getModel(wksp->_getCurrentModelId());
 
-	if ( NULL != AP::WORKSPACE::getCurrentModel() )
+	if ( NULL != obj )
 	{
 		if (obj->hasType(CObject::IMAGE))
 		{
-			QString fileName = QFileDialog::getSaveFileName(this, tr("Save image"), AP::WORKSPACE::getCurrentModel()->path(), QString("PNG (*.png);;TIFF (*.tif);;JPEG (*.jpg);;Bitmap (*.bmp);;Gif (*.gif)"));
+			QString fileName = QFileDialog::getSaveFileName(this, tr("Save image"), obj->path(), QString("PNG (*.png);;TIFF (*.tif);;JPEG (*.jpg);;Bitmap (*.bmp);;Gif (*.gif)"));
 
 			if (!fileName.isEmpty())
 			{
@@ -169,7 +199,7 @@ void CMainWindow::fileSave()
 		}
 		else
 		{
-			QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), AP::WORKSPACE::getCurrentModel()->path(), CFileConnector::getSaveExts() );
+			QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), obj->path(), CFileConnector::getSaveExts() );
 
 			if (!fileName.isEmpty())
 			{
@@ -199,13 +229,12 @@ void CMainWindow::importImage()
 
 	if (!fileName.isEmpty())
 	{
+		
+		StatusBarManager::setText("Loading image...");
 		std::shared_ptr<CImage> im = CImage::load( fileName );
 		if (nullptr != im)
 		{
-			AP::WORKSPACE::addImage(im, false);
-			
-			//adjustForCurrentFile(fileName);
-			//AP::mainApp().settings->setValue("recentFile", fileName);
+			WorkspaceImageHost::addImage(im, true);
 		}
 	}
 }
@@ -373,7 +402,7 @@ void CMainWindow::projectionOrthogonal()
 		StatusBarManager::setText("Orthogonal projection");
 		updateActiveView();
 	}
-	UI::DOCK::PROPERTIES::updateProperties();
+	dockProperties->updateProperties();
 }
 
 void CMainWindow::projectionPerspective()
@@ -385,13 +414,14 @@ void CMainWindow::projectionPerspective()
 		StatusBarManager::setText("Perspective projection");
 		updateActiveView();
 	}
-	UI::DOCK::PROPERTIES::updateProperties();
+	dockProperties->updateProperties();
 }
 
 
 void CMainWindow::modelVisibility( bool vis )
 {
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	CWorkspace* wksp = CWorkspace::instance();
+	std::shared_ptr<CModel3D> obj = wksp->_getModel(wksp->_getCurrentModelId());
 	if ( nullptr != obj )
 	{
 		if ( vis )
@@ -405,103 +435,99 @@ void CMainWindow::modelVisibility( bool vis )
 			StatusBarManager::setText(  "Model visibility: Hide" );
 		}
 		
-		UI::DOCK::WORKSPACE::setItemVisibleById(obj->id(), vis);
-		UI::DOCK::PROPERTIES::updateProperties();
-		updateAllViews();
+		CWorkspace::instance()->notifyObjectStateChanged(obj->id());
 	}
 }
 
 void CMainWindow::modelInvertNormals()
 {
-	if (std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel())
+	if (std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId()))
 	{
 		if (auto m = std::dynamic_pointer_cast<CMesh>(obj->getChild()))
 		{
 			m->invertNormals();
-			updateAllViews();
-			StatusBarManager::setText("Normalne ścian zostały odwrócone");
+			CWorkspace::instance()->notifyObjectStateChanged(obj->id());
+			StatusBarManager::setText("Normalne scian zostaly odwrocone");
 		}
 		else
 		{
-			StatusBarManager::setText("Obiekt nie jest siatką...");
+			StatusBarManager::setText("Obiekt nie jest siatka…...");
 		}
 	}
 }
 
 void CMainWindow::meshApplyTransformations()
 {
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	CWorkspace* wksp = CWorkspace::instance();
+	std::shared_ptr<CModel3D> obj = wksp->_getModel(wksp->_getCurrentModelId());
 	if (NULL != obj)
 	{
 		if ( auto o = std::dynamic_pointer_cast<CObject>(obj->getChild()) )
 		{
 			if ((o->type() == CObject::MESH) || (o->type() == CObject::CLOUD ) || (o->type() == CObject::ORDEREDCLOUD) )
 			{
-				AP::WORKSPACE::getCurrentModel()->applyTransform(CTransform());
+				obj->applyTransform(CTransform());
 
-				//CTransform trans = AP::WORKSPACE::getCurrentModel()->getTransform();
-				//((CMesh*)AP::WORKSPACE::getCurrentModel()->getChild())->applyTransformation( trans, CTransform() );
-				//AP::WORKSPACE::getCurrentModel()->setTransform(CTransform());
 
-				StatusBarManager::setText("Współrzędne obiektu zostały przekształcone");
 
-				updateAllViews();
+				StatusBarManager::setText("WspĂłĹ‚rzÄ™dne obiektu zostaĹ‚y przeksztaĹ‚cone");
+
+				CWorkspace::instance()->notifyObjectStateChanged(obj->id());
 			}
 			else
 			{
-				StatusBarManager::setText("Obiekt nie jest chmurą punktów lub siatką...");
+				StatusBarManager::setText("Obiekt nie jest chmurÄ… punktĂłw lub siatkÄ…...");
 			}
 		}
 		else
 		{
-			StatusBarManager::setText("Obiekt nie jest chmurą punktów lub siatką...");
+			StatusBarManager::setText("Obiekt nie jest chmurÄ… punktĂłw lub siatkÄ…...");
 		}
 
-		UI::DOCK::PROPERTIES::updateProperties();
 	}
 }
 
 void CMainWindow::renderAsFaces()
 {
-	if ( NULL != AP::WORKSPACE::getCurrentModel() )
+	if (std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId()))
 	{
-		AP::WORKSPACE::getCurrentModel()->switchOption( CModel3D::Opt::optRenderAsPoints, CModel3D::Switch::switchOff );
-		AP::WORKSPACE::getCurrentModel()->switchOption( CModel3D::Opt::optRenderAsEdges, CModel3D::Switch::switchOff );
+		obj->switchOption( CModel3D::Opt::optRenderAsPoints, CModel3D::Switch::switchOff );
+		obj->switchOption( CModel3D::Opt::optRenderAsEdges, CModel3D::Switch::switchOff );
 		StatusBarManager::setText(  "Rendering: Faces" );
 		
-		updateAllViews();
+		CWorkspace::instance()->notifyObjectStateChanged(obj->id());
 	}
 }
 
 void CMainWindow::renderAsEdges()
 {
-	if ( NULL != AP::WORKSPACE::getCurrentModel() )
+	if (std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId()))
 	{
-		AP::WORKSPACE::getCurrentModel()->switchOption( CModel3D::Opt::optRenderAsPoints, CModel3D::Switch::switchOff );
-		AP::WORKSPACE::getCurrentModel()->switchOption( CModel3D::Opt::optRenderAsEdges, CModel3D::Switch::switchOn );
+		obj->switchOption( CModel3D::Opt::optRenderAsPoints, CModel3D::Switch::switchOff );
+		obj->switchOption( CModel3D::Opt::optRenderAsEdges, CModel3D::Switch::switchOn );
 		StatusBarManager::setText(  "Rendering: Edges" );
 
-		updateAllViews();
+		CWorkspace::instance()->notifyObjectStateChanged(obj->id());
 	}
 }
 
 void CMainWindow::renderAsVertices()
 {
-	if ( NULL != AP::WORKSPACE::getCurrentModel() )
+	if (std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId()))
 	{
-		AP::WORKSPACE::getCurrentModel()->switchOption( CModel3D::Opt::optRenderAsEdges, CModel3D::Switch::switchOff );
-		AP::WORKSPACE::getCurrentModel()->switchOption( CModel3D::Opt::optRenderAsPoints, CModel3D::Switch::switchOn );
+		obj->switchOption( CModel3D::Opt::optRenderAsEdges, CModel3D::Switch::switchOff );
+		obj->switchOption( CModel3D::Opt::optRenderAsPoints, CModel3D::Switch::switchOn );
 		StatusBarManager::setText( "Rendering: Vertices" );
 		
-		updateAllViews();
+		CWorkspace::instance()->notifyObjectStateChanged(obj->id());
 	}
 }
 
 void CMainWindow::textureOnOff()
 {
-	if ( NULL != AP::WORKSPACE::getCurrentModel() )
+	if (std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId()))
 	{
-		if ( AP::WORKSPACE::getCurrentModel()->switchOption( CModel3D::Opt::optRenderWithTexture, CModel3D::Switch::switchToggle ) )
+		if ( obj->switchOption( CModel3D::Opt::optRenderWithTexture, CModel3D::Switch::switchToggle ) )
 		{
 			//ModifyMenu(GetMenu( hWnd ), IDM_MODEL_TEXTUREONOFF, MF_BYCOMMAND|MF_STRING, IDM_MODEL_TEXTUREONOFF, GetResourceString( IDS_MODEL_TEXTUREOFF ).c_str() ); 
 			StatusBarManager::setText(  "Texture: on" );
@@ -512,28 +538,25 @@ void CMainWindow::textureOnOff()
 			StatusBarManager::setText(  "Texture: off" );
 		}
 
-		updateAllViews();
+		CWorkspace::instance()->notifyObjectStateChanged(obj->id());
 	}
 }
 
 void CMainWindow::smoothingOnOff()
 {
-	if ( NULL != AP::WORKSPACE::getCurrentModel() )
+	if (std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId()))
 	{
-		AP::WORKSPACE::getCurrentModel()->calcVN();
-		//StatusBarManager::setText( AP::WORKSPACE::getCurrentModel()->GetMeshInfoText().c_str() );
-
-		StatusBarManager::setText( AP::WORKSPACE::getCurrentModel()->switchOption( CModel3D::Opt::optSmoothVertices, CModel3D::Switch::switchToggle ) ? "Wygladzanie wierzcholkow: wlaczone" : "Wygladzanie wierzcholkow: wylaczone" );
+		obj->calcVN();
+		StatusBarManager::setText( obj->switchOption( CModel3D::Opt::optSmoothVertices, CModel3D::Switch::switchToggle ) ? "Wygladzanie wierzcholkow: wlaczone" : "Wygladzanie wierzcholkow: wylaczone" );
+		CWorkspace::instance()->notifyObjectStateChanged(obj->id());
 	}
 	else
 		StatusBarManager::setText( "None objects selected" );
-
-	updateAllViews();
 }
 
 void CMainWindow::createNewCopy()
 {
-	AP::WORKSPACE::duplicateCurrentModel();
+	CWorkspace::instance()->duplicateCurrentModel();
 }
 
 void CMainWindow::cameraResetPosition()
@@ -542,7 +565,7 @@ void CMainWindow::cameraResetPosition()
 		if (nullptr != view)
 		{
 			view->resetGeometry();
-			UI::DOCK::PROPERTIES::updateProperties();
+			dockProperties->updateProperties();
 			updateAllViews();
 		}
 }
@@ -561,13 +584,13 @@ double computeCameraDistance(CBoundingBox& bb, double fovY_deg,	double aspect)
 	double halfHeight = (max.y - min.y) * 0.5;
 	double halfDepth = (max.z - min.z) * 0.5;
 
-	// odległość wymagana w pionie i w poziomie
+	// odlegĹ‚oĹ›Ä‡ wymagana w pionie i w poziomie
 	double dY = halfHeight / tan(fovY / 2.0);
 	double dX = halfWidth / tan(fovX / 2.0);
 
 	double dist = std::max(dX, dY);
 
-	// dodajemy głębokość, żeby box się mieścił w Z
+	// dodajemy gĹ‚Ä™bokoĹ›Ä‡, ĹĽeby box siÄ™ mieĹ›ciĹ‚ w Z
 	dist += halfDepth;
 
 	return dist;
@@ -626,7 +649,7 @@ void CMainWindow::actionLookDir(int direction, std::shared_ptr<CModel3D> obj)
 	}
 	else
 	{
-		bb = AP::WORKSPACE::instance()->topBB();
+		bb = CWorkspace::instance()->topBB();
 
 		if (bb.isInvalid()) return;
 	}
@@ -638,7 +661,7 @@ void CMainWindow::actionLookDir(int direction, std::shared_ptr<CModel3D> obj)
 	double fovY = view->getVAngle(); //getFovY(); // np. 45 stopni
 
 
-	Eigen::Matrix4d R = view->transform().toEigenMatrix4d(); // zawiera już obrót
+	Eigen::Matrix4d R = view->transform().toEigenMatrix4d(); // zawiera juĹĽ obrĂłt
 
 	CPoint3d center = bb.getMidpoint();
 	CPoint3d rotatedCenter = R * center;
@@ -652,10 +675,10 @@ void CMainWindow::actionLookDir(int direction, std::shared_ptr<CModel3D> obj)
 	double dist = computeCameraDistance(bb, fovY, aspect);
 	double targetZ = 200.0 - dist;
 
-	// przesunięcie w Z
+	// przesuniÄ™cie w Z
 	view->transform().translate(CVector3d(0.0, 0.0, targetZ - rotatedCenter.z));
 
-	UI::DOCK::PROPERTIES::updateProperties();
+	dockProperties->updateProperties();
 	updateAllViews();
 }
 
@@ -688,7 +711,7 @@ void CMainWindow::actionLookDir()
 		dir = 6;
 	}
 
-	actionLookDir(dir, AP::WORKSPACE::getCurrentModel());
+	actionLookDir(dir, CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId()));
 }
 
 void CMainWindow::actionSelectSelectionDelete()
@@ -728,51 +751,16 @@ void CMainWindow::actionSelectNone()
 	updateActiveView();
 }
 
-#include "PicViewer.h"
-
 void CMainWindow::imageFit(bool fit)
 {
-	std::shared_ptr<CModel3D> im = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> im = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId());
 	if ((im != nullptr) && im->hasType(CObject::IMAGE))
 	{
-		((CImage*)im.get())->fitToWindow = fit;
-	}
-
-	QMdiSubWindow* window = getPicViewerInstance(im->id());
-	if (window != nullptr)
-	{
-		((PicViewer*)((MdiChild*)window->widget())->m_widget)->reloadImage();
+		ImageViewerHost::setFitToWindow(im->id(), fit);
 	}
 }
 
-//void CMainWindow::bbShowHide(bool show)
-//{
-//	if ( NULL != AP::WORKSPACE::getCurrentModel() )
-//	{
-//		while ( show != AP::WORKSPACE::getCurrentModel()->toggleDrawBB() ) {};
-//
-//		if ( show )
-//		{
-//			StatusBarManager::setText(  "Bounding box: on" );
-//		}
-//		else
-//		{
-//			StatusBarManager::setText(  "Bounding box: off" );
-//		}
-//
-//		updateAllViews();
-//	}
-//	else
-//	{
-//		GLViewer *view = this->currentViewer();
-//		if (NULL != view)
-//		{
-//			view->toggleAxesVisibility();
-//
-//			updateActiveView();
-//		}
-//	}
-//}
+
 
 #include "DockWidgetWorkspace.h"
 
@@ -823,14 +811,14 @@ void CMainWindow::openWorkspace()
 	
 	if (0 == reply)
 	{
-		AP::WORKSPACE::removeAllModels();
+		CWorkspace::instance()->removeAll();
 		//unsigned long t1, t2;
 
 		//t1 = GetTickCount();
 		auto t1 = std::chrono::steady_clock::now();
 
 		//CModel3D* obj = parser->load(path, true);
-		AP::WORKSPACE::loadModel(path, true);
+		WorkspaceImportHost::loadModel(path, true);
 
 		//t2 = GetTickCount();
 		auto t2 = std::chrono::steady_clock::now();
@@ -857,7 +845,7 @@ void CMainWindow::saveWorkspace()
 
 	QVector<std::shared_ptr<CBaseObject>> objects;
 
-	for (const auto& o : AP::WORKSPACE::instance()->children())
+	for (const auto& o : CWorkspace::instance()->children())
 	{
 		objects << o.second;
 	}
@@ -878,189 +866,128 @@ void CMainWindow::saveWorkspace()
 void CMainWindow::removeAllModels()
 {
 	int reply = QMessageBox::question(0, "You are about to removing all models in your workspace.\nRealy you want to do it?", "Caution!");
-	if ( 0 == reply ) AP::WORKSPACE::removeAllModels();
+	if ( 0 == reply ) CWorkspace::instance()->removeAll();
 }
 
 void CMainWindow::removeSelectedModels()
 {
 	int reply = QMessageBox::question(0, "You are about to removing all selected (checked) models.\nRealy you want to do it?", "Caution!");
-	if (0 == reply) AP::WORKSPACE::removeSelectedModels();
+	if (0 == reply) CWorkspace::instance()->removeChecked();
 }
 
 void CMainWindow::resetAllTransformations()
 {
-	for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
+	for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = CWorkspace::instance()->begin(); it != CWorkspace::instance()->end(); it++)
 	{
 		it->second->transform().reset();
 	}
-	UI::DOCK::PROPERTIES::updateProperties();
-	updateAllViews();
+	CWorkspace::instance()->notifyStructureChanged();
 }
 
 void CMainWindow::resetSelectedTransformations()
 {
-	std::list<int> sel = AP::getWorkspace()->getSelection();
+	std::list<int> sel = CWorkspace::instance()->checkedIds();
 	for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
 	{
-		AP::WORKSPACE::getModel(*it)->transform().reset();
+		if (std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(*it))
+		{
+			obj->transform().reset();
+		}
 	}
-	UI::DOCK::PROPERTIES::updateProperties();
-	updateAllViews();
+	CWorkspace::instance()->notifyStructureChanged();
 }
 
 void CMainWindow::lockAllModels()
 {
-	//UI::MESSAGEBOX::information(L"Lock ALL");
-	for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
+	for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = CWorkspace::instance()->begin(); it != CWorkspace::instance()->end(); it++)
 	{
 		it->second->setLocked(true);
-		UI::DOCK::WORKSPACE::setItemLockedById(it->first, true);
 	}
-	UI::changeMenuAfterSelect();
-	UI::DOCK::PROPERTIES::updateProperties();
-	updateAllViews();
+	CWorkspace::instance()->notifyStructureChanged();
 }
 
 void CMainWindow::lockSelectedModels()
 {
-	std::list<int> sel = AP::getWorkspace()->getSelection();
+	std::list<int> sel = CWorkspace::instance()->checkedIds();
 	for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
 	{
-		std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getModel(*it);
-		obj->setLocked(true);
-		UI::DOCK::WORKSPACE::setItemLockedById(*it, true);
+		if (std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(*it))
+		{
+			obj->setLocked(true);
+		}
 	}
-	UI::changeMenuAfterSelect();
-	UI::DOCK::PROPERTIES::updateProperties();
-	updateAllViews();
+	CWorkspace::instance()->notifyStructureChanged();
 }
 
 void CMainWindow::unlockAllModels()
 {
-	//UI::MESSAGEBOX::information(L"Lock ALL");
-	for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
+	for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = CWorkspace::instance()->begin(); it != CWorkspace::instance()->end(); it++)
 	{
 		it->second->setLocked(false);
-		UI::DOCK::WORKSPACE::setItemLockedById(it->first, false);
 	}
-	UI::changeMenuAfterSelect();
-	UI::DOCK::PROPERTIES::updateProperties();
-	updateAllViews();
+	CWorkspace::instance()->notifyStructureChanged();
 }
 
 void CMainWindow::unlockSelectedModels()
 {
-	std::list<int> sel = AP::getWorkspace()->getSelection();
+	std::list<int> sel = CWorkspace::instance()->checkedIds();
 	for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
 	{
-		std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getModel(*it);
-		obj->setLocked(false);
-		UI::DOCK::WORKSPACE::setItemLockedById(*it, false);
+		if (std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(*it))
+		{
+			obj->setLocked(false);
+		}
 	}
-	UI::changeMenuAfterSelect();
-	UI::DOCK::PROPERTIES::updateProperties();
-	updateAllViews();
+	CWorkspace::instance()->notifyStructureChanged();
 }
 
 void CMainWindow::selectAll()
 {
-	AP::getWorkspace()->clearSelection();
-	for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
-	{
-		AP::WORKSPACE::SELECTION::selectModel(it->first);
-	}
+	CWorkspace::instance()->checkAll();
 }
 
 void CMainWindow::unselectAll()
 {
-	std::list<int> sel = AP::getWorkspace()->getSelection();
-	for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
-	{
-		AP::WORKSPACE::SELECTION::unselectModel(*it);
-	}
+	CWorkspace::instance()->clearChecked();
+	CWorkspace::instance()->notifyStructureChanged();
 }
 
 void CMainWindow::hideAllModels()
 {
-	AP::WORKSPACE::setAllModelsVisible(false);
-	//for (std::map<int, CModel3D*>::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
-	//{
-	//	it->second->setVisible(false);
-	//	UI::DOCK::WORKSPACE::setItemVisibleById(it->first, false);
-	//}
-	//UI::changeMenuAfterSelect();
-	//UI::DOCK::PROPERTIES::updateProperties();
-	//updateAllViews();
+	CWorkspace::instance()->setAllVisible(false);
 }
 
 void CMainWindow::hideSelectedModels()
 {
-	AP::WORKSPACE::SELECTION::setModelsVisible(false);
-	//std::list<int> sel = AP::getWorkspace()->getSelection();
-	//for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
-	//{
-	//	CModel3D *obj = AP::WORKSPACE::getModel(*it);
-	//	obj->setVisible(false);
-	//	UI::DOCK::WORKSPACE::setItemVisibleById(*it, false);
-	//}
-	//UI::changeMenuAfterSelect();
-	//UI::DOCK::PROPERTIES::updateProperties();
-	//updateAllViews();
+	CWorkspace::instance()->setCheckedVisible(false);
 }
 
 void CMainWindow::showAllModels()
 {
-	AP::WORKSPACE::setAllModelsVisible(true);
-	//for (std::map<int, CModel3D*>::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
-	//{
-	//	it->second->setVisible(true);
-	//	UI::DOCK::WORKSPACE::setItemVisibleById(it->first, true);
-	//}
-	//UI::changeMenuAfterSelect();
-	//UI::DOCK::PROPERTIES::updateProperties();
-	//updateAllViews();
+	CWorkspace::instance()->setAllVisible(true);
 }
 
 void CMainWindow::showSelectedModels()
 {
-	AP::WORKSPACE::SELECTION::setModelsVisible(true);
-	//std::list<int> sel = AP::getWorkspace()->getSelection();
-	//for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
-	//{
-	//	CModel3D *obj = AP::WORKSPACE::getModel(*it);
-	//	obj->setVisible(true);
-	//	UI::DOCK::WORKSPACE::setItemVisibleById(*it, true);
-	//}
-	//UI::changeMenuAfterSelect();
-	//UI::DOCK::PROPERTIES::updateProperties();
-	//updateAllViews();
+	CWorkspace::instance()->setCheckedVisible(true);
 }
 
 void CMainWindow::modelInSelection(bool b)
 {
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId());
 	if (nullptr != obj)
 	{
-		if (b)
-		{
-			AP::WORKSPACE::SELECTION::selectModel(obj->id());
-		}
-		else
-		{
-			AP::WORKSPACE::SELECTION::unselectModel(obj->id());
-		}
-		UI::DOCK::PROPERTIES::updateProperties();
+		CWorkspace::instance()->setChecked(obj->id(), b);
 	}
 }
 
 void CMainWindow::modelResetTransformations()
 {
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId());
 	if (nullptr != obj)
 	{
 		obj->transform().reset();
-		UI::DOCK::PROPERTIES::updateProperties();
-		updateAllViews();
+		CWorkspace::instance()->notifyObjectStateChanged(obj->id());
 	}
 }
 
@@ -1068,7 +995,7 @@ void CMainWindow::modelResetTransformations()
 
 void CMainWindow::modelLock( bool b )
 {
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId());
 	if ( nullptr != obj )
 	{
 		if ( obj->setLocked( b ) )
@@ -1080,9 +1007,7 @@ void CMainWindow::modelLock( bool b )
 			StatusBarManager::setText(  "Model unlocked" );
 		}
 
-		UI::DOCK::WORKSPACE::setItemLockedById(obj->id(), b);
-		UI::DOCK::PROPERTIES::updateProperties();
-		updateAllViews();
+		CWorkspace::instance()->notifyObjectStateChanged(obj->id());
 	}
 }
 
@@ -1105,19 +1030,19 @@ void CMainWindow::modelClose()
 	}
 
 	auto wksp = CWorkspace::instance();
-
-	auto obj = AP::WORKSPACE::getCurrentModel();
+	auto obj = wksp->_getModel(wksp->_getCurrentModelId());
 
 	if (obj != nullptr)
 	{
 		if (auto im = std::dynamic_pointer_cast<CImage>(obj))
 		{
+			im->setShowViewer(false);
 			if (wksp->_objectRemove(im))
 				StatusBarManager::setText("Current image has been removed...");
 		}
 		else
 		{
-			if (wksp->_objectRemove(obj))
+			if (wksp->removeCurrent())
 				StatusBarManager::setText("Current model has been removed...");
 		}
 	}
@@ -1129,7 +1054,7 @@ void CMainWindow::modelClose()
 
 void CMainWindow::pmEcol()
 {
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId());
 
 	if ( NULL != obj )
 	{
@@ -1138,12 +1063,12 @@ void CMainWindow::pmEcol()
 		Ui_pmDialog pmUi;
 		pmUi.setupUi(pmD);
 
-		pmUi.spinBox->setValue(std::dynamic_pointer_cast<CMesh>(AP::WORKSPACE::getCurrentModel()->getChild())->vertices().size());
+		pmUi.spinBox->setValue(std::dynamic_pointer_cast<CMesh>(obj->getChild())->vertices().size());
 
 		if ( pmD->exec() )
 		{	
 			try {
-				std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+				std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId());
 				if ( NULL != obj )
 				{
 					QFileInfo f( obj->path() );
@@ -1158,7 +1083,7 @@ void CMainWindow::pmEcol()
 
 						obj->setPath( f.absolutePath() + "/" + fname + "." + f.completeSuffix() );
 						
-						AP::WORKSPACE::addModel( obj );
+						CWorkspace::instance()->_objectAdd(obj);
 					}
 					else
 					{
@@ -1181,7 +1106,7 @@ void CMainWindow::pmEcol()
 
 void CMainWindow::pmVsplit()
 {
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	std::shared_ptr<CModel3D> obj = CWorkspace::instance()->_getModel(CWorkspace::instance()->_getCurrentModelId());
 
 	if ( NULL != obj )
 	{
@@ -1190,13 +1115,13 @@ void CMainWindow::pmVsplit()
 		Ui_pmDialog pmUi;
 		pmUi.setupUi(pmD);
 
-		pmUi.spinBox->setValue(std::dynamic_pointer_cast<CMesh>(AP::WORKSPACE::getCurrentModel()->getChild())->vertices().size());
+		pmUi.spinBox->setValue(std::dynamic_pointer_cast<CMesh>(obj->getChild())->vertices().size());
 
 		if ( pmD->exec() )
 		{	
 			if ( pmUi.checkBox->isChecked() )
 			{
-				obj = AP::WORKSPACE::duplicateCurrentModel();
+				obj = CWorkspace::instance()->duplicateCurrentModel();
 				if (nullptr == obj) return;
 			}
 
@@ -1218,12 +1143,12 @@ void CMainWindow::pmVsplit()
 
 void CMainWindow::grabPoints(bool b)
 {
-	AP::mainApp().bGlobalPicking = b;
+	PluginRuntimeManager::setGlobalPickingEnabled(b);
 }
 
 void CMainWindow::pickSnap(bool b)
 {
-	AP::mainApp().bPickSnap = b;
+	PluginRuntimeManager::setPickSnapEnabled(b);
 }
 
 

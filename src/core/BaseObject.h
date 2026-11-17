@@ -123,6 +123,7 @@ public:
 	virtual const QString xmlInfo() { return QString(); };
 
 	virtual void applyTransformation(CTransform& /*from*/, CTransform& /*to*/) {};
+	virtual bool applyParentTransform();
 
 	//virtual CBaseObject *getCopy() { return new CBaseObject( *this ); }
 
@@ -187,6 +188,7 @@ public:
 	int id() { return m_Id; };
 	int parentId() { if (auto o = m_parent.lock()) return o->id(); else return NO_CURRENT_MODEL; };
 
+	[[deprecated("Use CWorkspace::setChecked(id, bool) for workspace-managed objects. Direct setChecked() is intended only for detached objects or deliberate low-level use.")]]
 	virtual inline bool setChecked(bool sel) { return m_checked = sel; };
 	virtual inline bool isChecked() { return m_checked; };
 

@@ -2,7 +2,8 @@
 #include "AnnotationSetOfFaces.h"
 #include "propTransform.h"
 
-#include "../api/UI.h"
+//
+#include "../core/Workspace.h"
 #include <QVBoxLayout>
 
 PropAnnotationSetOfFaces::PropAnnotationSetOfFaces(CAnnotationSetOfFaces *an, QWidget *parent) : PropWidget(parent)//: PropAnnotation( an, parent )
@@ -59,12 +60,4 @@ void PropAnnotationSetOfFaces::updateProperties()
 	ui.info->blockSignals(true);
 	ui.info->setText(info);
 	ui.info->blockSignals(false);
-}
-
-
-void PropAnnotationSetOfFaces::pointSizeChanged(int s)
-{
-	//obj->m_pointSize = s;
-
-	UI::updateAllViews();
 }

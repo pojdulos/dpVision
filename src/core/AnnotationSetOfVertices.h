@@ -9,20 +9,20 @@
 typedef std::set<INDEX_TYPE> SetOfVIndices;
 #define SetOfVertices SetOfVIndices
 
-class DPVISION_EXPORT CAnnotationSetOfVertices : public CAnnotation, public SetOfVIndices
+class CAnnotationSetOfVertices : public CAnnotation, public SetOfVIndices
 {
 public:
 	std::shared_ptr<CPointCloud> m_cloud;
 	int m_pointSize;
 
-	CAnnotationSetOfVertices(std::shared_ptr<CBaseObject> m = nullptr);;
+	DPVISION_EXPORT CAnnotationSetOfVertices(std::shared_ptr<CBaseObject> m = nullptr);;
 
-	CAnnotationSetOfVertices(const CAnnotationSetOfVertices& a);;
+	DPVISION_EXPORT CAnnotationSetOfVertices(const CAnnotationSetOfVertices& a);;
 
 	~CAnnotationSetOfVertices() override { SetOfVIndices::clear(); };
 
 	void setDest(std::shared_ptr<CPointCloud> m) { m_cloud = m; };
-	void getDest();
+	DPVISION_EXPORT void getDest();
 
 	virtual inline void clear() override
 	{

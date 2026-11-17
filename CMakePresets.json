@@ -1,0 +1,185 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": "windows-system",
+      "displayName": "Windows (system packages)",
+      "description": "Use the default Windows generator and dependencies visible in the system.",
+      "inherits": "base",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "windows-vcpkg",
+      "displayName": "Windows + vcpkg",
+      "description": "Use the default Windows generator and dependencies from VCPKG_ROOT.",
+      "inherits": "base",
+      "condition": {
+        "type": "allOf",
+        "conditions": [
+          {
+            "type": "equals",
+            "lhs": "${hostSystemName}",
+            "rhs": "Windows"
+          },
+          {
+            "type": "notEquals",
+            "lhs": "$env{VCPKG_ROOT}",
+            "rhs": ""
+          }
+        ]
+      },
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      }
+    },
+    {
+      "name": "windows-vcpkg-local",
+      "displayName": "Windows + local vcpkg",
+      "description": "Use the default Windows generator and dependencies from E:/vcpkg.",
+      "inherits": "base",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "E:/vcpkg/scripts/buildsystems/vcpkg.cmake"
+      }
+    },
+    {
+      "name": "linux-ninja-system",
+      "displayName": "Linux Ninja (system packages)",
+      "description": "Use Ninja and dependencies installed in the system.",
+      "inherits": "base",
+      "generator": "Ninja",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      }
+    },
+    {
+      "name": "linux-ninja-vcpkg",
+      "displayName": "Linux Ninja + vcpkg",
+      "description": "Use Ninja and dependencies from VCPKG_ROOT.",
+      "inherits": "base",
+      "generator": "Ninja",
+      "condition": {
+        "type": "allOf",
+        "conditions": [
+          {
+            "type": "equals",
+            "lhs": "${hostSystemName}",
+            "rhs": "Linux"
+          },
+          {
+            "type": "notEquals",
+            "lhs": "$env{VCPKG_ROOT}",
+            "rhs": ""
+          }
+        ]
+      },
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "windows-system-debug",
+      "configurePreset": "windows-system",
+      "configuration": "Debug",
+      "jobs": 8
+    },
+    {
+      "name": "windows-system-release",
+      "configurePreset": "windows-system",
+      "configuration": "Release",
+      "jobs": 8
+    },
+    {
+      "name": "windows-vcpkg-debug",
+      "configurePreset": "windows-vcpkg",
+      "configuration": "Debug",
+      "jobs": 8
+    },
+    {
+      "name": "windows-vcpkg-release",
+      "configurePreset": "windows-vcpkg",
+      "configuration": "Release",
+      "jobs": 8
+    },
+    {
+      "name": "windows-vcpkg-local-debug",
+      "configurePreset": "windows-vcpkg-local",
+      "configuration": "Debug",
+      "jobs": 8
+    },
+    {
+      "name": "windows-vcpkg-local-release",
+      "configurePreset": "windows-vcpkg-local",
+      "configuration": "Release",
+      "jobs": 8
+    },
+    {
+      "name": "linux-ninja-system",
+      "configurePreset": "linux-ninja-system"
+    },
+    {
+      "name": "linux-ninja-vcpkg",
+      "configurePreset": "linux-ninja-vcpkg"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "windows-vcpkg-local-debug-tests",
+      "configurePreset": "windows-vcpkg-local",
+      "configuration": "Debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": false
+      }
+    },
+    {
+      "name": "windows-vcpkg-local-debug-api-tests",
+      "inherits": "windows-vcpkg-local-debug-tests",
+      "filter": {
+        "include": {
+          "name": "dpVisionApiTests"
+        }
+      }
+    },
+    {
+      "name": "windows-vcpkg-local-release-tests",
+      "configurePreset": "windows-vcpkg-local",
+      "configuration": "Release",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": false
+      }
+    }
+  ]
+}

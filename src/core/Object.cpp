@@ -13,6 +13,8 @@ CObject::CObject(std::shared_ptr<CBaseObject> p) : CBaseObject(p), CBoundingBox(
 	bDrawBB = true;
 	m_data.clear();
 	m_annotations.clear();
+	m_childOrder.clear();
+	m_annotationOrder.clear();
 	renderer_ = std::make_shared<IObjectRenderer>();
 };
 
@@ -23,6 +25,8 @@ CObject::CObject(int parentId) : CBaseObject(parentId), CBoundingBox()
 	bDrawBB = true;
 	m_data.clear();
 	m_annotations.clear();
+	m_childOrder.clear();
+	m_annotationOrder.clear();
 	renderer_ = std::make_shared<IObjectRenderer>();
 };
 
@@ -31,6 +35,8 @@ CObject::CObject(const CObject &b) : CBaseObject(b), CBoundingBox(b) //CMinMax(b
 {
 	m_data.clear();
 	m_annotations.clear();
+	m_childOrder.clear();
+	m_annotationOrder.clear();
 
 	for (Children::const_iterator it = b.m_data.begin(); it != b.m_data.end(); it++)
 	{
@@ -39,6 +45,7 @@ CObject::CObject(const CObject &b) : CBaseObject(b), CBoundingBox(b) //CMinMax(b
 		{
 			//child->setParent(this_shared);
 			this->m_data[child->id()] = child;
+			this->m_childOrder.append(child->id());
 		}
 	}
 
@@ -49,6 +56,7 @@ CObject::CObject(const CObject &b) : CBaseObject(b), CBoundingBox(b) //CMinMax(b
 		{
 			//child->setParent(this_shared);
 			this->m_annotations[child->id()] = child;
+			this->m_annotationOrder.append(child->id());
 		}
 	}
 	
@@ -144,6 +152,7 @@ int CObject::addAnnotation(std::shared_ptr<CObject> parent, std::shared_ptr<CAnn
 	if (ad == nullptr) return NO_CURRENT_MODEL;
 
 	parent->m_annotations[ad->id()] = ad;
+	parent->m_annotationOrder.append(ad->id());
 	ad->setParent(parent);
 
 	return ad->id();
@@ -156,6 +165,7 @@ std::shared_ptr<CAnnotation> CObject::removeAnnotation(int id)
 	{
 		std::shared_ptr<CAnnotation> an = it->second;
 		m_annotations.erase(id);
+		m_annotationOrder.remove(id);
 		return an;
 	}
 	else
@@ -171,6 +181,22 @@ std::shared_ptr<CAnnotation> CObject::removeAnnotation(int id)
 	return nullptr;
 }
 
+bool CObject::moveAnnotationBefore(int movedId, int anchorId)
+{
+	ensureAnnotationOrder();
+	return (m_annotations.find(movedId) != m_annotations.end())
+		&& (m_annotations.find(anchorId) != m_annotations.end())
+		&& m_annotationOrder.moveBefore(movedId, anchorId);
+}
+
+bool CObject::moveAnnotationAfter(int movedId, int anchorId)
+{
+	ensureAnnotationOrder();
+	return (m_annotations.find(movedId) != m_annotations.end())
+		&& (m_annotations.find(anchorId) != m_annotations.end())
+		&& m_annotationOrder.moveAfter(movedId, anchorId);
+}
+
 
 bool CObject::removeAnnotation(std::shared_ptr<CAnnotation> an)
 {
@@ -181,6 +207,7 @@ bool CObject::removeAnnotation(std::shared_ptr<CAnnotation> an)
 	if (it != m_annotations.end())
 	{
 		m_annotations.erase(it);
+		m_annotationOrder.remove(an->id());
 
 		return true;
 	}
@@ -236,6 +263,7 @@ int CObject::addChild(std::shared_ptr<CObject> parent, std::shared_ptr<CBaseObje
 	child->setParent(parent);
 
 	parent->m_data[child->id()] = child;
+	parent->m_childOrder.append(child->id());
 	
 	return child->id();
 }
@@ -244,7 +272,19 @@ std::shared_ptr<CBaseObject> CObject::getChild(int id)
 {
 	if (m_data.empty()) return nullptr;
 
-	if (id == 0) return m_data.begin()->second;
+	if (id == 0)
+	{
+		ensureChildOrder();
+		for (int orderedId : m_childOrder.ids())
+		{
+			Children::iterator it = m_data.find(orderedId);
+			if (it != m_data.end())
+			{
+				return it->second;
+			}
+		}
+		return nullptr;
+	}
 
 	if (m_data.find(id) == m_data.end()) return nullptr;
 	else return m_data.at(id);
@@ -267,7 +307,15 @@ bool CObject::removeChild(int id)
 {
 	if (id == 0)
 	{
-		m_data.erase(m_data.begin());
+		ensureChildOrder();
+		if (m_childOrder.ids().empty())
+		{
+			return false;
+		}
+
+		const int firstId = m_childOrder.ids().front();
+		m_data.erase(firstId);
+		m_childOrder.remove(firstId);
 		return true;
 	}
 	else
@@ -276,16 +324,35 @@ bool CObject::removeChild(int id)
 		if (it != m_data.end())
 		{
 			m_data.erase(it);
+			m_childOrder.remove(id);
 			return true;
 		}
 	}
 	return false;
 }
 
+bool CObject::moveChildBefore(int movedId, int anchorId)
+{
+	ensureChildOrder();
+	return (m_data.find(movedId) != m_data.end())
+		&& (m_data.find(anchorId) != m_data.end())
+		&& m_childOrder.moveBefore(movedId, anchorId);
+}
+
+bool CObject::moveChildAfter(int movedId, int anchorId)
+{
+	ensureChildOrder();
+	return (m_data.find(movedId) != m_data.end())
+		&& (m_data.find(anchorId) != m_data.end())
+		&& m_childOrder.moveAfter(movedId, anchorId);
+}
+
 void CObject::removeAllChilds()
 {
 	m_data.clear();
 	m_annotations.clear();
+	m_childOrder.clear();
+	m_annotationOrder.clear();
 }
 
 
@@ -312,9 +379,9 @@ std::vector<unsigned int> CObject::getChildrenIds()
 {
 	std::vector<unsigned int> ids;
 
-	for (CObject::Children::iterator it = m_data.begin(); it != m_data.end(); it++)
+	for (int id : orderedChildIds())
 	{
-		ids.push_back(it->first);
+		ids.push_back((unsigned int)id);
 	}
 
 	return ids;
@@ -334,10 +401,11 @@ int CObject::countChildren(CBaseObject::Type type)
 std::vector<CBaseObject*> CObject::getChildren()
 {
 	std::vector<CBaseObject*> children;
-	for (auto child : m_data)
+	for (int id : orderedChildIds())
 	{
-		if (child.second != nullptr)
-			children.push_back(child.second.get());
+		Children::iterator it = m_data.find(id);
+		if ((it != m_data.end()) && (it->second != nullptr))
+			children.push_back(it->second.get());
 	}
 	return children;
 }
@@ -345,11 +413,62 @@ std::vector<CBaseObject*> CObject::getChildren()
 std::vector<CBaseObject*> CObject::getChildren(CBaseObject::Type type)
 {
 	std::vector<CBaseObject*> children;
-	for (auto child : m_data)
+	for (int id : orderedChildIds())
 	{
-		if ((child.second != nullptr) && child.second->hasType(type))
-			children.push_back(child.second.get());
+		Children::iterator it = m_data.find(id);
+		if ((it != m_data.end()) && (it->second != nullptr) && it->second->hasType(type))
+			children.push_back(it->second.get());
 	}
 	return children;
+}
+
+const std::vector<int>& CObject::orderedChildIds()
+{
+	ensureChildOrder();
+	return m_childOrder.ids();
+}
+
+const std::vector<int>& CObject::orderedAnnotationIds()
+{
+	ensureAnnotationOrder();
+	return m_annotationOrder.ids();
+}
+
+void CObject::ensureChildOrder()
+{
+	OrderedIdList normalized;
+	for (int id : m_childOrder.ids())
+	{
+		if (m_data.find(id) != m_data.end())
+		{
+			normalized.append(id);
+		}
+	}
+
+	for (const auto& child : m_data)
+	{
+		normalized.append(child.first);
+	}
+
+	m_childOrder = normalized;
+}
+
+void CObject::ensureAnnotationOrder()
+{
+	OrderedIdList normalized;
+	for (int id : m_annotationOrder.ids())
+	{
+		if (m_annotations.find(id) != m_annotations.end())
+		{
+			normalized.append(id);
+		}
+	}
+
+	for (const auto& annotation : m_annotations)
+	{
+		normalized.append(annotation.first);
+	}
+
+	m_annotationOrder = normalized;
 }
 

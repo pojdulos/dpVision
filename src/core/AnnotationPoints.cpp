@@ -1,7 +1,6 @@
 #include "Global.h"
 #include "AnnotationPoints.h"
 
-#include "../api/AP.h"
 
 #include "../renderers/IAnnotationPointsRenderer.h"
 

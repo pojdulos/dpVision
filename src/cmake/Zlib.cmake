@@ -1,20 +1,30 @@
-message( "\nConfiguring ZLIB:\n" )
+message("\nConfiguring ZLIB:\n")
 
-find_package (Qt5Zlib QUIET)
-if (Qt5Zlib_FOUND)
-    message( "-- Qt::Zlib found" )
-    target_link_libraries( ${EXE_NAME}
-		Qt::Zlib
-	)
-    set (QUAZIP_USE_QT_ZLIB ON)
-else (Qt5Zlib_FOUND)
-	find_package (ZLIB)
-	if (ZLIB_FOUND)
-		message( "-- ZLIB found" )
-		target_link_libraries( ${EXE_NAME}
-			z
-		)
-	else (ZLIB_FOUND)
-		message( "-- Qt::Zlib not found, looking for another zlib" )
-	endif (ZLIB_FOUND)
-endif (Qt5Zlib_FOUND)
+if(TARGET Qt::Zlib)
+    set(_dpvision_zlib_target Qt::Zlib)
+    set(QUAZIP_USE_QT_ZLIB ON)
+elseif(TARGET Qt5::Zlib)
+    set(_dpvision_zlib_target Qt5::Zlib)
+    set(QUAZIP_USE_QT_ZLIB ON)
+else()
+    find_package(Qt5Zlib QUIET)
+    if(Qt5Zlib_FOUND AND TARGET Qt::Zlib)
+        set(_dpvision_zlib_target Qt::Zlib)
+        set(QUAZIP_USE_QT_ZLIB ON)
+    elseif(Qt5Zlib_FOUND AND TARGET Qt5::Zlib)
+        set(_dpvision_zlib_target Qt5::Zlib)
+        set(QUAZIP_USE_QT_ZLIB ON)
+    else()
+        find_package(ZLIB REQUIRED)
+        set(_dpvision_zlib_target ZLIB::ZLIB)
+    endif()
+endif()
+
+if(NOT TARGET dpVision::ZLIB)
+    add_library(dpVision::ZLIB INTERFACE IMPORTED)
+    set_target_properties(dpVision::ZLIB PROPERTIES
+        INTERFACE_LINK_LIBRARIES "${_dpvision_zlib_target}"
+    )
+endif()
+
+message("-- Using ZLIB target: ${_dpvision_zlib_target}")

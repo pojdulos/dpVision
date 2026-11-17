@@ -1,28 +1,42 @@
-message( "\nConfiguring Boost:\n" )
-#find_package(Boost QUIET)
-find_package(Boost CONFIG REQUIRED)
+message("\nConfiguring Boost headers:\n")
 
-if (Boost_FOUND)
-	message( "-- Boost found.")
-else (Boost_FOUND)
-	message( "-- Boost not found in system path. Looking in 3rdParty folder...")
+set(_dpvision_boost_candidates
+    "${CMAKE_SOURCE_DIR}/3rdParty"
+    "${PROJECT_SOURCE_DIR}/3rdParty"
+)
 
-	find_subdirs( ${CMAKE_CURRENT_SOURCE_DIR}/3rdParty "boost")
-	
-	list(LENGTH SUBDIRS SUBDIR_COUNT)
-	while((SUBDIR_COUNT GREATER 0) AND (NOT Boost_FOUND))
-		list(POP_FRONT SUBDIRS SUBDIR)
-		set (PTH "${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/${SUBDIR}")
-		if(IS_DIRECTORY ${PTH} AND EXISTS "${PTH}/boost/version.hpp")
-			set(Boost_INCLUDE_DIR ${PTH} CACHE PATH "Boost directory" FORCE)
-			find_package(Boost QUIET)
-		endif()
-		list(LENGTH SUBDIRS SUBDIR_COUNT)
-	endwhile()
-	
-	if (Boost_FOUND)
-		message( "-- Boost found in ${PTH}" )
-	else (Boost_FOUND)
-		message( "-- Boost not found. Specify Boost_INCLUDE_DIR variable and reconfigure, please...")
-	endif (Boost_FOUND)
-endif (Boost_FOUND)
+find_path(Boost_INCLUDE_DIRS
+    NAMES boost/version.hpp
+)
+
+if(NOT Boost_INCLUDE_DIRS)
+    foreach(_dpvision_boost_root IN LISTS _dpvision_boost_candidates)
+        if(EXISTS "${_dpvision_boost_root}")
+            file(GLOB _dpvision_boost_subdirs RELATIVE "${_dpvision_boost_root}" "${_dpvision_boost_root}/*")
+            foreach(_dpvision_boost_subdir IN LISTS _dpvision_boost_subdirs)
+                set(_dpvision_boost_include_dir "${_dpvision_boost_root}/${_dpvision_boost_subdir}")
+                if(EXISTS "${_dpvision_boost_include_dir}/boost/version.hpp")
+                    set(Boost_INCLUDE_DIRS "${_dpvision_boost_include_dir}")
+                    break()
+                endif()
+            endforeach()
+        endif()
+
+        if(Boost_INCLUDE_DIRS)
+            break()
+        endif()
+    endforeach()
+endif()
+
+if(NOT Boost_INCLUDE_DIRS)
+    message(FATAL_ERROR "Boost headers not found. Install boost-array and boost-multi-array via vcpkg/system packages or place Boost headers in 3rdParty")
+endif()
+
+if(NOT TARGET Boost::boost)
+    add_library(Boost::boost INTERFACE IMPORTED)
+    set_target_properties(Boost::boost PROPERTIES
+        INTERFACE_INCLUDE_DIRECTORIES "${Boost_INCLUDE_DIRS}"
+    )
+endif()
+
+message("-- Using Boost headers from ${Boost_INCLUDE_DIRS}")

@@ -2,11 +2,10 @@
 
 #include "ImageLabel.h"
 #include "Image.h"
+#include "ImageViewerState.h"
 
 #include <QScrollArea>
 #include <QVBoxLayout>
-#include "../api/AP.h"
-
 PicViewer::PicViewer(QWidget* parent) : QWidget( parent )
 {
 	setupUi(this);
@@ -117,7 +116,7 @@ void PicViewer::reloadImage()
 	int imgW = pic.width();
 	int imgH = pic.height();
 
-	if (m_images[m_current]->fitToWindow)
+	if (ImageViewerState::fitToWindow(m_images[m_current]->id()))
 	{
 		scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
 		scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);

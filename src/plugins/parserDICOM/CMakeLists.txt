@@ -32,6 +32,7 @@ target_compile_definitions(${PLUGIN_NAME} PRIVATE
 
 target_link_libraries (${PLUGIN_NAME}
 	dpVision::Core
+	dpVision::Gui
 	dpVision::PluginManager
 	Qt5::Core
 	Eigen3::Eigen
@@ -56,8 +57,8 @@ if (MSVC)
 		LINKER_LANGUAGE CXX
 	)
 	add_custom_command(TARGET ${PLUGIN_NAME} POST_BUILD
-		COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${PLUGIN_NAME}>/plugins/
-		COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PLUGIN_NAME}> $<TARGET_FILE_DIR:${PLUGIN_NAME}>/plugins/
+		COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:dpVision>/plugins
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${PLUGIN_NAME}> $<TARGET_FILE_DIR:dpVision>/plugins/
 	)
 	
 	target_compile_options(${PLUGIN_NAME} PRIVATE /bigobj)

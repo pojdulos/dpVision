@@ -35,6 +35,7 @@ public:
 	void fullScreen();
 
 	void keyPressEvent(QKeyEvent* e) override;
+	void closeEvent(QCloseEvent* event) override;
 
 	void resizeEvent(QResizeEvent* e) override;
 

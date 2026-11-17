@@ -58,8 +58,8 @@ void PMFactory::CalcPlane( Plane &p, const CFace &f )
 void PMFactory::select_pair()
 {
 	const double t = 0.12;
-	int max_vid;
-	int min_vid;
+    INDEX_TYPE max_vid;
+    INDEX_TYPE min_vid;
 	int i, j;
 	bool take_virtual_pair_into_consideration = false;
 	
@@ -68,12 +68,12 @@ void PMFactory::select_pair()
 	size_t cnter = 0;
 
 	auto progress_ = IProgressListener::getDefault();
-	if (progress_) progress_->init( 0, faces.size(), 0 );
+    if (progress_) progress_->init( 0, static_cast<int>(faces.size()), 0 );
 
 	int progress = 0;
 	for (CPMFfaces::iterator fit=faces.begin(); fit!=faces.end(); fit++)
 	{
-		StatusBarManager::setTextTimed( 500, QString("Quadrics::select_pair(): f=%1 ").arg(cnter++));
+        StatusBarManager::setTextTimed( 500, QString("Quadrics::select_pair(): f=%1 ").arg(static_cast<qulonglong>(cnter++)));
 		if (progress_) progress_->setValue( progress++ );
 
 		// sciana ma 3 krawedzie - dla kazdej krawedzi sprawdzam czy juz jest w bazie bledow
@@ -125,7 +125,7 @@ void PMFactory::select_pair()
 
 
 
-error_type PMFactory::calculate_error(int id_v1, int id_v2, double* vx, double* vy, double* vz)
+error_type PMFactory::calculate_error(size_t id_v1, size_t id_v2, double* vx, double* vy, double* vz)
 {
 	error_type min_error;
 	Matrix q_bar;

@@ -1,0 +1,3 @@
+[submodule "plugins/splint-maker"]
+	path = plugins/splint-maker
+	url = https://github.com/iitis/splint-maker.git

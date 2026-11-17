@@ -9,17 +9,17 @@ class CMesh;
 
 typedef std::set<INDEX_TYPE> SetOfFIndices;
 
-class DPVISION_EXPORT CAnnotationSetOfFaces : public CAnnotation, public SetOfFIndices
+class CAnnotationSetOfFaces : public CAnnotation, public SetOfFIndices
 {
 	friend class PropAnnotationSetOfFaces;
 	std::shared_ptr<CMesh> m_mesh;
 
 public:
-	CAnnotationSetOfFaces(std::shared_ptr<CBaseObject> m = nullptr);;
+	DPVISION_EXPORT CAnnotationSetOfFaces(std::shared_ptr<CBaseObject> m = nullptr);;
 
-	CAnnotationSetOfFaces( const CAnnotationSetOfFaces& p );;
+	DPVISION_EXPORT CAnnotationSetOfFaces( const CAnnotationSetOfFaces& p );;
 
-	CAnnotationSetOfFaces( const SetOfFIndices& list );;
+	DPVISION_EXPORT CAnnotationSetOfFaces( const SetOfFIndices& list );;
 
 	~CAnnotationSetOfFaces() override { SetOfFIndices::clear(); } // m_pairs.clear(); };
 
@@ -50,7 +50,7 @@ public:
 	};
 
 	void setDest(std::shared_ptr<CMesh> m) { m_mesh = m; };
-	std::shared_ptr<CMesh> getDest();
+	DPVISION_EXPORT std::shared_ptr<CMesh> getDest();
 
 	inline std::shared_ptr<CMesh>& dstMesh() { return m_mesh; }
 
@@ -61,7 +61,7 @@ public:
 	};
 
 
-	std::shared_ptr<CMesh> toMesh();
+	DPVISION_EXPORT std::shared_ptr<CMesh> toMesh();
 
 	virtual int type() { return CAnnotation::Type::SETOFFACES; }
 
@@ -72,5 +72,5 @@ public:
 };
 
 
-// dla zachowania zgodnoœci
+// dla zachowania zgodnoï¿½ci
 typedef CAnnotationSetOfFaces CAnnotationVFaces;

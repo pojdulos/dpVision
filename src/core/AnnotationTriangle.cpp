@@ -1,7 +1,6 @@
 #include "Global.h"
 #include "AnnotationTriangle.h"
 
-#include "../api/AP.h"
 
 #include "../renderers/IAnnotationTriangleRenderer.h"
 

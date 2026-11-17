@@ -26,7 +26,7 @@ out VS_OUT{
 	vec3 vScale;
 	mat4 modelviewMatrix;
 	mat4 projectionMatrix;
-	bool isValid;
+	int isValid;
 } vout;
 
 void main()
@@ -49,7 +49,7 @@ void main()
 	vout.projectionMatrix = projectionMatrix;
 
 	vout.color = color.rgb;
-	vout.isValid = true;
+	vout.isValid = 1;
 }
 )";
 
@@ -81,7 +81,7 @@ out VS_OUT{
 	vec3 vScale;
 	mat4 modelviewMatrix;
 	mat4 projectionMatrix;
-	bool isValid;
+	int isValid;
 } vout;
 
 vec3 get_filter(int i, float nCol)
@@ -116,7 +116,7 @@ void main()
 			{
 				vout.color = get_filter(i, nCol);
 
-				vout.isValid = true;
+				vout.isValid = 1;
 				return;
 			}
 		}
@@ -131,16 +131,16 @@ void main()
 			}
 			else
 				vout.color = vec3(1.0, 1.0, 1.0);
-			vout.isValid = true;
+			vout.isValid = 1;
 		}
 		else
 		{
-			vout.isValid = false;
+			vout.isValid = 0;
 		}
 	}
 	else
 	{
-		vout.isValid = false;
+		vout.isValid = 0;
 	}
 }
 )";
@@ -156,16 +156,18 @@ in VS_OUT{
 	vec3 vScale;
 	mat4 modelviewMatrix;
 	mat4 projectionMatrix;
-	bool isValid;
+	int isValid;
 } gs_in[];
 
 out vec3 vertexColor;
+out vec3 FragPos;
 
 void main(void)
 {
-	if (gs_in[0].isValid)
+	if (gs_in[0].isValid != 0)
 	{
 		vertexColor = gs_in[0].color;
+		FragPos = gs_in[0].vPos;
 		gl_Position = gs_in[0].projectionMatrix * gs_in[0].modelviewMatrix * vec4(gs_in[0].vPos, 1.0);
 
 		EmitVertex();
@@ -184,13 +186,14 @@ in VS_OUT {
 	vec3 vScale;
 	mat4 modelviewMatrix;
 	mat4 projectionMatrix;
-    bool isValid;
+    int isValid;
 } gs_in[];
 
 out vec3 vertexColor;
+out vec3 FragPos;
 
 void main() {
-    if (gs_in[0].isValid) {
+    if (gs_in[0].isValid != 0) {
         vertexColor = gs_in[0].color;
 
         // Pozycja wierzcho�ka (punkt)
@@ -239,12 +242,14 @@ void main() {
         // Generowanie �cian kostki
         for (int i = 0; i < 10; ++i) {
 			int idx = indices[i];
+            FragPos = vertices[idx].xyz;
             gl_Position = gs_in[0].projectionMatrix * gs_in[0].modelviewMatrix * vertices[idx];
             EmitVertex();
         }
         EndPrimitive();
         for (int i = 10; i < 20; ++i) {
 			int idx = indices[i];
+            FragPos = vertices[idx].xyz;
             gl_Position = gs_in[0].projectionMatrix * gs_in[0].modelviewMatrix * vertices[idx];
             EmitVertex();
         }

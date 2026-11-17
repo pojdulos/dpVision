@@ -1,0 +1,6 @@
+#include "../core/StatusBarManager.h"
+#include "../core/MessageBoxManager.h"
+#include "../core/interfaces/IProgressListener.h"
+#include "../core/PointCloud.h"
+#include "../core/interfaces/IStatusListener.h"
+#include "../core/interfaces/IMessageListener.h"

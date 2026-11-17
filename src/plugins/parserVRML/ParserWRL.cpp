@@ -2,7 +2,15 @@
 
 #include "ParserWRL.h"
 #include "Utilities.h"
-#include "../api/UI.h"
+#include "../api/adapters/PluginHostAPIAdapter.h"
+
+namespace {
+PluginHostAPIAdapter& hostApi()
+{
+    static PluginHostAPIAdapter api;
+    return api;
+}
+}
 
 CParserWRL::CParserWRL(void)
 {
@@ -23,7 +31,16 @@ size_t CParserWRL::Run()
 	m_model->addChild(m_model, pMeshData = std::make_shared<CMesh>() );
 	if ( pMeshData == NULL ) return 0;
 
-	return ReadVRML();
+
+	auto result = ReadVRML();
+
+	qInfo() << "VRML file loaded: " << plikSiatki.absoluteFilePath() << " with " << pMeshData->faces().size() << " faces and " << pMeshData->vertices().size() << " vertices.";
+	
+	pMeshData->setPath(plikSiatki.absoluteFilePath());
+	m_model->setPath(plikSiatki.absoluteFilePath());
+	m_model->setLabel(plikSiatki.fileName());
+
+	return result;
 }
 
 
@@ -103,7 +120,7 @@ bool CParserWRL::VRML_GoToNextLine( FILE *plik )
 
 size_t CParserWRL::ReadVRML()
 {
-	//std::string buffer = UI::stream2string( plikSiatki.absoluteFilePathW().c_str() );
+	
 
 #ifdef _WIN32
     FILE* plik = _wfopen(plikSiatki.absoluteFilePathW().c_str(), L"r");
@@ -154,7 +171,8 @@ size_t CParserWRL::ReadVRML()
 
 	fclose( plik );
 
-	UI::STATUSBAR::printf(L"Ready: F:%lu, V:%lu", pMeshData->faces().size(), pMeshData->vertices().size() );
+	hostApi().statusBar().setText(
+        QString("Ready: F:%1, V:%2").arg(pMeshData->faces().size()).arg(pMeshData->vertices().size()));
 
 	return pMeshData->faces().size(); //faceCount;
 }

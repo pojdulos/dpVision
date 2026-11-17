@@ -1,7 +1,6 @@
 #include "Global.h"
 #include "AnnotationVPath.h"
 
-#include "../api/AP.h"
 
 #include "../renderers/IAnnotationVPathRenderer.h"
 

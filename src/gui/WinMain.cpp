@@ -9,15 +9,15 @@
 #include <QCommandLineOption>
 #include <QDebug>
 #include <QDialog>
+#include <QFileInfo>
 #include <QLabel>
+#include <QDir>
 #include <QVBoxLayout>
 #include <QWidget>
 
 #include "AppSettings.h"
-
-#include "../api/AP.h"
-
 #include "StatusBarManager.h"
+#include "WorkspaceImportHost.h"
 
 int main(int argc, char* argv[])
 {
@@ -36,7 +36,11 @@ int main(int argc, char* argv[])
 
     QT_REQUIRE_VERSION(argc, argv, "5.15.2")
 
+    const QString exeDir = QFileInfo(QString::fromLocal8Bit(argv[0])).absolutePath();
+    qputenv("QT_QPA_PLATFORM_PLUGIN_PATH", QDir(exeDir).filePath("platforms").toLocal8Bit());
+
     CMainApplication::theApp = new CMainApplication(argc, argv);
+    AppSettings::configureApiDefaults();
 
     QCommandLineParser parser;
     parser.setApplicationDescription("dpVision - eksperymentalne narzędzie do wizualizacji, edycji i integracji wielomodalnych i wielowymiarowych danych.");
@@ -98,7 +102,7 @@ int main(int argc, char* argv[])
         if (QFile(plik).exists())
         {
             StatusBarManager::setText("loading model: " + plik);
-            AP::WORKSPACE::loadModel(plik);
+            WorkspaceImportHost::loadModel(plik);
         }
     }
     
@@ -108,7 +112,7 @@ int main(int argc, char* argv[])
 
     StatusBarManager::setText("starting tcp server...");
 
-    CMainWindow::instance()->startServer();
+    CMainApplication::theApp->startRemoteCommandServer();
 
     //FreeConsole();
     //AllocConsole();

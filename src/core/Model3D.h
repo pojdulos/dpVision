@@ -88,6 +88,7 @@ public:
 	inline CTransform &setTransform( const CTransform & t=CTransform()) { return m_transform = t; };
 
 	void applyTransform(CTransform to=CTransform());
+	bool applyParentTransform() override;
 
 	virtual bool hasTransformation() override { return true; };
 	virtual Eigen::Matrix4d getTransformationMatrix() override { return this->m_transform.toEigenMatrix4d(); };

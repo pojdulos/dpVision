@@ -1,11 +1,17 @@
 #include "DockWidgetPluginPanel.h"
 
-#include "../api/UI.h"
-#include "../api/AP.h"
-
 #include "Plugin.h"
+#include "MainApplication.h"
 
 #include <QtWidgets>
+
+namespace
+{
+	CMainApplication* mainApplication()
+	{
+		return static_cast<CMainApplication*>(QApplication::instance());
+	}
+}
 
 DockWidgetPluginPanel::DockWidgetPluginPanel(QWidget *parent) : QDockWidget(parent)
 {
@@ -49,7 +55,7 @@ void DockWidgetPluginPanel::userButton()
 
 	unsigned int id = l[0].toUInt();
 
-	PluginInterface *p = AP::PLUGIN::getPlugin(id);
+	PluginInterface *p = mainApplication() ? mainApplication()->getPlugin(id) : nullptr;
 	if (p != nullptr)
 	{
 		p->onButton(l[1]);
@@ -156,7 +162,7 @@ void DockWidgetPluginPanel::userValueChanged(int val)
 
 	unsigned int id = l[0].toUInt();
 
-	PluginInterface *p = AP::PLUGIN::getPlugin(id);
+	PluginInterface *p = mainApplication() ? mainApplication()->getPlugin(id) : nullptr;
 	if (NULL != p)
 	{
 		p->onButton(l[1]);
@@ -173,7 +179,7 @@ void DockWidgetPluginPanel::comboTextChanged(const QString & text)
 
 	unsigned int id = l[0].toUInt();
 
-	PluginInterface *p = AP::PLUGIN::getPlugin(id);
+	PluginInterface *p = mainApplication() ? mainApplication()->getPlugin(id) : nullptr;
 	if (NULL != p)
 	{
 		p->onButton(l[1]);

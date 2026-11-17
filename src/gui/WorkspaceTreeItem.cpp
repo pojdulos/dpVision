@@ -1,5 +1,4 @@
 #include "WorkspaceTreeItem.h"
-#include "../api/AP.h"
 #include "Model3D.h"
 
 WorkspaceTreeItem::WorkspaceTreeItem(std::shared_ptr<CBaseObject> obj) : QStandardItem()
@@ -11,7 +10,7 @@ WorkspaceTreeItem::WorkspaceTreeItem(std::shared_ptr<CBaseObject> obj) : QStanda
 		this->setObject(obj);
 
 		//	setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable);
-		setFlags(Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable);
+		setFlags(Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled);
 		setCheckable(true);
 		setCheckState(obj->isChecked() ? Qt::Checked : Qt::Unchecked);
 
@@ -120,7 +119,7 @@ WorkspaceTreeItem* WorkspaceTreeItem::getField(Column c)
 WorkspaceTreeItem* WorkspaceTreeItem::createVisibleColumn(std::shared_ptr<CBaseObject> obj)
 {
 	WorkspaceTreeItem* m_V = new WorkspaceTreeItem();
-	m_V->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	m_V->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled);
 	m_V->setObject(obj);
 	m_V->setToolTip("change own visibility");
 	return m_V;
@@ -129,7 +128,7 @@ WorkspaceTreeItem* WorkspaceTreeItem::createVisibleColumn(std::shared_ptr<CBaseO
 WorkspaceTreeItem* WorkspaceTreeItem::createKidsVisibleColumn(std::shared_ptr<CBaseObject> obj)
 {
 	WorkspaceTreeItem* m_V = new WorkspaceTreeItem();
-	m_V->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	m_V->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled);
 	m_V->setObject(obj);
 	m_V->setToolTip("change kids visibility");
 	return m_V;
@@ -138,7 +137,7 @@ WorkspaceTreeItem* WorkspaceTreeItem::createKidsVisibleColumn(std::shared_ptr<CB
 WorkspaceTreeItem* WorkspaceTreeItem::createLockColumn(std::shared_ptr<CBaseObject> obj)
 {
 	WorkspaceTreeItem* m_L = new WorkspaceTreeItem();
-	m_L->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	m_L->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled);
 	m_L->setObject(obj);
 	m_L->setToolTip("lock / unlock");
 	return m_L;

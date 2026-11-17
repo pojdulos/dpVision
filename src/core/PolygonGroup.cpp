@@ -1,6 +1,5 @@
 #include "Global.h"
 #include "PolygonGroup.h"
-#include "GLViewer.h"
 
 CPolygonGroup::CPolygonGroup( CBaseObject* p ) //: CBaseObject( p )
 {

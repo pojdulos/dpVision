@@ -1,7 +1,9 @@
 #include "GLViewer.h"
 
 #include "MainApplication.h"
+#include "../core/PluginRuntimeManager.h"
 #include "AnnotationPoint.h"
+#include "Workspace.h"
 
 //#include "../api/AP.h"
 #include "GroupObject.h"
@@ -353,7 +355,7 @@ void GLViewer::PickMeshPoint(double xx, double yy, std::shared_ptr<CModel3D> obj
 				else
 					vertexId = mesh->faces()[faceIdx].B();
 
-			if (NULL != AP::mainApp().activePlugin)
+			if (PluginInterface* plugin = PluginRuntimeManager::activePlugin())
 			{
 				Plugin::PickEvent pickEvent;
 
@@ -382,17 +384,17 @@ void GLViewer::PickMeshPoint(double xx, double yy, std::shared_ptr<CModel3D> obj
 
 				pickEvent.facePicked = true;
 
-				usedInPlugin = AP::mainApp().activePlugin->onMousePick(pickEvent);
+				usedInPlugin = plugin->onMousePick(pickEvent);
 			}
 
 
-			if (!usedInPlugin && AP::mainApp().bGlobalPicking)
+			if (!usedInPlugin && PluginRuntimeManager::globalPickingEnabled())
 			{
 				std::shared_ptr<CAnnotationPoint> pt = std::make_shared<CAnnotationPoint>(IntersectionPoint);
 
 				pt->setParent(obj);
 
-				if (AP::mainApp().bPickSnap)
+				if (PluginRuntimeManager::pickSnapEnabled())
 				{
 					pt->setPoint(mesh->vertices()[vertexId]);
 				}
@@ -408,12 +410,6 @@ void GLViewer::PickMeshPoint(double xx, double yy, std::shared_ptr<CModel3D> obj
 				unsigned int ptId = wksp->_objectAdd(pt, obj);
 			}
 
-			//tymczasowo !!! -----------------------------------------------------
-			//if ( !usedInPlugin && (NULL != AP::mainApp().activePlugin) )
-			//{
-			//	AP::mainApp().activePlugin->pickSlot(obj->id(), *pt);
-			//}
-			//------------------------------------------------------------------
 
 
 			//ULONGLONG t1 = GetTickCount64();
@@ -456,11 +452,6 @@ void GLViewer::PickCloudPoint(double xx, double yy, std::shared_ptr<CModel3D> ob
 		if (!idxs.empty())
 		{
 
-			//double minDist = DBL_MAX;
-			//INDEX_TYPE minIdx;
-
-			//CModel3D* obj1 = new CModel3D();
-			//AP::WORKSPACE::addModel(obj1);
 
 			for (auto idx : idxs)
 			{
@@ -486,15 +477,12 @@ void GLViewer::PickCloudPoint(double xx, double yy, std::shared_ptr<CModel3D> ob
 				}
 			}
 
-			//CAnnotationVertex* hit = new CAnnotationVertex(obj, minIdx);
-			//hit->setLabel(L"Trafienie");
-			//AP::MODEL::addAnnotation(obj, hit);
 		}
 
 
 		bool usedInPlugin = false;
 
-		if (NULL != AP::mainApp().activePlugin)
+		if (PluginInterface* plugin = PluginRuntimeManager::activePlugin())
 		{
 			Plugin::PickEvent pickEvent;
 
@@ -517,10 +505,10 @@ void GLViewer::PickCloudPoint(double xx, double yy, std::shared_ptr<CModel3D> ob
 
 			pickEvent.facePicked = false;
 
-			usedInPlugin = AP::mainApp().activePlugin->onMousePick(pickEvent);
+			usedInPlugin = plugin->onMousePick(pickEvent);
 		}
 
-		if (!usedInPlugin && AP::mainApp().bGlobalPicking)
+		if (!usedInPlugin && PluginRuntimeManager::globalPickingEnabled())
 		{
 			wksp->_objectAdd(apy, obj);	
 			wksp->_objectAdd(hits, obj);
@@ -545,7 +533,8 @@ void GLViewer::PickPoint(int x, int y)
 	double xx = 0.5 + x;
 	double yy = 0.5 + y;
 
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	CWorkspace* wksp = CWorkspace::instance();
+	std::shared_ptr<CModel3D> obj = wksp->_getModel(wksp->_getCurrentModelId());
 
 	if ( obj != nullptr )
 	{
@@ -576,14 +565,13 @@ void GLViewer::PickPoint(int x, int y)
 		CMainWindow::instance()->statusBar()->showMessage("No objects selected");
 	}
 
-//	UI::getMainWindow().updateListViewSelection( sel );
 }
 
 void GLViewer::PickObject(int x, int y)
 {
 	int id = readSelectBuffer( x, y );
 
-	AP::WORKSPACE::setCurrentModel(id);
+	CWorkspace::instance()->_objectActivate(id);
 }
 
 

@@ -26,7 +26,9 @@ class CParserATMDL :public CParser
 	CTransform parseProperty_rotation(QTextStream& in);
 	CTransform parseProperty_translation(QTextStream& in);
 
-	CMovement::FrameVal parseProperty_frame(QTextStream& in);
+    CVector3d parseProperty_eulerangles(QTextStream &in);
+
+    CMovement::FrameVal parseProperty_frame(QTextStream& in);
 	CMovement::SeqList parseProperty_frameset(QTextStream& in);
 	CMovement::SeqList parseProperty_sequence(QTextStream& in);
 
@@ -40,7 +42,19 @@ class CParserATMDL :public CParser
 	std::shared_ptr<CBaseObject> parseObject_plane(QTextStream& in);
 	std::shared_ptr<CBaseObject> parseObject_triangle(QTextStream& in);
 	std::shared_ptr<CBaseObject> parseObject_animation(QTextStream& in);
+
+	bool peekNextNonSpace(QTextStream& in, QChar expected);
+	bool consumeNextNonSpace(QTextStream& in, QChar expected);
+	QString readToken(QTextStream& in);
+	void skipQuotedString(QTextStream& in);
+	void skipBalanced(QTextStream& in, QChar openChar, QChar closeChar);
+	void skipSimpleValue(QTextStream& in);
+	QList<std::shared_ptr<CBaseObject>> parseUnknownBlock(QTextStream& in);
+	std::shared_ptr<CBaseObject> parseObject_unknown(QTextStream& in, const QString& name);
+
 	std::shared_ptr<CBaseObject> parseObject(QTextStream& in, QString slowo);
+
+	
 
 public:
 	CParserATMDL(void);

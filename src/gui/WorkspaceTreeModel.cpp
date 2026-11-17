@@ -2,6 +2,7 @@
 
 #include "Model3D.h"
 #include "Annotation.h"
+#include <QMimeData>
 
 WorkspaceTreeModel::WorkspaceTreeModel(QObject *parent) : QStandardItemModel(parent)
 {
@@ -27,34 +28,40 @@ WorkspaceTreeItem* WorkspaceTreeModel::append(QStandardItem* root, std::shared_p
 
 	if (obj->hasCategory(CBaseObject::Category::OBJECT))
 	{
-		auto& kids = std::static_pointer_cast<CObject>(obj)->children();
-		if (!kids.empty())
+		std::shared_ptr<CObject> object = std::static_pointer_cast<CObject>(obj);
+		if (!object->children().empty())
 		{
-			for (const auto& iter : kids)
+			for (int id : object->orderedChildIds())
 			{
-				this->append(i1, iter.second);
+				if (std::shared_ptr<CBaseObject> child = object->getChild(id))
+				{
+					this->append(i1, child);
+				}
 			}
 		}
 
-		auto& anns = std::static_pointer_cast<CObject>(obj)->annotations();
-
-		if (!anns.empty())
+		if (!object->annotations().empty())
 		{
-			for (const auto& iter : anns)
+			for (int id : object->orderedAnnotationIds())
 			{
-				this->append(i1, iter.second);
+				if (CAnnotation* annotation = object->annotation(id))
+				{
+					this->append(i1, annotation->shared_from_this());
+				}
 			}
 		}
 	}
 	else if (obj->hasCategory(CBaseObject::Category::ANNOTATION))
 	{
-		auto& anns = std::static_pointer_cast<CAnnotation>(obj)->annotations();
-
-		if (!anns.empty())
+		std::shared_ptr<CAnnotation> annotationObject = std::static_pointer_cast<CAnnotation>(obj);
+		if (!annotationObject->annotations().empty())
 		{
-			for (const auto& iter : anns)
+			for (int id : annotationObject->orderedAnnotationIds())
 			{
-				this->append(i1, iter.second);
+				if (CAnnotation* annotation = annotationObject->annotation(id))
+				{
+					this->append(i1, annotation->shared_from_this());
+				}
 			}
 		}
 	}
@@ -122,6 +129,33 @@ WorkspaceTreeItem* WorkspaceTreeModel::append(QStandardItem* root, std::shared_p
 void WorkspaceTreeModel::addModelWithChildren(std::shared_ptr<CModel3D> obj)
 {
 	this->append(this->invisibleRootItem(), obj);
+}
+
+QStringList WorkspaceTreeModel::mimeTypes() const
+{
+	return QStringList() << "application/x-dpvision-workspace-item";
+}
+
+QMimeData* WorkspaceTreeModel::mimeData(const QModelIndexList& indexes) const
+{
+	QMimeData* mimeData = new QMimeData();
+
+	for (const QModelIndex& index : indexes)
+	{
+		if (index.column() != 0)
+		{
+			continue;
+		}
+
+		const int id = index.data(Qt::UserRole + 1).toInt();
+		if (id != 0)
+		{
+			mimeData->setData("application/x-dpvision-workspace-item", QByteArray::number(id));
+			break;
+		}
+	}
+
+	return mimeData;
 }
 
 //void WorkspaceTreeModel::addModelWithChildren(CModel3D * obj)

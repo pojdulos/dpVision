@@ -1,27 +1,71 @@
 // WorkspaceAPIAdapter.h
 #pragma once
 #include "../interfaces/IWorkspaceAPI.h"
-#include "../api/AP.h"
+#include "WorkspaceImportAPIAdapter.h"
 #include "Workspace.h"
+#include "Object.h"
+#include "Model3D.h"
 
 class WorkspaceAPIAdapter : public IWorkspaceAPI {
     CWorkspace* ws_;
+    WorkspaceImportAPIAdapter importApi_;
 public:
     WorkspaceAPIAdapter(CWorkspace* ws = nullptr) : ws_(ws ? ws : CWorkspace::instance()) {}
 
+    std::vector<std::pair<int, std::shared_ptr<CModel3D>>> children() override {
+        std::vector<std::pair<int, std::shared_ptr<CModel3D>>> result;
+        result.reserve(ws_->orderedIds().size());
+        for (int id : ws_->orderedIds()) {
+            if (auto child = ws_->_getModel(id)) {
+                result.push_back({ id, child });
+            }
+        }
+        return result;
+    }
+
+    std::vector<std::shared_ptr<CBaseObject>> selectedObjects(
+        std::set<CBaseObject::Type> types = {},
+        std::shared_ptr<CObject> parent = nullptr) override {
+        std::vector<std::shared_ptr<CBaseObject>> result;
+        auto selected = ws_->checkedObjects(std::move(types), std::move(parent));
+        result.reserve(selected.size());
+        for (const auto& object : selected) {
+            result.push_back(object);
+        }
+        return result;
+    }
+
     bool addModel(std::shared_ptr<CModel3D> obj, bool setItCurrent = false) override {
-        return AP::WORKSPACE::addModel(obj, setItCurrent);
+        if (obj == nullptr) return false;
+        const auto result = ws_->_objectAdd(obj);
+        if (setItCurrent) ws_->_objectActivate(obj->id());
+        return result != -1;
+    }
+    bool addObject(std::shared_ptr<CBaseObject> obj, bool setItCurrent = false) override {
+        if (obj == nullptr) return false;
+        const auto result = ws_->_objectAdd(obj);
+        if (setItCurrent) ws_->_objectActivate(obj->id());
+        return result != -1;
     }
     bool removeModel(int id) override {
-        return AP::WORKSPACE::removeModel(id);
+        return ws_->_objectRemove(id);
+    }
+    std::shared_ptr<CBaseObject> findId(int id) override {
+        return ws_->getSomethingWithId(id);
     }
     std::shared_ptr<CModel3D> getModel(int id) override {
-        return AP::WORKSPACE::getModel(id);
+        return ws_->_getModel(id);
     }
     std::shared_ptr<CModel3D> getCurrentModel() override {
-        return AP::WORKSPACE::getCurrentModel();
+        return ws_->_getModel(ws_->_getCurrentModelId());
+    }
+    int getCurrentModelId() override {
+        return ws_->_getCurrentModelId();
+    }
+    std::shared_ptr<CModel3D> loadModel(const QString& path, bool synchronous = true, bool setItCurrent = false) override {
+        return importApi_.loadModel(path, synchronous, setItCurrent);
     }
     size_t size() override {
-        return AP::WORKSPACE::size();
+        return ws_->size();
     }
 };

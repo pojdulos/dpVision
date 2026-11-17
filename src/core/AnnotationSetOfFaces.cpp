@@ -1,7 +1,6 @@
 #include "Global.h"
 #include "AnnotationSetOfFaces.h"
 
-#include "../api/AP.h"
 
 #include "../renderers/IAnnotationSetOfFacesRenderer.h"
 

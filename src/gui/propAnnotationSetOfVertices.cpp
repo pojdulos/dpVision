@@ -2,7 +2,8 @@
 #include "AnnotationSetOfVertices.h"
 #include "propTransform.h"
 
-#include "../api/UI.h"
+//
+#include "../core/Workspace.h"
 #include <QVBoxLayout>
 
 PropAnnotationSetOfVertices::PropAnnotationSetOfVertices(CAnnotationSetOfVertices *an, QWidget *parent) : PropWidget(parent)//: PropAnnotation( an, parent )
@@ -66,5 +67,5 @@ void PropAnnotationSetOfVertices::pointSizeChanged(int s)
 {
 	obj->m_pointSize = s;
 
-	UI::updateAllViews();
+	CWorkspace::instance()->notifyObjectStateChanged(obj->id());
 }

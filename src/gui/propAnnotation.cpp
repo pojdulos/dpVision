@@ -1,7 +1,19 @@
 #include "propAnnotation.h"
 #include "Annotation.h"
-#include "../api/UI.h"
+//
+#include "../core/Workspace.h"
 #include <QVBoxLayout>
+
+namespace
+{
+	void notifyAnnotationChanged(CBaseObject* obj)
+	{
+		if (obj != nullptr)
+		{
+			CWorkspace::instance()->notifyObjectStateChanged(obj->id());
+		}
+	}
+}
 
 PropAnnotation::PropAnnotation(CAnnotation *a, QWidget *parent) : PropWidget( parent )
 {
@@ -88,49 +100,49 @@ void PropAnnotation::updateProperties()
 //void PropAnnotation::changedColR(int c)
 //{
 //	((CAnnotation*)obj)->getColor().R(c);
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}
 //
 //void PropAnnotation::changedColG(int c)
 //{
 //	((CAnnotation*)obj)->getColor().G(c);
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}
 //
 //void PropAnnotation::changedColB(int c)
 //{
 //	((CAnnotation*)obj)->getColor().B(c);
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}
 //
 //void PropAnnotation::changedColA(int c)
 //{
 //	((CAnnotation*)obj)->getColor().A(c);
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}
 //
 //void PropAnnotation::changedSelR(int c)
 //{
 //	((CAnnotation*)obj)->getSelColor().R(c);
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}
 //
 //void PropAnnotation::changedSelG(int c)
 //{
 //	((CAnnotation*)obj)->getSelColor().G(c);
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}
 //
 //void PropAnnotation::changedSelB(int c)
 //{
 //	((CAnnotation*)obj)->getSelColor().B(c);
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}
 //
 //void PropAnnotation::changedSelA(int c)
 //{
 //	((CAnnotation*)obj)->getSelColor().A(c);
-//	UI::updateAllViews();
+//	AppStateManager::updateAllViews();
 //}
 
 #include <QColorDialog>
@@ -146,7 +158,7 @@ void PropAnnotation::colorButtonPressed()
 	if (color.isValid())
 	{
 		updateColorButton(col = fromQColor(color));
-		UI::updateAllViews();
+		notifyAnnotationChanged(obj);
 	}
 }
 
@@ -158,7 +170,7 @@ void PropAnnotation::selcolorButtonPressed()
 	if (color.isValid())
 	{
 		updateSelColorButton(col = fromQColor(color));
-		UI::updateAllViews();
+		notifyAnnotationChanged(obj);
 	}
 }
 

@@ -1,7 +1,6 @@
 #include "Global.h"
 #include "AnnotationBezier.h"
 
-#include "../api/AP.h"
 
 
 #include "StatusBarManager.h"

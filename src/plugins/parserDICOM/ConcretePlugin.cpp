@@ -2,9 +2,17 @@
 #include "ConcretePlugin.h"
 
 #include "../api/AP.h"
-#include "../api/UI.h"
+#include "../api/adapters/PluginHostAPIAdapter.h"
 #include "FileConnector.h"
 #include "ParserDICOM.h"
+
+namespace {
+PluginHostAPIAdapter& hostApi()
+{
+    static PluginHostAPIAdapter api;
+    return api;
+}
+}
 
 ConcretePlugin::ConcretePlugin(void)
 {
@@ -28,5 +36,5 @@ void ConcretePlugin::onUnload()
 
 void ConcretePlugin::MarchingTetrahedron(void)
 {
-	UI::MESSAGEBOX::information( L"Nothing to do at now !!!\n\nThis is a parser plugin. Look for it's extentions in OpenFile dialog." );
+	hostApi().messageBox().information(QString::fromWCharArray(L"Nothing to do at now !!!\n\nThis is a parser plugin. Look for it's extentions in OpenFile dialog."));
 }

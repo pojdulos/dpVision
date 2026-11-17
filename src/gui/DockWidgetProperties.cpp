@@ -1,7 +1,5 @@
 #include "DockWidgetProperties.h"
 
-#include "../api/UI.h"
-
 #include "DockWidgetWorkspace.h"
 #include "Annotation.h"
 
@@ -35,8 +33,9 @@
 
 #include <QLayout>
 #include <QScrollArea>
-
-#include "../api/AP.h"
+#include <QAbstractSpinBox>
+#include <QApplication>
+#include <QLineEdit>
 
 #include "Model3D.h"
 
@@ -44,6 +43,91 @@
 #include "Workspace.h"
 
 #include "AppSettings.h"
+
+namespace
+{
+	GLViewer* currentViewer()
+	{
+		if (auto win = CMainWindow::instance())
+		{
+			return win->currentViewer();
+		}
+		return nullptr;
+	}
+
+	void configureSpinBoxesForManualEditing(QWidget* root)
+	{
+		if (root == nullptr)
+		{
+			return;
+		}
+
+		if (auto* spinBox = qobject_cast<QAbstractSpinBox*>(root))
+		{
+			spinBox->setKeyboardTracking(false);
+		}
+
+		const auto spinBoxes = root->findChildren<QAbstractSpinBox*>();
+		for (QAbstractSpinBox* spinBox : spinBoxes)
+		{
+			if (spinBox != nullptr)
+			{
+				spinBox->setKeyboardTracking(false);
+			}
+		}
+	}
+
+	struct FocusRestoreState
+	{
+		QPointer<QWidget> widget;
+		int cursorPosition = -1;
+		int selectionStart = -1;
+		int selectionLength = 0;
+	};
+
+	FocusRestoreState captureFocusState(QWidget* scope)
+	{
+		FocusRestoreState state;
+		QWidget* focused = QApplication::focusWidget();
+		if (focused == nullptr || scope == nullptr || !scope->isAncestorOf(focused))
+		{
+			return state;
+		}
+
+		state.widget = focused;
+
+		if (auto* lineEdit = qobject_cast<QLineEdit*>(focused))
+		{
+			state.cursorPosition = lineEdit->cursorPosition();
+			state.selectionStart = lineEdit->selectionStart();
+			state.selectionLength = lineEdit->selectedText().size();
+		}
+
+		return state;
+	}
+
+	void restoreFocusState(const FocusRestoreState& state)
+	{
+		if (state.widget == nullptr || !state.widget->isVisible() || !state.widget->isEnabled())
+		{
+			return;
+		}
+
+		state.widget->setFocus(Qt::OtherFocusReason);
+
+		if (auto* lineEdit = qobject_cast<QLineEdit*>(state.widget.data()))
+		{
+			if (state.selectionStart >= 0 && state.selectionLength > 0)
+			{
+				lineEdit->setSelection(state.selectionStart, state.selectionLength);
+			}
+			else if (state.cursorPosition >= 0)
+			{
+				lineEdit->setCursorPosition(state.cursorPosition);
+			}
+		}
+	}
+}
 
 DockWidgetProperties::DockWidgetProperties(QWidget *parent)	: QDockWidget(parent)
 {
@@ -55,6 +139,18 @@ DockWidgetProperties::DockWidgetProperties(QWidget *parent)	: QDockWidget(parent
 	ui.tree->setIndentation(0);
 
 	connect(AppSettingsNotifier::instance(), SIGNAL(darkModeChanged(bool)), this, SLOT(onDarkModeChanged(bool)));
+	connect(ui.tree, &QTreeWidget::itemExpanded, this, [this](QTreeWidgetItem* item) {
+		if (item != nullptr)
+		{
+			expandedState_[item->text(0)] = true;
+		}
+	});
+	connect(ui.tree, &QTreeWidget::itemCollapsed, this, [this](QTreeWidgetItem* item) {
+		if (item != nullptr)
+		{
+			expandedState_[item->text(0)] = false;
+		}
+	});
 }
 
 DockWidgetProperties::~DockWidgetProperties() {}
@@ -66,24 +162,26 @@ DockWidgetProperties::~DockWidgetProperties() {}
 
 void DockWidgetProperties::selectionChanged( int id )
 {
+	currentSelectionId_ = id;
+	rememberExpandedState();
 	ui.tree->clear();
 
 	QVector<PropWidget*> submodels = QVector<PropWidget*>(0);
 
 	if (id == NO_CURRENT_MODEL)
 	{
-		GLViewer* view = AP::mainWin().currentViewer();
+		GLViewer* view = currentViewer();
 		submodels = PropViewer::create_and_get_subwidgets(view);
 	}
 	else
 	{
-		std::shared_ptr<CBaseObject> currentObjectPtr = AP::WORKSPACE::findId(id);
+		std::shared_ptr<CBaseObject> currentObjectPtr = CWorkspace::instance()->getSomethingWithId(id);
 		
 		CBaseObject* currentObject = currentObjectPtr.get(); //TYMCZASOWO
 		
 		if (currentObject == nullptr)
 		{
-			GLViewer* view = AP::mainWin().currentViewer();
+			GLViewer* view = currentViewer();
 			submodels = PropViewer::create_and_get_subwidgets(view);
 		}
 		else
@@ -172,6 +270,7 @@ void DockWidgetProperties::selectionChanged( int id )
 
 void DockWidgetProperties::updateProperties()
 {
+	const FocusRestoreState focusState = captureFocusState(ui.tree);
 	QRegularExpression rx("prop");
 	QWidgetList children = ui.tree->findChildren<QWidget*>(rx);// , Qt::FindDirectChildrenOnly);
 
@@ -179,6 +278,7 @@ void DockWidgetProperties::updateProperties()
 	{
 		((PropWidget*)kid)->updateProperties();
 	}
+	restoreFocusState(focusState);
 }
 
 #include <QTreeWidget>
@@ -201,8 +301,21 @@ void DockWidgetProperties::addExpandableItem(QString title, PropWidget* contentW
 	QTreeWidgetItem* childItem = new QTreeWidgetItem();
 	item->addChild(childItem);
 	ui.tree->setItemWidget(childItem, 0, contentWidget);
+	configureSpinBoxesForManualEditing(contentWidget);
 
-	item->setExpanded(true);
+	item->setExpanded(expandedState_.value(title, true));
+}
+
+void DockWidgetProperties::rememberExpandedState()
+{
+	for (int i = 0; i < ui.tree->topLevelItemCount(); ++i)
+	{
+		QTreeWidgetItem* item = ui.tree->topLevelItem(i);
+		if (item != nullptr)
+		{
+			expandedState_[item->text(0)] = item->isExpanded();
+		}
+	}
 }
 
 void DockWidgetProperties::onWorkspaceObjectActivated(int i)
@@ -224,8 +337,51 @@ void DockWidgetProperties::onWorkspaceObjectActivated(CBaseObject* obj)
 	update();
 }
 
+void DockWidgetProperties::onWorkspaceObjectStateChanged(int)
+{
+	CWorkspace* workspace = CWorkspace::instance();
+	if (ui.tree->topLevelItemCount() > 0)
+	{
+		if (currentSelectionId_ == NO_CURRENT_MODEL || workspace->getSomethingWithId(currentSelectionId_) != nullptr)
+		{
+			updateProperties();
+		}
+		else
+		{
+			selectionChanged(workspace->_getCurrentModelId());
+		}
+	}
+	else
+	{
+		selectionChanged(currentSelectionId_);
+	}
+	update();
+}
+
 void DockWidgetProperties::onWorkspaceObjectRemoved(int) {
-	selectionChanged(CWorkspace::instance()->_getCurrentModelId());
+	CWorkspace* workspace = CWorkspace::instance();
+	if (currentSelectionId_ != NO_CURRENT_MODEL && workspace->getSomethingWithId(currentSelectionId_) != nullptr)
+	{
+		selectionChanged(currentSelectionId_);
+	}
+	else
+	{
+		selectionChanged(workspace->_getCurrentModelId());
+	}
+	update();
+}
+
+void DockWidgetProperties::onWorkspaceStructureChanged()
+{
+	CWorkspace* workspace = CWorkspace::instance();
+	if (currentSelectionId_ != NO_CURRENT_MODEL && workspace->getSomethingWithId(currentSelectionId_) != nullptr)
+	{
+		selectionChanged(currentSelectionId_);
+	}
+	else
+	{
+		selectionChanged(workspace->_getCurrentModelId());
+	}
 	update();
 }
 

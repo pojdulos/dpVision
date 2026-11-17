@@ -11,7 +11,7 @@ public:
 	};
 
 	CTIndex():a(0),b(0),c(0) {};
-	CTIndex( size_t aa, size_t ab, size_t ac ):a(aa),b(ab),c(ac) {};
+	CTIndex(INDEX_TYPE aa, INDEX_TYPE ab, INDEX_TYPE ac) : a(aa), b(ab), c(ac) {}
 
 	INDEX_TYPE& operator[](const unsigned int idx) {
 		assert((idx < 3) && "Index out of range");

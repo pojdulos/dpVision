@@ -1,324 +1,258 @@
 #include "../api/AP.h"
 
-#include "../api/UI.h"
+#include "../core/LegacyAppRuntime.h"
+#include "../core/LegacyObjectTransferService.h"
 
-#include "MainApplication.h"
-#include "MainWindow.h"
-
-#include "DockWidgetWorkspace.h"
-//#include "DockWidgetPluginList.h"
-#include "Annotation.h"
-#include "MdiChild.h"
-#include "Image.h"
-#include "Workspace.h"
-#include "Histogram.h"
-
-#include <QtCore/QString>
-#include "StatusBarManager.h"
-
-#include <QElapsedTimer>
+#include "adapters/AppAPIAdapter.h"
+#include "adapters/ModelAPIAdapter.h"
+#include "adapters/ModelLoadAPIAdapter.h"
+#include "adapters/ObjectAPIAdapter.h"
+#include "adapters/WorkspaceActivationAPIAdapter.h"
+#include "adapters/WorkspaceBulkAPIAdapter.h"
+#include "adapters/WorkspaceDuplicationAPIAdapter.h"
+#include "adapters/WorkspaceImportAPIAdapter.h"
+#include "adapters/WorkspaceAPIAdapter.h"
+#include "adapters/WorkspaceSelectionAPIAdapter.h"
 
 
 namespace AP
 {
-	CMainApplication& mainApp() {
-		return (CMainApplication&)*QApplication::instance();
-	}
-	
-	CMainWindow& mainWin() { return *CMainWindow::instance(); }
-	
-	CMainWindow* mainWinPtr() { return CMainWindow::instance(); }
-
-	void leaveSelectionMode() { if ( auto win = CMainWindow::instance() ) win->leaveSelectionMode(); }
-
-	int getUniqueId() {	return AP::mainApp().getUniqueId(); }
-
-
-	void processEvents(bool immediate)
-	{
-		static QElapsedTimer timer;
-		if (!timer.isValid())
-			timer.start();
-
-		if (immediate || timer.elapsed() > 1000)
+	namespace {
+		WorkspaceAPIAdapter& workspaceApi()
 		{
-			QCoreApplication::processEvents();
-			timer.restart();
+			static WorkspaceAPIAdapter api;
+			return api;
+		}
+
+		ObjectAPIAdapter& objectApi()
+		{
+			static ObjectAPIAdapter api;
+			return api;
+		}
+
+		ModelAPIAdapter& modelApi()
+		{
+			static ModelAPIAdapter api;
+			return api;
+		}
+
+		ModelLoadAPIAdapter& modelLoadApi()
+		{
+			static ModelLoadAPIAdapter api;
+			return api;
+		}
+
+		AppAPIAdapter& appApi()
+		{
+			static AppAPIAdapter api;
+			return api;
+		}
+
+		WorkspaceSelectionAPIAdapter& workspaceSelectionApi()
+		{
+			static WorkspaceSelectionAPIAdapter api;
+			return api;
+		}
+
+		WorkspaceActivationAPIAdapter& workspaceActivationApi()
+		{
+			static WorkspaceActivationAPIAdapter api;
+			return api;
+		}
+
+		WorkspaceBulkAPIAdapter& workspaceBulkApi()
+		{
+			static WorkspaceBulkAPIAdapter api;
+			return api;
+		}
+
+		WorkspaceImportAPIAdapter& workspaceImportApi()
+		{
+			static WorkspaceImportAPIAdapter api;
+			return api;
+		}
+
+		WorkspaceDuplicationAPIAdapter& workspaceDuplicationApi()
+		{
+			static WorkspaceDuplicationAPIAdapter api;
+			return api;
 		}
 	}
 
+	void processEvents(bool immediate)
+	{
+		LegacyAppRuntime::processEvents(immediate);
+	}
 
-	CWorkspace* getWorkspace(void) { return CWorkspace::instance(); }
 
-	const QString& getExeFilePath(void) { return AP::mainApp().appExecDir(); }
+	const QString& getExeFilePath(void) { return appApi().exeFilePath(); }
+
+	void adjustForCurrentFile(const QString& filePath)
+	{
+		appApi().adjustForCurrentFile(filePath);
+	}
 
 
 	int addAnnotation(int parentId, std::shared_ptr<CAnnotation> an)
 	{
-		auto wksp = CWorkspace::instance();
-		return wksp->_objectAdd(an, wksp->getSomethingWithId(parentId));
+		return objectApi().addChild(workspaceApi().findId(parentId), an);
 	}
 
 
 	int addAnnotation(std::shared_ptr<CModel3D> obj, std::shared_ptr<CAnnotation> an)
 	{
-		auto wksp = CWorkspace::instance();
-		return wksp->_objectAdd(an, obj);
-	}
-
-
-	namespace PLUGIN {
-		bool loadPlugin(const QString &pluginPath)
-		{
-			return AP::mainApp().loadPlugin(pluginPath);
-		}
-
-		void unloadPlugin(const unsigned int id)
-		{
-			AP::mainApp().unloadPlugin(id);
-		}
-
-
-		PluginInterface* getPlugin(unsigned int id)
-		{
-			return AP::mainApp().getPlugin(id);
-		}
-
-		// PluginInterface* getPlugin(const char* strUUID)
-		// {
-		// 	return AP::mainApp().getPlugin(strUUID);
-		// }
-
-		bool runPlugin(const char* strUUID)
-		{
-			return AP::mainApp().runPlugin(strUUID);
-		}
+		return modelApi().addAnnotation(obj, an);
 	}
 
 	namespace MODEL {
 		std::shared_ptr<CModel3D> load(std::wstring path, bool synchronous)
 		{
-			return CModel3D::load(path, synchronous);
+			return modelLoadApi().load(std::move(path), synchronous);
 		}
 
-		void removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child) { CWorkspace::instance()->_objectRemove(child); }
-		void removeChild(int parentid, int childid) { CWorkspace::instance()->_objectRemove(childid); }
-		void removeAnnotation(int parentid, int id) { CWorkspace::instance()->_objectRemove(id); }
+		void removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child) { modelApi().removeChild(obj, child); }
+		void removeChild(int parentid, int childid) { workspaceApi().removeModel(childid); }
+		void removeAnnotation(int parentid, int id) { workspaceApi().removeModel(id); }
 
 
 		int addChild(std::shared_ptr<CModel3D> obj, std::shared_ptr<CBaseObject> child)
 		{
-			if (child == nullptr) return NO_CURRENT_MODEL;
-			if (obj == nullptr) return NO_CURRENT_MODEL;
-
-			auto wksp = CWorkspace::instance();
-			return wksp->_objectAdd(child, obj);
+			return modelApi().addChild(obj, child);
 		}
 	
 		int addAnnotation(std::shared_ptr<CModel3D> obj, std::shared_ptr<CAnnotation> an)
 		{
-			if (an == nullptr) return NO_CURRENT_MODEL;
-			if (obj == nullptr) return NO_CURRENT_MODEL;
-
-			auto wksp = CWorkspace::instance();
-			return wksp->_objectAdd(an, obj);
+			return modelApi().addAnnotation(obj, an);
 		}
 	}
 
 
 
 	namespace WORKSPACE {
-		CWorkspace* instance()
-		{
-			return CWorkspace::instance();
-		}
-
 		std::shared_ptr<CModel3D> loadModel(const QString fext, const QString& path, bool synchronous, bool setItCurrent)
 		{
-			std::shared_ptr<CModel3D> obj = CModel3D::load(fext, path, synchronous);
-
-			if (nullptr != obj)
-			{
-				if (AP::WORKSPACE::addModel(obj, setItCurrent))
-				{
-					return obj;
-				}
-			}
-			return nullptr;
+			return workspaceImportApi().loadModel(fext, path, synchronous, setItCurrent);
 		}
 
 		std::shared_ptr<CModel3D> loadModel(const QString& path, bool synchronous, bool setItCurrent, std::shared_ptr<IProgressListener> prg)
 		{
-			std::shared_ptr<CModel3D> obj = CModel3D::load(path, synchronous, prg);
-
-			if (nullptr != obj)
-			{
-				if (AP::WORKSPACE::addModel(obj, setItCurrent))
-				{
-					return obj;
-				}
-			}
-			return nullptr;
+			return workspaceImportApi().loadModel(path, synchronous, setItCurrent, prg);
 		}
 
 		std::shared_ptr<CModel3D> loadModel(const std::wstring& path, bool synchronous, bool setItCurrent )
 		{
-			std::shared_ptr<CModel3D> obj = CModel3D::load(path, synchronous);
-
-			if (nullptr != obj)
-			{
-				if (AP::WORKSPACE::addModel(obj, setItCurrent))
-				{
-					return obj;
-				}
-			}
-			return nullptr;
+			return workspaceImportApi().attachLoadedModel(modelLoadApi().load(path, synchronous), setItCurrent);
 		}
 
 		void setAllModelsVisible(bool visibility)
 		{
-			for (std::map<int, std::shared_ptr<CModel3D>>::iterator it = AP::getWorkspace()->begin(); it != AP::getWorkspace()->end(); it++)
-			{
-				it->second->setSelfVisibility(visibility);
-				it->second->setKidsVisibility(visibility);
-
-				UI::DOCK::WORKSPACE::setItemVisibleById(it->first, visibility);
-				UI::DOCK::WORKSPACE::setItemKidsVisibleById(it->first, visibility);
-			}
-			UI::changeMenuAfterSelect();
-			UI::DOCK::PROPERTIES::updateProperties();
-			UI::updateAllViews();
+			workspaceBulkApi().setAllVisible(visibility);
 		}
 
 		bool addModel(std::shared_ptr<CModel3D> obj, bool setItCurrent)
 		{
-			auto wksp = CWorkspace::instance();
-			auto result = wksp->_objectAdd(obj);
-			if (setItCurrent) wksp->_objectActivate(obj->id());
-			return result!=-1;
+			return workspaceApi().addModel(obj, setItCurrent);
 		}
 
 		bool addObject(std::shared_ptr<CBaseObject> obj, bool setItCurrent)
 		{
-			auto wksp = CWorkspace::instance();
-			auto result = wksp->_objectAdd(obj);
-			if (setItCurrent) wksp->_objectActivate(obj->id());
-			return result!=-1;
+			return workspaceApi().addObject(obj, setItCurrent);
+		}
+
+		void notifyObjectStateChanged(int id)
+		{
+			if (id != NO_CURRENT_MODEL)
+			{
+				CWorkspace::instance()->notifyObjectStateChanged(id);
+			}
+		}
+
+		void notifyStructureChanged()
+		{
+			CWorkspace::instance()->notifyStructureChanged();
 		}
 
 		bool addImage(std::shared_ptr<CImage> im, bool showViewer, bool show3d)
 		{
+			if (im == nullptr)
+			{
+				return false;
+			}
+
 			im->setSelfVisibility(show3d);
-
-			if (showViewer) MdiChild::create(im.get(), AP::mainWin().ui.mdiArea);
-
-			auto wksp = CWorkspace::instance();
-			auto result = wksp->_objectAdd(im);
-			return result!=-1;
+			im->setShowViewer(showViewer);
+			return workspaceApi().addModel(im, false);
 		}
 
 
-		bool removeModel(int id) { return CWorkspace::instance()->_objectRemove(id); };
-		bool removeModel(std::shared_ptr<CModel3D> obj) { return CWorkspace::instance()->_objectRemove(obj); };
+		bool removeModel(int id) { return workspaceApi().removeModel(id); };
+		bool removeModel(std::shared_ptr<CModel3D> obj) { return objectApi().remove(obj); };
 
-		bool removeImage(int id) { return CWorkspace::instance()->_objectRemove(id); }
-		bool removeImage(std::shared_ptr<CImage> im) { return CWorkspace::instance()->_objectRemove(im); };
+		bool removeImage(int id) { return workspaceApi().removeModel(id); }
+		bool removeImage(std::shared_ptr<CImage> im) { return objectApi().remove(im); };
 
 
 		bool removeCurrentModel()
 		{
-			auto wksp = CWorkspace::instance();
-
-			int id = wksp->_getCurrentModelId();
-
+			int id = workspaceApi().getCurrentModelId();
 			if (NO_CURRENT_MODEL == id) return false;
 
-			return wksp->_objectRemove(id);
+			return workspaceApi().removeModel(id);
 		}
 
 		bool removeAllModels()
 		{
-			UI::DOCK::PROPERTIES::selectionChanged(NO_CURRENT_MODEL);
-			AP::getWorkspace()->_removeAllModels();
-			UI::DOCK::WORKSPACE::rebuildTree();
-			UI::updateAllViews();
-
-			return true;
+			return workspaceBulkApi().removeAll();
 		}
 
 		bool removeSelectedModels()
 		{
-			auto wksp = CWorkspace::instance();
-			std::list<int> sel = wksp->getSelection();
-			for (std::list<int>::reverse_iterator it = sel.rbegin(); it != sel.rend(); it++)
-			{
-				wksp->_objectRemove(*it);
-			}
-			return true;
+			return workspaceBulkApi().removeSelected();
 		}
 
 		int setCurrentModel( int id )
 		{
-			auto wksp = CWorkspace::instance();
-			
-			wksp->_objectActivate(id);
-			return wksp->_getCurrentModelId();
+			return workspaceActivationApi().setCurrentObject(id);
 		}
 
 		std::shared_ptr<CModel3D> duplicateModel(std::shared_ptr<CModel3D> orginal)
 		{
-			if (nullptr != orginal)
-			{
-				std::shared_ptr<CModel3D> kopia = std::dynamic_pointer_cast<CModel3D>(orginal->getCopy());
-
-				if (nullptr != kopia)
-				{
-					if (AP::WORKSPACE::addModel(kopia))
-					{
-						return kopia;
-					}
-					//else
-					//{
-					//	delete kopia;
-					//}
-				}
-			}
-			return nullptr;
+			return workspaceDuplicationApi().duplicateModel(orginal);
 		}
 
 		std::shared_ptr<CModel3D> duplicateModel(int id)
 		{
-			return AP::WORKSPACE::duplicateModel(AP::WORKSPACE::getModel(id));
+			return workspaceDuplicationApi().duplicateModel(id);
 		}
 
 		std::shared_ptr<CModel3D> duplicateCurrentModel()
 		{
-			return AP::WORKSPACE::duplicateModel(AP::WORKSPACE::getCurrentModel());
+			return workspaceDuplicationApi().duplicateCurrentModel();
 		}
 
 		std::shared_ptr<CModel3D> getModel(int id)
 		{
-			return getWorkspace()->_getModel(id);
+			return workspaceApi().getModel(id);
 		}
 
 		std::shared_ptr<CModel3D> getCurrentModel()
 		{
-			return getWorkspace()->_getModel( getWorkspace()->_getCurrentModelId() );
+			return workspaceApi().getCurrentModel();
 		}
 
 		int getCurrentModelId()
 		{
-			return getWorkspace()->_getCurrentModelId();
+			return workspaceApi().getCurrentModelId();
 		}
 
 		size_t size()
 		{
-			return getWorkspace()->size();
+			return workspaceApi().size();
 		}
 
 		std::shared_ptr<CBaseObject> findId(int id)
 		{
-			return CWorkspace::instance()->getSomethingWithId(id);
+			return workspaceApi().findId(id);
 		}
 
 		////OBSOLETE FUNCTIONS
@@ -345,272 +279,63 @@ namespace AP
 		namespace SELECTION {
 			void selectModel(int id)
 			{
-				//CModel3D *obj = AP::getWorkspace()->_getModel(id);
-
-				AP::getWorkspace()->addToSelection(id);
-				UI::DOCK::WORKSPACE::setItemCheckedById(id, true);
-				UI::DOCK::PROPERTIES::updateProperties();
-				UI::updateAllViews();
+				workspaceSelectionApi().select(id);
 			}
 			void unselectModel(int id)
 			{
-				//CModel3D *obj = AP::getWorkspace()->_getModel(id);
-
-				AP::getWorkspace()->removeFromSelection(id);
-				UI::DOCK::WORKSPACE::setItemCheckedById(id, false);
-				UI::DOCK::PROPERTIES::updateProperties();
-				UI::updateAllViews();
+				workspaceSelectionApi().unselect(id);
 			}
 
 			bool isModelSelected(int id)
 			{
-				return AP::getWorkspace()->inSelection(id);
+				return workspaceSelectionApi().contains(id);
 			}
 
 			void clear()
 			{
-				AP::getWorkspace()->clearSelection();
+				workspaceSelectionApi().clear();
 			}
 
 			std::list<int> getList()
 			{
-				return AP::getWorkspace()->getSelection();
+				const std::vector<int> ids = workspaceSelectionApi().ids();
+				return std::list<int>(ids.begin(), ids.end());
 			}
 
 			std::list<int> getList(std::set<CBaseObject::Type> types, std::shared_ptr<CObject> obj)
 			{
-				return AP::getWorkspace()->getSelection(types, obj);
+				return workspaceSelectionApi().ids(std::move(types), std::move(obj));
 			}
 
 			std::list<std::shared_ptr<CBaseObject>> getObjList(std::set<CBaseObject::Type> types, std::shared_ptr<CObject> obj)
 			{
-				return AP::getWorkspace()->getSelected(types, obj);
+				return workspaceSelectionApi().objectList(std::move(types), std::move(obj));
 			}
 
 			void setModelsVisible(bool visibility)
 			{
-				std::list<int> sel = AP::getWorkspace()->getSelection();
-				for (std::list<int>::iterator it = sel.begin(); it != sel.end(); it++)
-				{
-					std::shared_ptr<CModel3D> m = AP::WORKSPACE::getModel(*it);
-					if (m != nullptr)
-					{
-						m->setSelfVisibility(visibility);
-						UI::DOCK::WORKSPACE::setItemVisibleById(*it, visibility);
-					}
-				}
-
-				UI::changeMenuAfterSelect();
-				UI::DOCK::PROPERTIES::updateProperties();
-				UI::updateAllViews();
-			}
-		}
-	}
-
-	namespace EVENTS {
-		void modelIndicationEvent( int objId )
-		{
-			bool usedInPlugin = false;
-
-			if (nullptr != AP::mainApp().activePlugin)
-				usedInPlugin = AP::mainApp().activePlugin->onModelIndication(objId);
-
-			if (!usedInPlugin)
-			{
-				AP::WORKSPACE::setCurrentModel(objId);
-
-				if (NO_CURRENT_MODEL != objId)
-				{
-					StatusBarManager::setText(QString("Selected (%1) %2").arg(objId).arg(AP::WORKSPACE::getCurrentModel()->getLabel()));
-				}
-				else
-				{
-					StatusBarManager::setText(QString("None selected (%1)").arg(objId));
-				}
-
-				//UI::DOCK::WORKSPACE::selectItem(objId);
-				//UI::DOCK::PROPERTIES::selectionChanged();
-				//UI::changeMenuAfterSelect();
-			}
-		}
-
-		DPVISION_EXPORT void workspaceTreeClicked( int objId )
-		{
-			bool usedInPlugin = false;
-
-			if (nullptr != AP::mainApp().activePlugin)
-				usedInPlugin = AP::mainApp().activePlugin->onModelIndication(objId);
-
-			if (!usedInPlugin)
-			{
-				//DO SOMETHING ELSE
-				;
+				workspaceSelectionApi().setSelectedVisible(visibility);
 			}
 		}
 	}
 
 	namespace OBJECT {
-		bool remove(std::shared_ptr<CBaseObject> obj) { return CWorkspace::instance()->_objectRemove(obj); };
-		bool removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child) { return CWorkspace::instance()->_objectRemove(child); };
+		bool remove(std::shared_ptr<CBaseObject> obj) { return objectApi().remove(obj); };
+		bool removeChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child) { return objectApi().removeChild(obj, child); };
 
 		int addChild(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> child)
 		{
-			if (child == nullptr) return NO_CURRENT_MODEL;
-			if (obj == nullptr) return NO_CURRENT_MODEL;
-
-			auto wksp = CWorkspace::instance();
-			auto result = wksp->_objectAdd(child, obj);
-			return result;
+			return objectApi().addChild(obj, child);
 		}
 
 		void moveTo(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> newParent, bool keep_pos)
 		{
-			auto wksp = CWorkspace::instance();
-
-			if (obj != nullptr)
-			{
-				if ((newParent != nullptr) && newParent->hasCategory(CBaseObject::Category::ANNOTATION) && obj->hasCategory(CBaseObject::Category::OBJECT))
-				{
-					UI::MESSAGEBOX::error("regular object cannot be moved as a descendant of annotation");
-					return;
-				}
-
-				std::shared_ptr<CBaseObject> oldParent = obj->getParentPtr();
-
-				CTransform t0;
-
-				if (oldParent != nullptr)
-				{
-					t0 = CTransform(CBaseObject::getGlobalTransformationMatrix(oldParent));
-					AP::OBJECT::removeChild(oldParent, obj);
-				}
-				else
-				{
-					wksp->_objectRemove(obj->id());
-				}
-
-				if (keep_pos)
-				{
-					std::shared_ptr<CModel3D> newmodel = std::make_shared<CModel3D>();
-					newmodel->setLabel("<=>");
-					newmodel->setDescr("Macierz dopasowania, wygenerowana podczas przenoszenia obiektu");
-
-					if (obj->hasCategory(CBaseObject::OBJECT))
-					{
-						newmodel->addChild(newmodel, obj);
-						newmodel->importChildrenGeometry();
-					}
-					else if (obj->hasCategory(CBaseObject::ANNOTATION))
-					{
-						newmodel->addAnnotation(newmodel, std::dynamic_pointer_cast<CAnnotation>(obj));
-					}
-
-					if (newParent == nullptr) // copyToNew
-					{
-						newmodel->setTransform(t0);
-
-						AP::WORKSPACE::addModel(newmodel);
-					}
-					else // copyTo existing
-					{
-						CTransform t1(CBaseObject::getGlobalTransformationMatrix(newParent));
-						CTransform ft = CTransform::fromTo(t0, t1);
-
-						newmodel->setTransform(ft);
-
-						AP::OBJECT::addChild(newParent, newmodel);
-						//((CObject*)newParent)->importChildrenGeometry();
-					}
-				}
-				else
-				{
-					if (newParent == nullptr) // moveToNew
-					{
-						AP::WORKSPACE::addObject(obj);
-					}
-					else // moveTo existing
-					{
-						AP::OBJECT::addChild(newParent, obj);
-					}
-				}
-
-				UI::updateAllViews();
-			}
+			LegacyObjectTransferService::moveTo(obj, newParent, keep_pos);
 		}
 
 		void copyTo(std::shared_ptr<CBaseObject> obj, std::shared_ptr<CBaseObject> newParent, bool keep_pos)
 		{
-			if (obj != nullptr)
-			{
-				if ((newParent != nullptr) && newParent->hasCategory(CBaseObject::Category::ANNOTATION) && obj->hasCategory(CBaseObject::Category::OBJECT))
-				{
-					UI::MESSAGEBOX::error("regular object cannot be copied as a descendant of annotation");
-					return;
-				}
-
-				std::shared_ptr<CBaseObject> kopia = obj->getCopy();
-
-				if (keep_pos)
-				{
-					CTransform t0;
-					if (obj->getParent() != nullptr)
-						t0 = CTransform(CBaseObject::getGlobalTransformationMatrix(obj->getParentPtr()));
-
-					std::shared_ptr<CModel3D> newmodel = std::make_shared<CModel3D>();
-					newmodel->setLabel("<=>");
-					newmodel->setDescr("Macierz dopasowania, wygenerowana podczas kopiowania obiektu");
-
-					if (newParent == nullptr) // copyToNew
-					{
-						if (kopia->hasCategory(CBaseObject::OBJECT))
-						{
-							newmodel->addChild(newmodel, kopia);
-							newmodel->importChildrenGeometry();
-							newmodel->setTransform(t0);
-							AP::WORKSPACE::addModel(newmodel);
-						}
-						else if (kopia->hasCategory(CBaseObject::ANNOTATION))
-						{
-							newmodel->addAnnotation(newmodel, std::dynamic_pointer_cast<CAnnotation>(kopia));
-							newmodel->setTransform(t0);
-							AP::WORKSPACE::addModel(newmodel);
-						}
-					}
-					else // copyTo existing
-					{
-						CTransform t1(CBaseObject::getGlobalTransformationMatrix(newParent));
-						CTransform ft = CTransform::fromTo(t0, t1);
-
-						if (ft.toQMatrix4x4().isIdentity())
-						{
-							AP::OBJECT::addChild(newParent, kopia);
-							//delete newmodel;
-						}
-						else
-						{
-							newmodel->addChild(newmodel, kopia);
-							newmodel->importChildrenGeometry();
-							newmodel->setTransform(ft);
-
-							AP::OBJECT::addChild(newParent, newmodel);
-						}
-
-						//((CObject*)newParent)->importChildrenGeometry();
-					}
-				}
-				else
-				{
-					if (newParent == nullptr) // copyToNew
-					{
-						AP::WORKSPACE::addObject(kopia);
-					}
-					else // copyTo existing
-					{
-						AP::OBJECT::addChild(newParent, kopia);
-					}
-				}
-				UI::updateAllViews();
-			}
+			LegacyObjectTransferService::copyTo(obj, newParent, keep_pos);
 		}
 	}
 }

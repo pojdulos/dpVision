@@ -13,7 +13,7 @@ void PMFactory::vSplit( CMesh &dst, unsigned int iNewSize )
 	dst.fnormals().clear();
 	dst.fnormals().swap(dst.fnormals());
 
-	size_t matIdx = 0;
+    unsigned int matIdx = 0;
 
 	_mapOfFaces tmpFCSset;
 	//for ( CArrayOfFaces::iterator itf=dst.faces().begin(); itf!=dst.faces().end(); itf++ )
@@ -36,16 +36,16 @@ void PMFactory::vSplit( CMesh &dst, unsigned int iNewSize )
 
 	CMesh::Vsplits::iterator its = dst.vsplits.begin();
 
-	if ( iNewSize > (dst.vertices().size()+dst.vsplits.size()) ) iNewSize = dst.vertices().size()+dst.vsplits.size();
+	if ( iNewSize > (dst.vertices().size()+dst.vsplits.size()) ) iNewSize = static_cast<unsigned int>(dst.vertices().size() + dst.vsplits.size());
 
 	auto progress_ = IProgressListener::getDefault();
-	if (progress_) progress_->init( dst.vertices().size(), iNewSize, dst.vertices().size() );
+	if (progress_) progress_->init( static_cast<int>(dst.vertices().size()), static_cast<int>(iNewSize), static_cast<int>(dst.vertices().size()) );
 
 	while ( ( its != dst.vsplits.end() ) && ( dst.vertices().size() < iNewSize ) )
 	{
-		StatusBarManager::setText( QString("\r    PMFactory::vSplit(): reconstruction to %1 -> current: %2              ").arg(iNewSize).arg(dst.vertices().size()));
+		StatusBarManager::setText( QString("\r    PMFactory::vSplit(): reconstruction to %1 -> current: %2              ").arg(static_cast<qulonglong>(iNewSize)).arg(static_cast<qulonglong>(dst.vertices().size())));
 		
-		if (progress_) progress_->setValue( dst.vertices().size() );
+		if (progress_) progress_->setValue( static_cast<int>(dst.vertices().size()) );
 
 		//modyfikuje wierzcholek v1
 		try {
@@ -79,13 +79,13 @@ void PMFactory::vSplit( CMesh &dst, unsigned int iNewSize )
 
 		// odczytuje prawdziwy numer wierzcho³ka v1
 		// bedzie potrzebny by znalezc sciany 
-		unsigned int id1 = its->i1;
-		unsigned int id2 = its->i2;
+		INDEX_TYPE id1 = static_cast<INDEX_TYPE>(its->i1);
+		INDEX_TYPE id2 = static_cast<INDEX_TYPE>(its->i2);
 
 		//szukam scian z tablicy vs.chgFcs i je zmieniam
 		for ( _vsplit::Faces::iterator itchg=its->chgFcs.begin(); itchg!=its->chgFcs.end(); itchg++ )
 		{
-			unsigned int F[3];
+			INDEX_TYPE F[3];
 			F[0] = itchg->A();
 			F[1] = itchg->B();
 			F[2] = itchg->C();

@@ -8,8 +8,6 @@
 #include "Volumetric.h"
 #include "IVolumetricShaders.h"
 
-extern bool mouse_key_pressed;
-
 void IVolumetricRenderer::renderSelf(const CBaseObject* _obj)
 {
     Volumetric* obj = (Volumetric*)_obj;
@@ -68,7 +66,7 @@ void IVolumetricRenderer::renderSelf(const CBaseObject* _obj)
 	f->glUniform3fv(fcolors_loc, 7, (float*)obj->m_fcolors);
 
 	int factor = 1;
-	if (obj->m_fastDraw || mouse_key_pressed)
+	if (obj->m_fastDraw)
 		factor = 4;
 
 

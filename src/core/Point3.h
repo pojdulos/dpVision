@@ -19,7 +19,7 @@
 template<
 	typename _T,
 	typename = typename std::enable_if<std::is_arithmetic<_T>::value, _T>::type >
-class DPVISION_EXPORT CPoint3 : public CTriple<_T>
+class CPoint3 : public CTriple<_T>
 {
 public:
 	/// Default constructor. Initializes all coordinates to 0.

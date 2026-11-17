@@ -297,7 +297,7 @@ size_t CParserSMF::ReadSMF_V3()
 				SkipLine( plik );
 				break;
 		}
-		//UI::STATUSBAR::printf( "%s: v=%d, f=%d, s=%d", plikSiatki.fileNameW().c_str(), pMeshData->vertices().size(), pMeshData->faces().size(), pMeshData->vsplits.size() );
+		//printf( "%s: v=%d, f=%d, s=%d", plikSiatki.fileNameW().c_str(), pMeshData->vertices().size(), pMeshData->faces().size(), pMeshData->vsplits.size() );
 	}
 	fclose( plik );
 

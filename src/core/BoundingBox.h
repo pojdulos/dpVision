@@ -9,7 +9,6 @@
 #include "Vertex.h"
 
 #include <cfloat>
-
 class CBoundVector;
 
 class  DPVISION_EXPORT CBoundingBox
@@ -32,6 +31,8 @@ public:
 
 	CPoint3d & getMin() { return m_min; };
 	CPoint3d & getMax() { return m_max; };
+	const CPoint3d& getMin() const { return m_min; };
+	const CPoint3d& getMax() const { return m_max; };
 
 	void reset(InitialValues v = InitialValues::InvalidBB);
 
@@ -50,17 +51,17 @@ public:
 
 	static CBoundingBox intersection(CBoundingBox a, CBoundingBox b);
 	
-	bool isNull()
+	bool isNull() const
 	{
 		return (m_max.X() == m_min.X()) && (m_max.Y() == m_min.Y()) && (m_max.Z() == m_min.Z());
 	};
 
-	bool isValid()
+	bool isValid() const
 	{
 		return (m_max.X() >= m_min.X()) && (m_max.Y() >= m_min.Y()) && (m_max.Z() >= m_min.Z()); 
 	};
 
-	bool isInvalid()
+	bool isInvalid() const
 	{
 		return (m_max.X() == -DBL_MAX) || (m_max.Y() == -DBL_MAX) || (m_max.Z() == -DBL_MAX)
 			|| (m_min.X() == DBL_MAX) || (m_min.Y() == DBL_MAX) || (m_min.Z() == DBL_MAX)
@@ -97,9 +98,6 @@ public:
 
 	virtual void draw( Style r = DontRender, bool checked = false );
 	QVector<CPoint3d> getCorners();
-private:
-	void drawBox(bool dashed = false);
-
 
 protected:
 	CPoint3d m_min;

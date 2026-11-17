@@ -20,6 +20,9 @@ class WorkspaceTreeItem;
 #include "dll_global.h"
 
 #include <QMouseEvent>
+#include <QDropEvent>
+#include <QDragMoveEvent>
+#include <QDragEnterEvent>
 #include <QDebug>
 
 class DeselectableTreeView : public QTreeView
@@ -29,6 +32,9 @@ class DeselectableTreeView : public QTreeView
 public:
 	DeselectableTreeView(QWidget* parent) : QTreeView(parent) {}
 	virtual ~DeselectableTreeView() {}
+
+signals:
+	void itemOrderMoveRequested(int movedId, int anchorId, bool after);
 
 private:
 	virtual void mousePressEvent(QMouseEvent* event) override
@@ -43,6 +49,15 @@ private:
 			emit(clicked(item));
 		}
 	}
+
+	virtual void dragEnterEvent(QDragEnterEvent* event) override;
+	virtual void dragMoveEvent(QDragMoveEvent* event) override;
+	virtual void dropEvent(QDropEvent* event) override;
+	virtual void startDrag(Qt::DropActions supportedActions) override;
+
+private:
+	int draggedItemId_ = -1;
+	int draggedParentId_ = -1;
 };
 
 
@@ -95,6 +110,7 @@ private:
 	void colSelfVisibilityClicked(std::shared_ptr<CBaseObject> obj, WorkspaceTreeItem* clickedItem);
 	void colKidsVisibilityClicked(std::shared_ptr<CBaseObject> obj, WorkspaceTreeItem* clickedItem);
 	void colNameClicked(std::shared_ptr<CBaseObject> obj, WorkspaceTreeItem* clickedItem);
+	bool refreshItemById(int id);
 
 signals:
 	//void currentObjectChanged(std::shared_ptr<CBaseObject>);
@@ -102,8 +118,10 @@ signals:
 
 public slots:
 	void onWorkspaceObjectActivated(int);
+	void onWorkspaceObjectStateChanged(int);
 	void onWorkspaceObjectAdded(int);
 	void onWorkspaceObjectRemoved(int);
+	void onWorkspaceStructureChanged();
 
 	void onTreeViewItemClicked(QModelIndex);
 
@@ -119,6 +137,7 @@ private:
 
 private slots:
  	void onCustomContextMenu(const QPoint &point);
+	void onItemOrderMoveRequested(int movedId, int anchorId, bool after);
 };
 
 #endif // DOCKWIDGETWORKSPACE_H

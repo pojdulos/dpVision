@@ -1,7 +1,6 @@
 #include "Global.h"
 #include "AnnotationTriple.h"
 
-#include "../api/AP.h"
 
 #include "../renderers/IAnnotationTripleRenderer.h"
 

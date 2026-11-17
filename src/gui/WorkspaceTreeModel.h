@@ -20,5 +20,8 @@ public:
 	//WorkspaceTreeItem* appendAnnotationChild(QStandardItem* root, CAnnotation* an);
 
 	void addModelWithChildren(std::shared_ptr<CModel3D> obj);
+
+	QStringList mimeTypes() const override;
+	QMimeData* mimeData(const QModelIndexList& indexes) const override;
 };
 

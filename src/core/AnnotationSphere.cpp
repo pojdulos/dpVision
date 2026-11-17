@@ -1,7 +1,6 @@
 #include "Global.h"
 #include "AnnotationSphere.h"
 
-#include "../api/AP.h"
 
 #include "../renderers/IAnnotationSphereRenderer.h"
 

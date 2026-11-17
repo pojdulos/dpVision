@@ -1,8 +1,20 @@
 #include "propAnnotationTriple.h"
 #include "AnnotationTriple.h"
 
-#include "../api/UI.h"
+//
+#include "../core/Workspace.h"
 #include <QVBoxLayout>
+
+namespace
+{
+	void notifyAnnotationTripleChanged(CBaseObject* obj)
+	{
+		if (obj != nullptr)
+		{
+			CWorkspace::instance()->notifyObjectStateChanged(obj->id());
+		}
+	}
+}
 
 PropAnnotationTriple::PropAnnotationTriple(CAnnotationTriple *an, QWidget *parent) : PropWidget( parent )
 {
@@ -77,35 +89,35 @@ void PropAnnotationTriple::updateProperties()
 void PropAnnotationTriple::changedCtrX(double x)
 {
 	((CAnnotationTriple*)obj)->origin().X(x);
-	UI::updateAllViews();
+	notifyAnnotationTripleChanged(obj);
 }
 
 void PropAnnotationTriple::changedCtrY(double y)
 {
 	((CAnnotationTriple*)obj)->origin().Y(y);
-	UI::updateAllViews();
+	notifyAnnotationTripleChanged(obj);
 }
 
 void PropAnnotationTriple::changedCtrZ(double z)
 {
 	((CAnnotationTriple*)obj)->origin().Z(z);
-	UI::updateAllViews();
+	notifyAnnotationTripleChanged(obj);
 }
 
 void PropAnnotationTriple::changedNormX(double x)
 {
 	((CAnnotationTriple*)obj)->rot().X(x);
-	UI::updateAllViews();
+	notifyAnnotationTripleChanged(obj);
 }
 
 void PropAnnotationTriple::changedNormY(double y)
 {
 	((CAnnotationTriple*)obj)->rot().Y(y);
-	UI::updateAllViews();
+	notifyAnnotationTripleChanged(obj);
 }
 
 void PropAnnotationTriple::changedNormZ(double z)
 {
 	((CAnnotationTriple*)obj)->rot().Z(z);
-	UI::updateAllViews();
+	notifyAnnotationTripleChanged(obj);
 }

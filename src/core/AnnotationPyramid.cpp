@@ -1,7 +1,6 @@
 #include "Global.h"
 #include "AnnotationPyramid.h"
 
-#include "../api/AP.h"
 
 #include "../renderers/IAnnotationPyramidRenderer.h"
 

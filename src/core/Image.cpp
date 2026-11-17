@@ -1,7 +1,5 @@
 #include "Image.h"
-#include "../api/AP.h"
 //#include "MainWindow.h"
-#include "MdiChild.h"
 
 #include "../renderers/IImageRenderer.h"
 
@@ -10,7 +8,7 @@
 CImage::CImage() : CModel3D(), QImage()
 {
 	setLabel("image");
-	fitToWindow = false;
+	m_showViewer = false;
 
 	CModel3D::bDrawBB = false;
 
@@ -20,7 +18,7 @@ CImage::CImage() : CModel3D(), QImage()
 CImage::CImage(const QImage& i) : CModel3D(), QImage(i)
 {
 	setLabel("image");
-	fitToWindow = false;
+	m_showViewer = false;
 
 	img3d_half_width = (float)this->width() / 100.0f;
 	img3d_half_height = (float)this->height() / 100.0f;
@@ -42,7 +40,7 @@ CImage::CImage(const QString& path, const char* format) : CModel3D(), QImage(pat
 {
 	m_label = QFileInfo(path).fileName();
 	m_path = path;
-	fitToWindow = false;
+	m_showViewer = false;
 
 	img3d_half_width = (float)this->width() / 100.0f;
 	img3d_half_height = (float)this->height() / 100.0f;
@@ -57,7 +55,7 @@ CImage::CImage(const QString& path, const char* format) : CModel3D(), QImage(pat
 CImage::CImage(const CImage& i) : CModel3D( i ), QImage( i )
 {
 	setLabel("image");
-	fitToWindow = false;
+	m_showViewer = i.m_showViewer;
 
 	img3d_half_width = (float)this->width() / 100.0f;
 	img3d_half_height = (float)this->height() / 100.0f;
@@ -72,7 +70,7 @@ CImage::CImage(const CImage& i) : CModel3D( i ), QImage( i )
 CImage::CImage(const uchar* b, int ww, int hh, CImage::Format f) : CModel3D(), QImage(b, ww, hh, f)
 {
 	setLabel("image");
-	fitToWindow = false;
+	m_showViewer = false;
 
 	img3d_half_width = (float)this->width() / 100.0f;
 	img3d_half_height = (float)this->height() / 100.0f;
@@ -87,7 +85,7 @@ CImage::CImage(const uchar* b, int ww, int hh, CImage::Format f) : CModel3D(), Q
 CImage::CImage(int ww, int hh, CImage::Format f) : CModel3D(), QImage(ww, hh, f)
 {
 	setLabel("image");
-	fitToWindow = false;
+	m_showViewer = false;
 
 	img3d_half_width = (float)this->width() / 100.0f;
 	img3d_half_height = (float)this->height() / 100.0f;

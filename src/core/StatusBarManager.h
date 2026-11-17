@@ -1,17 +1,18 @@
 #pragma once
+#include "dll_global.h"
 #include "interfaces/IStatusListener.h"
 
 #include <cstdarg>
 #include <string>
 #include <QtCore/QString>
 
-class StatusBarManager {
+class DPVISION_EXPORT StatusBarManager {
 public:
-    static void setListener(IStatusListener* l) { listener_ = l; }
-    static IStatusListener* listener() { return listener_; }
+    static void setListener(IStatusListener* l) { listenerRef() = l; }
+    static IStatusListener* listener() { return listenerRef(); }
 
     static void setText(const QString& text) {
-        if (listener_) listener_->setText(text.toStdString());
+        if (listenerRef()) listenerRef()->setText(text.toStdString());
     }
 
     //static void setText(const std::string& text) {
@@ -20,12 +21,18 @@ public:
 
     static void setTextTimed(int mst, const QString& txt);
 
+    static void vprintf(const char* format, va_list args);
+    static void vprintf(const wchar_t* format, va_list args);
     static void printf(const char* format, ...);
+    static void printf(const wchar_t* format, ...);
+    static void vprintfTimed(int mst, const char* format, va_list args);
+    static void vprintfTimed(int mst, const wchar_t* format, va_list args);
     static void printfTimed(int mst, const char* format, ...);
+    static void printfTimed(int mst, const wchar_t* format, ...);
 
     static void clear() {
-        if (listener_) listener_->clear();
+        if (listenerRef()) listenerRef()->clear();
     }
 private:
-    static IStatusListener* listener_;
+    static IStatusListener*& listenerRef();
 };

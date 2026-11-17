@@ -1,7 +1,6 @@
 #include "Global.h"
 #include "AnnotationPodkowa.h"
 
-#include "../api/AP.h"
 
 #include <math.h>
 

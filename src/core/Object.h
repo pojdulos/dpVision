@@ -8,6 +8,7 @@
 #include "Punkt3D.h"
 #include "Wektor3D.h"
 #include "Global.h"
+#include "OrderedIdList.h"
 
 #include <map>
 
@@ -22,14 +23,18 @@ public:
 	typedef std::map<int, std::shared_ptr<CBaseObject>> Children;
 	typedef std::map<int, std::shared_ptr<CAnnotation>> Annotations;
 
+private:
+	Children m_data;
+	Annotations m_annotations;
+	mutable OrderedIdList m_childOrder;
+	mutable OrderedIdList m_annotationOrder;
+
+public:
 	bool bDrawBB;
 
 	const bool toggleDrawBB() { return bDrawBB = !bDrawBB; };
 	const bool DrawBB() const { return bDrawBB; };
 	const bool DrawBB(const bool b) { return (bDrawBB = b); };
-
-	Children m_data;
-	Annotations m_annotations;
 
 	// konstruktor ze wskazaniem rodzica
 	CObject(std::shared_ptr<CBaseObject> p = nullptr);
@@ -56,11 +61,14 @@ public:
 	
 	virtual std::shared_ptr<CBaseObject> getSomethingWithId(int id);
 
-	Annotations& annotations() { return m_annotations; };
+	const Annotations& annotations() const { return m_annotations; };
+	const std::vector<int>& orderedAnnotationIds();
 	CAnnotation* annotation(int id);
 
 	static int addAnnotation(std::shared_ptr<CObject> parent, std::shared_ptr<CAnnotation> ad);
 	std::shared_ptr<CAnnotation> removeAnnotation(int);
+	bool moveAnnotationBefore(int movedId, int anchorId);
+	bool moveAnnotationAfter(int movedId, int anchorId);
 
 	bool removeAnnotation(std::shared_ptr<CAnnotation> an);
 
@@ -79,6 +87,8 @@ public:
 
 	static int addChild(std::shared_ptr<CObject> parent, std::shared_ptr<CBaseObject> child );
 	bool removeChild( int id = 0 );
+	bool moveChildBefore(int movedId, int anchorId);
+	bool moveChildAfter(int movedId, int anchorId);
 	
 	/*
 	removes the links from this object to all child objects
@@ -92,7 +102,8 @@ public:
 	std::shared_ptr<CBaseObject> getChild(const QString& label);
 	//int getChildId( CBaseObject *d );
 
-	Children & children() { return m_data; };
+	const Children& children() const { return m_data; };
+	const std::vector<int>& orderedChildIds();
 	std::vector<unsigned int> getChildrenIds();
 
 	int countChildren(CBaseObject::Type type);
@@ -100,6 +111,10 @@ public:
 	std::vector<CBaseObject*> getChildren(CBaseObject::Type type);
 
 	virtual std::shared_ptr<CBaseObject> findId( int id ) override;
+
+private:
+	void ensureChildOrder();
+	void ensureAnnotationOrder();
 };
 
 typedef CObject* PtrObject;

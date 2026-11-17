@@ -6,7 +6,6 @@
 
 #include <GL/glu.h>
 
-
 void GLViewer::cameraTransformations()
 {
 	// Macierz obrotu
@@ -186,7 +185,7 @@ void GLViewer::RenderScene()
 	wsp->renderLights( true );
 
 	// OPCJONALNIE TU MOZNA WYSWIETLAC OBRAZEK TLA
-	// NP. AP::mainApp().GetBGplaneRef().Render( SINGLE_IMAGE ); 
+
 
 	cameraTransformations();
 
@@ -231,7 +230,7 @@ void GLViewer::RenderLeftView()
 					   FStereoMagnitudeAdjustment, FParallaxBalanceAdjustment, 
 					   LEFT_EYE_PROJECTION);
 
-	//AP::mainApp().GetBGplaneRef().Render( LEFT_IMAGE );
+	
 	
 	RenderScene();
 
@@ -252,7 +251,7 @@ void GLViewer::RenderRightView()
                            FStereoMagnitudeAdjustment, FParallaxBalanceAdjustment, 
                            RIGHT_EYE_PROJECTION);
 
-	//AP::mainApp().GetBGplaneRef().Render( RIGHT_IMAGE );
+	
 	
 	RenderScene();
 
@@ -594,7 +593,8 @@ void GLViewer::toolBar(void)
 void GLViewer::objectTriad(void)
 {
 
-	std::shared_ptr<CModel3D> obj = AP::WORKSPACE::getCurrentModel();
+	CWorkspace* wksp = CWorkspace::instance();
+	std::shared_ptr<CModel3D> obj = wksp->_getModel(wksp->_getCurrentModelId());
 
 	if (obj != NULL)
 	{
@@ -751,11 +751,11 @@ void GLViewer::rysujOsie()
 
 	if (m_drawAxes == AxesStyle_ARROWS)
 	{
-		triad3D( 0.1, 45.0, 0.4, 5.0, (AP::WORKSPACE::getCurrentModelId() < 0) );
+		triad3D( 0.1, 45.0, 0.4, 5.0, (CWorkspace::instance()->_getCurrentModelId() < 0) );
 	}
 	else if (m_drawAxes == AxesStyle_PLANES)
 	{
-		bool active = (AP::WORKSPACE::getCurrentModelId() < 0);
+		bool active = (CWorkspace::instance()->_getCurrentModelId() < 0);
 
 		glColor3f(0.2f, 0.2f, 0.2f);
 
@@ -802,7 +802,7 @@ void GLViewer::rysujOsie()
 	}
 	else if (m_drawAxes == AxesStyle_LINES)
 	{
-		bool active = (AP::WORKSPACE::getCurrentModelId() < 0);
+		bool active = (CWorkspace::instance()->_getCurrentModelId() < 0);
 
 		glColor3f(0.2f, 0.2f, 0.2f);
 		glLineWidth(1);

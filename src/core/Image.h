@@ -10,8 +10,6 @@ public:
 	typedef enum QImage::Format Format;
 	typedef enum Qt::GlobalColor Color;
 
-	bool fitToWindow;
-
 	/*
 	constructor creating an null-size CImage instance, so instance->isNull() returns true.
 	*/
@@ -94,6 +92,9 @@ public:
 	//kolor w formacie: #AARRGGBB
 	void setPixel(int x, int y, uint32_t pixel);
 
+	inline void setShowViewer(bool show) { m_showViewer = show; }
+	inline bool getShowViewer() const { return m_showViewer; }
+
 	inline void setRectWidth(float w) { img3d_half_width = w / 2.0f; };
 	inline float rectWidth() { return img3d_half_width * 2.0f; };
 
@@ -113,5 +114,6 @@ public:
 
 //private:
 	float img3d_half_width, img3d_half_height, img3d_Z;
+	bool m_showViewer;
 };
 

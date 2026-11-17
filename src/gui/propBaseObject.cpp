@@ -1,6 +1,6 @@
 #include "propBaseObject.h"
 #include "BaseObject.h"
-#include "../api/UI.h"
+#include "Workspace.h"
 
 bool PropBaseObject::group_visible = true;
 
@@ -12,7 +12,7 @@ PropBaseObject::PropBaseObject(CBaseObject* o, QWidget* parent) : PropWidget(par
 
 	treeItemLabel = QString("Base Object - Id: %1").arg(obj->id());
 
-	// Usuń istniejący layout
+	// UsuĂ„Ä…Ă˘â‚¬Ĺľ istniejÄ‚â€žĂ˘â‚¬Â¦cy layout
 	//QLayout* oldLayout = layout();
 	//if (oldLayout) {
 	//	QLayoutItem* item;
@@ -107,14 +107,10 @@ void PropBaseObject::updateKeywords()
 	ui.keywordsAreaContents->update();
 }
 
-#include "../api/AP.h"
-#include "Workspace.h"
-
 void PropBaseObject::changedLabel(QString s)
 {
 	((CBaseObject*)obj)->setLabel(s.toStdWString());
-	UI::updateAllViews();
-	UI::DOCK::WORKSPACE::setItemLabelById(obj->id(), s.toStdWString());
+	CWorkspace::instance()->notifyObjectStateChanged(obj->id());
 }
 
 QVector<PropWidget*> PropBaseObject::create_and_get_subwidgets(CBaseObject* obj)
@@ -155,7 +151,7 @@ void PropBaseObject::onAddKeywordButtonClick()
 	* 1. odczytaj okienko
 	* 2. sprawdz czy keyword istnieje w obiekcie
 	* 2.a. jesli nie dodaj keyword do obiektu
-	* 2.b. oraz utw�rz przycisk na widgecie
+	* 2.b. oraz utwĂ„ĹąÄąÄ˝Ă‹ĹĄrz przycisk na widgecie
 	*/
 	QString keyword = ui.addKeywordCombo->currentText();
 	if (!obj->hasKeyword(keyword)) {
@@ -170,16 +166,7 @@ void PropBaseObject::onAddKeywordButtonClick()
 void PropBaseObject::changedSelection(int checkState)
 {
 	bool b = (checkState == Qt::Checked);
-	if (obj->hasType(CBaseObject::MODEL))
-	{
-		AP::getWorkspace()->changeSelection(obj->id(), b );
-	}
-	else
-	{
-		obj->setChecked( b );
-	}
-	UI::DOCK::WORKSPACE::setItemCheckedById(obj->id(), b );
-	UI::updateAllViews();
+	CWorkspace::instance()->setChecked(obj->id(), b);
 }
 
 void PropBaseObject::changedVisibility(int b)
@@ -187,9 +174,7 @@ void PropBaseObject::changedVisibility(int b)
 	bool vis = (b == Qt::CheckState::Checked);
 
 	obj->setSelfVisibility(vis);
-
-	UI::updateAllViews();
-	UI::DOCK::WORKSPACE::setItemVisibleById(obj->id(), vis);
+	CWorkspace::instance()->notifyObjectStateChanged(obj->id());
 
 	//emit signalChangedVisibility(vis);
 }
@@ -197,9 +182,7 @@ void PropBaseObject::changedVisibility(int b)
 void PropBaseObject::changedKidsVisibility(bool b)
 {
 	obj->setKidsVisibility(b);
-
-	UI::updateAllViews();
-	UI::DOCK::WORKSPACE::setItemKidsVisibleById(obj->id(), b);
+	CWorkspace::instance()->notifyStructureChanged();
 
 	//emit signalChangedVisibility(vis);
 }

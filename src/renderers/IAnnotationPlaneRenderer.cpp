@@ -1,4 +1,4 @@
-﻿#include "IAnnotationPlaneRenderer.h"
+#include "IAnnotationPlaneRenderer.h"
 #include <qopengl.h>
 #include "AnnotationPlane.h"
 
@@ -6,35 +6,12 @@ void IAnnotationPlaneRenderer::renderSelf(const CBaseObject* _obj)
 {
 	CAnnotationPlane* obj = (CAnnotationPlane*)_obj;
 
-	auto& normal = obj->m_normal;
+	auto normal = obj->getNormal();
 
 	if (normal.length())
 	{
-		// wzór wyjściowy: n.x*v.x + n.y*v.y +n.z*v.z = 0
-		// v.x = ( n.y*v.y + n.z*v.z ) / -n.x
-		// v.y = ( n.x*v.x + n.z*v.z ) / -n.y
-		// v.z = ( n.x*v.x + n.y*v.y ) / -n.z
-
-		// przyjmuję wstępnie wartości v.x, v.y oraz v.z = 1.0 dla uproszczenia obliczeń
-		double x = 1.0;
-		double y = 1.0;
-		double z = 1.0;
-
-
-		// mianownik nie mo�e by� zerowy
-		if (normal.Z() != 0.0) {
-			z = (normal.X() + normal.Y()) / -normal.Z();
-		}
-		else if (normal.Y() != 0.0) {
-			y = (normal.X() + normal.Z()) / -normal.Y();
-		}
-		else {
-			x = (normal.Y() + normal.Z()) / -normal.X();
-		}
-
 		auto size = obj->getSize();
-
-		CVector3d v1(CVector3d(x, y, z).getNormalized() * size);			// mamy wektor kierunkowy do pierwszego naro�nika, kt�ry mno�ymy od razu przez m_size
+		CVector3d v1(obj->axisU() * size);
 		CVector3d v2(v1.crossProduct(normal).getNormalized() * size);	// wektor prostopad�y jednocze�nie do normalnego i do v1 wyznaczy drugi naro�nik
 		CVector3d v3(-v1);													// wektor przeciwny do v1 wyznacza trzeci naro�nik,
 		CVector3d v4(-v2);													// a wektor przeciwny do v2 - czwarty
@@ -58,7 +35,8 @@ void IAnnotationPlaneRenderer::renderSelf(const CBaseObject* _obj)
 			glColor4ubv(obj->getColor().V());
 		}
 
-		glTranslatef(obj->m_center.X(), obj->m_center.Y(), obj->m_center.Z());
+		auto center = obj->getCenter();
+		glTranslatef(center.X(), center.Y(), center.Z());
 
 		//glBegin(GL_TRIANGLES);
 		//glVertex3f(v1.X(), v1.Y(), v1.Z());
